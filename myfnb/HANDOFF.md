@@ -2,6 +2,8 @@
 
 > 写于 2026-09-29（云端 Claude Code 会话，额度将满，交给本地会话继续）。
 > 本地 Claude：先完整读完本文件，再读仓库根目录的 `AGENTS.md` 和 `docs/customize.md`，然后从「§6 下一步」开始做。
+>
+> **2026-09-30 本地会话已完成 §6 第 1–3 项**（改 `industry/`、改 `tests/`、跑检查）。接手者先读 **§11**：做了什么、和 §3 定案的出入、核实过的事实、下一步。
 
 ---
 
@@ -145,6 +147,8 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
 
 ### 3.4 信源 → `industry/sources.json`
 
+> **已被 §11.2 取代**：本地逐个试抓后，最终接了 12 个，下表是当时未测的原始计划。
+
 **注意**：云端会话出网被挡，下列网址一个都没测过。按作者标准，部署后在后台"信源"页逐个**试抓**，抓不到的改用 `web_list` 配选择器，或经 Jina 渲染（`JINA_API_KEY`，按次计费）。`site_fulltext` 一律 `false`（只放摘要和链接）。
 
 | 等级 | 门槛 | 信源（首页或新闻页，待试抓） |
@@ -198,16 +202,16 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
 
 ## 6. 下一步（按顺序）
 
-1. **改 `industry/`**：按 §3、§4 改 site.ts、taxonomy.ts、topics.json、sources.json、prompts/（selection-score、prefilter、content-understanding、structure、rules-domain，以及 summarize/report/story 里写死"AI"的地方，`grep -rn "AI" industry/prompts` 逐个看）、features.ts、pages/、changelog.json。
-2. **改 `tests/`**：作者说明测试里有 AI 分类样例（`ai-models`、"模型发布"、Anthropic），换成餐饮对应项，规则本身不改。
-3. **跑四项检查**：
+1. ✅（2026-09-30，见 §11）**改 `industry/`**：按 §3、§4 改 site.ts、taxonomy.ts、topics.json、sources.json、prompts/（selection-score、prefilter、content-understanding、structure、rules-domain，以及 summarize/report/story 里写死"AI"的地方，`grep -rn "AI" industry/prompts` 逐个看）、features.ts、pages/、changelog.json。
+2. ✅（2026-09-30，见 §11）**改 `tests/`**：作者说明测试里有 AI 分类样例（`ai-models`、"模型发布"、Anthropic），换成餐饮对应项，规则本身不改。
+3. ✅（2026-09-30，结果见 §11.4）**跑四项检查**：
    ```bash
    npm run typecheck
    DATABASE_URL=postgres://…/myhot_test npm test   # 库名须以 _test 或 _ci 结尾
    npm run build -w @aihot/web && node --test apps/web/tests/*.test.ts
    node scripts/smoke.ts --base http://localhost:3000   # 站点跑起来后
    ```
-4. **写部署脚本 `myfnb/bootstrap.sh`**（用户在腾讯云网页终端 OrcaTerm 粘贴一行即可）：装 Docker → clone 我们的 fork → 用 `openssl rand -hex 32` 生成 `SESSION_SECRET`、`IMG_PROXY_SIGN_SECRET`、`POSTGRES_PASSWORD` → 交互式读入 DeepSeek key、阿里云 key、后台密码（≥12 位）→ 写 `.env`（`SITE_URL=https://new.myfnbguide.com`、`SITE_DOMAIN=new.myfnbguide.com`、`PORT=127.0.0.1:3000`、`TRUST_PROXY=true`）→ `docker compose --profile https up -d --build`。再装一个 systemd timer：每 5 分钟 `git fetch`，有变化就 `git pull && docker compose --profile https up -d --build`。
+4. **写部署脚本 `myfnb/bootstrap.sh`**（用户在腾讯云网页终端 OrcaTerm 粘贴一行即可）：装 Docker → clone 我们的 fork → 用 `openssl rand -hex 32` 生成 `SESSION_SECRET`、`IMG_PROXY_SIGN_SECRET`、`POSTGRES_PASSWORD` → 交互式读入 DeepSeek key、**Gemini key**（向量已改用 Gemini，见 §2，不再是阿里云 key）、后台密码（≥12 位）→ 写 `.env`（`SITE_URL=https://new.myfnbguide.com`、`SITE_DOMAIN=new.myfnbguide.com`、`PORT=127.0.0.1:3000`、`TRUST_PROXY=true`）→ `docker compose --profile https up -d --build`。再装一个 systemd timer：每 5 分钟 `git fetch`，有变化就 `git pull && docker compose --profile https up -d --build`。
 5. **向量配置（部署前必须核实）**：用 Gemini，走 `providers/embeddings.ts` 的通用路径：`EMBEDDING_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/`、`EMBEDDING_API_KEY=<AI Studio key>`、`EMBEDDING_MODEL=gemini-embedding-001`。该模型默认 3072 维，支持用 `dimensions` 缩小（推荐 768 / 1536 / 3072）。**先查 `database/migrations/` 里向量列维度是否写死**（阿里云默认 1024）：写死就设 `EMBEDDING_DIMS` 为该值并实测 Gemini 是否接受；不写死就用 `EMBEDDING_DIMS=1536`。拿不到能用的向量时，作者代码会退回字面比对（`events/group.ts`），站照样能跑，只是中英文同一事件合不上。
 6. **10/6–10/7 部署**：先 `git fetch upstream` 审阅并合并作者最新修复 → 用户买 Lighthouse（新加坡、Ubuntu LTS、2 核 4GB、1 个月、关自动续费；默认防火墙已开 22/80/443）→ Porkbun 加 `new` A 记录 → 用户粘贴 bootstrap 命令。
 7. **部署后**：后台"信源"逐个试抓并修；后台"设置 → 预算"设每日上限；腾讯云监控设流量包 80% 告警（轻量服务器超额按量计费，新加坡中文站标价 0.8 元人民币/GB，**无自动关机选项**）；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`。
@@ -274,3 +278,116 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
 - 阿里云向量计费：https://alibabacloud.com/help/en/model-studio/billing-for-text-embedding
 - 电子发票豁免：https://www.bernamabiz.com/news.php?id=2601057
 - 版权法第 13 条：http://www.commonlii.org/my/legis/consol_act/ca1987133/s13.html
+
+---
+
+## 11. 2026-09-30 本地会话：做了什么（接手者先读这节）
+
+### 11.1 完成情况与提交（分支 `claude/myfnb-handoff`）
+
+| 步骤 | 内容 | 提交 |
+|---|---|---|
+| 1 站点身份 | site.ts、features.ts（两个 AI 模块关掉）、changelog.json | `4860bca` |
+| 1 分类 | taxonomy.ts、topics.json | `273a24c` |
+| 1 精选标准 | prompts/ 16 个文件 | `126ed98` |
+| 1 信源 | sources.json，CI 一行 | `24b17d6`；LHDN 改英文版列表 `046b8a0` |
+| 1 条款 | pages/terms.md、privacy.md | `7bbd0e7` |
+| 1 品牌 | brand/ 图标与报头 | `8a0f778` |
+| 1 评测样例 | gold.example.jsonl | `68671c9` |
+| 2 测试 | 只改因分类变化而失败的 3 个测试文件，测的规则不变 | `bc84cd6` |
+| 3 四项检查 | 见 §11.4；检查中发现并修掉两类问题（下两行） | — |
+| 3 修：页面写死的 AI 字样 | 报告页、热点榜、主题页、反馈框（见 §11.2 第 6 条） | `ac7ee13` |
+| 3 修：冒烟检查 | 站名带 `&` 时误报 | `69caaee` |
+
+### 11.2 与 §3 定案的出入（在授权范围内由 Claude 决定，请过目）
+
+1. **信源收成 12 个**（原计划约 40 个）。每个都在本地用框架自己的采集代码试抓通过，日期、标题、正文都拿得到：
+
+   | 等级 | 信源 | 抓法 | 说明 |
+   |---|---|---|---|
+   | T1 | 财政部 MOF · 文告 | RSS（马来文版） | 英文版 RSS 更新慢（最新 8/18；马来文版 9/29） |
+   | T1 | 内陆税收局 LHDN · 公告与文告 | 网页列表（英文版） | 马来文版日期写成「31 Ogo 2026」，框架认不出马来文月份，十月（Okt）起会全部没有日期 |
+   | T2 | 星洲日报 · 餐饮业标签页 | 网页列表，日期从文章页补 | 原计划没有。中文报里对老板最有用的一类：公会诉求、市议会执法、缺工、预算案期望 |
+   | T2 | 南洋商报 · 餐饮业标签页 | 同上 | 同上 |
+   | T2 | 东方日报 · 财经 | RSS | |
+   | T2 | FMT Business | RSS | |
+   | T2 | Malay Mail Money | RSS | |
+   | T2 | The Malaysian Reserve | RSS | |
+   | T2 | Vulcan Post | RSS | 大马与新加坡的中小企业、餐饮品牌故事 |
+   | T2 | SoyaCincau | RSS | 电子钱包、外卖平台的变化 |
+   | T2 | Grab Malaysia 新闻稿 | RSS | 刻意不给 T1（同 §3.4） |
+   | T2 | Modern Restaurant Management | RSS | 海外经营方法，量小 |
+
+   没接的及原因：
+   - **The Star**：RSS 页写明仅限个人、非商业用途，不得聚合后配广告；我们计划接赞助。
+   - 国家银行 BNM、公积金局 KWSP、卫生部 KKM、中小企业机构 SME Corp：对抓取返回 403。
+   - 国内贸易部 KPDN：文告只有 PDF，框架不解析 PDF，抓到也只有标题，发不出去。
+   - 人力资源部 MOHR：文告列表靠脚本渲染，抓不到条目。统计局 DOSM：首页没有可抓的新闻列表（没再深挖）。
+   - 移民局：RSS 停在 2023 年；首相署：`/feed/` 返回 404；能源委员会 ST：新闻页多是转载的报纸剪报；JAKIM 清真网站：首页只有编码过的链接，没找到可用的列表。
+   - 中国报：与星洲、南洋同属世华媒体集团，它的「餐饮业」标签页 8 月 20 日之后没有新稿；诗华日报财经：前几条与东方日报财经同一批通讯社稿。
+   - Bernama：RSS 只有 10 条，各版混在一起，没有日期。
+   - Nation's Restaurant News：一天约 50 篇，多是美国连锁的新闻，按条计费的模型成本高、对大马小店用处小；红餐网：`/rss`、`/feed` 都 404，内容以中国市场为主；Restaurant Business：`/rss.xml` 返回的是网页。
+   - StoreHub 博客：全是「某某行业的收银系统」推广页；foodpanda：`/feed/` 返回 404。
+
+   这些以后都能在后台「信源」页随时加。以上是本机网络的试抓结果；服务器在新加坡，政府网站可能挡数据中心的 IP，部署后要在后台再试抓一次。
+2. 机构与平台标签用中文名（内陆税收局、公积金局、社险机构、卫生部、人力资源部、移民局、国家银行、统计局、财政部），KPDN、JAKIM 保留缩写（旧站对 KPDN 的中文叫法前后不一）。
+3. 主题 34 个（原定 26 个）：经营主题加了「公积金与社险」「执照与准证」「租金与选址」「融资与贷款」，让 19 个主题标签都有落脚页；内容形态按作者的做法，每个分类标签一页。
+4. 归组规则加了一条：预算案这类一次公布多项措施的，报道同一措施的算同一件事，报道不同措施的算同一事件的不同进展。日报按「同一件事」去重，这样 10/9 预算案里的最低薪金和 SST 会各占一条，不会被并成一条。
+5. 身份词典（防止模型把原文没提到的机构写进标题）覆盖中、英、马来文写法。20 个跨语言样例在本地验证过：原文英文「Human Resources Minister」、摘要写「人力资源部长」会放行；原文只写「外卖平台」、模型写成「Grab」会被拦下。
+6. **偏离 §2「只改 `industry/`」的地方**（都写成跟行业无关的通用改法，可以原样提给作者，见 §11.5）：
+   - 作者漏了几处写死的「AI」，只改 `industry/` 的话，新站的日报页标题会是「AI 日报」，热点榜写「AI 圈讨论最多的」，主题页标题是「按主题看 AI」、分组写着「公司与模型」「技术方向：Agent、多模态、具身智能」。改了 `apps/web` 的 6 个文件，让这些字样改从 `industry/site.ts` 和 `industry/topics.json` 读。已验证：行业词换回 AI 时，页面上看得到的文字与作者原版逐字相同；只有两处换成了通用写法——主题页给搜索引擎的描述（原来手写了 OpenAI、Anthropic 等例子）和反馈框的举例。
+   - `scripts/smoke.ts` 一行：站名「MyF&B」在网页里写成 `MyF&amp;B`，作者的冒烟检查拿原文比对，15 个页面全报错。
+   - `.github/workflows/check.yml` 一行：CI 原本写死「信源 18 个」，改成按 `industry/sources.json` 的条数比对。
+   - 以后合并上游时，只有这几个文件可能冲突；作者若接受 PR，冲突就消失。
+7. 更新日志首条、使用规则、隐私说明的生效日期按计划部署日 **2026-10-07** 填写。上线日期变了就改 `industry/changelog.json` 和 `industry/pages/` 的两个文件。
+8. 使用规则写了运营主体 CORE SYSTEM STUDIO，没写 SSM 注册号（旧站也没写）；要写就补在 `industry/pages/terms.md` 表格的「运营主体」一行。
+
+### 11.3 核实过的事实（省得重查）
+
+- 所有提示词都能展开，没有漏填的 `{{…}}`；内容理解提示词里写死的三组标签与 `taxonomy.ts` 逐字一致。
+- 正文抽取：星洲 1,224 字、南洋 1,586 字（南洋 PLUS 付费文只有 231 字）、财政部 3,365 字、东方日报 546 字，都抽得到。LHDN 的文章页只放第一段（约 250–300 字），全文在页面附的 PDF 里，框架读不了；标题带着新闻本身，细节靠同一事件的媒体报道补上（归组会把它们并在一起）。
+- 站名里的 `&`：RSS 标题走 CDATA 或转义，分享图和网页也会转义，不会弄坏输出。
+- 核心代码里的 `Asia/Shanghai` 与马来西亚同为 UTC+8，日报仍是本地早上 8 点。
+- 版权法第 13(2)(a) 条：为报道时事而合理使用，公开使用时须注明作品标题与作者；第 13(2A) 条会看是否商业用途和用了多少。这是只放标题、来源、简短摘要和链接的依据。
+- PDPA 2024 修订（Act A1727）：外泄须在 72 小时内通报专员；可能造成重大伤害时，须不无故拖延地通知当事人；新增资料可携权。
+- 本机是 Windows：`apps/web/server.ts` 在 Windows 上起不来（§11.5 第 2 条），关机信号类测试也跑不了。四项检查以 Linux（WSL Ubuntu 24.04）结果为准，与作者 CI、正式服务器同一系统。WSL 里的 PostgreSQL 要用带 lz4 的版本（第 34 号迁移会设 `default_toast_compression = lz4`）；conda-forge 的 postgresql 17 可以，zonky 的便携版不行。
+
+### 11.4 四项检查结果
+
+2026-09-30，在 Linux（WSL Ubuntu 24.04、Node 24.14、PostgreSQL 17.11，新建的空库）上按作者 CI 的顺序跑，提交 `69caaee`：
+
+| 检查 | 结果 |
+|---|---|
+| `npm run typecheck` | 通过 |
+| `npm test`（后端，约 30 秒） | 139 个全部通过，0 失败，0 取消 |
+| `npm run build -w @aihot/web` 与网站测试 | 构建通过；网站测试 16 个全部通过 |
+| `node scripts/smoke.ts`（站点跑起来后，采集和模型调用关闭） | 全部通过：15 个页面、14 个机器出口、MCP 握手 |
+
+另外逐页抓了 15 个页面：没有剩下「AI 日报」「AI 圈」「按主题看 AI」「OpenAI」「公司与模型」「MyHOT」等字样；日报、周报、热点榜、主题页、关于页显示的是「餐饮日报」「餐饮周报」「餐饮圈」「按主题看餐饮」「机构与平台」「经营主题」「马来西亚餐饮圈每天都有新消息」。
+
+同一套检查在 Windows 上：类型检查和网站构建通过；网站测试、冒烟检查起不了站点，后端测试里 5 个关机信号测试超时——这些在未改动的原版上也一样（`apps/web/server.ts` 的 Windows 问题，见 §11.5 第 2 条；Windows 不支持 SIGTERM 处理），与本次改动无关。
+
+### 11.5 发现的上游问题（可以给作者提 PR，也是参与社区的起点）
+
+1. **已在 fork 里改好、可直接提 PR**：报告页、热点榜、主题页、反馈框写死的「AI」（`ac7ee13`，主题页顺带改成读 `topics.json` 的 groups，原本这部分数据没人读）；冒烟检查不认 HTML 转义的站名（`69caaee`）；CI 写死信源数 18（`24b17d6` 里的一行）。
+2. `apps/web/server.ts` 用 `import(path.resolve(...))` 加载构建产物，在 Windows 上报 `ERR_UNSUPPORTED_ESM_URL_SCHEME`，网站起不来；改用 `pathToFileURL` 即可。
+3. `packages/backend/src/sources/web-list.ts` 的日期解析不认马来文、印尼文月份（Mac、Mei、Ogos、Okt、Dis）。我们绕开了（LHDN 改用英文版列表），没改核心。
+4. 三处读者看得到的文案写死「北京时间」（`packages/backend/src/publication/feeds.ts`、`apps/web/app/routes/agent.tsx`、`apps/web/app/routes/report-latest.tsx`）。时间本身对（同为 UTC+8），只是说法；可以把时区说法放进 `industry/site.ts`。没改。
+5. 两个测试靠「宽召回的AI相关性预筛」这几个字认出预筛提示词，换行业就得改测试；只认「宽召回」即可（`tests/default-model.test.ts` 已经这样写）。
+6. 框架不解析 PDF，而不少政府文告只有 PDF（KPDN 全是 PDF，LHDN 的全文也在 PDF 里）。
+
+### 11.6 下一步（按顺序）
+
+1. **用户，一次性**：打开 GitHub 仓库的 Actions 页，点「I understand my workflows, go ahead and enable them」。fork 的工作流默认关着；打开后推送到 main 或开 PR 时，作者的全套检查会在 Ubuntu 上自动跑。
+2. **§6 第 4 项 bootstrap.sh**：部署日在真服务器上边写边测（本机没有 Docker，现在写了也验证不了）。
+3. **§6 第 5 项向量**：
+   - 已查：向量列是 `real[]`，维度没写死（`database/migrations/0006_embeddings.sql`），按原定用 `EMBEDDING_DIMS=1536`。
+   - 未确认：Google 的 OpenAI 兼容文档只示范了 `input` 和 `model`，没说是否支持 `dimensions`、`encoding_format` 和一次传多条，而框架这三样都会发。部署日用用户自己的 key 在服务器上试一条：返回向量就用 1536；报参数错误就改 `EMBEDDING_DIMS=0`（用默认 3072 维）；还不行就设 `EMBEDDINGS_ENABLED=false`，归组退回字面比对，站照样能跑。
+     ```bash
+     curl -s https://generativelanguage.googleapis.com/v1beta/openai/embeddings \
+       -H "Authorization: Bearer $EMBEDDING_API_KEY" -H "Content-Type: application/json" \
+       -d '{"model":"gemini-embedding-001","input":["测试一","测试二"],"dimensions":1536,"encoding_format":"float"}' | head -c 300
+     ```
+4. **部署后**：后台「信源」页对 12 个信源各试抓一次（理由见 §11.2 第 1 条末段）。
+5. **上线前**：请专业人士看一遍 `industry/pages/`（作者模板原话建议）。
+6. 其余按 §6 第 6–10 项。

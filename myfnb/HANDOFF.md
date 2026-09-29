@@ -44,7 +44,7 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
 | 范围 | 马来西亚餐饮。政策法规只看大马；实战经验放宽到全球，但要"大马小店用得上" |
 | 内容 | 7 类全要，按"能不能直接拿来用"（act 维度）加权 |
 | 写摘要模型 | DeepSeek 官方 API（作者 init-env 默认，`.env.example` 默认 `LLM_BASE_URL=https://api.deepseek.com/v1`、`LLM_MODEL=deepseek-flash`） |
-| 向量模型 | 阿里云 Model Studio **国际版** `text-embedding-v4`（新加坡区，开 Free Quota Only） |
+| 向量模型 | **Google Gemini `gemini-embedding-001`（免费层）**，走作者代码的通用 OpenAI 兼容路径 `EMBEDDING_*`。原定阿里云 `text-embedding-v4`（作者默认），但阿里云不收预付卡/虚拟卡，用户只有 TNG Visa（预付卡），绑不上。Gemini 免费层每天 1,500 次请求、不用绑卡。以后用户有了银行借记卡，可切回阿里云默认路径 |
 | 服务器 | 腾讯云**国际版** Lighthouse **新加坡** 2 核 4GB，Ubuntu LTS，按月付、关自动续费 |
 | 备份 | 腾讯云 COS 新加坡（`backup.ts` 默认就是腾讯云 COS） |
 | 域名 | 试跑用 `new.myfnbguide.com`（Porkbun 加 A 记录）；上线切换时 `www.myfnbguide.com` 指过来 |
@@ -186,9 +186,10 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
 |---|---|
 | Fork `1204kay/myfnbguide` | 已完成 |
 | Claude GitHub App 访问该仓库 | 用户说已开 |
-| DeepSeek（platform.deepseek.com，充 ¥50，建 key） | 已给教程，未确认 |
-| 阿里云国际版 Model Studio（新加坡，Free Quota Only，建 key，抄 Workspace ID） | 已给教程，未确认；Workspace ID 未收到 |
-| 腾讯云国际版（tencentcloud.com，只注册、验证、绑卡，**先不买**） | 已给教程，未确认 |
+| DeepSeek | **已完成**：已充值，余额 US$2.00 + ¥9.90（约 US$3.4），已建 key。余额提醒目前是关的，要打开；10/6 部署前充到约 US$10 |
+| 阿里云国际版 | **放弃**：绑卡页写明不支持预付卡、虚拟卡，用户的 TNG Visa 是预付卡 |
+| Google AI Studio（Gemini 向量 key） | 待办：用户用 Google 账号在 https://aistudio.google.com/apikey 建 key，不用绑卡 |
+| 腾讯云国际版 | **已注册并绑卡**（TNG Visa 可用，用 Google 登录）；先不买服务器 |
 | Porkbun A 记录 `new` → 服务器 IP | 等买服务器后做 |
 
 **所有 key 不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
@@ -207,7 +208,7 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
    node scripts/smoke.ts --base http://localhost:3000   # 站点跑起来后
    ```
 4. **写部署脚本 `myfnb/bootstrap.sh`**（用户在腾讯云网页终端 OrcaTerm 粘贴一行即可）：装 Docker → clone 我们的 fork → 用 `openssl rand -hex 32` 生成 `SESSION_SECRET`、`IMG_PROXY_SIGN_SECRET`、`POSTGRES_PASSWORD` → 交互式读入 DeepSeek key、阿里云 key、后台密码（≥12 位）→ 写 `.env`（`SITE_URL=https://new.myfnbguide.com`、`SITE_DOMAIN=new.myfnbguide.com`、`PORT=127.0.0.1:3000`、`TRUST_PROXY=true`）→ `docker compose --profile https up -d --build`。再装一个 systemd timer：每 5 分钟 `git fetch`，有变化就 `git pull && docker compose --profile https up -d --build`。
-5. **向量配置（部署前必须核实）**：`providers/embeddings.ts` 有两条路：只填 `DASHSCOPE_API_KEY` 走阿里云（默认 `text-embedding-v4`，1024 维）；填 `EMBEDDING_API_KEY` 则走通用接口（默认维度 0，要显式设 `EMBEDDING_DIMS=1024`）。国际版 key 在中国区地址用不了，要确认 DashScope 路径是否读 `DASHSCOPE_BASE_URL`；不读就改用通用路径：`EMBEDDING_BASE_URL` 设成新加坡区地址（官方文档格式 `https://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1`，或 `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`，二者择一实测）、`EMBEDDING_MODEL=text-embedding-v4`、`EMBEDDING_DIMS=1024`。同时查 `database/migrations/` 里向量列维度是否固定。
+5. **向量配置（部署前必须核实）**：用 Gemini，走 `providers/embeddings.ts` 的通用路径：`EMBEDDING_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/`、`EMBEDDING_API_KEY=<AI Studio key>`、`EMBEDDING_MODEL=gemini-embedding-001`。该模型默认 3072 维，支持用 `dimensions` 缩小（推荐 768 / 1536 / 3072）。**先查 `database/migrations/` 里向量列维度是否写死**（阿里云默认 1024）：写死就设 `EMBEDDING_DIMS` 为该值并实测 Gemini 是否接受；不写死就用 `EMBEDDING_DIMS=1536`。拿不到能用的向量时，作者代码会退回字面比对（`events/group.ts`），站照样能跑，只是中英文同一事件合不上。
 6. **10/6–10/7 部署**：先 `git fetch upstream` 审阅并合并作者最新修复 → 用户买 Lighthouse（新加坡、Ubuntu LTS、2 核 4GB、1 个月、关自动续费；默认防火墙已开 22/80/443）→ Porkbun 加 `new` A 记录 → 用户粘贴 bootstrap 命令。
 7. **部署后**：后台"信源"逐个试抓并修；后台"设置 → 预算"设每日上限；腾讯云监控设流量包 80% 告警（轻量服务器超额按量计费，新加坡中文站标价 0.8 元人民币/GB，**无自动关机选项**）；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`。
 8. **校准（10 月中下旬）**：收集约一周（10/9 预算案是第一批考题）→ Claude 先标 100–200 条 select/reject/either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**。作者没定准确率数字。
@@ -236,7 +237,7 @@ git remote add upstream https://github.com/KKKKhazix/AIHOT.git
 |---|---|---|
 | 腾讯云 Lighthouse 新加坡 2 核 4GB | 约 US$8.5 | **未核实**：来自搜索结果，腾讯云价格页在云端被挡；以下单页为准 |
 | DeepSeek | 约 US$7–14 | 按每天 50 条、每条约 6 次调用（作者文档：152 篇首次导入约 930 次调用）、每次约 3000 token 估算；预付费，余额用完即停 |
-| 阿里云向量 | 前 90 天免费，之后 < RM1 | 新用户 100 万 token 免费；text-embedding-v4 约 US$0.091/百万 token |
+| Gemini 向量 | 0 | 免费层每天 1,500 次请求，不用绑卡（免费层数据可能被 Google 用于改进产品；我们处理的是公开新闻，可接受） |
 | COS 备份 | 几分钱 | |
 | 超额流量 | 正常 0 | 唯一会随读者上涨的费用 |
 

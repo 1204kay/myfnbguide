@@ -2,22 +2,352 @@
   "exportedAt": "2026-09-30",
   "groups": [
     {
-      "key": "company",
-      "name": "机构与平台",
-      "blurb": "按机构与平台追踪：谁出了新规、谁改了费率"
-    },
-    {
       "key": "field",
       "name": "经营主题",
-      "blurb": "按经营主题深挖：外卖、人力、税务、食安……"
+      "blurb": "按怎么多赚钱来分：菜单、营销、利润、外卖、员工……"
     },
     {
       "key": "genre",
       "name": "内容形态",
-      "blurb": "按内容类型浏览：政策、实战、观点、数据……"
+      "blurb": "按内容类型浏览：实战、成本、平台、政策……"
+    },
+    {
+      "key": "company",
+      "name": "机构与平台",
+      "blurb": "按机构与平台追踪：谁出了新规、谁改了费率"
     }
   ],
   "topics": [
+    {
+      "slug": "menu-pricing",
+      "name": "菜单与定价",
+      "group": "field",
+      "tags": [
+        "菜单",
+        "定价"
+      ],
+      "definition": "菜单怎么设计、哪道菜该推、价格怎么定才赚钱：菜单工程、定价与涨价的做法。",
+      "related": [
+        "marketing-retention",
+        "profit-finance",
+        "cost-ingredients"
+      ]
+    },
+    {
+      "slug": "marketing-retention",
+      "name": "营销与复购",
+      "group": "field",
+      "tags": [
+        "营销",
+        "顾客/复购",
+        "节庆"
+      ],
+      "definition": "怎么让新客上门、老客回头：社交媒体、本地搜索、会员、节庆营销与服务体验。",
+      "related": [
+        "menu-pricing",
+        "delivery",
+        "profit-finance"
+      ]
+    },
+    {
+      "slug": "profit-finance",
+      "name": "利润与财务",
+      "group": "field",
+      "tags": [
+        "利润/财务"
+      ],
+      "definition": "看懂自己的利润：成本结构、毛利、现金流、损益表和盈亏平衡。",
+      "related": [
+        "menu-pricing",
+        "cost-ingredients",
+        "financing"
+      ]
+    },
+    {
+      "slug": "delivery",
+      "name": "外卖",
+      "group": "field",
+      "tags": [
+        "外卖"
+      ],
+      "definition": "外卖平台的佣金、规则与运营方法：怎么在外卖上不亏钱。",
+      "related": [
+        "grab",
+        "foodpanda",
+        "marketing-retention"
+      ]
+    },
+    {
+      "slug": "cost-ingredients",
+      "name": "食材与成本",
+      "group": "field",
+      "tags": [
+        "食材",
+        "水电/能源"
+      ],
+      "definition": "食材、燃气与电费的价格变化，以及控成本的方法。",
+      "related": [
+        "profit-finance",
+        "kpdn",
+        "rent-location"
+      ]
+    },
+    {
+      "slug": "manpower",
+      "name": "员工与外劳",
+      "group": "field",
+      "tags": [
+        "员工管理",
+        "外劳"
+      ],
+      "definition": "招人、培训、排班、留人，以及最低薪金与外劳政策：餐饮业人手问题的全部动态。",
+      "related": [
+        "kesuma",
+        "imigresen",
+        "epf-socso"
+      ]
+    },
+    {
+      "slug": "rent-location",
+      "name": "租金与选址",
+      "group": "field",
+      "tags": [
+        "租金/选址"
+      ],
+      "definition": "店租走势、选址方法与商场、店屋的租赁条件。",
+      "related": [
+        "opening",
+        "cost-ingredients",
+        "profit-finance"
+      ]
+    },
+    {
+      "slug": "cleaning-maintenance",
+      "name": "清洁与维护",
+      "group": "field",
+      "tags": [
+        "清洁/维护"
+      ],
+      "definition": "厨房清洁、隔油池与下水道、设备保养：少停工、少被罚、设备用得更久。",
+      "related": [
+        "food-safety-halal",
+        "licensing",
+        "cost-ingredients"
+      ]
+    },
+    {
+      "slug": "food-safety-halal",
+      "name": "食品安全与清真",
+      "group": "field",
+      "tags": [
+        "食品安全",
+        "清真"
+      ],
+      "definition": "卫生检查、食品安全规定与清真认证：怎么合规、不被关店。",
+      "related": [
+        "kkm",
+        "jakim",
+        "cleaning-maintenance"
+      ]
+    },
+    {
+      "slug": "payments-pos",
+      "name": "支付与收银",
+      "group": "field",
+      "tags": [
+        "支付",
+        "收银系统"
+      ],
+      "definition": "电子钱包、DuitNow QR、刷卡手续费与收银系统的变化和选择。",
+      "related": [
+        "bnm",
+        "tax-e-invoice",
+        "tools"
+      ]
+    },
+    {
+      "slug": "financing",
+      "name": "融资与贷款",
+      "group": "field",
+      "tags": [
+        "融资/贷款"
+      ],
+      "definition": "中小企业贷款、政府援助与融资计划：申请条件与利率。",
+      "related": [
+        "bnm",
+        "mof",
+        "opening"
+      ]
+    },
+    {
+      "slug": "opening",
+      "name": "开业",
+      "group": "field",
+      "tags": [
+        "开业"
+      ],
+      "definition": "开业前要办的执照、预算、选址与试营业：从零开始开一门餐饮生意。",
+      "related": [
+        "licensing",
+        "rent-location",
+        "financing"
+      ]
+    },
+    {
+      "slug": "tax-e-invoice",
+      "name": "税务与电子发票",
+      "group": "field",
+      "tags": [
+        "税务",
+        "电子发票"
+      ],
+      "definition": "所得税、销售与服务税（SST）与电子发票：适用门槛、截止日期与做法。",
+      "related": [
+        "lhdn",
+        "mof",
+        "payments-pos"
+      ]
+    },
+    {
+      "slug": "epf-socso",
+      "name": "公积金与社险",
+      "group": "field",
+      "tags": [
+        "公积金/社险"
+      ],
+      "definition": "雇主要缴的公积金、社险与就业保险：缴纳率、对象与罚则的变化。",
+      "related": [
+        "kwsp",
+        "perkeso",
+        "manpower"
+      ]
+    },
+    {
+      "slug": "licensing",
+      "name": "执照与准证",
+      "group": "field",
+      "tags": [
+        "执照/准证"
+      ],
+      "definition": "营业执照、招牌、食物处理与地方政府准证的申请、更新和执法。",
+      "related": [
+        "kkm",
+        "food-safety-halal",
+        "opening"
+      ]
+    },
+    {
+      "slug": "practice",
+      "name": "实战经验",
+      "group": "genre",
+      "tags": [
+        "实战/经验"
+      ],
+      "definition": "能照做的经营方法：员工管理、菜单设计、成本与利润、营销与复购、外卖运营、清洁与维护。",
+      "related": [
+        "menu-pricing",
+        "marketing-retention",
+        "profit-finance"
+      ]
+    },
+    {
+      "slug": "cost-prices",
+      "name": "成本与价格",
+      "group": "genre",
+      "tags": [
+        "成本/价格"
+      ],
+      "definition": "食材、能源、租金等主要成本的价格变化。",
+      "related": [
+        "cost-ingredients",
+        "data",
+        "kpdn"
+      ]
+    },
+    {
+      "slug": "platforms",
+      "name": "平台动态",
+      "group": "genre",
+      "tags": [
+        "平台动态"
+      ],
+      "definition": "外卖、支付与银行等平台的规则、费率和服务变化。",
+      "related": [
+        "delivery",
+        "payments-pos",
+        "grab"
+      ]
+    },
+    {
+      "slug": "tools",
+      "name": "新工具",
+      "group": "genre",
+      "tags": [
+        "新工具"
+      ],
+      "definition": "收银、管理软件、厨房设备与政府网上系统的新工具。",
+      "related": [
+        "payments-pos",
+        "platforms",
+        "practice"
+      ]
+    },
+    {
+      "slug": "policy",
+      "name": "政策法规",
+      "group": "genre",
+      "tags": [
+        "政策/法规"
+      ],
+      "definition": "政府新规的公布、生效日期、罚则与执法。",
+      "related": [
+        "mof",
+        "lhdn",
+        "kesuma"
+      ]
+    },
+    {
+      "slug": "industry",
+      "name": "行业动态",
+      "group": "genre",
+      "tags": [
+        "行业动态"
+      ],
+      "definition": "品牌开店关店、进入或退出大马、连锁扩张与并购。",
+      "related": [
+        "data",
+        "opinions",
+        "cost-prices"
+      ]
+    },
+    {
+      "slug": "data",
+      "name": "数据与报告",
+      "group": "genre",
+      "tags": [
+        "数据/报告"
+      ],
+      "definition": "统计局数据、行业调查与研究报告。",
+      "related": [
+        "dosm",
+        "cost-prices",
+        "industry"
+      ]
+    },
+    {
+      "slug": "opinions",
+      "name": "观点与访谈",
+      "group": "genre",
+      "tags": [
+        "观点/访谈"
+      ],
+      "definition": "业内人士的观点、访谈与趋势分析。",
+      "related": [
+        "practice",
+        "industry",
+        "policy"
+      ]
+    },
     {
       "slug": "lhdn",
       "name": "内陆税收局 LHDN",
@@ -78,7 +408,7 @@
       "definition": "价格管制、反暴利、标价与津贴食用油：国内贸易与生活成本部的执法与新规。",
       "related": [
         "cost-ingredients",
-        "pricing-marketing",
+        "menu-pricing",
         "policy"
       ]
     },
@@ -240,293 +570,6 @@
         "grab",
         "foodpanda",
         "delivery"
-      ]
-    },
-    {
-      "slug": "delivery",
-      "name": "外卖",
-      "group": "field",
-      "tags": [
-        "外卖"
-      ],
-      "definition": "外卖平台的佣金、规则与运营方法：怎么在外卖上不亏钱。",
-      "related": [
-        "grab",
-        "foodpanda",
-        "pricing-marketing"
-      ]
-    },
-    {
-      "slug": "manpower",
-      "name": "人力与外劳",
-      "group": "field",
-      "tags": [
-        "人力/排班",
-        "外劳"
-      ],
-      "definition": "招人、留人、排班、最低薪金与外劳政策：餐饮业人手问题的全部动态。",
-      "related": [
-        "kesuma",
-        "imigresen",
-        "kwsp"
-      ]
-    },
-    {
-      "slug": "epf-socso",
-      "name": "公积金与社险",
-      "group": "field",
-      "tags": [
-        "公积金/社险"
-      ],
-      "definition": "雇主要缴的公积金、社险与就业保险：缴纳率、对象与罚则的变化。",
-      "related": [
-        "kwsp",
-        "perkeso",
-        "manpower"
-      ]
-    },
-    {
-      "slug": "tax-e-invoice",
-      "name": "税务与电子发票",
-      "group": "field",
-      "tags": [
-        "税务",
-        "电子发票"
-      ],
-      "definition": "所得税、销售与服务税（SST）与电子发票：适用门槛、截止日期与做法。",
-      "related": [
-        "lhdn",
-        "mof",
-        "payments-pos"
-      ]
-    },
-    {
-      "slug": "licensing",
-      "name": "执照与准证",
-      "group": "field",
-      "tags": [
-        "执照/准证"
-      ],
-      "definition": "营业执照、招牌、食物处理与地方政府准证的申请、更新和执法。",
-      "related": [
-        "kkm",
-        "food-safety-halal",
-        "opening"
-      ]
-    },
-    {
-      "slug": "food-safety-halal",
-      "name": "食品安全与清真",
-      "group": "field",
-      "tags": [
-        "食品安全",
-        "清真"
-      ],
-      "definition": "卫生检查、食品安全规定与清真认证：怎么合规、不被关店。",
-      "related": [
-        "kkm",
-        "jakim",
-        "licensing"
-      ]
-    },
-    {
-      "slug": "cost-ingredients",
-      "name": "食材与成本",
-      "group": "field",
-      "tags": [
-        "食材",
-        "水电/能源"
-      ],
-      "definition": "食材、燃气与电费的价格变化，以及控成本的方法。",
-      "related": [
-        "kpdn",
-        "rent-location",
-        "pricing-marketing"
-      ]
-    },
-    {
-      "slug": "rent-location",
-      "name": "租金与选址",
-      "group": "field",
-      "tags": [
-        "租金/选址"
-      ],
-      "definition": "店租走势、选址方法与商场、店屋的租赁条件。",
-      "related": [
-        "cost-ingredients",
-        "opening",
-        "industry"
-      ]
-    },
-    {
-      "slug": "pricing-marketing",
-      "name": "定价与营销",
-      "group": "field",
-      "tags": [
-        "定价",
-        "营销",
-        "节庆"
-      ],
-      "definition": "菜单定价、涨价时机、促销、社交媒体与节庆营销的做法。",
-      "related": [
-        "delivery",
-        "cost-ingredients",
-        "practice"
-      ]
-    },
-    {
-      "slug": "payments-pos",
-      "name": "支付与收银",
-      "group": "field",
-      "tags": [
-        "支付",
-        "收银系统"
-      ],
-      "definition": "电子钱包、DuitNow QR、刷卡手续费与收银系统的变化和选择。",
-      "related": [
-        "bnm",
-        "tax-e-invoice",
-        "tools"
-      ]
-    },
-    {
-      "slug": "financing",
-      "name": "融资与贷款",
-      "group": "field",
-      "tags": [
-        "融资/贷款"
-      ],
-      "definition": "中小企业贷款、政府援助与融资计划：申请条件与利率。",
-      "related": [
-        "bnm",
-        "mof",
-        "opening"
-      ]
-    },
-    {
-      "slug": "opening",
-      "name": "开业",
-      "group": "field",
-      "tags": [
-        "开业"
-      ],
-      "definition": "开业前要办的执照、预算、选址与试营业：从零开始开一门餐饮生意。",
-      "related": [
-        "licensing",
-        "rent-location",
-        "financing"
-      ]
-    },
-    {
-      "slug": "policy",
-      "name": "政策法规",
-      "group": "genre",
-      "tags": [
-        "政策/法规"
-      ],
-      "definition": "政府新规的公布、生效日期、罚则与执法。",
-      "related": [
-        "mof",
-        "lhdn",
-        "kesuma"
-      ]
-    },
-    {
-      "slug": "platforms",
-      "name": "平台动态",
-      "group": "genre",
-      "tags": [
-        "平台动态"
-      ],
-      "definition": "外卖、支付与银行等平台的规则、费率和服务变化。",
-      "related": [
-        "delivery",
-        "payments-pos",
-        "grab"
-      ]
-    },
-    {
-      "slug": "tools",
-      "name": "新工具",
-      "group": "genre",
-      "tags": [
-        "新工具"
-      ],
-      "definition": "收银、管理软件、厨房设备与政府网上系统的新工具。",
-      "related": [
-        "payments-pos",
-        "platforms",
-        "practice"
-      ]
-    },
-    {
-      "slug": "industry",
-      "name": "行业动态",
-      "group": "genre",
-      "tags": [
-        "行业动态"
-      ],
-      "definition": "品牌开店关店、进入或退出大马、连锁扩张与并购。",
-      "related": [
-        "data",
-        "opinions",
-        "cost-prices"
-      ]
-    },
-    {
-      "slug": "cost-prices",
-      "name": "成本与价格",
-      "group": "genre",
-      "tags": [
-        "成本/价格"
-      ],
-      "definition": "食材、能源、租金等主要成本的价格变化。",
-      "related": [
-        "cost-ingredients",
-        "data",
-        "kpdn"
-      ]
-    },
-    {
-      "slug": "data",
-      "name": "数据与报告",
-      "group": "genre",
-      "tags": [
-        "数据/报告"
-      ],
-      "definition": "统计局数据、行业调查与研究报告。",
-      "related": [
-        "dosm",
-        "cost-prices",
-        "industry"
-      ]
-    },
-    {
-      "slug": "practice",
-      "name": "实战经验",
-      "group": "genre",
-      "tags": [
-        "实战/经验"
-      ],
-      "definition": "能照做的经营方法：定价、控成本、排班、营销与外卖运营。",
-      "related": [
-        "pricing-marketing",
-        "delivery",
-        "opinions"
-      ]
-    },
-    {
-      "slug": "opinions",
-      "name": "观点与访谈",
-      "group": "genre",
-      "tags": [
-        "观点/访谈"
-      ],
-      "definition": "业内人士的观点、访谈与趋势分析。",
-      "related": [
-        "practice",
-        "industry",
-        "policy"
       ]
     }
   ]

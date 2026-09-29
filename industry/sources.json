@@ -1,19 +1,19 @@
 {
-  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。每个都在 2026-09-30 用框架自己的采集代码试抓过；政府机构用 T1，媒体、平台与海外媒体用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。",
   "sources": [
     {
-      "id": "rss-openai-news",
-      "name": "OpenAI News",
+      "id": "rss-mof-press",
+      "name": "财政部 MOF · 文告",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://openai.com/news/rss.xml",
+        "feedUrl": "https://www.mof.gov.my/portal/ms/berita/siaran-media?format=feed&type=rss",
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
       "tier": "T1",
       "first_party": true,
-      "owner_entity_id": "openai",
+      "owner_entity_id": "mof",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -23,18 +23,21 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-google-deepmind",
-      "name": "Google DeepMind",
-      "kind": "rss",
+      "id": "web-lhdn-media",
+      "name": "内陆税收局 LHDN · 公告与文告",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://deepmind.google/blog/rss.xml",
+        "url": "https://www.hasil.gov.my/pengumuman-kenyataan-media/",
+        "itemSelector": "div.pengumuman-kenyataan-grid > a",
+        "titleSelector": "h5.pengumuman-kenyataan-title",
+        "publishedAtSelector": ".pengumuman-kenyataan-date",
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
       "tier": "T1",
       "first_party": true,
-      "owner_entity_id": "google",
+      "owner_entity_id": "lhdn",
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
@@ -44,183 +47,63 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-google-research",
-      "name": "Google Research",
-      "kind": "rss",
+      "id": "web-sinchew-fnb",
+      "name": "星洲日报 · 餐饮业",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://research.google/blog/rss/",
+        "url": "https://www.sinchew.com.my/tag/%E9%A4%90%E9%A5%AE%E4%B8%9A",
+        "itemSelector": "#cat-post-list div.title",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "google",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-hugging-face",
-      "name": "Hugging Face Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://huggingface.co/blog/feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "hugging-face",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "开源"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-microsoft-research",
-      "name": "Microsoft Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.microsoft.com/en-us/research/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "microsoft",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-nvidia-blog",
-      "name": "NVIDIA Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://blogs.nvidia.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "nvidia",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-aws-ml",
-      "name": "AWS Machine Learning Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://aws.amazon.com/blogs/machine-learning/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
+      "tier": "T2",
+      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "官方",
-        "教程"
+        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-github-ai",
-      "name": "GitHub Blog · AI & ML",
-      "kind": "rss",
+      "id": "web-enanyang-fnb",
+      "name": "南洋商报 · 餐饮业",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://github.blog/ai-and-ml/feed/",
+        "url": "https://www.enanyang.my/tag/%E9%A4%90%E9%A5%AE%E4%B8%9A",
+        "itemSelector": "div.horizontal-post-title",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 10
+        },
         "_aihot": {
           "initialBackfillLimit": 8
         }
       },
-      "tier": "T1",
-      "first_party": true,
+      "tier": "T2",
+      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "官方"
+        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-mistral",
-      "name": "Mistral AI",
+      "id": "rss-orientaldaily-business",
+      "name": "东方日报 · 财经",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://mistral.ai/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-bair",
-      "name": "Berkeley AI Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://bair.berkeley.edu/blog/feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 180,
-      "tags": [
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-the-verge-ai",
-      "name": "The Verge · AI",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+        "feedUrl": "https://www.orientaldaily.com.my/feeds/rss/business",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -237,11 +120,11 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-techcrunch-ai",
-      "name": "TechCrunch · AI",
+      "id": "rss-fmt-business",
+      "name": "FMT · Business",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "feedUrl": "https://www.freemalaysiatoday.com/category/business/feed/",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -258,11 +141,11 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-ars-technica-ai",
-      "name": "Ars Technica · AI",
+      "id": "rss-malaymail-money",
+      "name": "Malay Mail · Money",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://arstechnica.com/ai/feed/",
+        "feedUrl": "https://www.malaymail.com/feed/rss/money",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -279,11 +162,32 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-mit-tech-review-ai",
-      "name": "MIT Technology Review · AI",
+      "id": "rss-malaysian-reserve",
+      "name": "The Malaysian Reserve",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
+        "feedUrl": "https://themalaysianreserve.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-vulcan-post",
+      "name": "Vulcan Post",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://vulcanpost.com/feed/",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -300,32 +204,11 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-the-decoder",
-      "name": "The Decoder",
+      "id": "rss-soyacincau",
+      "name": "SoyaCincau",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://the-decoder.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-simon-willison",
-      "name": "Simon Willison",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://simonwillison.net/atom/everything/",
+        "feedUrl": "https://soyacincau.com/feed/",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -336,17 +219,38 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "个人"
+        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-import-ai",
-      "name": "Import AI",
+      "id": "rss-grab-my-press",
+      "name": "Grab Malaysia · 新闻稿",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://importai.substack.com/feed",
+        "feedUrl": "https://www.grab.com/my/press/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": true,
+      "owner_entity_id": "grab",
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-modern-restaurant-management",
+      "name": "Modern Restaurant Management",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://modernrestaurantmanagement.com/feed/",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -355,31 +259,10 @@
       "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 180,
+      "interval_minutes": 120,
       "tags": [
-        "个人",
-        "周刊"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-latent-space",
-      "name": "Latent Space",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.latent.space/feed",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 180,
-      "tags": [
-        "个人"
+        "媒体",
+        "海外"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

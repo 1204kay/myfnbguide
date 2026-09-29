@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。每个都在 2026-09-30 用框架自己的采集代码试抓过；政府机构用 T1，媒体、平台与海外媒体用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两条线：全球的餐饮经营实战（标签“经营实战”），和马来西亚的政策、成本、平台与行业动态。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。",
   "sources": [
     {
       "id": "rss-mof-press",
@@ -246,6 +246,112 @@
       "syndicate_fulltext": false
     },
     {
+      "id": "web-canyin88-zhuanlan",
+      "name": "红餐网 · 专栏",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyin88.com/zhuanlan/",
+        "itemSelector": "div.descBox h3",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "经营实战",
+        "中国"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ichef-blog",
+      "name": "iCHEF 餐厅帮",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.ichefpos.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "经营实战",
+        "台湾"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-rbo-operations",
+      "name": "Restaurant Business · Operations",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.restaurantbusinessonline.com/operations",
+        "itemSelector": "div.item-inner",
+        "linkSelector": "a[href*='/operations/']",
+        "allowUrlPrefixes": [
+          "https://www.restaurantbusinessonline.com/operations/"
+        ],
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\.? \\d{1,2}, 20\\d\\d)",
+          "publishedAtUtcOffset": "-05:00",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "经营实战",
+        "美国"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-owner-blog",
+      "name": "Owner.com Blog",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.owner.com/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "经营实战",
+        "美国"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
       "id": "rss-modern-restaurant-management",
       "name": "Modern Restaurant Management",
       "kind": "rss",
@@ -261,8 +367,8 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "媒体",
-        "海外"
+        "经营实战",
+        "美国"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

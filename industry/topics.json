@@ -1,549 +1,462 @@
 {
-  "exportedAt": "2026-09-26",
+  "exportedAt": "2026-09-30",
   "groups": [
     {
       "key": "company",
-      "name": "公司与模型",
-      "blurb": "按厂商与模型系追踪：谁发了什么、又赢了哪一局"
+      "name": "机构与平台",
+      "blurb": "按机构与平台追踪：谁出了新规、谁改了费率"
     },
     {
       "key": "field",
-      "name": "技术方向",
-      "blurb": "按技术领域深挖：Agent、多模态、具身智能……"
+      "name": "经营主题",
+      "blurb": "按经营主题深挖：外卖、人力、税务、食安……"
     },
     {
       "key": "genre",
       "name": "内容形态",
-      "blurb": "按内容类型浏览：论文、教程、观点、政策……"
+      "blurb": "按内容类型浏览：政策、实战、观点、数据……"
     }
   ],
   "topics": [
     {
-      "slug": "openai",
-      "name": "OpenAI / ChatGPT",
+      "slug": "lhdn",
+      "name": "内陆税收局 LHDN",
       "group": "company",
-      "entityId": "openai",
+      "entityId": "lhdn",
       "tags": [
-        "OpenAI",
-        "entity:openai"
+        "内陆税收局",
+        "entity:lhdn"
       ],
-      "definition": "OpenAI 的全部动态：GPT 系列模型、ChatGPT 与 Sora 产品、公司战略与人事的持续追踪。",
+      "definition": "报税、电子发票、税务稽查与税务指南：内陆税收局对餐饮业者的每一项新要求。",
       "related": [
-        "anthropic",
-        "google",
-        "model-releases"
+        "kwsp",
+        "tax-e-invoice",
+        "mof"
       ]
     },
     {
-      "slug": "anthropic",
-      "name": "Anthropic / Claude",
+      "slug": "kwsp",
+      "name": "公积金局 KWSP / EPF",
       "group": "company",
-      "entityId": "anthropic",
+      "entityId": "kwsp",
       "tags": [
-        "Anthropic",
-        "entity:anthropic"
+        "公积金局",
+        "entity:kwsp"
       ],
-      "definition": "Anthropic 的全部动态：Claude 系列模型、Claude Code、安全研究路线与公司进展的持续追踪。",
+      "definition": "雇主公积金供款、缴纳率与新规：外劳供款、兼职员工与罚则的变化。",
       "related": [
-        "openai",
-        "google",
-        "safety"
+        "perkeso",
+        "manpower",
+        "kesuma"
       ]
     },
     {
-      "slug": "google",
-      "name": "Google / Gemini",
+      "slug": "perkeso",
+      "name": "社险机构 PERKESO / SOCSO",
       "group": "company",
-      "entityId": "google",
+      "entityId": "perkeso",
       "tags": [
-        "Google",
-        "DeepMind",
-        "entity:google"
+        "社险机构",
+        "entity:perkeso"
       ],
-      "definition": "Google 与 DeepMind 的 AI 动态：Gemini 系列、Veo 视频模型、研究成果与产品生态的持续追踪。",
+      "definition": "社险与就业保险（EIS）的供款、注册与赔偿规定，以及雇主的法定责任。",
       "related": [
-        "openai",
-        "anthropic",
-        "multimodal"
+        "kwsp",
+        "manpower",
+        "kesuma"
       ]
     },
     {
-      "slug": "deepseek",
-      "name": "DeepSeek",
+      "slug": "kpdn",
+      "name": "国内贸易与生活成本部 KPDN",
       "group": "company",
-      "entityId": "deepseek",
+      "entityId": "kpdn",
       "tags": [
-        "DeepSeek",
-        "entity:deepseek"
+        "KPDN",
+        "entity:kpdn"
       ],
-      "definition": "DeepSeek（深度求索）的模型发布、开源权重与技术报告——开源大模型价格与性能双卷的风向标。",
+      "definition": "价格管制、反暴利、标价与津贴食用油：国内贸易与生活成本部的执法与新规。",
       "related": [
-        "qwen",
-        "open-source",
-        "model-releases"
+        "cost-ingredients",
+        "pricing-marketing",
+        "policy"
       ]
     },
     {
-      "slug": "qwen",
-      "name": "千问 Qwen",
+      "slug": "kkm",
+      "name": "卫生部 KKM",
       "group": "company",
-      "entityId": "qwen",
+      "entityId": "kkm",
       "tags": [
-        "entity:qwen"
+        "卫生部",
+        "entity:kkm"
       ],
-      "definition": "阿里千问 Qwen 系列的开源发布与迭代：从旗舰模型到端侧小模型的全谱系动态。",
+      "definition": "食品安全、卫生检查、伤寒针与食物处理课程：卫生部对餐饮场所的要求与执法。",
       "related": [
-        "deepseek",
-        "kimi",
-        "open-source"
+        "food-safety-halal",
+        "jakim",
+        "licensing"
       ]
     },
     {
-      "slug": "kimi",
-      "name": "Kimi / 月之暗面",
+      "slug": "jakim",
+      "name": "伊斯兰发展局 JAKIM",
       "group": "company",
-      "entityId": "kimi",
+      "entityId": "jakim",
       "tags": [
-        "entity:kimi"
+        "JAKIM",
+        "entity:jakim"
       ],
-      "definition": "月之暗面 Kimi 系列模型与产品动态：K 系列开源模型、长上下文技术与产品演进的追踪。",
+      "definition": "清真认证的申请、续期、费用与规则变化，以及清真执法。",
       "related": [
-        "qwen",
-        "deepseek",
-        "minimax"
+        "food-safety-halal",
+        "kkm",
+        "licensing"
       ]
     },
     {
-      "slug": "minimax",
-      "name": "MiniMax",
+      "slug": "kesuma",
+      "name": "人力资源部 KESUMA",
       "group": "company",
-      "entityId": "minimax",
+      "entityId": "kesuma",
       "tags": [
-        "entity:minimax"
+        "人力资源部",
+        "entity:kesuma"
       ],
-      "definition": "MiniMax 的模型与产品动态：M 系列大模型、语音与多模态能力、开源与商业化进展。",
+      "definition": "最低薪金、劳工法令、工时与雇佣规定：人力资源部与劳工局的政策与执法。",
       "related": [
-        "kimi",
-        "qwen",
-        "voice"
+        "manpower",
+        "imigresen",
+        "kwsp"
       ]
     },
     {
-      "slug": "zhipu",
-      "name": "智谱 GLM",
+      "slug": "imigresen",
+      "name": "移民局 Imigresen",
       "group": "company",
-      "entityId": "zhipu",
+      "entityId": "imigresen",
       "tags": [
-        "entity:zhipu"
+        "移民局",
+        "entity:imigresen"
       ],
-      "definition": "智谱的 GLM 系列模型动态：旗舰开源发布、代码与推理能力迭代、商业化与生态进展的追踪。",
+      "definition": "外劳准证、配额、合法化计划与突击执法：移民局与外劳相关的动态。",
       "related": [
-        "qwen",
-        "kimi",
-        "open-source"
+        "manpower",
+        "kesuma",
+        "policy"
       ]
     },
     {
-      "slug": "xai",
-      "name": "xAI / Grok",
+      "slug": "bnm",
+      "name": "国家银行 BNM",
       "group": "company",
-      "entityId": "xai",
+      "entityId": "bnm",
       "tags": [
-        "xAI",
-        "entity:xai"
+        "国家银行",
+        "entity:bnm"
       ],
-      "definition": "马斯克 xAI 与 Grok 系列的全部动态：模型迭代、算力扩张与 X 平台整合的持续追踪。",
+      "definition": "利率、中小企业贷款与电子支付规则：国家银行影响餐饮业者借贷和收款的决定。",
       "related": [
-        "openai",
-        "meta",
+        "financing",
+        "payments-pos",
+        "mof"
+      ]
+    },
+    {
+      "slug": "dosm",
+      "name": "统计局 DOSM",
+      "group": "company",
+      "entityId": "dosm",
+      "tags": [
+        "统计局",
+        "entity:dosm"
+      ],
+      "definition": "餐饮服务业营业额、物价指数与经济普查：统计局发布的可引用数据。",
+      "related": [
+        "data",
+        "cost-ingredients",
         "industry"
       ]
     },
     {
-      "slug": "meta",
-      "name": "Meta / Llama",
+      "slug": "mof",
+      "name": "财政部 MOF",
       "group": "company",
-      "entityId": "meta",
+      "entityId": "mof",
       "tags": [
-        "Meta",
-        "entity:meta"
+        "财政部",
+        "entity:mof"
       ],
-      "definition": "Meta 的 AI 动态：Llama 开源模型系列、超级智能实验室与元宇宙之外的 AI 豪赌。",
+      "definition": "财政预算案、销售与服务税（SST）、津贴与中小企业援助：财政部的政策与公告。",
       "related": [
-        "xai",
-        "open-source",
-        "industry"
-      ]
-    },
-    {
-      "slug": "microsoft",
-      "name": "Microsoft / Copilot",
-      "group": "company",
-      "entityId": "microsoft",
-      "tags": [
-        "Microsoft",
-        "entity:microsoft"
-      ],
-      "definition": "微软的 AI 布局：Copilot 全家桶、Azure AI 基础设施与 OpenAI 合作关系的持续追踪。",
-      "related": [
-        "openai",
-        "coding",
-        "product-updates"
-      ]
-    },
-    {
-      "slug": "nvidia",
-      "name": "NVIDIA 英伟达",
-      "group": "company",
-      "entityId": "nvidia",
-      "tags": [
-        "entity:nvidia"
-      ],
-      "definition": "英伟达的 AI 芯片与生态动态：GPU 新品、CUDA 生态、机器人平台与 AI 算力市场的风向。",
-      "related": [
-        "engineering",
-        "industry",
-        "embodied"
-      ]
-    },
-    {
-      "slug": "hugging-face",
-      "name": "Hugging Face",
-      "group": "company",
-      "entityId": "hugging-face",
-      "tags": [
-        "Hugging Face",
-        "entity:hugging-face"
-      ],
-      "definition": "Hugging Face 开源社区动态：热门模型与数据集、排行榜变化与开源生态的晴雨表。",
-      "related": [
-        "open-source",
-        "model-releases",
-        "data-training"
-      ]
-    },
-    {
-      "slug": "cursor",
-      "name": "Cursor",
-      "group": "company",
-      "entityId": "cursor",
-      "tags": [
-        "entity:cursor"
-      ],
-      "definition": "Cursor 编辑器的产品迭代与生态动态——AI 编码工具竞争中最受关注的玩家之一。",
-      "related": [
-        "coding",
-        "agent",
-        "product-updates"
-      ]
-    },
-    {
-      "slug": "openrouter",
-      "name": "OpenRouter",
-      "group": "company",
-      "entityId": "openrouter",
-      "tags": [
-        "entity:openrouter"
-      ],
-      "definition": "OpenRouter 模型路由平台动态：新模型上架、用量排行与开发者选型的真实市场信号。",
-      "related": [
-        "engineering",
-        "model-releases",
-        "open-source"
-      ]
-    },
-    {
-      "slug": "agent",
-      "name": "Agent 智能体",
-      "group": "field",
-      "tags": [
-        "Agent"
-      ],
-      "definition": "让模型自主规划、调用工具、完成多步任务的技术方向——从 Claude Code、Manus 到各家 Agent 框架与评测基准的全部动态。",
-      "related": [
-        "mcp",
-        "coding",
-        "reasoning"
-      ]
-    },
-    {
-      "slug": "coding",
-      "name": "AI 编码",
-      "group": "field",
-      "tags": [
-        "编码"
-      ],
-      "definition": "AI 写代码的一切：编码助手、Vibe Coding、代码模型评测与开发工作流变革。",
-      "related": [
-        "agent",
-        "cursor",
-        "tutorials"
-      ]
-    },
-    {
-      "slug": "reasoning",
-      "name": "推理能力",
-      "group": "field",
-      "tags": [
-        "推理"
-      ],
-      "definition": "模型推理能力的进展：思维链、推理模型、数学与逻辑基准的突破与争议。",
-      "related": [
-        "papers",
-        "model-releases",
-        "agent"
-      ]
-    },
-    {
-      "slug": "multimodal",
-      "name": "多模态",
-      "group": "field",
-      "tags": [
-        "多模态"
-      ],
-      "definition": "文本之外的能力：视觉理解、图文混合、音视频输入输出的模型与产品进展。",
-      "related": [
-        "image-gen",
-        "video",
-        "voice"
-      ]
-    },
-    {
-      "slug": "image-gen",
-      "name": "图像生成",
-      "group": "field",
-      "tags": [
-        "图像生成"
-      ],
-      "definition": "AI 画图的最前线：文生图模型迭代、图像编辑能力与创作工具生态的全部动态。",
-      "related": [
-        "video",
-        "multimodal",
-        "product-updates"
-      ]
-    },
-    {
-      "slug": "video",
-      "name": "AI 视频",
-      "group": "field",
-      "tags": [
-        "视频"
-      ],
-      "definition": "AI 视频生成与理解：文生视频模型、视频编辑工具与影视创作变革的追踪。",
-      "related": [
-        "image-gen",
-        "multimodal",
-        "voice"
-      ]
-    },
-    {
-      "slug": "voice",
-      "name": "语音与音频",
-      "group": "field",
-      "tags": [
-        "语音"
-      ],
-      "definition": "AI 语音与音频的进展：语音合成、实时对话、音乐生成与音频理解的模型与产品。",
-      "related": [
-        "multimodal",
-        "video",
-        "product-updates"
-      ]
-    },
-    {
-      "slug": "embodied",
-      "name": "具身智能",
-      "group": "field",
-      "tags": [
-        "具身智能"
-      ],
-      "definition": "AI 走进物理世界：人形机器人、具身基础模型与真实环境操作能力的进展追踪。",
-      "related": [
-        "nvidia",
-        "multimodal",
-        "papers"
-      ]
-    },
-    {
-      "slug": "on-device",
-      "name": "端侧 AI",
-      "group": "field",
-      "tags": [
-        "端侧"
-      ],
-      "definition": "跑在手机、电脑与边缘设备上的 AI：小模型、本地推理与端侧芯片的进展。",
-      "related": [
-        "engineering",
-        "open-source",
-        "model-releases"
-      ]
-    },
-    {
-      "slug": "open-source",
-      "name": "开源生态",
-      "group": "field",
-      "tags": [
-        "开源生态",
-        "开源/仓库"
-      ],
-      "definition": "开源模型、框架与仓库动态：权重开放、社区项目爆火、开源与闭源的力量消长。",
-      "related": [
-        "model-releases",
-        "hugging-face",
-        "coding"
-      ]
-    },
-    {
-      "slug": "engineering",
-      "name": "部署工程",
-      "group": "field",
-      "tags": [
-        "部署/工程"
-      ],
-      "definition": "把模型跑起来的工程实践：推理优化、显存与成本、Serving 架构与基础设施选型。",
-      "related": [
-        "open-source",
-        "data-training",
-        "on-device"
-      ]
-    },
-    {
-      "slug": "data-training",
-      "name": "数据与训练",
-      "group": "field",
-      "tags": [
-        "数据/训练"
-      ],
-      "definition": "训练侧的门道：数据集构建、合成数据、预训练与后训练方法、算力与训练成本。",
-      "related": [
-        "papers",
-        "engineering",
-        "model-releases"
-      ]
-    },
-    {
-      "slug": "safety",
-      "name": "安全对齐",
-      "group": "field",
-      "tags": [
-        "安全/对齐"
-      ],
-      "definition": "AI 安全与对齐：越狱与防御、模型行为研究、安全评测与治理框架的进展。",
-      "related": [
-        "papers",
+        "lhdn",
         "policy",
-        "reasoning"
+        "financing"
       ]
     },
     {
-      "slug": "mcp",
-      "name": "MCP 与工具调用",
+      "slug": "grab",
+      "name": "Grab",
+      "group": "company",
+      "entityId": "grab",
+      "tags": [
+        "Grab",
+        "entity:grab"
+      ],
+      "definition": "GrabFood 佣金、商家规则、GrabPay 与商家工具的变化。",
+      "related": [
+        "foodpanda",
+        "shopeefood",
+        "delivery"
+      ]
+    },
+    {
+      "slug": "foodpanda",
+      "name": "foodpanda",
+      "group": "company",
+      "entityId": "foodpanda",
+      "tags": [
+        "foodpanda",
+        "entity:foodpanda"
+      ],
+      "definition": "foodpanda 的商家佣金、合作条款与营运区域变化。",
+      "related": [
+        "grab",
+        "shopeefood",
+        "delivery"
+      ]
+    },
+    {
+      "slug": "shopeefood",
+      "name": "ShopeeFood",
+      "group": "company",
+      "entityId": "shopeefood",
+      "tags": [
+        "ShopeeFood",
+        "entity:shopeefood"
+      ],
+      "definition": "ShopeeFood 的商家佣金、优惠补贴与营运变化。",
+      "related": [
+        "grab",
+        "foodpanda",
+        "delivery"
+      ]
+    },
+    {
+      "slug": "delivery",
+      "name": "外卖",
       "group": "field",
       "tags": [
-        "MCP/工具调用"
+        "外卖"
       ],
-      "definition": "模型连接外部世界的协议与实践：MCP 生态、function calling、工具链集成的动态。",
+      "definition": "外卖平台的佣金、规则与运营方法：怎么在外卖上不亏钱。",
       "related": [
-        "agent",
-        "coding",
-        "open-source"
+        "grab",
+        "foodpanda",
+        "pricing-marketing"
       ]
     },
     {
-      "slug": "model-releases",
-      "name": "模型发布",
-      "group": "genre",
+      "slug": "manpower",
+      "name": "人力与外劳",
+      "group": "field",
       "tags": [
-        "模型发布"
+        "人力/排班",
+        "外劳"
       ],
-      "definition": "新模型的发布、开源与迭代：大模型厂商的旗舰更新、开源权重放出、性能与价格变化的第一时间记录。",
+      "definition": "招人、留人、排班、最低薪金与外劳政策：餐饮业人手问题的全部动态。",
       "related": [
-        "product-updates",
-        "papers",
-        "open-source"
+        "kesuma",
+        "imigresen",
+        "kwsp"
       ]
     },
     {
-      "slug": "product-updates",
-      "name": "产品更新",
-      "group": "genre",
+      "slug": "epf-socso",
+      "name": "公积金与社险",
+      "group": "field",
       "tags": [
-        "产品更新"
+        "公积金/社险"
       ],
-      "definition": "AI 产品与应用的功能上新、改版与商业化动态——谁家的产品变强了、变贵了、能用了。",
+      "definition": "雇主要缴的公积金、社险与就业保险：缴纳率、对象与罚则的变化。",
       "related": [
-        "model-releases",
-        "industry",
-        "coding"
+        "kwsp",
+        "perkeso",
+        "manpower"
       ]
     },
     {
-      "slug": "papers",
-      "name": "论文研究",
-      "group": "genre",
+      "slug": "tax-e-invoice",
+      "name": "税务与电子发票",
+      "group": "field",
       "tags": [
-        "论文/研究"
+        "税务",
+        "电子发票"
       ],
-      "definition": "值得读的 AI 论文与研究成果：架构创新、训练方法、能力测量与理论进展的精选解读。",
+      "definition": "所得税、销售与服务税（SST）与电子发票：适用门槛、截止日期与做法。",
       "related": [
-        "reasoning",
-        "safety",
-        "data-training"
+        "lhdn",
+        "mof",
+        "payments-pos"
       ]
     },
     {
-      "slug": "benchmarks",
-      "name": "评测基准",
-      "group": "genre",
+      "slug": "licensing",
+      "name": "执照与准证",
+      "group": "field",
       "tags": [
-        "评测/基准"
+        "执照/准证"
       ],
-      "definition": "模型到底谁强：Benchmark 成绩、评测方法论争议与排行榜变化的持续记录。",
+      "definition": "营业执照、招牌、食物处理与地方政府准证的申请、更新和执法。",
       "related": [
-        "model-releases",
-        "papers",
-        "reasoning"
+        "kkm",
+        "food-safety-halal",
+        "opening"
       ]
     },
     {
-      "slug": "tutorials",
-      "name": "教程实践",
-      "group": "genre",
+      "slug": "food-safety-halal",
+      "name": "食品安全与清真",
+      "group": "field",
       "tags": [
-        "教程/实践"
+        "食品安全",
+        "清真"
       ],
-      "definition": "拿来就能用的实操内容：提示词技巧、工作流搭建、工具用法与踩坑经验。",
+      "definition": "卫生检查、食品安全规定与清真认证：怎么合规、不被关店。",
       "related": [
-        "coding",
-        "agent",
-        "product-updates"
+        "kkm",
+        "jakim",
+        "licensing"
       ]
     },
     {
-      "slug": "opinions",
-      "name": "大佬观点",
-      "group": "genre",
+      "slug": "cost-ingredients",
+      "name": "食材与成本",
+      "group": "field",
       "tags": [
-        "大佬观点"
+        "食材",
+        "水电/能源"
       ],
-      "definition": "行业关键人物在想什么：创始人访谈、研究者论战、投资人判断的观点集合。",
+      "definition": "食材、燃气与电费的价格变化，以及控成本的方法。",
       "related": [
-        "trends",
+        "kpdn",
+        "rent-location",
+        "pricing-marketing"
+      ]
+    },
+    {
+      "slug": "rent-location",
+      "name": "租金与选址",
+      "group": "field",
+      "tags": [
+        "租金/选址"
+      ],
+      "definition": "店租走势、选址方法与商场、店屋的租赁条件。",
+      "related": [
+        "cost-ingredients",
+        "opening",
         "industry"
       ]
     },
     {
-      "slug": "trends",
-      "name": "现象与趋势",
+      "slug": "pricing-marketing",
+      "name": "定价与营销",
+      "group": "field",
+      "tags": [
+        "定价",
+        "营销",
+        "节庆"
+      ],
+      "definition": "菜单定价、涨价时机、促销、社交媒体与节庆营销的做法。",
+      "related": [
+        "delivery",
+        "cost-ingredients",
+        "practice"
+      ]
+    },
+    {
+      "slug": "payments-pos",
+      "name": "支付与收银",
+      "group": "field",
+      "tags": [
+        "支付",
+        "收银系统"
+      ],
+      "definition": "电子钱包、DuitNow QR、刷卡手续费与收银系统的变化和选择。",
+      "related": [
+        "bnm",
+        "tax-e-invoice",
+        "tools"
+      ]
+    },
+    {
+      "slug": "financing",
+      "name": "融资与贷款",
+      "group": "field",
+      "tags": [
+        "融资/贷款"
+      ],
+      "definition": "中小企业贷款、政府援助与融资计划：申请条件与利率。",
+      "related": [
+        "bnm",
+        "mof",
+        "opening"
+      ]
+    },
+    {
+      "slug": "opening",
+      "name": "开业",
+      "group": "field",
+      "tags": [
+        "开业"
+      ],
+      "definition": "开业前要办的执照、预算、选址与试营业：从零开始开一门餐饮生意。",
+      "related": [
+        "licensing",
+        "rent-location",
+        "financing"
+      ]
+    },
+    {
+      "slug": "policy",
+      "name": "政策法规",
       "group": "genre",
       "tags": [
-        "现象/趋势"
+        "政策/法规"
       ],
-      "definition": "正在发生的行业级变化：使用习惯迁移、能力涌现、社会影响与市场格局的观察。",
+      "definition": "政府新规的公布、生效日期、罚则与执法。",
       "related": [
-        "opinions",
-        "industry",
-        "safety"
+        "mof",
+        "lhdn",
+        "kesuma"
+      ]
+    },
+    {
+      "slug": "platforms",
+      "name": "平台动态",
+      "group": "genre",
+      "tags": [
+        "平台动态"
+      ],
+      "definition": "外卖、支付与银行等平台的规则、费率和服务变化。",
+      "related": [
+        "delivery",
+        "payments-pos",
+        "grab"
+      ]
+    },
+    {
+      "slug": "tools",
+      "name": "新工具",
+      "group": "genre",
+      "tags": [
+        "新工具"
+      ],
+      "definition": "收银、管理软件、厨房设备与政府网上系统的新工具。",
+      "related": [
+        "payments-pos",
+        "platforms",
+        "practice"
       ]
     },
     {
@@ -553,25 +466,67 @@
       "tags": [
         "行业动态"
       ],
-      "definition": "AI 行业的商业脉搏：融资并购、人事变动、合作与竞争、政策与市场信号。",
+      "definition": "品牌开店关店、进入或退出大马、连锁扩张与并购。",
       "related": [
-        "trends",
+        "data",
         "opinions",
-        "policy"
+        "cost-prices"
       ]
     },
     {
-      "slug": "policy",
-      "name": "政策监管",
+      "slug": "cost-prices",
+      "name": "成本与价格",
       "group": "genre",
       "tags": [
-        "政策/监管"
+        "成本/价格"
       ],
-      "definition": "AI 相关政策法规与政府监管动态：立法进展、出口管制与全球治理框架的追踪。",
+      "definition": "食材、能源、租金等主要成本的价格变化。",
       "related": [
+        "cost-ingredients",
+        "data",
+        "kpdn"
+      ]
+    },
+    {
+      "slug": "data",
+      "name": "数据与报告",
+      "group": "genre",
+      "tags": [
+        "数据/报告"
+      ],
+      "definition": "统计局数据、行业调查与研究报告。",
+      "related": [
+        "dosm",
+        "cost-prices",
+        "industry"
+      ]
+    },
+    {
+      "slug": "practice",
+      "name": "实战经验",
+      "group": "genre",
+      "tags": [
+        "实战/经验"
+      ],
+      "definition": "能照做的经营方法：定价、控成本、排班、营销与外卖运营。",
+      "related": [
+        "pricing-marketing",
+        "delivery",
+        "opinions"
+      ]
+    },
+    {
+      "slug": "opinions",
+      "name": "观点与访谈",
+      "group": "genre",
+      "tags": [
+        "观点/访谈"
+      ],
+      "definition": "业内人士的观点、访谈与趋势分析。",
+      "related": [
+        "practice",
         "industry",
-        "safety",
-        "trends"
+        "policy"
       ]
     }
   ]

@@ -6,134 +6,122 @@
  * 网页上的类别（筛选栏、卡片角标、RSS 分类订阅）。key 是网址和接口里的身份，上线后不要改。
  * section 是日报里的分节标题（几个类别可以共用一节，按这里的顺序排）；guide 告诉模型怎么归类。
  * 没归上类的资料在日报里放进第一个 key 为 industry 的类别所在的节（没有就放最后一节）。
+ * tip 和 opinion 两个 key 公开接口也认（v1 的 tip 同时包含 opinion），不要改名。
  */
 export const CATEGORIES = [
-  { key: "ai-models", label: "模型", section: "模型发布/更新", guide: "新模型、模型版本、权重开放、模型能力与价格变化的发布与评测结果" },
-  { key: "ai-products", label: "产品", section: "产品发布/更新", guide: "AI 产品、功能、应用、工具、API 与平台的发布和更新" },
-  { key: "industry", label: "行业", section: "行业动态", guide: "公司经营、融资并购、人事、合作、诉讼、监管与政策、市场与基础设施" },
-  { key: "paper", label: "论文", section: "论文研究", guide: "研究论文、技术报告、基准与数据集" },
-  { key: "tip", label: "教程", section: "技巧与观点", guide: "教程、实践经验、使用技巧、提示词与工具用法、深度技术讲解" },
-  { key: "opinion", label: "观点", section: "技巧与观点", guide: "人物观点、评论、分析、访谈、现象与趋势讨论" },
+  { key: "policy", label: "政策", section: "政策法规", guide: "税费、最低薪金、公积金与社险、执照准证、食品安全、清真认证、外劳政策的公布、生效与执法" },
+  { key: "platform", label: "平台", section: "平台与工具", guide: "外卖平台、支付与电子钱包、银行融资的费率、规则与服务变化" },
+  { key: "tools", label: "工具", section: "平台与工具", guide: "收银与管理软件、厨房设备、政府网上系统等新工具与功能" },
+  { key: "industry", label: "行业", section: "行业动态", guide: "品牌开店关店、进入或退出大马、连锁扩张、并购与人事" },
+  { key: "cost", label: "成本与数据", section: "行业动态", guide: "食材、租金、水电等价格变化，统计局数据，行业调查与报告" },
+  { key: "tip", label: "实战", section: "实战与观点", guide: "定价、控成本、排班、营销、外卖运营、开业流程等能照做的方法与经验" },
+  { key: "opinion", label: "观点", section: "实战与观点", guide: "业内人士观点、访谈、趋势分析" },
 ] as const;
 
 /**
  * 内容理解一步给每篇资料判的“内容类型”（写在 prompts/content-understanding.md 里，改了类型要同步改那份提示词）。
  * 评分提示词（prompts/selection-score.md）按类型给五个维度不同的权重。
  */
-export const ITEM_TYPES = ["model_release", "product_launch", "tool_or_prompt", "research_paper", "industry_event", "opinion_analysis", "tutorial_explainer"] as const;
+export const ITEM_TYPES = ["policy_change", "platform_update", "tool_launch", "cost_data", "industry_event", "practice_howto", "opinion_analysis"] as const;
 
 // ── 标签词表 ────────────────────────────────────────────────────────────────────────────
 
 /** 每篇资料的第一个标签必须是这些“分类标签”之一。 */
-export const CATEGORY_TAGS = [
-  "产品更新", "模型发布", "论文/研究", "开源/仓库", "教程/实践", "现象/趋势", "大佬观点", "评测/基准", "安全/对齐", "行业动态", "政策/监管",
-  "非AI/通用工具", "其他",
-] as const;
+export const CATEGORY_TAGS = ["政策/法规", "平台动态", "新工具", "行业动态", "成本/价格", "数据/报告", "实战/经验", "观点/访谈", "其他"] as const;
 
 /** 可选的主题标签。 */
 export const TOPIC_TAGS = [
-  "Agent", "编码", "推理", "多模态", "语音", "视频", "图像生成", "RAG", "端侧", "数据/训练", "搜索", "部署/工程", "开源生态", "具身智能", "MCP/工具调用",
+  "外卖", "人力/排班", "外劳", "税务", "电子发票", "公积金/社险", "执照/准证", "食品安全", "清真", "食材", "定价", "营销", "支付", "收银系统",
+  "融资/贷款", "租金/选址", "水电/能源", "节庆", "开业",
 ] as const;
 
-/** 可选的实体标签（公司、机构、平台）。 */
-export const ENTITY_TAGS = ["OpenAI", "Anthropic", "DeepSeek", "DeepMind", "Google", "Meta", "Microsoft", "xAI", "Hugging Face", "GitHub", "arXiv"] as const;
+/** 可选的实体标签（机构、平台）。 */
+export const ENTITY_TAGS = [
+  "内陆税收局", "公积金局", "社险机构", "KPDN", "卫生部", "JAKIM", "人力资源部", "移民局", "国家银行", "统计局", "财政部", "Grab", "foodpanda", "ShopeeFood",
+] as const;
 
 /** 模型常写的近义词，统一成词表里的写法。 */
 export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
-  "教程/玩法": "教程/实践", "技巧/最佳实践": "教程/实践", "合作/生态": "行业动态", "融资/收购": "行业动态", "公司动态": "行业动态",
-  合作: "行业动态", 生态: "行业动态", 融资: "行业动态", 收购: "行业动态", 投资: "行业动态", 并购: "行业动态",
-  政策: "政策/监管", 监管: "政策/监管", 法规: "政策/监管", 安全: "安全/对齐", 对齐: "安全/对齐",
-  论文: "论文/研究", 研究: "论文/研究", paper: "论文/研究", papers: "论文/研究",
-  "open-source": "开源/仓库", 开源: "开源/仓库", 仓库: "开源/仓库", repo: "开源/仓库",
-  教程: "教程/实践", 玩法: "教程/实践", 指南: "教程/实践", 技巧: "教程/实践", 最佳实践: "教程/实践", 实践: "教程/实践",
-  产品: "产品更新", 更新: "产品更新", 发布: "模型发布", 模型: "模型发布", 趋势: "现象/趋势", 现象: "现象/趋势", 观点: "大佬观点",
-  视频生成: "视频", 非ai: "非AI/通用工具", "non-ai": "非AI/通用工具", 通用工具: "非AI/通用工具", 工程工具: "非AI/通用工具",
-  安全扫描: "非AI/通用工具", devops: "非AI/通用工具", 行业: "行业动态", 动态: "行业动态",
+  政策: "政策/法规", 法规: "政策/法规", 监管: "政策/法规", 法令: "政策/法规", 执法: "政策/法规", "政策/监管": "政策/法规", 预算案: "政策/法规", 财案: "政策/法规",
+  平台: "平台动态", 平台更新: "平台动态", 外卖平台: "平台动态",
+  工具: "新工具", 新产品: "新工具", 产品更新: "新工具", 新功能: "新工具",
+  行业: "行业动态", 动态: "行业动态", 公司动态: "行业动态", 连锁: "行业动态", 并购: "行业动态", 收购: "行业动态", 人事: "行业动态",
+  成本: "成本/价格", 价格: "成本/价格", 物价: "成本/价格", 涨价: "成本/价格",
+  数据: "数据/报告", 报告: "数据/报告", 统计: "数据/报告", 调查: "数据/报告", 研究: "数据/报告",
+  实战: "实战/经验", 经验: "实战/经验", 教程: "实战/经验", 技巧: "实战/经验", 方法: "实战/经验", 指南: "实战/经验", "教程/实践": "实战/经验",
+  观点: "观点/访谈", 访谈: "观点/访谈", 评论: "观点/访谈", 分析: "观点/访谈", 趋势: "观点/访谈", "现象/趋势": "观点/访谈",
+  外送: "外卖", 送餐: "外卖", 人力: "人力/排班", 排班: "人力/排班", 员工: "人力/排班", 招聘: "人力/排班", 最低薪金: "人力/排班", 最低工资: "人力/排班",
+  外籍劳工: "外劳", 外籍员工: "外劳", 税: "税务", 税收: "税务", 销售与服务税: "税务", sst: "税务", "e-invoice": "电子发票", 电子发票制度: "电子发票",
+  公积金: "公积金/社险", 社险: "公积金/社险", epf: "公积金/社险", kwsp: "公积金/社险", socso: "公积金/社险", perkeso: "公积金/社险",
+  执照: "执照/准证", 准证: "执照/准证", 营业执照: "执照/准证", 卫生: "食品安全", 食安: "食品安全", halal: "清真", 清真认证: "清真",
+  原料: "食材", 食材价格: "食材", 菜单: "定价", 推广: "营销", 社交媒体: "营销", 电子钱包: "支付", 收款: "支付", pos: "收银系统", 收银: "收银系统",
+  贷款: "融资/贷款", 融资: "融资/贷款", 租金: "租金/选址", 选址: "租金/选址", 电费: "水电/能源", 水电: "水电/能源", 能源: "水电/能源", 节日: "节庆", 创业: "开业",
 };
 
 /** 模型漏了分类标签时，按内容类型补一个。 */
 export const CATEGORY_BY_ITEM_TYPE: Readonly<Record<string, string>> = {
-  model_release: "模型发布", product_launch: "产品更新", tool_or_prompt: "教程/实践", research_paper: "论文/研究",
-  industry_event: "行业动态", opinion_analysis: "大佬观点", tutorial_explainer: "教程/实践",
+  policy_change: "政策/法规", platform_update: "平台动态", tool_launch: "新工具", cost_data: "成本/价格",
+  industry_event: "行业动态", practice_howto: "实战/经验", opinion_analysis: "观点/访谈",
 };
 
-// ── 公司与主体 ──────────────────────────────────────────────────────────────────────────
+// ── 机构与平台 ──────────────────────────────────────────────────────────────────────────
 
-/** 公司主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。 */
+/** 机构与平台主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。 */
 export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[] }> = {
-  openai: { name: "OpenAI", displayTag: "OpenAI", aliases: ["OpenAI", "ChatGPT", "Sora", "Codex", "GPT"] },
-  anthropic: { name: "Anthropic", displayTag: "Anthropic", aliases: ["Anthropic", "Claude"] },
-  google: { name: "Google", displayTag: "Google", aliases: ["Google", "DeepMind", "Gemini", "谷歌"] },
-  deepseek: { name: "DeepSeek", displayTag: "DeepSeek", aliases: ["DeepSeek", "深度求索"] },
-  qwen: { name: "千问 Qwen", displayTag: null, aliases: ["Qwen", "通义", "阿里"] },
-  kimi: { name: "Kimi / 月之暗面", displayTag: null, aliases: ["Kimi", "月之暗面", "Moonshot"] },
-  minimax: { name: "MiniMax", displayTag: null, aliases: ["MiniMax", "海螺"] },
-  zhipu: { name: "智谱 GLM", displayTag: null, aliases: ["智谱", "GLM", "Z.ai"] },
-  xai: { name: "xAI", displayTag: "xAI", aliases: ["xAI", "Grok"] },
-  meta: { name: "Meta", displayTag: "Meta", aliases: ["Meta", "Llama"] },
-  microsoft: { name: "Microsoft", displayTag: "Microsoft", aliases: ["Microsoft", "微软", "Copilot"] },
-  nvidia: { name: "NVIDIA", displayTag: null, aliases: ["NVIDIA", "英伟达"] },
-  "hugging-face": { name: "Hugging Face", displayTag: "Hugging Face", aliases: ["Hugging Face"] },
-  cursor: { name: "Cursor", displayTag: null, aliases: ["Cursor", "Anysphere"] },
-  openrouter: { name: "OpenRouter", displayTag: null, aliases: ["OpenRouter"] },
+  lhdn: { name: "内陆税收局 LHDN", displayTag: "内陆税收局", aliases: ["LHDN", "内陆税收局", "HASiL", "Inland Revenue Board"] },
+  kwsp: { name: "公积金局 KWSP / EPF", displayTag: "公积金局", aliases: ["KWSP", "EPF", "公积金局"] },
+  perkeso: { name: "社险机构 PERKESO / SOCSO", displayTag: "社险机构", aliases: ["PERKESO", "SOCSO", "社险机构"] },
+  kpdn: { name: "国内贸易与生活成本部 KPDN", displayTag: "KPDN", aliases: ["KPDN", "国内贸易与生活成本部", "Domestic Trade and Cost of Living Ministry"] },
+  kkm: { name: "卫生部 KKM", displayTag: "卫生部", aliases: ["KKM", "MOH", "卫生部"] },
+  jakim: { name: "伊斯兰发展局 JAKIM", displayTag: "JAKIM", aliases: ["JAKIM", "伊斯兰发展局", "Islamic Development Department"] },
+  kesuma: { name: "人力资源部 KESUMA", displayTag: "人力资源部", aliases: ["KESUMA", "人力资源部", "Ministry of Human Resources"] },
+  imigresen: { name: "移民局 Imigresen", displayTag: "移民局", aliases: ["Imigresen", "移民局", "Immigration Department"] },
+  bnm: { name: "国家银行 BNM", displayTag: "国家银行", aliases: ["BNM", "Bank Negara", "国家银行"] },
+  dosm: { name: "统计局 DOSM", displayTag: "统计局", aliases: ["DOSM", "统计局", "Department of Statistics"] },
+  mof: { name: "财政部 MOF", displayTag: "财政部", aliases: ["MOF", "财政部", "Ministry of Finance"] },
+  grab: { name: "Grab", displayTag: "Grab", aliases: ["Grab", "GrabFood", "GrabPay"] },
+  foodpanda: { name: "foodpanda", displayTag: "foodpanda", aliases: ["foodpanda"] },
+  shopeefood: { name: "ShopeeFood", displayTag: "ShopeeFood", aliases: ["ShopeeFood"] },
 };
 
 /**
- * 身份词典：摘要和标题里出现的公司，必须在原文里也出现过，否则退回原标题、丢掉摘要（防止模型张冠李戴）。
- * 行业没有这个问题时可以留空数组。
+ * 身份词典：摘要和标题里出现的机构或平台，必须在原文里也出现过，否则退回原标题、丢掉摘要（防止模型张冠李戴）。
+ * 每个主体要把中、英、马来文的叫法都写进去：原文用英文或马来文、中文摘要用中文名时，两边要能认出是同一个主体。
+ * 容易和普通词撞车的缩写（Grab、JIM、IRB）区分大小写。
  */
 export const IDENTITY_LEXICON: ReadonlyArray<{ id: string; name: string; patterns: RegExp[] }> = [
-  { id: "openai", name: "OpenAI", patterns: [/openai|chatgpt|\bgpt-?[o\d]|\bsora\b|\bcodex\b/i] },
-  { id: "anthropic", name: "Anthropic", patterns: [/anthropic|\bclaude\b/i, /\b(?:opus|sonnet|haiku)\s*\d+(?:[.\-]\d+)*\b/i, /\bfable\s*\d+(?:[.\-]\d+)*\b|\bmythos\b/i] },
-  { id: "google", name: "Google / Gemini", patterns: [/google|deepmind|\bgemini\b|notebooklm|\bveo\s?\d|\bAlphaFold\b|\bAMIE\b/i] },
-  { id: "deepseek", name: "DeepSeek", patterns: [/deepseek|深度求索/i] },
-  { id: "xai", name: "xAI / Grok", patterns: [/\bxai\b|\bgrok\b/i] },
-  { id: "meta", name: "Meta / Llama", patterns: [/\bMeta\b/, /\bmeta\s?ai\b|\bllama\b/i] },
-  { id: "microsoft", name: "Microsoft / Copilot", patterns: [/microsoft|copilot|微软/i] },
-  { id: "nvidia", name: "NVIDIA", patterns: [/nvidia|英伟达|\bnemotron\b|\bnemo\b|\bblackwell\b|\brubin(?:\s+ultra)?\b|\bcuda\b/i] },
-  { id: "qwen", name: "千问 Qwen", patterns: [/\bqwen|通义|千问/i] },
-  { id: "hugging-face", name: "Hugging Face", patterns: [/hugging\s?face/i] },
-  { id: "cursor", name: "Cursor", patterns: [/\bCursor\b/] },
-  { id: "kimi", name: "Kimi / 月之暗面", patterns: [/\bkimi\b|月之暗面|\bmoonshot\s?ai\b/i] },
-  { id: "openrouter", name: "OpenRouter", patterns: [/openrouter/i] },
-  { id: "minimax", name: "MiniMax", patterns: [/minimax/i] },
-  { id: "zhipu", name: "智谱 GLM", patterns: [/智谱|\bglm-?[4-9]/i] },
-  { id: "hunyuan", name: "腾讯混元", patterns: [/混元|hunyuan/i] },
-  { id: "doubao", name: "字节豆包", patterns: [/豆包|doubao|字节跳动|bytedance/i] },
-  { id: "mistral", name: "Mistral", patterns: [/mistral/i] },
-  { id: "perplexity", name: "Perplexity", patterns: [/\bPerplexity\b/] },
-  { id: "runway", name: "Runway", patterns: [/\brunway\b/i] },
-  { id: "suno", name: "Suno", patterns: [/\bsuno\b/i] },
-  { id: "midjourney", name: "Midjourney", patterns: [/midjourney/i] },
-  { id: "stability-ai", name: "Stability AI", patterns: [/stability\s?ai/i] },
-  { id: "elevenlabs", name: "ElevenLabs", patterns: [/eleven\s?labs/i] },
-  { id: "vllm", name: "vLLM", patterns: [/\bvllm\b/i] },
-  { id: "ollama", name: "Ollama", patterns: [/\bollama\b/i] },
-  { id: "windsurf", name: "Windsurf", patterns: [/windsurf/i] },
-  { id: "devin", name: "Devin", patterns: [/\bdevin\b/i] },
-  { id: "manus", name: "Manus", patterns: [/\bmanus\b/i] },
-  { id: "apple", name: "Apple AI", patterns: [/\bapple\s?(intelligence|silicon|ai)\b|苹果(智能|\s?AI)/i] },
-  { id: "amazon", name: "Amazon / AWS", patterns: [/amazon|\baws\b|亚马逊/i] },
-  { id: "baidu", name: "百度文心", patterns: [/百度|baidu|文心|\bernie\s?bot\b/i] },
+  { id: "lhdn", name: "内陆税收局 LHDN", patterns: [/\bLHDN(?:M)?\b|\bHASiL\b|Lembaga Hasil|内陆税收局|税收局|Inland Revenue/i, /\bIRB(?:M)?\b/] },
+  { id: "kwsp", name: "公积金局 KWSP / EPF", patterns: [/\bKWSP\b|\bEPF\b|公积金|Provident Fund|Kumpulan Wang Simpanan Pekerja/i] },
+  { id: "perkeso", name: "社险机构 PERKESO / SOCSO", patterns: [/PERKESO|\bSOCSO\b|社险|社会保险|Social Security|Keselamatan Sosial/i] },
+  { id: "kpdn", name: "国内贸易与生活成本部 KPDN", patterns: [/\bKPDN(?:HEP)?\b|国内贸易(?:及|与)?(?:生活成本|生活费用?|消费人事务|民生事务)部|国贸(?:及|与)?(?:生活成本)?部|贸消部|Domestic Trade|Perdagangan Dalam Negeri/i] },
+  { id: "kkm", name: "卫生部 KKM", patterns: [/\bKKM\b|卫生部|Ministry of Health|Health Minist(?:er|ry)|(?:Kementerian|Menteri) Kesihatan/i, /\bMOH\b/] },
+  { id: "jakim", name: "伊斯兰发展局 JAKIM", patterns: [/JAKIM|伊斯兰(?:教)?发展局|Islamic Development Department|Jabatan Kemajuan Islam/i] },
+  { id: "kesuma", name: "人力资源部 KESUMA", patterns: [/KESUMA|人力资源部|人资部|劳工局|Ministry of Human Resources|Human Resources? Minist(?:er|ry)|(?:Kementerian|Menteri) Sumber Manusia|Labour Department|Jabatan Tenaga Kerja|JTKSM/i, /\bMOHR\b/] },
+  { id: "imigresen", name: "移民局 Imigresen", patterns: [/Imigresen|移民局|\bImmigration\b/i, /\bJIM\b/] },
+  { id: "bnm", name: "国家银行 BNM", patterns: [/Bank Negara|国家银行|国行(?!版)/i, /\bBNM\b/] },
+  { id: "dosm", name: "统计局 DOSM", patterns: [/DOSM|统计局|Department of Statistics|Statistics Department|Jabatan Perangkaan/i] },
+  { id: "mof", name: "财政部 MOF", patterns: [/财政部|财长|Ministry of Finance|Finance Minist(?:er|ry)|(?:Kementerian|Menteri) Kewangan/i, /\bMOF\b/] },
+  { id: "grab", name: "Grab", patterns: [/\bGrab(?:Food|Pay|Mart|Merchant|Express)?\b/] },
+  { id: "foodpanda", name: "foodpanda", patterns: [/food\s?panda|熊猫外卖/i] },
+  { id: "shopeefood", name: "ShopeeFood", patterns: [/shopee\s?food/i] },
 ];
 
-/** 这些域名上的文章，发布方就是对应的公司（托管平台如 GitHub、arXiv 不算）。 */
+/** 这些域名上的文章，发布方就是对应的机构或平台。 */
 export const PUBLISHER_DOMAINS: ReadonlyArray<{ entityId: string; domains: readonly string[] }> = [
-  { entityId: "openai", domains: ["openai.com"] },
-  { entityId: "anthropic", domains: ["anthropic.com", "claude.com"] },
-  { entityId: "google", domains: ["deepmind.google", "ai.google", "blog.google"] },
-  { entityId: "deepseek", domains: ["deepseek.com"] },
-  { entityId: "xai", domains: ["x.ai"] },
-  { entityId: "meta", domains: ["ai.meta.com"] },
-  { entityId: "microsoft", domains: ["microsoft.com"] },
-  { entityId: "nvidia", domains: ["nvidia.com"] },
-  { entityId: "qwen", domains: ["qwen.ai"] },
-  { entityId: "cursor", domains: ["cursor.com"] },
-  { entityId: "openrouter", domains: ["openrouter.ai"] },
+  { entityId: "lhdn", domains: ["hasil.gov.my"] },
+  { entityId: "kwsp", domains: ["kwsp.gov.my"] },
+  { entityId: "perkeso", domains: ["perkeso.gov.my"] },
+  { entityId: "kpdn", domains: ["kpdn.gov.my"] },
+  { entityId: "kkm", domains: ["moh.gov.my"] },
+  { entityId: "jakim", domains: ["halal.gov.my", "islam.gov.my"] },
+  { entityId: "kesuma", domains: ["mohr.gov.my"] },
+  { entityId: "imigresen", domains: ["imi.gov.my"] },
+  { entityId: "bnm", domains: ["bnm.gov.my"] },
+  { entityId: "dosm", domains: ["dosm.gov.my"] },
+  { entityId: "mof", domains: ["mof.gov.my"] },
+  { entityId: "grab", domains: ["grab.com"] },
+  { entityId: "foodpanda", domains: ["foodpanda.my"] },
 ];
 
-/** 原文里的这些写法也算提到了对应公司。 */
-export const IDENTITY_CONTEXT_ALIASES: ReadonlyArray<{ entityId: string; pattern: RegExp }> = [
-  { entityId: "meta", pattern: /@AIatMeta\b/i },
-  { entityId: "zhipu", pattern: /\bZhipu(?:\s+AI\b|['’]s\b)/i },
-];
+/** 原文里的这些写法也算提到了对应主体。 */
+export const IDENTITY_CONTEXT_ALIASES: ReadonlyArray<{ entityId: string; pattern: RegExp }> = [];

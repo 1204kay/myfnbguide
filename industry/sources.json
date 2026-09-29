@@ -27,7 +27,7 @@
       "name": "内陆税收局 LHDN · 公告与文告",
       "kind": "web_list",
       "config": {
-        "url": "https://www.hasil.gov.my/pengumuman-kenyataan-media/",
+        "url": "https://www.hasil.gov.my/en/pengumuman-kenyataan-media/",
         "itemSelector": "div.pengumuman-kenyataan-grid > a",
         "titleSelector": "h5.pengumuman-kenyataan-title",
         "publishedAtSelector": ".pengumuman-kenyataan-date",

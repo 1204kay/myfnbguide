@@ -49,8 +49,9 @@ cd "$DIR"
 # ── 3. .env ───────────────────────────────────────────────────────────────────────────────
 say "3/7 生成设置文件 .env"
 getenv() { sed -n "s/^$1=//p" .env | tail -1; }
-setenv() { # 密钥写进文件的那一刻起就只有 root 能读
-  (umask 077; { grep -v "^$1=" .env || true; printf '%s=%s\n' "$1" "$2"; } > .env.new)
+setenv() { # 密钥写进文件的那一刻起就只有 root 能读（install 直接设 600，不受 umask 或目录默认 ACL 影响）
+  install -m 600 /dev/null .env.new
+  { grep -v "^$1=" .env || true; printf '%s=%s\n' "$1" "$2"; } >> .env.new
   mv .env.new .env
 }
 ADMIN_LINE=""
@@ -61,6 +62,7 @@ if [ ! -f .env ]; then
 else
   echo ".env 已存在，保留原有设置。"
 fi
+chmod 600 .env
 
 ask() { # ask <提示> → 从终端读一行（不回显）
   local v=""
@@ -141,7 +143,7 @@ curl -fsS -o /dev/null http://127.0.0.1:3000/api/health || { docker compose logs
 # ── 6. 检查 ───────────────────────────────────────────────────────────────────────────────
 say "6/7 冒烟检查与信源复查"
 docker run --rm --network host --env-file .env aihot-app node scripts/smoke.ts --base http://127.0.0.1:3000 | tail -3 || warn "冒烟检查有失败，把上面的内容发给 Claude。"
-docker run --rm aihot-app node myfnb/check-sources.mjs | tail -2 || warn "有信源不合规，把上面的内容发给 Claude。"
+docker run --rm aihot-app node myfnb/check-sources.mjs | grep -v '^✓' || warn "有信源不合规或这台服务器读不到它的 robots.txt，把上面的内容发给 Claude。"
 
 # ── 7. 自动更新 ───────────────────────────────────────────────────────────────────────────
 say "7/7 自动更新：每 5 分钟检查 $BRANCH，只部署检查通过的提交"

@@ -124,7 +124,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 同步上游 | 定期 `git fetch upstream`，审阅后合并，不自动跟；合并后跑四项检查 |
 | 写摘要模型 | DeepSeek 官方 API（作者 `init-env` 的默认：`LLM_BASE_URL=https://api.deepseek.com/v1`、`LLM_MODEL=deepseek-flash`，前一会话读 `.env.example` 所得） |
 | 向量模型 | Google Gemini `gemini-embedding-001` 免费层，走通用 OpenAI 兼容路径 `EMBEDDING_*`。原定作者默认的阿里云 `text-embedding-v4`，但阿里云绑卡页写明不收预付卡、虚拟卡，用户只有 TNG Visa（预付卡）。以后有银行借记卡可切回阿里云 |
-| 服务器 | 腾讯云**国际版** Lighthouse **新加坡** 2 核 4GB，Ubuntu LTS，按月付、关自动续费 |
+| 服务器 | 腾讯云**国际版** Lighthouse **新加坡**，**Razor Speed（锐驰型）2 核 4GB 60GB**，Ubuntu Server 24.04 LTS，按月付、关自动续费。选锐驰型是因为官方写明「流量不限、进出流量不额外收费」（峰值带宽 200Mbps 不保证），没有超额流量账单的风险；General 型有流量包、超额按量计费 |
 | 备份 | 腾讯云 COS 新加坡（`backup.ts` 默认就是腾讯云 COS 端点） |
 | 域名 | 试跑用 `new.myfnbguide.com`（Porkbun 加 A 记录）；上线切换时 `www.myfnbguide.com` 指过来 |
 | 更新方式 | 服务器每 5 分钟检查 fork 的 `main`，有更新就执行作者的更新命令（`git pull` + `docker compose --profile https up -d --build`） |
@@ -270,7 +270,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 把内容交给模型服务商 | 只把公开发布、对 AI 没有限制的来源内容交给 DeepSeek 和 Gemini；不交读者资料 |
 | 服务器被入侵 | 只开 22/80/443；网页只绑本机、由 Caddy 转发；数据库和接口不对外；`.env` 权限 600、不进 git；自动安全更新已开（`bootstrap.sh`）；自动部署只认 GitHub 上检查通过的提交，所以 **GitHub 账号必须开两步验证**（§8） |
 | 出了问题没人知道 | 框架的告警（模型欠费或 key 失效、信源连续失败等）只发飞书，我们没开，只记在服务器日志和后台。对策：DeepSeek 自己的余额提醒邮件要开（最常见的故障就是余额用完）；每周发周报链接时顺手打开后台看一眼「运行」和「信源」页；每次新对话先看后台告警 |
-| 花费失控 | DeepSeek 预付费，余额用完即停；Gemini 免费层不绑卡，不会产生费用；后台「设置 → 预算」设每日上限；腾讯云流量 80% 告警 |
+| 花费失控 | DeepSeek 预付费，余额用完即停；Gemini 免费层不绑卡，不会产生费用；后台「设置 → 预算」设每日上限；服务器选锐驰型，流量不限、不另收费 |
 
 降不下去、只能知道的风险：
 
@@ -364,9 +364,9 @@ key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 ai
 2. ✅（2026-09-30）**fork 的 `main` 跟着 `claude/myfnb-handoff` 快进**。以后在 `claude/myfnb-handoff` 上做完、四项检查通过后，`git push origin claude/myfnb-handoff:main`；部署后服务器每 5 分钟看一次 `main`，GitHub 上检查通过才自动部署（`myfnb/update.sh`）。
 3. ✅（2026-09-30）**部署脚本 `myfnb/bootstrap.sh`、自动更新 `myfnb/update.sh`** 已写好，并在 GitHub 的全新 Ubuntu 24.04 机器上完整演练（结果见 §6）。向量设置由脚本实测后自动选：Gemini 接受 1536 维就用 1536，只接受默认维度就用默认，都不行就关向量（站照样能跑，只是中英文同一事件合不上）。
 4. **10/1 部署**：
-   - 用户先做（开新对话之前）：~~确认 GitHub 两步验证已开~~（已确认）；在 AI Studio 建 Gemini key（§8 的命名）；DeepSeek 充到约 US$10，找得到余额提醒就打开（DeepSeek key 部署时现建现贴，§8）；买腾讯云国际版 Lighthouse（新加坡、Ubuntu 24.04 LTS、2 核 4GB、1 个月、关自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
+   - 用户先做（开新对话之前）：~~确认 GitHub 两步验证已开~~（已确认）；在 AI Studio 建 Gemini key（§8 的命名）；DeepSeek 充到约 US$10，找得到余额提醒就打开（DeepSeek key 部署时现建现贴，§8）；买腾讯云国际版 Lighthouse（购买页「基于操作系统镜像」→ Ubuntu Server 24.04 LTS；新加坡；套餐 Razor Speed Type 2 核 4GB 60GB；1 个月；不勾自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
    - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过（推送后至少等 5 分钟：`raw.githubusercontent.com` 按分支名取文件有约 5 分钟缓存，演练时踩过；急的话把命令里的 `main` 换成提交编号）→ 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key（脚本问 DeepSeek key 时，请用户在 platform.deepseek.com 的 API keys 页新建 `myfnb-server`、复制后直接粘贴；Gemini key 从 aistudio.google.com/apikey 复制）→ 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
-5. **部署后第一周**：后台「信源」页看 18 个信源是否都抓得到（服务器 IP 可能被政府网站挡）；每月跑一次 `docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；腾讯云监控设流量包 80% 告警（**没有自动关机选项**）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
+5. **部署后第一周**：后台「信源」页看 18 个信源是否都抓得到（服务器 IP 可能被政府网站挡）；每月跑一次 `docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；（锐驰型流量不限、不另收费，不用设流量告警）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
 6. **量得到读者（§2.4）**：上线当天在 Google Search Console 添加「网域」资源 `myfnbguide.com`，按它给的值在 Porkbun 加一条 TXT 记录验证（涵盖 `new` 子域；不改代码、不追踪访客，看搜索点击；其他 DNS 记录不动）；开 WhatsApp 频道（关注数即读者数）。
 7. **校准（10/9 预算案后的一周）**：Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时数大马动态每周入选几条、全球与大马是否接近七比三；大马不够就按 §5.4 规则补来源（已查过对 AI 没有限制的候选：Kosmo、Sinar Harian、Astro Awani、光华日报；接之前还要读条款、试抓）。
 8. **关卡**：每周 ≥ 10 条对餐饮业者有参考价值的新闻，且 holdout 结果用户认可 → 上线（§10 切换）；不过就停（删服务器即停止计费）。
@@ -393,11 +393,11 @@ key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 ai
 
 | 项目 | 每月 | 备注 |
 |---|---|---|
-| 腾讯云 Lighthouse 新加坡 2 核 4GB | 约 US$8.5 | **未核实**：来自搜索结果，以下单页为准 |
+| 腾讯云 Lighthouse 新加坡 锐驰型 2 核 4GB | 以下单页为准 | 官方写锐驰型每月 US$5–66（2 核 1GB 到 4 核 16GB）；用户下单后把实际月费记在这里 |
 | DeepSeek | 约 US$7–20 | **估算**：每天约 110 条进预筛，大部分一般商业新闻在预筛一步就挡掉（1 次调用），入选的还要评分两次、写摘要、打标签、归组；估每天 300–400 次、每次约 3000 token。以上线第一周后台「模型与评测」页为准。预付费，余额用完即停 |
 | Gemini 向量 | 0 | 免费层，不用绑卡（免费层数据可能被 Google 用于改进产品；我们处理的是公开新闻，可接受） |
 | COS 备份 | 几分钱 | |
-| 超额流量 | 正常 0 | 唯一会随读者上涨的费用 |
+| 流量 | 0 | 锐驰型流量不限、不另收费；读者再多也不加钱，只是高峰时带宽可能变慢 |
 
 模型费用不随读者上涨（读者打开页面不触发模型调用）；随信源数量上涨。
 

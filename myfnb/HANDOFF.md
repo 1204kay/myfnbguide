@@ -255,7 +255,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 ### 7.2 发现但还没做成 PR 的上游问题
 
 1. `packages/backend/src/sources/web-list.ts` 的日期解析不认马来文、印尼文月份（Mac、Mei、Ogos、Okt、Dis）。我们绕开了（LHDN 用英文版）。属于作者欢迎的「通用采集能力」。
-2. 三处读者看得到的文案写死「北京时间」（`packages/backend/src/publication/feeds.ts`、`apps/web/app/routes/agent.tsx`、`apps/web/app/routes/report-latest.tsx`）。时间本身对（马来西亚同为 UTC+8），只是说法；可以把时区说法放进 `industry/site.ts`，适合并进 §7.3 的多语言讨论。
+2. 四处读者看得到的文案写死「北京时间」（`packages/backend/src/publication/feeds.ts`、`publication/llms.ts`、`apps/web/app/routes/agent.tsx`、`routes/report-latest.tsx`），另有两处给模型的输入也写「北京时间」（`editorial/input.ts`、`editorial/analyze.ts`；Codex 监控模块里的是 AI 专用模块，已关）。时间本身对（马来西亚同为 UTC+8），只是说法；可以把时区说法放进 `industry/site.ts`，适合并进 §7.3 的多语言讨论。
 3. 两个测试靠「宽召回的AI相关性预筛」这几个字认出预筛提示词，换行业改提示词就得改测试；只认「宽召回」即可（`tests/default-model.test.ts` 已经这样写）。
 4. 框架不解析 PDF，而不少政府文告只有 PDF（KPDN 全是 PDF，LHDN 的全文在 PDF 里）。
 5. 采集不看 robots.txt 的 `Content-Signal`。框架若能自动跳过 `ai-input=no` 的来源，所有 fork 都受益（§5.4 的规则 2 现在靠人工查）。

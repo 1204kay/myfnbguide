@@ -349,8 +349,8 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 | DeepSeek | 已充值，余额 US$2.00 + ¥9.90（约 US$3.4），已建 key。余额提醒是关的，要打开；10/1 部署前充到约 US$10 |
 | 阿里云国际版 | 放弃（不收预付卡、虚拟卡） |
 | Google AI Studio（Gemini 向量 key） | **待办**：用户用 Google 账号在 https://aistudio.google.com/apikey 建 key，不用绑卡 |
-| 腾讯云国际版 | 已注册并绑卡（TNG Visa 可用，Google 登录）；10/1 买服务器 |
-| Porkbun A 记录 `new` → 服务器 IP | 买服务器后做 |
+| 腾讯云国际版 | 已注册并绑卡（TNG Visa 可用，Google 登录）。**2026-10-01 已买**：Lighthouse `myfnb`，新加坡，锐驰型 2 核 4GB 60GB，Ubuntu 24.04，**公网 IP 43.160.228.180**，2026-11-01 到期，不自动续费（到期前决定续不续） |
+| Porkbun A 记录 `new` → 43.160.228.180 | 2026-10-01 用户已添加（TTL 600）；其余 12 条记录未动 |
 
 **所有 key 都不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
 

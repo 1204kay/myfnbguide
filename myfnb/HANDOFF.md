@@ -300,6 +300,7 @@ GitHub 上作者的 CI：fork 的 `main` 推到 `85ae703`（19 个信源）、`7
 | 模型设置 | `.env` 里 `LLM_EXTRA_JSON={"thinking":{"type":"disabled"}}`，思考关闭（同作者 DeepSeek 预设的做法，省输出 token） |
 | 防火墙 | Lighthouse 默认只有 22、80、Ping，**没有 443**（也没有 3389）；手动加 443 后 HTTPS 才通 |
 | HTTPS | Caddy 经 80 端口申请到 Let's Encrypt 证书（到 2026-12-29，自动续期）；从外网跑冒烟检查 23 项全部通过；3000 端口外网连不上 |
+| 自动更新 | 推 `34577e3` 到 `main` → GitHub 检查约 2 分钟通过 → 服务器下一次定时检查（05:54）自动拉取、重建、重启，日志 `已部署 34577e3`。连续推两次时，旧提交的检查会被取消（算没通过），服务器只部署最新那个 |
 | 信源 | 14 个正常，4 个 403 已暂停（§5.4） |
 | 后台预算 | `llm` 每天 3000（开站约 20 分钟已用 442 次，平时估每天 300–400 次）；`embedding` 是免费层、其余服务没配 key，都不动 |
 | 第一次导入 | 每个信源回补 8 条（`initialBackfillLimit`），约 110 条；约 20 分钟后 `llm` 442 次、向量 46 次，之后不再增加。「全部动态」写好 50 条，**精选只有 2 条**（都是财政部燃油价，T1 门槛 60）。T2 门槛 76 对我们偏高：如「ACCCIM 欢迎中小微企业暂缓调涨最低薪金」这种该进日报的大马新闻也没进精选；全部动态里还有万圣节菜单、人事任命等消费者向或低价值内容。按规则先标注、改挑选标准、最后才动门槛（§9 第 7 项），当天不改 |
@@ -355,7 +356,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 **所有 key 都不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
 
-key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 aistudio.google.com/apikey 随时能看（项目名 `myfnb`、key 名 `myfnb-embedding`）；DeepSeek key 只显示一次，所以**部署时现建现贴**（key 名 `myfnb-server`），旧 key 删掉。`bootstrap.sh` 在腾讯云网页终端里逐个提示粘贴，只写进服务器上的 `.env`（权限 600，不进 git）；以后要看就在服务器上 `sudo grep -E '^(LLM_API_KEY|EMBEDDING_API_KEY|ADMIN_PASSWORD)=' /opt/myfnbguide/.env`。后台密码第一次登录时让 Chrome 保存。不发聊天、不存截图、不放 GitHub。GitHub 两步验证 2026-10-01 用户截图确认已开（Authenticator app）。
+key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 aistudio.google.com/apikey 随时能看（项目名 `myfnb`、key 名 `myfnb-embedding`）；DeepSeek key 只显示一次，所以**部署时现建现贴**（key 名 `myfnb-server`），旧 key 删掉。`bootstrap.sh` 在腾讯云网页终端里逐个提示粘贴，只写进服务器上的 `.env`（权限 600，不进 git）；以后要看就在服务器上 `sudo grep -E '^(LLM_API_KEY|EMBEDDING_API_KEY|ADMIN_PASSWORD)=' /opt/myfnbguide/.env`。后台密码存在 Chrome 里。不发聊天、不存截图、不放 GitHub。**后台密码 2026-10-01 换过一次**（部署输出的截图连同密码发进了聊天）。以后要换，在服务器终端跑下面这行，新密码只显示这一次，存进 Chrome 后输入 `clear` 清屏，不要截图：`cd /opt/myfnbguide && P=$(openssl rand -hex 12) && sudo install -m 600 /dev/null .env.new && sudo sh -c "grep -v '^ADMIN_PASSWORD=' .env > .env.new && echo ADMIN_PASSWORD=$P >> .env.new && mv .env.new .env" && sudo docker compose --profile https up -d --force-recreate api && echo "新管理员密码：$P"; cd ~`。请用户贴终端输出时，一律复制文字、贴之前删掉密码和 key，不要截图（截图会连带拍到上面的旧输出）。GitHub 两步验证 2026-10-01 用户截图确认已开（Authenticator app）。
 
 ---
 

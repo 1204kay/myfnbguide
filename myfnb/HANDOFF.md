@@ -381,9 +381,10 @@ key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 ai
 2. 关闭 5 个 Tally 表单：fix（EkJ0lN）、feedback（XxElML）、story（yPx8dx）、ask（Gxo91j）、join（dWZNBV）。
 3. FB / IG / 小红书 @myfnbguide 简介链接改新站。
 4. GitHub 仓库 `1204kay/myf-b_book` 设为 Archive（不删）。
-5. 域名接管后停掉 Vercel 旧项目（用户自己操作）。
-6. Porkbun 其他 DNS 记录不动（`forms.myfnbguide.com` Tally CNAME、Sender DKIM 3 CNAME + 1 TXT）。
-7. 过渡期：新站上线前若预算案改了最低薪金等数字，改旧仓库 `.vitepress/data/regulations.js` 一处即可（旧站 97.8% 法规数字从它读取；该文件 `DATA_META.nextReview: '2026-07-23'` 已过期）。
+5. **先处理拼写变体域名 `myfbguide.com`**：它现在 308 转到 `https://www.myfnbguide.com/`，转址看起来是 Vercel 做的（2026-10-01 用 curl 查到 308，Vercel 的转址方式）。停 Vercel 之前，在 Porkbun 给 `myfbguide.com`（含 www）设 URL Forwarding 到 `https://www.myfnbguide.com`，确认转址还通，再停。
+6. 域名接管、上一条确认后，停掉 Vercel 旧项目（用户自己操作）。
+7. Porkbun 的 DNS 记录（快照 2026-10-01，共 13 条，用户截图）：根域 A `216.198.79.1` 与 `www` CNAME `…vercel-dns-017.com`（旧站 Vercel，切换时改这两条指到新服务器）；`new` A `43.160.228.180`（新站试跑）；`forms` CNAME `cname.tally.so`；SendGrid 的 `em2480.forms`、`s1._domainkey.forms`、`s2._domainkey.forms` 三条 CNAME 与 `_dmarc.forms` TXT；邮件转发 MX `fwd1/fwd2.porkbun.com` 与 SPF TXT；两条 `_acme-challenge` TXT。除了根域和 `www` 两条，其余切换时都不动。
+8. 过渡期：新站上线前若预算案改了最低薪金等数字，改旧仓库 `.vitepress/data/regulations.js` 一处即可（旧站 97.8% 法规数字从它读取；该文件 `DATA_META.nextReview: '2026-07-23'` 已过期）。
 
 ---
 

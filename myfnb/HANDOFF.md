@@ -229,6 +229,8 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | `4edd697`（合并作者 5 个新提交后） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 | `ed056c4`（信源按条款调整后） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 
+GitHub 上作者的 CI（fork 的 `main` 推到 `85ae703` 后）：`check` 与 `docker` 两个 job 都通过（https://github.com/1204kay/myfnbguide/actions/runs/36715649502）。`docker` job 用我们的 `industry/` 构建镜像、`docker compose up`、跑冒烟检查并核对导入了 19 个信源，这是本机没有 Docker 时唯一的镜像验证。
+
 另逐页抓了 15 个页面：没有残留「AI 日报」「AI 圈」「按主题看 AI」「OpenAI」「公司与模型」「MyHOT」「多赚」等字样；显示的是「餐饮日报」「餐饮圈」「按主题看餐饮」「机构与品牌」「地区与业态」「经营主题」。标语只用在分享图和 PWA 清单里（作者模板注释说在首页左上角，实际代码不在那用），首页看不到是正常的。
 
 Windows 上：类型检查和网站构建通过；作者原版的网页服务器在 Windows 起不来（PR 4 修），关机信号类后端测试在 Windows 上跑不了（Windows 不支持 SIGTERM 处理），与我们的改动无关。
@@ -284,7 +286,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 ## 9. 下一步（按顺序）
 
 1. **提交给作者的 PR**（§7.1）：用户点头后逐个提交，正文按作者的 PR 模板写，附验证结果；提交后把链接记进 §7.1。再按 §7.3 开多语言讨论。
-2. **把 `claude/myfnb-handoff` 合并进 fork 的 `main`**：fork 的 `main` 是它的祖先，可以快进。推送后作者的 CI（含 docker 构建和冒烟）会在 GitHub 上跑一遍，这是本机没有 Docker 时唯一能验证镜像的地方。
+2. ✅（2026-09-30）**fork 的 `main` 已快进到 `claude/myfnb-handoff`**，GitHub CI 两个 job 通过（§6）。以后在 `claude/myfnb-handoff` 上做完、检查通过后，同样快进推到 `main`（`git push origin claude/myfnb-handoff:main`）；部署后服务器跟的就是 `main`，推上去约 5 分钟内会自动更新线上站。
 3. **部署脚本 `myfnb/bootstrap.sh`**（部署日在真服务器上边写边测；本机没有 Docker，现在写了也验证不了）。按作者 `docs/deploy.md` 的做法：装 Docker → clone fork 的 `main` → 用作者的 `scripts/init-env.ts` 生成 `.env`（服务器没有 Node，就在 `node:24` 容器里跑它）→ 交互式读入 DeepSeek key 和 Gemini key（用户自己粘贴）→ 追加 `SITE_URL=https://new.myfnbguide.com`、`SITE_DOMAIN=new.myfnbguide.com`、`PORT=127.0.0.1:3000`、`TRUST_PROXY=true` 和向量配置 → `docker compose --profile https up -d --build` → 装 systemd timer：每 5 分钟 `git fetch`，`main` 有变化就 `git pull` 并重新 `up -d --build`。
 4. **向量配置**：`EMBEDDING_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/`、`EMBEDDING_MODEL=gemini-embedding-001`。向量列是 `real[]`，维度没写死（`database/migrations/0006_embeddings.sql`），用 `EMBEDDING_DIMS=1536`。未确认 Google 的兼容接口是否接受框架会发的 `dimensions`、`encoding_format` 和一次多条输入，部署日在服务器上用用户的 key 试一条：返回向量就用 1536；报参数错误就改 `EMBEDDING_DIMS=0`（默认 3072 维）；还不行就设 `EMBEDDINGS_ENABLED=false`，归组退回字面比对，站照样能跑，只是中英文同一事件合不上。
 

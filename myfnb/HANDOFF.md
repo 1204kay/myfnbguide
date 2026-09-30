@@ -311,6 +311,8 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 **所有 key 都不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
 
+key 的存放（2026-09-30 告诉用户的做法）：建好就存进 Google 密码管理器（passwords.google.com →「添加」，网站填 `aistudio.google.com` 或 `platform.deepseek.com`，用户名填「Gemini key」或「DeepSeek key」，密码栏粘贴 key）。不放 GitHub、不发聊天、不存截图。部署那天 `bootstrap.sh` 在腾讯云网页终端里逐个提示粘贴，只写进服务器上的 `.env`（权限 600，不进 git）。DeepSeek 的 key 只显示一次，没存下就新建一个、把旧的删掉。
+
 ---
 
 ## 9. 下一步（按顺序）

@@ -37,7 +37,7 @@ const provider = await stub(async (_hit, request) => {
   if (step === "understand" && active.writingAnswer) { active.writingAsked!.open(); await active.writingAnswer.promise; }
   const content = step === "prefilter" ? { label: "PASS", reason: "餐饮业新规" }
     : step === "score" ? { attentionScore: 80 }
-      : step === "structure" ? { category: "policy", tags: ["政策/法规"], subjects: [], fact: { title: "新规生效" } }
+      : step === "structure" ? { category: "malaysia", tags: ["政策/法规"], subjects: [], fact: { title: "新规生效" } }
         : { itemType: "policy_change", authorRole: "principal", tags: ["政策/法规"], editorialJudgment: "新规写明了生效日期和罚则", titleZh: `新规生效 ${T}`, summaryZh: "新规公布了生效日期和罚款金额。" };
   return { id: `stub-${active.calls.length}`, choices: [{ message: { content: JSON.stringify(content) } }], usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 } };
 });

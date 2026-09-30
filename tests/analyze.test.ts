@@ -47,7 +47,7 @@ const provider = await stub((_hit, req) => {
     if (marker === "SENSITIVE") return new Reply(400, { contentFilter: [{ level: 1, role: "user" }], error: { code: "1301", message: "系统检测到输入或生成内容可能包含不安全或敏感内容" } });
     return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "公积金", "外劳", "不存在的标签"], editorialJudgment: `理由 ${marker}`, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
   }
-  if (step === "structure") return answer({ category: "policy", tags: ["政策/法规", "税务"], subjects: ["kwsp", "unknown-co"], fact: { title: `事实 ${marker}`, subject: "某公司", action: "发布", object: "模型", occurredAt: null } });
+  if (step === "structure") return answer({ category: "malaysia", tags: ["政策/法规", "税务"], subjects: ["kwsp", "unknown-co"], fact: { title: `事实 ${marker}`, subject: "某公司", action: "发布", object: "模型", occurredAt: null } });
   return answer(`title_zh: 翻译标题 ${marker}\nsummary_zh: 翻译摘要 ${marker}。第二句补充影响。`);
 });
 for (const env of ["DASHSCOPE_BASE_URL", "ZHIPU_BASE_URL", "DEEPSEEK_BASE_URL"]) process.env[env] = `${provider.url}/v1`;
@@ -98,7 +98,7 @@ test("a selected item: prefilter, two scores, the content understanding and the 
   assert.deepEqual([res!.output!.selected, res!.output!.score], [true, 75], "78 + 72 = 150 >= 120");
   assert.deepEqual(calls("CLEAR").sort(), ["prefilter", "score", "score", "structure", "understand"]);
   const r = await row(id);
-  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "policy", 5]);
+  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "malaysia", 5]);
   assert.deepEqual(r.tags, ["政策/法规", "公积金/社险", "外劳", "公积金局"], "vocabulary tags (synonyms mapped, unknown dropped) and the subject's tag");
   assert.deepEqual(r.subjects, ["kwsp"]);
   assert.deepEqual([r.output.writer, r.output.itemType, r.output.prefilter.label, r.output.fact.title], ["understand", "policy_change", "PASS", "事实 CLEAR"]);

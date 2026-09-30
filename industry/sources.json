@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两条线：全球的餐饮经营实战（标签“经营实战”），和马来西亚的政策、成本、平台与行业动态。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两部分：马来西亚的政府机构、中英马来文报纸和平台（标签“马来西亚”），全球的餐饮行业媒体（标签写地区）。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。",
   "sources": [
     {
       "id": "rss-mof-press",
@@ -17,6 +17,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
+        "马来西亚",
         "官方"
       ],
       "site_fulltext": false,
@@ -41,6 +42,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
+        "马来西亚",
         "官方"
       ],
       "site_fulltext": false,
@@ -67,6 +69,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -93,6 +96,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -114,6 +118,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -135,6 +140,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -156,6 +162,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -177,6 +184,29 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
+        "马来西亚",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hmetro-bisnes",
+      "name": "Harian Metro · Bisnes",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hmetro.com.my/bisnes.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -198,27 +228,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-soyacincau",
-      "name": "SoyaCincau",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://soyacincau.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
+        "马来西亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -240,7 +250,201 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
+        "马来西亚",
         "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nrn",
+      "name": "Nation's Restaurant News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nrn.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-restaurant-dive",
+      "name": "Restaurant Dive",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.restaurantdive.com/feeds/news/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-rbo",
+      "name": "Restaurant Business",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.restaurantbusinessonline.com/",
+        "itemSelector": "div.item-inner",
+        "linkSelector": "a[href*='/financing/'], a[href*='/operations/'], a[href*='/technology/'], a[href*='/workforce/'], a[href*='/marketing/'], a[href*='/leadership/'], a[href*='/food/']",
+        "allowUrlPrefixes": [
+          "https://www.restaurantbusinessonline.com/financing/",
+          "https://www.restaurantbusinessonline.com/operations/",
+          "https://www.restaurantbusinessonline.com/technology/",
+          "https://www.restaurantbusinessonline.com/workforce/",
+          "https://www.restaurantbusinessonline.com/marketing/",
+          "https://www.restaurantbusinessonline.com/leadership/",
+          "https://www.restaurantbusinessonline.com/food/"
+        ],
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\.? \\d{1,2}, 20\\d\\d)",
+          "publishedAtUtcOffset": "-05:00",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-modern-restaurant-management",
+      "name": "Modern Restaurant Management",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://modernrestaurantmanagement.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-fer",
+      "name": "Foodservice Equipment Reports",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.fermag.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "设备"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-insideretail-asia-fnb",
+      "name": "Inside Retail Asia · Food & Beverage",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://insideretail.asia/category/food-beverage/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "亚洲",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-world-coffee-portal",
+      "name": "World Coffee Portal",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.worldcoffeeportal.com/latest/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "全球",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-foodbank-kr",
+      "name": "식품외식경제（韩国）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodbank.co.kr/rss/allArticle.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "韩国",
+        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
@@ -268,8 +472,8 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
-        "经营实战",
-        "中国"
+        "中国",
+        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
@@ -290,85 +494,8 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "经营实战",
-        "台湾"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "web-rbo-operations",
-      "name": "Restaurant Business · Operations",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.restaurantbusinessonline.com/operations",
-        "itemSelector": "div.item-inner",
-        "linkSelector": "a[href*='/operations/']",
-        "allowUrlPrefixes": [
-          "https://www.restaurantbusinessonline.com/operations/"
-        ],
-        "detail": {
-          "maxFetches": 15,
-          "publishedAtRegex": "((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\.? \\d{1,2}, 20\\d\\d)",
-          "publishedAtUtcOffset": "-05:00",
-          "publishedAtAuthoritative": true
-        },
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "经营实战",
-        "美国"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-owner-blog",
-      "name": "Owner.com Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.owner.com/blog/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "经营实战",
-        "美国"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-modern-restaurant-management",
-      "name": "Modern Restaurant Management",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://modernrestaurantmanagement.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "经营实战",
-        "美国"
+        "台湾",
+        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

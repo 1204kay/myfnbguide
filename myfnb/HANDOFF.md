@@ -213,6 +213,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 3. 使用条款禁止爬虫、自动抓取、文本与数据挖掘或 AI 使用 → 不接。只许个人使用其 RSS 或内容的 → 不接。
 4. 只有通用的「不得转载、复制」条款 → 可以接：本站不转载，只写自己的简短摘要（80–160 字）并链接原文（依据见 §12 版权法第 13(2)(a) 条）。
 5. robots.txt 读不到（403、超时）→ 无法确认，不接。
+6. 部署后，服务器 IP 被来源挡住（抓取返回 403）→ 在后台暂停该来源。**不用代理（`EGRESS_PROXY_URL`）绕过**：对方挡数据中心 IP 就是不欢迎机器抓取，绕过去本身就是风险。
 
 规则 1、2、5 由 `node myfnb/check-sources.mjs` 自动查（用框架自己的抓取身份，因为有的网站按访问者返回不同的 robots.txt）；规则 3、4 要人工读条款。**每月跑一次，加新信源前先对候选跑**（可传候选文件路径）。框架本身不读 robots.txt，来源也会改规则，所以这一步不能省。
 
@@ -240,7 +241,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | Bernama | RSS 只有 10 条，各版混在一起，没有日期 |
 | Owner.com 博客、StoreHub 博客 | 厂商内容，几乎不更新或全是推广页 |
 
-以上是本机网络的结果；服务器在新加坡，政府网站可能挡数据中心 IP，部署后要在后台「信源」页再试抓一次。
+以上是本机（家用网络）的结果。**云服务器 IP 会被一部分来源挡住**：2026-09-30 在 GitHub 的云服务器（微软 Azure 的 IP）上演练部署，The Malaysian Reserve、Total Food Service、星洲、南洋返回 403，东方日报超时，其余 13 个正常。腾讯云新加坡的情况要部署后在后台「信源」页看；被挡的按规则 6 暂停。星洲、南洋若都被挡，大马华文餐饮来源只剩东方日报财经，§2.4 风险 1 会更明显，校准时优先补大马来源。
 
 ### 5.5 改了 `industry/` 以外的文件
 
@@ -268,6 +269,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 来源方投诉 | 条款承诺一般三个工作日内处理。要求停止收录的，用作者自带的 `node --env-file=.env scripts/delete-sources.ts "<原因>" <来源 id>`（读过代码：先撤下已入选的内容，再删除来源和它的全部文章） |
 | 把内容交给模型服务商 | 只把公开发布、对 AI 没有限制的来源内容交给 DeepSeek 和 Gemini；不交读者资料 |
 | 服务器被入侵 | 只开 22/80/443；网页只绑本机、由 Caddy 转发；数据库和接口不对外；`.env` 权限 600、不进 git；自动安全更新已开（`bootstrap.sh`）；自动部署只认 GitHub 上检查通过的提交，所以 **GitHub 账号必须开两步验证**（§8） |
+| 出了问题没人知道 | 框架的告警（模型欠费或 key 失效、信源连续失败等）只发飞书，我们没开，只记在服务器日志和后台。对策：DeepSeek 自己的余额提醒邮件要开（最常见的故障就是余额用完）；每周发周报链接时顺手打开后台看一眼「运行」和「信源」页；每次新对话先看后台告警 |
 | 花费失控 | DeepSeek 预付费，余额用完即停；Gemini 免费层不绑卡，不会产生费用；后台「设置 → 预算」设每日上限；腾讯云流量 80% 告警 |
 
 降不下去、只能知道的风险：
@@ -288,7 +290,18 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | `ed056c4`（信源按条款调整后） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 | `ec682dd`（按最低风险收紧信源、规则、条款后） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 
-GitHub 上作者的 CI：fork 的 `main` 推到 `85ae703`（19 个信源）和 `7ef1159`（18 个信源）后各跑一次，`check` 与 `docker` 两个 job 都通过（https://github.com/1204kay/myfnbguide/actions/runs/36715649502、https://github.com/1204kay/myfnbguide/actions/runs/36734886046）。`docker` job 用我们的 `industry/` 构建镜像、`docker compose up`、跑冒烟检查并核对导入的信源数。
+**部署演练**（2026-09-30，GitHub 提供的全新 Ubuntu 24.04 云机器，用假 key，按明天的命令从 GitHub 取脚本；共跑三次，第三次为最终版，演练记录和测试分支之后已删除，因为日志里有演练机的一次性密码）：
+
+| 项 | 结果 |
+|---|---|
+| 一行命令部署 | 五个容器都起来；经 Caddy 的 HTTPS 首页标题正确；冒烟检查全部通过；自动更新定时器已启用 |
+| `.env` 权限 | 600、只有 root 能读（测试机 `/opt` 带默认 ACL，第一版脚本因此变成 666，已改成 `install -m 600` 并验证） |
+| 假 key | 脚本提示 key 不可用、照样把站点跑起来；Gemini 不通时自动关闭向量 |
+| 重复执行 | `.env` 前后完全一样，不再显示管理员密码 |
+| 自动更新 | 检查没跑完的提交：等下次；检查通过的新 `main`：自动拉取、重建、健康检查通过 |
+| 云服务器 IP 抓取 | 18 个里 13–14 个正常；星洲、南洋、The Malaysian Reserve 返回 403（连 robots.txt 都读不到），Total Food 时而 403；东方日报、财政部偶尔超时 |
+
+GitHub 上作者的 CI：fork 的 `main` 推到 `85ae703`（19 个信源）、`7ef1159` 和 `6c48eda`（18 个信源，含作者 9/30 的 7 个新提交）后各跑一次，`check` 与 `docker` 两个 job 都通过（https://github.com/1204kay/myfnbguide/actions/runs/36715649502、https://github.com/1204kay/myfnbguide/actions/runs/36734886046）。`docker` job 用我们的 `industry/` 构建镜像、`docker compose up`、跑冒烟检查并核对导入的信源数。
 
 另逐页抓了 15 个页面：没有残留「AI 日报」「AI 圈」「按主题看 AI」「OpenAI」「公司与模型」「MyHOT」「多赚」等字样；显示的是「餐饮日报」「餐饮圈」「按主题看餐饮」「机构与品牌」「地区与业态」「经营主题」。标语只用在分享图和 PWA 清单里（作者模板注释说在首页左上角，实际代码不在那用），首页看不到是正常的。
 
@@ -352,7 +365,7 @@ key 的存放（2026-09-30 告诉用户的做法）：建好就存进 Google 密
 3. ✅（2026-09-30）**部署脚本 `myfnb/bootstrap.sh`、自动更新 `myfnb/update.sh`** 已写好，并在 GitHub 的全新 Ubuntu 24.04 机器上完整演练（结果见 §6）。向量设置由脚本实测后自动选：Gemini 接受 1536 维就用 1536，只接受默认维度就用默认，都不行就关向量（站照样能跑，只是中英文同一事件合不上）。
 4. **10/1 部署**：
    - 用户先做（开新对话之前）：确认 GitHub 两步验证已开；建 Gemini key；DeepSeek 充到约 US$10 并打开余额提醒；两个 key 存进密码管理器（§8）；买腾讯云国际版 Lighthouse（新加坡、Ubuntu 24.04 LTS、2 核 4GB、1 个月、关自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
-   - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过 → 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key → 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
+   - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过（推送后至少等 5 分钟：`raw.githubusercontent.com` 按分支名取文件有约 5 分钟缓存，演练时踩过；急的话把命令里的 `main` 换成提交编号）→ 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key → 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
 5. **部署后第一周**：后台「信源」页看 18 个信源是否都抓得到（服务器 IP 可能被政府网站挡）；每月跑一次 `docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；腾讯云监控设流量包 80% 告警（**没有自动关机选项**）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
 6. **量得到读者（§2.4）**：上线当天在 Google Search Console 添加「网域」资源 `myfnbguide.com`，按它给的值在 Porkbun 加一条 TXT 记录验证（涵盖 `new` 子域；不改代码、不追踪访客，看搜索点击；其他 DNS 记录不动）；开 WhatsApp 频道（关注数即读者数）。
 7. **校准（10/9 预算案后的一周）**：Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时数大马动态每周入选几条、全球与大马是否接近七比三；大马不够就按 §5.4 规则补来源（已查过对 AI 没有限制的候选：Kosmo、Sinar Harian、Astro Awani、光华日报；接之前还要读条款、试抓）。

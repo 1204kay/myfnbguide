@@ -131,7 +131,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 - `site.ts`：站名 `MyF&B`，行业词 `餐饮`，标语、首页标题、介绍见 §2.1；`locale: "zh-MY"`；`mcpPrefix: "myfnb"`（上线后不改）；联系邮箱 `myfb.guide.my@gmail.com`；`crawlerName: "MyFnBBot"`；页脚「由 AIHOT 开源框架驱动」（致谢）。关于页大标题「全球餐饮每天都有新消息，／值得看的，只有几条。」另加了 `subjectAfter()` 辅助函数（§5.5）。
 - `features.ts`：`leaderboard: false`、`codexResetMonitor: false`（两个 AI 专用模块关掉）。
-- `brand/`：MyF&B 图标与报头「餐饮日报／周报／月报」（`node scripts/nameplates.ts package` 生成）。没有用 AIHOT 的名字和 Logo。图标（2026-10-01 换）：白色「&」（Noto Sans SC Black，与报头同一字体）放在网站强调色 `#176b75` 的圆角方块上（圆角 116/512，同作者）；`apple-icon.png` 满版不透明，`favicon.ico` 含 16/32/48。原先沿用旧站的琥珀色罗盘圆环，和网站的青绿配色不搭，缩到 16px 还像「⊘ 禁止」标志。网站配色本身是作者的（`apps/web/app/app.css`），不改。
+- `brand/`：MyF&B 图标与报头「餐饮日报／周报／月报」（`node scripts/nameplates.ts package` 生成）。没有用 AIHOT 的名字和 Logo。图标：沿用旧站的罗盘圆环，2026-10-01 从旧站琥珀色 `#b45309` 改成网站强调色 `#176b75`（原先和网站的青绿配色不搭）；用户看过「&」等方案后决定保留罗盘，只换颜色。圆角 116/512（同作者），`apple-icon.png` 满版不透明，`favicon.ico` 含 16/32/48。网站配色本身是作者的（`apps/web/app/app.css`），不改。
 - `changelog.json`：首条「MyF&B 改版上线」，日期是试跑部署日 **2026-10-01**。
 - `pages/terms.md`、`privacy.md`：运营主体 CORE SYSTEM STUDIO（用户的 SSM Enterprise 商号，没写注册号；旧站也没写，要写就补在 terms.md 表格「运营主体」一行），生效日期 2026-10-01，马来西亚法律，PDPA（含 2024 修订 Act A1727），只放标题、摘要、来源名和原文链接；写明内容由 AI 自动生成、未经人工逐条审核，只报道不给建议，收录来源的规则，下架承诺，上线初期不接受赞助和广告（§5.6）。**上线日期变了，要同时改 changelog.json 和这两个文件的日期。**
 

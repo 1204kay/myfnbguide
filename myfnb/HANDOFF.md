@@ -19,14 +19,6 @@
 所有决定由你做（授权见交接文件 §4）。从 §9「下一步」第一项未完成的开始。
 ```
 
-部署当天（§9 第 4 项）用这一段：
-
-```text
-请完整读 myfnb/HANDOFF.md（项目唯一依据），再读 AGENTS.md、docs/deploy.md 和 myfnb/bootstrap.sh。
-今天部署。§9 第 4 项里要我做的都做完了：GitHub 两步验证已开；Gemini key 已在 AI Studio 建好；DeepSeek 已充值（key 按交接文件部署时现建现贴）；腾讯云新加坡服务器已买，公网 IP 是：【填 IP】；Porkbun 已加 new 的 A 记录指向这个 IP。key 我自己粘贴到服务器，不会发给你。
-所有决定由你做。请从 §9 第 4 项「新对话里 Claude 做」开始，一步一步告诉我在服务器网页终端里做什么；我会把终端的输出贴回来给你。
-```
-
 本地准备（新机器才需要）：
 
 ```bash
@@ -93,7 +85,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 三个最大的方向风险与对策（都已写进 §9）：
 
-1. **大马餐饮新闻来源偏薄。** 大马这边的信源多是综合商业新闻，按标题粗算真正跟餐饮相关的每天只有几条；星洲、南洋的餐饮标签页每天不到 1 条。对策：上线一周后数「大马动态」每周入选几条，不够就按 §5.4 的规则补来源（候选已查过 robots.txt）。先量再补，不凭感觉加。
+1. **大马餐饮新闻来源偏薄。** 大马这边的信源多是综合商业新闻，按标题粗算真正跟餐饮相关的每天只有几条；2026-10-01 部署后，华文来源（星洲、南洋、东方）在服务器上全部被挡，大马只剩英文、马来文来源（§5.4）。对策：上线一周后数「大马动态」每周入选几条，不够就按 §5.4 的规则补来源（候选已查过 robots.txt）。先量再补，不凭感觉加。
 2. **读者从哪里来。** 旧站最大的教训是不做分发。对策：上线当天开 WhatsApp 频道，每周发周报链接；在作者的「作品展示」区分享。这是全站唯一的人工工作。
 3. **读者数量量不到。** 我们不做访客统计（隐私），3 个月检查点就没有数字可看。对策：Google Search Console（只在 DNS 加一条记录，不改代码、不追踪访客）看搜索点击，加上 WhatsApp 频道关注数。
 
@@ -140,8 +132,8 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 - `site.ts`：站名 `MyF&B`，行业词 `餐饮`，标语、首页标题、介绍见 §2.1；`locale: "zh-MY"`；`mcpPrefix: "myfnb"`（上线后不改）；联系邮箱 `myfb.guide.my@gmail.com`；`crawlerName: "MyFnBBot"`；页脚「由 AIHOT 开源框架驱动」（致谢）。关于页大标题「全球餐饮每天都有新消息，／值得看的，只有几条。」另加了 `subjectAfter()` 辅助函数（§5.5）。
 - `features.ts`：`leaderboard: false`、`codexResetMonitor: false`（两个 AI 专用模块关掉）。
 - `brand/`：MyF&B 图标与报头「餐饮日报／周报／月报」（`node scripts/nameplates.ts package` 生成）。没有用 AIHOT 的名字和 Logo。
-- `changelog.json`：首条「MyF&B 改版上线」，日期按计划部署日 **2026-10-07**。
-- `pages/terms.md`、`privacy.md`：运营主体 CORE SYSTEM STUDIO（用户的 SSM Enterprise 商号，没写注册号；旧站也没写，要写就补在 terms.md 表格「运营主体」一行），生效日期 2026-10-07，马来西亚法律，PDPA（含 2024 修订 Act A1727），只放标题、摘要、来源名和原文链接；写明内容由 AI 自动生成、未经人工逐条审核，只报道不给建议，收录来源的规则，下架承诺，上线初期不接受赞助和广告（§5.6）。**上线日期变了，要同时改 changelog.json 和这两个文件的日期。**
+- `changelog.json`：首条「MyF&B 改版上线」，日期是试跑部署日 **2026-10-01**。
+- `pages/terms.md`、`privacy.md`：运营主体 CORE SYSTEM STUDIO（用户的 SSM Enterprise 商号，没写注册号；旧站也没写，要写就补在 terms.md 表格「运营主体」一行），生效日期 2026-10-01，马来西亚法律，PDPA（含 2024 修订 Act A1727），只放标题、摘要、来源名和原文链接；写明内容由 AI 自动生成、未经人工逐条审核，只报道不给建议，收录来源的规则，下架承诺，上线初期不接受赞助和广告（§5.6）。**上线日期变了，要同时改 changelog.json 和这两个文件的日期。**
 
 ### 5.2 分类（`taxonomy.ts`、`topics.json`）
 
@@ -179,17 +171,14 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 - 写作：马来文、英文专有名词保留原文并首次括注；机构缩写首次括注中文；金额照原文（RM 加阿拉伯数字，外币不换算）；马来西亚写「最低薪金」、别国写「最低工资」；族群、宗教、王室只写事实和规定；指控和未判决案件写成「某方指控／称」；普通个人不写全名，不写身份证、住址、电话。事件综述和日报、周报导语也有同样的规定。
 - 门槛 `selection.ts` 仍是作者的 T1 60 / T1_5 65 / T2 76，**等标注样本校准后再改**（作者规则：先改挑选标准，最后才动门槛）。
 
-### 5.4 信源（18 个，全部 `site_fulltext` / `syndicate_fulltext` 关闭）
+### 5.4 信源（14 个，全部 `site_fulltext` / `syndicate_fulltext` 关闭）
 
-每个都用框架自己的采集代码试抓通过，`node myfnb/check-sources.mjs` 复查全部合规（2026-09-30）。每天新稿量是当天实测（快照），只有 10 条的 RSS 按跨度外推，偏粗。
+每个都用框架自己的采集代码试抓通过，`node myfnb/check-sources.mjs` 复查全部合规（2026-09-30），2026-10-01 在正式服务器上 14 个都抓取正常。每天新稿量是 9/30 实测（快照），只有 10 条的 RSS 按跨度外推，偏粗。
 
 | 地区 | 信源 | 抓法 | 每天约 |
 |---|---|---|---:|
 | 大马 T1 | 财政部 MOF · 文告（马来文 RSS；英文版更新慢） | RSS | 0.3 |
 | 大马 T1 | 内陆税收局 LHDN · 公告与文告（英文版列表；马来文版日期框架认不出） | 网页列表 | 0.3 |
-| 大马 | 星洲日报 · 餐饮业标签页（日期从文章页补） | 网页列表 | 0.2 |
-| 大马 | 南洋商报 · 餐饮业标签页（同上） | 网页列表 | 0.3 |
-| 大马 | 东方日报 · 财经 | RSS | 16 |
 | 大马 | Malay Mail · Money | RSS | 8 |
 | 大马 | The Malaysian Reserve | RSS | 40 |
 | 大马 | Utusan Malaysia · Ekonomi（马来文） | RSS | 18 |
@@ -200,11 +189,10 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 全球 | Total Food Service（美国） | RSS | 1.2 |
 | 全球 | Daily Coffee News（咖啡业） | RSS | 1.4 |
 | 全球 | QSR Media Asia（亚洲快餐与连锁；日期从文章页补） | 网页列表 | 1 |
-| 全球 | 食品産業新聞社 · 外食（日本） | RSS | 5.4 |
 | 全球 | 식품외식경제（韩国） | RSS | 3.3 |
 | 全球 | 红餐网 · 专栏（中国） | 网页列表 | 12 |
 
-合计每天约 110 条进预筛：大马约 84 条（多是一般商业新闻，大部分会被预筛挡掉），全球约 29 条（全是餐饮专门来源）。七比三看的是精选结果，校准时核对；全球那边偏少的话，按下面的规则补来源（先用复查脚本查候选）。
+合计每天约 92 条进预筛：大马约 68 条（多是一般商业新闻，大部分会被预筛挡掉），全球约 24 条（全是餐饮专门来源）。七比三看的是精选结果，校准时核对；全球那边偏少的话，按下面的规则补来源（先用复查脚本查候选）。
 
 **接信源的规则**（2026-09-30 按「风险最低」定，写进了 `sources.json` 的 `$comment` 和使用条款）：**只接对 AI 没有任何限制的来源。**
 
@@ -240,8 +228,9 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 中国报、诗华日报 | 与星洲、南洋同集团同稿；诗华财经与东方财经同一批通讯社稿 |
 | Bernama | RSS 只有 10 条，各版混在一起，没有日期 |
 | Owner.com 博客、StoreHub 博客 | 厂商内容，几乎不更新或全是推广页 |
+| 星洲日报 · 餐饮业、南洋商报 · 餐饮业、东方日报 · 财经、食品産業新聞社 · 外食（日本） | 在家用网络上合规、抓得到，但 2026-10-01 在正式服务器（腾讯云新加坡）上抓取和读 robots.txt 都返回 403（规则 5、6）。后台已暂停（数据库里保留，可恢复），`sources.json` 已去掉，配置见提交 `fe8e2a7` 的 `industry/sources.json`。换服务器、或想看对方是否解除封锁时，把它们放进候选文件在服务器上跑复查 |
 
-以上是本机（家用网络）的结果。**云服务器 IP 会被一部分来源挡住**：2026-09-30 在 GitHub 的云服务器（微软 Azure 的 IP）上演练部署，The Malaysian Reserve、Total Food Service、星洲、南洋返回 403，东方日报超时，其余 13 个正常。腾讯云新加坡的情况要部署后在后台「信源」页看；被挡的按规则 6 暂停。星洲、南洋若都被挡，大马华文餐饮来源只剩东方日报财经，§2.4 风险 1 会更明显，校准时优先补大马来源。
+上表除最后一行外是本机（家用网络）的结果。**云服务器 IP 会被一部分来源挡住，而且各家云不一样**：2026-09-30 在 GitHub 的云服务器（微软 Azure）上演练时，The Malaysian Reserve、Total Food Service、星洲、南洋返回 403，东方日报超时；2026-10-01 在腾讯云新加坡上，The Malaysian Reserve 和 Total Food Service 正常，星洲、南洋、东方日报、食品産業新聞社返回 403。结果是**大马的华文来源一个都不剩**（大马来源只剩英文和马来文，写成中文照样给华文读者看），§2.4 风险 1 更明显；补来源时优先华文（候选光华日报），候选**必须在服务器上跑复查**：`sudo docker run --rm -v /tmp/cand.json:/cand.json aihot-app node myfnb/check-sources.mjs /cand.json`（本机能读，不代表服务器能读）。
 
 ### 5.5 改了 `industry/` 以外的文件
 
@@ -303,6 +292,18 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 GitHub 上作者的 CI：fork 的 `main` 推到 `85ae703`（19 个信源）、`7ef1159` 和 `6c48eda`（18 个信源，含作者 9/30 的 7 个新提交）后各跑一次，`check` 与 `docker` 两个 job 都通过（https://github.com/1204kay/myfnbguide/actions/runs/36715649502、https://github.com/1204kay/myfnbguide/actions/runs/36734886046）。`docker` job 用我们的 `industry/` 构建镜像、`docker compose up`、跑冒烟检查并核对导入的信源数。
 
+**正式部署**（2026-10-01，腾讯云新加坡 `43.160.228.180`，`main` = `fe8e2a7`，作者 `main` 无新提交）：
+
+| 项 | 结果 |
+|---|---|
+| 一行命令部署 | 一次跑完：DeepSeek key 可用、`deepseek-flash` 在可用列表里；Gemini 接受 1536 维；五个容器起来；服务器上冒烟检查全部通过；自动更新定时器每 5 分钟跑 |
+| 模型设置 | `.env` 里 `LLM_EXTRA_JSON={"thinking":{"type":"disabled"}}`，思考关闭（同作者 DeepSeek 预设的做法，省输出 token） |
+| 防火墙 | Lighthouse 默认只有 22、80、Ping，**没有 443**（也没有 3389）；手动加 443 后 HTTPS 才通 |
+| HTTPS | Caddy 经 80 端口申请到 Let's Encrypt 证书（到 2026-12-29，自动续期）；从外网跑冒烟检查 23 项全部通过；3000 端口外网连不上 |
+| 信源 | 14 个正常，4 个 403 已暂停（§5.4） |
+| 后台预算 | `llm` 每天 3000（开站约 20 分钟已用 442 次，平时估每天 300–400 次）；`embedding` 是免费层、其余服务没配 key，都不动 |
+| 第一次导入 | 每个信源回补 8 条（`initialBackfillLimit`），约 110 条；约 20 分钟后 `llm` 442 次、向量 46 次，之后不再增加。「全部动态」写好 50 条，**精选只有 2 条**（都是财政部燃油价，T1 门槛 60）。T2 门槛 76 对我们偏高：如「ACCCIM 欢迎中小微企业暂缓调涨最低薪金」这种该进日报的大马新闻也没进精选；全部动态里还有万圣节菜单、人事任命等消费者向或低价值内容。按规则先标注、改挑选标准、最后才动门槛（§9 第 7 项），当天不改 |
+
 另逐页抓了 15 个页面：没有残留「AI 日报」「AI 圈」「按主题看 AI」「OpenAI」「公司与模型」「MyHOT」「多赚」等字样；显示的是「餐饮日报」「餐饮圈」「按主题看餐饮」「机构与品牌」「地区与业态」「经营主题」。标语只用在分享图和 PWA 清单里（作者模板注释说在首页左上角，实际代码不在那用），首页看不到是正常的。
 
 Windows 上：类型检查和网站构建通过；作者原版的网页服务器在 Windows 起不来（PR 4 修），关机信号类后端测试在 Windows 上跑不了（Windows 不支持 SIGTERM 处理），与我们的改动无关。
@@ -338,7 +339,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 ---
 
-## 8. 用户账号进度（快照：2026-09-30）
+## 8. 用户账号进度（快照：2026-10-01）
 
 | 项目 | 状态 |
 |---|---|
@@ -346,10 +347,10 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 | GitHub Actions | 用户已在 fork 打开（工作流「Check」，推送到 `main` 或开 PR 时跑作者的全套检查） |
 | GitHub 命令行 | 本机 `gh` 已登录 `1204kay`，可以给作者开 PR |
 | GitHub 两步验证 | 已开（2026-10-01 用户截图确认：Authenticator app）。服务器会自动部署 `main` 上检查通过的提交，所以 GitHub 账号就是服务器的钥匙 |
-| DeepSeek | 已充值，余额 US$2.00 + ¥9.90（约 US$3.4），已建 key。余额提醒是关的，要打开；10/1 部署前充到约 US$10 |
+| DeepSeek | 服务器用的 key `myfnb-server`（2026-10-01 部署时建）。部署时余额 US$2.00 + ¥9.90（约 US$3.4），**还没充到计划的约 US$10**；余额提醒要打开 |
 | 阿里云国际版 | 放弃（不收预付卡、虚拟卡） |
-| Google AI Studio（Gemini 向量 key） | **待办**：用户用 Google 账号在 https://aistudio.google.com/apikey 建 key，不用绑卡 |
-| 腾讯云国际版 | 已注册并绑卡（TNG Visa 可用，Google 登录）。**2026-10-01 已买**：Lighthouse `myfnb`，新加坡，锐驰型 2 核 4GB 60GB，Ubuntu 24.04，**公网 IP 43.160.228.180**，2026-11-01 到期，不自动续费（到期前决定续不续） |
+| Google AI Studio（Gemini 向量 key） | 已建（项目 `myfnb`、key `myfnb-embedding`，没绑卡），已部署，1536 维可用 |
+| 腾讯云国际版 | 已注册并绑卡（TNG Visa 可用，Google 登录）。**2026-10-01 已买**：Lighthouse `myfnb`，新加坡，锐驰型 2 核 4GB 60GB，Ubuntu 24.04，**公网 IP 43.160.228.180**，2026-11-01 到期，不自动续费（到期前决定续不续）。防火墙：22、80、443、Ping（443 是 10/1 手动加的） |
 | Porkbun A 记录 `new` → 43.160.228.180 | 2026-10-01 用户已添加（TTL 600）；其余 12 条记录未动 |
 
 **所有 key 都不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
@@ -363,12 +364,10 @@ key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 ai
 1. ✅（2026-09-30）给作者的 4 个 PR 与多语言讨论已提交（§7.1、§7.3）。之后留意作者回复，按 §7.1 末段处理。
 2. ✅（2026-09-30）**fork 的 `main` 跟着 `claude/myfnb-handoff` 快进**。以后在 `claude/myfnb-handoff` 上做完、四项检查通过后，`git push origin claude/myfnb-handoff:main`；部署后服务器每 5 分钟看一次 `main`，GitHub 上检查通过才自动部署（`myfnb/update.sh`）。
 3. ✅（2026-09-30）**部署脚本 `myfnb/bootstrap.sh`、自动更新 `myfnb/update.sh`** 已写好，并在 GitHub 的全新 Ubuntu 24.04 机器上完整演练（结果见 §6）。向量设置由脚本实测后自动选：Gemini 接受 1536 维就用 1536，只接受默认维度就用默认，都不行就关向量（站照样能跑，只是中英文同一事件合不上）。
-4. **10/1 部署**：
-   - 用户先做（开新对话之前）：~~确认 GitHub 两步验证已开~~（已确认）；在 AI Studio 建 Gemini key（§8 的命名）；DeepSeek 充到约 US$10，找得到余额提醒就打开（DeepSeek key 部署时现建现贴，§8）；买腾讯云国际版 Lighthouse（购买页「基于操作系统镜像」→ Ubuntu Server 24.04 LTS；新加坡；套餐 Razor Speed Type 2 核 4GB 60GB；1 个月；不勾自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
-   - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过（推送后至少等 5 分钟：`raw.githubusercontent.com` 按分支名取文件有约 5 分钟缓存，演练时踩过；急的话把命令里的 `main` 换成提交编号）→ 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key（脚本问 DeepSeek key 时，请用户在 platform.deepseek.com 的 API keys 页新建 `myfnb-server`、复制后直接粘贴；Gemini key 从 aistudio.google.com/apikey 复制）→ 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
-5. **部署后第一周**：后台「信源」页看 18 个信源是否都抓得到（服务器 IP 可能被政府网站挡）；每月跑一次 `docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；（锐驰型流量不限、不另收费，不用设流量告警）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
+4. ✅（2026-10-01）**部署到 https://new.myfnbguide.com**（结果见 §6「正式部署」）。重新部署或换服务器：在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key；新服务器记得在防火墙加 443（§12）。推到 `main` 后 `raw.githubusercontent.com` 有约 5 分钟缓存。
+5. **部署后第一周**：~~后台「信源」页看信源是否都抓得到~~（10/1 已看：14 个正常，4 个 403 已暂停并去掉，§5.4）；之后每次看后台时留意「信源」页有没有新的失败，被挡的按规则 6 暂停；每月在服务器上跑一次 `sudo docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；DeepSeek 充到约 US$10 并打开余额提醒（部署时只有约 US$3.4，§8）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
 6. **量得到读者（§2.4）**：上线当天在 Google Search Console 添加「网域」资源 `myfnbguide.com`，按它给的值在 Porkbun 加一条 TXT 记录验证（涵盖 `new` 子域；不改代码、不追踪访客，看搜索点击；其他 DNS 记录不动）；开 WhatsApp 频道（关注数即读者数）。
-7. **校准（10/9 预算案后的一周）**：Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时数大马动态每周入选几条、全球与大马是否接近七比三；大马不够就按 §5.4 规则补来源（已查过对 AI 没有限制的候选：Kosmo、Sinar Harian、Astro Awani、光华日报；接之前还要读条款、试抓）。
+7. **校准（10/9 预算案后的一周）**：Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时数大马动态每周入选几条、全球与大马是否接近七比三；大马不够就按 §5.4 规则补来源（已查过对 AI 没有限制的候选：Kosmo、Sinar Harian、Astro Awani、光华日报，华文优先；接之前还要读条款、**在服务器上**跑复查和试抓）。起点：第一次导入 50 条里精选只有 2 条（§6「正式部署」）。
 8. **关卡**：每周 ≥ 10 条对餐饮业者有参考价值的新闻，且 holdout 结果用户认可 → 上线（§10 切换）；不过就停（删服务器即停止计费）。
 9. **上线前**：按 §5.6 逐项自查一遍；上线日期变了，同步改 `changelog.json` 与两份条款的生效日期（现在是 2026-10-01）。
 10. **上线后**：每周把周报链接发到 WhatsApp 频道和 FB / IG（这是全站唯一的人工工作，约 5 分钟一周）；在作者的「作品展示」讨论区分享；3 个月检查点看 Search Console 点击数和频道关注数。
@@ -395,7 +394,7 @@ key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 ai
 | 项目 | 每月 | 备注 |
 |---|---|---|
 | 腾讯云 Lighthouse 新加坡 锐驰型 2 核 4GB 60GB | US$8.50 | 2026-10-01 下单页实价（用户截图），1 个月、不自动续费 |
-| DeepSeek | 约 US$7–20 | **估算**：每天约 110 条进预筛，大部分一般商业新闻在预筛一步就挡掉（1 次调用），入选的还要评分两次、写摘要、打标签、归组；估每天 300–400 次、每次约 3000 token。以上线第一周后台「模型与评测」页为准。预付费，余额用完即停 |
+| DeepSeek | 约 US$7–20 | **估算**：每天约 90 条进预筛，大部分一般商业新闻在预筛一步就挡掉（1 次调用），入选的还要评分两次、写摘要、打标签、归组；估每天 300–400 次、每次约 3000 token。以上线第一周后台「模型与评测」页为准。预付费，余额用完即停 |
 | Gemini 向量 | 0 | 免费层，不用绑卡（免费层数据可能被 Google 用于改进产品；我们处理的是公开新闻，可接受） |
 | COS 备份 | 几分钱 | |
 | 流量 | 0 | 锐驰型流量不限、不另收费；读者再多也不加钱，只是高峰时带宽可能变慢 |
@@ -440,7 +439,7 @@ key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 ai
 
 账号与服务：
 
-- 腾讯云 Lighthouse：控制台 Login 打开 OrcaTerm 网页终端，默认用户 `lighthouse`；默认防火墙开 22/80/443/3389。
+- 腾讯云 Lighthouse（国际版，Ubuntu 24.04 镜像，2026-10-01 实测）：实例详情页「登录」打开 OrcaTerm 网页终端，登录用户是 `ubuntu`（`sudo` 不用密码）；默认防火墙只开 22、80 和 Ping，**没有 443**，要在实例详情页「防火墙」→「添加规则」→ HTTPS(443) 手动加；服务器时区是 CST（UTC+8）。
 - DeepSeek：API key 只显示一次；海外卡经 PayPal；最低充值 ¥10；余额为零返回 402。
 - 阿里云 Model Studio：新加坡区 API key 页 `https://modelstudio.console.alibabacloud.com/ap-southeast-1/settings/api-key`；免费额度用完返回 403 `AllocationQuota.FreeTierOnly`。
 

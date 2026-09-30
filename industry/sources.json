@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两部分：马来西亚的政府机构、中英马来文报纸和平台（标签“马来西亚”），全球的餐饮行业媒体（标签写地区）。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。只接对 AI 没有任何限制的来源：robots.txt 不许抓的、robots.txt 点名拒绝任何 AI 爬虫或 Content-Signal 写 ai-input=no / ai-train=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只有通用「不得转载」条款的可以接（本站不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两部分：马来西亚的政府机构、英文与马来文报纸和平台（标签“马来西亚”），全球的餐饮行业媒体（标签写地区）。华文报纸（星洲、南洋、东方）和日本的食品産業新聞社在正式服务器上抓不到，已去掉（myfnb/HANDOFF.md §5.4）。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。只接对 AI 没有任何限制的来源：robots.txt 不许抓的、robots.txt 点名拒绝任何 AI 爬虫或 Content-Signal 写 ai-input=no / ai-train=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只有通用「不得转载」条款的可以接（本站不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
   "sources": [
     {
       "id": "rss-mof-press",
@@ -44,82 +44,6 @@
       "tags": [
         "马来西亚",
         "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "web-sinchew-fnb",
-      "name": "星洲日报 · 餐饮业",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.sinchew.com.my/tag/%E9%A4%90%E9%A5%AE%E4%B8%9A",
-        "itemSelector": "#cat-post-list div.title",
-        "linkSelector": "a",
-        "detail": {
-          "maxFetches": 10
-        },
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "web-enanyang-fnb",
-      "name": "南洋商报 · 餐饮业",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.enanyang.my/tag/%E9%A4%90%E9%A5%AE%E4%B8%9A",
-        "itemSelector": "div.horizontal-post-title",
-        "linkSelector": "a",
-        "detail": {
-          "maxFetches": 10
-        },
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-orientaldaily-business",
-      "name": "东方日报 · 财经",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.orientaldaily.com.my/feeds/rss/business",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "马来西亚",
-        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
@@ -347,28 +271,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "亚洲",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-ssnp-foodservice",
-      "name": "食品産業新聞社 · 外食（日本）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.ssnp.co.jp/foodservice/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "日本",
         "媒体"
       ]
     },

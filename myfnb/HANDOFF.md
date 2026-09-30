@@ -23,7 +23,7 @@
 
 ```text
 请完整读 myfnb/HANDOFF.md（项目唯一依据），再读 AGENTS.md、docs/deploy.md 和 myfnb/bootstrap.sh。
-今天部署。§9 第 4 项里要我做的都做完了：GitHub 两步验证已开；Gemini key 建好；DeepSeek 已充值并打开余额提醒；两个 key 都在我的密码管理器里（不会发给你）；腾讯云新加坡服务器已买，公网 IP 是：【填 IP】；Porkbun 已加 new 的 A 记录指向这个 IP。
+今天部署。§9 第 4 项里要我做的都做完了：GitHub 两步验证已开；Gemini key 已在 AI Studio 建好；DeepSeek 已充值（key 按交接文件部署时现建现贴）；腾讯云新加坡服务器已买，公网 IP 是：【填 IP】；Porkbun 已加 new 的 A 记录指向这个 IP。key 我自己粘贴到服务器，不会发给你。
 所有决定由你做。请从 §9 第 4 项「新对话里 Claude 做」开始，一步一步告诉我在服务器网页终端里做什么；我会把终端的输出贴回来给你。
 ```
 
@@ -345,7 +345,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 | Fork `1204kay/myfnbguide` | 已完成 |
 | GitHub Actions | 用户已在 fork 打开（工作流「Check」，推送到 `main` 或开 PR 时跑作者的全套检查） |
 | GitHub 命令行 | 本机 `gh` 已登录 `1204kay`，可以给作者开 PR |
-| GitHub 两步验证 | **待用户确认已开**（github.com/settings/security）。服务器会自动部署 `main` 上检查通过的提交，所以 GitHub 账号就是服务器的钥匙 |
+| GitHub 两步验证 | 已开（2026-10-01 用户截图确认：Authenticator app）。服务器会自动部署 `main` 上检查通过的提交，所以 GitHub 账号就是服务器的钥匙 |
 | DeepSeek | 已充值，余额 US$2.00 + ¥9.90（约 US$3.4），已建 key。余额提醒是关的，要打开；10/1 部署前充到约 US$10 |
 | 阿里云国际版 | 放弃（不收预付卡、虚拟卡） |
 | Google AI Studio（Gemini 向量 key） | **待办**：用户用 Google 账号在 https://aistudio.google.com/apikey 建 key，不用绑卡 |
@@ -354,7 +354,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 **所有 key 都不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
 
-key 的存放（2026-09-30 告诉用户的做法）：建好就存进 Google 密码管理器（passwords.google.com →「添加」，网站填 `aistudio.google.com` 或 `platform.deepseek.com`，用户名填「Gemini key」或「DeepSeek key」，密码栏粘贴 key）。不放 GitHub、不发聊天、不存截图。部署那天 `bootstrap.sh` 在腾讯云网页终端里逐个提示粘贴，只写进服务器上的 `.env`（权限 600，不进 git）。DeepSeek 的 key 只显示一次，没存下就新建一个、把旧的删掉。
+key 的处理（2026-10-01 与用户定，不另外保存）：Gemini key 在 aistudio.google.com/apikey 随时能看（项目名 `myfnb`、key 名 `myfnb-embedding`）；DeepSeek key 只显示一次，所以**部署时现建现贴**（key 名 `myfnb-server`），旧 key 删掉。`bootstrap.sh` 在腾讯云网页终端里逐个提示粘贴，只写进服务器上的 `.env`（权限 600，不进 git）；以后要看就在服务器上 `sudo grep -E '^(LLM_API_KEY|EMBEDDING_API_KEY|ADMIN_PASSWORD)=' /opt/myfnbguide/.env`。后台密码第一次登录时让 Chrome 保存。不发聊天、不存截图、不放 GitHub。GitHub 两步验证 2026-10-01 用户截图确认已开（Authenticator app）。
 
 ---
 
@@ -364,8 +364,8 @@ key 的存放（2026-09-30 告诉用户的做法）：建好就存进 Google 密
 2. ✅（2026-09-30）**fork 的 `main` 跟着 `claude/myfnb-handoff` 快进**。以后在 `claude/myfnb-handoff` 上做完、四项检查通过后，`git push origin claude/myfnb-handoff:main`；部署后服务器每 5 分钟看一次 `main`，GitHub 上检查通过才自动部署（`myfnb/update.sh`）。
 3. ✅（2026-09-30）**部署脚本 `myfnb/bootstrap.sh`、自动更新 `myfnb/update.sh`** 已写好，并在 GitHub 的全新 Ubuntu 24.04 机器上完整演练（结果见 §6）。向量设置由脚本实测后自动选：Gemini 接受 1536 维就用 1536，只接受默认维度就用默认，都不行就关向量（站照样能跑，只是中英文同一事件合不上）。
 4. **10/1 部署**：
-   - 用户先做（开新对话之前）：确认 GitHub 两步验证已开；建 Gemini key；DeepSeek 充到约 US$10 并打开余额提醒；两个 key 存进密码管理器（§8）；买腾讯云国际版 Lighthouse（新加坡、Ubuntu 24.04 LTS、2 核 4GB、1 个月、关自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
-   - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过（推送后至少等 5 分钟：`raw.githubusercontent.com` 按分支名取文件有约 5 分钟缓存，演练时踩过；急的话把命令里的 `main` 换成提交编号）→ 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key → 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
+   - 用户先做（开新对话之前）：~~确认 GitHub 两步验证已开~~（已确认）；在 AI Studio 建 Gemini key（§8 的命名）；DeepSeek 充到约 US$10，找得到余额提醒就打开（DeepSeek key 部署时现建现贴，§8）；买腾讯云国际版 Lighthouse（新加坡、Ubuntu 24.04 LTS、2 核 4GB、1 个月、关自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
+   - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过（推送后至少等 5 分钟：`raw.githubusercontent.com` 按分支名取文件有约 5 分钟缓存，演练时踩过；急的话把命令里的 `main` 换成提交编号）→ 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key（脚本问 DeepSeek key 时，请用户在 platform.deepseek.com 的 API keys 页新建 `myfnb-server`、复制后直接粘贴；Gemini key 从 aistudio.google.com/apikey 复制）→ 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
 5. **部署后第一周**：后台「信源」页看 18 个信源是否都抓得到（服务器 IP 可能被政府网站挡）；每月跑一次 `docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；腾讯云监控设流量包 80% 告警（**没有自动关机选项**）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
 6. **量得到读者（§2.4）**：上线当天在 Google Search Console 添加「网域」资源 `myfnbguide.com`，按它给的值在 Porkbun 加一条 TXT 记录验证（涵盖 `new` 子域；不改代码、不追踪访客，看搜索点击；其他 DNS 记录不动）；开 WhatsApp 频道（关注数即读者数）。
 7. **校准（10/9 预算案后的一周）**：Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时数大马动态每周入选几条、全球与大马是否接近七比三；大马不够就按 §5.4 规则补来源（已查过对 AI 没有限制的候选：Kosmo、Sinar Harian、Astro Awani、光华日报；接之前还要读条款、试抓）。

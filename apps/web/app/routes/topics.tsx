@@ -30,7 +30,7 @@ export async function loader({ request }: { request: Request }) {
 
 export function meta({ loaderData }: Route.MetaArgs) {
   const description = loaderData
-    ? `按${loaderData.groups.map((g) => g.name).join("、")}聚合的${withSubject("主题页")}，共 ${loaderData.topics.length} 个主题。`
+    ? `${subjectAfter(`按${loaderData.groups.map((g) => g.name).join("、")}聚合的`, "主题页")}，共 ${loaderData.topics.length} 个主题。`
     : withSubject("主题页");
   return pageMeta({ title: "主题", description, path: "/topics", image: "/og/pages/topics.png" });
 }

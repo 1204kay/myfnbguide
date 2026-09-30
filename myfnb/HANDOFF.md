@@ -15,8 +15,16 @@
 给下一个会话的开场白（用户复制发送即可）：
 
 ```text
-请完整读 myfnb/HANDOFF.md，再读 AGENTS.md 和 docs/customize.md。
-所有决定由你做（用户授权见交接文件 §4）。从 §9「下一步」第一项未完成的开始。
+请完整读 myfnb/HANDOFF.md（项目唯一依据），再读 AGENTS.md 和 docs/customize.md。
+所有决定由你做（授权见交接文件 §4）。从 §9「下一步」第一项未完成的开始。
+```
+
+部署当天（§9 第 4 项）用这一段：
+
+```text
+请完整读 myfnb/HANDOFF.md（项目唯一依据），再读 AGENTS.md、docs/deploy.md 和 myfnb/bootstrap.sh。
+今天部署。§9 第 4 项里要我做的都做完了：GitHub 两步验证已开；Gemini key 建好；DeepSeek 已充值并打开余额提醒；两个 key 都在我的密码管理器里（不会发给你）；腾讯云新加坡服务器已买，公网 IP 是：【填 IP】；Porkbun 已加 new 的 A 记录指向这个 IP。
+所有决定由你做。请从 §9 第 4 项「新对话里 Claude 做」开始，一步一步告诉我在服务器网页终端里做什么；我会把终端的输出贴回来给你。
 ```
 
 本地准备（新机器才需要）：
@@ -70,7 +78,26 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 - **设备与用品**：新的好用设备、同行都在用什么（例如大家在用哪种炒炉），是新闻和调查，**不是供应商名录**。我们量不出市场占有率，只收录说得出这件事的内容（调查、评测、店家实例）。
 - **人才**：薪资行情、最低薪金与外劳政策、培训与补助、招人留人的方法，作为内容线，**不做招聘板**。
-- **族群、宗教、王室话题**：只写事实和规定，不带族群框架（写进了评分和写作规则）。
+- **族群、宗教、王室话题**：只写事实和规定，不带族群框架（写进了评分和写作规则）；争议与抵制呼吁直接不收（§5.6）。
+
+### 2.4 方向审核（2026-09-30，上线前最后一次全面审核）
+
+对照旧站失败的四个原因逐条看：
+
+| 旧站的问题 | 新站 | 结论 |
+|---|---|---|
+| 静态参考书，没有回来的理由 | 每天自动更新，08:00 日报 | 解决 |
+| 写错对象 | 读者定为各类、各层级业者；评分按「对马来西亚业者的参考价值」 | 解决，校准时用真实数据再验 |
+| 刻意不做分发 | 计划有，但全在「上线后」 | **风险 2** |
+| 精力花在内部治理 | 全自动；只剩每周发一次周报链接 | 解决 |
+
+三个最大的方向风险与对策（都已写进 §9）：
+
+1. **大马餐饮新闻来源偏薄。** 大马这边的信源多是综合商业新闻，按标题粗算真正跟餐饮相关的每天只有几条；星洲、南洋的餐饮标签页每天不到 1 条。对策：上线一周后数「大马动态」每周入选几条，不够就按 §5.4 的规则补来源（候选已查过 robots.txt）。先量再补，不凭感觉加。
+2. **读者从哪里来。** 旧站最大的教训是不做分发。对策：上线当天开 WhatsApp 频道，每周发周报链接；在作者的「作品展示」区分享。这是全站唯一的人工工作。
+3. **读者数量量不到。** 我们不做访客统计（隐私），3 个月检查点就没有数字可看。对策：Google Search Console（只在 DNS 加一条记录，不改代码、不追踪访客）看搜索点击，加上 WhatsApp 频道关注数。
+
+另外：第一步只写中文，读者实际上是看中文的业者；马来文、英文读者要等第二、三步（§7.3），这是有意的取舍。
 
 ---
 
@@ -237,9 +264,11 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | AI 写错造成诽谤或误导 | 预筛直接挡掉点名个人或小商家的指控、罪案、官司、事故个案；写作规则要求指控写成「某方指控」、普通个人不写全名；使用条款写明内容由 AI 自动生成、未经人工逐条审核、以原文为准；每条都有原文链接 |
 | 马来西亚 3R 话题（族群、宗教、王室） | 争议与抵制呼吁在预筛一步直接挡掉；主管机构的正式规定照收，只写事实 |
 | 给建议害人 | 只报道不建议（§2.2 原则 1）；推荐理由只说为什么值得关注；条款写明不构成专业意见；不做计算器（§3） |
-| 个人资料（PDPA） | 不做访客统计；反馈只保存处理反馈所需的内容，不交给模型（模型相关代码不读反馈）；摘要不写普通个人全名和身份资料；隐私说明按 PDPA 2024 修订写了外泄通报 |
+| 个人资料（PDPA） | 不需要注册、不需要委任资料保护官（§12）；不做访客统计；反馈只保存处理反馈所需的内容，不交给模型（模型相关代码不读反馈）；摘要不写普通个人全名和身份资料；隐私说明按 PDPA 2024 修订写了外泄通报 |
 | 来源方投诉 | 条款承诺一般三个工作日内处理。要求停止收录的，用作者自带的 `node --env-file=.env scripts/delete-sources.ts "<原因>" <来源 id>`（读过代码：先撤下已入选的内容，再删除来源和它的全部文章） |
 | 把内容交给模型服务商 | 只把公开发布、对 AI 没有限制的来源内容交给 DeepSeek 和 Gemini；不交读者资料 |
+| 服务器被入侵 | 只开 22/80/443；网页只绑本机、由 Caddy 转发；数据库和接口不对外；`.env` 权限 600、不进 git；自动安全更新已开（`bootstrap.sh`）；自动部署只认 GitHub 上检查通过的提交，所以 **GitHub 账号必须开两步验证**（§8） |
+| 花费失控 | DeepSeek 预付费，余额用完即停；Gemini 免费层不绑卡，不会产生费用；后台「设置 → 预算」设每日上限；腾讯云流量 80% 告警 |
 
 降不下去、只能知道的风险：
 
@@ -259,7 +288,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | `ed056c4`（信源按条款调整后） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 | `ec682dd`（按最低风险收紧信源、规则、条款后） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 
-GitHub 上作者的 CI（fork 的 `main` 推到 `85ae703` 后）：`check` 与 `docker` 两个 job 都通过（https://github.com/1204kay/myfnbguide/actions/runs/36715649502）。`docker` job 用我们的 `industry/` 构建镜像、`docker compose up`、跑冒烟检查并核对导入了 19 个信源，这是本机没有 Docker 时唯一的镜像验证。
+GitHub 上作者的 CI：fork 的 `main` 推到 `85ae703`（19 个信源）和 `7ef1159`（18 个信源）后各跑一次，`check` 与 `docker` 两个 job 都通过（https://github.com/1204kay/myfnbguide/actions/runs/36715649502、https://github.com/1204kay/myfnbguide/actions/runs/36734886046）。`docker` job 用我们的 `industry/` 构建镜像、`docker compose up`、跑冒烟检查并核对导入的信源数。
 
 另逐页抓了 15 个页面：没有残留「AI 日报」「AI 圈」「按主题看 AI」「OpenAI」「公司与模型」「MyHOT」「多赚」等字样；显示的是「餐饮日报」「餐饮圈」「按主题看餐饮」「机构与品牌」「地区与业态」「经营主题」。标语只用在分享图和 PWA 清单里（作者模板注释说在首页左上角，实际代码不在那用），首页看不到是正常的。
 
@@ -271,7 +300,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 用户要求：「一定要 PR 给作者，我们用他的开源，要做贡献。」按作者 `CONTRIBUTING.md`：一次 PR 只解决一个问题，从最新 `main` 建分支，写明验证结果；大方向先在 Issue 或讨论区说。PR 模板三节：解决什么问题 / 如何验证 / 兼容与使用影响。
 
-### 7.1 已准备的 PR（快照：分支都基于作者 `main` 的 `c38705b`）
+### 7.1 已提交的 PR（2026-09-30，分支都基于作者 `main` 的 `cf8f8d0`，四项检查在这个基础上重跑过：后端 183/183、网站 16/16、冒烟全过）
 
 | # | 分支 | 解决什么 | 验证 |
 |---|---|---|---|
@@ -280,7 +309,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 | 3 | `pr/ci-source-count` | CI 的 docker 检查按 `sources.json` 条数比对信源数 | seed 把 `sources.json` 每一条都写进表（读过 `scripts/seed.ts`）；docker 步骤要在 GitHub 上跑，提 PR 后由作者的 CI 验证 |
 | 4 | `pr/windows-web-server` | `apps/web/server.ts` 用 `pathToFileURL` 加载构建产物，Windows 上网站能起来 | Windows：原版网页测试 9 个失败（`ERR_UNSUPPORTED_ESM_URL_SCHEME`），修复后 16/16；Linux 四项检查全过 |
 
-状态：**已验证，等用户说一声后提交**（对外发布，按用户的全局规则先说一声）。提交后把 PR 链接记在这里。
+已提交（用户 2026-09-30 回复「你决定」）：[#33](https://github.com/KKKKhazix/AIHOT/pull/33)、[#34](https://github.com/KKKKhazix/AIHOT/pull/34)、[#35](https://github.com/KKKKhazix/AIHOT/pull/35)、[#36](https://github.com/KKKKhazix/AIHOT/pull/36)。作者要求修改时，在对应的 `pr/*` 分支上改、先 `git rebase upstream/main` 再推；作者合并后，下次同步上游时我们 fork 里的同样改动会自然对齐。
 
 ### 7.2 发现但还没做成 PR 的上游问题
 
@@ -290,9 +319,9 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 4. 框架不解析 PDF，而不少政府文告只有 PDF（KPDN 全是 PDF，LHDN 的全文在 PDF 里）。
 5. 采集不读 robots.txt（包括 `Content-Signal`）。我们用 `myfnb/check-sources.mjs` 每月人工复查；框架若能在采集时自动跳过不许抓或不许 AI 使用的来源，所有 fork 都受益。可以先在讨论区提，作者认可再把脚本的逻辑做成通用功能提 PR。
 
-### 7.3 多语言（议题，未开）
+### 7.3 多语言（已在作者的「想法交流」区开讨论：[#37](https://github.com/KKKKhazix/AIHOT/discussions/37)）
 
-先去作者仓库的「想法交流」讨论区或 Issue 说明场景：同一站点输出多种语言。改动横跨数据库（文章表存的是中文标题、摘要、推荐理由）、写作步骤和全部界面文案，新贡献者直接丢大 PR 被接受的机会很低。先讨论，按作者意见拆小 PR；第一个小 PR 只把写死在网页里的界面文案搬进 `industry/`（PR 1 是同一方向的第一步）。技术路线二选一：三个站各跑一份（改动小，模型费约三倍，2 核 4GB 跑不动三套），或一个站写三种语言（收集和评分只做一次，但要改核心）。等作者回应和中文版读者数据再定。
+讨论帖说明了场景：同一站点输出多种语言。改动横跨数据库（文章表存的是中文标题、摘要、推荐理由）、写作步骤和全部界面文案，新贡献者直接丢大 PR 被接受的机会很低。先讨论，按作者意见拆小 PR；第一个小 PR 只把写死在网页里的界面文案搬进 `industry/`（PR 1 是同一方向的第一步）。技术路线二选一：三个站各跑一份（改动小，模型费约三倍，2 核 4GB 跑不动三套），或一个站写三种语言（收集和评分只做一次，但要改核心）。等作者回应和中文版读者数据再定。
 
 ---
 
@@ -303,10 +332,11 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 | Fork `1204kay/myfnbguide` | 已完成 |
 | GitHub Actions | 用户已在 fork 打开（工作流「Check」，推送到 `main` 或开 PR 时跑作者的全套检查） |
 | GitHub 命令行 | 本机 `gh` 已登录 `1204kay`，可以给作者开 PR |
-| DeepSeek | 已充值，余额 US$2.00 + ¥9.90（约 US$3.4），已建 key。余额提醒是关的，要打开；10/6 部署前充到约 US$10 |
+| GitHub 两步验证 | **待用户确认已开**（github.com/settings/security）。服务器会自动部署 `main` 上检查通过的提交，所以 GitHub 账号就是服务器的钥匙 |
+| DeepSeek | 已充值，余额 US$2.00 + ¥9.90（约 US$3.4），已建 key。余额提醒是关的，要打开；10/1 部署前充到约 US$10 |
 | 阿里云国际版 | 放弃（不收预付卡、虚拟卡） |
 | Google AI Studio（Gemini 向量 key） | **待办**：用户用 Google 账号在 https://aistudio.google.com/apikey 建 key，不用绑卡 |
-| 腾讯云国际版 | 已注册并绑卡（TNG Visa 可用，Google 登录）；还没买服务器 |
+| 腾讯云国际版 | 已注册并绑卡（TNG Visa 可用，Google 登录）；10/1 买服务器 |
 | Porkbun A 记录 `new` → 服务器 IP | 买服务器后做 |
 
 **所有 key 都不要让用户发给 Claude**，部署时由用户自己粘贴到服务器上。
@@ -317,21 +347,18 @@ key 的存放（2026-09-30 告诉用户的做法）：建好就存进 Google 密
 
 ## 9. 下一步（按顺序）
 
-1. **提交给作者的 PR**（§7.1）：用户点头后逐个提交，正文按作者的 PR 模板写，附验证结果；提交后把链接记进 §7.1。再按 §7.3 开多语言讨论。
-2. ✅（2026-09-30）**fork 的 `main` 已快进到 `claude/myfnb-handoff`**，GitHub CI 两个 job 通过（§6）。以后在 `claude/myfnb-handoff` 上做完、检查通过后，同样快进推到 `main`（`git push origin claude/myfnb-handoff:main`）；部署后服务器跟的就是 `main`，推上去约 5 分钟内会自动更新线上站。
-3. **部署脚本 `myfnb/bootstrap.sh`**（部署日在真服务器上边写边测；本机没有 Docker，现在写了也验证不了）。按作者 `docs/deploy.md` 的做法：装 Docker → clone fork 的 `main` → 用作者的 `scripts/init-env.ts` 生成 `.env`（服务器没有 Node，就在 `node:24` 容器里跑它）→ 交互式读入 DeepSeek key 和 Gemini key（用户自己粘贴）→ 追加 `SITE_URL=https://new.myfnbguide.com`、`SITE_DOMAIN=new.myfnbguide.com`、`PORT=127.0.0.1:3000`、`TRUST_PROXY=true` 和向量配置 → `docker compose --profile https up -d --build` → 装 systemd timer：每 5 分钟 `git fetch`，`main` 有变化就 `git pull` 并重新 `up -d --build`。
-4. **向量配置**：`EMBEDDING_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/`、`EMBEDDING_MODEL=gemini-embedding-001`。向量列是 `real[]`，维度没写死（`database/migrations/0006_embeddings.sql`），用 `EMBEDDING_DIMS=1536`。未确认 Google 的兼容接口是否接受框架会发的 `dimensions`、`encoding_format` 和一次多条输入，部署日在服务器上用用户的 key 试一条：返回向量就用 1536；报参数错误就改 `EMBEDDING_DIMS=0`（默认 3072 维）；还不行就设 `EMBEDDINGS_ENABLED=false`，归组退回字面比对，站照样能跑，只是中英文同一事件合不上。
-
-   ```bash
-   curl -s https://generativelanguage.googleapis.com/v1beta/openai/embeddings -H "Authorization: Bearer $EMBEDDING_API_KEY" -H "Content-Type: application/json" -d '{"model":"gemini-embedding-001","input":["测试一","测试二"],"dimensions":1536,"encoding_format":"float"}' | head -c 300
-   ```
-
-5. **10/6–10/7 部署**：先 `git fetch upstream` 审阅并合并作者最新修复、跑四项检查 → 用户买 Lighthouse（新加坡、Ubuntu LTS、2 核 4GB、1 个月、关自动续费；默认防火墙已开 22/80/443）→ Porkbun 加 `new` A 记录 → 用户在 OrcaTerm 网页终端粘贴 bootstrap 命令。
-6. **部署后**：在服务器上跑 `node myfnb/check-sources.mjs`（机器上没有 Node 就用 `docker compose run --rm --no-deps --entrypoint node setup myfnb/check-sources.mjs`）并在后台「信源」页对 18 个信源各试抓一次（服务器 IP 可能被政府网站挡）；以后**每月跑一次复查**，不合规的来源在后台暂停；后台「设置 → 预算」设每日上限；腾讯云监控设流量包 80% 告警（轻量服务器超额按量计费，**没有自动关机选项**）；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`；第一周看后台「模型与评测」页的实际调用次数和 token 数，校正 §11 的费用估算。
-7. **校准（10 月中下旬）**：收集约一周（10/9 预算案是第一批考题）→ Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时核对精选结果的全球与大马比例是否接近七比三。
+1. ✅（2026-09-30）给作者的 4 个 PR 与多语言讨论已提交（§7.1、§7.3）。之后留意作者回复，按 §7.1 末段处理。
+2. ✅（2026-09-30）**fork 的 `main` 跟着 `claude/myfnb-handoff` 快进**。以后在 `claude/myfnb-handoff` 上做完、四项检查通过后，`git push origin claude/myfnb-handoff:main`；部署后服务器每 5 分钟看一次 `main`，GitHub 上检查通过才自动部署（`myfnb/update.sh`）。
+3. ✅（2026-09-30）**部署脚本 `myfnb/bootstrap.sh`、自动更新 `myfnb/update.sh`** 已写好，并在 GitHub 的全新 Ubuntu 24.04 机器上完整演练（结果见 §6）。向量设置由脚本实测后自动选：Gemini 接受 1536 维就用 1536，只接受默认维度就用默认，都不行就关向量（站照样能跑，只是中英文同一事件合不上）。
+4. **10/1 部署**：
+   - 用户先做（开新对话之前）：确认 GitHub 两步验证已开；建 Gemini key；DeepSeek 充到约 US$10 并打开余额提醒；两个 key 存进密码管理器（§8）；买腾讯云国际版 Lighthouse（新加坡、Ubuntu 24.04 LTS、2 核 4GB、1 个月、关自动续费），记下公网 IP；Porkbun 给 `myfnbguide.com` 加 A 记录：主机 `new` → 服务器 IP（其他记录不动）。
+   - 新对话里 Claude 做：`git fetch upstream`，有新提交就审阅、合并、跑四项检查、推 `main` 并等 GitHub 检查通过 → 请用户在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key → 读用户贴回来的输出，处理 `!!` 开头的提醒 → 打开 https://new.myfnbguide.com 与后台确认 → 后台「设置 → 预算」设每日上限。
+5. **部署后第一周**：后台「信源」页看 18 个信源是否都抓得到（服务器 IP 可能被政府网站挡）；每月跑一次 `docker run --rm aihot-app node myfnb/check-sources.mjs` 复查，不合规的来源在后台暂停；腾讯云监控设流量包 80% 告警（**没有自动关机选项**）；第一周看后台「模型与评测」页的实际调用次数，校正 §11 的费用估算；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）。
+6. **量得到读者（§2.4）**：上线当天在 Google Search Console 添加「网域」资源 `myfnbguide.com`，按它给的值在 Porkbun 加一条 TXT 记录验证（涵盖 `new` 子域；不改代码、不追踪访客，看搜索点击；其他 DNS 记录不动）；开 WhatsApp 频道（关注数即读者数）。
+7. **校准（10/9 预算案后的一周）**：Claude 先标 100–200 条 select / reject / either（含边界难例，分 development / holdout）→ 用户审 → `node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl --split development` → 后台 SelectBench 看错例 → **先改挑选标准，最后才动门槛**（作者没定准确率数字）。同时数大马动态每周入选几条、全球与大马是否接近七比三；大马不够就按 §5.4 规则补来源（已查过对 AI 没有限制的候选：Kosmo、Sinar Harian、Astro Awani、光华日报；接之前还要读条款、试抓）。
 8. **关卡**：每周 ≥ 10 条对餐饮业者有参考价值的新闻，且 holdout 结果用户认可 → 上线（§10 切换）；不过就停（删服务器即停止计费）。
-9. **上线前**：按 §5.6 逐项自查一遍（用户没有可请的专业人士，已按最低风险处理）；上线日期变了，同步改 `changelog.json` 与两份条款的生效日期。
-10. **上线后**：WhatsApp 频道 + FB / IG 每周发周报链接攒读者；在作者的「作品展示」讨论区分享；3 个月检查点。
+9. **上线前**：按 §5.6 逐项自查一遍；上线日期变了，同步改 `changelog.json` 与两份条款的生效日期（现在是 2026-10-01）。
+10. **上线后**：每周把周报链接发到 WhatsApp 频道和 FB / IG（这是全站唯一的人工工作，约 5 分钟一周）；在作者的「作品展示」讨论区分享；3 个月检查点看 Search Console 点击数和频道关注数。
 
 ---
 
@@ -392,6 +419,7 @@ key 的存放（2026-09-30 告诉用户的做法）：建好就存进 Google 密
 
 - 版权法（1987）第 13(2)(a) 条：为报道时事而合理使用，公开使用时须注明作品标题与作者；第 13(2A) 条会看是否商业用途和用了多少。这是只放标题、来源、简短摘要和链接的依据。
 - PDPA 2024 修订（Act A1727）：外泄须在 72 小时内通报专员；可能造成重大伤害时须不无故拖延地通知当事人；新增资料可携权。
+- PDPA 注册：只有《2013 年资料使用者类别令》列出的行业必须注册（通讯、银行金融、保险、医疗、旅游酒店、交通、教育、直销、法律会计等专业服务、房地产、水电、当铺放贷），新闻网站不在其中。资料保护官：2025-06-01 起，处理超过 2 万人的个人资料（或超过 1 万人的敏感资料、或有系统性监控）才必须委任；本站只存少量反馈，不适用。（2026-09-30 查证，来源：Linklaters、DLA Piper 的法律摘要）
 - 全马餐饮场所 136,453 家（DOSM 2023 经济普查，2022 年数据）。
 - 电子发票：2026-09-01 起年营业额 RM300 万以下免开。
 - Budget 2027 于 2026-10-09 提交。

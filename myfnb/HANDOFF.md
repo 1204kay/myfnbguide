@@ -131,7 +131,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 - `site.ts`：站名 `MyF&B`，行业词 `餐饮`，标语、首页标题、介绍见 §2.1；`locale: "zh-MY"`；`mcpPrefix: "myfnb"`（上线后不改）；联系邮箱 `myfb.guide.my@gmail.com`；`crawlerName: "MyFnBBot"`；页脚「由 AIHOT 开源框架驱动」（致谢）。关于页大标题「全球餐饮每天都有新消息，／值得看的，只有几条。」另加了 `subjectAfter()` 辅助函数（§5.5）。
 - `features.ts`：`leaderboard: false`、`codexResetMonitor: false`（两个 AI 专用模块关掉）。
-- `brand/`：MyF&B 图标与报头「餐饮日报／周报／月报」（`node scripts/nameplates.ts package` 生成）。没有用 AIHOT 的名字和 Logo。
+- `brand/`：MyF&B 图标与报头「餐饮日报／周报／月报」（`node scripts/nameplates.ts package` 生成）。没有用 AIHOT 的名字和 Logo。图标（2026-10-01 换）：白色「&」（Noto Sans SC Black，与报头同一字体）放在网站强调色 `#176b75` 的圆角方块上（圆角 116/512，同作者）；`apple-icon.png` 满版不透明，`favicon.ico` 含 16/32/48。原先沿用旧站的琥珀色罗盘圆环，和网站的青绿配色不搭，缩到 16px 还像「⊘ 禁止」标志。网站配色本身是作者的（`apps/web/app/app.css`），不改。
 - `changelog.json`：首条「MyF&B 改版上线」，日期是试跑部署日 **2026-10-01**。
 - `pages/terms.md`、`privacy.md`：运营主体 CORE SYSTEM STUDIO（用户的 SSM Enterprise 商号，没写注册号；旧站也没写，要写就补在 terms.md 表格「运营主体」一行），生效日期 2026-10-01，马来西亚法律，PDPA（含 2024 修订 Act A1727），只放标题、摘要、来源名和原文链接；写明内容由 AI 自动生成、未经人工逐条审核，只报道不给建议，收录来源的规则，下架承诺，上线初期不接受赞助和广告（§5.6）。**上线日期变了，要同时改 changelog.json 和这两个文件的日期。**
 
@@ -303,7 +303,7 @@ GitHub 上作者的 CI：fork 的 `main` 推到 `85ae703`（19 个信源）、`7
 | 自动更新 | 推 `34577e3` 到 `main` → GitHub 检查约 2 分钟通过 → 服务器下一次定时检查（05:54）自动拉取、重建、重启，日志 `已部署 34577e3`。连续推两次时，旧提交的检查会被取消（算没通过），服务器只部署最新那个 |
 | 信源 | 14 个正常，4 个 403 已暂停（§5.4） |
 | 后台预算 | `llm` 每天 3000（开站约 20 分钟已用 442 次，平时估每天 300–400 次）；`embedding` 是免费层、其余服务没配 key，都不动 |
-| 第一次导入 | 每个信源回补 8 条（`initialBackfillLimit`），约 110 条；约 20 分钟后 `llm` 442 次、向量 46 次，之后不再增加。「全部动态」写好 50 条，**精选只有 2 条**（都是财政部燃油价，T1 门槛 60）。T2 门槛 76 对我们偏高：如「ACCCIM 欢迎中小微企业暂缓调涨最低薪金」这种该进日报的大马新闻也没进精选；全部动态里还有万圣节菜单、人事任命等消费者向或低价值内容。按规则先标注、改挑选标准、最后才动门槛（§9 第 7 项），当天不改 |
+| 第一次导入 | 每个信源回补 8 条（`initialBackfillLimit`），约 110 条；约 20 分钟后 `llm` 442 次、向量 46 次，之后不再增加。「全部动态」写好 50 条（全球来源 44 条；大马来源只有 6 条：Malay Mail 3、Utusan 2、Malaysian Reserve 1，约 12%，目标三成；LHDN、Grab、Vulcan Post 0 条），**精选只有 2 条**（都是财政部燃油价，T1 门槛 60）。T2 门槛 76 对我们偏高：如「ACCCIM 欢迎中小微企业暂缓调涨最低薪金」这种该进日报的大马新闻也没进精选；全部动态里还有万圣节菜单、人事任命等消费者向或低价值内容。按规则先标注、改挑选标准、最后才动门槛（§9 第 7 项），当天不改 |
 
 另逐页抓了 15 个页面：没有残留「AI 日报」「AI 圈」「按主题看 AI」「OpenAI」「公司与模型」「MyHOT」「多赚」等字样；显示的是「餐饮日报」「餐饮圈」「按主题看餐饮」「机构与品牌」「地区与业态」「经营主题」。标语只用在分享图和 PWA 清单里（作者模板注释说在首页左上角，实际代码不在那用），首页看不到是正常的。
 

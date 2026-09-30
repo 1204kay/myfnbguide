@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两部分：马来西亚的政府机构、中英马来文报纸和平台（标签“马来西亚”），全球的餐饮行业媒体（标签写地区）。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。robots.txt 不许抓、Content-Signal 写 ai-input=no（不许把内容交给模型），或使用条款明文禁止自动抓取的来源不接。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两部分：马来西亚的政府机构、中英马来文报纸和平台（标签“马来西亚”），全球的餐饮行业媒体（标签写地区）。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。只接对 AI 没有任何限制的来源：robots.txt 不许抓的、robots.txt 点名拒绝任何 AI 爬虫或 Content-Signal 写 ai-input=no / ai-train=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只有通用「不得转载」条款的可以接（本站不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
   "sources": [
     {
       "id": "rss-mof-press",
@@ -108,28 +108,6 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.orientaldaily.com.my/feeds/rss/business",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-fmt-business",
-      "name": "FMT · Business",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.freemalaysiatoday.com/category/business/feed/",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -257,72 +235,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-nrn",
-      "name": "Nation's Restaurant News",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.nrn.com/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "美国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-restaurant-dive",
-      "name": "Restaurant Dive",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.restaurantdive.com/feeds/news/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "美国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-modern-restaurant-management",
-      "name": "Modern Restaurant Management",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://modernrestaurantmanagement.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "美国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-fer",
       "name": "Foodservice Equipment Reports",
       "kind": "rss",
@@ -345,11 +257,11 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-insideretail-asia-fnb",
-      "name": "Inside Retail Asia · Food & Beverage",
+      "id": "rss-fsr",
+      "name": "FSR Magazine",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://insideretail.asia/category/food-beverage/feed/",
+        "feedUrl": "https://www.fsrmagazine.com/feed/",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -359,12 +271,106 @@
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-totalfood",
+      "name": "Total Food Service",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.totalfood.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-daily-coffee-news",
+      "name": "Daily Coffee News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://dailycoffeenews.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "全球",
+        "媒体"
+      ]
+    },
+    {
+      "id": "web-qsrmedia-asia",
+      "name": "QSR Media Asia",
+      "kind": "web_list",
+      "config": {
+        "url": "https://qsrmedia.asia/news",
+        "itemSelector": "div.item",
+        "linkSelector": "h2.item__title a",
+        "titleSelector": "h2.item__title",
+        "detail": {
+          "maxFetches": 12
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
       "tags": [
         "亚洲",
         "媒体"
-      ],
+      ]
+    },
+    {
+      "id": "rss-ssnp-foodservice",
+      "name": "食品産業新聞社 · 外食（日本）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ssnp.co.jp/foodservice/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
       "site_fulltext": false,
-      "syndicate_fulltext": false
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "媒体"
+      ]
     },
     {
       "id": "rss-foodbank-kr",
@@ -412,28 +418,6 @@
       "interval_minutes": 60,
       "tags": [
         "中国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-ichef-blog",
-      "name": "iCHEF 餐厅帮",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://blog.ichefpos.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "台湾",
         "媒体"
       ],
       "site_fulltext": false,

@@ -10,19 +10,20 @@
 
 | 能不能接 | 个数 |
 |---|---:|
-| 可接 | 250 |
-| 连不上（从服务器复测） | 47 |
+| 可接 | 235 |
+| 连不上 | 47 |
 | 挡抓取 | 30 |
 | 拒绝 AI 阅读 | 25 |
-| 接入中 | 14 |
-| 条款不许 | 6 |
-| robots 不许 | 6 |
-| 无网站或只在社交平台（消息见报道） | 5 |
+| 接入中 | 18 |
+| 条款不许 | 9 |
+| 停用 | 7 |
+| robots 不许 | 7 |
+| 无网站或只在社交平台 | 5 |
 | 技术难 | 4 |
 | 服务器挡 | 3 |
 | 看接入方式 | 2 |
 
-能接（可接 + 接入中）**264** 个，其中有 RSS 的 112 个。
+能接（可接 + 接入中）**253** 个，其中有 RSS 的 101 个。
 
 | 值不值得接 | 个数 |
 |---|---:|
@@ -94,7 +95,8 @@
 
 | 写法 | 意思 | 对应规则 |
 |---|---|---|
-| 接入中 | 现在服务器上的 14 个信源 | — |
+| 接入中 | 第一批 20 个信源（2026-10-01 定，见 `plan-2026-10-01.md` 与 `HANDOFF.md` §5.4） | — |
+| 停用 | 原来接入、2026-10-01 改为全球定位后停用的马来西亚来源 | — |
 | 可接 | 本机查过：robots.txt 读得到，不拒绝 AI 阅读。**条款和服务器两关接入前逐个再查** | 1、2、5 |
 | 可接·只拒训练 | 同上，但点名拒绝了 AI 训练爬虫；按精确解读可接 | 2 |
 | ·首页挡 | 首页对抓取返回 403，robots.txt 读得到；要看 RSS 或栏目页能不能读 | 5 |
@@ -115,7 +117,7 @@
 | 空白 | 个数 | 什么时候、怎么填 |
 |---|---:|---|
 | 值不值得接：待抽样 | 300 | 方案第一步。有 RSS 的用订阅；网页列表的抓栏目页标题。先抽「能接」的 |
-| 连不上（从服务器复测） | 47 | 方案第一步。用户在服务器上跑一条命令（清单在 `candidates-reach-2026-10-01.txt`，第一步前更新），十分钟 |
+| 连不上（从服务器复测） | 0 | 方案第一步。用户在服务器上跑一条命令（清单在 `candidates-reach-2026-10-01.txt`，第一步前更新），十分钟 |
 | 条款 | — | 只读「能接而且值得接」的来源的条款，接入前读。不值得接的不花时间读 |
 | 首页挡 | 38 | 抽样时一起看 RSS 或栏目页能不能读 |
 
@@ -136,7 +138,7 @@
 | 3 平台与服务商 | 7shifts（排班；Content-Signal 写明允许 AI 阅读） | 7shifts.com | 网页列表（要配） | 可接 | 待抽样 |
 | 3 平台与服务商 | Foodics（中东收银） | foodics.com | RSS | 可接 | 低：近 7 天订阅没有新内容 |
 | 3 平台与服务商 | foodpanda | foodpanda.my/newsroom | — | 连不上（从服务器复测） | 待抽样 |
-| 3 平台与服务商 | Grab | grab.com/my/press | RSS | 接入中 | 低：多为乘车与公益新闻 |
+| 3 平台与服务商 | Grab | grab.com/my/press | — | 停用（2026-10-01 改为全球定位） | 低：多为乘车与公益新闻 |
 | 3 平台与服务商 | iCHEF 餐厅帮 | ichefpos.com | — | 拒绝 AI 阅读 | 待抽样 |
 | 3 平台与服务商 | Owner.com、StoreHub 等厂商博客 | — | 网页列表（要配） | 可接 | 低：多为推广 |
 | 3 平台与服务商 | Restaurant365 | restaurant365.com | 网页列表（要配） | 可接 | 待抽样 |
@@ -147,11 +149,11 @@
 | 7 研究与数据 | Circana | circana.com | RSS | 可接 | 低：零售与包装食品为主 |
 | 7 研究与数据 | Datassential | datassential.com | RSS | 可接 | 低：近 7 天订阅没有新内容 |
 | 7 研究与数据 | Euromonitor | euromonitor.com | 网页列表（要配） | 可接 | 待抽样 |
-| 7 研究与数据 | Lumina Intelligence（英国） | lumina-intelligence.com | RSS | 可接 | 中：英国餐饮数据，每周约 1 条 |
+| 7 研究与数据 | Lumina Intelligence（英国） | lumina-intelligence.com | RSS | 接入中 | 中：英国餐饮数据，每周约 1 条 |
 | 7 研究与数据 | Mintel | mintel.com | RSS | 可接 | 低：近 7 天订阅没有新内容 |
 | 7 研究与数据 | Technomic | technomic.com | 网页列表（要配） | 可接 | 待抽样 |
 | 9 餐饮媒体 | Asia Food Journal | asiafoodjournal.com | — | 连不上（从服务器复测） | 待抽样 |
-| 9 餐饮媒体 | Fast Casual | fastcasual.com | RSS | 可接·只拒训练 | 中高：10 条里必看 1–2、可看 4 |
+| 9 餐饮媒体 | Fast Casual | fastcasual.com | RSS | 条款不许（只许个人使用） | 中高：10 条里必看 1–2、可看 4 |
 | 9 餐饮媒体 | Food & Beverage Asia | foodandbeverageasia.com | — | 连不上（从服务器复测） | 待抽样 |
 | 9 餐饮媒体 | FoodBev Media | foodbev.com | RSS | 可接 | 不相关：包装食品与饮料厂商 |
 | 9 餐饮媒体 | Foodservice Director | foodservicedirector.com | RSS | 可接·只拒训练 | 低：学校与机构团餐，食谱多 |
@@ -161,24 +163,24 @@
 | 9 餐饮媒体 | Inside Retail Asia | insideretail.asia | — | 拒绝 AI 阅读 | 待抽样 |
 | 9 餐饮媒体 | just-food | just-food.com | RSS | 可接·只拒训练 | 低：包装食品厂商为主，偶有可看 |
 | 9 餐饮媒体 | Modern Restaurant Management | modernrestaurantmanagement.com | RSS | 拒绝 AI 阅读 | 待抽样 |
-| 9 餐饮媒体 | Nation's Restaurant News | nrn.com | RSS | 可接·只拒训练 | 中高：10 条里必看 1、可看 5 |
+| 9 餐饮媒体 | Nation's Restaurant News | nrn.com | RSS | 条款不许（只许浏览，不许其他任何使用） | 中高：10 条里必看 1、可看 5 |
 | 9 餐饮媒体 | Nosh | nosh.com | RSS | 可接·首页挡 | 不相关：包装食品创业 |
 | 9 餐饮媒体 | Pizza Marketplace | pizzamarketplace.com | RSS | 可接·只拒训练 | 低：多为促销与公益 |
 | 9 餐饮媒体 | QSR Magazine | qsrmagazine.com | RSS | 可接·只拒训练·首页挡 | 低：10 条里必看 0、可看 2，其余是人事、颁奖、单店开张；要按栏目过滤 |
-| 9 餐饮媒体 | QSR Media（澳洲、亚洲、英国） | qsrmedia.com / qsrmedia.asia | RSS | 接入中（亚洲版）；.com 可接 | 中：营销稿多，夹着连锁动态 |
+| 9 餐饮媒体 | QSR Media（澳洲、亚洲、英国） | qsrmedia.com / qsrmedia.asia | RSS 与网页列表 | 接入中（亚洲版与澳洲版） | 中：10 条里可看 4，人事与开张多 |
 | 9 餐饮媒体 | Restaurant Business | restaurantbusinessonline.com | — | 条款不许 | 待抽样 |
-| 9 餐饮媒体 | Restaurant Dive | restaurantdive.com | RSS | 可接·只拒训练 | 中高：10 条里必看 1、可看 4，人事较多 |
+| 9 餐饮媒体 | Restaurant Dive | restaurantdive.com | RSS | 条款不许（禁止用机器人与数据挖掘收集） | 中高：10 条里必看 1、可看 4，人事较多 |
 | 9 餐饮媒体 | Restaurant Hospitality | restaurant-hospitality.com | — | 连不上（从服务器复测） | 待抽样 |
 | 9 餐饮媒体 | Skift Table | skift.com | RSS | 可接 | 不相关：旅游业 |
 | 9 餐饮媒体 | The Food Institute | foodinstitute.com | — | 拒绝 AI 阅读 | 待抽样 |
 | 9 餐饮媒体 | Total Food Service | totalfood.com | RSS | 接入中 | 中高：多为经营文章 |
-| 9 餐饮媒体 | Verdict Foodservice（GlobalData） | verdictfoodservice.com | RSS | 可接·只拒训练 | 中：10 条里可看 6，每天不到 1 条 |
+| 9 餐饮媒体 | Verdict Foodservice（GlobalData） | verdictfoodservice.com | RSS | 接入中 | 中：10 条里可看 6，每天不到 1 条 |
 | 10 品类媒体 | 1851 Franchise | 1851franchise.com | 网页列表（要配） | 可接 | 待抽样 |
 | 10 品类媒体 | AgFunder News | agfundernews.com | RSS | 可接 | 不相关：食品科技投资 |
 | 10 品类媒体 | Bakery and Snacks | bakeryandsnacks.com | 网页列表（要配） | 可接·只拒训练 | 待抽样 |
 | 10 品类媒体 | Baking Business | bakingbusiness.com | 网页列表（要配） | 可接·首页挡 | 待抽样 |
 | 10 品类媒体 | Bar & Restaurant | barandrestaurant.com | RSS | 可接·首页挡 | 低：近 7 天订阅没有新内容 |
-| 10 品类媒体 | Barista Magazine | baristamagazine.com | RSS | 可接 | 中：咖啡馆经营与趋势，每天不到 1 条 |
+| 10 品类媒体 | Barista Magazine | baristamagazine.com | RSS | 接入中 | 中：咖啡馆经营与趋势，每天不到 1 条 |
 | 10 品类媒体 | Beverage Daily | beveragedaily.com | 网页列表（要配） | 可接·只拒训练 | 待抽样 |
 | 10 品类媒体 | BevNET | bevnet.com | RSS | 可接·只拒训练·首页挡 | 不相关：饮料品牌 |
 | 10 品类媒体 | British Baker | bakeryinfo.co.uk | 网页列表（要配） | 可接 | 待抽样 |
@@ -190,13 +192,13 @@
 | 10 品类媒体 | Foodservice Equipment Journal（英国） | foodserviceequipmentjournal.com | 网页列表（要配） | 可接·首页挡 | 待抽样 |
 | 10 品类媒体 | Foodservice Equipment Reports | fermag.com | RSS | 接入中 | 中：人事与颁奖多，去掉后可用 |
 | 10 品类媒体 | Franchise Times | franchisetimes.com | — | 拒绝 AI 阅读 | 待抽样 |
-| 10 品类媒体 | Global Coffee Report | gcrmag.com | RSS | 可接 | 中：10 条里可看 6，咖啡连锁的国际扩张与数据 |
+| 10 品类媒体 | Global Coffee Report | gcrmag.com | RSS | 接入中 | 中：10 条里可看 6，咖啡连锁的国际扩张与数据 |
 | 10 品类媒体 | Green Queen | greenqueen.com.hk | RSS | 可接 | 不相关：替代蛋白与包装食品 |
 | 10 品类媒体 | Hotel F&B | hotelfandb.com | RSS | 可接 | 不能用：网站已被赌博广告占据 |
 | 10 品类媒体 | Just Drinks | just-drinks.com | RSS | 可接·只拒训练 | 不相关：饮料与酒类厂商 |
 | 10 品类媒体 | Perfect Daily Grind | perfectdailygrind.com | — | 连不上（从服务器复测） | 待抽样 |
 | 10 品类媒体 | Pizza Today | pizzatoday.com | — | 挡抓取 | 待抽样 |
-| 10 品类媒体 | PMQ Pizza Magazine | pmq.com | RSS | 可接 | 中高：10 条里必看 2–3（留人做法、经营故事）、可看 5 |
+| 10 品类媒体 | PMQ Pizza Magazine | pmq.com | RSS | 接入中 | 中高：10 条里必看 2–3（留人做法、经营故事）、可看 5 |
 | 10 品类媒体 | Sprudge | sprudge.com | 网页列表（要配） | 可接 | 待抽样 |
 | 10 品类媒体 | Tea & Coffee Trade Journal | teaandcoffee.net | 网页列表（要配） | 可接 | 低：RSS 为空 |
 | 10 品类媒体 | The Spirits Business | thespiritsbusiness.com | — | 连不上（从服务器复测） | 待抽样 |
@@ -318,7 +320,7 @@
 | 7 研究与数据 | 窄门餐眼（门店数数据） | zhaimen.com | — | 连不上（从服务器复测） | 待抽样 |
 | 8 商业地产 | 赢商网（餐饮开关店、品牌） | winshang.com | 网页列表（要配） | 可接 | 待抽样 |
 | 9 餐饮媒体 | 餐宝典 | canbaodian.com | — | 连不上（从服务器复测） | 待抽样 |
-| 9 餐饮媒体 | 餐饮界 | canyinj.com | 网页列表（要配） | 可接 | 待抽样 |
+| 9 餐饮媒体 | 餐饮界 | canyinj.com | 网页列表 | 接入中 | 待抽样 |
 | 9 餐饮媒体 | 餐饮老板内参 | kuaidiantou.com | — | 连不上（从服务器复测） | 待抽样 |
 | 9 餐饮媒体 | 红餐网（专栏、资讯、产业研究） | canyin88.com | 网页列表 | 接入中 | 高：用户必看 5 条里 2 条来自这里；资讯页 30 条里约 7 条必看、12 条可看 |
 | 9 餐饮媒体 | 咖门 | kamen.com.cn | — | 连不上（从服务器复测） | 待抽样 |
@@ -369,7 +371,7 @@
 | 9 餐饮媒体 | 飲食店ドットコム ジャーナル | inshokuten.com | — | 连不上（从服务器复测） | 待抽样 |
 | 9 餐饮媒体 | 月刊食堂（柴田書店） | shibatashoten.co.jp | 网页列表（要配） | 可接 | 待抽样 |
 | 9 餐饮媒体 | HOTERES（週刊ホテルレストラン） | hoteresonline.com | — | 连不上（从服务器复测） | 待抽样 |
-| 9 餐饮媒体 | フードリンクニュース | foodrink.co.jp | RSS | 可接 | 高：10 条里可看 9，日本餐饮企业动态，写给业者 |
+| 9 餐饮媒体 | フードリンクニュース | foodrink.co.jp | RSS | 接入中 | 高：10 条里可看 9，日本餐饮企业动态，写给业者 |
 | 11 综合商业媒体 | 東洋経済オンライン | toyokeizai.net | 网页列表（要配） | 可接 | 待抽样 |
 | 11 综合商业媒体 | ITmedia | itmedia.co.jp | RSS | 可接 | 待抽样 |
 | 11 综合商业媒体 | ダイヤモンド・オンライン | diamond.jp | RSS | 可接 | 待抽样 |
@@ -397,10 +399,10 @@
 | 5 协会与商会 | ACCCIM（中华总商会）、MEF（雇主联合会）、FMM（厂商联合会）、SAMENTA、MRCA（零售连锁协会）、MFA（加盟协会） | — | 网页列表（要配） | 可接 | 待抽样 |
 | 5 协会与商会 | PRESMA（穆斯林餐馆业主协会） | presma.org.my | 网页列表（要配） | 可接 | 低：几乎不更新 |
 | 5 协会与商会 | PRIMAS（印裔餐馆业主协会）、PPRB、雪隆咖啡酒餐商公会 | — | — | 无网站或只在社交平台（消息见报道） | 待抽样 |
-| 6 政府与监管 | 财政部 MOF | mof.gov.my | RSS | 接入中 | 低：多为每周例行油价公告 |
+| 6 政府与监管 | 财政部 MOF | mof.gov.my | — | 停用（2026-10-01 改为全球定位） | 低：多为每周例行油价公告 |
 | 6 政府与监管 | 国内贸易部 KPDN | kpdn.gov.my | — | 技术难 | 待抽样 |
 | 6 政府与监管 | 吉隆坡市政局 DBKL | dbkl.gov.my | — | 拒绝 AI 阅读 | 待抽样 |
-| 6 政府与监管 | 内陆税收局 LHDN | hasil.gov.my | 网页列表 | 接入中 | 低：多为税务行政通告 |
+| 6 政府与监管 | 内陆税收局 LHDN | hasil.gov.my | — | 停用（2026-10-01 改为全球定位） | 低：多为税务行政通告 |
 | 6 政府与监管 | 清真局 JAKIM | halal.gov.my | — | 技术难 | 待抽样 |
 | 6 政府与监管 | 人力部 MOHR | mohr.gov.my | — | 技术难 | 待抽样 |
 | 6 政府与监管 | 人力部劳工局 JTKSM | jtksm.mohr.gov.my | RSS | 可接 | 低：近 7 天订阅没有新内容 |
@@ -414,16 +416,16 @@
 | 11 综合商业媒体 | Business Today | businesstoday.com.my | — | 服务器挡 | 待抽样 |
 | 11 综合商业媒体 | FMT | freemalaysiatoday.com | RSS | 可接·只拒训练 | 待抽样 |
 | 11 综合商业媒体 | Kosmo | kosmo.com.my | 网页列表（要配） | 可接 | 低：对经营者用处小 |
-| 11 综合商业媒体 | Malay Mail 财经 | malaymail.com | RSS | 接入中 | 低：50 条里约 2 条相关 |
+| 11 综合商业媒体 | Malay Mail 财经 | malaymail.com | — | 停用（2026-10-01 改为全球定位） | 低：50 条里约 2 条相关 |
 | 11 综合商业媒体 | Marketing-Interactive（东南亚营销） | marketing-interactive.com | 网页列表（要配） | 可接 | 待抽样 |
 | 11 综合商业媒体 | NST、Harian Metro | — | — | 拒绝 AI 阅读 | 待抽样 |
 | 11 综合商业媒体 | SoyaCincau | soyacincau.com | — | 连不上（从服务器复测） | 待抽样 |
 | 11 综合商业媒体 | The Edge Malaysia | theedgemalaysia.com | 网页列表（要配） | 可接·只拒训练 | 待抽样 |
-| 11 综合商业媒体 | The Malaysian Reserve | themalaysianreserve.com | RSS | 接入中 | 低：10 条里约 2 条相关 |
+| 11 综合商业媒体 | The Malaysian Reserve | themalaysianreserve.com | — | 停用（2026-10-01 改为全球定位） | 低：10 条里约 2 条相关 |
 | 11 综合商业媒体 | The Star | thestar.com.my | — | 条款不许 | 待抽样 |
 | 11 综合商业媒体 | The Sun | thesun.my | RSS | 可接·只拒训练 | 待抽样 |
-| 11 综合商业媒体 | Utusan 经济 | utusan.com.my | RSS | 接入中 | 低：10 条里约 2 条相关 |
-| 11 综合商业媒体 | Vulcan Post | vulcanpost.com | RSS | 接入中 | 低：10 条里 0 条相关 |
+| 11 综合商业媒体 | Utusan 经济 | utusan.com.my | — | 停用（2026-10-01 改为全球定位） | 低：10 条里约 2 条相关 |
+| 11 综合商业媒体 | Vulcan Post | vulcanpost.com | — | 停用（2026-10-01 改为全球定位） | 低：10 条里 0 条相关 |
 
 ## 东南亚 · 新加坡
 
@@ -509,7 +511,7 @@
 | 6 政府与监管 | 沙特中小企业局 Monsha'at | monshaat.gov.sa | — | 连不上（从服务器复测） | 待抽样 |
 | 9 餐饮媒体 | Caterer Middle East | caterermiddleeast.com | 网页列表（要配） | 可接·首页挡 | 待抽样 |
 | 9 餐饮媒体 | Food Business MEA | foodbusinessmea.com | RSS | 可接 | 待抽样 |
-| 9 餐饮媒体 | Hospitality News（中东） | hospitalitynewsmag.com | RSS | 可接·只拒训练 | 中：中东餐饮业的数据与访谈 |
+| 9 餐饮媒体 | Hospitality News（中东） | hospitalitynewsmag.com | RSS | 接入中 | 中：中东餐饮业的数据与访谈 |
 | 9 餐饮媒体 | Hotelier Middle East | hoteliermiddleeast.com | 网页列表（要配） | 可接·首页挡 | 待抽样 |
 | 11 综合商业媒体 | Arab Finance（埃及） | arabfinance.com | 网页列表（要配） | 可接 | 待抽样 |
 | 11 综合商业媒体 | Arab News 商业版 | arabnews.com | RSS | 可接 | 待抽样 |
@@ -554,7 +556,7 @@
 | 9 餐饮媒体 | Hospitality & Catering News（英国） | hospitalityandcateringnews.com | RSS | 可接 | 低：10 条里可看 1，多为酒店与开张 |
 | 9 餐饮媒体 | Italia a Tavola（意大利） | italiaatavola.net | RSS | 可接 | 中：10 条里必看 1、可看 4，意大利本地为主 |
 | 9 餐饮媒体 | L'Hôtellerie Restauration（法国） | lhotellerie-restauration.fr | — | 连不上（从服务器复测） | 待抽样 |
-| 9 餐饮媒体 | MCA Insight（英国） | mca-insight.com | RSS | 可接 | 中：10 条里可看 5，英国连锁动态与数据 |
+| 9 餐饮媒体 | MCA Insight（英国） | mca-insight.com | RSS | robots 不许（RSS 对所有爬虫关闭） | 中：10 条里可看 5，英国连锁动态与数据 |
 | 9 餐饮媒体 | Misset Horeca（荷兰） | missethoreca.nl | RSS | 拒绝 AI 阅读 | 待抽样 |
 | 9 餐饮媒体 | Morning Advertiser（英国酒吧业） | morningadvertiser.co.uk | 网页列表（要配） | 可接·只拒训练 | 待抽样 |
 | 9 餐饮媒体 | Néo Restauration（法国） | neorestauration.com | — | 挡抓取 | 待抽样 |
@@ -563,7 +565,7 @@
 | 9 餐饮媒体 | Restauración News（西班牙） | restauracionnews.com | — | 挡抓取 | 待抽样 |
 | 9 餐饮媒体 | Restaurant Online（英国） | restaurantonline.co.uk | 网页列表（要配） | 可接·只拒训练 | 待抽样 |
 | 9 餐饮媒体 | Restauratören（瑞典） | restauratoren.se | RSS | 可接 | 低：近 7 天订阅没有新内容 |
-| 9 餐饮媒体 | Ristorazione Italiana Magazine（意大利） | ristorazioneitalianamagazine.it | RSS | 可接 | 高：10 条里必看 3–4（定价、食材成本做法），每天不到 1 条 |
+| 9 餐饮媒体 | Ristorazione Italiana Magazine（意大利） | ristorazioneitalianamagazine.it | RSS | 接入中 | 高：10 条里必看 3–4（定价、食材成本做法），每天不到 1 条 |
 | 9 餐饮媒体 | Snacking.fr（法国） | snacking.fr | 网页列表（要配） | 可接 | 待抽样 |
 | 9 餐饮媒体 | The Caterer（英国） | thecaterer.com | — | 条款不许 | 待抽样 |
 | 9 餐饮媒体 | Zepros（法国） | zepros.fr | RSS | 可接 | 低：近 7 天订阅没有新内容 |
@@ -580,7 +582,7 @@
 
 | 类型 | 名称 | 网址 | 怎么接 | 能不能接 | 值不值得接 |
 |---|---|---|---|---|---|
-| 5 协会与商会 | 加拿大餐馆协会 Restaurants Canada | restaurantscanada.org | RSS | 可接 | 中：加拿大餐饮业数据与政策，每周约 1 条 |
+| 5 协会与商会 | 加拿大餐馆协会 Restaurants Canada | restaurantscanada.org | RSS | 接入中 | 中：加拿大餐饮业数据与政策，每周约 1 条 |
 | 5 协会与商会 | Abrasel（巴西酒吧与餐厅协会） | abrasel.com.br | 网页列表（要配） | 可接 | 待抽样 |
 | 5 协会与商会 | ACHIGA（智利餐饮协会） | achiga.cl | — | 连不上（从服务器复测） | 待抽样 |
 | 5 协会与商会 | ACODRES（哥伦比亚餐饮协会） | acodres.com.co | — | 挡抓取 | 待抽样 |
@@ -603,5 +605,5 @@
 | 5 协会与商会 | Restaurant & Catering Australia | rca.asn.au | 网页列表（要配） | 可接 | 待抽样 |
 | 5 协会与商会 | Restaurant Association of New Zealand | restaurantnz.co.nz | — | 挡抓取 | 待抽样 |
 | 9 餐饮媒体 | Hospitality Business（新西兰） | hospitalitybiz.co.nz | — | 连不上（从服务器复测） | 待抽样 |
-| 9 餐饮媒体 | Hospitality Magazine（澳洲） | hospitalitymagazine.com.au | RSS | 可接 | 中：8 条里必看 1、可看 1，开张与颁奖多 |
+| 9 餐饮媒体 | Hospitality Magazine（澳洲） | hospitalitymagazine.com.au | RSS | 接入中 | 中：8 条里必看 1、可看 1，开张与颁奖多 |
 | 9 餐饮媒体 | The Shout（澳洲酒水） | theshout.com.au | RSS | 可接 | 不相关：酒类批发 |

@@ -1,0 +1,463 @@
+id	名称	网址	批次	结果	原因
+rss-ahresp	AHRESP	https://ahresp.com/feed/	2026-10-01·第一批	接入	
+rss-arq-quebec	Association Restauration Québec	https://restauration.org/feed/	2026-10-01·第一批	接入	
+rss-bargiornale	Bargiornale	https://www.bargiornale.it/feed/	2026-10-01·第一批	接入	
+rss-bevinfogroup	Beverage Information Group（Cheers、Beverage Dynamics）	https://bevinfogroup.com/feed/	2026-10-01·第一批	接入	只收 Cheers 栏目
+rss-canirac	CANIRAC	https://portal.canirac.org.mx/feed/	2026-10-01·第一批	接入	
+rss-corestaurant	Colorado Restaurant Association	https://corestaurant.org/feed/	2026-10-01·第一批	接入	
+rss-fehgra	FEHGRA	https://fehgra.org.ar/feed	2026-10-01·第一批	接入	
+rss-fipe	FIPE	https://www.fipe.it/feed/	2026-10-01·第一批	接入	
+rss-food-business-mea	Food Business MEA	https://www.foodbusinessmea.com/feed/	2026-10-01·第一批	接入	只收 Food service 栏
+rss-foodretail-es	Foodretail	https://www.foodretail.es/rss/	2026-10-01·第一批	接入	只收 CADENAS（连锁）栏
+rss-fresh-cup	Fresh Cup	https://freshcup.com/feed/	2026-10-01·第一批	接入	
+rss-frla	Florida Restaurant & Lodging Association	https://frla.org/feed/	2026-10-01·第一批	接入	
+rss-gast-at	Gast	https://www.gast.at/feed/	2026-10-01·第一批	接入	只收餐饮、综合与批发栏
+rss-hawaiirestaurant	Hawaii Restaurant Association	https://hawaiirestaurant.org/feed/	2026-10-01·第一批	接入	
+rss-horecanews-it	Horecanews	https://horecanews.it/rss/latest-posts	2026-10-01·第一批	接入	去掉活动、颁奖、酒店旅游栏
+rss-hospitality-catering-news	Hospitality & Catering News	https://www.hospitalityandcateringnews.com/feed/	2026-10-01·第一批	接入	去掉酒店与人事栏
+rss-hospitality-ireland	Hospitality Ireland	https://www.hospitalityireland.com/feed	2026-10-01·第一批	接入	
+rss-hotelier-me	Hotelier Middle East	https://www.hoteliermiddleeast.com/feed	2026-10-01·第一批	接入	只收 Food & Beverage 栏
+rss-ir-papajohns	Papa John's	https://ir.papajohns.com/news-events/news-releases/rss	2026-10-01·第一批	接入	
+rss-ir-redrobin	Red Robin	https://ir.redrobin.com/news-events/press-releases/rss	2026-10-01·第一批	接入	
+rss-ir-wingstop	Wingstop	https://ir.wingstop.com/feed/	2026-10-01·第一批	接入	
+rss-italia-a-tavola	Italia a Tavola	https://www.italiaatavola.net/rss/feed.xml	2026-10-01·第一批	接入	去掉食评、酒、食谱栏
+rss-lra	Louisiana Restaurant Association	https://www.lra.org/feed/	2026-10-01·第一批	接入	
+rss-marginedge	MarginEdge	https://www.marginedge.com/blog/rss.xml	2026-10-01·第一批	接入	
+rss-nho-reiseliv	NHO Reiseliv	https://www.nhoreiseliv.no/rss	2026-10-01·第一批	接入	
+rss-qsr-magazine	QSR Magazine	https://www.qsrmagazine.com/feed/	2026-10-01·第一批	接入	只收 Story（专题），News 多为品牌新闻稿
+rss-rai-ireland	Restaurants Association of Ireland	https://www.rai.ie/feed/	2026-10-01·第一批	接入	
+rss-spoton	SpotOn	https://www.spoton.com/blog/rss/	2026-10-01·第一批	接入	
+rss-sprudge	Sprudge	https://sprudge.com/feed	2026-10-01·第一批	接入	
+rss-the-spoon	The Spoon	https://thespoon.tech/feed/	2026-10-01·第一批	接入	
+rss-visita	Visita	https://visita.se/feed/	2026-10-01·第一批	接入	
+rss-vrlta	Virginia Restaurant, Lodging & Travel Association	https://www.vrlta.org/feed/	2026-10-01·第一批	接入	
+rss-wahospitality	Washington Hospitality Association	https://wahospitality.org/feed/	2026-10-01·第一批	接入	
+rss-foodservice-director	Foodservice Director	https://www.foodservicedirector.com/rss.xml	2026-10-01·第一批	不接	Informa 条款：除浏览外不得使用（规则 3）
+rss-fesmag	FE&S	https://www.fesmag.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-plate	Plate	https://www.plateonline.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-flavor-menu	Flavor & The Menu	https://www.getflavor.com/feed/	2026-10-01·第一批	不接	条款只许个人非商业或内部使用（规则 3）
+rss-food-on-demand	Food On Demand	https://foodondemand.com/feed/	2026-10-01·第一批	不接	条款只许个人非商业使用（规则 3）
+rss-restfinance	Restaurant Finance Monitor	https://www.restfinance.com/	2026-10-01·第一批	不接	找不到订阅源（首页 429）
+rss-franchising-com	Franchising.com	https://www.franchising.com/features.xml	2026-10-01·第一批	不接	订阅损坏
+rss-1851-franchise	1851 Franchise	https://1851franchise.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-bar-restaurant	Bar & Restaurant	https://www.barandrestaurant.com/rss.xml	2026-10-01·第一批	不接	多为赞助内容，每天 0 条
+rss-nightclub-bar	Nightclub & Bar	https://www.nightclub.com/	2026-10-01·第一批	不接	订阅与 Bar & Restaurant 相同
+rss-cheers	Cheers	https://www.cheersonline.com/	2026-10-01·第一批	不接	与 Beverage Dynamics 同一订阅，合并为 rss-bevinfogroup
+rss-beverage-dynamics	Beverage Dynamics	https://beveragedynamics.com/	2026-10-01·第一批	不接	找不到订阅源（）
+rss-roast-magazine	Roast Magazine	https://www.roastmagazine.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-perfect-daily-grind	Perfect Daily Grind	https://perfectdailygrind.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-tea-coffee-trade	Tea & Coffee Trade Journal	https://www.teaandcoffee.net/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-comunicaffe	Comunicaffè International	https://www.comunicaffe.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-baking-business	Baking Business	https://www.bakingbusiness.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-bake-magazine	Bake Magazine	https://www.bakemag.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-restaurant-tech-news	Restaurant Technology News	https://restauranttechnologynews.com/feed/	2026-10-01·第一批	不接	条款禁止自动访问与系统性抓取（规则 3）
+rss-hospitality-tech	Hospitality Technology	https://hospitalitytech.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-hospitality-net	Hospitality Net	https://www.hospitalitynet.org/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-pizza-marketplace-check	Pizza Today	https://www.pizzatoday.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-food-management	Food Management	https://www.food-management.com/	2026-10-01·第一批	不接	订阅与 Foodservice Director 相同
+rss-restaurant-hospitality	Restaurant Hospitality	https://www.restaurant-hospitality.com/	2026-10-01·第一批	不接	订阅跳到 NRN，条款不许（规则 3）
+rss-kitchen-bath-skip	Foodservice Equipment & Supplies Dealer	https://www.fesdealer.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-restaurant-development	Restaurant Development + Design	https://www.rddmag.com/?format=feed&type=rss	2026-10-01·第一批	不接	条款只许个人非商业使用（规则 3）
+rss-food-truck-empire	Mobile Cuisine	https://mobile-cuisine.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-total-food-check	Foodservice Equipment Journal	https://www.foodserviceequipmentjournal.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-catering-insight	Catering Insight	https://www.cateringinsight.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-big-hospitality	BigHospitality	https://www.bighospitality.co.uk/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-restaurant-online	Restaurant Online	https://www.restaurantonline.co.uk/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-morning-advertiser	Morning Advertiser	https://www.morningadvertiser.co.uk/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-propel	Propel	https://www.propelinfo.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-casual-dining	Casual Dining	https://www.casualdiningmagazine.co.uk/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-british-baker	British Baker	https://bakeryinfo.co.uk/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-pub-bar	Pub & Bar	https://www.pubandbar.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-class-bar	Class	https://classbarmag.com/news/rss.php/rss.xml	2026-10-01·第一批	不接	出版商 Mash Media 条款只许个人浏览（规则 3）
+rss-code-hospitality	CODE Hospitality	https://www.codehospitality.co.uk/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-cga-niq	CGA by NIQ	https://cgastrategy.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-bars-clubs	Bars and Clubs	https://www.barsandclubs.com.au/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-hospitality-biz-nz	Hospitality Business	https://www.hospitalitybiz.co.nz/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-canadian-restaurant-news	Canadian Restaurant News	https://canadianrestaurantnews.com/feed	2026-10-01·第一批	不接	已变成垃圾内容站
+rss-hogapage	Hogapage	https://www.hogapage.de/	2026-10-01·第一批	不接	找不到订阅源（首页 404）
+rss-gastgewerbe-magazin	Gastgewerbe Magazin	https://gastgewerbe-magazin.de/feed	2026-10-01·第一批	不接	拒绝代用户读网页的 AI（规则 2）
+rss-cafe-future	Cafe Future	https://www.cafe-future.net/	2026-10-01·第一批	不接	订阅跳到 food-service.de，拒绝 AI 阅读（规则 2）
+rss-tageskarte	Tageskarte	https://www.tageskarte.io/rss/	2026-10-01·第一批	不接	订阅文件过大，框架拒收
+rss-gv-praxis	GV-Praxis	https://gvpraxis.food-service.de/nachrichten/feed/	2026-10-01·第一批	不接	拒绝代用户读网页的 AI（规则 2）
+rss-catering-inside	Catering Inside	https://www.catering-inside.de/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-rollingpin	Rolling Pin	https://rollingpin.com/feed	2026-10-01·第一批	不接	条款禁止用抓取技术收集内容另作他用（规则 3）
+rss-gastrojournal	GastroJournal	https://www.gastrojournal.ch/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-snacking-fr	Snacking	https://www.snacking.fr/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-food-service-vision	Food Service Vision	https://www.foodservicevision.fr/feed/	2026-10-01·第一批	不接	2022 年后停更
+rss-zepros	Zepros Restauration	https://www.zepros.fr/rss.xml	2026-10-01·第一批	不接	停更
+rss-atabula	Atabula	https://www.atabula.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-toute-la-franchise	Toute la Franchise	https://www.toute-la-franchise.com/rss-news.xml	2026-10-01·第一批	不接	各行业加盟，餐饮很少
+rss-mixerplanet	Mixer Planet	https://www.mixerplanet.com/feed	2026-10-01·第一批	不接	条款禁止自动下载程序持续抓取（规则 3）
+rss-foodserviceweb	Food Service	https://www.foodserviceweb.it/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-pizza-pasta-italiana	Pizza e Pasta Italiana	https://www.pizzaepastaitaliana.it/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-gastroeconomy	Gastroeconomy	https://www.gastroeconomy.com/feed/	2026-10-01·第一批	不接	robots.txt 返回 403（规则 5）
+rss-marcas-restauracion	Marcas de Restauración	https://marcasderestauracion.es/feed/	2026-10-01·第一批	不接	条款只许个人私用（规则 3）
+rss-restauracion-colectiva	Restauración Colectiva	https://www.restauracioncolectiva.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-financial-food	Financial Food	https://financialfood.es/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-restauratoren	Restauratören	https://www.restauratoren.se/atom.xml	2026-10-01·第一批	不接	已变成垃圾内容站
+rss-besoksliv	Besøksliv	https://www.besoksliv.no/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ttg-cz	TTG Gastro	https://www.ttg.cz/feed/	2026-10-01·第一批	不接	旅游业
+rss-fnbdaily-gr	Fnb Daily	https://www.fnbdaily.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-restoved	Ресторанные ведомости	https://www.restoved.ru/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-nissyoku-gaishoku	日本食糧新聞 · 外食	https://news.nissyoku.co.jp/archives/news-cat/001/feed	2026-10-01·第一批	不接	食品厂商为主，不是外食栏
+rss-gaishoku-shimbun	日本外食新聞	https://www.gaishokushimbun.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-hoteres	HOTERES	https://www.hoteresonline.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-asahiya	旭屋出版	https://asahiya-jp.com/feed/	2026-10-01·第一批	不接	出版社书讯
+rss-thinkfood	식품음료신문	https://cdn.thinkfood.co.kr/rss/gn_rss_allArticle.xml	2026-10-01·第一批	不接	食品厂商为主
+rss-foodnews-kr	식품저널	https://www.foodnews.co.kr/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-foodtoday-kr	푸드투데이	https://www.foodtoday.or.kr/data/rss/news.xml	2026-10-01·第一批	不接	综合食品与农业，每天 39 条，餐饮很少
+rss-foodnext-tw	食力	https://www.foodnext.net/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-linkshop	联商网	https://www.linkshop.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-winshang	赢商网	https://www.winshang.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-marketing-interactive	Marketing-Interactive	https://www.marketing-interactive.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-positioning-th	Positioning	https://positioningmag.com/rss.xml	2026-10-01·第一批	不接	整站综合；第二批找餐饮栏目
+rss-foodizz	Foodizz	https://foodizz.id/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-restaurant-india	Restaurant India	https://www.restaurantindia.in/rss.xml	2026-10-01·第一批	不接	2017 年后停更
+rss-franchise-india	Franchise India	https://www.franchiseindia.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-et-hospitalityworld	ET HospitalityWorld	https://hospitality.economictimes.indiatimes.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-bizcommunity	Bizcommunity	https://www.bizcommunity.com/rss/196/1.html	2026-10-01·第一批	不接	整站综合新闻；第二批找餐饮栏目
+rss-foodservice-news-br	Food Service News	https://foodservicenews.com.br/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-mercado-consumo	Mercado & Consumo	https://mercadoeconsumo.com.br/feed/	2026-10-01·第一批	不接	综合经济，订阅停在 8 月
+rss-food-connection-br	Food Connection	https://www.foodconnection.com.br/feed/	2026-10-01·第一批	不接	Informa 条款：只许个人非商业，不得收进检索系统（规则 3）
+rss-national-restaurant-assoc	National Restaurant Association	https://restaurant.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ifa-franchise	International Franchise Association	https://www.franchise.org/feed/	2026-10-01·第一批	不接	条款禁止数据挖掘与机器人（规则 3）
+rss-calrest	California Restaurant Association	https://www.calrest.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-txrestaurant	Texas Restaurant Association	https://www.txrestaurant.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-nysra	New York State Restaurant Association	https://www.nysra.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-illinois-restaurants	Illinois Restaurant Association	https://www.illinoisrestaurants.org/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ohio-restaurant	Ohio Restaurant Association	https://ohiorestaurant.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-gra	Georgia Restaurant Association	https://www.garestaurants.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ncrla	North Carolina Restaurant & Lodging Association	https://www.ncrla.org/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-orla	Oregon Restaurant & Lodging Association	https://www.orlaoregon.org/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-azrestaurant	Arizona Restaurant Association	https://azrestaurant.org/sitemap.rss	2026-10-01·第一批	不接	订阅是页面目录，不是新闻
+rss-massrest	Massachusetts Restaurant Association	https://themassrest.org/feed/	2026-10-01·第一批	不接	占位内容
+rss-prla	Pennsylvania Restaurant & Lodging Association	https://prla.org/feed/	2026-10-01·第一批	不接	会员介绍
+rss-njra	New Jersey Restaurant & Hospitality Association	https://www.njrha.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-hospitality-mn	Hospitality Minnesota	https://www.hospitalitymn.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-mrla	Michigan Restaurant & Lodging Association	https://www.mrla.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-wirestaurant	Wisconsin Restaurant Association	https://www.wirestaurant.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-inrestaurants	Indiana Restaurant & Lodging Association	https://www.inrestaurants.org/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-kyra	Kentucky Restaurant Association	https://kyra.org/feed/	2026-10-01·第一批	不接	停更
+rss-scrla	South Carolina Restaurant & Lodging Association	https://scrla.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-marylandrestaurants	Restaurant Association of Maryland	https://www.marylandrestaurants.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ctrestaurant	Connecticut Restaurant Association	https://www.ctrestaurant.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-restaurantiowa	Iowa Restaurant Association	https://restaurantiowa.com/feed/	2026-10-01·第一批	不接	停更
+rss-okrestaurants	Oklahoma Restaurant Association	https://www.okrestaurants.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-nmrestaurants	New Mexico Restaurant Association	https://www.nmrestaurants.org/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-rihospitality	Rhode Island Hospitality Association	https://rihospitality.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-nyc-alliance	NYC Hospitality Alliance	https://thenycalliance.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ggra	Golden Gate Restaurant Association	https://ggra.org/feed/	2026-10-01·第一批	不接	2022 年后停更
+rss-tnhta	Tennessee Hospitality & Tourism Association	https://www.tnhta.net/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-missouri-restaurant	Missouri Restaurant Association	https://www.morestaurants.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-nv-restaurant	Nevada Restaurant Association	https://www.nvrestaurants.com/feed/	2026-10-01·第一批	不接	占位内容
+rss-ukhospitality	UKHospitality	https://www.ukhospitality.org.uk/feed/	2026-10-01·第一批	不接	条款禁止爬取与抓取（规则 3）
+rss-bbpa	British Beer & Pub Association	https://beerandpub.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-bfa-franchise	British Franchise Association	https://www.thebfa.org/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-rca-au	Restaurant & Catering Australia	https://rca.asn.au/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-franchise-council-au	Franchise Council of Australia	https://www.franchise.org.au/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-orhma	ORHMA	https://www.orhma.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-bcrfa	BC Restaurant & Foodservices Association	https://bcrfa.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-dehoga	DEHOGA	https://www.dehoga-bundesverband.de/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-gastrosuisse	GastroSuisse	https://www.gastrosuisse.ch/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-umih	UMIH	https://www.umih.fr/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ghr	GHR	https://www.ghr.fr/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-hosteleria-espana	Hostelería de España	https://www.hosteleriadeespana.es/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-horeca-vlaanderen	Horeca Vlaanderen	https://www.horecavlaanderen.be/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-horesta	Horesta	https://www.horesta.dk/rss	2026-10-01·第一批	不接	订阅文件过大，框架拒收
+rss-mara-fi	MaRa	https://www.mara.fi/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-hotrec	HOTREC	https://www.hotrec.eu/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ahrcr	AHR ČR	https://www.ahrcr.cz/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-tures	TÜRES	https://tures.org.tr/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-jfnet	日本フードサービス協会	https://www.jfnet.or.jp/feed/	2026-10-01·第一批	不接	订阅是空站
+rss-ras-sg	Restaurant Association of Singapore	https://www.ras.org.sg/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-nrai	National Restaurant Association of India	https://nrai.org/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-tcfa-tw	台湾连锁暨加盟协会	https://www.tcfa.org.tw/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-abrasel	Abrasel	https://abrasel.com.br/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-achiga	ACHIGA	https://www.achiga.cl/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-toast-blog	Toast	https://pos.toasttab.com/blog	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-7shifts	7shifts	https://www.7shifts.com/blog/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-restaurant365	Restaurant365	https://www.restaurant365.com/blog/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-olo	Olo	https://www.olo.com/blog/rss.xml	2026-10-01·第一批	不接	条款只许内部使用（规则 3）
+rss-popmenu	Popmenu	https://get.popmenu.com/blog	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-sevenrooms	SevenRooms	https://sevenrooms.com/blog/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-opentable-press	OpenTable	https://press.opentable.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-doordash-merchants	DoorDash Merchants	https://merchants.doordash.com/en-us/blog	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ubereats-merchants	Uber Eats Merchants	https://merchants.ubereats.com/us/en/blog/	2026-10-01·第一批	不接	找不到订阅源（首页 404）
+rss-lightspeed	Lightspeed	https://www.lightspeedhq.com/feed/	2026-10-01·第一批	不接	零售为主
+rss-touchbistro	TouchBistro	https://www.touchbistro.com/blog/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-deliverect	Deliverect	https://www.deliverect.com/en/blog	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-square-restaurants	Square	https://squareup.com/us/en/the-bottom-line	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-technomic	Technomic	https://www.technomic.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-datassential	Datassential	https://datassential.com/feed/	2026-10-01·第一批	不接	2023 年后停更
+rss-circana	Circana	https://www.circana.com/blog-feed.xml	2026-10-01·第一批	不接	零售与包装食品为主
+rss-hiringlab	Indeed Hiring Lab	https://hiringlab.indeed.com/feed/	2026-10-01·第一批	不接	美国宏观就业数据（不看）
+rss-pudu	Pudu Robotics	https://www.pudurobotics.com/	2026-10-01·第一批	不接	找不到订阅源（首页 500）
+rss-rational	Rational	https://www.rational-online.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-middleby	Middleby	https://www.middleby.com/feed/	2026-10-01·第一批	不接	9 个月未更新
+rss-electrolux-pro	Electrolux Professional	https://www.electroluxprofessional.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ir-yum	Yum! Brands	https://investors.yum.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-starbucks	Starbucks	https://investor.starbucks.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-chipotle	Chipotle	https://ir.chipotle.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
+rss-ir-dominos	Domino's	https://ir.dominos.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-wendys	Wendy's	https://ir.wendys.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-rbi	Restaurant Brands International	https://www.rbi.com/English/investors/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-darden	Darden	https://investor.darden.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-texasroadhouse	Texas Roadhouse	https://investor.texasroadhouse.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-shakeshack	Shake Shack	https://investor.shakeshack.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-sweetgreen	Sweetgreen	https://investor.sweetgreen.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-cava	CAVA	https://investor.cava.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-dutchbros	Dutch Bros	https://investors.dutchbros.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-portillos	Portillo's	https://investors.portillos.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-bloomin	Bloomin' Brands	https://investors.bloominbrands.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-brinker	Brinker	https://investors.brinker.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-cheesecake	The Cheesecake Factory	https://investors.thecheesecakefactory.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-crackerbarrel	Cracker Barrel	https://investor.crackerbarrel.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-dennys	Denny's	https://investor.dennys.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-dine	Dine Brands	https://investors.dinebrands.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-jackinthebox	Jack in the Box	https://investors.jackinthebox.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-elpolloloco	El Pollo Loco	https://investor.elpolloloco.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-noodles	Noodles & Company	https://investor.noodles.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-potbelly	Potbelly	https://investors.potbelly.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-firstwatch	First Watch	https://investors.firstwatch.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-krispykreme	Krispy Kreme	https://investors.krispykreme.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-bjs	BJ's Restaurants	https://investors.bjsrestaurants.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-kurasushi	Kura Sushi USA	https://ir.kurasushi.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-arcosdorados	Arcos Dorados	https://ir.arcosdorados.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-toast	Toast IR	https://investors.toasttab.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-olo	Olo IR	https://investors.olo.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-par	PAR Technology	https://ir.partech.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-doordash	DoorDash IR	https://ir.doordash.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-usfoods	US Foods	https://ir.usfoods.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-pfg	Performance Food Group	https://investors.pfgc.com/	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-chefswarehouse	The Chefs' Warehouse	https://investors.chefswarehouse.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-aramark	Aramark	https://investor.aramark.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-mcdonalds	McDonald's	https://corporate.mcdonalds.com/corpmcd/our-stories.html	2026-10-01·第一批	不接	找不到订阅源（首页 403）
+rss-ir-dave-busters	Dave & Buster's	https://ir.daveandbusters.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-luckin	Luckin Coffee	https://investor.lkcoffee.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-ir-yumchina	Yum China	https://ir.yumchina.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
+rss-positioning-th	Positioning	https://positioningmag.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-brandinside-th	Brand Inside	https://brandinside.asia/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-marketeer-th	Marketeer	https://marketeeronline.co/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-thansettakij	Thansettakij	https://www.thansettakij.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-prachachat	Prachachat	https://www.prachachat.net/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-bangkokbiznews	Bangkok Biz News	https://www.bangkokbiznews.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-nation-th	The Nation	https://www.nationthailand.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-bangkokpost	Bangkok Post	https://www.bangkokpost.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-vir-vn	Vietnam Investment Review	https://vir.com.vn/rss_feed/timeout/hotels-restaurants	2026-10-02·第二批（商业媒体栏目）	不接	栏目订阅实际是全站新闻稿
+rss-theinvestor-vn	The Investor	https://theinvestor.vn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-vietnamnews	Vietnam News	https://vietnamnews.vn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-brandsvietnam	Brands Vietnam	https://www.brandsvietnam.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-cafef	CafeF	https://cafef.vn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-saigontimes	The Saigon Times	https://english.thesaigontimes.vn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-katadata	Katadata	https://katadata.co.id/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-swa-id	SWA	https://swa.co.id/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-marketeers-id	Marketeers	https://www.marketeers.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-dailysocial	DailySocial	https://dailysocial.id/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-cnbcindonesia	CNBC Indonesia	https://www.cnbcindonesia.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-kompas-money	Kompas Money	https://money.kompas.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 0）
+rss-bworld	BusinessWorld	https://www.bworldonline.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-inquirer-biz	Inquirer Business	https://business.inquirer.net/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-philstar-biz	Philstar Business	https://www.philstar.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-manilabulletin	Manila Bulletin	https://mb.com.ph/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-businessmirror	BusinessMirror	https://businessmirror.com.ph/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-vulcanpost	Vulcan Post	https://vulcanpost.com/feed/	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站
+rss-edge-sg	The Edge Singapore	https://www.theedgesingapore.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-cna	CNA	https://www.channelnewsasia.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-straitstimes	The Straits Times	https://www.straitstimes.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-edge-my	The Edge Malaysia	https://theedgemalaysia.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-fmt	Free Malaysia Today	https://www.freemalaysiatoday.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-thesun-my	The Sun	https://thesun.my/feed/	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站
+rss-malaysianow	MalaysiaNow	https://www.malaysianow.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-khmertimes	Khmer Times	https://www.khmertimeskh.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-b2b-cambodia	B2B Cambodia	https://www.b2b-cambodia.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-cambodge-mag	Cambodge Mag	https://www.cambodgemag.com/blog-feed.xml	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站
+rss-hk01	香港01	https://www.hk01.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-thestandard-hk	The Standard	https://www.thestandard.com.hk/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-scmp	SCMP	https://www.scmp.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-businessweekly-tw	商业周刊	https://www.businessweekly.com.tw/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-businesstoday-tw	今周刊	https://www.businesstoday.com.tw/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-bnext	数位时代	https://www.bnext.com.tw/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-udn-money	经济日报	https://money.udn.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-gvm	远见	https://www.gvm.com.tw/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-36kr	36氪	https://36kr.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-jiemian	界面新闻	https://www.jiemian.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-yicai	第一财经	https://www.yicai.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-eeo	经济观察网	https://www.eeo.com.cn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-tmtpost	钛媒体	https://www.tmtpost.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-bjnews	新京报	https://www.bjnews.com.cn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-thepaper	澎湃新闻	https://www.thepaper.cn/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-iyiou	亿欧	https://www.iyiou.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 202）
+rss-huxiu	虎嗅	https://www.huxiu.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-cb-com-cn	中国经营报	http://www.cb.com.cn/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 521）
+rss-bbtnews	北京商报	https://www.bbtnews.com.cn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-nbd	每日经济新闻	https://www.nbd.com.cn/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-lanjinger	蓝鲸财经	https://www.lanjinger.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-toyokeizai	東洋経済オンライン	https://toyokeizai.net/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-diamond	ダイヤモンド・オンライン	https://diamond.jp/list/feed/rss/dol	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站
+rss-itmedia-biz	ITmedia ビジネスオンライン	https://www.itmedia.co.jp/business/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-president	プレジデントオンライン	https://president.jp/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-jcast	J-CASTニュース	https://www.j-cast.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-merkmal	Merkmal	https://merkmal-biz.jp/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-mk	매일경제	https://www.mk.co.kr/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-fnnews	파이낸셜뉴스	https://www.fnnews.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-mt	머니투데이	https://www.mt.co.kr/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-edaily	이데일리	https://www.edaily.co.kr/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-asiae	아시아경제	https://www.asiae.co.kr/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-news1	뉴스1	https://www.news1.kr/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-newsis	뉴시스	https://www.newsis.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-inc42	Inc42	https://inc42.com/industry/foodtech/feed/	2026-10-02·第二批（商业媒体栏目）	不接	条款禁止爬虫、机器人与任何自动访问（规则 3）
+rss-entrackr	Entrackr	https://entrackr.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-etretail	ETRetail	https://retail.economictimes.indiatimes.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-business-standard	Business Standard	https://www.business-standard.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-livemint	Mint	https://www.livemint.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-financialexpress	Financial Express	https://www.financialexpress.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-moneycontrol	Moneycontrol	https://www.moneycontrol.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-businessline	BusinessLine	https://www.thehindubusinessline.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-afaqs	afaqs!	https://www.afaqs.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-exchange4media	exchange4media	https://www.exchange4media.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-indianretailer	Indian Retailer	https://www.indianretailer.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-dailyft	Daily FT	https://www.ft.lk/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-brecorder	Business Recorder	https://www.brecorder.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-arabianbusiness	Arabian Business	https://www.arabianbusiness.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-zawya	Zawya	https://www.zawya.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-khaleejtimes	Khaleej Times	https://www.khaleejtimes.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-gulfnews	Gulf News	https://gulfnews.com/business	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-thenational	The National	https://www.thenationalnews.com/business/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-arabnews	Arab News	https://www.arabnews.com/economy	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-tradearabia	TradeArabia	https://www.tradearabia.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-wamda	Wamda	https://www.wamda.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-businessday-ng	BusinessDay	https://businessday.ng/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-nairametrics	Nairametrics	https://nairametrics.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-techcabal	TechCabal	https://techcabal.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-moneyweb	Moneyweb	https://www.moneyweb.co.za/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-iol-biz	IOL Business	https://iol.co.za/business/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-enterprise-eg	Enterprise	https://enterprise.press/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-dailynewsegypt	Daily News Egypt	https://www.dailynewsegypt.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-bizcommunity	Bizcommunity	https://www.bizcommunity.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-exame	Exame	https://exame.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-infomoney	InfoMoney	https://www.infomoney.com.br/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-neofeed	NeoFeed	https://neofeed.com.br/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-expansion-mx	Expansión	https://expansion.mx/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-elfinanciero	El Financiero	https://www.elfinanciero.com.mx/arc/outboundfeeds/rss/?outputType=xml	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站
+rss-eleconomista-mx	El Economista	https://www.eleconomista.com.mx/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-forbes-mx	Forbes México	https://www.forbes.com.mx/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-larepublica	La República	https://www.larepublica.co/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-portafolio	Portafolio	https://www.portafolio.co/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 0）
+rss-df-cl	Diario Financiero	https://www.df.cl/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-iprofesional	iProfesional	https://www.iprofesional.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-gestion-pe	Gestión	https://gestion.pe/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-cnbc	CNBC	https://www.cnbc.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-forbes	Forbes	https://www.forbes.com/food-drink/feed/	2026-10-02·第二批（商业媒体栏目）	不接	写给食客（餐厅推荐、酒）
+rss-fortune	Fortune	https://fortune.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-businessinsider	Business Insider	https://feeds.businessinsider.com/custom/all	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站
+rss-eater	Eater	https://www.eater.com/rss/index.xml	2026-10-02·第二批（商业媒体栏目）	不接	订阅是整站，写给食客
+rss-crains-chicago	Crain's Chicago Business	https://www.chicagobusiness.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-crains-ny	Crain's New York Business	https://www.crainsnewyork.com/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-cityam	City A.M.	https://www.cityam.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-retailgazette	Retail Gazette	https://www.retailgazette.co.uk/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-expansion-es	Expansión	https://www.expansion.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-eleconomista-es	elEconomista	https://www.eleconomista.es/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-cincodias	Cinco Días	https://cincodias.elpais.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-lsa	LSA	https://www.lsa-conso.fr/	2026-10-02·第二批（商业媒体栏目）	不接	首页打不开（home 403）
+rss-journaldunet	Journal du Net	https://www.journaldunet.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-handelsblatt	Handelsblatt	https://www.handelsblatt.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-wiwo	WirtschaftsWoche	https://www.wiwo.de/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-ilsole	Il Sole 24 Ore	https://www.ilsole24ore.com/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-wiadomoscihandlowe	Wiadomości Handlowe	https://www.wiadomoscihandlowe.pl/	2026-10-02·第二批（商业媒体栏目）	不接	找不到订阅源（）
+rss-capital-tr	Capital	https://www.capital.com.tr/	2026-10-02·第二批（商业媒体栏目）	不接	找不到餐饮栏目订阅
+rss-wiadomoscihandlowe-1	Wiadomości Handlowe · franczyza gastronomiczna	https://www.wiadomoscihandlowe.pl/franczyza-w-handlu/franczyza-gastronomiczna/feed	2026-10-02·第二批（商业媒体栏目）	不接	停更 8 个月
+rss-wiadomoscihandlowe-2	Wiadomości Handlowe · Foodtech i start-upy handlowe	https://www.wiadomoscihandlowe.pl/foodtech-i-start-upy-handlowe/feed	2026-10-02·第二批（商业媒体栏目）	不接	食品厂与投资，非餐饮
+rss-wiadomoscihandlowe-3	Wiadomości Handlowe · Horeca i qsr	https://www.wiadomoscihandlowe.pl/horeca-i-qsr/feed	2026-10-02·第二批（商业媒体栏目）	不接	条款保留文本与数据挖掘权，禁止用软件系统性下载（规则 3）
+prt-skylark	株式会社すかいらーくホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17486	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-yoshinoya	吉野家ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19432	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-zensho	株式会社ゼンショーホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=97263	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-matsuya	株式会社松屋フーズホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=47538	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-colowide	株式会社コロワイドダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=173827	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-toridoll	株式会社トリドールホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28440	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-marugame	株式会社丸亀製麺（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=56642	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-mos	株式会社モスフードサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75449	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-kfc-jp	日本ケンタッキー・フライド・チキン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=32088	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-starbucks-jp	スターバックスコーヒージャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=33194	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-doutor	株式会社ドトールコーヒー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=8784	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-ichibanya	株式会社壱番屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=108441	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-ohsho	株式会社王将フードサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=11353	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-kourakuen	株式会社幸楽苑（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29714	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-monogatari	物語コーポレーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=44964	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-torikizoku	株式会社エターナルホスピタリティグループ（旧：株式会社鳥貴族ホールディングス）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=82134	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-watami	ワタミ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=9215	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-create-restaurants	株式会社クリエイト・レストランツ・ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=177867	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-kushikatsu-tanaka	株式会社ユニシアホールディングス（旧 串カツ田中ホールディングス）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=27839	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-ootoya	株式会社大戸屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17712	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-royal	ロイヤルホールディングス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=71323	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-hiday	株式会社ハイデイ日高（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=48716	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-kisoji	株式会社木曽路（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=83122	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-bronco	株式会社ブロンコビリー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=27084	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-kappa	カッパ・クリエイト株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18731	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-dd	DDグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=7303	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-dominos-jp	株式会社ドミノ・ピザ　ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29053	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-pizzahut-jp	日本ピザハット株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31164	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-foursis	株式会社フォーシーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=2646	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-hotland	株式会社ホットランドホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31747	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-plenus	株式会社プレナス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=54093	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-tullys	タリーズコーヒージャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20545	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-saint-marc	サンマルクカフェ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=85701	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-ichiran	株式会社一蘭（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=9803	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-alef	株式会社アレフ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43540	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-joyfull	株式会社ジョイフル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=23968	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-montrosa	株式会社モンテローザ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=1046	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-chimney	チムニー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=62344	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-yoronotaki	養老乃瀧 株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=2892	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-kappo-gourmet-kineya	株式会社グルメ杵屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=90386	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-atom	株式会社アトム（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43111	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-amiyakitei	株式会社あみやき亭（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=130952	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-reins	株式会社レインズインターナショナル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18604	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-gogocurry	株式会社ゴーゴーカレーグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75866	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-wonder-table	ワンダーテーブル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=7752	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-transit	株式会社トランジットホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=40062	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-dining-innovation	株式会社ダイニングイノベーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=34691	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-gnavi	株式会社ぐるなび（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=1511	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-retty	Retty株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=4025	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-toreta	株式会社トレタ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38464	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-demaecan	株式会社出前館（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29254	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-smaregi	株式会社スマレジ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=71550	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-dinii	株式会社ダイニー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43056	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-tenpos	テンポス グループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=30130	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-hoshizaki	ホシザキ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=61218	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-pudu-jp	Pudu Technology Inc.（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=158245	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-foodlabo	株式会社シンクロ・フード（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=1049	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-bk-jp	株式会社ビーケー・ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38980	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-food-life	F&LC（FOOD & LIFE COMPANIES）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=49164	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-genki	株式会社Genki Global Dining Concepts（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=160366	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-ap	APHD（エー・ピーホールディングス）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=4635	2026-10-02·第三批（PR TIMES 日本企业）	接入	
+prt-mcdonalds-jp	日本マクドナルド	マクドナルド	2026-10-02·第三批（PR TIMES 日本企业）	不接	搜到的是麦当劳之家慈善基金会
+prt-komeda	コメダ	コメダ	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-saizeriya	サイゼリヤ	サイゼリヤ	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-ringerhut	リンガーハット	リンガーハット	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-pepper-food	ペッパーフードサービス	https://prtimes.jp/companyrdf.php?company_id=32854	2026-10-02·第三批（PR TIMES 日本企业）	不接	停更 5 年
+prt-fujio	フジオフードグループ	https://prtimes.jp/companyrdf.php?company_id=169671	2026-10-02·第三批（PR TIMES 日本企业）	不接	停更 10 个月
+prt-kura	くら寿司	くら寿司	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-sfp	SFPホールディングス	https://prtimes.jp/companyrdf.php?company_id=13133	2026-10-02·第三批（PR TIMES 日本企业）	不接	停更 7 个月
+prt-zetteria	ゼッテリア	ゼッテリア	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-ueshima	上島珈琲	上島珈琲	2026-10-02·第三批（PR TIMES 日本企业）	不接	对到 UCC 咖啡厂，不是上岛咖啡店
+prt-chikaranomoto	力の源ホールディングス	力の源	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-seven-food	セブン&アイ・フードシステムズ	https://prtimes.jp/companyrdf.php?company_id=8035	2026-10-02·第三批（PR TIMES 日本企业）	不接	停更 2 年
+prt-tenallied	テンアライド	https://prtimes.jp/companyrdf.php?company_id=88949	2026-10-02·第三批（PR TIMES 日本企业）	不接	停更 4 个月
+prt-misdo	ミスタードーナツ	ダスキン	2026-10-02·第三批（PR TIMES 日本企业）	不接	Duskin 以清洁业务为主
+prt-tenya	テンコーポレーション	テンコーポレーション	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-nihon-restaurant-system	日本レストランシステム	日本レストランシステム	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-greenhouse	グリーンハウス	https://prtimes.jp/companyrdf.php?company_id=70935	2026-10-02·第三批（PR TIMES 日本企业）	不接	停更 5 个月
+prt-aim-services	エームサービス	エームサービス	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-seiyo-food	西洋フード・コンパスグループ	西洋フード	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-hotpepper	ホットペッパーグルメ外食総研	リクルート	2026-10-02·第三批（PR TIMES 日本企业）	不接	对到整个 Recruit 集团
+prt-tablecheck	TableCheck	TableCheck	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-ubereats-jp	Uber Eats Japan	https://prtimes.jp/companyrdf.php?company_id=130465	2026-10-02·第三批（PR TIMES 日本企业）	不接	Uber Japan 以叫车为主
+prt-menu	menu株式会社	menu	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-usen	USEN	USEN	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-showcase-gig	Showcase Gig	Showcase Gig	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-tkr	TKホールディングス	TK	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-connected-robotics	コネクテッドロボティクス	コネクテッドロボティクス	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-infomart	インフォマート	https://prtimes.jp/companyrdf.php?company_id=13808	2026-10-02·第三批（PR TIMES 日本企业）	不接	通用企业发票平台为主
+prt-airlink	Airレジ	リクルート	2026-10-02·第三批（PR TIMES 日本企业）	不接	对到整个 Recruit 集团
+prt-foodrink-media	フードリンク	フードリンク	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-gaishoku-assoc	日本フードサービス協会	フードサービス協会	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+prt-kicchin-car	キッチンカー	Mellow	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业

@@ -181,28 +181,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-verdict-foodservice",
-      "name": "Verdict Foodservice（英国，全球连锁）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.verdictfoodservice.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "英国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-barista-magazine",
       "name": "Barista Magazine（咖啡馆经营）",
       "kind": "rss",
@@ -848,31 +826,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-hotelier-me",
-      "name": "Hotelier Middle East",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.hoteliermiddleeast.com/feed",
-        "allowCategories": [
-          "Food & Beverage"
-        ],
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "中东",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-ir-papajohns",
       "name": "Papa John's",
       "kind": "rss",
@@ -1032,31 +985,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-qsr-magazine",
-      "name": "QSR Magazine",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.qsrmagazine.com/feed/",
-        "allowCategories": [
-          "Story"
-        ],
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "美国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-rai-ireland",
       "name": "Restaurants Association of Ireland",
       "kind": "rss",
@@ -1172,28 +1100,6 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.vrlta.org/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "美国",
-        "协会"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-wahospitality",
-      "name": "Washington Hospitality Association",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://wahospitality.org/feed/",
         "_aihot": {
           "initialBackfillLimit": 3
         }

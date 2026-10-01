@@ -16,7 +16,7 @@ rss-hawaiirestaurant	Hawaii Restaurant Association	https://hawaiirestaurant.org/
 rss-horecanews-it	Horecanews	https://horecanews.it/rss/latest-posts	2026-10-01·第一批	接入	去掉活动、颁奖、酒店旅游栏
 rss-hospitality-catering-news	Hospitality & Catering News	https://www.hospitalityandcateringnews.com/feed/	2026-10-01·第一批	接入	去掉酒店与人事栏
 rss-hospitality-ireland	Hospitality Ireland	https://www.hospitalityireland.com/feed	2026-10-01·第一批	接入	
-rss-hotelier-me	Hotelier Middle East	https://www.hoteliermiddleeast.com/feed	2026-10-01·第一批	接入	只收 Food & Beverage 栏
+rss-hotelier-me	Hotelier Middle East	https://www.hoteliermiddleeast.com/feed	2026-10-01·第一批	不接	只收 Food & Beverage 栏；服务器返回 405（规则 6，10/2 部署后），已暂停
 rss-ir-papajohns	Papa John's	https://ir.papajohns.com/news-events/news-releases/rss	2026-10-01·第一批	接入	
 rss-ir-redrobin	Red Robin	https://ir.redrobin.com/news-events/press-releases/rss	2026-10-01·第一批	接入	
 rss-ir-wingstop	Wingstop	https://ir.wingstop.com/feed/	2026-10-01·第一批	接入	
@@ -24,14 +24,14 @@ rss-italia-a-tavola	Italia a Tavola	https://www.italiaatavola.net/rss/feed.xml	2
 rss-lra	Louisiana Restaurant Association	https://www.lra.org/feed/	2026-10-01·第一批	接入	
 rss-marginedge	MarginEdge	https://www.marginedge.com/blog/rss.xml	2026-10-01·第一批	接入	
 rss-nho-reiseliv	NHO Reiseliv	https://www.nhoreiseliv.no/rss	2026-10-01·第一批	接入	
-rss-qsr-magazine	QSR Magazine	https://www.qsrmagazine.com/feed/	2026-10-01·第一批	接入	只收 Story（专题），News 多为品牌新闻稿
+rss-qsr-magazine	QSR Magazine	https://www.qsrmagazine.com/feed/	2026-10-01·第一批	不接	只收 Story（专题），News 多为品牌新闻稿；服务器返回 403（规则 6，10/2 部署后），已暂停
 rss-rai-ireland	Restaurants Association of Ireland	https://www.rai.ie/feed/	2026-10-01·第一批	接入	
 rss-spoton	SpotOn	https://www.spoton.com/blog/rss/	2026-10-01·第一批	接入	
 rss-sprudge	Sprudge	https://sprudge.com/feed	2026-10-01·第一批	接入	
 rss-the-spoon	The Spoon	https://thespoon.tech/feed/	2026-10-01·第一批	接入	
 rss-visita	Visita	https://visita.se/feed/	2026-10-01·第一批	接入	
 rss-vrlta	Virginia Restaurant, Lodging & Travel Association	https://www.vrlta.org/feed/	2026-10-01·第一批	接入	
-rss-wahospitality	Washington Hospitality Association	https://wahospitality.org/feed/	2026-10-01·第一批	接入	
+rss-wahospitality	Washington Hospitality Association	https://wahospitality.org/feed/	2026-10-01·第一批	不接	服务器返回 403（规则 6，10/2 部署后），已暂停
 rss-foodservice-director	Foodservice Director	https://www.foodservicedirector.com/rss.xml	2026-10-01·第一批	不接	Informa 条款：除浏览外不得使用（规则 3）
 rss-fesmag	FE&S	https://www.fesmag.com/	2026-10-01·第一批	不接	找不到订阅源（首页 200）
 rss-plate	Plate	https://www.plateonline.com/	2026-10-01·第一批	不接	找不到订阅源（首页 0）
@@ -461,3 +461,4 @@ prt-airlink	Airレジ	リクルート	2026-10-02·第三批（PR TIMES 日本企
 prt-foodrink-media	フードリンク	フードリンク	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
 prt-gaishoku-assoc	日本フードサービス協会	フードサービス協会	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
 prt-kicchin-car	キッチンカー	Mellow	2026-10-02·第三批（PR TIMES 日本企业）	不接	PR TIMES 上搜不到这家企业
+rss-verdict-foodservice	Verdict Foodservice（GlobalData）	https://www.verdictfoodservice.com/feed/	2026-10-01·初始	不接	服务器读到的不是订阅文件（本机正常，对方挡数据中心 IP；规则 6，10/2），已暂停

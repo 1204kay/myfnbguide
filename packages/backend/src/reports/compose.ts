@@ -133,8 +133,11 @@ async function saveReport(kind: "daily" | "weekly" | "monthly", key: string, sta
   });
 }
 
-/** Daily report for Beijing date D covers [D-1 08:00, D 08:00) Beijing time. */
-export async function composeDaily(date: string, reason = "scheduled"): Promise<{ key: string; entries: number }> {
+/**
+ * Daily report for Beijing date D covers [D-1 08:00, D 08:00) Beijing time. With skipEmpty (catch-up),
+ * a period with nothing to print is not written, so a new site does not open with a week of blank issues.
+ */
+export async function composeDaily(date: string, reason = "scheduled", opts: { skipEmpty?: boolean } = {}): Promise<{ key: string; entries: number }> {
   const end = new Date(beijingMidnight(date).getTime() + 8 * 3600 * 1000);
   const start = new Date(end.getTime() - 86400000);
   const covered = await recentlyCovered("daily", date);
@@ -154,6 +157,7 @@ export async function composeDaily(date: string, reason = "scheduled"): Promise<
     items: perSection.get(label)!.map(({ category: _c, factKey: _f, ...entry }) => entry),
   }));
   const ordered = sections.flatMap((s) => s.items).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  if (opts.skipEmpty && ordered.length === 0) return { key: date, entries: 0 };
   const model = await modelFor("report");
   const lead = ordered.length ? await writeLead("daily", date, ordered, model) : null;
   const content = {
@@ -197,11 +201,12 @@ export function periodPrompt(kind: "weekly" | "monthly", startDate: string, endD
   };
 }
 
-async function composePeriod(kind: "weekly" | "monthly", key: string, startDate: string, endDateInclusive: string, reason: string) {
+async function composePeriod(kind: "weekly" | "monthly", key: string, startDate: string, endDateInclusive: string, reason: string, opts: { skipEmpty?: boolean } = {}) {
   const start = beijingMidnight(startDate);
   const end = beijingMidnight(addDays(endDateInclusive, 1));
   const all = await candidates(start, end);
   const top = all.slice(0, kind === "weekly" ? 40 : 60);
+  if (opts.skipEmpty && top.length === 0) return { key, entries: 0 };
   const dailyCount = (await sql<{ n: number }[]>`SELECT count(*) AS n FROM reports WHERE kind = 'daily' AND key >= ${startDate} AND key <= ${endDateInclusive}`)[0]?.n ?? 0;
   let themes: Array<{ heading: string; summary: string; storyRefs: ReportEntry[] }> = [];
   let headline = "";
@@ -240,23 +245,24 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
   return { key, entries: top.length };
 }
 
-export async function composeWeekly(label: string, reason = "scheduled") {
+export async function composeWeekly(label: string, reason = "scheduled", opts: { skipEmpty?: boolean } = {}) {
   const range = isoWeekRange(label);
   if (!range) throw new Error(`bad week label ${label}`);
-  return composePeriod("weekly", label, range.start, range.end, reason);
+  return composePeriod("weekly", label, range.start, range.end, reason, opts);
 }
 
-export async function composeMonthly(label: string, reason = "scheduled") {
+export async function composeMonthly(label: string, reason = "scheduled", opts: { skipEmpty?: boolean } = {}) {
   const m = /^(\d{4})-(\d{2})$/.exec(label);
   if (!m) throw new Error(`bad month label ${label}`);
   const start = `${label}-01`;
   const next = Number(m[2]) === 12 ? `${Number(m[1]) + 1}-01-01` : `${m[1]}-${String(Number(m[2]) + 1).padStart(2, "0")}-01`;
-  return composePeriod("monthly", label, start, addDays(next, -1), reason);
+  return composePeriod("monthly", label, start, addDays(next, -1), reason, opts);
 }
 
 /**
  * Catch-up: generates any missing daily report for the last `days` days (never the future and never
- * before the first report in the database), the last complete week and the last complete month.
+ * before the first report in the database), the last complete week and the last complete month. A
+ * missed period with nothing selected stays unwritten: catch-up fills gaps, it does not print blanks.
  */
 export async function catchUpReports(now = new Date(), days = 7): Promise<{ generated: string[] }> {
   const generated: string[] = [];
@@ -269,10 +275,7 @@ export async function catchUpReports(now = new Date(), days = 7): Promise<{ gene
     const d = addDays(latestDue, -i);
     if (first?.key && d < first.key) continue;
     const [exists] = await sql`SELECT 1 FROM reports WHERE kind = 'daily' AND key = ${d}`;
-    if (!exists) {
-      await composeDaily(d, "catch-up");
-      generated.push(`daily:${d}`);
-    }
+    if (!exists && (await composeDaily(d, "catch-up", { skipEmpty: true })).entries) generated.push(`daily:${d}`);
   }
   // Last complete ISO week (Monday 10:00 onwards).
   const dow = (new Date(`${today}T00:00:00Z`).getUTCDay() + 6) % 7;
@@ -280,10 +283,7 @@ export async function catchUpReports(now = new Date(), days = 7): Promise<{ gene
   const weekDue = dow > 0 || bjHour >= 10;
   if (weekDue) {
     const [w] = await sql`SELECT 1 FROM reports WHERE kind = 'weekly' AND key = ${lastWeek}`;
-    if (!w) {
-      await composeWeekly(lastWeek, "catch-up");
-      generated.push(`weekly:${lastWeek}`);
-    }
+    if (!w && (await composeWeekly(lastWeek, "catch-up", { skipEmpty: true })).entries) generated.push(`weekly:${lastWeek}`);
   }
   // Last complete month (1st 10:30 onwards).
   const [y, mo, dd] = today.split("-").map(Number) as [number, number, number];
@@ -291,10 +291,7 @@ export async function catchUpReports(now = new Date(), days = 7): Promise<{ gene
   const monthDue = dd > 1 || bjHour > 10 || (bjHour === 10 && Number(new Date(now.getTime() + 8 * 3600000).toISOString().slice(14, 16)) >= 30);
   if (monthDue) {
     const [m] = await sql`SELECT 1 FROM reports WHERE kind = 'monthly' AND key = ${prevMonth}`;
-    if (!m) {
-      await composeMonthly(prevMonth, "catch-up");
-      generated.push(`monthly:${prevMonth}`);
-    }
+    if (!m && (await composeMonthly(prevMonth, "catch-up", { skipEmpty: true })).entries) generated.push(`monthly:${prevMonth}`);
   }
   return { generated };
 }

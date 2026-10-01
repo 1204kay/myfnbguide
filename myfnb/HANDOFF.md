@@ -302,12 +302,12 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 4. 框架不解析 PDF。
 5. 采集不读 robots.txt；我们用 `check-sources.mjs` 每月人工复查。
 6. `tests/selection-eval-runtime.test.ts:101` 连按秒取整的 `wallSeconds` 也比，跨秒时偶尔失败（10/1 CI 遇到一次，重跑即过）。
-7. **补发会给新站补出空刊**：`catchUpReports` 在没有任何日报时补最近 7 天，周报月报也补，内容为空也写进去。我们已修（§5.5），**10/1 用户同意提 PR**。
-8. **日报报头写死「人工智能」**（`format.ts` 的 `MOTTO`）。我们已修（§5.5），**10/1 用户同意提 PR**。
+7. **补发会给新站补出空刊**：`catchUpReports` 在没有任何日报时补最近 7 天，周报月报也补，内容为空也写进去。我们已修（§5.5）。10/1 用户同意提 PR，但作者当天的 `8d5a39b` 已经改掉了（没有刊时只补最近一期；没有精选的日报不写入），**不再提**。
+8. **日报报头写死「人工智能」**（`format.ts` 的 `MOTTO`）。我们已修（§5.5）；作者的 `8d5a39b` 也改成按行业词显示，写法与我们的相同，**不再提**。
 
 ### 7.3 多语言
 
-2026-09-30 在作者的「想法交流」区开过讨论 [#37](https://github.com/KKKKhazix/AIHOT/discussions/37)（同一站点输出多种语言，以马来西亚三语为例）。2026-10-01 读者定为看中文的人，**我们不再需要多语言**；讨论帖没有回复，用户同意在帖里补一句说明并关闭。
+2026-09-30 在作者的「想法交流」区开过讨论 [#37](https://github.com/KKKKhazix/AIHOT/discussions/37)（同一站点输出多种语言，以马来西亚三语为例）。2026-10-01 读者定为看中文的人，**我们不再需要多语言**；讨论帖没有回复，经用户同意，当天补了一句说明并关闭（原因选「过时」）。
 
 ---
 
@@ -332,7 +332,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 1. ✅（2026-10-01）部署到 https://new.myfnbguide.com（§6）。重新部署或换服务器：在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key；新服务器记得在防火墙加 443（§12）。
 2. ✅（2026-10-01）方案定案（`plan-2026-10-01.md`）；第一批 20 个信源选定（§5.4）；`industry/` 按全球定位改写，补发空刊和报头两处修复（`34389d1`、`bd63a3d`），四项检查通过（§6）。
-3. **推上 `main`、等自动部署，然后在服务器上清理试跑期的旧数据**（用户跑，删了不能恢复，10/1 已告知用户删什么）。打开网页终端，整段粘贴：
+3. ✅ 推上 `main`（`6be6253`），10/1 自动部署完成（首页标题已是「全球餐饮业每日要闻」，13 个新信源随部署导入）。**接着在服务器上清理试跑期的旧数据**（用户跑，删了不能恢复，10/1 已告知用户删什么）。打开网页终端，整段粘贴：
 
    ```bash
    cd /opt/myfnbguide && sudo docker compose exec -T worker node scripts/delete-sources.ts "2026-10-01 改为全球定位，停用马来西亚来源" rss-mof-press web-lhdn-media rss-malaymail-money rss-malaysian-reserve rss-utusan-ekonomi rss-vulcan-post rss-grab-my-press web-sinchew-fnb web-enanyang-fnb rss-orientaldaily-business && sudo docker compose exec -T db psql -U aihot -d aihot -v ON_ERROR_STOP=1 -f - < myfnb/cleanup-2026-10-01.sql; cd ~
@@ -351,7 +351,8 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 7. **用户看一周真实日报**，每天 5 分钟。这一关用户说了算。
 8. **上线**：按 §5.6 自查一遍；§10 切换；加不认人的计数并改隐私说明（§2.4）；上线日期变了同步改 `changelog.json` 与两份条款的日期；开始分发（`research-2026-10-01.md` §6：没有一家同类只靠内容自己长起来；具体怎么发，等日报质量过关再定）。
 9. **第一周之后**：看后台「模型与评测」页的实际调用次数，校正 §11；每周数一次日报的地区分布（§2.2）；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）；每月跑一次 `sudo docker run --rm aihot-app node myfnb/check-sources.mjs`。
-10. **给作者**：提 §7.2 第 7、8 项两个 PR；在讨论帖 #37 补一句说明并关闭（10/1 用户已同意）。
+10. **合并上游 `8d5a39b`**（作者 10/1 的「improve recovery, public consistency and agent access」，174 个文件，+10,042/−2,246 行）：`git merge upstream/main`，冲突预计在 `packages/backend/src/reports/compose.ts`（取作者的，删掉我们的 `tests/report-catchup.test.ts` 或改成测作者的新行为）、`apps/web/app/features/report/format.ts` 与 `ReportPaper.tsx`（PR 1 的改动）；合并后跑四项检查，再推 `main`。读一遍作者这次的改动说明，看有没有需要改 `industry/` 的新配置。
+11. ✅（2026-10-01）讨论帖 #37 已补一句说明并关闭（用户同意）。§7.2 第 7、8 项作者已修，不提 PR。
 
 ---
 

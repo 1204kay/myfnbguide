@@ -132,7 +132,7 @@ test("resumed extraction and analysis publish the fetched body at its current re
   assert.equal(publication!.eligible, true);
   assert.equal(publication!.visibility, "public");
   assert.match(String(publication!.title), /连锁品牌/);
-  assert.match(String(publication!.summary), /评测/);
+  assert.match(String(publication!.summary), /开店数/);
   assert.ok(provider.hits() >= 5, "normal budgeted model stages used the local fixture");
 });
 

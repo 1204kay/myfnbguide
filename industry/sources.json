@@ -1,169 +1,17 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。两部分：马来西亚的政府机构、英文与马来文报纸和平台（标签“马来西亚”），全球的餐饮行业媒体（标签写地区）。华文报纸（星洲、南洋、东方）和日本的食品産業新聞社在正式服务器上抓不到，已去掉（myfnb/HANDOFF.md §5.4）。每个都用框架自己的采集代码试抓过；政府机构用 T1，其余用 T2（平台新闻稿刻意不给 T1）。全文一律不展示，只放摘要和原文链接。只接对 AI 没有任何限制的来源：robots.txt 不许抓的、robots.txt 点名拒绝任何 AI 爬虫或 Content-Signal 写 ai-input=no / ai-train=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只有通用「不得转载」条款的可以接（本站不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全球的餐饮行业媒体与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过；协会用 T1，媒体用 T2。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
   "sources": [
-    {
-      "id": "rss-mof-press",
-      "name": "财政部 MOF · 文告",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.mof.gov.my/portal/ms/berita/siaran-media?format=feed&type=rss",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "mof",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "马来西亚",
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "web-lhdn-media",
-      "name": "内陆税收局 LHDN · 公告与文告",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.hasil.gov.my/en/pengumuman-kenyataan-media/",
-        "itemSelector": "div.pengumuman-kenyataan-grid > a",
-        "titleSelector": "h5.pengumuman-kenyataan-title",
-        "publishedAtSelector": ".pengumuman-kenyataan-date",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "lhdn",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "马来西亚",
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-malaymail-money",
-      "name": "Malay Mail · Money",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.malaymail.com/feed/rss/money",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-malaysian-reserve",
-      "name": "The Malaysian Reserve",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://themalaysianreserve.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-utusan-ekonomi",
-      "name": "Utusan Malaysia · Ekonomi",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.utusan.com.my/category/ekonomi/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-vulcan-post",
-      "name": "Vulcan Post",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://vulcanpost.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "马来西亚",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-grab-my-press",
-      "name": "Grab Malaysia · 新闻稿",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.grab.com/my/press/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": true,
-      "owner_entity_id": "grab",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "马来西亚",
-        "平台"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
     {
       "id": "rss-fer",
       "name": "Foodservice Equipment Reports",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.fermag.com/feed/",
+        "denyCategories": [
+          "Appointments",
+          "Awards and Recognition",
+          "Event Coverage"
+        ],
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -186,6 +34,9 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.fsrmagazine.com/feed/",
+        "allowCategories": [
+          "Feature"
+        ],
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -208,6 +59,10 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.totalfood.com/feed/",
+        "denyCategories": [
+          "Events",
+          "Digital Issue"
+        ],
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -307,6 +162,322 @@
         "detail": {
           "maxFetches": 15,
           "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-pmq",
+      "name": "PMQ Pizza Magazine（美国，披萨业）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://pmq.com/feed/",
+        "denyCategories": [
+          "Sponsored Content",
+          "Webinars and Live Chats",
+          "Pizza Hall of Fame"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-verdict-foodservice",
+      "name": "Verdict Foodservice（英国，全球连锁）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.verdictfoodservice.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "英国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-gcr",
+      "name": "Global Coffee Report（咖啡业）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gcrmag.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "全球",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-barista-magazine",
+      "name": "Barista Magazine（咖啡馆经营）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.baristamagazine.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-qsrmedia-au",
+      "name": "QSR Media（澳洲与英国，快餐与连锁）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://qsrmedia.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        },
+        "detail": {
+          "maxFetches": 20,
+          "titleRegex": "og:title\" content=\"([^\"]+)\"",
+          "titleAuthoritative": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "澳洲",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-lumina",
+      "name": "Lumina Intelligence（英国，餐饮数据）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.lumina-intelligence.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "英国",
+        "研究"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hospitality-au",
+      "name": "Hospitality（澳洲）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hospitalitymagazine.com.au/feed/",
+        "denyCategories": [
+          "Awards",
+          "Golden Chef's Hat Awards",
+          "Openings"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "澳洲",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hospitality-news-me",
+      "name": "Hospitality News Middle East（中东）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hospitalitynewsmag.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "中东",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-restaurants-canada",
+      "name": "Restaurants Canada（加拿大餐馆协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.restaurantscanada.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "加拿大",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ristorazione-italiana",
+      "name": "Ristorazione Italiana Magazine（意大利）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ristorazioneitalianamagazine.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "欧洲",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-foodrink",
+      "name": "フードリンクニュース（日本，外食业）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodrink.co.jp/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "日本",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-canyin88-zixun",
+      "name": "红餐网 · 资讯（中国）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyin88.com/zixun/",
+        "itemSelector": "div.descBox h3",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-canyinj",
+      "name": "餐饮界（中国）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyinj.com/",
+        "itemSelector": "li.rtmj-box",
+        "linkSelector": "dd h3 a",
+        "titleSelector": "dd h3",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": " / (20\\d\\d-\\d\\d-\\d\\d)</div>",
           "publishedAtAuthoritative": true
         },
         "_aihot": {

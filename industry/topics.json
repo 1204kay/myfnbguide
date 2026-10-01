@@ -1,401 +1,601 @@
 {
-  "exportedAt": "2026-09-30",
+  "exportedAt": "2026-10-01",
   "groups": [
     {
       "key": "field",
       "name": "经营主题",
-      "blurb": "按经营的各个方面看：菜单、人才、成本、设备、外卖、税务……"
+      "blurb": "按经营的各个方面看：人与用工、成本、引流复购、菜单定价、AI 与自动化、开店……"
     },
     {
       "key": "genre",
-      "name": "地区与业态",
-      "blurb": "哪里、哪种餐饮在变：马来西亚、新加坡、中国……茶室、咖啡茶饮、快餐……"
+      "name": "品类与地区",
+      "blurb": "哪种餐饮、哪里在变：咖啡、茶饮、火锅、快餐……中国、日本、东南亚、美国……"
     },
     {
       "key": "company",
-      "name": "机构与品牌",
-      "blurb": "按机构、平台与品牌追踪：谁出了新规、谁改了费率、谁在扩张"
+      "name": "品牌与平台",
+      "blurb": "按品牌和平台追踪：谁在扩张、谁在关店、谁改了佣金"
     }
   ],
   "topics": [
     {
-      "slug": "menu-pricing",
-      "name": "菜单与定价",
+      "slug": "people",
+      "name": "人与用工",
       "group": "field",
-      "tags": ["菜单/定价"],
-      "definition": "菜单怎么设计、价格怎么定和调：各地餐饮业者的菜单与定价做法，涨价与平价策略。",
-      "related": ["cost-profit", "marketing", "ingredients"]
-    },
-    {
-      "slug": "marketing",
-      "name": "营销与顾客",
-      "group": "field",
-      "tags": ["营销/顾客", "节庆"],
-      "definition": "怎么让新客上门、老客回头：社交媒体与本地搜索、会员与复购、节庆营销和服务体验。",
-      "related": ["menu-pricing", "delivery", "tech"]
+      "tags": ["人与用工", "外劳"],
+      "definition": "招人、留人、排班与培训，工资与人工成本，缺工与外劳政策：各地餐饮业者怎么解决“人”的问题。",
+      "related": ["ai-automation", "cost-profit", "franchising"]
     },
     {
       "slug": "cost-profit",
       "name": "成本与利润",
       "group": "field",
-      "tags": ["成本/利润", "水电/能源"],
-      "definition": "餐饮店的钱花在哪、赚在哪：成本结构、毛利与利润、现金流，以及电费、燃气等能源成本的变化。",
-      "related": ["ingredients", "rent-location", "menu-pricing"]
+      "tags": ["成本/利润", "能源"],
+      "definition": "钱花在哪、赚在哪：毛利结构、食材与能源成本、涨价与价格战，单店怎么算账。",
+      "related": ["ingredients", "menu-pricing", "opening-expansion"]
     },
     {
       "slug": "ingredients",
       "name": "食材与供应链",
       "group": "field",
       "tags": ["食材/供应链"],
-      "definition": "食材的价格、供应与采购：鸡蛋、鸡肉、食用油、咖啡豆等主要食材的价格变化与供应链动态。",
-      "related": ["cost-profit", "menu-pricing", "packaging"]
+      "definition": "谁在供货、原料价格与短缺：咖啡豆、可可、牛肉、大米、食用油等主要原料的变化与采购做法。",
+      "related": ["cost-profit", "catering", "menu-pricing"]
     },
     {
-      "slug": "rent-location",
-      "name": "租金与选址",
+      "slug": "menu-pricing",
+      "name": "菜单与定价",
       "group": "field",
-      "tags": ["租金/选址"],
-      "definition": "店开在哪、租金多少：商场与店屋的租金变化、选址做法与商圈变化。",
-      "related": ["cost-profit", "openings", "financing"]
+      "tags": ["菜单/定价"],
+      "definition": "菜单怎么设计、价格怎么定和调：各地餐饮的定价做法、涨价与平价策略、爆品与菜单结构。",
+      "related": ["cost-profit", "new-products", "traffic-loyalty"]
     },
     {
-      "slug": "talent",
-      "name": "人才与管理",
+      "slug": "traffic-loyalty",
+      "name": "引流与回头客",
       "group": "field",
-      "tags": ["人才/管理", "外劳"],
-      "definition": "招人、留人、带团队：缺工与薪资、最低薪金、外劳政策、培训与排班管理。",
-      "related": ["epf-socso", "kesuma", "tech"]
+      "tags": ["引流/复购"],
+      "definition": "怎么让新客上门、老客回头：团购与短视频、会员与复购、服务体验和本地营销。",
+      "related": ["new-products", "delivery", "menu-pricing"]
+    },
+    {
+      "slug": "new-products",
+      "name": "新品与促销",
+      "group": "field",
+      "tags": ["新品/促销", "节庆"],
+      "definition": "同行在推什么：大品牌和特色品牌的新品、限定、联名与节庆促销，看灵感也看策略。",
+      "related": ["menu-pricing", "traffic-loyalty", "quick-service"]
     },
     {
       "slug": "delivery",
       "name": "外卖与平台",
       "group": "field",
       "tags": ["外卖/平台"],
-      "definition": "外卖平台的佣金与规则、外卖运营和云厨房的动态。",
-      "related": ["grab", "foodpanda", "marketing"]
+      "definition": "外卖平台的佣金、规则与新功能，外卖怎么做不亏钱，云厨房与外带。",
+      "related": ["traffic-loyalty", "tech", "meituan"]
     },
     {
-      "slug": "equipment",
-      "name": "设备与装修",
+      "slug": "ai-automation",
+      "name": "AI 与自动化",
       "group": "field",
-      "tags": ["厨房设备", "店面/装修"],
-      "definition": "餐饮业要买的硬件：炉具、排烟与新风、冷藏、店面家具、柜台与装修，新产品和业者的选用情况。",
-      "related": ["tech", "packaging", "openings"]
+      "tags": ["AI/自动化"],
+      "definition": "机器人、自动化设备与 AI 在餐饮店里的实际用法：能省多少人、多少钱，谁在大规模用。",
+      "related": ["people", "tech", "equipment"]
     },
     {
       "slug": "tech",
-      "name": "餐饮科技",
+      "name": "系统与科技",
       "group": "field",
       "tags": ["科技/系统"],
-      "definition": "收银点餐、支付、订位、库存与排班系统，以及自动化、机器人和 AI 在餐饮店的应用。",
-      "related": ["equipment", "delivery", "talent"]
+      "definition": "收银点餐、订位、排班与管理系统，支付方式的变化，餐饮科技公司的新产品。",
+      "related": ["ai-automation", "delivery", "equipment"]
+    },
+    {
+      "slug": "equipment",
+      "name": "厨房设备",
+      "group": "field",
+      "tags": ["厨房设备"],
+      "definition": "炉具、冷藏、清洗与烘焙设备：新产品、新用法和同行在用什么。",
+      "related": ["ai-automation", "store-design", "tech"]
+    },
+    {
+      "slug": "store-design",
+      "name": "店面与装修",
+      "group": "field",
+      "tags": ["店面/装修"],
+      "definition": "店面设计、装修与空间：怎么用更少的面积做更多生意，新店型的样子。",
+      "related": ["equipment", "opening-expansion", "coffee"]
+    },
+    {
+      "slug": "opening-expansion",
+      "name": "开店与扩张",
+      "group": "field",
+      "tags": ["开店/扩张", "租金/选址"],
+      "definition": "开店选址、租金、单店模型与投资回报，品牌的扩张节奏与新店型。",
+      "related": ["franchising", "closures", "going-global"]
+    },
+    {
+      "slug": "franchising",
+      "name": "加盟",
+      "group": "field",
+      "tags": ["加盟"],
+      "definition": "加盟还是直营，加盟商与总部的关系，加盟的账怎么算、坑在哪里。",
+      "related": ["opening-expansion", "closures", "people"]
+    },
+    {
+      "slug": "closures",
+      "name": "关店与倒闭",
+      "group": "field",
+      "tags": ["关店/倒闭"],
+      "definition": "谁在关店、为什么关：连锁收缩、倒闭与破产，失败的教训。",
+      "related": ["opening-expansion", "franchising", "cost-profit"]
+    },
+    {
+      "slug": "funding",
+      "name": "融资与上市",
+      "group": "field",
+      "tags": ["融资/上市"],
+      "definition": "餐饮品牌的融资、上市与并购，以及背后的经营数字。",
+      "related": ["opening-expansion", "going-global", "china"]
+    },
+    {
+      "slug": "going-global",
+      "name": "出海",
+      "group": "field",
+      "tags": ["出海"],
+      "definition": "中国和亚洲餐饮品牌走向海外：去哪里、怎么开、遇到什么问题。",
+      "related": ["opening-expansion", "southeast-asia", "tea-drinks"]
     },
     {
       "slug": "food-safety",
       "name": "食品安全与卫生",
       "group": "field",
       "tags": ["食品安全/卫生"],
-      "definition": "食品安全规定、卫生检查与执法，清洁与虫害防治，隔油池与下水道维护。",
-      "related": ["licensing", "halal", "kkm"]
+      "definition": "食品安全与卫生的规定、检查重点与执法，后厨清洁与维护的做法。",
+      "related": ["halal", "packaging", "catering"]
     },
     {
       "slug": "halal",
-      "name": "清真认证",
+      "name": "清真",
       "group": "field",
       "tags": ["清真"],
-      "definition": "清真认证的规定、申请与执法，以及清真餐饮市场的动态。",
-      "related": ["jakim", "food-safety", "licensing"]
+      "definition": "清真认证的规定与市场，清真餐饮在各地的发展。",
+      "related": ["food-safety", "middle-east", "southeast-asia"]
     },
     {
       "slug": "tax",
-      "name": "税务与电子发票",
+      "name": "税费",
       "group": "field",
-      "tags": ["税务", "电子发票"],
-      "definition": "销售与服务税、所得税和电子发票：规定、生效日期、豁免门槛与执法。",
-      "related": ["lhdn", "mof", "epf-socso"]
-    },
-    {
-      "slug": "epf-socso",
-      "name": "公积金与社险",
-      "group": "field",
-      "tags": ["公积金/社险"],
-      "definition": "雇主的公积金与社险缴纳：费率、适用对象、外籍员工的缴纳规定与执法。",
-      "related": ["kwsp", "perkeso", "talent"]
-    },
-    {
-      "slug": "licensing",
-      "name": "执照与准证",
-      "group": "field",
-      "tags": ["执照/准证"],
-      "definition": "营业执照、招牌执照、食物处理课程与伤寒针等准证规定，以及地方政府的执法。",
-      "related": ["food-safety", "tax", "openings"]
-    },
-    {
-      "slug": "financing",
-      "name": "融资与援助",
-      "group": "field",
-      "tags": ["融资/贷款"],
-      "definition": "中小企业贷款、政府援助与补贴，以及餐饮企业的融资与上市。",
-      "related": ["openings", "rent-location", "mof"]
-    },
-    {
-      "slug": "openings",
-      "name": "开店与关店",
-      "group": "field",
-      "tags": ["开店/加盟", "关店/倒闭"],
-      "definition": "开店与关店的动态：连锁扩张与收缩、加盟、进入或退出市场、倒闭潮。",
-      "related": ["financing", "rent-location", "talent"]
+      "tags": ["税费"],
+      "definition": "跟餐饮店有关的税费变化：营业税、消费税、关税与各种收费，任何国家。",
+      "related": ["cost-profit", "people", "packaging"]
     },
     {
       "slug": "packaging",
       "name": "包装与环保",
       "group": "field",
       "tags": ["包装/环保"],
-      "definition": "外卖包装、塑料禁令、食物浪费与环保规定。",
-      "related": ["delivery", "ingredients", "equipment"]
+      "definition": "外卖包装、减塑与环保规定，食物浪费的处理与做法。",
+      "related": ["delivery", "food-safety", "tax"]
     },
     {
-      "slug": "malaysia",
-      "name": "马来西亚",
+      "slug": "coffee",
+      "name": "咖啡",
       "group": "genre",
-      "tags": ["马来西亚"],
-      "definition": "马来西亚餐饮业的新闻：政策、成本、平台、品牌与市场。",
-      "related": ["singapore", "indonesia", "tax"]
+      "tags": ["咖啡"],
+      "definition": "咖啡店与咖啡连锁：品牌扩张、门店模型、咖啡豆价格与咖啡馆经营。",
+      "related": ["tea-drinks", "luckin", "starbucks"]
     },
     {
-      "slug": "singapore",
-      "name": "新加坡",
+      "slug": "tea-drinks",
+      "name": "茶饮",
       "group": "genre",
-      "tags": ["新加坡"],
-      "definition": "新加坡餐饮业的动态：小贩中心、连锁品牌、人力与成本。",
-      "related": ["malaysia", "hawkers", "hong-kong"]
+      "tags": ["茶饮"],
+      "definition": "新茶饮与奶茶：品牌、门店数、出海和价格战。",
+      "related": ["coffee", "mixue", "going-global"]
     },
     {
-      "slug": "indonesia",
-      "name": "印尼",
+      "slug": "hotpot",
+      "name": "火锅",
       "group": "genre",
-      "tags": ["印尼"],
-      "definition": "印尼餐饮市场的动态：本土与外来品牌、咖啡茶饮与外卖。",
-      "related": ["malaysia", "thailand", "vietnam"]
-    },
-    {
-      "slug": "thailand",
-      "name": "泰国",
-      "group": "genre",
-      "tags": ["泰国"],
-      "definition": "泰国餐饮市场的动态：连锁品牌、街头小吃、外卖与旅游餐饮。",
-      "related": ["vietnam", "indonesia", "malaysia"]
-    },
-    {
-      "slug": "vietnam",
-      "name": "越南",
-      "group": "genre",
-      "tags": ["越南"],
-      "definition": "越南餐饮市场的动态：咖啡、连锁扩张与消费变化。",
-      "related": ["thailand", "indonesia", "coffee-tea"]
-    },
-    {
-      "slug": "china",
-      "name": "中国",
-      "group": "genre",
-      "tags": ["中国"],
-      "definition": "中国餐饮市场的动态：茶饮与咖啡连锁、价格竞争、品牌出海与业态变化。",
-      "related": ["taiwan", "hong-kong", "coffee-tea"]
-    },
-    {
-      "slug": "taiwan",
-      "name": "台湾",
-      "group": "genre",
-      "tags": ["台湾"],
-      "definition": "台湾餐饮业的动态：连锁品牌、经营做法与人力。",
-      "related": ["china", "hong-kong", "japan"]
-    },
-    {
-      "slug": "hong-kong",
-      "name": "香港",
-      "group": "genre",
-      "tags": ["香港"],
-      "definition": "香港餐饮业的动态：开业与结业、租金、消费变化与茶餐厅。",
-      "related": ["china", "taiwan", "singapore"]
-    },
-    {
-      "slug": "japan",
-      "name": "日本",
-      "group": "genre",
-      "tags": ["日本"],
-      "definition": "日本餐饮业的动态：连锁经营、人手短缺与自动化、价格与消费。",
-      "related": ["korea", "taiwan", "tech"]
-    },
-    {
-      "slug": "korea",
-      "name": "韩国",
-      "group": "genre",
-      "tags": ["韩国"],
-      "definition": "韩国餐饮业的动态：连锁与加盟、外卖、韩国品牌出海。",
-      "related": ["japan", "china", "openings"]
-    },
-    {
-      "slug": "usa",
-      "name": "美国",
-      "group": "genre",
-      "tags": ["美国"],
-      "definition": "美国餐饮业的动态：大型连锁的业绩与策略、快餐、科技应用与劳动政策。",
-      "related": ["quick-service", "tech", "mcdonalds"]
-    },
-    {
-      "slug": "hawkers",
-      "name": "小贩与食阁",
-      "group": "genre",
-      "tags": ["小贩/食阁"],
-      "definition": "小贩、档口、食阁与夜市：摊位租金、执照、传承与经营。",
-      "related": ["kopitiam", "malaysia", "singapore"]
-    },
-    {
-      "slug": "kopitiam",
-      "name": "茶室与嘛嘛档",
-      "group": "genre",
-      "tags": ["茶室/嘛嘛档"],
-      "definition": "Kopitiam 咖啡店、茶餐室与嘛嘛档的经营、成本与转型。",
-      "related": ["hawkers", "coffee-tea", "malaysia"]
-    },
-    {
-      "slug": "coffee-tea",
-      "name": "咖啡与茶饮",
-      "group": "genre",
-      "tags": ["咖啡/茶饮"],
-      "definition": "咖啡馆与咖啡、奶茶、茶饮连锁：扩张、价格竞争、新品类与供应链。",
-      "related": ["zus", "mixue", "china"]
+      "tags": ["火锅"],
+      "definition": "火锅品类的门店、价格、复购与新玩法。",
+      "related": ["full-service", "haidilao", "china"]
     },
     {
       "slug": "quick-service",
       "name": "快餐",
       "group": "genre",
       "tags": ["快餐"],
-      "definition": "快餐连锁的动态：价格与套餐、扩张、自助点餐与自动化。",
-      "related": ["mcdonalds", "kfc", "usa"]
+      "definition": "快餐与快休闲连锁：价格战、得来速、数字化与扩张。",
+      "related": ["mcdonalds", "kfc", "new-products"]
     },
     {
-      "slug": "restaurants",
-      "name": "餐厅与酒楼",
+      "slug": "full-service",
+      "name": "正餐",
       "group": "genre",
-      "tags": ["餐厅/酒楼"],
-      "definition": "中餐馆、酒楼与各类正餐餐厅：经营、成本、人手与消费变化。",
-      "related": ["menu-pricing", "talent", "catering"]
+      "tags": ["正餐"],
+      "definition": "正餐与休闲餐厅：客单价、翻台、服务与成本。",
+      "related": ["hotpot", "menu-pricing", "people"]
     },
     {
       "slug": "bakery",
       "name": "烘焙与甜品",
       "group": "genre",
       "tags": ["烘焙/甜品"],
-      "definition": "面包店、蛋糕与甜品店的经营、原料价格与连锁动态。",
-      "related": ["ingredients", "coffee-tea", "openings"]
+      "definition": "面包店、甜品与烘焙连锁：品类风向、价格与开店。",
+      "related": ["coffee", "new-products", "equipment"]
+    },
+    {
+      "slug": "snacks-stalls",
+      "name": "小吃与档口",
+      "group": "genre",
+      "tags": ["小吃/档口"],
+      "definition": "小吃、街边档口与小店：小本生意怎么做、怎么活下来。",
+      "related": ["opening-expansion", "cost-profit", "china"]
     },
     {
       "slug": "catering",
-      "name": "团膳与中央厨房",
+      "name": "团餐与中央厨房",
       "group": "genre",
-      "tags": ["团膳/中央厨房"],
-      "definition": "团膳、酒席承办、学校与机构餐饮，以及中央厨房与预制菜。",
-      "related": ["food-safety", "equipment", "restaurants"]
+      "tags": ["团餐/中央厨房"],
+      "definition": "团餐、机构餐饮与中央厨房：规模化出餐的做法与生意。",
+      "related": ["ingredients", "food-safety", "equipment"]
     },
     {
-      "slug": "lhdn",
-      "name": "内陆税收局 LHDN",
-      "group": "company",
-      "tags": ["内陆税收局", "entity:lhdn"],
-      "entityId": "lhdn",
-      "definition": "内陆税收局的公告与文告：所得税、销售与服务税、电子发票的规定、期限与执法。",
-      "related": ["tax", "mof", "kwsp"]
+      "slug": "bars",
+      "name": "酒吧与酒饮",
+      "group": "genre",
+      "tags": ["酒吧/酒饮"],
+      "definition": "酒吧、小酒馆与餐厅酒饮：品类风向和经营。",
+      "related": ["full-service", "new-products", "uk-europe"]
     },
     {
-      "slug": "kwsp",
-      "name": "公积金局 KWSP",
-      "group": "company",
-      "tags": ["公积金局", "entity:kwsp"],
-      "entityId": "kwsp",
-      "definition": "公积金局的缴纳规定、费率与执法，包括外籍员工的公积金。",
-      "related": ["perkeso", "epf-socso", "talent"]
+      "slug": "china",
+      "name": "中国",
+      "group": "genre",
+      "tags": ["中国"],
+      "definition": "中国餐饮业：品类与品牌的起落、价格战、开店关店与经营做法。",
+      "related": ["going-global", "tea-drinks", "hotpot"]
     },
     {
-      "slug": "perkeso",
-      "name": "社险机构 PERKESO",
-      "group": "company",
-      "tags": ["社险机构", "entity:perkeso"],
-      "entityId": "perkeso",
-      "definition": "社险机构的缴纳规定与计划：雇员社会保险、就业保险与执法。",
-      "related": ["kwsp", "epf-socso", "kesuma"]
+      "slug": "hong-kong",
+      "name": "香港",
+      "group": "genre",
+      "tags": ["香港"],
+      "definition": "香港餐饮业的经营、开关店与政策。",
+      "related": ["china", "taiwan", "southeast-asia"]
     },
     {
-      "slug": "kpdn",
-      "name": "国内贸易与生活成本部 KPDN",
-      "group": "company",
-      "tags": ["KPDN", "entity:kpdn"],
-      "entityId": "kpdn",
-      "definition": "国内贸易与生活成本部：价格管制、津贴食用油、Menu Rahmah 与标价执法。",
-      "related": ["ingredients", "menu-pricing", "mof"]
+      "slug": "taiwan",
+      "name": "台湾",
+      "group": "genre",
+      "tags": ["台湾"],
+      "definition": "台湾餐饮业的经营、品牌与市场。",
+      "related": ["china", "hong-kong", "japan"]
     },
     {
-      "slug": "kkm",
-      "name": "卫生部 KKM",
-      "group": "company",
-      "tags": ["卫生部", "entity:kkm"],
-      "entityId": "kkm",
-      "definition": "卫生部的食品安全规定、卫生检查、关闭令与禁烟执法。",
-      "related": ["food-safety", "licensing", "jakim"]
+      "slug": "japan",
+      "name": "日本",
+      "group": "genre",
+      "tags": ["日本"],
+      "definition": "日本餐饮业：连锁的经营数字、人手短缺的应对、新业态。",
+      "related": ["korea", "saizeriya", "sushiro"]
     },
     {
-      "slug": "jakim",
-      "name": "伊斯兰发展局 JAKIM",
-      "group": "company",
-      "tags": ["JAKIM", "entity:jakim"],
-      "entityId": "jakim",
-      "definition": "伊斯兰发展局的清真认证规定、申请与执法。",
-      "related": ["halal", "kkm", "food-safety"]
+      "slug": "korea",
+      "name": "韩国",
+      "group": "genre",
+      "tags": ["韩国"],
+      "definition": "韩国餐饮业：外卖、加盟、自动化与品牌出海。",
+      "related": ["japan", "ai-automation", "franchising"]
     },
     {
-      "slug": "kesuma",
-      "name": "人力资源部 KESUMA",
-      "group": "company",
-      "tags": ["人力资源部", "entity:kesuma"],
-      "entityId": "kesuma",
-      "definition": "人力资源部与劳工局：最低薪金、雇佣法令、外劳招聘与劳资规定。",
-      "related": ["talent", "imigresen", "kwsp"]
+      "slug": "southeast-asia",
+      "name": "东南亚",
+      "group": "genre",
+      "tags": ["东南亚", "马来西亚", "新加坡", "印尼", "泰国", "越南", "菲律宾"],
+      "definition": "东南亚各国的餐饮市场、品牌扩张与经营变化。",
+      "related": ["going-global", "halal", "grab"]
     },
     {
-      "slug": "imigresen",
-      "name": "移民局 Imigresen",
-      "group": "company",
-      "tags": ["移民局", "entity:imigresen"],
-      "entityId": "imigresen",
-      "definition": "移民局的外劳准证、执法与突击检查。",
-      "related": ["talent", "kesuma", "licensing"]
+      "slug": "india",
+      "name": "印度",
+      "group": "genre",
+      "tags": ["印度"],
+      "definition": "印度餐饮市场：连锁扩张、外卖平台与消费变化。",
+      "related": ["southeast-asia", "middle-east", "delivery"]
     },
     {
-      "slug": "bnm",
-      "name": "国家银行 BNM",
-      "group": "company",
-      "tags": ["国家银行", "entity:bnm"],
-      "entityId": "bnm",
-      "definition": "国家银行的利率决定、中小企业融资计划与支付规定。",
-      "related": ["financing", "mof", "dosm"]
+      "slug": "middle-east",
+      "name": "中东",
+      "group": "genre",
+      "tags": ["中东"],
+      "definition": "中东餐饮市场：品牌进入、经济数据与经营。",
+      "related": ["halal", "india", "going-global"]
     },
     {
-      "slug": "dosm",
-      "name": "统计局 DOSM",
-      "group": "company",
-      "tags": ["统计局", "entity:dosm"],
-      "entityId": "dosm",
-      "definition": "统计局发布的餐饮业相关数据：服务业营收、通胀与消费。",
-      "related": ["bnm", "mof", "malaysia"]
+      "slug": "australia",
+      "name": "澳洲",
+      "group": "genre",
+      "tags": ["澳洲"],
+      "definition": "澳洲与新西兰的餐饮业：成本、用工与经营。",
+      "related": ["uk-europe", "usa", "people"]
     },
     {
-      "slug": "mof",
-      "name": "财政部 MOF",
+      "slug": "usa",
+      "name": "美国",
+      "group": "genre",
+      "tags": ["美国"],
+      "definition": "美国餐饮业：大型连锁的策略、同店销售、价格战与科技应用。",
+      "related": ["quick-service", "canada", "mcdonalds"]
+    },
+    {
+      "slug": "canada",
+      "name": "加拿大",
+      "group": "genre",
+      "tags": ["加拿大"],
+      "definition": "加拿大餐饮业的成本、客流与政策。",
+      "related": ["usa", "people", "cost-profit"]
+    },
+    {
+      "slug": "uk-europe",
+      "name": "英国与欧洲",
+      "group": "genre",
+      "tags": ["英国", "欧洲"],
+      "definition": "英国和欧洲的餐饮市场：连锁表现、成本与税负、经营做法。",
+      "related": ["usa", "australia", "bars"]
+    },
+    {
+      "slug": "latin-america",
+      "name": "拉美",
+      "group": "genre",
+      "tags": ["拉美"],
+      "definition": "拉丁美洲的餐饮市场与品牌。",
+      "related": ["usa", "going-global", "delivery"]
+    },
+    {
+      "slug": "mcdonalds",
+      "name": "麦当劳",
       "group": "company",
-      "tags": ["财政部", "entity:mof"],
-      "entityId": "mof",
-      "definition": "财政部的预算案、税务与援助措施。",
-      "related": ["tax", "lhdn", "financing"]
+      "tags": ["麦当劳", "entity:mcdonalds"],
+      "entityId": "mcdonalds",
+      "definition": "麦当劳的策略、菜单、科技与门店：全球最大的餐饮连锁在怎么做。",
+      "related": ["kfc", "quick-service", "ai-automation"]
+    },
+    {
+      "slug": "kfc",
+      "name": "肯德基",
+      "group": "company",
+      "tags": ["肯德基", "entity:kfc"],
+      "entityId": "kfc",
+      "definition": "肯德基在各地的经营、菜单与扩张。",
+      "related": ["yumchina", "mcdonalds", "quick-service"]
+    },
+    {
+      "slug": "yumchina",
+      "name": "百胜中国",
+      "group": "company",
+      "tags": ["百胜中国", "entity:yumchina"],
+      "entityId": "yumchina",
+      "definition": "百胜中国（肯德基、必胜客在中国的经营者）的门店、价格与数字化。",
+      "related": ["kfc", "pizzahut", "china"]
+    },
+    {
+      "slug": "starbucks",
+      "name": "星巴克",
+      "group": "company",
+      "tags": ["星巴克", "entity:starbucks"],
+      "entityId": "starbucks",
+      "definition": "星巴克的门店调整、策略转向与各地市场。",
+      "related": ["luckin", "coffee", "cotti"]
+    },
+    {
+      "slug": "luckin",
+      "name": "瑞幸",
+      "group": "company",
+      "tags": ["瑞幸", "entity:luckin"],
+      "entityId": "luckin",
+      "definition": "瑞幸咖啡的门店、价格与出海。",
+      "related": ["cotti", "starbucks", "coffee"]
+    },
+    {
+      "slug": "mixue",
+      "name": "蜜雪冰城",
+      "group": "company",
+      "tags": ["蜜雪冰城", "entity:mixue"],
+      "entityId": "mixue",
+      "definition": "蜜雪冰城的门店、供应链与海外扩张。",
+      "related": ["tea-drinks", "chagee", "going-global"]
+    },
+    {
+      "slug": "chagee",
+      "name": "霸王茶姬",
+      "group": "company",
+      "tags": ["霸王茶姬", "entity:chagee"],
+      "entityId": "chagee",
+      "definition": "霸王茶姬的门店、上市与出海。",
+      "related": ["mixue", "heytea", "tea-drinks"]
+    },
+    {
+      "slug": "heytea",
+      "name": "喜茶",
+      "group": "company",
+      "tags": ["喜茶", "entity:heytea"],
+      "entityId": "heytea",
+      "definition": "喜茶的门店策略、加盟与产品。",
+      "related": ["chagee", "guming", "tea-drinks"]
+    },
+    {
+      "slug": "guming",
+      "name": "古茗",
+      "group": "company",
+      "tags": ["古茗", "entity:guming"],
+      "entityId": "guming",
+      "definition": "古茗的门店、加盟与供应链。",
+      "related": ["chabaidao", "mixue", "tea-drinks"]
+    },
+    {
+      "slug": "chabaidao",
+      "name": "茶百道",
+      "group": "company",
+      "tags": ["茶百道", "entity:chabaidao"],
+      "entityId": "chabaidao",
+      "definition": "茶百道的门店、加盟与市场。",
+      "related": ["guming", "heytea", "tea-drinks"]
+    },
+    {
+      "slug": "cotti",
+      "name": "库迪",
+      "group": "company",
+      "tags": ["库迪", "entity:cotti"],
+      "entityId": "cotti",
+      "definition": "库迪咖啡的门店、价格与新业务。",
+      "related": ["luckin", "coffee", "china"]
+    },
+    {
+      "slug": "haidilao",
+      "name": "海底捞",
+      "group": "company",
+      "tags": ["海底捞", "entity:haidilao"],
+      "entityId": "haidilao",
+      "definition": "海底捞的经营、新品牌与海外门店。",
+      "related": ["hotpot", "china", "going-global"]
+    },
+    {
+      "slug": "pizzahut",
+      "name": "必胜客",
+      "group": "company",
+      "tags": ["必胜客", "entity:pizzahut"],
+      "entityId": "pizzahut",
+      "definition": "必胜客的经营、菜单与门店。",
+      "related": ["dominos", "yumchina", "quick-service"]
+    },
+    {
+      "slug": "dominos",
+      "name": "达美乐",
+      "group": "company",
+      "tags": ["达美乐", "entity:dominos"],
+      "entityId": "dominos",
+      "definition": "达美乐的外卖模式、门店与各地市场。",
+      "related": ["pizzahut", "delivery", "quick-service"]
+    },
+    {
+      "slug": "burgerking",
+      "name": "汉堡王",
+      "group": "company",
+      "tags": ["汉堡王", "entity:burgerking"],
+      "entityId": "burgerking",
+      "definition": "汉堡王的改造计划、门店与加盟。",
+      "related": ["mcdonalds", "quick-service", "franchising"]
+    },
+    {
+      "slug": "subway",
+      "name": "赛百味",
+      "group": "company",
+      "tags": ["赛百味", "entity:subway"],
+      "entityId": "subway",
+      "definition": "赛百味的门店调整、加盟与菜单。",
+      "related": ["franchising", "quick-service", "closures"]
+    },
+    {
+      "slug": "chipotle",
+      "name": "Chipotle",
+      "group": "company",
+      "tags": ["Chipotle", "entity:chipotle"],
+      "entityId": "chipotle",
+      "definition": "Chipotle 的门店、科技与运营做法。",
+      "related": ["quick-service", "ai-automation", "usa"]
+    },
+    {
+      "slug": "jollibee",
+      "name": "快乐蜂",
+      "group": "company",
+      "tags": ["快乐蜂", "entity:jollibee"],
+      "entityId": "jollibee",
+      "definition": "快乐蜂集团的品牌、并购与海外扩张。",
+      "related": ["going-global", "southeast-asia", "quick-service"]
+    },
+    {
+      "slug": "saizeriya",
+      "name": "萨莉亚",
+      "group": "company",
+      "tags": ["萨莉亚", "entity:saizeriya"],
+      "entityId": "saizeriya",
+      "definition": "萨莉亚的低价模式、门店与经营数字。",
+      "related": ["japan", "menu-pricing", "full-service"]
+    },
+    {
+      "slug": "sushiro",
+      "name": "寿司郎",
+      "group": "company",
+      "tags": ["寿司郎", "entity:sushiro"],
+      "entityId": "sushiro",
+      "definition": "寿司郎的门店、出海与运营。",
+      "related": ["japan", "going-global", "ai-automation"]
+    },
+    {
+      "slug": "yoshinoya",
+      "name": "吉野家",
+      "group": "company",
+      "tags": ["吉野家", "entity:yoshinoya"],
+      "entityId": "yoshinoya",
+      "definition": "吉野家的门店、价格与新业态。",
+      "related": ["japan", "quick-service", "menu-pricing"]
+    },
+    {
+      "slug": "timhortons",
+      "name": "Tim Hortons",
+      "group": "company",
+      "tags": ["Tim Hortons", "entity:timhortons"],
+      "entityId": "timhortons",
+      "definition": "Tim Hortons 的门店与海外市场。",
+      "related": ["coffee", "canada", "dunkin"]
+    },
+    {
+      "slug": "dunkin",
+      "name": "Dunkin'",
+      "group": "company",
+      "tags": ["Dunkin'", "entity:dunkin"],
+      "entityId": "dunkin",
+      "definition": "Dunkin' 的门店、饮品与市场。",
+      "related": ["coffee", "timhortons", "usa"]
+    },
+    {
+      "slug": "meituan",
+      "name": "美团",
+      "group": "company",
+      "tags": ["美团", "entity:meituan"],
+      "entityId": "meituan",
+      "definition": "美团外卖与到店业务的规则、佣金与海外业务（Keeta）。",
+      "related": ["delivery", "eleme", "china"]
+    },
+    {
+      "slug": "eleme",
+      "name": "饿了么",
+      "group": "company",
+      "tags": ["饿了么", "entity:eleme"],
+      "entityId": "eleme",
+      "definition": "饿了么的规则、补贴与商家政策。",
+      "related": ["meituan", "delivery", "china"]
+    },
+    {
+      "slug": "doordash",
+      "name": "DoorDash",
+      "group": "company",
+      "tags": ["DoorDash", "entity:doordash"],
+      "entityId": "doordash",
+      "definition": "DoorDash 的佣金、功能与商家工具。",
+      "related": ["ubereats", "delivery", "usa"]
+    },
+    {
+      "slug": "ubereats",
+      "name": "Uber Eats",
+      "group": "company",
+      "tags": ["Uber Eats", "entity:ubereats"],
+      "entityId": "ubereats",
+      "definition": "Uber Eats 的佣金、功能与市场。",
+      "related": ["doordash", "delivery", "grab"]
     },
     {
       "slug": "grab",
@@ -403,8 +603,8 @@
       "group": "company",
       "tags": ["Grab", "entity:grab"],
       "entityId": "grab",
-      "definition": "Grab 在马来西亚与东南亚的外卖、支付与商家规则动态。",
-      "related": ["foodpanda", "shopeefood", "delivery"]
+      "definition": "Grab 外卖的规则、佣金与东南亚市场。",
+      "related": ["foodpanda", "delivery", "southeast-asia"]
     },
     {
       "slug": "foodpanda",
@@ -412,89 +612,17 @@
       "group": "company",
       "tags": ["foodpanda", "entity:foodpanda"],
       "entityId": "foodpanda",
-      "definition": "foodpanda 的商家佣金、规则与业务动态。",
-      "related": ["grab", "shopeefood", "delivery"]
+      "definition": "foodpanda 的规则、佣金与市场变化。",
+      "related": ["grab", "delivery", "southeast-asia"]
     },
     {
-      "slug": "shopeefood",
-      "name": "ShopeeFood",
+      "slug": "deliveroo",
+      "name": "Deliveroo",
       "group": "company",
-      "tags": ["ShopeeFood", "entity:shopeefood"],
-      "entityId": "shopeefood",
-      "definition": "ShopeeFood 的商家规则与业务动态。",
-      "related": ["grab", "foodpanda", "delivery"]
-    },
-    {
-      "slug": "mcdonalds",
-      "name": "麦当劳 McDonald's",
-      "group": "company",
-      "tags": ["麦当劳", "entity:mcdonalds"],
-      "entityId": "mcdonalds",
-      "definition": "麦当劳在马来西亚与全球的动态：业绩、价格与套餐、扩张与科技应用。",
-      "related": ["kfc", "quick-service", "usa"]
-    },
-    {
-      "slug": "kfc",
-      "name": "肯德基 KFC",
-      "group": "company",
-      "tags": ["肯德基", "entity:kfc"],
-      "entityId": "kfc",
-      "definition": "肯德基在马来西亚与全球的动态：门店扩张与收缩、价格与经营策略。",
-      "related": ["mcdonalds", "quick-service", "malaysia"]
-    },
-    {
-      "slug": "starbucks",
-      "name": "星巴克 Starbucks",
-      "group": "company",
-      "tags": ["星巴克", "entity:starbucks"],
-      "entityId": "starbucks",
-      "definition": "星巴克在马来西亚与全球的动态：业绩、门店策略与咖啡市场的竞争。",
-      "related": ["luckin", "zus", "coffee-tea"]
-    },
-    {
-      "slug": "mixue",
-      "name": "蜜雪冰城 Mixue",
-      "group": "company",
-      "tags": ["蜜雪冰城", "entity:mixue"],
-      "entityId": "mixue",
-      "definition": "蜜雪冰城的门店扩张、出海与低价茶饮模式，包括在东南亚的动态。",
-      "related": ["chagee", "luckin", "coffee-tea"]
-    },
-    {
-      "slug": "luckin",
-      "name": "瑞幸咖啡 Luckin",
-      "group": "company",
-      "tags": ["瑞幸", "entity:luckin"],
-      "entityId": "luckin",
-      "definition": "瑞幸咖啡的门店扩张、价格策略与海外市场动态。",
-      "related": ["starbucks", "zus", "coffee-tea"]
-    },
-    {
-      "slug": "chagee",
-      "name": "霸王茶姬 CHAGEE",
-      "group": "company",
-      "tags": ["霸王茶姬", "entity:chagee"],
-      "entityId": "chagee",
-      "definition": "霸王茶姬的门店扩张与在马来西亚、东南亚的动态。",
-      "related": ["mixue", "tealive", "coffee-tea"]
-    },
-    {
-      "slug": "zus",
-      "name": "ZUS Coffee",
-      "group": "company",
-      "tags": ["ZUS Coffee", "entity:zus"],
-      "entityId": "zus",
-      "definition": "ZUS Coffee 的门店扩张、融资与海外市场动态。",
-      "related": ["tealive", "starbucks", "coffee-tea"]
-    },
-    {
-      "slug": "tealive",
-      "name": "Tealive",
-      "group": "company",
-      "tags": ["Tealive", "entity:tealive"],
-      "entityId": "tealive",
-      "definition": "Tealive 与母公司 Loob Holding 的门店、品牌与海外市场动态。",
-      "related": ["zus", "chagee", "coffee-tea"]
+      "tags": ["Deliveroo", "entity:deliveroo"],
+      "entityId": "deliveroo",
+      "definition": "Deliveroo 的佣金、功能与市场。",
+      "related": ["ubereats", "delivery", "uk-europe"]
     }
   ]
 }

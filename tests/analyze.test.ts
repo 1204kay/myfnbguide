@@ -45,9 +45,9 @@ const provider = await stub((_hit, req) => {
   if (step === "score") return answer({ attentionScore: scoreAnswers[marker]!.shift() });
   if (step === "understand") {
     if (marker === "SENSITIVE") return new Reply(400, { contentFilter: [{ level: 1, role: "user" }], error: { code: "1301", message: "系统检测到输入或生成内容可能包含不安全或敏感内容" } });
-    return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "公积金", "外劳", "不存在的标签"], editorialJudgment: `理由 ${marker}`, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
+    return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "工资", "外劳", "不存在的标签"], editorialJudgment: `理由 ${marker}`, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
   }
-  if (step === "structure") return answer({ category: "malaysia", tags: ["政策/法规", "税务"], subjects: ["kwsp", "unknown-co"], fact: { title: `事实 ${marker}`, subject: "某公司", action: "发布", object: "模型", occurredAt: null } });
+  if (step === "structure") return answer({ category: "policy", tags: ["政策/法规", "税务"], subjects: ["mcdonalds", "unknown-co"], fact: { title: `事实 ${marker}`, subject: "某公司", action: "发布", object: "模型", occurredAt: null } });
   return answer(`title_zh: 翻译标题 ${marker}\nsummary_zh: 翻译摘要 ${marker}。第二句补充影响。`);
 });
 for (const env of ["DASHSCOPE_BASE_URL", "ZHIPU_BASE_URL", "DEEPSEEK_BASE_URL"]) process.env[env] = `${provider.url}/v1`;
@@ -98,9 +98,9 @@ test("a selected item: prefilter, two scores, the content understanding and the 
   assert.deepEqual([res!.output!.selected, res!.output!.score], [true, 75], "78 + 72 = 150 >= 120");
   assert.deepEqual(calls("CLEAR").sort(), ["prefilter", "score", "score", "structure", "understand"]);
   const r = await row(id);
-  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "malaysia", 5]);
-  assert.deepEqual(r.tags, ["政策/法规", "公积金/社险", "外劳", "公积金局"], "vocabulary tags (synonyms mapped, unknown dropped) and the subject's tag");
-  assert.deepEqual(r.subjects, ["kwsp"]);
+  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "policy", 5]);
+  assert.deepEqual(r.tags, ["政策/法规", "人与用工", "外劳", "麦当劳"], "vocabulary tags (synonyms mapped, unknown dropped) and the subject's tag");
+  assert.deepEqual(r.subjects, ["mcdonalds"]);
   assert.deepEqual([r.output.writer, r.output.itemType, r.output.prefilter.label, r.output.fact.title], ["understand", "policy_change", "PASS", "事实 CLEAR"]);
   const score = requests.find((q) => q.marker === "CLEAR" && q.step === "score")!;
   assert.match(score.user, /【标题】\nCLEAR model release/, "the score reads the original title, before any writing");
@@ -122,7 +122,7 @@ test("a near-selected item is written like a selected one; below the floor it is
   const summarize = requests.find((q) => q.marker === "LOW" && q.step === "summarize")!;
   assert.equal(summarize.body.messages.length, 1, "the title/summary prompt is one user message");
   assert.equal(summarize.body.response_format, undefined, "answered in its own text format");
-  assert.deepEqual((await row(lowId)).tags, ["政策/法规", "税务", "公积金局"], "structure tags");
+  assert.deepEqual((await row(lowId)).tags, ["政策/法规", "税费", "麦当劳"], "structure tags");
 });
 
 test("the prefilter's BLOCK stops everything; UNKNOWN goes on like PASS", async () => {
@@ -178,8 +178,8 @@ test("guards: a company the input does not name is not written in; long summarie
   const guarded = enforceIdentity(input, { titleZh: "Grab 调高商家佣金", summaryZh: "某外卖平台调高商家佣金。" });
   assert.deepEqual([guarded.titleZh, guarded.summaryZh, guarded.identityGuard.outcome], ["某外卖平台调高佣金", "某外卖平台调高商家佣金。", "fallback"]);
   // The identity lexicon: a Chinese rendering of a company the input names in English is no invention.
-  const irb = { title: "Inland Revenue Board raises the e-invoice exemption threshold", text: "The Inland Revenue Board said businesses below the new threshold are exempt.", sourceKind: "rss" };
-  assert.equal(enforceIdentity(irb, { titleZh: "内陆税收局调高电子发票豁免门槛", summaryZh: "内陆税收局表示，低于新门槛的企业可豁免电子发票。" }).identityGuard.outcome, "pass");
+  const mcd = { title: "McDonald's raises menu prices across US restaurants", text: "McDonald's said menu prices rose by about 3% this year.", sourceKind: "rss" };
+  assert.equal(enforceIdentity(mcd, { titleZh: "麦当劳上调美国门店的菜单价格", summaryZh: "麦当劳表示，今年菜单价格上调约 3%。" }).identityGuard.outcome, "pass");
   const long = "第一句交代了谁做了什么以及关键结果，这一句本身已经足够说明核心事件的来龙去脉。".repeat(3) + "第二句补充数字。".repeat(20);
   assert.ok(compactAnswerFirstSummary(long).length <= 190);
   assert.deepEqual(parseTranslateOutput("title_zh: 标题\nsummary_zh: 第一句。\n第二句。"), { titleZh: "标题", summaryZh: "第一句。\n第二句。", bodyZh: "" });

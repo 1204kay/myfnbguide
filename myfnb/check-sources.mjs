@@ -1,13 +1,19 @@
 // Re-checks every source in industry/sources.json against the collection rule on the terms page:
-// robots.txt must allow the path we fetch, must not turn away any AI crawler or fetcher, and its
-// Content-Signal must not say ai-input=no or ai-train=no. Sources change their robots.txt; the framework
-// does not read it, so run this monthly, and on a candidate file before adding a source.
+// robots.txt must allow the path we fetch, must not turn away the AI agents that read pages for a user
+// (ChatGPT-User, Claude-User, Perplexity-User, OAI-SearchBot and the like), and its Content-Signal must not
+// say ai-input=no. Turning away only AI training crawlers (GPTBot, CCBot…) or ai-train=no is allowed: the
+// site trains no model, it writes a short summary and links the original (myfnb/HANDOFF.md, the source
+// rules). Sources change their robots.txt; the framework does not read it, so run this monthly, and on a
+// candidate file before adding a source.
 //   node myfnb/check-sources.mjs [sources.json]
 // The AI agent list is the community-maintained one from github.com/ai-robots-txt/ai.robots.txt.
 // A source's terms of use still need reading by hand (no crawling, text and data mining or AI use).
 import { readFileSync } from "node:fs";
 
 const AGENTS_URL = "https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/main/robots.json";
+// Agents that fetch a page because a person asked an AI assistant or AI search to read it. Blocking one
+// of these refuses AI reading for readers, which is what our use resembles.
+const ASSIST = new Set(["chatgpt-user", "oai-searchbot", "claude-user", "claude-searchbot", "perplexity-user", "perplexitybot", "duckassistbot", "mistralai-user", "meta-externalfetcher", "gemini-deep-research", "google-cloudvertexbot", "amzn-user", "novaact", "operator", "youbot", "phindbot", "kagi-fetcher", "cohere-ai-user", "manus-user"]);
 // Named in that list, but blocking them says nothing about AI: link previews, plain search, a library.
 const GENERAL = new Set(["facebookexternalhit", "applebot", "scrapy", "googleother", "googleother-image", "googleother-video", "petalbot", "semrushbot-ocob", "semrushbot-swa"]);
 // The collector's own User-Agent (packages/backend/src/lib/http-fetch.ts): some sites answer robots.txt per agent.
@@ -50,16 +56,25 @@ for (const s of sources) {
     res = null;
   }
   const problems = [];
+  const notes = [];
   if (!res || (res.status !== 200 && res.status !== 404)) problems.push(`robots.txt unreadable (${res?.status ?? "no answer"})`);
   const text = res?.status === 200 ? await res.text() : "";
   for (const g of groups(text)) {
     if (g.agents.includes("*") && disallowed(g.rules, path)) problems.push(`robots.txt disallows ${path} for every crawler`);
-    const named = g.agents.filter((a) => ai.has(a));
-    if (named.length && (disallowed(g.rules, "/") || disallowed(g.rules, path))) problems.push(`robots.txt turns away AI agents: ${named.slice(0, 6).join(", ")}${named.length > 6 ? "…" : ""}`);
+    if (!disallowed(g.rules, "/") && !disallowed(g.rules, path)) continue;
+    const assist = g.agents.filter((a) => ASSIST.has(a));
+    const train = g.agents.filter((a) => ai.has(a) && !ASSIST.has(a));
+    if (assist.length) problems.push(`robots.txt turns away AI agents that read for users: ${assist.slice(0, 6).join(", ")}${assist.length > 6 ? "…" : ""}`);
+    if (train.length) notes.push(`turns away AI training crawlers only (allowed): ${train.slice(0, 4).join(", ")}${train.length > 4 ? "…" : ""}`);
   }
-  for (const line of text.split(/\r?\n/)) if (/^\s*content-signal\s*:.*ai-(input|train)\s*=\s*no/i.test(line)) problems.push(`Content-Signal: ${line.split(":").slice(1).join(":").trim()}`);
+  for (const line of text.split(/\r?\n/)) {
+    if (!/^\s*content-signal\s*:/i.test(line)) continue;
+    if (/ai-input\s*=\s*no/i.test(line)) problems.push(`Content-Signal: ${line.split(":").slice(1).join(":").trim()}`);
+    else if (/ai-train\s*=\s*no/i.test(line)) notes.push("Content-Signal ai-train=no (allowed)");
+  }
   if (problems.length) failed += 1;
-  console.log(`${problems.length ? "✗" : "✓"} ${s.id}${problems.length ? `\n    ${[...new Set(problems)].join("\n    ")}` : ""}`);
+  const lines = [...new Set(problems), ...new Set(notes)];
+  console.log(`${problems.length ? "✗" : "✓"} ${s.id}${lines.length ? `\n    ${lines.join("\n    ")}` : ""}`);
 }
 console.log(failed ? `\n${failed} source(s) break the rule: pause them in the admin Sources page (or scripts/delete-sources.ts) and update industry/sources.json.` : `\nall ${sources.length} sources pass`);
 process.exit(failed ? 1 : 0);

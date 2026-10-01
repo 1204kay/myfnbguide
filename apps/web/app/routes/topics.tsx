@@ -1,8 +1,8 @@
-import { Link, useLoaderData } from "react-router";
+import { data as withHeaders, Link, useLoaderData } from "react-router";
 import { subjectAfter, withSubject } from "@aihot/industry/site";
 import catalog from "@aihot/industry/topics.json";
 import type { Route } from "./+types/topics";
-import { apiGet } from "../lib/api.server";
+import { apiGet, releaseBoundCache } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
 
 interface TopicSummary {
@@ -24,8 +24,9 @@ interface TopicGroup {
 }
 
 export async function loader({ request }: { request: Request }) {
-  const { topics } = await apiGet<{ topics: TopicSummary[] }>("/api/site/topics", { signal: request.signal });
-  return { topics, groups: catalog.groups as TopicGroup[] };
+  const upstream = new Headers();
+  const data = await apiGet<{ topics: TopicSummary[]; refreshAt: string | null }>("/api/site/topics", { signal: request.signal, responseHeaders: upstream });
+  return withHeaders({ ...data, groups: catalog.groups as TopicGroup[] }, { headers: releaseBoundCache(data.refreshAt, 300, Date.now(), upstream) });
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
@@ -35,8 +36,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
   return pageMeta({ title: "主题", description, path: "/topics", image: "/og/pages/topics.png" });
 }
 
-export function headers() {
-  return { "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=600" };
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return loaderHeaders;
 }
 
 export default function TopicsPage() {

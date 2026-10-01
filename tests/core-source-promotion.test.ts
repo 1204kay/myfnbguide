@@ -22,10 +22,10 @@ const provider = await stub((_hit, req) => {
   const system = body.messages[0]?.role === "system" ? body.messages[0].content : "";
   const input = JSON.stringify(body.messages);
   let answer: unknown;
-  if (system.includes("宽召回的AI相关性预筛")) answer = { label: input.includes("OFFTOPIC") ? "BLOCK" : "PASS", reason: "测试" };
+  if (system.includes("宽召回")) answer = { label: input.includes("OFFTOPIC") ? "BLOCK" : "PASS", reason: "测试" };
   else if (system.includes("事件注意力评分器")) answer = { attentionScore: 80 };
-  else if (system.includes("内容理解编辑")) answer = { itemType: "model_release", authorRole: "principal", tags: ["模型发布"], editorialJudgment: "测试判断", titleZh: "某实验室发布新模型", summaryZh: "某实验室发布新模型，并公布评测结果和价格。" };
-  else if (system.includes("资料结构化助手")) answer = { category: "ai-models", tags: ["模型发布"], subjects: [], fact: { title: "某实验室发布新模型" } };
+  else if (system.includes("内容理解编辑")) answer = { itemType: "industry_event", authorRole: "principal", tags: ["行业动态"], editorialJudgment: "测试判断", titleZh: "某连锁品牌公布新店计划", summaryZh: "某连锁品牌公布新店计划，并公布开店数和投资额。" };
+  else if (system.includes("资料结构化助手")) answer = { category: "industry", tags: ["行业动态"], subjects: [], fact: { title: "某连锁品牌公布新店计划" } };
   else throw new Error("unexpected model request");
   return { id: "stub", choices: [{ message: { content: JSON.stringify(answer) } }], usage: { prompt_tokens: 10, completion_tokens: 10, total_tokens: 20 } };
 });
@@ -131,7 +131,7 @@ test("resumed extraction and analysis publish the fetched body at its current re
   const [publication] = await sql`SELECT eligible, visibility, title, summary FROM publications WHERE article_id = ${id}`;
   assert.equal(publication!.eligible, true);
   assert.equal(publication!.visibility, "public");
-  assert.match(String(publication!.title), /实验室/);
+  assert.match(String(publication!.title), /连锁品牌/);
   assert.match(String(publication!.summary), /评测/);
   assert.ok(provider.hits() >= 5, "normal budgeted model stages used the local fixture");
 });

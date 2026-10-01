@@ -346,7 +346,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
    curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/candidates-reach-2026-10-01.txt | grep '^http' > /tmp/urls.txt; while read -r u; do echo "$(curl -s -o /dev/null -m 20 -w '%{http_code}' -A 'Mozilla/5.0 (compatible; MyFnBBot/1.0; +https://new.myfnbguide.com/about)' "$u") $u"; done < /tmp/urls.txt > /tmp/reach.txt; grep -v '^200 ' /tmp/reach.txt; echo "200 的有 $(grep -c '^200 ' /tmp/reach.txt) 个，共 $(wc -l < /tmp/reach.txt) 个"
    ```
 
-   结果：第一批 20 个里 18 个正常；Total Food 是 301（www 跳到不带 www，框架会跟着跳，正常）；**PMQ、Global Coffee Report 返回 403**，按规则 6 暂停（用户在服务器跑下面这行，等于后台点「暂停」，只是不留操作记录）。中文实战媒体（餐饮老板内参、职业餐饮网、咖门、筷玩思维、餐宝典）和窄门餐眼、两个中国行业协会、百胜中国投资者网站，以及韩国、泰国、印尼的协会，服务器全部连不上；飲食店ドットコム 403、Caterer Middle East 405。能连上的候选：Foodizz（印尼）、Food Business MEA（中东，RSS）、TradeArabia。
+   结果：第一批 20 个里 18 个正常；Total Food 是 301（www 跳到不带 www，框架会跟着跳，正常）；**PMQ、Global Coffee Report 返回 403**，按规则 6 暂停（10/1 用户在服务器跑了下面这行，返回 UPDATE 2，关于页显示 18 个信源；等于后台点「暂停」，只是不留操作记录）。中文实战媒体（餐饮老板内参、职业餐饮网、咖门、筷玩思维、餐宝典）和窄门餐眼、两个中国行业协会、百胜中国投资者网站，以及韩国、泰国、印尼的协会，服务器全部连不上；飲食店ドットコム 403、Caterer Middle East 405。能连上的候选：Foodizz（印尼）、Food Business MEA（中东，RSS）、TradeArabia。
 
    ```bash
    cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "UPDATE sources SET enabled = false, health = 'paused', updated_at = now() WHERE id IN ('rss-pmq', 'rss-gcr');"; cd ~

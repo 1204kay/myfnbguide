@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全球的餐饮行业媒体与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过，并从正式服务器测过能打开（PMQ、Global Coffee Report 对服务器返回 403，已去掉）；协会用 T1，媒体用 T2。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全球的餐饮行业媒体与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过（node myfnb/vet-sources.ts）；第一批 20 个从正式服务器测过能打开（PMQ、Global Coffee Report 对服务器返回 403，已去掉），之后加的部署后看后台「信源」页，对服务器返回 403 的暂停。协会、品牌与上市公司用 T1，平台与服务商用 T1_5，媒体用 T2。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
   "sources": [
     {
       "id": "rss-fer",
@@ -443,6 +443,887 @@
       "tags": [
         "中国",
         "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ahresp",
+      "name": "AHRESP",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ahresp.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "葡萄牙",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-arq-quebec",
+      "name": "Association Restauration Québec",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://restauration.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "加拿大",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-bargiornale",
+      "name": "Bargiornale",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.bargiornale.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "意大利",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-bevinfogroup",
+      "name": "Beverage Information Group（Cheers、Beverage Dynamics）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://bevinfogroup.com/feed/",
+        "allowCategories": [
+          "Cheers Latest News",
+          "Cheers Features",
+          "Cheers Top Stories"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-canirac",
+      "name": "CANIRAC",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://portal.canirac.org.mx/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "墨西哥",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-corestaurant",
+      "name": "Colorado Restaurant Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://corestaurant.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-fehgra",
+      "name": "FEHGRA",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://fehgra.org.ar/feed",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "阿根廷",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-fipe",
+      "name": "FIPE",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.fipe.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "意大利",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-food-business-mea",
+      "name": "Food Business MEA",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodbusinessmea.com/feed/",
+        "allowCategories": [
+          "Food service",
+          "Food service, Retail, E-commerce"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "中东",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-foodretail-es",
+      "name": "Foodretail",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodretail.es/rss/",
+        "allowCategories": [
+          "CADENAS"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "西班牙",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-fresh-cup",
+      "name": "Fresh Cup",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://freshcup.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-frla",
+      "name": "Florida Restaurant & Lodging Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://frla.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-gast-at",
+      "name": "Gast",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gast.at/feed/",
+        "allowCategories": [
+          "Gastronomie",
+          "Allgemein",
+          "Gastro-Großhandel"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "奥地利",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hawaiirestaurant",
+      "name": "Hawaii Restaurant Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hawaiirestaurant.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-horecanews-it",
+      "name": "Horecanews",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://horecanews.it/rss/latest-posts",
+        "denyCategories": [
+          "Eventi",
+          "Premi e Riconoscimenti",
+          "Ospitalità e Turismo"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "意大利",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hospitality-catering-news",
+      "name": "Hospitality & Catering News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hospitalityandcateringnews.com/feed/",
+        "denyCategories": [
+          "Hotel News",
+          "appointments"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "英国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hospitality-ireland",
+      "name": "Hospitality Ireland",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hospitalityireland.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "爱尔兰",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-hotelier-me",
+      "name": "Hotelier Middle East",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hoteliermiddleeast.com/feed",
+        "allowCategories": [
+          "Food & Beverage"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "中东",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ifa-franchise",
+      "name": "International Franchise Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.franchise.org/feed/",
+        "allowCategories": [
+          "IFA Advocacy News",
+          "IFA Press Releases"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ir-papajohns",
+      "name": "Papa John's",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ir.papajohns.com/news-events/news-releases/rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ir-redrobin",
+      "name": "Red Robin",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ir.redrobin.com/news-events/press-releases/rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ir-wingstop",
+      "name": "Wingstop",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ir.wingstop.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-italia-a-tavola",
+      "name": "Italia a Tavola",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.italiaatavola.net/rss/feed.xml",
+        "denyCategories": [
+          "check-in",
+          "wine",
+          "ricette"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "意大利",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-lra",
+      "name": "Louisiana Restaurant Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.lra.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-marcas-restauracion",
+      "name": "Marcas de Restauración",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://marcasderestauracion.es/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "西班牙",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-marginedge",
+      "name": "MarginEdge",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.marginedge.com/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-nho-reiseliv",
+      "name": "NHO Reiseliv",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nhoreiseliv.no/rss",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "挪威",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-qsr-magazine",
+      "name": "QSR Magazine",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.qsrmagazine.com/feed/",
+        "allowCategories": [
+          "Story"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-rai-ireland",
+      "name": "Restaurants Association of Ireland",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.rai.ie/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "爱尔兰",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-restaurant-tech-news",
+      "name": "Restaurant Technology News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://restauranttechnologynews.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "科技"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-rollingpin",
+      "name": "Rolling Pin",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rollingpin.com/feed",
+        "denyCategories": [
+          "Top-Supplier News",
+          "Werbung"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "奥地利",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-spoton",
+      "name": "SpotOn",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.spoton.com/blog/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-sprudge",
+      "name": "Sprudge",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sprudge.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "全球",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-the-spoon",
+      "name": "The Spoon",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://thespoon.tech/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "全球",
+        "科技"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ukhospitality",
+      "name": "UKHospitality",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ukhospitality.org.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "英国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-visita",
+      "name": "Visita",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://visita.se/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "瑞典",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-vrlta",
+      "name": "Virginia Restaurant, Lodging & Travel Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.vrlta.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-wahospitality",
+      "name": "Washington Hospitality Association",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://wahospitality.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "美国",
+        "协会"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

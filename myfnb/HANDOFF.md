@@ -167,9 +167,9 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 - **写作**：全球通用的餐饮用语与专有名词规则，金额照原文币种；去掉马来西亚专用的写法；保留族群、宗教、王室只写事实，指控写成「某方指控」，普通个人不写全名（运营主体在马来西亚）。
 - **门槛** `selection.ts` 仍是作者的 T1 60 / T1_5 65 / T2 76，**等用户的标注校准后再改**（作者规则：先改挑选标准，最后才动门槛）。所以在校准之前，日报会偏少。
 
-### 5.4 信源（20 个，全部只放摘要和原文链接）
+### 5.4 信源（18 个，全部只放摘要和原文链接）
 
-每个都用框架自己的采集代码试抓通过（本机，2026-10-01），`node myfnb/check-sources.mjs` 全部合规。每天条数是 10/1 实测（快照，过滤后），从服务器能不能抓到见 §9 第 4 项。
+每个都用框架自己的采集代码试抓通过（本机，2026-10-01），`node myfnb/check-sources.mjs` 全部合规，并从正式服务器测过能打开（10/1，§9 第 4 项）。第一批原有 20 个，PMQ Pizza Magazine 和 Global Coffee Report 对服务器返回 403，按规则 6 暂停并从 `sources.json` 去掉（配置在提交 `6be6253`）。每天条数是 10/1 实测（快照，过滤后）。
 
 | 地区 | 信源 | 抓法与过滤 | 每天约 |
 |---|---|---|---:|
@@ -189,12 +189,12 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 美国 | FSR Magazine | RSS，只收「Feature」 | 0.9 |
 | 美国 | Total Food Service | RSS，去掉活动与电子刊 | 1 |
 | 美国 | Foodservice Equipment Reports | RSS，去掉人事、颁奖、活动 | 0.1 |
-| 美国 | PMQ Pizza Magazine | RSS，去掉赞助内容与活动 | 3 |
 | 全球 | Barista Magazine | RSS | 0.9 |
 | 全球 | Daily Coffee News | RSS | 1.7 |
-| 全球 | Global Coffee Report | RSS | 4.5 |
 
-合计每天约 50 条进预筛。按标题抽样估（`plan-2026-10-01.md` §4.4，是 Claude 的判断），每天约 5 条必看、20 条左右可看；必看最多的是讲经营做法的媒体（红餐网、PMQ、Ristorazione Italiana、Total Food）。
+合计每天约 43 条进预筛。按标题抽样估（`plan-2026-10-01.md` §4.4，是 Claude 的判断），每天约 4 条必看、15–20 条可看；必看一半以上来自红餐网。
+
+**入口太窄（2026-10-01 用户问：「作者有 800 多个，我们 20 个，信息够吗？」）**：不够。作者 853 个信源里 513 个是 X 账号（AI 业的一手消息在 X 上），每天收进约 6,098 条、只精选 32 条（约 0.5%），所以挑得狠；我们每天收进约 43 条，日报目标 10–20 条，等于每三四条就要登一条，挑不起来；必看又集中在一家（红餐网），地区偏中国和美国，同一件事很少有几家同时报道，热点榜也排不出来。信源个数本身不是目标，要的是每天够多的相关候选。餐饮业对应 X 的地方是抖音、小红书、公众号，这些接不到（见下），所以要靠更多能接的网站把入口加宽。**下一步先把入口加宽到约 100 个来源、每天几百条进预筛，再做标注校准**（§9 第 5 项）。
 
 **接信源的六条规则**（写进了 `sources.json` 的 `$comment`、使用条款和 `check-sources.mjs`）：
 
@@ -219,8 +219,9 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | Modern Restaurant Management 等 25 个 | 拒绝 AI 阅读（规则 2） |
 | QSR Magazine、BigHospitality、Restaurant Online、Morning Advertiser | 抽样价值低：多为人事、颁奖、单店开张（BigHospitality 与 Restaurant Online 是同一个订阅） |
 | Food Bev、Just Food、Bakery and Snacks 等 11 个 | 不是写给餐厅的（包装食品、饮料、酒店、旅游、时尚，还有一家其实是林业报）；Hotel F&B 网站已被赌博广告占据 |
-| 飲食店ドットコム、Caterer Middle East | 对抓取返回 403（规则 5；待从服务器复测） |
-| 餐饮老板内参、职业餐饮网、咖门、筷玩思维、餐宝典 | 本机连不上（待从服务器复测，§9 第 4 项）；这几家的内容主要在公众号 |
+| PMQ Pizza Magazine、Global Coffee Report | 对正式服务器返回 403（规则 6，10/1 测）；已暂停 |
+| 飲食店ドットコム、Caterer Middle East | 对正式服务器返回 403、405（规则 5、6，10/1 测） |
+| 餐饮老板内参、职业餐饮网、咖门、筷玩思维、餐宝典、窄门餐眼、中国烹饪协会、中国连锁经营协会 | 本机和正式服务器都连不上（10/1 测）：多半只对中国大陆开放，规则 6 不用代理绕。中文实战内容因此只剩红餐网、餐饮界两家能接，其余在公众号里 |
 | 马来西亚的华文报纸（星洲、南洋、东方、光华、诗华、中国报、光明） | 挡云服务器（规则 6，10/1 实测） |
 
 **2026-10-01 停用**的马来西亚来源（全球定位下跟餐饮经营相关的只有 0–20%，而且都是本地事）：财政部、LHDN、Malay Mail · Money、The Malaysian Reserve、Utusan · Ekonomi、Vulcan Post、Grab Malaysia 新闻稿；以及早先已暂停的星洲 · 餐饮业、南洋 · 餐饮业、东方日报 · 财经。服务器上的删除命令见 §9 第 3 项。
@@ -332,27 +333,38 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 1. ✅（2026-10-01）部署到 https://new.myfnbguide.com（§6）。重新部署或换服务器：在 Lighthouse 控制台点「登录」打开网页终端，粘贴 `sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/bootstrap.sh)"`，按提示粘贴两个 key；新服务器记得在防火墙加 443（§12）。
 2. ✅（2026-10-01）方案定案（`plan-2026-10-01.md`）；第一批 20 个信源选定（§5.4）；`industry/` 按全球定位改写，补发空刊和报头两处修复（`34389d1`、`bd63a3d`），四项检查通过（§6）。
-3. ✅ 推上 `main`（`6be6253`），10/1 自动部署完成（首页标题已是「全球餐饮业每日要闻」，13 个新信源随部署导入）。**接着在服务器上清理试跑期的旧数据**（用户跑，删了不能恢复，10/1 已告知用户删什么）。打开网页终端，整段粘贴：
+3. ✅（2026-10-01）推上 `main`（`6be6253`），自动部署完成（首页标题已是「全球餐饮业每日要闻」，13 个新信源随部署导入）。用户在服务器上跑了清理（命令留作记录，SQL 在 `myfnb/cleanup-2026-10-01.sql`，可重复执行）：
 
    ```bash
    cd /opt/myfnbguide && sudo docker compose exec -T worker node scripts/delete-sources.ts "2026-10-01 改为全球定位，停用马来西亚来源" rss-mof-press web-lhdn-media rss-malaymail-money rss-malaysian-reserve rss-utusan-ekonomi rss-vulcan-post rss-grab-my-press web-sinchew-fnb web-enanyang-fnb rss-orientaldaily-business && sudo docker compose exec -T db psql -U aihot -d aihot -v ON_ERROR_STOP=1 -f - < myfnb/cleanup-2026-10-01.sql; cd ~
    ```
 
-   做的事：删掉 10 个马来西亚来源和它们抓到的文章（入选过的先撤下）；给 FER、FSR、Total Food 加分类过滤（`sources.json` 的改动不会覆盖数据库里已有的信源）；删掉旧的主题页；删掉 9 期空刊。SQL 在 `myfnb/cleanup-2026-10-01.sql`，最后列出剩下的信源供核对。
-4. **从服务器测连通**（用户跑，贴回输出文字）：
+   结果：删掉 10 个马来西亚来源和 232 篇文章（入选过的 6 篇先撤下）；FER、FSR、Total Food 加上分类过滤；删掉 30 个旧主题，剩 72 个；删掉 10 期空刊，现在一期刊都没有（下一期有精选的日报才会出）。
+4. ✅（2026-10-01）从服务器测连通（清单 `myfnb/candidates-reach-2026-10-01.txt`，80 个网址，41 个返回 200）。命令留作以后测新候选用（换清单即可）：
 
    ```bash
    curl -fsSL https://raw.githubusercontent.com/1204kay/myfnbguide/main/myfnb/candidates-reach-2026-10-01.txt | grep '^http' > /tmp/urls.txt; while read -r u; do echo "$(curl -s -o /dev/null -m 20 -w '%{http_code}' -A 'Mozilla/5.0 (compatible; MyFnBBot/1.0; +https://new.myfnbguide.com/about)' "$u") $u"; done < /tmp/urls.txt > /tmp/reach.txt; grep -v '^200 ' /tmp/reach.txt; echo "200 的有 $(grep -c '^200 ' /tmp/reach.txt) 个，共 $(wc -l < /tmp/reach.txt) 个"
    ```
 
-   只列出不是 200 的网址（robots.txt 返回 404 算正常，等于没有限制）。Claude 按结果：第一批里抓不到的按规则 6 在后台暂停；候选里能通的，读条款、抽样，值得的加进来（先看餐饮老板内参、职业餐饮网、咖门、筷玩思维这几家中文实战媒体）。
-5. **标注 150 条**（用户约 30 分钟）：从第一批信源近几天的条目里取，覆盖各类来源和地区，多放难例（例如「新任高管公布人手策略」这种看起来像人事任命的），也放几条厂商写的经营文章试用户的口味。开发集 110 条：Claude 先按 §2.2 标，用户改不同意的；留出集 40 条：用户单独标，Claude 不先标。必看 = 该选，不看 = 不该选，可看 = 两可（作者评测工具的三档）。
-6. **评测与校准**：在服务器上跑 `scripts/eval-selection.ts`（要用服务器 `.env` 里的 key）。`.data/gold.jsonl` 含原文，不进 git：标注结果按网址存进仓库（只存网址和标签），在服务器上按网址从数据库取材料生成 gold 文件（这个小脚本到这一步再写）。后台 SelectBench 看错例，**先改挑选标准，最后才动门槛**。通过标准（作者没给数字，Claude 定的）：留出集里的必看最多漏 1 条；不看的混进精选不超过一成；推算每天精选 10–20 条。
-7. **用户看一周真实日报**，每天 5 分钟。这一关用户说了算。
-8. **上线**：按 §5.6 自查一遍；§10 切换；加不认人的计数并改隐私说明（§2.4）；上线日期变了同步改 `changelog.json` 与两份条款的日期；开始分发（`research-2026-10-01.md` §6：没有一家同类只靠内容自己长起来；具体怎么发，等日报质量过关再定）。
-9. **第一周之后**：看后台「模型与评测」页的实际调用次数，校正 §11；每周数一次日报的地区分布（§2.2）；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）；每月跑一次 `sudo docker run --rm aihot-app node myfnb/check-sources.mjs`。
-10. **合并上游 `8d5a39b`**（作者 10/1 的「improve recovery, public consistency and agent access」，174 个文件，+10,042/−2,246 行）：`git merge upstream/main`，冲突预计在 `packages/backend/src/reports/compose.ts`（取作者的，删掉我们的 `tests/report-catchup.test.ts` 或改成测作者的新行为）、`apps/web/app/features/report/format.ts` 与 `ReportPaper.tsx`（PR 1 的改动）；合并后跑四项检查，再推 `main`。读一遍作者这次的改动说明，看有没有需要改 `industry/` 的新配置。
-11. ✅（2026-10-01）讨论帖 #37 已补一句说明并关闭（用户同意）。§7.2 第 7、8 项作者已修，不提 PR。
+   结果：第一批 20 个里 18 个正常；Total Food 是 301（www 跳到不带 www，框架会跟着跳，正常）；**PMQ、Global Coffee Report 返回 403**，按规则 6 暂停（用户在服务器跑下面这行，等于后台点「暂停」，只是不留操作记录）。中文实战媒体（餐饮老板内参、职业餐饮网、咖门、筷玩思维、餐宝典）和窄门餐眼、两个中国行业协会、百胜中国投资者网站，以及韩国、泰国、印尼的协会，服务器全部连不上；飲食店ドットコム 403、Caterer Middle East 405。能连上的候选：Foodizz（印尼）、Food Business MEA（中东，RSS）、TradeArabia。
+
+   ```bash
+   cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "UPDATE sources SET enabled = false, health = 'paused', updated_at = now() WHERE id IN ('rss-pmq', 'rss-gcr');"; cd ~
+   ```
+
+5. **把入口加宽（下一个会话从这里开始）**。原因见 §5.4「入口太窄」。目标：约 100 个来源、每天几百条进预筛，日报从每天几十条相关候选里挑 10–20 条。做法：
+   - 来源从 `sources-universe-2026-10-01.md` 里「可接」的 234 个里找，先抽样再接（§5.4 的三个问题：能不能接、值不值得接、怎么接）。顺序：一、剩下的行业与品类媒体（Food Business MEA、Foodizz、Snacking.fr、ET HospitalityWorld 等，含要写网页列表规则的）；二、一手渠道：连锁品牌的新闻室与投资者关系、外卖与支付平台、协会、研究与数据机构（多为「可看」，但是热点和大事的原始出处）；三、各地商业媒体的消费或餐饮栏目（东南亚、印度、中东、日本、韩国、欧洲、拉美），能用栏目订阅就用栏目订阅，其余交给预筛挡掉。
+   - 每个新来源：`check-sources.mjs` 查规则 1、2、5；用上面的连通命令从服务器测；值得接的才读条款；用框架代码试抓（本次的做法：在仓库根目录写临时脚本调 `fetchRss` / `fetchWebList`，用完删掉）。
+   - 费用：预筛一条只花一次短调用，每天多几百条约多 US$10–20 一个月（§11）；后台 `llm` 每日上限 3,000 次，入口到 1,000 条以上时要调高。
+   - 量：接完后跑两三天，数每天进来多少、预筛放行多少、按标题粗判的必看和可看各多少、地区分布，写进本文。
+   - **公众号先不接**：中文实战媒体的网站服务器都连不上，中文必看只剩红餐网、餐饮界两家能接，所以公众号是补中文实战内容唯一的路。等标注校准、日报跑一周以后，如果中文必看明显不够，再请用户决定要不要花钱试 5–10 个号（经第三方接口，约每月 ¥300–500，不是微信授权的方式）。
+6. **标注 150 条**（用户约 30 分钟）：从加宽以后的信源近几天的条目里取，覆盖各类来源和地区，多放难例（例如「新任高管公布人手策略」这种看起来像人事任命的），也放几条厂商写的经营文章试用户的口味。开发集 110 条：Claude 先按 §2.2 标，用户改不同意的；留出集 40 条：用户单独标，Claude 不先标。必看 = 该选，不看 = 不该选，可看 = 两可（作者评测工具的三档）。
+7. **评测与校准**：在服务器上跑 `scripts/eval-selection.ts`（要用服务器 `.env` 里的 key）。`.data/gold.jsonl` 含原文，不进 git：标注结果按网址存进仓库（只存网址和标签），在服务器上按网址从数据库取材料生成 gold 文件（这个小脚本到这一步再写）。后台 SelectBench 看错例，**先改挑选标准，最后才动门槛**。通过标准（作者没给数字，Claude 定的）：留出集里的必看最多漏 1 条；不看的混进精选不超过一成；推算每天精选 10–20 条。
+8. **用户看一周真实日报**，每天 5 分钟。这一关用户说了算。
+9. **上线**：按 §5.6 自查一遍；§10 切换；加不认人的计数并改隐私说明（§2.4）；上线日期变了同步改 `changelog.json` 与两份条款的日期；开始分发（`research-2026-10-01.md` §6：没有一家同类只靠内容自己长起来；具体怎么发，等日报质量过关再定）。
+10. **第一周之后**：看后台「模型与评测」页的实际调用次数，校正 §11；每周数一次日报的地区分布（§2.2）；COS 建桶并设生命周期（daily 留 30 天、weekly 留 90 天），填 `DB_BACKUP_STORE_*`（在此之前只有服务器本机的 3 份备份）；每月跑一次 `sudo docker run --rm aihot-app node myfnb/check-sources.mjs`。
+11. **合并上游 `8d5a39b`**（作者 10/1 的「improve recovery, public consistency and agent access」，174 个文件，+10,042/−2,246 行）：`git merge upstream/main`，冲突预计在 `packages/backend/src/reports/compose.ts`（取作者的，删掉我们的 `tests/report-catchup.test.ts` 或改成测作者的新行为）、`apps/web/app/features/report/format.ts` 与 `ReportPaper.tsx`（PR 1 的改动）；合并后跑四项检查，再推 `main`。读一遍作者这次的改动说明，看有没有需要改 `industry/` 的新配置。可以放在第 5 项之前做：加宽入口要改的是 `industry/`，跟上游的改动不冲突。
+12. ✅（2026-10-01）讨论帖 #37 已补一句说明并关闭（用户同意）。§7.2 第 7、8 项作者已修，不提 PR。
 
 ---
 
@@ -370,12 +382,12 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 ## 11. 成本与变现
 
-**每月约 US$12–20（RM50–80，1 USD = RM4.08）**，快照：
+**现在每月约 US$12–20（RM50–80，1 USD = RM4.08）；入口加宽到每天几百条以后约 US$20–40（RM80–165）**，快照：
 
 | 项目 | 每月 | 备注 |
 |---|---|---|
 | 腾讯云 Lighthouse 新加坡 锐驰型 | US$8.50 | 下单页实价，1 个月、不自动续费 |
-| DeepSeek | 约 US$3–10 | **估算**：第一批信源每天约 50 条进预筛，挡掉的只花 1 次调用，其余还要评分两次、结构化、写摘要、归组，估每天 150–300 次。deepseek-flash 官网价（10/1）：未命中缓存的输入每百万 token 0.30 美元、命中缓存 0.006 美元、输出 1.20 美元，非高峰时段（北京时间工作日 09:00–12:00、14:00–18:00 以外）半价。以上线第一周后台「模型与评测」页为准；加信源会涨 |
+| DeepSeek | 约 US$3–10；加宽后多约 US$10–20 | **估算**：现在每天约 43 条进预筛，挡掉的只花 1 次调用，其余还要评分两次、结构化、写摘要、归组，估每天 150–300 次；加宽到每天几百条后，多出来的大部分在预筛一步挡掉，每条只多一次短调用。deepseek-flash 官网价（10/1）：未命中缓存的输入每百万 token 0.30 美元、命中缓存 0.006 美元、输出 1.20 美元，非高峰时段（北京时间工作日 09:00–12:00、14:00–18:00 以外）半价。以上线第一周后台「模型与评测」页为准；加信源会涨 |
 | Gemini 向量 | 0 | 免费层，不绑卡（免费层数据可能被 Google 用于改进产品；我们处理的是公开新闻，可接受） |
 | COS 备份 | 几分钱 | |
 | 流量 | 0 | 锐驰型流量不限、不另收费 |

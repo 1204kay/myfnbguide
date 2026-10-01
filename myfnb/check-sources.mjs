@@ -49,11 +49,14 @@ let failed = 0;
 for (const s of sources) {
   const url = new URL(s.config.url ?? s.config.feedUrl);
   const path = url.pathname + url.search;
-  let res;
-  try {
-    res = await fetch(`${url.origin}/robots.txt`, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(20000) });
-  } catch (e) {
-    res = null;
+  // One retry: a single timeout on a slow network is not a site refusing robots.txt.
+  let res = null;
+  for (let attempt = 0; attempt < 2 && !res; attempt++) {
+    try {
+      res = await fetch(`${url.origin}/robots.txt`, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(20000) });
+    } catch {
+      res = null;
+    }
   }
   const problems = [];
   const notes = [];

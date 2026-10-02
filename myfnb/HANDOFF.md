@@ -387,13 +387,13 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 新方向的顺序（`plan-2026-10-02.md` §10）。10/1–10/2 下午已完成的步骤在本节末尾「记录」里。
 
 1. ✅（2026-10-02 傍晚，`b400719`）**文案、分节、标准改成站在一家小店里面看**：站点文案、日报六节、预筛与评分标准、推荐理由与日报导语的写法、5 个主题说明、使用条款与更新日志的说明（§2、§5.1–§5.3）。四项检查通过（§6）。
-2. **评测与校准（等用户在服务器上跑一条命令）**。gold 是 `myfnb/gold-labels.tsv` 的 168 条（必看 6、可看 81、不看 81）；`myfnb/build-gold.ts` 按文章编号从数据库取原文生成 `.data/gold.jsonl`（含原文，不进 git、不在镜像里），评测跑完 `myfnb/eval-cases.ts` 把每条的分数和用户标注逐行打出来，贴回来就能校准。**10/3 09:00 以后跑**：`llm` 的上限按「过去 24 小时」滚动计（`providers/receipts.ts`，评测的调用也算、也会被挡），10/2 上午积压用满了 3,000 次，要到 10/3 早上才陆续空出来；每条约 3 次调用，共约 500 次。在 Lighthouse 网页终端粘贴：
+2. **评测与校准（等用户在服务器上跑一条命令）**。gold 是 `myfnb/gold-labels.tsv` 的 168 条（必看 6、可看 81、不看 81）；`myfnb/build-gold.ts` 按文章编号从数据库取原文生成 `.data/gold.jsonl`（含原文，不进 git、不在镜像里），评测跑完 `myfnb/eval-cases.ts` 按 `gold-labels.tsv` 的顺序把 168 条的分数压成 9 行（B = 预筛挡掉，U = 没写出中文，E = 这条失败，多半是 `llm` 上限），用户从网页终端复制十来行贴回来，Claude 对照仓库里的标注解出来校准（`--long` 打出逐条和各门槛的结果，给在电脑前的人看）。**10/3 09:00 以后跑**：`llm` 的上限按「过去 24 小时」滚动计（`providers/receipts.ts`，评测的调用也算、也会被挡），10/2 上午积压用满了 3,000 次，要到 10/3 早上才陆续空出来；每条约 3 次调用，共约 500 次。在 Lighthouse 网页终端粘贴：
 
    ```bash
-   cd /opt/myfnbguide && sudo docker compose exec -T worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 --label '小店标准 v1' && node myfnb/eval-cases.ts"; cd ~
+   cd /opt/myfnbguide && sudo docker compose exec -T worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 --label '小店标准 v1' > /dev/null && node myfnb/eval-cases.ts"; cd ~
    ```
 
-   输出约 200 行，**复制文字贴回来**（不要截图，§8）。输出里有「错误」或 budget 字样，就是上限还没空出来，过一两个小时再跑同一条（已经跑完的不重复收费）。Claude 拿到后：先看错例改 `selection-score.md`，改了就推上线、请用户再跑一次（新提示词才会重算）；标准稳定了再定门槛。**通过标准**（作者没给数字，Claude 定）：6 条必看全部入选；入选的里面不看不超过一成；每天的条数在 5–10 条（gold 的 150 条取自网站上线后一天半的资料，推不出每天的量，所以条数看上线后 `/api/site/stats` 的 `day.selected` 和真实日报，不够或太多再挪门槛）。留出集 40 条里没有必看，只用来查不看有没有混进来。
+   输出约 11 行（`gold: 168 cases …` 一行、`#` 开头一行、`01|` 到 `09|` 九行），**复制文字贴回来**（不要截图，§8）。数字里有很多 `E`，就是上限还没空出来，过一两个小时再跑同一条（已经跑完的不重复收费）。给用户的一步步做法：控制台 https://console.tencentcloud.com/lighthouse/instance/index → 实例 `myfnb` →「登录」（OrcaTerm，免密）→ 粘贴 → 回车；跑的时候别按 Ctrl+C；选中结果后右键复制。Claude 拿到后：先看错例改 `selection-score.md`，改了就推上线、请用户再跑一次（新提示词才会重算）；标准稳定了再定门槛。**通过标准**（作者没给数字，Claude 定）：6 条必看全部入选；入选的里面不看不超过一成；每天的条数在 5–10 条（gold 的 150 条取自网站上线后一天半的资料，推不出每天的量，所以条数看上线后 `/api/site/stats` 的 `day.selected` 和真实日报，不够或太多再挪门槛）。留出集 40 条里没有必看，只用来查不看有没有混进来。
 3. **来源**：
    - 3a ✅（2026-10-02 傍晚，`347149c`）**按小店标准重量现有 57 个**：9/18–10/2 两周 612 条标题（`must-read-2026-10-02.tsv`），把旧判的必看、可看共 204 条按 §2.2 重判，结果必看 36、可看 124（只看标题，偏乐观），每个来源的数字在 `myfnb/remeasure-2026-10-02.tsv`。照 10/2 下午的规矩（两周至少 1 条必看或至少 2 条可看才留下）**停用 7 个**：Jollibee 新闻室、ロイヤル（PR TIMES）、GlobeNewswire 餐饮栏、澳洲餐饮协会 ARCA、西班牙 Sivarious、日本外食新闻播客「10分解説 話題の外食最前線」、红餐网 · 快讯。`sources.json` 已删、账本已记。**服务器上要用户跑一次**（推上线后随时可跑；等于在后台把这 7 个点「暂停」，并撤下它们还没分析的条目）：
 

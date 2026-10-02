@@ -122,7 +122,7 @@ test("default evaluation follows the production score route and shares duplicate
     assert.equal(cold.model, "glm-5.3-flash-selection", "no --models follows SCORE_MODEL / production routing");
     assert.deepEqual(cold.summary, warm.summary, "cold and cached evaluations keep the same coverage and metrics");
     assert.deepEqual(Object.fromEntries(cold.cases.map((item) => [item.caseId.slice(marker.length + 1), item.decision])), { t1: "select", t2: "select", mp: "reject" },
-      "the shared score still uses each tier's threshold (cases are listed as they finish)");
+      "the shared score still uses each tier's threshold (cases come in the eval's seeded sample order)");
     assert.deepEqual([cold.summary.decisive, cold.summary.errors, cold.summary.accuracy], [3, 0, 1]);
     assert.deepEqual([prefilter.hits(), score.hits()], [3, 2], "three per-case prefilters, two shared score calls across both runs");
     assert.deepEqual([cold.summary.tokensIn, cold.summary.tokensOut], [230, 55], "shared score receipts count once");

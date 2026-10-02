@@ -50,7 +50,10 @@ if (fromFeeds.length) {
     const mine = fromFeeds.filter((r) => r.source === s.id);
     const done = new Map(collected.filter((a) => a.source_id === s.id).map((a) => [a.url, a]));
     let found: Candidate[] = [];
-    if (mine.some((r) => !done.has(r.url))) {
+    // A source whose feed text is the body (summaryIsBody, the podcasts): a body stored before 2026-10-03 came from
+    // the episode page, which on Spotify-hosted shows is the show's blurb and ads, the same for every episode.
+    const feedFirst = s.config.summaryIsBody === true;
+    if (feedFirst || mine.some((r) => !done.has(r.url))) {
       try {
         const row = { ...s, cursor: null };
         found = s.kind === "rss" ? (await fetchRss(row, { force: true })).candidates
@@ -62,10 +65,10 @@ if (fromFeeds.length) {
       }
     }
     for (const r of mine) {
-      const a = done.get(r.url);
-      if (a) { byId.set(r.id, a); continue; }
       // Episodes without a page were labelled under their guid; the feed now gives their media file as url.
       const c = found.find((x) => x.url === r.url || (x.raw as { guid?: string } | undefined)?.guid === r.url);
+      const a = done.get(r.url);
+      if (a && !(feedFirst && c?.bodyText)) { byId.set(r.id, a); continue; }
       let body = c?.bodyText || null;
       if (!body && /^https?:\/\//.test(r.url)) body = (await extractFromUrl(r.url, { allowJina: false, subject: "gold" }))?.text ?? null;
       if (!c && !body) continue;

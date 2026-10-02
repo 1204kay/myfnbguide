@@ -7547,3 +7547,550 @@ web-hosteleria-espana	Hostelería de España	https://www.hosteleriadeespana.es/	
 web-cnews-kr	창업경영신문	https://www.cnews.co.kr/	2026-10-02·第十四批（没有订阅的网站）	不接	规则 1：robots.txt 全站禁止
 web-sidae-kr	sidae.com	https://www.sidae.com/	2026-10-02·第十四批（没有订阅的网站）	不接	现在是综合新闻社（동행미디어 시대），不是餐饮媒体；条款另禁 AI 学习与大量爬取
 web-foodizz	Foodizz	https://foodizz.id/	2026-10-02·第十四批（没有订阅的网站）	不接	卖餐饮课程的网站，文章是课程营销，页面靠脚本渲染
+rss-fer	Foodservice Equipment Reports		2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-lumina	Lumina Intelligence（英国，餐饮数据）		2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-hospitality-news-me	Hospitality News Middle East（中东）		2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-restaurants-canada	Restaurants Canada（加拿大餐馆协会）		2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+web-canyinj	餐饮界（中国）		2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-arq-quebec	Association Restauration Québec	https://restauration.org/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-bevinfogroup	Beverage Information Group（Cheers、Beverage Dynamics）	https://bevinfogroup.com/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-canirac	CANIRAC	https://portal.canirac.org.mx/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-corestaurant	Colorado Restaurant Association	https://corestaurant.org/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-fehgra	FEHGRA	https://fehgra.org.ar/feed	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 9 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-food-business-mea	Food Business MEA	https://www.foodbusinessmea.com/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-foodretail-es	Foodretail	https://www.foodretail.es/rss/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-frla	Florida Restaurant & Lodging Association	https://frla.org/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-hawaiirestaurant	Hawaii Restaurant Association	https://hawaiirestaurant.org/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-hospitality-catering-news	Hospitality & Catering News	https://www.hospitalityandcateringnews.com/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-ir-papajohns	Papa John's	https://ir.papajohns.com/news-events/news-releases/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-ir-redrobin	Red Robin	https://ir.redrobin.com/news-events/press-releases/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-ir-wingstop	Wingstop	https://ir.wingstop.com/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-lra	Louisiana Restaurant Association	https://www.lra.org/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-nho-reiseliv	NHO Reiseliv	https://www.nhoreiseliv.no/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 13 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-rai-ireland	Restaurants Association of Ireland	https://www.rai.ie/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-spoton	SpotOn	https://www.spoton.com/blog/rss/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-sprudge	Sprudge	https://sprudge.com/feed	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-the-spoon	The Spoon	https://thespoon.tech/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-visita	Visita	https://visita.se/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-vrlta	Virginia Restaurant, Lodging & Travel Association	https://www.vrlta.org/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-skylark	株式会社すかいらーくホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17486	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-yoshinoya	吉野家ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19432	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-zensho	株式会社ゼンショーホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=97263	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 14 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-matsuya	株式会社松屋フーズホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=47538	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-colowide	株式会社コロワイドダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=173827	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-toridoll	株式会社トリドールホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28440	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-marugame	株式会社丸亀製麺（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=56642	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-mos	株式会社モスフードサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75449	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-kfc-jp	日本ケンタッキー・フライド・チキン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=32088	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-starbucks-jp	スターバックスコーヒージャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=33194	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-doutor	株式会社ドトールコーヒー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=8784	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-ichibanya	株式会社壱番屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=108441	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-ohsho	株式会社王将フードサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=11353	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-kourakuen	株式会社幸楽苑（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29714	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-monogatari	物語コーポレーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=44964	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 7 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-torikizoku	株式会社エターナルホスピタリティグループ（旧：株式会社鳥貴族ホールディングス）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=82134	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-watami	ワタミ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=9215	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 15 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-create-restaurants	株式会社クリエイト・レストランツ・ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=177867	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 11 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-kushikatsu-tanaka	株式会社ユニシアホールディングス（旧 串カツ田中ホールディングス）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=27839	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-ootoya	株式会社大戸屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17712	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-hiday	株式会社ハイデイ日高（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=48716	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-kisoji	株式会社木曽路（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=83122	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-bronco	株式会社ブロンコビリー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=27084	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-kappa	カッパ・クリエイト株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18731	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 7 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-dd	DDグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=7303	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-dominos-jp	株式会社ドミノ・ピザ　ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29053	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-pizzahut-jp	日本ピザハット株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31164	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-foursis	株式会社フォーシーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=2646	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-hotland	株式会社ホットランドホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31747	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-plenus	株式会社プレナス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=54093	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 18 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-tullys	タリーズコーヒージャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20545	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-saint-marc	サンマルクカフェ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=85701	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-ichiran	株式会社一蘭（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=9803	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-alef	株式会社アレフ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43540	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-joyfull	株式会社ジョイフル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=23968	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-montrosa	株式会社モンテローザ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=1046	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 8 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-chimney	チムニー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=62344	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-yoronotaki	養老乃瀧 株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=2892	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-kappo-gourmet-kineya	株式会社グルメ杵屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=90386	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-atom	株式会社アトム（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43111	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-amiyakitei	株式会社あみやき亭（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=130952	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-reins	株式会社レインズインターナショナル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18604	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-gogocurry	株式会社ゴーゴーカレーグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75866	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-wonder-table	ワンダーテーブル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=7752	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-transit	株式会社トランジットホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=40062	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-dining-innovation	株式会社ダイニングイノベーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=34691	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-gnavi	株式会社ぐるなび（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=1511	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 11 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-retty	Retty株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=4025	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-toreta	株式会社トレタ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38464	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-demaecan	株式会社出前館（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29254	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-smaregi	株式会社スマレジ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=71550	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-dinii	株式会社ダイニー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43056	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-tenpos	テンポス グループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=30130	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 15 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-hoshizaki	ホシザキ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=61218	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-pudu-jp	Pudu Technology Inc.（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=158245	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-foodlabo	株式会社シンクロ・フード（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=1049	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-bk-jp	株式会社ビーケー・ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38980	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-food-life	F&LC（FOOD & LIFE COMPANIES）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=49164	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-genki	株式会社Genki Global Dining Concepts（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=160366	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-ap	APHD（エー・ピーホールディングス）（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=4635	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-the-pax-hospitality-podcast	The PAX Hospitality Podcast（播客）	https://anchor.fm/s/110449ca4/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-it-s-not-you-it-s-your-hospitality	It’s Not You—It’s Your Hospitality（播客）	https://rss.buzzsprout.com/2536703.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-think-hospitality-podcast	Think Hospitality Podcast（播客）	https://anchor.fm/s/117922378/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-hospitality-politics-with-andrew-rigie	Hospitality & Politics with Andrew Rigie（播客）	https://anchor.fm/s/10484f5a8/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-no-reservation-the-hospitality-podcast	NO RESERVATION - The Hospitality Podcast（播客）	https://rss.buzzsprout.com/2602852.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-hospitality-ops-club	Hospitality Ops Club（播客）	https://api.riverside.fm/hosting/7udtUJds.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-studio-gastro-der-gastronomie-podcast-mi	Studio Gastro – Der Gastronomie Podcast mit Sebastian E. Merget & Friends（播客）	https://cdn.audiorella.com/podcasts/1709-fiete-gastro-der-auch-kulinarische-podcast/feed.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-und-ein-spritzer-zitrone-gastronomie-pod	…und ein Spritzer Zitrone | Gastronomie-Podcast（播客）	https://podcast8fd78b.podigee.io/feed/mp3	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-mehrwertwissen-fu-r-die-hotellerie-und-g	#MehrWertWissen für die Hotellerie und Gastronomie（播客）	https://hotelier-de.podigee.io/feed/mp3	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-talent-podcast	TALENT PODCAST（播客）	https://anchor.fm/s/e96cba44/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-on-met-la-table	On met la table（播客）	https://anchor.fm/s/f351b9ec/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-talents	Talents（播客）	https://feeds.acast.com/public/shows/651c1cdc315af90011f3e94b	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurants-association-of-ireland-podca	Restaurants Association of Ireland Podcast（播客）	https://anchor.fm/s/115476d08/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-deal-making-exposed-with-patr	Restaurant Deal Making EXPOSED! With Patrick and Andy（播客）	https://feeds.captivate.fm/restaurant-deal-making/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-oltre-il-menu-dietro-le-quinte-della-ris	Oltre il menù - Dietro le quinte della ristorazione（播客）	https://feeds.megaphone.fm/AMCS3046736222	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-kr-baemin-owner-talk	사장님 라이브 토크 · 배민아카데미（播客）	https://anchor.fm/s/1133b4cdc/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-entre-fogones-el-po-dcast-de-makro	Entre fogones, el pódcast de Makro（播客）	https://anchor.fm/s/a4c837c4/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-hotello-s	Hotello's（播客）	https://anchor.fm/s/1145b484c/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-ru-restohub-horeca	Разговоры с лидерами HoReCa · Restohub（播客）	https://podster.fm/rss.xml?pid=93431	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-podcast-voor-horeca	Podcast voor Horeca（播客）	https://api.riverside.com/hosting/vUJeQXKB.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-tw-canyin-boaizuo	餐飲博愛座（播客）	https://feeds.soundon.fm/podcasts/125085da-ce53-4b09-a80b-ab95360ebebd.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-roi-roundup	Restaurant ROI Roundup（播客）	https://rss.podengine.io/restaurant-roi-roundup	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-season-the-story-of-opening-r	Restaurant Season — The Story of Opening, Running & Surviving a Restaurant（播客）	https://api.riverside.com/hosting/co44hAZ2.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-hero	Restaurant Hero（播客）	https://app.kajabi.com/podcasts/2147882667/feed	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-little-raps-restaurant-strategy-insights	Little Raps - Restaurant Strategy Insights and Ideas（播客）	https://anchor.fm/s/f807f5a0/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-we-live-to-eat	We Live To Eat（播客）	https://rss.buzzsprout.com/2358476.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-your-life-and-restaurant	Your Life and Restaurant（播客）	https://rss.buzzsprout.com/1625317.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-supy-talks-the-multi-branch-restaurant-o	Supy Talks - The Multi-Branch Restaurant Operations Podcast（播客）	https://anchor.fm/s/ef770b4c/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-running-restaurants	Running Restaurants（播客）	https://feeds.podetize.com/rss/gijH_xQwV	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-restauranttopia-a-show-for-local-indepen	Restauranttopia: A Show for Local Independent Restaurants（播客）	https://feeds.megaphone.fm/JXL3194447017	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-restaurant-owners-uncorked	Restaurant Owners Uncorked（播客）	https://restaurantownersuncorked.podomatic.com/rss2.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-the-modern-waiter-podcast	The Modern Waiter Podcast（播客）	https://rss.art19.com/the-modern-waiter-podcast	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-the-buildout	The Buildout（播客）	https://feeds.acast.com/public/shows/612e552895f9ec00136d5a16	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-the-restaurants-grow-podcast-how-marketi	The Restaurants Grow Podcast - How marketing and operations come together for restaurant success.（播客）	https://feed.podbean.com/restaurantmarketing/feed.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-give-an-ovation-the-restaurant-guest-exp	Give an Ovation: The Restaurant Guest Experience Podcast with Zack Oates（播客）	https://rss.buzzsprout.com/887458.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-the-dfy-restaurant-revolution	The DFY Restaurant Revolution（播客）	https://rss.buzzsprout.com/2440654.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-market-trends-with-tracy	Market Trends with Tracy（播客）	https://rss.buzzsprout.com/1890832.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-food-service-matters	Food Service Matters（播客）	https://anchor.fm/s/dad05ab8/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-seasoned-leaders	Seasoned Leaders（播客）	https://anchor.fm/s/10b7f009c/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-operator	Restaurant Operator（播客）	https://rss.buzzsprout.com/655768.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-restaurant-leadership-podcast-the-show-f	Restaurant Leadership Podcast: The Show for Multi-Unit Operators Ready to Scale（播客）	https://rss.buzzsprout.com/2220802.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-bar-hacks	Bar Hacks（播客）	https://anchor.fm/s/35c0f898/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-hospitality-mavericks-podcast-show	Hospitality Mavericks Podcast Show（播客）	https://feeds.captivate.fm/hospitality-mavericks/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-corner-booth-podcast	Corner Booth Podcast（播客）	https://feed.podbean.com/cornerboothpodcast/feed.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-kith-and-kin-hospitality-real-stories-fr	Kith and Kin Hospitality: Real Stories from the Hospitality Industry（播客）	https://anchor.fm/s/ee1ac964/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-technology-podcast	Restaurant Technology Podcast（播客）	https://api.substack.com/feed/podcast/3892076.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-restaurant-ai	Restaurant AI（播客）	https://feeds.megaphone.fm/restaurant-ai	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-restaurant-tech-trends	Restaurant Tech Trends（播客）	https://anchor.fm/s/1065cdc4c/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-35041	ユーシーシーフードサービスシステムズ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=35041	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-158425	株式会社トリドールジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=158425	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-173832	株式会社ナショナルフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=173832	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-19783	ドリームフーズ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19783	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-132940	株式会社ねぎしフードサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=132940	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-116507	GFC（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=116507	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-107911	マミヤ・オーピー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=107911	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-54091	株式会社プレコフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=54091	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-45707	株式会社ムジャキフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=45707	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-46356	TechMagic株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=46356	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-70373	株式会社ファッズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=70373	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-110396	LH 株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=110396	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-48503	株式会社ゴンチャ ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=48503	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-141264	これマネ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=141264	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-123926	株式会社高倉町珈琲（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=123926	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-121045	株式会社ちょいおでん（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=121045	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-52657	株式会社シナジーカフェ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=52657	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-11586	株式会社大庄（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=11586	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-27681	株式会社ガーデン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=27681	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 9 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-73150	株式会社HITOSUKE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=73150	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-33462	ニラックス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=33462	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 12 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-130092	株式会社double（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=130092	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-42301	株式会社 小田急レストランシステム（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=42301	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-117096	株式会社パンチョ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=117096	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-37579	株式会社サンパーク（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=37579	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-103105	株式会社MRホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=103105	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-87495	株式会社guriko（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=87495	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-56009	株式会社ハロー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=56009	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-78704	Okage株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=78704	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-83967	株式会社L＆L（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=83967	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-122416	SRSホールディングス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=122416	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-143384	株式会社JFLAホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=143384	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-55180	株式会社ビリオンフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=55180	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 11 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-83851	鉄人化ホールディングス <グループ各社>（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=83851	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-28006	焼肉坂井ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28006	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 8 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-35671	株式会社 FS.shake（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=35671	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 7 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-32350	アークランドサービスホールディングス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=32350	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 8 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-152670	ビッグクリエイト株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=152670	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-108938	千房株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=108938	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-36476	GOSSO株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=36476	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-37031	株式会社資さん（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=37031	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-20880	株式会社一家ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20880	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-25861	株式会社ラーメンデータバンク（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=25861	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-68009	株式会社堀口珈琲（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=68009	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-138026	井筒まい泉株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=138026	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-117336	株式会社FBIホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=117336	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-19589	株式会社オーイズミフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19589	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-54788	株式会社 ヴィア・ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=54788	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-60358	株式会社ＳｔｙＬｅ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=60358	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-118492	株式会社B.N（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=118492	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-16145	株式会社J・ART（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=16145	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-123082	株式会社 KONA'S（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=123082	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172203	グローバルフードソリューション株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172203	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-131309	株式会社鶏ヤロー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=131309	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-9278	株式会社ゼネラル・オイスター（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=9278	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-14510	株式会社Globridge（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=14510	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-19914	株式会社 銀座ルノアール（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19914	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-49183	S.H.N株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=49183	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-123261	株式会社 活美登利（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=123261	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-185678	株式会社SAKIGAKEホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=185678	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-106959	株式会社 肉屋の台所（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=106959	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-69924	株式会社丸福商店（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=69924	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-5340	GYRO HOLDINGS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=5340	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 7 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-63326	KOZOホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=63326	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-93471	株式会社マチルダ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=93471	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-48178	オイシーズ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=48178	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-87198	株式会社松富士食品（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=87198	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-158654	株式会社SuiSui（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=158654	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-39299	ホリイフードサービス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=39299	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-56468	ポスタス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=56468	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-126693	株式会社甲羅（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=126693	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-189841	株式会社マルエイフードテック（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=189841	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-174301	株式会社Matcha Frontier（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=174301	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-61742	ワンズトライン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=61742	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-32855	レッドロブスタージャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=32855	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-90362	株式会社京はやしや（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=90362	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-140188	株式会社ZUND（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=140188	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-129324	株式会社ｐｅａｃｅ ｐｕｔ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=129324	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-46202	タニコー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=46202	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-38986	株式会社安楽亭（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38986	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-184210	株式会社2TAPS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=184210	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-10329	イートアンドHD（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=10329	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-31222	Miコーポレーション株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31222	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-35358	株式会社日と々と（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=35358	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-7024	株式会社DAY TO LIFE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=7024	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-41346	俺の株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=41346	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-150846	NA Group株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=150846	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-146842	株式会社First Drop（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=146842	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-66499	株式会社シクロ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=66499	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-46327	Ｆ＆Ｐジャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=46327	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-73526	ミナモト（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=73526	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-56034	エデンレッドジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=56034	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-28731	株式会社ＨＵＧＥ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28731	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-106009	BLOOM株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=106009	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-23738	チタカ・インターナショナル・フーズ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=23738	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-107494	株式会社LDFS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=107494	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-29315	株式会社平城苑（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29315	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-171465	株式会社トライ・インターナショナル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=171465	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-17310	株式会社アントワークス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17310	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-135697	株式会社こむぎの（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=135697	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-154178	株式会社キッチンわたりがらす（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=154178	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-59385	ファーストキッチン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=59385	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-7269	株式会社アークミール（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=7269	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-26745	株式会社 オペレーションファクトリー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=26745	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-15963	株式会社チャンピオンカレー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=15963	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 6 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-19564	株式会社FTG Company（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19564	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-64061	株式会社グリーンハウスフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=64061	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-36259	ボンディッシュ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=36259	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-151908	株式会社キングファクトリーグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=151908	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-33995	株式会社ランプ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=33995	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-18877	株式会社プロントコーポレーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18877	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-78678	株式会社イーストン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=78678	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-113153	株式会社一神（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=113153	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-35415	株式会社QRAUD（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=35415	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-101842	株式会社うまプロ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=101842	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-38219	ベトナム屋台株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38219	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-145619	株式会社なだ万（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=145619	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-156474	麺屋NOBUNAGA（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=156474	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-100731	株式会社sommet farm（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=100731	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-24682	株式会社ほっかほっか亭総本部（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=24682	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-38334	グリーンカルチャー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38334	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-93487	株式会社ジャパンチケットホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=93487	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-45876	株式会社マルハンダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=45876	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-79423	C-United株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=79423	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-65562	株式会社トマトアンドアソシエイツ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=65562	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-24488	株式会社ポトマック（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=24488	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 11 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-117815	株式会社MOTHERS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=117815	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-60471	株式会社テンフォー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=60471	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-175373	株式会社ピソラ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=175373	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-190462	元祖おにぽん食堂（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=190462	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-152766	株式会社beagle（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=152766	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-50301	株式会社やる気（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=50301	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-43858	株式会社Review（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43858	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-88132	株式会社ちょいと（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=88132	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-36110	BOTEJYU Group ホールディングス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=36110	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-24246	株式会社mov（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=24246	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 12 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-108784	株式会社アイティープラス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=108784	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-186955	株式会社立ち食い寿司東京（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=186955	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-42791	NATTY SWANKY holdings Co.,Ltd.（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=42791	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-74719	有限会社アイズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=74719	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-188900	スタースリー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=188900	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 7 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-122221	株式会社Human Qreate（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=122221	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-188109	株式会社THAN（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=188109	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-15091	株式会社 Root（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=15091	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-168555	Too Good To Go Japan株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=168555	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-75665	クリスピー・クリーム・ドーナツ・ジャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75665	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-118864	株式会社 銀座おのでら（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=118864	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-35757	株式会社FIKA（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=35757	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-183692	株式会社ぐっとくるダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=183692	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-35646	トリゼンフーズ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=35646	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-41674	株式会社おかげさまで（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=41674	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-18734	株式会社 和僑ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18734	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-41634	株式会社 路珈珈（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=41634	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-25087	株式会社バルニバービ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=25087	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-23530	Ｇ－ＦＡＣＴＯＲＹ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=23530	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-189296	株式会社コネクティラボ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=189296	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-69393	ソフトバンクロボティクス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=69393	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-17102	スカイファーム株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17102	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-101785	株式会社ラショナル・ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=101785	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-2430	グルメエックス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=2430	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-183892	株式会社リアルテイスト（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=183892	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-24955	株式会社丸山珈琲（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=24955	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-12709	株式会社ファイブグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=12709	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-150503	株式会社新横浜ラーメン博物館（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=150503	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-87365	株式会社銚子丸（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=87365	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172916	株式会社ピープルズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172916	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-84098	株式会社ZOT（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=84098	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-177983	株式会社GOKU（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=177983	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-60496	株式会社SU-BEE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=60496	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-89920	株式会社阪急デリカ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=89920	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-55130	株式会社Sfida Fabbrica（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=55130	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-75032	株式会社サンマルクホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75032	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-167308	AIフリーコーヒー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=167308	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-84389	株式会社GRACE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=84389	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172277	株式会社 ネオ・エモーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172277	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-28572	DFA Robotics（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28572	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-156533	三共食品株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=156533	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-107332	株式会社ANCHOR（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=107332	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-60887	海老専門店「海老乃家」（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=60887	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-167482	有限会社天辺ダッシュカンパニー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=167482	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-20835	株式会社ダイナック（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20835	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-170938	有限会社楽天地（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=170938	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-123811	株式会社かぶらやグループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=123811	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-80185	株式会社ラブ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=80185	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-182379	コーヒーとハンバーグ「Dishers」（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=182379	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-67066	鈴茂器工（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=67066	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-189312	株式会社EPG（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=189312	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-41733	株式会社クオレガ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=41733	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-180474	株式会社カカクコム 食べログカンパニー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=180474	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-130112	株式会社アールディーシー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=130112	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-162292	株式会社リエイ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=162292	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-176421	有限会社ナチュラルスマイル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=176421	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-51014	株式会社HESTA大倉（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=51014	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-176999	株式会社 大二郎の小籠包（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=176999	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-44322	株式会社ピエトロ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=44322	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-64328	全日本コーヒー商工組合連合会（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=64328	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-106971	メーキュー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=106971	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-139583	株式会社LDH kitchen（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=139583	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-66514	まねき食品株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=66514	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-155927	株式会社イコック（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=155927	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-179600	株式会社WOF（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=179600	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-23807	株式会社studio092（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=23807	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172722	株式会社ベガスベガス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172722	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-31654	株式会社サガミホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31654	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-95938	株式会社REVIVE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=95938	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-164266	株式会社ＫＩＴＴＥＩ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=164266	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-26945	株式会社フレッシュネス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=26945	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-99943	株式会社理想実業（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=99943	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-161698	株式会社ハチバン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=161698	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-187957	株式会社あったらいいね（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=187957	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-13768	株式会社ストロベリーコーンズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=13768	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-40315	AFURI株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=40315	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-191844	合同会社WILDCARD WORKS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=191844	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-85956	株式会社Merci（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=85956	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-191730	株式会社ｓｅｉｄａｉ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=191730	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-181806	株式会社Feast Harbor（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=181806	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-40710	THE CROSS 株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=40710	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-188094	株式会社マリノ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=188094	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-171881	エンタライフ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=171881	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-74146	株式会社GREENING（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=74146	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-37205	株式会社カンリー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=37205	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 7 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-180540	株式会社B級グルメ研究所（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=180540	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-brot-backwaren	BROT+Backwaren	https://brotundbackwaren.de/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-horeca-ro	Horeca.ro	https://www.horeca.ro/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-revista-horeca-es	Revista Horeca	https://revistahoreca.es/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-visita-besoksliv	Besöksliv	https://www.besoksliv.se/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 5 条，必看 0、可看 1（按 §2.2 只看标题）
+rss-presseportal-systemgastronomie	presseportal · Systemgastronomie	https://www.presseportal.de/rss/rss2_vts.htx?q=Systemgastronomie&langid=1	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-29070	Compass Group Deutschland GmbH（presseportal）	https://www.presseportal.de/rss/pm_29070.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-42829	Zentralverband des Deutschen Bäckerhandwerks e.V.（presseportal）	https://www.presseportal.de/rss/pm_42829.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pp-52942	McDonald's Deutschland（presseportal）	https://www.presseportal.de/rss/pm_52942.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pp-69466	BURGER KING Deutschland GmbH（presseportal）	https://www.presseportal.de/rss/pm_69466.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-121522	METRO AG（presseportal）	https://www.presseportal.de/rss/pm_121522.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-137942	Too Good To Go GmbH（presseportal）	https://www.presseportal.de/rss/pm_137942.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-165632	Lightspeed POS Germany GmbH（presseportal）	https://www.presseportal.de/rss/pm_165632.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pp-178994	BdS Bundesverband der Systemgastronomie e.V.（presseportal）	https://www.presseportal.de/rss/pm_178994.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+pp-181288	FR L'Osteria SE（presseportal）	https://www.presseportal.de/rss/pm_181288.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-181298	Flexvelop（presseportal）	https://www.presseportal.de/rss/pm_181298.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pp-181706	Die FranchiseMacher GmbH（presseportal）	https://www.presseportal.de/rss/pm_181706.rss2	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+nr-amrest	AmRest	https://www.amrest.eu/en/rss.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+nr-golden-gate	Golden Gate Restaurant Group	https://ggg.com.vn/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+nr-wetherspoon	J D Wetherspoon	https://www.jdwetherspoon.com/feed/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-34869	株式会社ホスピタリティ&グローイング･ジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=34869	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-32163	カフェ・カンパニー株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=32163	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-179076	TPS株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=179076	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-66749	株式会社Wiaas（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=66749	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-73105	株式会社ヤプリフードコネクト（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=73105	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-9197	株式会社イートウイング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=9197	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-144523	株式会社Global Access（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=144523	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-108003	株式会社GALA（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=108003	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-70820	株式会社ホットパレット（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=70820	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-100405	株式会社フジランド（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=100405	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-89740	株式会社BIRCH（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=89740	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-55277	ユナイテッド＆コレクティブ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=55277	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-27005	猿田彦珈琲株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=27005	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-51168	株式会社ブルームダイニングサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=51168	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-145487	株式会社Ａｃｔ Ｃｏｍｍｕｎｉｔｙ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=145487	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-25763	三立化工機株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=25763	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-150113	株式会社プロガイド（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=150113	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-186441	株式会社KISSUI GROUP（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=186441	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-178899	株式会社富士達（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=178899	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172054	株式会社DIC（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172054	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-99833	株式会社BOND CREATION（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=99833	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-28898	株式会社にっぱん（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28898	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-42376	株式会社七葉（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=42376	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-99695	株式会社譚仔日本（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=99695	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-129232	Mom's Touch & Co.（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=129232	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-150267	株式会社ハルモニアラボ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=150267	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-8893	株式会社イデア（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=8893	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-20649	株式会社RYコーポレーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20649	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-14852	株式会社京都勝牛（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=14852	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-92563	株式会社イートファクトリーホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=92563	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-11808	TRNグループ 店舗流通ネット（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=11808	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-23564	株式会社TableCheck（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=23564	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-17849	フードダイバーシティ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=17849	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-16506	株式会社favy（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=16506	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-29400	株式会社創業新幹線（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=29400	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172503	株式会社こじま（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172503	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-55201	合同会社Farch（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=55201	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-73705	株式会社ALL GRACE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=73705	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-19286	株式会社タイソンズアンドカンパニー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=19286	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-51127	株式会社E-MATE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=51127	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-106018	株式会社ディーズプランニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=106018	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-103761	総合近江牛商社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=103761	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-173574	株式会社東筑軒（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=173574	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-26321	株式会社YORKYS ENTERTAINMENT（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=26321	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-53263	SANKO MARKETING FOODS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=53263	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-20469	株式会社スパイスワークスホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20469	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-129366	株式会社Mostfun（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=129366	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-136808	株式会社BRISK STAND（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=136808	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-50078	株式会社東急グルメフロント（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=50078	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-24845	株式会社キープ・ウィルダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=24845	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-10157	際コーポレーション株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=10157	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-134673	株式会社DimDimSum Japan（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=134673	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-75120	株式会社おすすめ屋（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=75120	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-83143	株式会社CHAVATY R&C（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=83143	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-43296	INSTYLE GROUP（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=43296	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-41041	株式会社SENTOEN（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=41041	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-163534	株式会社ファンインターナショナル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=163534	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-126835	東和フードサービス株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=126835	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-79479	株式会社梅の花グループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=79479	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172275	株式会社三味（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172275	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-149441	銀座アスター食品株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=149441	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-171015	株式会社Food Seed（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=171015	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-13501	SENSY（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=13501	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-31558	ソルト・コンソーシアム株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=31558	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-97330	株式会社ひらまつ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=97330	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-181311	株式会社タルガ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=181311	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-185769	株式会社ゆで太郎システム（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=185769	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-28952	株式会社ジャックポットプランニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28952	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-187728	フードトラベル株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=187728	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-90525	株式会社オアシスティーラウンジ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=90525	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-171612	株式会社スカイダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=171612	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-83706	株式会社Goals（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=83706	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-163231	株式会社Zeal's Planning（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=163231	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-39422	株式会社クラウドエヌ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=39422	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-163437	GINZA沁馥園（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=163437	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-124459	株式会社 KYコーポレーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=124459	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-172198	株式会社さわやか（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=172198	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-119128	株式会社サン・ルート（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=119128	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-176206	株式会社ばん（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=176206	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-114828	エレクター株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=114828	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-101757	株式会社サワライズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=101757	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-97019	株式会社一休（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=97019	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-182743	江戸ダイニング株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=182743	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-188423	タカラデータジャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=188423	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-12385	EGGS ‘N THINGS JAPAN株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=12385	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-28251	株式会社ジェイ・イシカワ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=28251	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-48883	Blue Bottle Coffee Japan合同会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=48883	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-171187	株式会社PLUS（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=171187	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-115392	リノスぺ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=115392	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-178962	株式会社食彩雲南（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=178962	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-188980	株式会社MONKY MAGIC（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=188980	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-164511	株式会社みんなの社食（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=164511	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-92806	株式会社FTF（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=92806	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-97460	スガキコシステムズ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=97460	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-138935	株式会社はらぺこ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=138935	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-161509	麺JAPAN株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=161509	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-trestle-senior-living	Tips from Trestle: The Senior Living Food and Hospitality Podcast（播客）	https://anchor.fm/s/7f188b78/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-gastropodcast-de	GASTROpodcast（播客）	https://www.spreaker.com/show/3671083/episodes/feed	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-brot-austern	Brot & Austern – Der Gastro-Trend Podcast mit Felicitas Then（播客）	https://brot-und-austern.podigee.io/feed/mp3	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-aufs-haus-gastro	Auf’s Haus der Podcast - Gastro Geschichten mit Axel und Ana aus Münster（播客）	https://anchor.fm/s/10c9370f8/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-gastrolab-heraldo	GastroLab（播客）	https://feeds.acast.com/public/shows/61674df12b74740013510295	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-gastrogenius	GastroGenius by Sarah Jacob（播客）	https://anchor.fm/s/e674c1ec/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-koffeinrausch-gastro	Koffeinrausch & Gastro（播客）	https://anchor.fm/s/114b20308/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-etl-adhoga	ETL ADHOGA informiert! (Tipps für Hotel- & Gastro-Unternehmen)（播客）	https://etl-adhoga-gastrobriefing.podigee.io/feed/mp3	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-gastrotalk-hoeller	GASTROtalk mit Kurt Höller（播客）	https://anchor.fm/s/1518f870/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-talking-hospitality	Talking Hospitality podcast（播客）	https://feeds.captivate.fm/talking-hospitality/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-elevated-hospitality	The Elevated Hospitality Podcast（播客）	https://anchor.fm/s/fb0da358/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-jp-hakata-ramen	シゲアキの博多ラーメンPODCAST（播客）	https://anchor.fm/s/111fda6e4/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-jp-kitchencar-michi	みちのキッチンカー復活劇場（播客）	https://stand.fm/rss/62fa2cce73ef6bc24982a205	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-the-pre-shift-7shifts	The Pre-Shift（播客）	https://rss.buzzsprout.com/1937749.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-marketing-gastronomico	Marketing Gastronómico Sobre La Mesa（播客）	https://anchor.fm/s/b613608/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-entre-hosteleros	ENTRE HOSTELEROS（播客）	https://anchor.fm/s/fd40eaf4/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-bakery-business-academy	Kitchen Notes: A Podcast by Bakery Business Academy（播客）	https://rss.buzzsprout.com/1992529.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-wholestory-fwd	WholeStory - An FWD Podcast（播客）	https://feed.podbean.com/FWDwholestory/feed.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-lado-b-gastronomia	Lado B da Gastronomia（播客）	https://www.spreaker.com/show/6146939/episodes/feed	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-sbs-chuangye-souhsik	創業搵食GUIDE（播客）	https://sbs-ondemand.streamguys1.com/career-kickstarter/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-coach	The Restaurant Coach Podcast（播客）	http://therestaurantcoachpodcast.blubrry.net/feed/podcast/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-mike-boyle-restaurant	Mike Boyle Restaurant Show Podcast（播客）	https://www.omnycontent.com/d/playlist/5e27a451-e6e6-4c51-aa03-a7370003783c/c270d2fe-ed96-4c77-a7a4-abe601132b58/ae89c1b9-8f0f-4445-9d71-abe601134df4/podcast.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 10 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-say86-hospitality	say86 Hospitality Podcast（播客）	https://rss.buzzsprout.com/2447330.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-shift-change-qsr	The Shift Change - Transforming QSR Operations Through Better HR（播客）	https://api.riverside.com/hosting/v65dB1Zc.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-cheftreff-k5	ChefTreff - ein K5 Podcast von Sven Rittau（播客）	https://anchor.fm/s/10a0b448c/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-profitable-coffee-business	The Profitable Coffee Business（播客）	https://anchor.fm/s/f4a777dc/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+pod-startcups-coffee	STARTCUPS® Coffee Talks Podcast（播客）	https://anchor.fm/s/10d8d7b20/podcast/rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+pod-restaurant-profit-coach	The Restaurant Profit Coach（播客）	https://api.riverside.com/hosting/avR0XOZf.rss	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-125063	しゃぶ禅（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=125063	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-162488	株式会社ネクストグローバルフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=162488	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-34783	ジローレストランシステム株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=34783	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-142690	株式会社サンマルクグリル（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=142690	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-131778	株式会社亜門（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=131778	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-143139	Mr.LAND株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=143139	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-102637	株式会社 Global Ocean（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=102637	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-60253	株式会社アセンティア・ホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=60253	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-2286	株式会社江戸一（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=2286	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-37550	CRISP（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=37550	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-101287	株式会社インターナショナル・ダイニング・コーポレーション（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=101287	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-39919	株式会社ノムノ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=39919	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-86797	株式会社Be bloom（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=86797	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-20379	株式会社ライドオンエクスプレスホールディングス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=20379	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-134730	株式会社 HOPE（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=134730	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-183380	株式会社エスワイフード（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=183380	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-73553	株式会社そら（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=73553	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-65701	株式会社コムライン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=65701	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-104470	株式会社C-HUNDRED（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=104470	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-56390	「赤身焼肉のカリスマ 牛恋」運営グループ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=56390	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-166896	400℃（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=166896	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-180760	株式会社シダックスフードサービス（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=180760	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-163166	株式会社ホイッスル三好（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=163166	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-179582	株式会社ヴィーナスダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=179582	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-14699	グローバルダイニング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=14699	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-143495	ハングリィジョーズホットチキンジャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=143495	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-116722	有限会社らくちん（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=116722	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-190465	株式会社アバロンフーズ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=190465	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-18848	株式会社 WithGreen（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=18848	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-73406	株式会社IOBI（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=73406	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 1 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-131985	株式会社鎌倉パスタ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=131985	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-10925	株式会社エクシオジャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=10925	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-79981	三笠会館（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=79981	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-190796	SOEL株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=190796	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 3 条，必看 0、可看 1（按 §2.2 只看标题）
+prt-168234	元祖博多めんたい重株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=168234	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-173793	株式会社絶好調（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=173793	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-38562	ハピタ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=38562	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-55652	株式会社リング（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=55652	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-166113	海鮮特急レーン 寿司じじや（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=166113	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-186963	熟成肉レストラン肉だけ（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=186963	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-188003	株式会社ＪＭコーヒージャパン（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=188003	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-160522	ラ・メゾン・ホスピタリテ株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=160522	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-189878	催事ジャパン株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=189878	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-44163	株式会社PleasantPlace（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=44163	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-168511	株式会社サッポロ実業（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=168511	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+prt-36375	株式会社タイミー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=36375	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
+web-canyin88-z	红餐网 · 知识树	https://www.canyin88.com/z/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
+rss-thinkfood-trend	식품음료신문 · 트렌드·리포트	https://www.thinkfood.co.kr/rss/S1N9.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 1（按 §2.2 只看标题）

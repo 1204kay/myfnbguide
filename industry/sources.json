@@ -1309,6 +1309,75 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "blog-eats365",
+      "name": "Eats365 餐厅经营指南（香港收银系统商，写亚太与北美）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.eats365pos.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "亚太",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-hospitality-nz",
+      "name": "Hospitality Business（新西兰）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hospitalitybusiness.co.nz/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "新西兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-ristorando",
+      "name": "Ristorando（意大利，餐饮企业经营）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ristorando.eu/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
     }
   ]
 }

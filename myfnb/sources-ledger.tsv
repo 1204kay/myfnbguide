@@ -8094,3 +8094,35 @@ prt-168511	株式会社サッポロ実業（PR TIMES）	https://prtimes.jp/compa
 prt-36375	株式会社タイミー（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=36375	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 2 条，必看 0、可看 1（按 §2.2 只看标题）
 web-canyin88-z	红餐网 · 知识树	https://www.canyin88.com/z/	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 0 条，必看 0、可看 0（按 §2.2 只看标题）
 rss-thinkfood-trend	식품음료신문 · 트렌드·리포트	https://www.thinkfood.co.kr/rss/S1N9.xml	2026-10-02·停用（按必看产出）	停用	9/18–10/2 两周 4 条，必看 0、可看 1（按 §2.2 只看标题）
+blog-eats365	Eats365 餐厅经营指南	https://www.eats365pos.com/rss.xml	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	接入	每天约 0.7 条，10 条里 3–4 条必看（吃到饱的桌台计时与出餐节奏、开店成本拆解）；网站没有条款页
+blog-airregi	Airレジ マガジン	https://airregi.jp/magazine/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	约每月一篇，两周 0 条；一半写美容、美甲开店
+blog-apicbase	Apicbase	https://get.apicbase.com/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	近 3 个月没更新
+blog-craftable	Craftable	https://craftable.com/blog/rss.xml	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	一个多月一篇，多为客户案例
+blog-tenzo	Tenzo	https://www.gotenzo.com/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	约半月一篇，两周 0 条
+blog-fourth	Fourth	https://www.fourth.com/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	4 个月没更新
+blog-owner	Owner.com	https://www.owner.com/blog/rss.xml	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	三周以上一篇，多为软件推荐清单
+blog-foodics	Foodics	https://www.foodics.com/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	规则 1：robots.txt 不许抓 /feed/
+rss-ahgz	AHGZ（德国）	https://www.ahgz.de/news/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	规则 2：robots.txt 拒绝代用户读网页的 AI（google-cloudvertexbot）
+rss-diamond-rm	ダイヤモンド・チェーンストアオンライン	https://diamond-rm.net/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	讲超市与百货，不是写给餐厅的
+rss-foodstadium	フードスタジアム	https://food-stadium.com/feed/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	4 个多月没更新
+blog-usen-canvas	USEN canvas	https://canvas.usen.co.jp/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	域名解析不到
+blog-supy	Supy	https://supy.io/blog	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	找不到订阅源（两遍深挖）
+blog-marketman	MarketMan	https://www.marketman.com/blog	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	找不到订阅源（两遍深挖）
+blog-storehub	StoreHub	https://www.storehub.com/blog/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	找不到订阅源（两遍深挖）
+blog-nory	Nory	https://nory.ai/blog/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	找不到订阅源（两遍深挖）
+rss-sikdang	월간식당	https://month.foodbank.co.kr/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	找不到订阅源（两遍深挖）
+web-restaurantowner	Restaurant Owner	https://www.restaurantowner.com/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	首页对机器返回 403
+rss-neorestauration	Néo Restauration	https://www.neorestauration.com/	2026-10-02·第十五批（系统商经营指南与日韩实务媒体）	不接	首页对机器返回 403
+rss-hospitality-nz	Hospitality Business（新西兰）	https://www.hospitalitybusiness.co.nz/feed/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	接入	每天约 1 条，两周 2 条必看（前厅语音 AI、退出商铺租约不踩坑）；网站没有条款页
+rss-ristorando	Ristorando（意大利）	https://www.ristorando.eu/feed/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	接入	每天约 1 条，两周约 6 条可看；只有隐私与 Cookie 说明，没有使用限制
+rss-restaurant-hub-in	Hotelier India	https://www.hotelierindia.com/feed	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	几乎全是酒店
+rss-fcsi	Foodservice Consultant（FCSI）	https://www.fcsi.org/feed/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	设备新品与人事
+rss-zepros-resto	Zepros Resto	https://resto.zepros.fr/rss.xml	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	订阅停在 2025 年 5 月
+rss-ristoratoretop	Ristoratore Top	https://www.ristoratoretop.com/feed/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	3 个多月没更新
+rss-gastronomie-report	Gastronomie-Report	https://www.gastronomie-report.de/rss	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	订阅没有内容
+rss-thefoodtech	The Food Tech	https://thefoodtech.com/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	首页对机器返回 403
+rss-firstclass	first class	https://www.firstclass-online.com/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	首页对机器返回 403
+rss-chr-magazine	CHR Magazine	https://www.chr-magazine.fr/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	域名解析不到
+rss-therail	The Rail	https://therail.media/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	找不到订阅源
+rss-hospitality-asia	Hospitality Asia	https://hospitality-asia.com/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	找不到订阅源
+rss-goomer	Goomer 博客	https://goomer.com.br/blog/	2026-10-02·第十六批（欧洲、大洋洲、拉美实务媒体）	不接	找不到订阅源

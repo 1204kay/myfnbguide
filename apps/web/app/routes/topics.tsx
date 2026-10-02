@@ -16,17 +16,10 @@ interface TopicSummary {
   latestAt: string | null;
 }
 
-/** A topic group as the industry pack names it (industry/topics.json). */
-interface TopicGroup {
-  key: TopicSummary["group"];
-  name: string;
-  blurb: string;
-}
-
 export async function loader({ request }: { request: Request }) {
   const upstream = new Headers();
   const data = await apiGet<{ topics: TopicSummary[]; refreshAt: string | null }>("/api/site/topics", { signal: request.signal, responseHeaders: upstream });
-  return withHeaders({ ...data, groups: catalog.groups as TopicGroup[] }, { headers: releaseBoundCache(data.refreshAt, 300, Date.now(), upstream) });
+  return withHeaders({ ...data, groups: catalog.groups }, { headers: releaseBoundCache(data.refreshAt, 300, Date.now(), upstream) });
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {

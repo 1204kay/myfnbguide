@@ -79,7 +79,7 @@
       "name": "AI 与自动化",
       "group": "field",
       "tags": ["AI/自动化"],
-      "definition": "机器人、自动化设备与 AI 在餐饮店里的实际用法：能省多少人、多少钱，谁在大规模用。",
+      "definition": "机器人、自动化设备与 AI 在餐饮店里的实际用法：能省多少人、多少钱，小店用不用得起。",
       "related": ["people", "tech", "equipment"]
     },
     {
@@ -207,7 +207,7 @@
       "name": "快餐",
       "group": "genre",
       "tags": ["快餐"],
-      "definition": "快餐与快休闲连锁：价格战、得来速、数字化与扩张。",
+      "definition": "快餐店与快餐连锁：价格战、出餐效率、外卖与成本。",
       "related": ["mcdonalds", "kfc", "new-products"]
     },
     {
@@ -279,7 +279,7 @@
       "name": "日本",
       "group": "genre",
       "tags": ["日本"],
-      "definition": "日本餐饮业：连锁的经营数字、人手短缺的应对、新业态。",
+      "definition": "日本餐饮业：个人店与连锁的经营做法、人手短缺的应对、新业态。",
       "related": ["korea", "saizeriya", "sushiro"]
     },
     {
@@ -327,7 +327,7 @@
       "name": "美国",
       "group": "genre",
       "tags": ["美国"],
-      "definition": "美国餐饮业：大型连锁的策略、同店销售、价格战与科技应用。",
+      "definition": "美国餐饮业：独立餐厅与小店的经营做法、成本与用工，连锁的价格战。",
       "related": ["quick-service", "canada", "mcdonalds"]
     },
     {
@@ -343,7 +343,7 @@
       "name": "英国与欧洲",
       "group": "genre",
       "tags": ["英国", "欧洲"],
-      "definition": "英国和欧洲的餐饮市场：连锁表现、成本与税负、经营做法。",
+      "definition": "英国和欧洲的餐饮业：独立餐厅与咖啡馆的经营做法、成本与税负。",
       "related": ["usa", "australia", "bars"]
     },
     {

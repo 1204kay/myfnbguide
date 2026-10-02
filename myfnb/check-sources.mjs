@@ -6,6 +6,9 @@
 // rules). Sources change their robots.txt; the framework does not read it, so run this monthly, and on a
 // candidate file before adding a source.
 //   node myfnb/check-sources.mjs [sources.json]
+// It also honours a text-and-data-mining reservation (W3C TDMRep): /.well-known/tdmrep.json, a robots.txt
+// "TDM-policy:" file, or a tdm-reservation response header on the feed (a reservation counts as the terms
+// refusing text and data mining).
 // The AI agent list is the community-maintained one from github.com/ai-robots-txt/ai.robots.txt.
 // A source's terms of use still need reading by hand (no crawling, text and data mining or AI use).
 import { readFileSync } from "node:fs";
@@ -45,23 +48,60 @@ function disallowed(rules, path) {
   return best?.[0] === "disallow";
 }
 
+/** GET with one retry (a single timeout on a slow network is not a refusal); null when there is no answer. */
+async function get(u) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(u, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(20000) });
+      return { status: res.status, headers: res.headers, text: res.status === 200 ? await res.text() : "" };
+    } catch {}
+  }
+  return null;
+}
+/** TDMRep rules of a site: [{ location, reserved }] from /.well-known/tdmrep.json and robots.txt TDM-policy files. */
+async function tdmRules(origin, robots) {
+  const files = [`${origin}/.well-known/tdmrep.json`];
+  for (const line of robots.split(/\r?\n/)) {
+    const m = line.match(/^\s*tdm-policy\s*:\s*(\S+)/i);
+    if (m && /\.json(\?|$)/i.test(m[1])) files.push(new URL(m[1], origin).toString());
+  }
+  const rules = [];
+  for (const f of files) {
+    const res = await get(f);
+    if (res?.status !== 200) continue;
+    try {
+      for (const e of [].concat(JSON.parse(res.text))) if (e && typeof e.location === "string") rules.push({ location: e.location, reserved: Number(e["tdm-reservation"]) === 1 });
+    } catch {}
+  }
+  return rules;
+}
+/** The most specific TDMRep location matching the path decides. */
+function tdmReserved(rules, path) {
+  let best = null;
+  for (const r of rules) {
+    const re = new RegExp("^" + r.location.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*"));
+    if (re.test(path) && (!best || r.location.length > best.location.length)) best = r;
+  }
+  return best?.reserved === true;
+}
+
+const sites = new Map();
 let failed = 0;
 for (const s of sources) {
   const url = new URL(s.config.url ?? s.config.feedUrl);
   const path = url.pathname + url.search;
-  // One retry: a single timeout on a slow network is not a site refusing robots.txt.
-  let res = null;
-  for (let attempt = 0; attempt < 2 && !res; attempt++) {
-    try {
-      res = await fetch(`${url.origin}/robots.txt`, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(20000) });
-    } catch {
-      res = null;
-    }
+  if (!sites.has(url.origin)) {
+    const robots = await get(`${url.origin}/robots.txt`);
+    sites.set(url.origin, { robots, tdm: await tdmRules(url.origin, robots?.status === 200 ? robots.text : "") });
   }
+  const { robots: res, tdm } = sites.get(url.origin);
   const problems = [];
   const notes = [];
   if (!res || (res.status !== 200 && res.status !== 404)) problems.push(`robots.txt unreadable (${res?.status ?? "no answer"})`);
-  const text = res?.status === 200 ? await res.text() : "";
+  const text = res?.status === 200 ? res.text : "";
+  if (tdmReserved(tdm, path)) problems.push("TDMRep: text and data mining reserved (tdmrep.json)");
+  const feed = await get(url.toString());
+  if (feed && /^\s*1\s*$/.test(feed.headers.get("tdm-reservation") ?? "")) problems.push("TDMRep: tdm-reservation header on the feed");
   for (const g of groups(text)) {
     if (g.agents.includes("*") && disallowed(g.rules, path)) problems.push(`robots.txt disallows ${path} for every crawler`);
     if (!disallowed(g.rules, "/") && !disallowed(g.rules, path)) continue;

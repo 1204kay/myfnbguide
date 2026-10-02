@@ -5388,7 +5388,7 @@ pod-jp-kitchencar-michi	みちのキッチンカー復活劇場（播客）	http
 pod-the-pre-shift-7shifts	The Pre-Shift（播客）	https://rss.buzzsprout.com/1937749.rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-marketing-gastronomico	Marketing Gastronómico Sobre La Mesa（播客）	https://anchor.fm/s/b613608/podcast/rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-entre-hosteleros	ENTRE HOSTELEROS（播客）	https://anchor.fm/s/fd40eaf4/podcast/rss	2026-10-02·第十批（播客第二轮）	接入	
-pod-food-business-blueprint	The Food Business Blueprint Podcast（播客）	https://feeds.transistor.fm/the-food-business-blueprint-podcast	2026-10-02·第十批（播客第二轮）	接入	
+pod-food-business-blueprint	The Food Business Blueprint Podcast（播客）	https://feeds.transistor.fm/the-food-business-blueprint-podcast	2026-10-02·第十批（播客第二轮）	不接	订阅主机的 robots.txt 返回 400（规则 5，两次复查）
 pod-bakery-business-academy	Kitchen Notes: A Podcast by Bakery Business Academy（播客）	https://rss.buzzsprout.com/1992529.rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-wholestory-fwd	WholeStory - An FWD Podcast（播客）	https://feed.podbean.com/FWDwholestory/feed.xml	2026-10-02·第十批（播客第二轮）	接入	
 pod-lado-b-gastronomia	Lado B da Gastronomia（播客）	https://www.spreaker.com/show/6146939/episodes/feed	2026-10-02·第十批（播客第二轮）	接入	
@@ -5401,7 +5401,7 @@ pod-restaurant-finance-podcast	The Restaurant Finance Podcast（播客）	https:
 pod-say86-hospitality	say86 Hospitality Podcast（播客）	https://rss.buzzsprout.com/2447330.rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-shift-change-qsr	The Shift Change - Transforming QSR Operations Through Better HR（播客）	https://api.riverside.com/hosting/v65dB1Zc.rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-cheftreff-k5	ChefTreff - ein K5 Podcast von Sven Rittau（播客）	https://anchor.fm/s/10a0b448c/podcast/rss	2026-10-02·第十批（播客第二轮）	接入	
-pod-nightlife-security	Nightlife Security Podcast | The Nightlife and Bar Security Resource for Security Professionals, Owners, & Operators（播客）	https://rss.libsyn.com/shows/44558/destinations/143469.xml	2026-10-02·第十批（播客第二轮）	接入	
+pod-nightlife-security	Nightlife Security Podcast | The Nightlife and Bar Security Resource for Security Professionals, Owners, & Operators（播客）	https://rss.libsyn.com/shows/44558/destinations/143469.xml	2026-10-02·第十批（播客第二轮）	不接	订阅主机的 robots.txt 返回 403（规则 5，两次复查）
 pod-profitable-coffee-business	The Profitable Coffee Business（播客）	https://anchor.fm/s/f4a777dc/podcast/rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-startcups-coffee	STARTCUPS® Coffee Talks Podcast（播客）	https://anchor.fm/s/10d8d7b20/podcast/rss	2026-10-02·第十批（播客第二轮）	接入	
 pod-restaurant-profit-coach	The Restaurant Profit Coach（播客）	https://api.riverside.com/hosting/avR0XOZf.rss	2026-10-02·第十批（播客第二轮）	接入	

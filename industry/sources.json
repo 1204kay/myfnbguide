@@ -12365,29 +12365,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-food-business-blueprint",
-      "name": "The Food Business Blueprint Podcast（播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "全球",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-bakery-business-academy",
       "name": "Kitchen Notes: A Podcast by Bakery Business Academy（播客）",
       "kind": "rss",
@@ -12646,29 +12623,6 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10a0b448c/podcast/rss",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-nightlife-security",
-      "name": "Nightlife Security Podcast | The Nightlife and Bar Security Resource for Security Professionals, Owners, & Operators（播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.libsyn.com/shows/44558/destinations/143469.xml",
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true

@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全球的餐饮行业媒体与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过（node myfnb/vet-sources.ts）；第一批 20 个从正式服务器测过能打开（PMQ、Global Coffee Report 对服务器返回 403，已去掉），之后加的部署后看后台「信源」页，对服务器返回 403 的暂停。协会用 T1；品牌新闻稿（新品促销多，校准前门槛不放低）与平台、服务商用 T1_5；媒体用 T2。接不接、留不留只看它每天能出几条必看（myfnb/HANDOFF.md §5.4「入口的终点」）；2026-10-02 按 9/18–10/2 两周实测停用了 547 个（多为 PR TIMES 日本企业新闻稿），名单与数字在 myfnb/prune-2026-10-02.tsv。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全世界写给餐饮老板的媒体、同行播客与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过（node myfnb/vet-sources.ts）；第一批 20 个从正式服务器测过能打开（PMQ、Global Coffee Report 对服务器返回 403，已去掉），之后加的部署后看后台「信源」页，对服务器返回 403 的暂停。协会用 T1；品牌新闻稿（新品促销多，校准前门槛不放低）与平台、服务商用 T1_5；媒体用 T2。接不接、留不留只看它每天能出几条必看（myfnb/HANDOFF.md §5.4「入口的终点」）；2026-10-02 按 9/18–10/2 两周实测停用了 547 个（多为 PR TIMES 日本企业新闻稿），名单与数字在 myfnb/prune-2026-10-02.tsv；同日傍晚内容改为站在一家小店里面看，按新标准再停用 7 个（myfnb/remeasure-2026-10-02.tsv）。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
   "sources": [
     {
       "id": "rss-fsr",
@@ -537,29 +537,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "prt-royal",
-      "name": "ロイヤルホールディングス株式会社（PR TIMES）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=71323",
-        "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T1_5",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "日本",
-        "品牌"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-hospitality-talks",
       "name": "Hospitality Talks（播客）",
       "kind": "rss",
@@ -634,29 +611,6 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/1167eb294/podcast/rss",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "日本",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-jp-gaishoku-saizensen",
-      "name": "10分解説 話題の外食最前線（播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://api.robotstart.jp/api/v1/feeds/36a9049a/get-feeds/podcast",
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -928,98 +882,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-arca",
-      "name": "Australian Restaurant & Cafe Association",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://arca.org.au/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "澳洲",
-        "协会"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-gnw-restaurants",
-      "name": "GlobeNewswire · Restaurants & Bars",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.globenewswire.com/RssFeed/industry/5757-Restaurants%20&%20Bars/feedTitle/GlobeNewswire%20-%20Industry%20News%20on%20Restaurants%20and%20Bars",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T1_5",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "美国",
-        "新闻稿"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-sivarious",
-      "name": "Sivarious",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://sivarious.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "西班牙",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "nr-jollibee",
-      "name": "Jollibee Group",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.jollibeegroup.com/news/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T1_5",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "菲律宾",
-        "品牌"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-der-gastro-podcast",
       "name": "DER GASTRO PODCAST（播客）",
       "kind": "rss",
@@ -1222,37 +1084,6 @@
       "tags": [
         "日本",
         "平台"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "web-canyin88-kuaixun",
-      "name": "红餐网 · 快讯",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.canyin88.com/kuaixun/",
-        "itemSelector": "div.nf_list_item",
-        "linkSelector": "a.nf_title",
-        "titleSelector": "a.nf_title",
-        "detail": {
-          "maxFetches": 15,
-          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
-          "publishedAtAuthoritative": true
-        },
-        "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "中国",
-        "媒体"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

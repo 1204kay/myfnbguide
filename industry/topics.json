@@ -10,11 +10,6 @@
       "key": "genre",
       "name": "品类与地区",
       "blurb": "哪种餐饮、哪里在变：咖啡、茶饮、火锅、快餐……中国、日本、东南亚、美国……"
-    },
-    {
-      "key": "company",
-      "name": "品牌与平台",
-      "blurb": "按品牌和平台追踪：谁在扩张、谁在关店、谁改了佣金"
     }
   ],
   "topics": [
@@ -72,7 +67,7 @@
       "group": "field",
       "tags": ["外卖/平台"],
       "definition": "外卖平台的佣金、规则与新功能，外卖怎么做不亏钱，云厨房与外带。",
-      "related": ["traffic-loyalty", "tech", "meituan"]
+      "related": ["traffic-loyalty", "tech", "packaging"]
     },
     {
       "slug": "ai-automation",
@@ -184,7 +179,7 @@
       "group": "genre",
       "tags": ["咖啡"],
       "definition": "咖啡店与咖啡连锁：品牌扩张、门店模型、咖啡豆价格与咖啡馆经营。",
-      "related": ["tea-drinks", "luckin", "starbucks"]
+      "related": ["tea-drinks", "bakery", "store-design"]
     },
     {
       "slug": "tea-drinks",
@@ -192,7 +187,7 @@
       "group": "genre",
       "tags": ["茶饮"],
       "definition": "新茶饮与奶茶：品牌、门店数、出海和价格战。",
-      "related": ["coffee", "mixue", "going-global"]
+      "related": ["coffee", "going-global", "new-products"]
     },
     {
       "slug": "hotpot",
@@ -200,7 +195,7 @@
       "group": "genre",
       "tags": ["火锅"],
       "definition": "火锅品类的门店、价格、复购与新玩法。",
-      "related": ["full-service", "haidilao", "china"]
+      "related": ["full-service", "china", "traffic-loyalty"]
     },
     {
       "slug": "quick-service",
@@ -208,7 +203,7 @@
       "group": "genre",
       "tags": ["快餐"],
       "definition": "快餐店与快餐连锁：价格战、出餐效率、外卖与成本。",
-      "related": ["mcdonalds", "kfc", "new-products"]
+      "related": ["new-products", "delivery", "franchising"]
     },
     {
       "slug": "full-service",
@@ -280,7 +275,7 @@
       "group": "genre",
       "tags": ["日本"],
       "definition": "日本餐饮业：个人店与连锁的经营做法、人手短缺的应对、新业态。",
-      "related": ["korea", "saizeriya", "sushiro"]
+      "related": ["korea", "taiwan", "menu-pricing"]
     },
     {
       "slug": "korea",
@@ -296,7 +291,7 @@
       "group": "genre",
       "tags": ["东南亚", "马来西亚", "新加坡", "印尼", "泰国", "越南", "菲律宾"],
       "definition": "东南亚各国的餐饮市场、品牌扩张与经营变化。",
-      "related": ["going-global", "halal", "grab"]
+      "related": ["going-global", "halal", "india"]
     },
     {
       "slug": "india",
@@ -328,7 +323,7 @@
       "group": "genre",
       "tags": ["美国"],
       "definition": "美国餐饮业：独立餐厅与小店的经营做法、成本与用工，连锁的价格战。",
-      "related": ["quick-service", "canada", "mcdonalds"]
+      "related": ["quick-service", "canada", "latin-america"]
     },
     {
       "slug": "canada",
@@ -353,276 +348,6 @@
       "tags": ["拉美"],
       "definition": "拉丁美洲的餐饮市场与品牌。",
       "related": ["usa", "going-global", "delivery"]
-    },
-    {
-      "slug": "mcdonalds",
-      "name": "麦当劳",
-      "group": "company",
-      "tags": ["麦当劳", "entity:mcdonalds"],
-      "entityId": "mcdonalds",
-      "definition": "麦当劳的策略、菜单、科技与门店：全球最大的餐饮连锁在怎么做。",
-      "related": ["kfc", "quick-service", "ai-automation"]
-    },
-    {
-      "slug": "kfc",
-      "name": "肯德基",
-      "group": "company",
-      "tags": ["肯德基", "entity:kfc"],
-      "entityId": "kfc",
-      "definition": "肯德基在各地的经营、菜单与扩张。",
-      "related": ["yumchina", "mcdonalds", "quick-service"]
-    },
-    {
-      "slug": "yumchina",
-      "name": "百胜中国",
-      "group": "company",
-      "tags": ["百胜中国", "entity:yumchina"],
-      "entityId": "yumchina",
-      "definition": "百胜中国（肯德基、必胜客在中国的经营者）的门店、价格与数字化。",
-      "related": ["kfc", "pizzahut", "china"]
-    },
-    {
-      "slug": "starbucks",
-      "name": "星巴克",
-      "group": "company",
-      "tags": ["星巴克", "entity:starbucks"],
-      "entityId": "starbucks",
-      "definition": "星巴克的门店调整、策略转向与各地市场。",
-      "related": ["luckin", "coffee", "cotti"]
-    },
-    {
-      "slug": "luckin",
-      "name": "瑞幸",
-      "group": "company",
-      "tags": ["瑞幸", "entity:luckin"],
-      "entityId": "luckin",
-      "definition": "瑞幸咖啡的门店、价格与出海。",
-      "related": ["cotti", "starbucks", "coffee"]
-    },
-    {
-      "slug": "mixue",
-      "name": "蜜雪冰城",
-      "group": "company",
-      "tags": ["蜜雪冰城", "entity:mixue"],
-      "entityId": "mixue",
-      "definition": "蜜雪冰城的门店、供应链与海外扩张。",
-      "related": ["tea-drinks", "chagee", "going-global"]
-    },
-    {
-      "slug": "chagee",
-      "name": "霸王茶姬",
-      "group": "company",
-      "tags": ["霸王茶姬", "entity:chagee"],
-      "entityId": "chagee",
-      "definition": "霸王茶姬的门店、上市与出海。",
-      "related": ["mixue", "heytea", "tea-drinks"]
-    },
-    {
-      "slug": "heytea",
-      "name": "喜茶",
-      "group": "company",
-      "tags": ["喜茶", "entity:heytea"],
-      "entityId": "heytea",
-      "definition": "喜茶的门店策略、加盟与产品。",
-      "related": ["chagee", "guming", "tea-drinks"]
-    },
-    {
-      "slug": "guming",
-      "name": "古茗",
-      "group": "company",
-      "tags": ["古茗", "entity:guming"],
-      "entityId": "guming",
-      "definition": "古茗的门店、加盟与供应链。",
-      "related": ["chabaidao", "mixue", "tea-drinks"]
-    },
-    {
-      "slug": "chabaidao",
-      "name": "茶百道",
-      "group": "company",
-      "tags": ["茶百道", "entity:chabaidao"],
-      "entityId": "chabaidao",
-      "definition": "茶百道的门店、加盟与市场。",
-      "related": ["guming", "heytea", "tea-drinks"]
-    },
-    {
-      "slug": "cotti",
-      "name": "库迪",
-      "group": "company",
-      "tags": ["库迪", "entity:cotti"],
-      "entityId": "cotti",
-      "definition": "库迪咖啡的门店、价格与新业务。",
-      "related": ["luckin", "coffee", "china"]
-    },
-    {
-      "slug": "haidilao",
-      "name": "海底捞",
-      "group": "company",
-      "tags": ["海底捞", "entity:haidilao"],
-      "entityId": "haidilao",
-      "definition": "海底捞的经营、新品牌与海外门店。",
-      "related": ["hotpot", "china", "going-global"]
-    },
-    {
-      "slug": "pizzahut",
-      "name": "必胜客",
-      "group": "company",
-      "tags": ["必胜客", "entity:pizzahut"],
-      "entityId": "pizzahut",
-      "definition": "必胜客的经营、菜单与门店。",
-      "related": ["dominos", "yumchina", "quick-service"]
-    },
-    {
-      "slug": "dominos",
-      "name": "达美乐",
-      "group": "company",
-      "tags": ["达美乐", "entity:dominos"],
-      "entityId": "dominos",
-      "definition": "达美乐的外卖模式、门店与各地市场。",
-      "related": ["pizzahut", "delivery", "quick-service"]
-    },
-    {
-      "slug": "burgerking",
-      "name": "汉堡王",
-      "group": "company",
-      "tags": ["汉堡王", "entity:burgerking"],
-      "entityId": "burgerking",
-      "definition": "汉堡王的改造计划、门店与加盟。",
-      "related": ["mcdonalds", "quick-service", "franchising"]
-    },
-    {
-      "slug": "subway",
-      "name": "赛百味",
-      "group": "company",
-      "tags": ["赛百味", "entity:subway"],
-      "entityId": "subway",
-      "definition": "赛百味的门店调整、加盟与菜单。",
-      "related": ["franchising", "quick-service", "closures"]
-    },
-    {
-      "slug": "chipotle",
-      "name": "Chipotle",
-      "group": "company",
-      "tags": ["Chipotle", "entity:chipotle"],
-      "entityId": "chipotle",
-      "definition": "Chipotle 的门店、科技与运营做法。",
-      "related": ["quick-service", "ai-automation", "usa"]
-    },
-    {
-      "slug": "jollibee",
-      "name": "快乐蜂",
-      "group": "company",
-      "tags": ["快乐蜂", "entity:jollibee"],
-      "entityId": "jollibee",
-      "definition": "快乐蜂集团的品牌、并购与海外扩张。",
-      "related": ["going-global", "southeast-asia", "quick-service"]
-    },
-    {
-      "slug": "saizeriya",
-      "name": "萨莉亚",
-      "group": "company",
-      "tags": ["萨莉亚", "entity:saizeriya"],
-      "entityId": "saizeriya",
-      "definition": "萨莉亚的低价模式、门店与经营数字。",
-      "related": ["japan", "menu-pricing", "full-service"]
-    },
-    {
-      "slug": "sushiro",
-      "name": "寿司郎",
-      "group": "company",
-      "tags": ["寿司郎", "entity:sushiro"],
-      "entityId": "sushiro",
-      "definition": "寿司郎的门店、出海与运营。",
-      "related": ["japan", "going-global", "ai-automation"]
-    },
-    {
-      "slug": "yoshinoya",
-      "name": "吉野家",
-      "group": "company",
-      "tags": ["吉野家", "entity:yoshinoya"],
-      "entityId": "yoshinoya",
-      "definition": "吉野家的门店、价格与新业态。",
-      "related": ["japan", "quick-service", "menu-pricing"]
-    },
-    {
-      "slug": "timhortons",
-      "name": "Tim Hortons",
-      "group": "company",
-      "tags": ["Tim Hortons", "entity:timhortons"],
-      "entityId": "timhortons",
-      "definition": "Tim Hortons 的门店与海外市场。",
-      "related": ["coffee", "canada", "dunkin"]
-    },
-    {
-      "slug": "dunkin",
-      "name": "Dunkin'",
-      "group": "company",
-      "tags": ["Dunkin'", "entity:dunkin"],
-      "entityId": "dunkin",
-      "definition": "Dunkin' 的门店、饮品与市场。",
-      "related": ["coffee", "timhortons", "usa"]
-    },
-    {
-      "slug": "meituan",
-      "name": "美团",
-      "group": "company",
-      "tags": ["美团", "entity:meituan"],
-      "entityId": "meituan",
-      "definition": "美团外卖与到店业务的规则、佣金与海外业务（Keeta）。",
-      "related": ["delivery", "eleme", "china"]
-    },
-    {
-      "slug": "eleme",
-      "name": "饿了么",
-      "group": "company",
-      "tags": ["饿了么", "entity:eleme"],
-      "entityId": "eleme",
-      "definition": "饿了么的规则、补贴与商家政策。",
-      "related": ["meituan", "delivery", "china"]
-    },
-    {
-      "slug": "doordash",
-      "name": "DoorDash",
-      "group": "company",
-      "tags": ["DoorDash", "entity:doordash"],
-      "entityId": "doordash",
-      "definition": "DoorDash 的佣金、功能与商家工具。",
-      "related": ["ubereats", "delivery", "usa"]
-    },
-    {
-      "slug": "ubereats",
-      "name": "Uber Eats",
-      "group": "company",
-      "tags": ["Uber Eats", "entity:ubereats"],
-      "entityId": "ubereats",
-      "definition": "Uber Eats 的佣金、功能与市场。",
-      "related": ["doordash", "delivery", "grab"]
-    },
-    {
-      "slug": "grab",
-      "name": "Grab",
-      "group": "company",
-      "tags": ["Grab", "entity:grab"],
-      "entityId": "grab",
-      "definition": "Grab 外卖的规则、佣金与东南亚市场。",
-      "related": ["foodpanda", "delivery", "southeast-asia"]
-    },
-    {
-      "slug": "foodpanda",
-      "name": "foodpanda",
-      "group": "company",
-      "tags": ["foodpanda", "entity:foodpanda"],
-      "entityId": "foodpanda",
-      "definition": "foodpanda 的规则、佣金与市场变化。",
-      "related": ["grab", "delivery", "southeast-asia"]
-    },
-    {
-      "slug": "deliveroo",
-      "name": "Deliveroo",
-      "group": "company",
-      "tags": ["Deliveroo", "entity:deliveroo"],
-      "entityId": "deliveroo",
-      "definition": "Deliveroo 的佣金、功能与市场。",
-      "related": ["ubereats", "delivery", "uk-europe"]
     }
   ]
 }

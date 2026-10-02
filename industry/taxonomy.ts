@@ -85,7 +85,7 @@ export const CATEGORY_BY_ITEM_TYPE: Readonly<Record<string, string>> = {
 
 // ── 品牌与平台 ──────────────────────────────────────────────────────────────────────────
 
-/** 品牌与平台主题：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。 */
+/** 品牌与平台（打实体标签用；品牌主题页 2026-10-02 已删）：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。 */
 export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[] }> = {
   mcdonalds: { name: "麦当劳 McDonald's", displayTag: "麦当劳", aliases: ["McDonald's", "麦当劳", "金拱门"] },
   kfc: { name: "肯德基 KFC", displayTag: "肯德基", aliases: ["KFC", "肯德基"] },

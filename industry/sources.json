@@ -9168,29 +9168,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-beanscene",
-      "name": "BeanScene",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.beanscenemag.com.au/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "澳洲",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-brot-backwaren",
       "name": "BROT+Backwaren",
       "kind": "rss",

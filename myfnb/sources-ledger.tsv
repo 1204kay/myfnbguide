@@ -2492,7 +2492,7 @@ prt-183015	株式会社パシフィックリゾート（PR TIMES）	https://prti
 prt-191255	一般社団法人いい屋根屋社中（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=191255	2026-10-02·第五批（PR TIMES 餐饮企业）	不接	不是餐饮经营者或专做餐饮生意的服务商（第一轮按公司名和最近 10 条标题判断）
 prt-134290	野村信託銀行株式会社（PR TIMES）	https://prtimes.jp/companyrdf.php?company_id=134290	2026-10-02·第五批（PR TIMES 餐饮企业）	不接	不是餐饮经营者或专做餐饮生意的服务商（第一轮按公司名和最近 10 条标题判断）
 rss-arca	Australian Restaurant & Cafe Association	https://arca.org.au/feed/	2026-10-02·第六批（各国餐饮与品类媒体）	接入	
-rss-beanscene	BeanScene	https://www.beanscenemag.com.au/feed/	2026-10-02·第六批（各国餐饮与品类媒体）	接入	
+rss-beanscene	BeanScene	https://www.beanscenemag.com.au/feed/	2026-10-02·第六批（各国餐饮与品类媒体）	不接	服务器返回 403（规则 6，10/2 第二次部署后），已暂停
 rss-brot-backwaren	BROT+Backwaren	https://brotundbackwaren.de/feed/	2026-10-02·第六批（各国餐饮与品类媒体）	接入	
 rss-gnw-restaurants	GlobeNewswire · Restaurants & Bars	https://www.globenewswire.com/RssFeed/industry/5757-Restaurants%20&%20Bars/feedTitle/GlobeNewswire%20-%20Industry%20News%20on%20Restaurants%20and%20Bars	2026-10-02·第六批（各国餐饮与品类媒体）	接入	
 rss-horeca-ro	Horeca.ro	https://www.horeca.ro/feed/	2026-10-02·第六批（各国餐饮与品类媒体）	接入	

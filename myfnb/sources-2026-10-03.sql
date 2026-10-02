@@ -47,3 +47,23 @@ WITH b AS (
   RETURNING id
 ) SELECT count(*) AS podcasts_summary_is_body FROM b;
 SELECT count(*) AS enabled_sources FROM sources WHERE enabled;
+-- 四、10/3 上午查到：每天 3000 次的上限主要被历史回补吃掉（24 小时里 Ristorazione Italiana 183 次分析，178 次是回补；
+--    已停用的 The Spoon、FEHGRA 等还在分析排队的旧条目）。回补的条目不进日报。跳过还没分析的回补条目与已停用来源的条目，
+--    并给所有来源补上 initialBackfillOnly（早期接的来源在数据库里没有这一项，seed 不覆盖已有来源）。
+WITH stale AS (
+  UPDATE articles a SET processing_state = 'skipped', processing_queued_at = NULL, processing_retry_at = NULL
+  WHERE a.processing_state IN ('new', 'failed')
+    AND (a.backfill OR a.source_id IN (SELECT id FROM sources WHERE NOT enabled))
+    AND NOT EXISTS (SELECT 1 FROM analyses n WHERE n.article_id = a.id)
+  RETURNING a.id
+), dropped AS (
+  DELETE FROM pgboss.job j USING stale
+  WHERE j.data->>'articleId' = stale.id AND j.name IN ('content.analyze', 'content.extract-body') AND j.state IN ('created', 'retry')
+  RETURNING j.id
+)
+SELECT (SELECT count(*) FROM stale) AS skipped_backlog, (SELECT count(*) FROM dropped) AS removed_jobs;
+WITH c AS (
+  UPDATE sources SET config = config || jsonb_build_object('_aihot', coalesce(config->'_aihot', '{}'::jsonb) || '{"initialBackfillOnly": true}'::jsonb), updated_at = now()
+  WHERE coalesce(config #>> '{_aihot,initialBackfillOnly}', '') <> 'true'
+  RETURNING id
+) SELECT count(*) AS backfill_only_set FROM c;

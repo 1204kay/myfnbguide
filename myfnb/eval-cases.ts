@@ -3,8 +3,9 @@
 // decodes against the labels kept in the repo. B = blocked by the prefilter, U<score> = no usable Chinese
 // copy, E = the case failed (often the llm budget: run the same command again later), - = no score.
 // --long prints one line per case and what every threshold would select instead.
-// Run in the same container right after the eval (.data is not in the image):
-//   sudo docker compose exec -T worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 > /dev/null && node myfnb/eval-cases.ts"
+// Run in the same container right after the eval (.data is not in the image; the app user cannot create it under
+// /app, hence -u root):
+//   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 > /dev/null && node myfnb/eval-cases.ts"
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { REPO_ROOT } from "@aihot/backend/config";

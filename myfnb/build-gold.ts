@@ -1,8 +1,9 @@
 // Builds the gold file for scripts/eval-selection.ts from the labels kept in the repo. The labels file holds
 // only ids, titles and the user's decisions (no source text: that stays out of git); this reads each item's
 // title, body and source where it can. 必看 = select, 不看 = reject, 可看 = either.
-// Run on the server, then evaluate in the same container (.data is not in the image):
-//   sudo docker compose exec -T worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500"
+// Run on the server, then evaluate in the same container (.data is not in the image; the app user cannot create it
+// under /app, hence -u root):
+//   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500"
 //   node myfnb/build-gold.ts [labels.tsv] [out.jsonl]   (defaults: myfnb/gold-labels.tsv, .data/gold.jsonl)
 // labels.tsv columns: article_id, label (必看/可看/不看), split (development/holdout), stratum[, source_id, url, title].
 // A row with a source_id was labelled straight from its source's feed (round 2, 2026-10-02): most such items were

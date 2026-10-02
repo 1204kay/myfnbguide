@@ -5,7 +5,7 @@
 //   sudo docker compose exec -T worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500"
 //   node myfnb/build-gold.ts [labels.tsv] [out.jsonl]   (defaults: myfnb/gold-labels.tsv, .data/gold.jsonl)
 // labels.tsv columns: article_id, label (必看/可看/不看), split (development/holdout), stratum[, source_id, url, title].
-// A row with a source_id was labelled straight from its source's feed (round 2, 2026-10-03): most such items were
+// A row with a source_id was labelled straight from its source's feed (round 2, 2026-10-02): most such items were
 // never collected (sources only bring in 2–3 old items), so the item comes from the database if it was collected
 // since, else from the source's feed, else from its page.
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -63,7 +63,8 @@ if (fromFeeds.length) {
     for (const r of mine) {
       const a = done.get(r.url);
       if (a) { byId.set(r.id, a); continue; }
-      const c = found.find((x) => x.url === r.url);
+      // Episodes without a page were labelled under their guid; the feed now gives their media file as url.
+      const c = found.find((x) => x.url === r.url || (x.raw as { guid?: string } | undefined)?.guid === r.url);
       let body = c?.bodyText || null;
       if (!body && /^https?:\/\//.test(r.url)) body = (await extractFromUrl(r.url, { allowJina: false, subject: "gold" }))?.text ?? null;
       if (!c && !body) continue;

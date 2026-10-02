@@ -11903,6 +11903,2075 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-trestle-senior-living",
+      "name": "Tips from Trestle: The Senior Living Food and Hospitality Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/7f188b78/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "澳洲",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-der-gastro-podcast",
+      "name": "DER GASTRO PODCAST（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/10c84feec/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-fettgespraeche",
+      "name": "Fettgespräche - Der Gastro-Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/11481fce4/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-gastropodcast-de",
+      "name": "GASTROpodcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.spreaker.com/show/3671083/episodes/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-brot-austern",
+      "name": "Brot & Austern – Der Gastro-Trend Podcast mit Felicitas Then（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://brot-und-austern.podigee.io/feed/mp3",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-aufs-haus-gastro",
+      "name": "Auf’s Haus der Podcast - Gastro Geschichten mit Axel und Ana aus Münster（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/10c9370f8/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-gastrolab-heraldo",
+      "name": "GastroLab（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.acast.com/public/shows/61674df12b74740013510295",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-gastrogenius",
+      "name": "GastroGenius by Sarah Jacob（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/e674c1ec/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-koffeinrausch-gastro",
+      "name": "Koffeinrausch & Gastro（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/114b20308/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-etl-adhoga",
+      "name": "ETL ADHOGA informiert! (Tipps für Hotel- & Gastro-Unternehmen)（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://etl-adhoga-gastrobriefing.podigee.io/feed/mp3",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-gastrotalk-hoeller",
+      "name": "GASTROtalk mit Kurt Höller（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/1518f870/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-talking-hospitality",
+      "name": "Talking Hospitality podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/talking-hospitality/",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-elevated-hospitality",
+      "name": "The Elevated Hospitality Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/fb0da358/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-the-ristoratori",
+      "name": "The Ristoratori（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/fb372db8/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "意大利",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-jp-hakata-ramen",
+      "name": "シゲアキの博多ラーメンPODCAST（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/111fda6e4/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "日本",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-jp-omise-radio-smaregi",
+      "name": "お店ラジオ2 supported by スマレジ（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/JPFMN9974221305",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "日本",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-jp-kitchencar-michi",
+      "name": "みちのキッチンカー復活劇場（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://stand.fm/rss/62fa2cce73ef6bc24982a205",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "日本",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-the-pre-shift-7shifts",
+      "name": "The Pre-Shift（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1937749.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "拉美",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-marketing-gastronomico",
+      "name": "Marketing Gastronómico Sobre La Mesa（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/b613608/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "拉美",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-entre-hosteleros",
+      "name": "ENTRE HOSTELEROS（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/fd40eaf4/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "拉美",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-food-business-blueprint",
+      "name": "The Food Business Blueprint Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "全球",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-bakery-business-academy",
+      "name": "Kitchen Notes: A Podcast by Bakery Business Academy（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1992529.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "全球",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-wholestory-fwd",
+      "name": "WholeStory - An FWD Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.podbean.com/FWDwholestory/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "全球",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-lado-b-gastronomia",
+      "name": "Lado B da Gastronomia（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.spreaker.com/show/6146939/episodes/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "欧洲",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-wealth",
+      "name": "Restaurant Wealth Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://api.riverside.com/hosting/iybPknYu.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "新加坡",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-cn-kaidian-biji",
+      "name": "开店笔记 ▎一店顶十店·小而美·极致单店（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "http://www.ximalaya.com/album/4416809.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "台湾",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-sbs-chuangye-souhsik",
+      "name": "創業搵食GUIDE（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sbs-ondemand.streamguys1.com/career-kickstarter/",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "台湾",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-coach",
+      "name": "The Restaurant Coach Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "http://therestaurantcoachpodcast.blubrry.net/feed/podcast/",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-mike-boyle-restaurant",
+      "name": "Mike Boyle Restaurant Show Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.omnycontent.com/d/playlist/5e27a451-e6e6-4c51-aa03-a7370003783c/c270d2fe-ed96-4c77-a7a4-abe601132b58/ae89c1b9-8f0f-4445-9d71-abe601134df4/podcast.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-finance-podcast",
+      "name": "The Restaurant Finance Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.blubrry.com/feeds/3956510.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-say86-hospitality",
+      "name": "say86 Hospitality Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2447330.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-shift-change-qsr",
+      "name": "The Shift Change - Transforming QSR Operations Through Better HR（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://api.riverside.com/hosting/v65dB1Zc.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-cheftreff-k5",
+      "name": "ChefTreff - ein K5 Podcast von Sven Rittau（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/10a0b448c/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-nightlife-security",
+      "name": "Nightlife Security Podcast | The Nightlife and Bar Security Resource for Security Professionals, Owners, & Operators（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.libsyn.com/shows/44558/destinations/143469.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-profitable-coffee-business",
+      "name": "The Profitable Coffee Business（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/f4a777dc/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-startcups-coffee",
+      "name": "STARTCUPS® Coffee Talks Podcast（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anchor.fm/s/10d8d7b20/podcast/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-profit-coach",
+      "name": "The Restaurant Profit Coach（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://api.riverside.com/hosting/avR0XOZf.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-growth-accelerator",
+      "name": "Restaurant Growth Accelerator: More Profit, More Locations, And More Time With Your Family（播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2419583.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-125063",
+      "name": "しゃぶ禅（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=125063",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-162488",
+      "name": "株式会社ネクストグローバルフーズ（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=162488",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-34783",
+      "name": "ジローレストランシステム株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=34783",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-142690",
+      "name": "株式会社サンマルクグリル（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=142690",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-131778",
+      "name": "株式会社亜門（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=131778",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-143139",
+      "name": "Mr.LAND株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=143139",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-102637",
+      "name": "株式会社 Global Ocean（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=102637",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-60253",
+      "name": "株式会社アセンティア・ホールディングス（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=60253",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-2286",
+      "name": "株式会社江戸一（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=2286",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-37550",
+      "name": "CRISP（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=37550",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-101287",
+      "name": "株式会社インターナショナル・ダイニング・コーポレーション（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=101287",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-39919",
+      "name": "株式会社ノムノ（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=39919",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-86797",
+      "name": "株式会社Be bloom（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=86797",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-20379",
+      "name": "株式会社ライドオンエクスプレスホールディングス（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=20379",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-134730",
+      "name": "株式会社 HOPE（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=134730",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-183380",
+      "name": "株式会社エスワイフード（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=183380",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-73553",
+      "name": "株式会社そら（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=73553",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-65701",
+      "name": "株式会社コムライン（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=65701",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-104470",
+      "name": "株式\u0000\u0000会社C-HUNDRED（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=104470",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-56390",
+      "name": "「赤身焼肉のカリスマ 牛恋」運営グループ（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=56390",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-166896",
+      "name": "400℃（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=166896",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-180760",
+      "name": "株式会社シダックスフードサービス（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=180760",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "团餐"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-163166",
+      "name": "株式会社ホイッスル三好（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=163166",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-179582",
+      "name": "株式会社ヴィーナスダイニング（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=179582",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-14699",
+      "name": "グローバルダイニング（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=14699",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-143495",
+      "name": "ハングリィジョーズホットチキンジャパン株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=143495",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-141863",
+      "name": "株式会社ExpreTech（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=141863",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-116722",
+      "name": "有限会社らくちん（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=116722",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-190465",
+      "name": "株式会社アバロンフーズ（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=190465",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-18848",
+      "name": "株式会社 WithGreen（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=18848",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-73406",
+      "name": "株式会社IOBI（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=73406",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-131985",
+      "name": "株式会社鎌倉パスタ（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=131985",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-10925",
+      "name": "株式会社エクシオジャパン（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=10925",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-79981",
+      "name": "三笠会館（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=79981",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-190796",
+      "name": "SOEL株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=190796",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "研究"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-168234",
+      "name": "元祖博多めんたい重株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=168234",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-173793",
+      "name": "株式会社絶好調（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=173793",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-38562",
+      "name": "ハピタ株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=38562",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-55652",
+      "name": "株式会社リング（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=55652",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-166113",
+      "name": "海鮮特急レーン 寿司じじや（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=166113",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-186963",
+      "name": "熟成肉レストラン肉だけ（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=186963",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-188003",
+      "name": "株式会社ＪＭコーヒージャパン（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=188003",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-160522",
+      "name": "ラ・メゾン・ホスピタリテ株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=160522",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-189878",
+      "name": "催事ジャパン株式会社（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=189878",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-44163",
+      "name": "株式会社PleasantPlace（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=44163",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-168511",
+      "name": "株式会社サッポロ実業（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=168511",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "品牌"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "prt-36375",
+      "name": "株式会社タイミー（PR TIMES）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=36375",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "日本",
+        "平台"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-canyin88-kuaixun",
+      "name": "红餐网 · 快讯",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyin88.com/kuaixun/",
+        "itemSelector": "div.nf_list_item",
+        "linkSelector": "a.nf_title",
+        "titleSelector": "a.nf_title",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-canyin88-hongchu",
+      "name": "红餐网 · 红厨",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyin88.com/hongchu/",
+        "itemSelector": "div.descBox h3",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-canyin88-z",
+      "name": "红餐网 · 知识树",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyin88.com/z/",
+        "itemSelector": "div.descBox h3",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-thinkfood-trend",
+      "name": "식품음료신문 · 트렌드·리포트",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.thinkfood.co.kr/rss/S1N9.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "韩国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

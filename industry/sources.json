@@ -55,29 +55,6 @@
       ]
     },
     {
-      "id": "rss-daily-coffee-news",
-      "name": "Daily Coffee News",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://dailycoffeenews.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "全球",
-        "媒体"
-      ]
-    },
-    {
       "id": "web-qsrmedia-asia",
       "name": "QSR Media Asia",
       "kind": "web_list",
@@ -105,29 +82,6 @@
         "亚洲",
         "媒体"
       ]
-    },
-    {
-      "id": "rss-foodbank-kr",
-      "name": "식품외식경제（韩国）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.foodbank.co.kr/rss/allArticle.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "韩国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
     },
     {
       "id": "web-canyin88-zhuanlan",
@@ -435,34 +389,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-horecanews-it",
-      "name": "Horecanews",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://horecanews.it/rss/latest-posts",
-        "denyCategories": [
-          "Eventi",
-          "Premi e Riconoscimenti",
-          "Ospitalità e Turismo"
-        ],
-        "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "意大利",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-hospitality-ireland",
       "name": "Hospitality Ireland",
       "kind": "rss",
@@ -542,6 +468,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10a46fcd4/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -565,6 +492,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10c589b40/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -588,6 +516,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/n5zJxIRnq5Vk",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -611,6 +540,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/1167eb294/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -634,6 +564,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/969bbcc0/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -657,6 +588,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.spreaker.com/show/5143519/episodes/feed",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -680,6 +612,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundon.fm/podcasts/04c60255-df49-4568-ba89-83a69b96ea61.xml",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -703,6 +636,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.riverside.fm/hosting/mMIUQRyf.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -726,6 +660,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.podengine.io/strategic-business-growth-systems-restaurant-edition",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -749,6 +684,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.podengine.io/marketing-morsels-for-restaurants",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -772,6 +708,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.castos.com/p49k",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -795,6 +732,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://totalfood.com/feed/podcast/",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -818,6 +756,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2128805.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -841,6 +780,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/238017.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -864,6 +804,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.art19.com/the-build",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -887,6 +828,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10c84feec/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -910,6 +852,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/11481fce4/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -933,6 +876,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fb372db8/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -956,6 +900,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.megaphone.fm/JPFMN9974221305",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -979,6 +924,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.riverside.com/hosting/iybPknYu.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1002,6 +948,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.blubrry.com/feeds/3956510.xml",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1025,6 +972,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2419583.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1163,6 +1111,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/101fb6240/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1186,6 +1135,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.captivate.fm/restaurant-prosperity-formula/",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1235,6 +1185,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/2f316c24/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1258,6 +1209,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.firstory.me/rss/user/ckiji29qfd9s108192s6mujil",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1281,6 +1233,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.transistor.fm/full-comp-the-voice-of-the-restaurant-industry-revolution",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1304,6 +1257,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:554457540/sounds.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1327,6 +1281,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:158297519/sounds.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1350,6 +1305,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/418643/destinations/3475718.xml",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1373,6 +1329,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/187310/destinations/1290941.xml",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1396,6 +1353,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/477066/destinations/4050717.xml",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1419,6 +1377,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.libsyn.com/537872/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1442,6 +1401,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/85579/destinations/412105.xml",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1465,6 +1425,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1488,6 +1449,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/1625317.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1511,6 +1473,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/4A7QwTm2zARD",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1534,6 +1497,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/1133b4cdc/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1557,6 +1521,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fd40eaf4/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1580,6 +1545,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2447330.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1603,6 +1569,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fb0da358/podcast/rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1626,6 +1593,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://app.kajabi.com/podcasts/2147882667/feed",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1649,6 +1617,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.captivate.fm/restaurant-deal-making/",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1672,6 +1641,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "http://therestaurantcoachpodcast.blubrry.net/feed/podcast/",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true
@@ -1695,6 +1665,7 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.substack.com/feed/podcast/3892076.rss",
+        "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2,
           "initialBackfillOnly": true

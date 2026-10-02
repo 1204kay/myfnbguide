@@ -1304,6 +1304,236 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-tw-kaidian-zhejianshi",
+      "name": "開店這件事 by PeiPeiTalks（台湾小店老板访谈，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.firstory.me/rss/user/ckiji29qfd9s108192s6mujil",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "台湾",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-full-comp",
+      "name": "FULL COMP: Restaurant Tactics, Tools, & Strategies（独立餐厅老板，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.transistor.fm/full-comp-the-voice-of-the-restaurant-industry-revolution",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-build-a-better-restaurant",
+      "name": "Build A Better Restaurant with Peter Harman（独立餐厅老板，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:554457540/sounds.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-rockstars",
+      "name": "Restaurant Rockstars Podcast（餐厅老板的利润与团队，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:158297519/sounds.rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-marketing-secrets",
+      "name": "Restaurant Marketing Secrets（餐厅营销做法，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.libsyn.com/shows/418643/destinations/3475718.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-great-work-for-restaurants",
+      "name": "Great Work for Restaurants（餐厅营销与回头客，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.libsyn.com/shows/187310/destinations/1290941.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-coffee-experts-club",
+      "name": "The Coffee Experts Club Podcast（咖啡馆老板，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.libsyn.com/shows/477066/destinations/4050717.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-pulling-shots",
+      "name": "Pulling Shots（小咖啡店老板，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.libsyn.com/537872/rss",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-keys-to-the-shop",
+      "name": "Keys To The Shop: Equipping Coffee Shop Leaders（咖啡店经营，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.libsyn.com/shows/85579/destinations/412105.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-food-business-blueprint",
+      "name": "The Food Business Blueprint Podcast（餐饮老板的经营心得，播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

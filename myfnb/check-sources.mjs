@@ -6,6 +6,8 @@
 // rules). Sources change their robots.txt; the framework does not read it, so run this monthly, and on a
 // candidate file before adding a source.
 //   node myfnb/check-sources.mjs [sources.json]
+// A robots.txt that cannot be read (no answer, 429, 5xx) fails the source; one answering 4xx counts as absent
+// while the source itself answers 200 (RFC 9309). A feed redirecting to another host is checked on both hosts.
 // It also honours a text-and-data-mining reservation (W3C TDMRep): /.well-known/tdmrep.json, a robots.txt
 // "TDM-policy:" file, or a tdm-reservation response header on the feed (a reservation counts as the terms
 // refusing text and data mining).
@@ -53,7 +55,7 @@ async function get(u) {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const res = await fetch(u, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(20000) });
-      return { status: res.status, headers: res.headers, text: res.status === 200 ? await res.text() : "" };
+      return { status: res.status, url: res.url, headers: res.headers, text: res.status === 200 ? await res.text() : "" };
     } catch {}
   }
   return null;
@@ -86,22 +88,23 @@ function tdmReserved(rules, path) {
 }
 
 const sites = new Map();
-let failed = 0;
-for (const s of sources) {
-  const url = new URL(s.config.url ?? s.config.feedUrl);
-  const path = url.pathname + url.search;
-  if (!sites.has(url.origin)) {
-    const robots = await get(`${url.origin}/robots.txt`);
-    sites.set(url.origin, { robots, tdm: await tdmRules(url.origin, robots?.status === 200 ? robots.text : "") });
+/** Rule findings for fetching `path` from `origin`: robots.txt, the AI agents it turns away, Content-Signal, TDMRep. */
+async function checkPath(origin, path, sourceAnswers, problems, notes) {
+  if (!sites.has(origin)) {
+    const robots = await get(`${origin}/robots.txt`);
+    sites.set(origin, { robots, tdm: await tdmRules(origin, robots?.status === 200 ? robots.text : "") });
   }
-  const { robots: res, tdm } = sites.get(url.origin);
-  const problems = [];
-  const notes = [];
-  if (!res || (res.status !== 200 && res.status !== 404)) problems.push(`robots.txt unreadable (${res?.status ?? "no answer"})`);
-  const text = res?.status === 200 ? res.text : "";
+  const { robots: res, tdm } = sites.get(origin);
+  // RFC 9309 §2.3.1.3: a robots.txt answering 4xx is unavailable and leaves the site unrestricted (S3-backed
+  // podcast hosts answer 403 for the missing file). It counts as unrestricted only while the source itself
+  // answers us 200: a site that turns us away answers the feed 403 as well. 429, 5xx and no answer stay
+  // "cannot confirm" (the RFC treats an unreachable robots.txt as a full disallow).
+  const status = res?.status;
+  const absent = status === 404 || (status >= 400 && status < 500 && status !== 429 && sourceAnswers);
+  if (status !== 200 && !absent) problems.push(`robots.txt unreadable at ${origin} (${status ?? "no answer"})`);
+  else if (status !== 200 && status !== 404) notes.push(`robots.txt at ${origin} answers ${status} while the source answers 200: unrestricted (RFC 9309)`);
+  const text = status === 200 ? res.text : "";
   if (tdmReserved(tdm, path)) problems.push("TDMRep: text and data mining reserved (tdmrep.json)");
-  const feed = await get(url.toString());
-  if (feed && /^\s*1\s*$/.test(feed.headers.get("tdm-reservation") ?? "")) problems.push("TDMRep: tdm-reservation header on the feed");
   for (const g of groups(text)) {
     if (g.agents.includes("*") && disallowed(g.rules, path)) problems.push(`robots.txt disallows ${path} for every crawler`);
     if (!disallowed(g.rules, "/") && !disallowed(g.rules, path)) continue;
@@ -115,6 +118,19 @@ for (const s of sources) {
     if (/ai-input\s*=\s*no/i.test(line)) problems.push(`Content-Signal: ${line.split(":").slice(1).join(":").trim()}`);
     else if (/ai-train\s*=\s*no/i.test(line)) notes.push("Content-Signal ai-train=no (allowed)");
   }
+}
+
+let failed = 0;
+for (const s of sources) {
+  const url = new URL(s.config.url ?? s.config.feedUrl);
+  const feed = await get(url.toString());
+  const problems = [];
+  const notes = [];
+  // The rules apply to the host the collector ends up reading from, so a redirect to another host is checked too.
+  const targets = [url];
+  if (feed?.url && new URL(feed.url).origin !== url.origin) targets.push(new URL(feed.url));
+  for (const t of targets) await checkPath(t.origin, t.pathname + t.search, feed?.status === 200, problems, notes);
+  if (feed && /^\s*1\s*$/.test(feed.headers.get("tdm-reservation") ?? "")) problems.push("TDMRep: tdm-reservation header on the feed");
   if (problems.length) failed += 1;
   const lines = [...new Set(problems), ...new Set(notes)];
   console.log(`${problems.length ? "✗" : "✓"} ${s.id}${lines.length ? `\n    ${lines.join("\n    ")}` : ""}`);

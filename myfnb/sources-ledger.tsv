@@ -8204,3 +8204,49 @@ pod-valor-coffee	Valor Coffee Podcast（咖啡店老板，播客）	https://anch
 pod-restaurant-prosperity-formula	The Restaurant Prosperity Formula（独立餐厅老板，播客）	https://feeds.captivate.fm/restaurant-prosperity-formula/	2026-10-02·第十七批（小店标准：中文小店来源、各国小店经营）	接入	独立餐厅老板的管理与财务习惯；两周 1 集
 rss-petpooja	Petpooja 博客（印度收银系统商，写给小餐馆）	https://blog.petpooja.com/feed/	2026-10-02·第十七批（小店标准：中文小店来源、各国小店经营）	接入	条款只限制用户提交内容的方式；印度酒牌与合规（/finance-compliance/）用 denyUrlPrefixes 过滤，留下成本、库存的做法，两周 3 条必看
 pod-panaderia-facil	Panadería fácil para emprendedores（小面包店创业，西班牙语播客）	https://anchor.fm/s/2f316c24/podcast/rss	2026-10-02·第十七批（小店标准：中文小店来源、各国小店经营）	接入	小面包店创业（设备怎么选、接活动订单、营销），9 月底停了几年后恢复更新，先试
+rss-gnavi-pro	ぐるなびPRO 飲食店経営マガジン（日本）	https://pro.gnavi.co.jp/magazine/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-tenpos-foodmedia	テンポスフードメディア（日本）	https://foodmedia.tenpos.com/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	媒体站没有条款页，同一公司テンポスドットコム的利用規約只许私的使用（私的使用の範囲外で使用する行為を禁止），按最低风险当作适用（规则 3）；内容合适：开店的设备预算、店主访谈，每天约 7 条，可按网址和栏目滤掉写给食客的
+rss-ubiregi-blog	ユビレジ ブログ（日本）	https://ubiregi.jp/feed	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	只有产品公告
+rss-smaregi-blog	スマレジ ブログ（日本）	https://smaregi.jp/blog/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	页面 404
+rss-tenpo-ryutsu	店舗流通ネット（日本）	https://www.tenpo.biz/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-shibata-shokudo	柴田書店 月刊食堂（日本）	https://www.shibatashoten.co.jp/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-cashnote-blog	캐시노트 블로그（韩国）	https://www.cashnote.kr/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	连不上（ECONNRESET）
+rss-tossplace-blog	토스플레이스 블로그（韩国）	https://tossplace.com/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	页面 404
+rss-yogiyo-ceo	요기요 사장님（韩国）	https://ceo.yogiyo.co.kr/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-storehub-blog	StoreHub 博客（马来西亚）	https://www.storehub.com/blog/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	订阅地址返回空内容
+rss-ipos-vn	iPOS.vn 博客（越南）	https://ipos.vn/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	订阅里只有产品公告和新闻稿
+rss-sapo-fnb	Sapo 博客（越南）	https://www.sapo.vn/blog/feed	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	约八成是软件榜单、物流优惠和非餐饮零售，餐饮做法每两周一两篇
+rss-kiotviet	KiotViet（越南）	https://www.kiotviet.vn/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源（有 WordPress 接口，没写规则）
+rss-majoo	majoo（印尼）	https://majoo.id/solusi	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-moka	Moka POS（印尼）	https://www.mokapos.com/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-qasir	Qasir（印尼）	https://www.qasir.id/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-pawoon	Pawoon（印尼）	https://www.pawoon.com/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	2023 起停更
+rss-esb	ESB（印尼）	https://www.esb.id/id/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-wongnai-business	Wongnai for Business（泰国）	https://www.wongnai.com/business-owners	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-foodstory	FoodStory 博客（泰国）	https://foodstory.co/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	2025-09 起停更（开店成本类内容合适）
+rss-mosaic-ph	Mosaic Solutions（菲律宾）	https://www.mosaic-solutions.com/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	2024 起停更
+rss-saipos	Saipos（巴西）	https://saipos.com/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	页面 404
+rss-fudo	Fudo（阿根廷）	https://fu.do/es/blog/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	页面 404
+rss-toteat	Toteat（智利）	https://www.toteat.com/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-consumer-br	Consumer（巴西）	https://programaconsumer.com.br/blog/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-goomer-gestao	Gestão de Restaurante（巴西）	https://www.gestaoderestaurante.com.br/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	连不上
+rss-restroworks	Restroworks 博客	https://www.restroworks.com/blog/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	条款禁止抓取、数据挖掘与数据提取（规则 3）；内容有具体数字（开店成本、保本点）
+rss-urbanpiper	UrbanPiper（印度）	https://www.urbanpiper.com/blog	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	找不到订阅源
+rss-sculpture	Sculpture Hospitality 博客	https://www.sculpturehospitality.com/blog/rss.xml	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	两周没有新文章，几十天一批
+rss-bevspot	BevSpot 博客	https://bevspot.com/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	2023 起停更
+pod-le-calcul-du-chef-strategies-vegetales-p	Le Calcul du Chef（播客）	https://feeds.transistor.fm/le-calcul-du-chef-strategies-vegetales-pour-la-restauration-rentable	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	规则 5 改后能过；但现在发的是给家里做饭的食谱
+pod-horeca-heroes	Horeca Heroes（播客）	https://feeds.transistor.fm/horeca-heroes	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	规则 5 改后能过；希腊语访谈，两周一集，标题看不出小店能照做的
+pod-n238	餐飲人生（播客）	https://feed.firstory.me/rss/user/cl7ajnc1h001101un7p9wartn	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	规则 5 改后能过；小店老板的心得，但每月约 1 集，近 30 天没有必看
+rss-gastroeconomy	Gastroeconomy	https://www.gastroeconomy.com/feed/	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	规则现在都过；内容是西班牙高级餐厅与榜单新闻，按小店标准不看
+pod-cafefuel-s-table-talk-marketing-mastery-	CafeFuel's Table Talk（播客）	https://feeds.soundcloud.com/users/soundcloud:users:1507916964/sounds.rss	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	规则 5 改后能过；标题重复、泛泛的营销话
+pod-tales-from-the-pass-a-hospitality-podcas	Tales From The Pass（播客）	https://rss.libsyn.com/shows/481980/destinations/4102278.xml	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	不接	规则 5 改后能过；近 60 天 1 集
+pod-tw-kaidian-zhejianshi	開店這件事 by PeiPeiTalks（台湾小店老板访谈，播客）	https://feed.firstory.me/rss/user/ckiji29qfd9s108192s6mujil	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（firstory 的 robots.txt 403、订阅 200）；台湾小店老板访谈，加盟、预备金等，两周 2 集
+pod-full-comp	FULL COMP: Restaurant Tactics, Tools, & Strategies（独立餐厅老板，播客）	https://feeds.transistor.fm/full-comp-the-voice-of-the-restaurant-industry-revolution	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（transistor 的 robots.txt 400）；独立餐厅老板与业内人士，菜单、回头客、融资的坑，两周 4 集
+pod-build-a-better-restaurant	Build A Better Restaurant with Peter Harman（独立餐厅老板，播客）	https://feeds.soundcloud.com/users/soundcloud:users:554457540/sounds.rss	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（soundcloud 的 robots.txt 405）；独立餐厅的人工、薪酬与老板角色，每周 1 集
+pod-restaurant-rockstars	Restaurant Rockstars Podcast（餐厅老板的利润与团队，播客）	https://feeds.soundcloud.com/users/soundcloud:users:158297519/sounds.rss	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（soundcloud）；利润策略、留人、运营系统，每周 1 集
+pod-restaurant-marketing-secrets	Restaurant Marketing Secrets（餐厅营销做法，播客）	https://rss.libsyn.com/shows/418643/destinations/3475718.xml	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（libsyn 的 robots.txt 403）；回头客与本地营销做法，两周 1 集
+pod-great-work-for-restaurants	Great Work for Restaurants（餐厅营销与回头客，播客）	https://rss.libsyn.com/shows/187310/destinations/1290941.xml	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（libsyn）；餐厅邮件、内容与回头客；部分集数绑定 Toast，交给评分压
+pod-coffee-experts-club	The Coffee Experts Club Podcast（咖啡馆老板，播客）	https://rss.libsyn.com/shows/477066/destinations/4050717.xml	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（libsyn）；咖啡馆老板的成本、合伙、用人，每周 1 集
+pod-pulling-shots	Pulling Shots（小咖啡店老板，播客）	https://feeds.libsyn.com/537872/rss	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（feeds.libsyn.com 跳到 rss.libsyn.com，两边都查）；小咖啡店老板，每周 1 集
+pod-keys-to-the-shop	Keys To The Shop: Equipping Coffee Shop Leaders（咖啡店经营，播客）	https://rss.libsyn.com/shows/85579/destinations/412105.xml	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（libsyn）；咖啡店经营与带团队，每周 2–3 集（含短集）
+pod-food-business-blueprint	The Food Business Blueprint Podcast（餐饮老板的经营心得，播客）	https://feeds.transistor.fm/the-food-business-blueprint-podcast	2026-10-02·第十八批（小店标准：日韩东南亚拉美的小店媒体；规则 5 改后重看）	接入	规则 5 改后能过（transistor）；餐饮老板的标准、利润与团队心得，两周 1 集

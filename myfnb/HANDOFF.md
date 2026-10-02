@@ -339,6 +339,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | `5a1264f`（10/3 凌晨，第三轮：接回 10 个播客、停用开店笔记、预筛与评分标准改两处、gold 333 条） | 通过 | 439/439 | 通过，31/31 | 全部通过；73 个信源导入；`sources-2026-10-03.sql` 在 WSL 测试库上模拟服务器状态连跑两遍：第一遍打开 9 个、停用 1 个，第二遍不改 |
 | `3f3f167`（10/3 早上，门槛三级都是 40、`understandFloor` 30，测试改成按配置推分数） | 通过 | 440/440 | 通过，31/31 | 全部通过；69 个信源导入；15 个页面无残留。另把门槛临时改回作者的 60/65/76、50，`analyze`、`selection-eval-runtime` 两个测试文件 11 项也全过 |
 | `7725b30`（10/3 早上，合并上游 `3343fe2`） | 通过 | 571/571 | 通过，31/31 | 全部通过；69 个信源导入；15 个页面无残留 |
+| `8f1caa2`（10/3 早上，评分调试脚本、`build-gold.ts` 优先用播客简介、交接文件） | 通过 | 571/571 | 通过，31/31 | 全部通过；69 个信源导入；15 个页面无残留。`debug-score.ts` 在测试库上空跑（模型调用关闭）：挑条目和流程正确；`rejudge-2026-10-03.sql` 在测试库上验证（见 §9 开头） |
 
 **本机检查要导入全部信源**（10/2 起）：`39fa82f` 在本机四项全过，GitHub 的 docker 检查却在导入信源时失败——3 个 PR TIMES 企业名里夹着 NUL 字符（从 PR TIMES 搜索页抓名字时带进来的），数据库拒收；本机原来只跑 `seed.ts --topics-only`，没导入过信源。WSL 的 `~/checks.sh` 已改成完整 `node scripts/seed.ts`，`6dde3f1` 去掉了这些字符（`sources.json` 3 处、账本 46 行）。
 
@@ -416,10 +417,11 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
   ```
 - ✅ **2c 合并上游**（`7725b30`，到作者的 `3343fe2`，5 个提交）：冲突 2 处取作者的写法（`scripts/smoke.ts` 站名转义多认引号、`routes/topics.tsx` 去掉分组类型断言）；我们 PR 1–4 的改动现在与作者逐字一致（§5.5）；我们的 `initialBackfillOnly`、播客链接、`summaryIsBody` 都保留。四项检查：后端 571/571、网站 31/31、冒烟全过、15 个页面无残留。**迁移 0041 绑定管理员会话：部署后后台要重新登录一次**（告诉用户）。
 - **给作者的 PR**：`summaryIsBody` 那处改动已在作者最新 main 上做成分支 `pr/rss-summary-is-body` 并推到我们的 fork，检查按作者 CI 的顺序跑过（§7.2 第 11 项）。**开 PR 是对外发布，等用户点头**；点头后用 `gh pr create --repo KKKKhazix/AIHOT --head 1204kay:pr/rss-summary-is-body`，正文照 #78 的三节写。§7.2 第 12 项（测试别写死门槛）也可以提，同样要用户点头。
-- **访谈类必看偏低（还没查清）**：写了 `myfnb/debug-score.ts`：从最新一次评测（SelectBench 表里存着每条的分数）挑出用户必看、低于 40、没被预筛挡掉的条目，用同一套评分提示词、末尾加一段「调试输出」，让模型列出类型、五轴、用到的压分规则和一句理由，一条一行（每条一次调用，约 16 次）。WSL 测试库上空跑过（模型调用关闭，挑条目和流程都对）。同时 `build-gold.ts` 改成：来源声明了 `summaryIsBody` 的，优先用订阅里的单集简介（原来先用数据库里的正文，而那批播客入库时存的是抓错的整档节目介绍，照旧重建 gold 等于评测还按错的正文评）。**下一条给用户的命令**（这一版部署后跑；输出复制文字贴回来）：
+- **访谈类必看偏低（还没查清）**：写了 `myfnb/debug-score.ts`：从最新一次评测（SelectBench 表里存着每条的分数）挑出用户必看、低于 40、没被预筛挡掉的条目，用同一套评分提示词、末尾加一段「调试输出」，让模型列出类型、五轴、用到的压分规则和一句理由，一条一行（每条一次调用，约 16 次）。WSL 测试库上空跑过（模型调用关闭，挑条目和流程都对）。同时 `build-gold.ts` 改成：来源声明了 `summaryIsBody` 的，优先用订阅里的单集简介（原来先用数据库里的正文，而那批播客入库时存的是抓错的整档节目介绍，照旧重建 gold 等于评测还按错的正文评）。**下一条给用户的命令**（第一条跑完就可以粘贴，它会等这一版部署好；输出复制文字贴回来）。前半是**重判**：门槛只在分析时判，10/2 白天按 76 判掉、平均分已到 40 的条目（例如 FULL COMP「把积分奖励改成俱乐部」60 分、Fresh Cup「冷萃浓缩液」60 分）不改就永远不进日报。`myfnb/rejudge-2026-10-03.sql` 把最近两天这类条目（还开着的来源、不是回补）的处理状态改回 `new`，worker 每 5 分钟的补漏会重新排队；回执按相同输入复用，40–49 分的要新写一次推荐理由，每条约 1 次调用。WSL 测试库上验证过：7 种情况只有该重判的那条改回、再跑一次是 0。后半是上面的调试脚本：
   ```bash
-  cd /opt/myfnbguide && sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"; cd ~
+  cd /opt/myfnbguide && until sudo docker compose exec -T worker test -f myfnb/rejudge-2026-10-03.sql 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T db psql -U aihot -d aihot -At -f - < myfnb/rejudge-2026-10-03.sql && sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"; cd ~
   ```
+  输出：第一行是重判的条数，然后 `#` 开头一行（用的哪次评测、几条），再一条一行的调试结果。
   Claude 拿到后：按五轴和理由改 `selection-score.md`（只改「什么算重要」的例子和压分规则，结构不动），推上线后跑评测 v4（2b 那条命令，标签改成「小店标准 v4」；额度现在 6000，评测约 1000 次调用够用），再看门槛要不要挪。
 - **10/4 请用户跑**（看回补的分析次数降没降、真实每天用多少；过去 24 小时用量低于 2000 次就自动把上限改回 3000，否则留在 6000 等 Claude 看）：
   ```bash

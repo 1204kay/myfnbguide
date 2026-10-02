@@ -8280,3 +8280,19 @@ pod-fr-passe-moi-le-sel	Passe moi le sel（法国餐厅老板的经营与带人�
 pod-cn-xiaocezi-coffee	小册子｜咖啡同学录（大陆咖啡店主理人访谈，播客）	https://feed.xyzfm.space/fnhedvjnkg3b	2026-10-03·第十九批（第三轮标注：停用播客按新标准重看与新候选）	不接	规则 2：小宇宙 feed.xyzfm.space 的 robots.txt 拒绝代用户读网页的 AI（OAI-SearchBot、PerplexityBot、Claude-SearchBot）；内容合适
 pod-br-negocio-em-dia-assai	Negócio em Dia Academia Assaí（巴西小食品生意，播客）	https://media.zencast.fm/negocio-em-dia/rss	2026-10-03·第十九批（第三轮标注：停用播客按新标准重看与新候选）	不接	规则 5：robots.txt 连续两次读不到（media.zencast.fm 没有回应）
 pod-cn-kaidian-biji	开店笔记 ▎一店顶十店·小而美·极致单店（播客）		2026-10-03·第十九批（第三轮标注：停用播客按新标准重看与新候选）	停用	每集简介都是主播固定的拜师学艺广告，读者和模型只看得到标题；用户第三轮 7 集全标不看：「全部没有简介，所以全部不看，因为我不知道内容是什么」
+web-canyin88-hongchu	红餐网 · 红厨	https://www.canyin88.com/hongchu	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	停用	列表上只剩 2026 年 1–6 月的旧文章，多是厨师与菜谱（按 §2.2 是不看），两周没有新内容
+web-canyinj	餐饮界（中国）	https://www.canyinj.com/	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	10/2 停用后按小店标准重看：最新 15 条是展会、供应商通稿、连锁新品、行业报告与食安纠纷，没有小店能照着做的
+blog-ichef-tw	iCHEF 部落格（台湾收银系统商）	https://blog.ichefpos.com/feed/	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	一两个月一篇，多是自家产品与政府补助公告；偶有小店案例（传统市场猪舌饭用 AI 推荐，客单价升 63 元），每天不到 0.1 条
+blog-ichef-hk	iCHEF 香港网志	https://hk-blog.ichefpos.com/feed/	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	订阅对机器返回 202（挡机器的验证页）
+rss-foodnext	食力 foodNEXT（台湾）	https://www.foodnext.net/rss	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	首页写的订阅地址返回 404
+rss-inline-tw	inline（台湾订位系统）	https://inline.company/feed	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	写给食客的餐厅推荐，2024-08 以后停更
+rss-shopline-tw	SHOPLINE 電商教室	https://blog.shopline.tw/feed/	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	电商教学，不是餐饮
+pod-zh20-00	小吃店的女兒（tw）	https://feed.firstory.me/rss/user/cmcckqazp01ma01w6b8en7fna	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-01	日薪八百窮學徒（tw）	https://feeds.soundon.fm/podcasts/34d7e807-fc1f-45d8-81d5-b5ddb8465fd9.xml	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-02	決策者（tw）	https://feed.firstory.me/rss/user/cl25hn9w4106n01w87aoa4n4v	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-03	陳修平的師父商學院（tw）	https://feeds.soundon.fm/podcasts/37da26a7-5d17-4fd9-97cd-67f0a50dfc75.xml	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-04	老闆容易嗎？（tw）	https://feed.firstory.me/rss/user/cmfnfgfmq000z01w38p4g4080	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-05	老闆玩很大（tw）	https://feed.firstory.me/rss/user/cm5p1a1oh017s01x4er5befll	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-06	經營男不難（tw）	https://feed.firstory.me/rss/user/ckgj73yv62ru3087504uoveq3	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-07	極簡創業實驗室（hk）	https://anchor.fm/s/f8bd10e8/podcast/rss	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮
+pod-zh20-08	下班聊個天（hk）	https://feed.firstory.me/rss/user/cm1ntyrw207ui01xy5i2catkb	2026-10-03·第二十批（中文小店来源：台港播客、系统商与媒体）	不接	Apple 播客目录用中文小店词搜到；最近几集讲一般创业、业务、个人成长或生活，偶尔才有一集餐饮

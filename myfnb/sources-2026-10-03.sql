@@ -3,6 +3,7 @@
 --    seed.ts 不覆盖已有的来源，所以加回 sources.json 不会自动打开，要在这里打开，并改对国家标签和名称（标签会交给写摘要的模型）。
 --    第 10 个（Passe moi le sel）是新来源，部署时 seed 会加进来。
 -- 二、停用「开店笔记」：每集简介都是主播固定的拜师学艺广告，用户第三轮：「全部没有简介，所以全部不看，因为不知道内容是什么」。
+--    10/3 加：停用「红餐网 · 红厨」：列表上只剩 2026 年 1–6 月的旧文章（多是厨师与菜谱），两周没有新内容。
 --    撤下它还没分析的条目与排队任务（与 pause-2026-10-02b.sql 相同的做法）。
 CREATE TEMP TABLE reopen (id text PRIMARY KEY, tags text[], name text);
 INSERT INTO reopen VALUES
@@ -22,11 +23,11 @@ WITH r AS (
 ) SELECT count(*) AS reopened_sources FROM r;
 WITH paused AS (
   UPDATE sources s SET enabled = false, health = 'paused', updated_at = now()
-  WHERE s.id = 'pod-cn-kaidian-biji' AND s.enabled
+  WHERE s.id IN ('pod-cn-kaidian-biji', 'web-canyin88-hongchu') AND s.enabled
   RETURNING s.id
 ), stale AS (
   UPDATE articles a SET processing_state = 'skipped', processing_queued_at = NULL, processing_retry_at = NULL
-  WHERE a.source_id = 'pod-cn-kaidian-biji'
+  WHERE a.source_id IN ('pod-cn-kaidian-biji', 'web-canyin88-hongchu')
     AND a.processing_state IN ('new', 'failed')
     AND NOT EXISTS (SELECT 1 FROM analyses n WHERE n.article_id = a.id)
   RETURNING a.id

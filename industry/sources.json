@@ -1066,36 +1066,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "web-canyin88-hongchu",
-      "name": "红餐网 · 红厨",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.canyin88.com/hongchu/",
-        "itemSelector": "div.descBox h3",
-        "linkSelector": "a",
-        "detail": {
-          "maxFetches": 15,
-          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)",
-          "publishedAtAuthoritative": true
-        },
-        "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "中国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-foodnews-kr",
       "name": "식품저널（韩国，食品与外食产业）",
       "kind": "rss",

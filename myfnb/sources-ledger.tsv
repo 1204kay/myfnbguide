@@ -7523,3 +7523,27 @@ web-canyin88-kuaixun	红餐网 · 快讯	https://www.canyin88.com/kuaixun/	2026-
 web-canyin88-hongchu	红餐网 · 红厨	https://www.canyin88.com/hongchu/	2026-10-02·第十二批（中韩栏目）	接入	沿用资讯栏规则
 web-canyin88-z	红餐网 · 知识树	https://www.canyin88.com/z/	2026-10-02·第十二批（中韩栏目）	接入	沿用资讯栏规则
 rss-thinkfood-trend	식품음료신문 · 트렌드·리포트	https://www.thinkfood.co.kr/rss/S1N9.xml	2026-10-02·第十二批（中韩栏目）	接入	
+rss-1851-franchise	1851 Franchise	https://1851franchise.com/feed/rss2	2026-10-02·第十三批（深挖出的订阅）	不接	每天 5 条，多数是理发、维修、补习等非餐饮加盟，订阅没有分类可过滤
+rss-code-news	CODE Hospitality · 行业新闻	https://www.codehospitality.co.uk/industry_news/feed/	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：条款只许个人非商业使用；且每周一次伦敦开店汇总
+rss-code-insights	CODE Hospitality · 行业观察	https://www.codehospitality.co.uk/industry_insights/feed/	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：条款只许个人非商业使用
+rss-morning-advertiser	The Morning Advertiser	https://www.morningadvertiser.co.uk/arc/outboundfeeds/rss/	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：William Reed 网站条款禁止自动抓取，禁止把内容用于 AI（含检索后生成）；BigHospitality 同属该集团
+rss-restaurant-online	Restaurant Online	https://www.restaurantonline.co.uk/arc/outboundfeeds/rss/	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：同 Morning Advertiser（William Reed 网站条款）
+rss-bake-magazine	Bake Magazine	https://www.bakemag.com/rss/articles	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：条款禁止机器人与自动访问、禁止用于 AI，只许个人或内部使用
+rss-british-baker	British Baker	https://bakeryinfo.co.uk/18274.rss	2026-10-02·第十三批（深挖出的订阅）	不接	规则 1：robots.txt 不许抓这个订阅
+rss-roast-magazine	Roast Magazine	https://www.roastmagazine.com/stories?format=rss	2026-10-02·第十三批（深挖出的订阅）	不接	38 天没有新内容
+rss-tea-coffee-journal	Tea & Coffee Trade Journal	https://www.teaandcoffee.net/news/feed/	2026-10-02·第十三批（深挖出的订阅）	不接	写给咖啡烘焙厂和茶商，不是写给餐厅的
+rss-fesmag	FE&S	https://fesmag.com/topics/the-latest-news?format=feed&type=rss	2026-10-02·第十三批（深挖出的订阅）	不接	这个订阅 8 条全是人事任命和颁奖
+rss-restauracion-colectiva	Restauración Colectiva · 团餐运营商	https://www.restauracioncolectiva.com/rss/operadoras	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：法律声明只许个人私用，禁止计算机处理
+rss-marketing-interactive	Marketing-Interactive	https://www.marketing-interactive.com/rss-feed	2026-10-02·第十三批（深挖出的订阅）	不接	亚太综合营销媒体，餐饮约一成，订阅没有餐饮栏可过滤
+rss-mrla	Michigan Restaurant & Lodging Association	https://www.mrla.org/mrlablog/feed	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：条款禁止抓取、爬取与聚合
+rss-wira	Wisconsin Restaurant Association	https://www.wirestaurant.org/news/feed	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：条款只许个人使用，不许用机器人复制内容
+rss-ora	Oklahoma Restaurant Association	https://www.okrestaurants.com/press-releases/feed	2026-10-02·第十三批（深挖出的订阅）	不接	231 天没有新内容
+rss-scrla	South Carolina Restaurant & Lodging Association	https://cdn.ymaws.com/www.scrla.org/resource/rss/news.rss	2026-10-02·第十三批（深挖出的订阅）	不接	规则 5：robots.txt 返回 403
+rss-restaurant365	Restaurant365 新闻稿	https://www.restaurant365.com/resource-category/press/feed/	2026-10-02·第十三批（深挖出的订阅）	不接	规则 3：条款禁止抓取、爬取与采集数据
+rss-foodnews-kr	식품저널（韩国，食品与外食产业）	https://www.foodnews.co.kr/rss/allArticle.xml	2026-10-02·第十四批（没有订阅的网站）	接入	每天约 25 条，外食栏和影响餐饮的物价、政策约四分之一；外食栏单独的列表在服务端不生效，整份接，靠预筛挡掉食品制造与农业
+web-et-hospitalityworld	ET HospitalityWorld	https://hospitality.economictimes.indiatimes.com/	2026-10-02·第十四批（没有订阅的网站）	不接	规则 3：条款只许个人使用、禁止机器人，并声明保留文本与数据挖掘权
+web-nra	National Restaurant Association	https://restaurant.org/	2026-10-02·第十四批（没有订阅的网站）	不接	规则 3：条款只许个人非商业使用，禁止机器人访问
+web-hosteleria-espana	Hostelería de España	https://www.hosteleriadeespana.es/	2026-10-02·第十四批（没有订阅的网站）	不接	规则 3：法律声明只许个人使用
+web-cnews-kr	창업경영신문	https://www.cnews.co.kr/	2026-10-02·第十四批（没有订阅的网站）	不接	规则 1：robots.txt 全站禁止
+web-sidae-kr	sidae.com	https://www.sidae.com/	2026-10-02·第十四批（没有订阅的网站）	不接	现在是综合新闻社（동행미디어 시대），不是餐饮媒体；条款另禁 AI 学习与大量爬取
+web-foodizz	Foodizz	https://foodizz.id/	2026-10-02·第十四批（没有订阅的网站）	不接	卖餐饮课程的网站，文章是课程营销，页面靠脚本渲染

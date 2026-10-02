@@ -13926,6 +13926,29 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-foodnews-kr",
+      "name": "식품저널（韩国，食品与外食产业）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodnews.co.kr/rss/allArticle.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "韩国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

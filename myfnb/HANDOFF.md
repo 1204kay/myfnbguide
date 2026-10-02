@@ -1,6 +1,6 @@
 # MyF&B 交接文件
 
-> **这是项目的唯一依据。** 2026-10-01 按全球定位重写，2026-10-02 更新（合并上游；入口目标改为约 1000 个来源；分支上已加到 601 个，线上还是 112 个，等推 `main`）。方案与理由见 `plan-2026-10-01.md`，查证记录见 `research-2026-10-01.md`，全球来源全集见 `sources-universe-2026-10-01.md`，10/2 起每个看过的候选记在 `sources-ledger.tsv`。
+> **这是项目的唯一依据。** 2026-10-01 按全球定位重写，2026-10-02 更新（合并上游；入口加宽到 601 个来源，已上线；入口目标从「约 1000 个来源」改为「每天约 500 条」）。方案与理由见 `plan-2026-10-01.md`，查证记录见 `research-2026-10-01.md`，全球来源全集见 `sources-universe-2026-10-01.md`，10/2 起每个看过的候选记在 `sources-ledger.tsv`。
 > 更早的版本（2026-09-30 的「全球与马来西亚餐饮新闻参考站」，更早的「华文中小餐饮老板」「帮老板多赚钱」、计算器等）全部作废，不要再按它们做；历史在 git log 里。
 > 标了「快照」的是写作当时的状态，会变；其余是定案。
 >
@@ -105,7 +105,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 项目 | 决定 |
 |---|---|
 | 底座 | Fork `KKKKhazix/AIHOT` → `1204kay/myfnbguide`。**尽量只改 `industry/`**（另有 `myfnb/` 放本文件和脚本）；必须改核心的地方写成跟行业无关的通用改法，提 PR 给作者（§7） |
-| 分支 | 工作分支 `claude/myfnb-handoff`；四项检查通过后 `git push origin claude/myfnb-handoff:main`，服务器跟 `main`。**推 `main` 由用户在终端运行**：Claude 的自动模式会把它判定为部署正式环境而直接拒绝（10/2 实测两次，连用户在场也不弹窗），所以 Claude 把命令写成 `git -C C:/myfnbguide push origin claude/myfnb-handoff:main` 交给用户；推工作分支不受影响 |
+| 分支 | 工作分支 `claude/myfnb-handoff`；四项检查通过后 `git push origin claude/myfnb-handoff:main`，服务器跟 `main`。**Claude 自己推**（之前的会话都是这样）；10/2 有一个会话里自动模式两次拒绝（判定为部署正式环境），同一天下一个会话又推成功了。被拒时不要重试，把 `git -C C:/myfnbguide push origin claude/myfnb-handoff:main` 交给用户在终端运行。**推了不等于上线**：GitHub 检查不过，服务器不部署，所以推完要看 `/api/site/stats` 的信源数（10/2 `39fa82f` 就是检查失败、没有部署，§6） |
 | 同步上游 | 定期 `git fetch upstream`，审阅后合并，不自动跟；合并后跑四项检查 |
 | 写摘要模型 | DeepSeek 官方 API（`LLM_BASE_URL=https://api.deepseek.com/v1`、`LLM_MODEL=deepseek-flash`，思考关闭） |
 | 向量模型 | Google Gemini `gemini-embedding-001` 免费层，1536 维，走通用 OpenAI 兼容路径 `EMBEDDING_*`（阿里云不收预付卡和虚拟卡） |
@@ -118,7 +118,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 ---
 
-## 5. 现状（快照：2026-10-02；线上 `e28a6e1`，分支 `f6263ab` 之后等推）
+## 5. 现状（快照：2026-10-02；线上 `6dde3f1`）
 
 ### 5.1 站点与模块
 
@@ -167,7 +167,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 - **写作**：全球通用的餐饮用语与专有名词规则，金额照原文币种；去掉马来西亚专用的写法；保留族群、宗教、王室只写事实，指控写成「某方指控」，普通个人不写全名（运营主体在马来西亚）。
 - **门槛** `selection.ts` 仍是作者的 T1 60 / T1_5 65 / T2 76，**等用户的标注校准后再改**（作者规则：先改挑选标准，最后才动门槛）。所以在校准之前，日报会偏少。
 
-### 5.4 信源（快照 2026-10-02：分支 `claude/myfnb-handoff` 上 601 个，线上 112 个；全部只放摘要和原文链接）
+### 5.4 信源（快照 2026-10-02：线上 601 个，分支 `claude/myfnb-handoff` 上 602 个；全部只放摘要和原文链接）
 
 清单以 `industry/sources.json` 为准；每个看过的候选（接或不接、为什么）在 `myfnb/sources-ledger.tsv`，一行一个，按批次记，下次不用重查。每天条数是试抓时的实测（快照，过滤后）。
 
@@ -186,6 +186,8 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 10/2 · 十 | 250 | 36 | 3.2 | 播客第二轮（更多国家和关键词）；提交后全量复查又撤下 2 个 robots 读不到的 |
 | 10/2 · 十一 | 1,901 | 47 | 0.3 | PR TIMES 第三轮 |
 | 10/2 · 十二 | 4 | 4 | — | 红餐网快讯、红厨、知识树（网页列表；试抓工具不读详情页日期，条数测不出）、韩国식품음료신문趋势栏 |
+| 10/2 · 十三 | 17 | 0 | 0 | 上一批深挖出的订阅：10 个条款不许（William Reed 的 Morning Advertiser 与 Restaurant Online、CODE、Bake Magazine、Restauración Colectiva、Restaurant365、两个州协会等），2 个 robots，5 个停更、不讲餐饮或全是人事任命 |
+| 10/2 · 十四 | 8 | 1 | 25 | 没有订阅的网站：식품저널有订阅，接入；ET HospitalityWorld、美国餐馆协会、Hostelería de España 条款不许，창업경영신문 robots 全站禁止，sidae.com 已是综合新闻社，Foodizz 是卖课网站 |
 
 快照 2026-10-02（`f6263ab`，601 个全量试抓，每天条数 = 过去 7 天的平均，过滤后）：PR TIMES 企业 426 个合计每天约 63 条；播客 100 个约 12 条；欧美新闻稿平台 13 个约 2 条；媒体、协会和其他 62 个约 99 条；**合计约 177 条**（红餐网各栏是网页列表，没算进去，线上实际每天多几十条）。**259 个信源过去 7 天一条都没有。**分级：协会 T1；品牌新闻稿与平台、服务商 T1_5（新品促销多，校准前门槛不放低）；媒体与播客 T2。**所有信源都要打开 `_aihot.initialBackfillOnly`**，首次回补 2–3 条：框架默认在首次导入之后把订阅里剩下的旧条目全部补进来、逐条走模型（作者的测试就是这么写的），PR TIMES 企业订阅一家约 200 条、播客几百集，第二次采集会把整个存档送进模型。打开后只收加入时间往前 48 小时以内发布的条目（10/2 加的配置，§5.5）。
 
@@ -205,10 +207,10 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 2. 规则 1、2、5 和 TDMRep：`node myfnb/check-sources.mjs <候选.json>`（文件格式与 `sources.json` 相同）。**等它跑完再读结果**（10/2 有一次只等了 2 秒就读，漏掉两个 robots 读不到的播客，提交后全量复查才发现）；提交前对整份 `sources.json` 全量跑一遍。偶发的「robots.txt unreadable (no answer)」先隔几分钟重跑（红餐网 10/2 就是网络抖动，重跑通过），连续两次才算规则 5。
 3. 试抓与相关性：`node myfnb/vet-sources.ts <候选.json> --titles 10`，用框架自己的采集代码抓，按来源自己的过滤算每天几条、列最新标题；混杂的订阅先统计栏目名，再用 `allowCategories` / `denyCategories` 只收餐饮栏。
 4. 规则 3：找到条款页，**全文**按禁止类关键词抽句子（scrape、crawl、robot、spider、automated、data mining、text and data、machine learning、personal non-commercial、internal use，以及各语言的对应词）逐句读。10/2 第一次只看前 12 句，漏掉了 5 个禁止抓取的，重查后撤下；所以必须全文。没有条款页的不算违规。
-5. 规则 6：部署后约 30 分钟，用户在服务器上跑下面的只读查询，返回 403、405 或连错到 failing 的按规则 6 暂停：
+5. 规则 6：部署后约 30 分钟（新来源都抓过一轮），用户在服务器上跑下面这一条：最近一次返回 403、405 的直接暂停（列在 `paused` 下），其余不正常的列出来给 Claude 判（429 限流、500 这类临时错误先不动；连续几次读不到订阅文件的也暂停），最后数各状态的个数（10/2 起合成一条，原来要用户跑两趟；在 WSL 测试库上验证过只停 403/405）。暂停的再从 `sources.json` 删掉、记进账本：
 
    ```bash
-   cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "SELECT s.id, s.health, s.fail_count, left(r.error, 80) AS error FROM sources s LEFT JOIN LATERAL (SELECT error FROM fetch_runs WHERE source_id = s.id ORDER BY started_at DESC LIMIT 1) r ON true WHERE s.enabled AND s.health <> 'ok' ORDER BY s.id;"; cd ~
+   cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "WITH last AS (SELECT DISTINCT ON (source_id) source_id, error FROM fetch_runs ORDER BY source_id, started_at DESC) UPDATE sources s SET enabled = false, health = 'paused', updated_at = now() FROM last WHERE last.source_id = s.id AND s.enabled AND s.health <> 'ok' AND last.error ~ '^HTTP 40[35]' RETURNING s.id AS paused, left(last.error, 60) AS error;" -c "SELECT s.id, s.health, s.fail_count, left(r.error, 80) AS error FROM sources s LEFT JOIN LATERAL (SELECT error FROM fetch_runs WHERE source_id = s.id ORDER BY started_at DESC LIMIT 1) r ON true WHERE s.enabled AND s.health NOT IN ('ok', 'unknown') ORDER BY s.id;" -c "SELECT health, count(*) FROM sources WHERE enabled GROUP BY health ORDER BY health;"; cd ~
    ```
 
 6. 结果写进 `sources-ledger.tsv`（接入的也写，过滤规则写在「原因」一栏）。
@@ -301,10 +303,13 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | `ec682dd`（9/30，马来西亚定位的最后一版） | 通过 | 158/158 | 通过，16/16 | 全部通过 |
 | `bd63a3d`（10/1，全球定位改写 + 补发空刊修复） | 通过 | 184/184（含新加的 `report-catchup`） | 通过，16/16 | 全部通过；逐页抓 15 个页面没有残留「AI 日报」「AI 圈」等字样；72 个主题导入 |
 | `3703010`（10/2，合并上游 `8d5a39b` + 第一批新信源） | 通过 | 435/435 | 通过，31/31 | 全部通过；15 个页面无残留；72 个主题导入。`e28a6e1` 只改 `sources.json`，由 GitHub 检查通过 |
+| `6dde3f1`（10/2，601 个信源 + `initialBackfillOnly` + TDMRep） | 通过 | 436/436 | 通过，31/31 | 全部通过；601 个信源全部导入；15 个页面无残留 |
+
+**本机检查要导入全部信源**（10/2 起）：`39fa82f` 在本机四项全过，GitHub 的 docker 检查却在导入信源时失败——3 个 PR TIMES 企业名里夹着 NUL 字符（从 PR TIMES 搜索页抓名字时带进来的），数据库拒收；本机原来只跑 `seed.ts --topics-only`，没导入过信源。WSL 的 `~/checks.sh` 已改成完整 `node scripts/seed.ts`，`6dde3f1` 去掉了这些字符（`sources.json` 3 处、账本 46 行）。
 
 **正式部署**（2026-10-01，腾讯云新加坡 `43.160.228.180`，`main` = `fe8e2a7`）：一行命令部署一次跑完；`LLM_EXTRA_JSON={"thinking":{"type":"disabled"}}`（思考关闭）；Lighthouse 默认防火墙没有 443，手动加后 HTTPS 才通；Caddy 申请到 Let's Encrypt 证书（到 2026-12-29，自动续期）；从外网跑冒烟检查 23 项全部通过；推 `34577e3` 后服务器 05:54 自动拉取、重建，日志 `已部署 34577e3`（连续推两次时，旧提交的检查会被取消，服务器只部署最新那个）。第一次导入每个信源回补 8 条，约 110 条，约 20 分钟用了 `llm` 442 次、向量 46 次；回补的条目不进日报（框架规则），所以开站当天的日报必然为空。
 
-**10/2 部署**：先推 `12e5d11`（只改 `update.sh`），GitHub 检查 1 分半通过，服务器拉取后换上新的部署顺序；再推 `e28a6e1`（合并上游 + 94 个新信源），检查 2 分 22 秒通过，约 1 分钟后网站显示 112 个信源，期间每 20 秒探一次健康检查都是 200；从外网跑冒烟检查全部通过。
+**10/2 部署**：先推 `12e5d11`（只改 `update.sh`），GitHub 检查 1 分半通过，服务器拉取后换上新的部署顺序；再推 `e28a6e1`（合并上游 + 94 个新信源），检查 2 分 22 秒通过，约 1 分钟后网站显示 112 个信源，期间每 20 秒探一次健康检查都是 200；从外网跑冒烟检查全部通过。12:46 推的 `39fa82f` 检查失败（见上），没有部署；修好后 13:00 推 `6dde3f1`，检查 2 分 22 秒通过，13:07 网站显示 605 个信源（601 + 早先被挡、还没在服务器上暂停的 4 个），外网冒烟全部通过。随后用户跑了 `cleanup-2026-10-02.sql`：撤下 10,586 条积压的旧条目、删掉 484 个排队中的分析任务，暂停那 4 个来源。
 
 Windows 上：类型检查和网站构建通过；作者原版的网页服务器在 Windows 起不来（PR 4 修）；关机信号类后端测试在 Windows 上跑不了，与我们的改动无关。
 
@@ -383,18 +388,15 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
    cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "UPDATE sources SET enabled = false, health = 'paused', updated_at = now() WHERE id IN ('rss-pmq', 'rss-gcr');"; cd ~
    ```
 
-5. **把入口加宽（进行中）。目标：每天进预筛约 500 条相关条目**（10/2 用户定的是「约 1000 个来源」；10/2 全量试抓发现个数加上去条数几乎不涨，Claude 把目标改成条数，理由见 §5.4「个数已经不是入口宽窄的好指标」）。现状：分支上 601 个，每天约 177 条；线上 112 个（等推 `main`）。做法见 §5.4「加新来源的做法」，脚本在 `myfnb/sourcing/`。**每个候选先看试抓的每天条数**，过去 7 天一条都没有的只在确实重要时接（协会、头部品牌）。下一批按产出排序：
-   - **10/2 已深挖出订阅、还没查规则和条款的 17 个**（`discover2.mjs` 对账本里 110 个「首页能打开、找不到订阅」的结果）：1851 Franchise `https://1851franchise.com/feed/rss2`（300 条）；CODE Hospitality `https://www.codehospitality.co.uk/industry_news/feed/` 与 `/industry_insights/feed/`；Morning Advertiser `https://www.morningadvertiser.co.uk/arc/outboundfeeds/rss/`；Restaurant Online `https://www.restaurantonline.co.uk/arc/outboundfeeds/rss/`（BigHospitality 的链接也指向它；这两家与 Morning Advertiser 同属 William Reed，10/1 因「抽样价值低」没接，现在判据放宽了，要重新试抓并读条款）；Bake Magazine `https://www.bakemag.com/rss/articles`；British Baker `https://bakeryinfo.co.uk/18274.rss`；Roast Magazine `https://www.roastmagazine.com/stories?format=rss`；Tea & Coffee Trade Journal `https://www.teaandcoffee.net/news/feed/`；FE&S `https://fesmag.com/topics/the-latest-news?format=feed&type=rss`；Restauración Colectiva `https://www.restauracioncolectiva.com/rss/operadoras`；Marketing-Interactive `https://www.marketing-interactive.com/rss-feed`（亚太营销综合，要只收餐饮）；四个美国州协会（密歇根 `https://www.mrla.org/mrlablog/feed`、威斯康星 `https://www.wirestaurant.org/news/feed`、俄克拉何马 `https://www.okrestaurants.com/press-releases/feed`、南卡 `https://cdn.ymaws.com/www.scrla.org/resource/rss/news.rss`）；Restaurant365 新闻稿 `https://www.restaurant365.com/resource-category/press/feed/`。
-   - **深挖后仍没有订阅、值得写网页列表规则的**（每个 10–30 分钟；先挑每天条数多的）：联商网、赢商网、美团研究院、食力 foodNEXT、식품저널、한국외식경제신문、창업경영신문、ET HospitalityWorld、Foodizz、Propel、Technomic、National Restaurant Association、DEHOGA、UMIH、GHR、Hostelería de España、Abrasel、NRAI、Snacking、GastroJournal、Ресторанные ведомости、MCA（网页路径允许）。另有 11 个开着 WordPress 接口、可以写 `json_list`：Comunicaffè、Food Service（意大利）、NYSRA、Hospitality Minnesota、TNHTA、Food Hotel Tech、TouchBistro、GoTo Foods、Whitbread（CODE、Tea & Coffee 已有订阅）。
+5. **把入口加宽（进行中）。目标：每天进预筛约 500 条相关条目**（10/2 用户定的是「约 1000 个来源」；10/2 全量试抓发现个数加上去条数几乎不涨，Claude 把目标改成条数，理由见 §5.4「个数已经不是入口宽窄的好指标」）。现状（快照）：线上 601 个，试抓估每天约 177 条；分支上 602 个（加了식품저널，每天约 25 条，等下次推）。做法见 §5.4「加新来源的做法」，脚本在 `myfnb/sourcing/`。**先读条款再写规则**：10/2 第十三、十四批 25 个候选里 13 个死在条款上（英文行业媒体与协会大多禁止抓取或只许个人使用），读条款几分钟，写一个网页列表规则要 10–30 分钟。**每个候选先看试抓的每天条数**，过去 7 天一条都没有的只在确实重要时接（协会、头部品牌）。下一批按产出排序：
+   - **深挖后仍没有订阅、规则和条款扫描都没查出问题、值得写网页列表规则的**（10/2 查过 robots 与条款）：赢商网（`news.winshang.com` 有品牌栏 `list-12.html`，要看餐饮占比）、联商网（GBK 编码，框架能解；10/2 下午本机连不上，先在服务器测连通）、美团研究院、食力 foodNEXT（台湾，偏食品产业）、Propel（首页靠脚本）、GastroJournal、Snacking（10/2 本机连不上）、DEHOGA、UMIH、GHR、NRAI、Abrasel、Ресторанные ведомости、MCA（网页路径允许）。Technomic 网站本身的条款只限付费报告，免费文章条数少。另有 9 个开着 WordPress 接口、可以写 `json_list`、条款扫描没查出问题：Comunicaffè、Food Service（意大利）、NYSRA、Hospitality Minnesota、TNHTA、Food Hotel Tech；TouchBistro 条款只讲商户、GoTo Foods 与 Whitbread 只许个人使用（不接）。
    - 还没看过的各国餐饮媒体：拉美、中东、东南亚、东欧、韩国，只找每天有几条以上的。
    - 还没查的新闻稿平台：北欧 Mynewsdesk、Prezly 新闻室、EIN Presswire、Newswire.com、ACCESS Newswire（先读条款）。PR TIMES、presseportal、播客的长尾不再挖（产出见 §5.4）。
    - 每批接完：部署后约 30 分钟请用户跑 §5.4 的查询，按规则 6 暂停被挡的；数每天进来多少、预筛放行多少；费用随条数涨（§11），后台 `llm` 每日上限 3,000 次，每天进来超过约 600 条时要调高。
    - 公众号仍先不接（见 §5.4「接不到的」）。
    - 每天约 500 条以后开始第 6 项标注；在那之前日报会一直是空的（第 6 项的评分偏差）。
-   - **待用户做（10/2）**：
-     1. 推 `main`：`git -C C:/myfnbguide push origin claude/myfnb-handoff:main`（自动模式拒绝 Claude 推，见 §4）。这一步带上 `initialBackfillOnly`、到 601 个的全部新信源、TDMRep 检查；四项检查结果见 §6；`update.sh` 只在 GitHub 检查通过后部署。
-     2. 部署后在服务器上跑清理（可重复执行）：`cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -v ON_ERROR_STOP=1 -f - < myfnb/cleanup-2026-10-02.sql; cd ~`。它撤下 10/2 第一次部署的 94 个信源在第二次采集时补进来、还没分析的旧条目（估计上万条，PR TIMES 61 家各约 200 条，10/2 约 00:10 UTC 起进队列），并暂停被服务器挡住的 4 个信源。在此之前，每日 3,000 次上限会兜住花费（每天约 US$2–4），新消息优先级高于历史，不受影响。
-     3. 再过约 30 分钟跑 §5.4 的规则 6 查询，把输出（去掉密码）贴给 Claude。
+   - 10/2 的推送与清理都已完成（§6）。**还差一步（10/2 13:40 以后）**：用户跑 §5.4 规则 6 那条命令，把输出（去掉密码）贴给 Claude；暂停的来源从 `sources.json` 删掉、记进账本，跟下一批一起推。
+   - **10/4 看实际条数再定标注时间**：601 个来源跑满两天后，用后台或数据库数实际每天进来多少条、预筛放行多少条（试抓的 177 条是估算）。照 10/2 两批的产出（25 个候选只接 1 个），离每天 500 条还很远；如果到 10/4 加宽的边际仍然这么低，就把实际数字报给用户，建议先开始第 6 项标注，不再等入口加满（评分标准的偏差跟入口宽窄无关，见第 6 项）。
 
 6. **标注**（2026-10-02 用户定：先把来源找齐约 1000 个，再和 Claude 一起标；同日 Claude 按全量试抓改成「每天约 500 条进预筛以后标」，见第 5 项）。**已知的评分偏差（10/2 用公开接口 `/api/v1/items?mode=all&window=7d` 拉了 276 条已过预筛的资料对照用户 10/1 的标注）**：分数 0–29 的 222 条、30–49 的 35 条、50–59 的 5 条、60–69 的 14 条、70 以上 0 条，所以门槛 76/65/60 下几乎全落选。排序大体对（最高的 62 分是 Big Easy 扩店复盘、双品牌改造成本、咖啡店高峰手册、会员制留客），但**用户标必看的只打到 38–45**（火锅店「第二次来」38、9.9 元冷冻烘焙 42、麦当劳 AI 得来速 45），**可看的大公司动作反而 55**（星巴克关 250 家、瑞幸新加坡第 100 家），**不看的迪生与美心分拆拿到 60**。所以不能只降门槛：先在 `selection-score.md` 里把能照着做的经营内容和带数字的教训往上提、资本运作本身往下压，再按标注定门槛。标注时专门放这几条。原计划（用户约 30 分钟）：从加宽以后的信源近几天的条目里取，覆盖各类来源和地区，多放难例（例如「新任高管公布人手策略」这种看起来像人事任命的），也放几条厂商写的经营文章试用户的口味。开发集 110 条：Claude 先按 §2.2 标，用户改不同意的；留出集 40 条：用户单独标，Claude 不先标。必看 = 该选，不看 = 不该选，可看 = 两可（作者评测工具的三档）。
 7. **评测与校准**：在服务器上跑 `scripts/eval-selection.ts`（要用服务器 `.env` 里的 key）。`.data/gold.jsonl` 含原文，不进 git：标注结果按网址存进仓库（只存网址和标签），在服务器上按网址从数据库取材料生成 gold 文件（这个小脚本到这一步再写）。后台 SelectBench 看错例，**先改挑选标准，最后才动门槛**。通过标准（作者没给数字，Claude 定的）：留出集里的必看最多漏 1 条；不看的混进精选不超过一成；推算每天精选 10–20 条。
@@ -471,6 +473,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 - PR TIMES：robots.txt 全站允许；条款没有禁止抓取，只限超出著作权法私人复制与引用范围的使用，并许可媒体为报道目的使用；每家企业有自己的订阅 `companyrdf.php?company_id=<编号>`。
 - Informa 旗下网站（NRN、Foodservice Director、Food Connection 等）条款：除浏览外不得使用、只许个人非商业、不得收进任何检索系统。Franchise Times 系（含 Food On Demand）、RD+D、Flavor & The Menu 只许个人非商业。Inc42、Restaurant Technology News、UKHospitality、IFA、Rolling Pin、Mixer Planet、Wiadomości Handlowe 明文禁止抓取或保留文本与数据挖掘权。
 - 美国上市连锁的投资者关系网站（多为 Q4 平台）对我们的抓取身份几乎全部返回 403；Papa John's、Red Robin、Wingstop 例外。
+- William Reed 网站条款（`https://www.william-reed.com/Website-Terms`，旗下 Morning Advertiser、Restaurant Online、BigHospitality 等的页脚都链到它）：禁止用机器人或自动手段抓取，禁止把内容用于 AI，明文包括检索后生成（10/2 查）。韩国用 ndsoft 系统的新闻网站（식품저널等）订阅在 `/rss/allArticle.xml` 和一级栏目 `/rss/S1N<n>.xml`，二级栏目没有订阅。
 - Google 不再公布 Gemini 免费层的调用上限，要在 AI Studio 里看自己的配额。向量只用在归组召回，按批调用。
 
 平台与接口（2026-10-01 查）：

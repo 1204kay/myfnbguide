@@ -7,12 +7,13 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { processArticle } from "@aihot/backend/jobs/content";
 import { stopBoss } from "@aihot/backend/jobs/queue";
+import { CATEGORIES, CATEGORY_TAGS, ITEM_TYPES } from "@aihot/industry/taxonomy";
 
 const sourceId = `analysis-consistency-${tag()}`;
 let hold: { entered: ReturnType<typeof gate<void>>; release: ReturnType<typeof gate<void>> } | null = null;
 const provider = await stub(async (_hit, request) => {
   const system = String(JSON.parse(request.body).messages[0]?.content ?? "");
-  const prefilter = system.includes("宽召回的AI相关性预筛");
+  const prefilter = system.includes("宽召回");
   if (prefilter && hold) {
     const waiting = hold;
     waiting.entered.open();
@@ -20,8 +21,8 @@ const provider = await stub(async (_hit, request) => {
   }
   const content = prefilter ? { label: "PASS", reason: "local fixture" }
     : system.includes("事件注意力评分器") ? { attentionScore: 80 }
-    : system.includes("资料结构化助手") ? { category: "ai-models", tags: [], subjects: [], scope: "single", fact: null }
-    : { itemType: "model_release", authorRole: "principal", tags: ["模型发布"], editorialJudgment: "模型能力提升", titleZh: "实验室发布新模型", summaryZh: "实验室发布新模型，并公布了评测结果与价格。" };
+    : system.includes("资料结构化助手") ? { category: CATEGORIES[0]!.key, tags: [], subjects: [], scope: "single", fact: null }
+    : { itemType: ITEM_TYPES[0], authorRole: "principal", tags: [CATEGORY_TAGS[0]], editorialJudgment: "模型能力提升", titleZh: "实验室发布新模型", summaryZh: "实验室发布新模型，并公布了评测结果与价格。" };
   return { choices: [{ message: { content: JSON.stringify(content) } }] };
 });
 for (const name of ["DASHSCOPE_BASE_URL", "ZHIPU_BASE_URL", "DEEPSEEK_BASE_URL"]) process.env[name] = `${provider.url}/v1`;

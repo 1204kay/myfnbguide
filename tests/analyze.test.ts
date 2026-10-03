@@ -72,7 +72,7 @@ after(async () => {
 });
 
 // The tag keeps each material unique: identical input would reuse an earlier run's paid answers.
-const LONG = "a lab released a model with a benchmark table and pricing details. ".repeat(8);
+const LONG = "the state raised the minimum wage, and a small restaurant shared how it reworked its staff rota. ".repeat(8);
 const article = async (marker: string, extra: Record<string, unknown> = {}) =>
   (await upsertMaterial({
     sourceId: SOURCE, url: `https://example.com/${marker}-${T}`, title: `${marker} model release ${T}`, bodyText: `${marker}: ${LONG} (${T})`,

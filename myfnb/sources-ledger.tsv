@@ -8328,3 +8328,4 @@ web-wongnai-business	Wongnai for Business（泰国）	https://www.wongnai.com/bu
 web-toteat	Toteat（智利）	https://www.toteat.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	每月 3–4 篇，多是智利本地菜单和工具推荐；文章页日期是西文月份缩写，框架读不出
 web-consumer-br	Consumer（巴西）	https://programaconsumer.com.br/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	博客跳到 blog.consumer.com.br，内容很少
 web-urbanpiper	UrbanPiper（印度）	https://www.urbanpiper.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	2026-04 以后没有更新
+rss-italia-a-tavola	Italia a Tavola	https://www.italiaatavola.net/rss/feed.xml	2026-10-03·停用（规则 6）	停用	对服务器连续 6 次返回 HTTP 429（10/2 已连续 3 次；本机实测限额每分钟 600 次，我们 2 小时才抓一次），按规则 6 当作对方不欢迎数据中心的机器，不用代理绕

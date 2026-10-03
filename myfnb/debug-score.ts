@@ -58,10 +58,11 @@ const DEBUG = `
 这一次不是正式评分，是在检查评分标准哪里把内容压低了。照上面的全部规则在心里算完以后，不要只输出分数，改为只返回下面这个 JSON（不要 Markdown）：
 {"itemType": "七类之一", "sig": 0, "nov": 0, "cred": 0, "reson": 0, "act": 0, "attentionScore": 0, "rule": "用到的压分规则或上限，引原话的前十几个字；没有就写空字符串", "why": "一句中文，60 字以内：分数主要被哪一轴拉低、为什么"}
 五轴是 0–10 的整数，attentionScore 按上面的类型权重表算出。`;
-const DebugSchema = z.object({
-  itemType: z.string(), sig: z.coerce.number(), nov: z.coerce.number(), cred: z.coerce.number(), reson: z.coerce.number(), act: z.coerce.number(),
-  attentionScore: z.coerce.number(), rule: z.string().default(""), why: z.string().default(""),
-});
+// Any JSON object is taken: the first run (10/3) lost every answer to a strict schema (a field came back null).
+// Fields are read leniently below, and an answer missing the axes is printed raw instead.
+const DebugSchema = z.record(z.string(), z.unknown());
+const text = (v: unknown) => (v === null || v === undefined ? "" : typeof v === "string" ? v : JSON.stringify(v));
+const one = (s: string) => s.replace(/\s+/g, " ").trim();
 
 const model = await modelFor("score");
 for (const id of ids) {
@@ -75,11 +76,14 @@ for (const id of ids) {
     });
     await markReceiptsCompleted([res.receiptId]);
     const d = res.data;
-    const one = (s: string) => s.replace(/\s+/g, " ").trim();
-    console.log(`${id} 评测${evalScore.get(id) ?? "-"} → ${d.itemType} s${d.sig} n${d.nov} c${d.cred} r${d.reson} a${d.act} =${d.attentionScore}`
-      + ` | 正文${(input.bodyText ?? "").length}字 | ${one(d.rule).slice(0, 40) || "无压分"} | ${one(d.why).slice(0, 80)}`);
+    const axes = ["sig", "nov", "cred", "reson", "act", "attentionScore"].map((k) => Number(d[k]));
+    const head = `${id} 评测${evalScore.get(id) ?? "-"} | 正文${(input.bodyText ?? "").length}字`;
+    if (axes.some((n) => !Number.isFinite(n))) { console.log(`${head} | 原样：${one(JSON.stringify(d)).slice(0, 300)}`); continue; }
+    const [sig, nov, cred, reson, act, score] = axes;
+    console.log(`${head} → ${text(d.itemType)} s${sig} n${nov} c${cred} r${reson} a${act} =${score}`
+      + ` | ${one(text(d.rule)).slice(0, 40) || "无压分"} | ${one(text(d.why)).slice(0, 80)}`);
   } catch (error) {
-    console.log(`${id} 失败：${String(error).slice(0, 120)}`);
+    console.log(`${id} 失败：${one(String(error)).slice(0, 300)}`);
   }
 }
 await closeDb();

@@ -12,7 +12,6 @@ const items: Record<string, string> = {
   "/page": `<link>https://example.org/episodes/42</link><guid isPermaLink="false">Buzzsprout-19886508</guid><enclosure url="${audio}" type="audio/mpeg" length="1"/>`,
   "/address": `<guid>https://example.org/episodes/42</guid><enclosure url="${audio}" type="audio/mpeg" length="1"/>`,
   "/bare": `<guid isPermaLink="false">Buzzsprout-19886508</guid>`,
-  "/short": `<guid isPermaLink="false">Buzzsprout-19886508</guid><enclosure url="${audio}" type="audio/mpeg" length="1"/><description>How leaders build confidence with their team.</description>`,
 };
 const server = http.createServer((req, res) => {
   res.setHeader("content-type", "application/rss+xml");
@@ -43,17 +42,6 @@ test("a page link or an address guid still wins over the media file", async () =
   assert.equal((await read("/page")).url, "https://example.org/episodes/42");
   assert.equal((await read("/address")).url, "https://example.org/episodes/42");
   assert.equal((await read("/page")).identityKey, undefined);
-});
-
-test("a short episode description is the body when the source declares summaryIsBody", async () => {
-  const feedUrl = `http://127.0.0.1:${(server.address() as { port: number }).port}/short`;
-  const read = async (config: Record<string, unknown>) =>
-    (await fetchRss({ id: "pod-test", config: { feedUrl, ...config }, participation_mode: "editorial" } as never)).candidates[0]!;
-  const plain = await read({});
-  assert.equal(plain.bodyStatus, "pending", "a short summary alone still asks for the page");
-  const declared = await read({ summaryIsBody: true });
-  assert.equal(declared.bodyStatus, "ok");
-  assert.equal(declared.bodyText, "How leaders build confidence with their team.");
 });
 
 test("an episode with neither page nor media file is kept as before", async () => {

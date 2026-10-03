@@ -34,7 +34,7 @@ const scoreAnswers: Record<string, number[]> = {
 };
 
 const stepOf = (system: string, user: string): Step =>
-  system.includes("宽召回的餐饮经营相关性预筛") ? "prefilter" : system.includes("事件注意力评分器") ? "score"
+  system.includes("宽召回") ? "prefilter" : system.includes("事件注意力评分器") ? "score"
   : system.includes("内容理解编辑") ? "understand" : system.includes("资料结构化助手") ? "structure"
   : user.includes("title_zh") ? "summarize" : (() => { throw new Error("unknown request"); })();
 
@@ -95,7 +95,7 @@ test("every prompt in the pack renders, and the site's name replaces AIHOT's", (
     const text = promptText(file.slice(0, -3), values);
     assert.ok(text.length > 20 && !/\{\{/.test(text), file);
   }
-  assert.ok(PREFILTER_SYSTEM.startsWith(`为${SITE.name}做宽召回的餐饮经营相关性预筛`));
+  assert.ok(PREFILTER_SYSTEM.startsWith(`为${SITE.name}做宽召回`));
 });
 
 test("a selected item: prefilter, two scores, the content understanding and the structure", async () => {

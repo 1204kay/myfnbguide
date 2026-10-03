@@ -455,7 +455,19 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
   ```bash
   cd /opt/myfnbguide && until sudo docker compose exec -T worker grep -q "debug-score-2" myfnb/debug-score.ts 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"; cd ~
   ```
-- 还没做：用户看一周真实日报（§9 第 4 项）；评分调试的结果（上面这条命令）。
+- ✅ **评分调试的结果（10/3 下午，20 条用户必看、评测 v3 低于 40）**。每条输出「评测 v3 分 / 现评两次 / 调试五轴与理由」：
+  - **「整集推销 sig ≤ 2」被误用 5 条**：飲食店のAI活用ラジオ 每集简介末尾附「無料のメール講座」报名，模型套了整集推销（规则里本来写了顺带的广告忽略）。
+  - **「只看得到标题」被误用约 3 条**：简介列了这集的具体题目，模型仍按残缺（≤ 30）处理。
+  - **主要的一类**：简介只预告这集讲什么，模型因为「没有具体数字、步骤或案例」压低 nov、cred、act，即使它自己写「主题共振强」（例：r2-298「忙却不赚钱」、r3-018「老板该不该一直在店里」、r3-007「老板最贵的错误」、r3-047「按满座设计」）。
+  - **同一材料，逐项写出五轴时 36–46 分，正式只报一个分数时多是 22**（r2-298 调试 46、现评 22/22；r3-047 45 vs 22/22；r3-018 40 vs 22/22）。作者的评分模型会先推理（`glm-5.3-flash-selection`，推理开到最高），所以提示词写「五轴只在心里算、只输出分数」；我们为了省钱关了 DeepSeek 的思考，模型没处去算，落在 22 这个惯性分数上。这是 Claude 的解释，要评测证实。
+  - 正文修正（播客改用订阅简介）本身让一部分回升：r2-293 现评 38/42（v3 8 分）、r2-292、r2-597、r2-654、r3-062 有一次到 38。
+- **据此做的（`b27ed88`）**：评分标准补三句，只把模型误用的地方写清楚，结构不动——简介末尾附课程、讲座、社群或邮件讲座报名的，不算整集推销；简介列出具体题目的，不算只有标题；播客和访谈按简介写明的题目评价，经营者专门讨论钱、人、客人、店的一个具体问题时，不因简介没展开做法和数字就把 nov、cred、act 压到很低（题目空泛、自我介绍、品牌故事、只对一种业态有用的照常评）。`eval-cases.ts` 加 `--sweep`（只打每条线下选进的必看、可看、不看）。上线后新进的条目就按新标准评。
+- **下一条给用户的命令：评测 v4，两种评分方式对比**（同一套新标准、同一批 333 条，`default` 直接报分 vs `deepseek-flash-think` 先思考再报分）。先用 3 条试「先思考」能不能用，不能用就停；能用就跑全量，没跑完的隔 65 秒重跑，最多 4 轮。「先思考」借用容器里现成的 `LLM_BASE_URL`、`LLM_API_KEY`（密钥不显示）。约 1,700 次调用，要跑半小时以上，网页终端别关：
+  ```bash
+  cd /opt/myfnbguide && until sudo docker compose exec -T worker grep -q "不算只看得到标题" industry/prompts/selection-score.md 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T -u root worker sh -c "export DEEPSEEK_BASE_URL=\"\$LLM_BASE_URL\" DEEPSEEK_API_KEY=\"\$LLM_API_KEY\"; node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 3 --concurrency 1 --models deepseek-flash-think --no-import > /dev/null; node myfnb/eval-cases.ts | grep '^#'; node myfnb/eval-cases.ts | grep '^#' | grep -q 'errors 0$' || { echo 'deepseek-flash-think 用不了，停下'; exit 1; }; for i in 1 2 3 4; do node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 --concurrency 2 --models default,deepseek-flash-think --label '小店标准 v4：直接报分 vs 先思考' > /dev/null; node myfnb/eval-cases.ts | grep '^#' | grep -v 'errors 0$' | grep -q . || break; sleep 65; done; node myfnb/eval-cases.ts; node myfnb/eval-cases.ts --sweep"; cd ~
+  ```
+  Claude 拿到后的判据（v3：40 分时必看 24/49、可看 35、不看 1）：哪种方式在不看 ≤ 1–2 条的前提下必看选进得多；可看选进太多会撑长日报，一起看。「先思考」明显更好就切过去：服务器 `.env` 加 `DEEPSEEK_BASE_URL`、`DEEPSEEK_API_KEY`（照 `LLM_*` 复制，不显示密钥）、重启 api 和 worker，在后台「模型与评测」把「精选评分」换成 `deepseek-flash-think`；推理的字数按输出计费，按每天几十条要评分估每月多几美元。门槛按新结果重定。
+- 还没做：用户看一周真实日报（§9 第 4 项）；评测 v4（上面这条命令）。
 
 **10/3 上午（上一会话，部分已被上面一段接手）**：
 - **评测 v3 跑完**（333 条，取到 329 条，0 报错）：不看分得开（中位数 15，44 分以上 0 条）；必看中位数 40，但 16 条在 22 分以下。查出两个原因：一、**播客正文 bug**：订阅没有完整正文时框架去抓单集网页，Spotify 托管的播客抓到的是整个节目的介绍和课程广告（每集一样），飲食店のAI活用ラジオ 6 条用户必看全部 8–12 分，Elevated Hospitality、Valor Coffee 被预筛挡掉；已修（所有播客 `summaryIsBody: true`，`rss.ts` 让 summaryIsBody 不论长短都当正文、与 json_list 一致，有测试），可提 PR（§7.2）。二、讲人、讲老板位置的访谈类必看常停在 22 分（say86、Your Life and Restaurant、会计师谈财务错误等，正文是对的），还没查清，下一步可写个调试脚本让模型对这十几条输出类型、五轴和理由。

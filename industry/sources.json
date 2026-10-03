@@ -343,6 +343,9 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://freshcup.com/feed/",
+        "denyCategories": [
+          "Sponsored"
+        ],
         "_aihot": {
           "initialBackfillLimit": 3,
           "initialBackfillOnly": true

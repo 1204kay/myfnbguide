@@ -1682,6 +1682,133 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "web-gnavi-pro-tokushu",
+      "name": "ぐるなび通信 · 特集（日本，飲食店の経営・販促・開業）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://pro.gnavi.co.jp/magazine/cont_1/",
+        "itemSelector": "a[href*=\"pro_mag_list_cassette\"]",
+        "linkSelector": "a",
+        "titleSelector": ".cassette-title",
+        "publishedAtSelector": ".cassette-date",
+        "publishedAtUtcOffset": "+09:00",
+        "allowUrlPrefixes": [
+          "https://pro.gnavi.co.jp/magazine/t_"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 3,
+          "initialBackfillOnly": true
+        },
+        "denyUrlPrefixes": [
+          "https://pro.gnavi.co.jp/magazine/t_fc/"
+        ]
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "日本",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-gnavi-pro-hanjo",
+      "name": "ぐるなび通信 · 今、繁盛している店（日本，繁盛店の数字と做法）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://pro.gnavi.co.jp/magazine/cont_23/",
+        "itemSelector": "a[href*=\"pro_mag_list_cassette\"]",
+        "linkSelector": "a",
+        "titleSelector": ".cassette-title",
+        "publishedAtSelector": ".cassette-date",
+        "publishedAtUtcOffset": "+09:00",
+        "allowUrlPrefixes": [
+          "https://pro.gnavi.co.jp/magazine/t_"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        },
+        "denyUrlPrefixes": [
+          "https://pro.gnavi.co.jp/magazine/t_fc/"
+        ]
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "日本",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-tenpo-biz-column",
+      "name": "店舗流通ネット · 飲食店経営コラム（日本，開業・閉店・資金繰り）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.tenpo.biz/solution/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "日本",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-goomer-blog",
+      "name": "Goomer 博客（巴西点餐系统商，写给餐厅老板）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://goomer.com.br/blog/",
+        "itemSelector": "div.post",
+        "linkSelector": "a.post-img",
+        "titleSelector": ".post-title",
+        "allowUrlPrefixes": [
+          "https://goomer.com.br/blog/"
+        ],
+        "denyUrlPrefixes": [
+          "https://goomer.com.br/blog/categoria/"
+        ],
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtUtcOffset": "-03:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 2,
+          "initialBackfillOnly": true
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "巴西",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

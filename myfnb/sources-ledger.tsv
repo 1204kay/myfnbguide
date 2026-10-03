@@ -8299,3 +8299,32 @@ pod-zh20-08	下班聊個天（hk）	https://feed.firstory.me/rss/user/cm1ntyrw20
 rss-horecanews-it	Horecanews		2026-10-03·停用（量大、标注没有必看）	停用	7 天公开 35 条（最多的来源）；用户标 12 条：必看 0、可看 3、不看 9
 rss-foodbank-kr	식품외식경제（韩国）		2026-10-03·停用（量大、标注没有必看）	停用	7 天公开 29 条；用户标 13 条：必看 0、可看 2、不看 11
 rss-daily-coffee-news	Daily Coffee News		2026-10-03·停用（量大、标注没有必看）	停用	7 天公开 11 条；用户标 6 条：必看 0、可看 1、不看 5
+web-gnavi-pro-tokushu	ぐるなび通信 · 特集（日本）	https://pro.gnavi.co.jp/magazine/cont_1/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	接入	网页列表（分类页的链接带 sc_lid，每个列表固定，不随位置变，不会重收）；每月约 7 篇；按标题判多是可看，偶有开店做法的必看；排除加盟路径 t_fc；条款「ウェブサイト利用上のご注意」的私的利用只管物件信息与地图下载，其余是通用的不得转载（规则 4）
+web-gnavi-pro-hanjo	ぐるなび通信 · 今、繁盛している店（日本）	https://pro.gnavi.co.jp/magazine/cont_23/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	接入	每月 2–3 篇真实店铺的数字与做法（坪月商、原価率、回头率、出餐流程），按标题估一半必看；Readability 抽得到正文里的三个要点
+rss-tenpo-biz-column	店舗流通ネット · 飲食店経営コラム（日本）	https://www.tenpo.biz/solution/feed/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	接入	账本原记「找不到订阅源」，订阅其实在 /solution/feed/（WordPress 装在子目录，带全文）；每月 6–8 篇，讲黑字倒闭、电水煤占营业额、运转资金、支付代行倒闭对策、开店与关店，一部分只适用日本（酒税、许可）；robots.txt 返回 404（规则 5 按没有限制）；免责声明是通用的未经许可不得复制（规则 4）
+web-goomer-blog	Goomer 博客（巴西）	https://goomer.com.br/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	接入	巴西点餐系统商；每周约 2 篇，钱、人、客人的比例高（利润率与收益率、运转资金、涨价怎么跟客人说、家族餐厅接班、顾客日变回头客）；列表没有日期，详情页读结构化数据里的日期（myfnb/sourcing/detail-check.ts 用框架的 fetchDetail 验证）；条款是给餐厅客户的平台许可，没有禁止抓取
+web-marketman	MarketMan	https://www.marketman.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	规则 3：使用条款禁止用机器人、爬虫或检索程序访问网站来检索、索引、数据挖掘，并禁止系统地下载、存储内容建库；内容合适（每周约 1 篇：菜单什么时候涨价、实际与理论食材成本差、进货对账）
+web-nory	Nory	https://nory.ai/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	规则 3：条款禁止用机器人、爬虫或任何抓取方式监控、复制其服务（写在客户服务条款里，按最低风险当作适用于网站）；每月约 5 篇，利润率基准、主成本
+web-7shifts	7shifts 博客	https://www.7shifts.com/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	规则 3：条款禁止数据挖掘、机器人或类似的数据收集方法（同上，按最低风险当作适用）；多为软件榜单与客户案例
+web-square-townsquare	Square Townsquare	https://squareup.com/us/en/townsquare	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	规则 3：条款禁止用机器人、爬虫等自动方式访问或监控任何内容
+web-shibata	柴田書店 月刊食堂（日本）	https://www.shibatashoten.co.jp/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	规则 3：利用規約只许著作权法规定的个人私的使用范围内的复制与使用
+web-supy	Supy	https://supy.io/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	写给多店连锁（多店库存差异、对账、营销），小店用不上的多
+web-storehub	StoreHub 博客（马来西亚）	https://www.storehub.com/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	订阅返回空内容，站点地图没有日期；条款把服务限于客户内部业务用途
+web-the-rail	The Rail	https://www.therail.media/stories	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	2026-04 以后没有新文章
+web-hospitality-asia	Hospitality Asia	https://hospitality-asia.com/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	酒店会议宣传，不写餐厅经营
+web-pizza-pasta-italiana	Pizza e Pasta Italiana	https://www.pizzaepastaitaliana.it/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	每周约 1 篇，多是食材与产品推广、名店介绍
+web-mobile-cuisine	Mobile Cuisine	https://mobile-cuisine.com/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	域名已被赌博广告占据
+web-usen-canary	USEN canary（日本）	https://canary-app.jp/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	首页靠脚本渲染，网页里没有文章链接；没找到条款页
+web-month-foodbank	월간식당（韩国）	https://month.foodbank.co.kr/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	月刊，一个月一批，列表没有日期；同一出版社的 식품외식경제 用户标 13 条 0 必看
+web-hotpepper-ggs	ホットペッパーグルメ外食総研（日本）	https://www.hotpepper.jp/ggs/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	日本外食市场调查与消费趋势，按 §2.2 多是不看或可看
+web-abrasel	Abrasel（巴西餐馆协会）	https://abrasel.com.br/noticias/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	协会的游说与巴西本国政策（§2.2 不看）
+web-yogiyo-ceo	요기요 사장님（韩国）	https://ceo.yogiyo.co.kr/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	商家后台入口，不是内容站
+web-kiotviet	KiotViet（越南）	https://www.kiotviet.vn/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	零售、酒店、美容都做的多行业收银系统，餐饮内容少；WordPress 接口返回的是 2014 年的旧页面
+web-majoo	majoo（印尼）	https://majoo.id/solusi	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	规则 2：robots.txt 拒绝 ChatGPT-User
+web-moka	Moka POS（印尼）	https://www.mokapos.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	印尼中小商家的泛内容，抽到的是咖啡店介绍和网店推广
+web-qasir	Qasir（印尼）	https://www.qasir.id/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	多行业收银系统（咖啡店、零售），列表没有日期
+web-esb	ESB（印尼）	https://www.esb.id/id/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	列表靠脚本渲染，网页里没有文章链接
+web-wongnai-business	Wongnai for Business（泰国）	https://www.wongnai.com/business-owners	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	商家栏目多是食谱标签和 Knorr 赞助文章
+web-toteat	Toteat（智利）	https://www.toteat.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	每月 3–4 篇，多是智利本地菜单和工具推荐；文章页日期是西文月份缩写，框架读不出
+web-consumer-br	Consumer（巴西）	https://programaconsumer.com.br/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	博客跳到 blog.consumer.com.br，内容很少
+web-urbanpiper	UrbanPiper（印度）	https://www.urbanpiper.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	2026-04 以后没有更新

@@ -6,7 +6,7 @@
 >
 > 接手的 Claude：读完本文，再读根目录的 `AGENTS.md` 和 `docs/customize.md`，然后从 **§9 下一步** 开始。
 >
-> **当前状态（快照 2026-10-03 上午）**：**最新进展先看 §9 开头「10/3 早上」一段**：门槛 40 已上线，上游已合并；给作者提了 3 个 PR（#83–#85）；没有订阅源的小店网站查完，接了 4 个（来源 73）；两条服务器命令（调高调用额度；重判与评分调试）已交给用户，用户在外面，回家再跑。以下是 10/3 凌晨的快照。
+> **当前状态（快照 2026-10-03 傍晚）**：**最新进展先看 §9 开头「10/3 早上」一段，读到「10/3 上午（上一会话）」为止**。门槛 40 已上线，上游已合并；给作者提了 3 个 PR（#83–#85）；接了第二十一批 4 个来源、停用 Italia a Tavola（来源 72）；重判 13 条；评分调试查出模型只报一个分数时惯性落在 22，评分标准补了三句；**评测 v4（直接报分 vs 先思考，333 条）在服务器上跑着，用户会把输出贴给下一个会话**。以下是 10/3 凌晨的快照。
 >
 > 10/3 凌晨：新方向的第一步已做完——文案、日报六节、预筛与评分标准、推荐理由的写法都改成站在一家小店里面看（`b400719`）；30 个品牌主题页已删（§5.2）。**三轮标注都做完了**：第二轮 113 条、第三轮 106 条（必看 18、可看 55、不看 33）。不看的线 Claude 已经对齐（第三轮判不看 33 条，27 条一致）；必看与可看的线用户自己在相近的题目上也两边都判，不再靠改措辞去追（§2.2）。评分标准与预筛按第一次评测和第三轮又改了两处（§5.3）；gold 333 条（必看 49）。来源 72 个：接回 10 个小店老板播客、停用开店笔记和红餐网·红厨（§9 第 3 项）；中文来源又查了一轮，没有能接的（§9 第 3 项第四轮）；现有来源每天约 2.4 条必看，免费、合规的路基本量完，「每天 5 条必看」先不追（§5.4）。第一次评测 10/2 晚跑了，第一行确认服务器用的是新标准，但 277 条里 243 条撞上每分钟调用上限（§9 第 2b 项）。**接下来**：用户在服务器上跑一条命令（恢复 9 个播客、停用开店笔记、带自动重试的评测 v3、规则 6 查询）→ Claude 看错例、定门槛 → 用户看一周真实日报（§9 第 4 项）。
 
@@ -473,7 +473,12 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
   ```bash
   cd /opt/myfnbguide && until sudo docker compose exec -T worker grep -q "deepseek-flash-think" packages/backend/src/editorial/analyze.ts 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T -u root worker sh -c "export DEEPSEEK_BASE_URL=\"\$LLM_BASE_URL\" DEEPSEEK_API_KEY=\"\$LLM_API_KEY\"; node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 3 --concurrency 1 --models deepseek-flash-think --no-import > /dev/null; node myfnb/eval-cases.ts | grep '^#'; node myfnb/eval-cases.ts | grep '^#' | grep -q 'errors 0$' || { echo 'deepseek-flash-think 用不了，停下'; exit 1; }; for i in 1 2 3 4; do node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 --concurrency 2 --models default,deepseek-flash-think --label '小店标准 v4：直接报分 vs 先思考' > /dev/null; node myfnb/eval-cases.ts | grep '^#' | grep -v 'errors 0$' | grep -q . || break; sleep 65; done; node myfnb/eval-cases.ts; node myfnb/eval-cases.ts --sweep"; cd ~
   ```
-- 还没做：用户看一周真实日报（§9 第 4 项）；评测 v4（上面这条命令）。
+- **评测 v4 出结果以后（下一个会话做）**：
+  1. 解读：输出里两个 `#` 行各跟 17 行（每行 20 个分数，按 `gold-labels.tsv` 的顺序，编码见第 2b 项），最后是 `--sweep` 两段（t=30…60 每条线下选进的必看、可看、不看）。对照 v3（40 分：必看 24/49、可看 35、不看 1）。判据：不看 ≤ 1–2 条的前提下必看选进得多；可看选进太多会撑长日报（日报每天 5–10 条，§2.3）。
+  2. 门槛按胜出那种方式的 `--sweep` 重定（三级同一个数，`industry/selection.ts`；`understandFloor` 比门槛低 10）。测试已经不绑门槛，改数字即可，照常跑四项检查。
+  3. **若「先思考」胜出，切换顺序不能反**（后台切换不检查密钥是否配好，先切会让线上评分全部失败）：① 服务器 `.env` 照 `LLM_*` 加 `DEEPSEEK_API_KEY`、`DEEPSEEK_BASE_URL`（不显示密钥），重建 api 和 worker：`cd /opt/myfnbguide && sudo sh -c 'grep -q "^DEEPSEEK_API_KEY=" .env || { k=$(sed -n "s/^LLM_API_KEY=//p" .env); u=$(sed -n "s/^LLM_BASE_URL=//p" .env); echo "DEEPSEEK_API_KEY=$k" >> .env; echo "DEEPSEEK_BASE_URL=$u" >> .env; }; grep -c "^DEEPSEEK_" .env' && sudo docker compose --profile https up -d --force-recreate api worker; cd ~`（应打印 2。`.env` 这一步 10/3 在 WSL 用假的 .env 试过：只加一次、重跑不重复、只打印 2、不显示密钥；重建容器那一步还没在服务器上跑过）；② 用户在后台「模型与评测」把「精选评分」换成 `deepseek-flash-think`，原因写进审计；③ 看新进条目的分数和费用（`receipts` 里 `service = 'deepseek'` 的输出 token）。DeepSeek 服务的调用上限是每分钟 100、每小时 2,000、每天 20,000，够用。
+  4. 两种方式都救不回访谈类必看时，再谈用户提的「副脑」：只把 30–50 分拿不准的条目交给更强的模型复核，先算清每月多花多少。
+- 还没做：评测 v4 的解读与切换（上面）；10/4 的统计命令（上面「10/4 请用户跑」，额度自动改回 3000 的那段要看 v4 评测和切换用掉多少再说）；用户看一周真实日报（§9 第 4 项，第一份应在 10/4 08:00）。
 
 **10/3 上午（上一会话，部分已被上面一段接手）**：
 - **评测 v3 跑完**（333 条，取到 329 条，0 报错）：不看分得开（中位数 15，44 分以上 0 条）；必看中位数 40，但 16 条在 22 分以下。查出两个原因：一、**播客正文 bug**：订阅没有完整正文时框架去抓单集网页，Spotify 托管的播客抓到的是整个节目的介绍和课程广告（每集一样），飲食店のAI活用ラジオ 6 条用户必看全部 8–12 分，Elevated Hospitality、Valor Coffee 被预筛挡掉；已修（所有播客 `summaryIsBody: true`，`rss.ts` 让 summaryIsBody 不论长短都当正文、与 json_list 一致，有测试），可提 PR（§7.2）。二、讲人、讲老板位置的访谈类必看常停在 22 分（say86、Your Life and Restaurant、会计师谈财务错误等，正文是对的），还没查清，下一步可写个调试脚本让模型对这十几条输出类型、五轴和理由。

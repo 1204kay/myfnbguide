@@ -629,6 +629,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 - 作者的评测工具 `scripts/eval-selection.ts` 的标注分三档：`select`、`reject`、`either`（两可，不计入准确率）。
 - 回补（新信源第一次导入的存量、发现时已超过 48 小时的）条目不进「今天」，也不进日报（`reports/compose.ts` 取候选时 `NOT p.backfill`）。
 - 预算熔断（`providers/receipts.ts`）按 `receipt_attempts` 过去 1 分钟、1 小时、24 小时滚动计数，不是日历日；只数 `origin = 'live'`，评测脚本的调用也算在里面、超了也会被挡。默认 `llm` 每天 40,000 次，我们在后台设成 3,000 次（10/3 临时 6,000，§9 开头）。上限每次调用都从 `budgets` 表读，改了立刻生效。撞上限时条目改回等待、任务本身结束（`jobs/content.ts` 的 `afterFailure`），由每几分钟一次的补漏重新排队，所以队列里看不到这些条目的任务。
+- **评测、调试这类长命令跑在 worker 容器里（`docker compose exec worker …`）时，不要推 main**：服务器每 5 分钟看一次 main，有新提交（只改文档也算）就自动部署，部署会停掉 worker，命令随之中断。10/3 傍晚评测 v4 在跑时 Claude 推了一个只改交接文件的提交（`7b88922`），评测可能因此中断。长命令在跑时只推工作分支，跑完再推 main。被打断就重新粘贴同一条命令，已经完成的调用按回执复用，不重复收费。
 - 门槛只在分析时判（`analyses.selected`），改门槛不会重判已经分析过的条目。日报按「进站时间和公开时间里较晚的一个」归到哪一天（`reports/compose.ts`），晚分析完的条目进下一期。
 - 评测结果除了写容器里的 `/app/.data/eval/`（不在数据卷上，重新部署就没了；数据卷是 `/data`），还导入后台 SelectBench（`selectbench_runs`、`selectbench_results` 两张表，每条的分数、档、预筛结果都在），`myfnb/debug-score.ts` 就从这里挑条目。评测的条目顺序是按种子打乱后的抽样顺序。
 - 作者 CI 先跑 `seed.ts --topics-only` 再跑后端测试；WSL 的 `~/checks.sh` 跑完整 `seed.ts`（要导入信源）。在作者的 AI 示例配置上用 `~/checks.sh` 会导入模型排行榜目录，`leaderboard-filter-pages` 一个测试因此撞唯一键失败，不是改动造成的；给作者的 PR 要按 CI 的顺序另跑一遍后端测试。

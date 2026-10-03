@@ -135,5 +135,5 @@ for (const s of sources) {
   const lines = [...new Set(problems), ...new Set(notes)];
   console.log(`${problems.length ? "✗" : "✓"} ${s.id}${lines.length ? `\n    ${lines.join("\n    ")}` : ""}`);
 }
-console.log(failed ? `\n${failed} source(s) break the rule: pause them in the admin Sources page (or scripts/delete-sources.ts) and update industry/sources.json.` : `\nall ${sources.length} sources pass`);
+console.log(failed ? `\n${failed} source(s) break the rule: pause them in the admin Sources page and update industry/sources.json.` : `\nall ${sources.length} sources pass`);
 process.exit(failed ? 1 : 0);

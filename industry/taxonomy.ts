@@ -4,19 +4,32 @@
 
 /**
  * 网页上的类别（筛选栏、卡片角标、RSS 分类订阅）。key 是网址和接口里的身份，上线后不要改。
- * section 是日报里的分节标题（几个类别可以共用一节，按这里的顺序排）；guide 告诉模型怎么归类。
+ * section 是日报里的分节标题（几个类别可以共用一节，按这里的顺序排）；guide 告诉结构抽取模型这一类收什么、
+ * 和相邻类别的边界在哪（总的归类原则写在 prompts/structure.md 里）。
+ * commentary 标出评论类（教程、观点）：日报写过的事又有评论类的后续报道，只占一行快讯（报道它的信源够多时除外）。
  * 没归上类的资料在日报里放进第一个 key 为 industry 的类别所在的节（没有就放最后一节）。
  * tip 和 opinion 两个 key 公开接口也认（v1 的 tip 同时包含 opinion），不要改名。
  * 按内容类型分，不按国家分；站在一家小店里面看，顺序是小店老板最用得上的在前（同行的做法和教训、老板的经验、省人省钱的工具）。
  */
 export const CATEGORIES = [
-  { key: "tip", label: "经验", section: "同行经验", guide: "能照着做的经营方法，以及真实店铺的复盘和失败教训：高峰期分工与出餐、菜单与定价、毛利与成本、引流与回头客、外卖与团购怎么做、小团队招人留人与排班、开店选址与单店算账、加盟与扩张的避坑、食品安全与清洁维护" },
-  { key: "opinion", label: "老板说", section: "老板说", guide: "老板、创始人和业内人士的访谈、创业故事、心态与经营理念、对行业的判断，以及没有新数据支撑的趋势评论" },
-  { key: "tools", label: "工具", section: "省人省钱", guide: "店里要买、要用的东西和服务：厨房设备、收银点餐与订位工具、AI 与管理系统、自动化与机器人、包装与用品，以及店家用它们省人省钱的情况和效果" },
-  { key: "market", label: "风向", section: "生意风向", guide: "生意的冷热与成本：哪些品类和业态在涨在跌，消费习惯的变化，客流、客单价、开店与关店数，食材、能源、租金、人工等成本的价格变化，行业调查与研究报告" },
-  { key: "industry", label: "大牌", section: "大牌动作", guide: "品牌与企业的动作：连锁开店关店、进入或退出市场、价格战与下沉、新业态与跨界、并购、融资与上市、业绩、新品与促销；不好归进其他类别的资料也放这里" },
-  { key: "policy", label: "规定", section: "规定与平台", guide: "会改变餐饮店成本或义务的规定与执法（工资与用工、税费、食品安全与卫生、执照、包装与环保），外卖、团购、支付与订位平台的规则、抽成和费率变化，以及业者组织对这些规定的诉求与回应" },
-] as const;
+  { key: "tip", label: "经验", section: "同行经验", guide: "能照着做的经营方法，以及真实店铺的复盘和失败教训：高峰期分工与出餐、菜单与定价、毛利与成本、引流与回头客、外卖与团购怎么做、小团队招人留人与排班、开店选址与单店算账、加盟与扩张的避坑、食品安全与清洁维护。重点是读者能照着做的方法或一家店真实的经过；只有态度和理念、没有做法的归老板说，讲设备或系统本身的归工具。", commentary: true },
+  { key: "opinion", label: "老板说", section: "老板说", guide: "老板、创始人和业内人士的访谈、创业故事、心态与经营理念、对行业的判断，以及没有新数据支撑的趋势评论。重点是说话的人的经验、判断和主张；访谈里讲出了具体做法和步骤的归经验，带新调查数据的归风向。", commentary: true },
+  { key: "tools", label: "工具", section: "省人省钱", guide: "店里要买、要用的东西和服务：厨房设备、收银点餐与订位工具、AI 与管理系统、自动化与机器人、包装与用品，以及店家用它们省人省钱的情况和效果。厂商发布、介绍自家产品也归这里；重点是连锁品牌开店、改业态的归大牌。" },
+  { key: "market", label: "风向", section: "生意风向", guide: "生意的冷热与成本：哪些品类和业态在涨在跌，消费习惯的变化，客流、客单价、开店与关店数，食材、能源、租金、人工等成本的价格变化，行业调查与研究报告。重点是数字和趋势；单个品牌的动作归大牌，规定和平台费率的变化归规定。" },
+  { key: "industry", label: "大牌", section: "大牌动作", guide: "品牌与企业的动作：连锁开店关店、进入或退出市场、价格战与下沉、新业态与跨界、并购、融资与上市、业绩、新品与促销；不好归进其他类别的资料也放这里。品牌老板谈理念归老板说，品牌公开的做法小店能照着做的归经验。" },
+  { key: "policy", label: "规定", section: "规定与平台", guide: "会改变餐饮店成本或义务的规定与执法（工资与用工、税费、食品安全与卫生、执照、包装与环保），外卖、团购、支付与订位平台的规则、抽成和费率变化，以及业者组织对这些规定的诉求与回应。已公布或已生效的规定和规则归这里；还只是预测和讨论的归风向或老板说。" },
+] as const satisfies ReadonlyArray<{ key: string; label: string; section: string; guide: string; commentary?: true }>;
+
+/**
+ * 这个行业最受关注的一类发布（AI 行业是新模型）：日报报头的“N 个新模型”、改分类后修订已出的报告、
+ * 公司编年史的上面一行都按它数。category 是类别，tag 是标签，两者都对上才算；unit 接在数字后面。
+ * 没有这样一类的行业设成 null，报头就不显示这个数。
+ * 餐饮小店没有这样一类发布：同行的做法、成本和规定的变化才是读者要的，新店、新品不是。
+ */
+export const RELEASE: { category: string; tag: string; unit: string } | null = null;
+
+/** 周报月报的总述可以直接写、不必在报道里找到出处的行业通用词（小写）。站名会自动算进去。 */
+export const PLAIN_TERMS: readonly string[] = ["ai", "pos", "sop", "kpi", "roi", "ceo", "ipo", "app"];
 
 /**
  * 内容理解一步给每篇资料判的“内容类型”（写在 prompts/content-understanding.md 里，改了类型要同步改那份提示词）。
@@ -77,16 +90,13 @@ export const TAG_SYNONYMS: Readonly<Record<string, string>> = {
   中国大陆: "中国", 大马: "马来西亚", 印度尼西亚: "印尼", 澳大利亚: "澳洲", 新西兰: "澳洲", 阿联酋: "中东", 沙特: "中东", 迪拜: "中东", 拉丁美洲: "拉美", 巴西: "拉美", 墨西哥: "拉美",
 };
 
-/** 模型漏了分类标签时，按内容类型补一个。 */
-export const CATEGORY_BY_ITEM_TYPE: Readonly<Record<string, string>> = {
-  policy_change: "政策/法规", platform_update: "平台动态", tool_launch: "设备/科技", market_data: "市场/数据",
-  industry_event: "行业动态", practice_howto: "实战/经验", opinion_analysis: "观点/访谈",
-};
-
 // ── 品牌与平台 ──────────────────────────────────────────────────────────────────────────
 
-/** 品牌与平台（打实体标签用；品牌主题页 2026-10-02 已删）：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。 */
-export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[] }> = {
+/**
+ * 品牌与平台（打实体标签用；品牌主题页 2026-10-02 已删）：id → 显示名、卡片上显示的标签（null 表示只用 entity:<id> 归类）、别名。
+ * aliases 给结构抽取模型看；otherNames 是公司自己的其他称呼（官方账号名、子品牌），把事实的主体对到发布方时也认它们。
+ */
+export const ENTITIES: Record<string, { name: string; displayTag: string | null; aliases: string[]; otherNames?: string[] }> = {
   mcdonalds: { name: "麦当劳 McDonald's", displayTag: "麦当劳", aliases: ["McDonald's", "麦当劳", "金拱门"] },
   kfc: { name: "肯德基 KFC", displayTag: "肯德基", aliases: ["KFC", "肯德基"] },
   yumchina: { name: "百胜中国 Yum China", displayTag: "百胜中国", aliases: ["Yum China", "百胜中国"] },

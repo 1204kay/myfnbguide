@@ -1,5 +1,4 @@
 {
-  "exportedAt": "2026-10-01",
   "groups": [
     {
       "key": "field",
@@ -17,337 +16,626 @@
       "slug": "people",
       "name": "人与用工",
       "group": "field",
-      "tags": ["人与用工", "外劳"],
-      "definition": "招人、留人、排班与培训，工资与人工成本，缺工与外劳政策：各地餐饮业者怎么解决“人”的问题。",
-      "related": ["ai-automation", "cost-profit", "franchising"]
+      "tags": [
+        "人与用工",
+        "外劳"
+      ],
+      "chronicleTerms": [
+        "招人",
+        "招聘",
+        "留人",
+        "员工",
+        "店员",
+        "人手",
+        "缺人",
+        "缺工",
+        "用工",
+        "工资",
+        "薪",
+        "排班",
+        "培训",
+        "外劳",
+        "人工",
+        "团队",
+        "离职",
+        "服务员",
+        "厨师"
+      ],
+      "definition": "招人、留人、排班与培训，工资与人工成本，缺工与外劳政策：各地餐饮业者怎么解决“人”的问题。"
     },
     {
       "slug": "cost-profit",
       "name": "成本与利润",
       "group": "field",
-      "tags": ["成本/利润", "能源"],
-      "definition": "钱花在哪、赚在哪：毛利结构、食材与能源成本、涨价与价格战，单店怎么算账。",
-      "related": ["ingredients", "menu-pricing", "opening-expansion"]
+      "tags": [
+        "成本/利润",
+        "能源"
+      ],
+      "chronicleTerms": [
+        "成本",
+        "利润",
+        "毛利",
+        "亏",
+        "盈利",
+        "赚",
+        "账",
+        "省钱",
+        "费用",
+        "能源",
+        "电费",
+        "房租",
+        "租金",
+        "CMV",
+        "现金流",
+        "营业额",
+        "收入"
+      ],
+      "definition": "钱花在哪、赚在哪：毛利结构、食材与能源成本、涨价与价格战，单店怎么算账。"
     },
     {
       "slug": "ingredients",
       "name": "食材与供应链",
       "group": "field",
-      "tags": ["食材/供应链"],
-      "definition": "谁在供货、原料价格与短缺：咖啡豆、可可、牛肉、大米、食用油等主要原料的变化与采购做法。",
-      "related": ["cost-profit", "catering", "menu-pricing"]
+      "tags": [
+        "食材/供应链"
+      ],
+      "chronicleTerms": [
+        "食材",
+        "原料",
+        "供应",
+        "采购",
+        "进货",
+        "咖啡豆",
+        "可可",
+        "牛肉",
+        "大米",
+        "食用油",
+        "鸡蛋",
+        "猪肉",
+        "海鲜",
+        "蔬菜",
+        "短缺"
+      ],
+      "definition": "谁在供货、原料价格与短缺：咖啡豆、可可、牛肉、大米、食用油等主要原料的变化与采购做法。"
     },
     {
       "slug": "menu-pricing",
       "name": "菜单与定价",
       "group": "field",
-      "tags": ["菜单/定价"],
-      "definition": "菜单怎么设计、价格怎么定和调：各地餐饮的定价做法、涨价与平价策略、爆品与菜单结构。",
-      "related": ["cost-profit", "new-products", "traffic-loyalty"]
+      "tags": [
+        "菜单/定价"
+      ],
+      "chronicleTerms": [
+        "菜单",
+        "定价",
+        "价格",
+        "涨价",
+        "降价",
+        "爆品",
+        "招牌菜",
+        "客单价",
+        "套餐",
+        "菜品"
+      ],
+      "definition": "菜单怎么设计、价格怎么定和调：各地餐饮的定价做法、涨价与平价策略、爆品与菜单结构。"
     },
     {
       "slug": "traffic-loyalty",
       "name": "引流与回头客",
       "group": "field",
-      "tags": ["引流/复购"],
-      "definition": "怎么让新客上门、老客回头：团购与短视频、会员与复购、服务体验和本地营销。",
-      "related": ["new-products", "delivery", "menu-pricing"]
+      "tags": [
+        "引流/复购"
+      ],
+      "chronicleTerms": [
+        "引流",
+        "回头客",
+        "复购",
+        "熟客",
+        "会员",
+        "客人",
+        "客流",
+        "顾客",
+        "口碑",
+        "营销",
+        "团购",
+        "短视频",
+        "评价",
+        "集点",
+        "积分",
+        "老客",
+        "新客"
+      ],
+      "definition": "怎么让新客上门、老客回头：团购与短视频、会员与复购、服务体验和本地营销。"
     },
     {
       "slug": "new-products",
       "name": "新品与促销",
       "group": "field",
-      "tags": ["新品/促销", "节庆"],
-      "definition": "同行在推什么：大品牌和特色品牌的新品、限定、联名与节庆促销，看灵感也看策略。",
-      "related": ["menu-pricing", "traffic-loyalty", "quick-service"]
+      "tags": [
+        "新品/促销",
+        "节庆"
+      ],
+      "chronicleTerms": [
+        "新品",
+        "限定",
+        "联名",
+        "促销",
+        "节日",
+        "季节",
+        "上新"
+      ],
+      "definition": "同行在推什么：大品牌和特色品牌的新品、限定、联名与节庆促销，看灵感也看策略。"
     },
     {
       "slug": "delivery",
       "name": "外卖与平台",
       "group": "field",
-      "tags": ["外卖/平台"],
-      "definition": "外卖平台的佣金、规则与新功能，外卖怎么做不亏钱，云厨房与外带。",
-      "related": ["traffic-loyalty", "tech", "packaging"]
+      "tags": [
+        "外卖/平台"
+      ],
+      "chronicleTerms": [
+        "外卖",
+        "配送",
+        "平台",
+        "佣金",
+        "抽成",
+        "美团",
+        "饿了么",
+        "Uber Eats",
+        "DoorDash",
+        "Grab",
+        "foodpanda",
+        "Deliveroo",
+        "云厨房",
+        "外带",
+        "自取"
+      ],
+      "definition": "外卖平台的佣金、规则与新功能，外卖怎么做不亏钱，云厨房与外带。"
     },
     {
       "slug": "ai-automation",
       "name": "AI 与自动化",
       "group": "field",
-      "tags": ["AI/自动化"],
-      "definition": "机器人、自动化设备与 AI 在餐饮店里的实际用法：能省多少人、多少钱，小店用不用得起。",
-      "related": ["people", "tech", "equipment"]
+      "tags": [
+        "AI/自动化"
+      ],
+      "chronicleTerms": [
+        "AI",
+        "人工智能",
+        "机器人",
+        "自动化",
+        "智能",
+        "无人"
+      ],
+      "definition": "机器人、自动化设备与 AI 在餐饮店里的实际用法：能省多少人、多少钱，小店用不用得起。"
     },
     {
       "slug": "tech",
       "name": "系统与科技",
       "group": "field",
-      "tags": ["科技/系统"],
-      "definition": "收银点餐、订位、排班与管理系统，支付方式的变化，餐饮科技公司的新产品。",
-      "related": ["ai-automation", "delivery", "equipment"]
+      "tags": [
+        "科技/系统"
+      ],
+      "chronicleTerms": [
+        "系统",
+        "收银",
+        "点餐",
+        "订位",
+        "POS",
+        "扫码",
+        "支付",
+        "软件",
+        "数字化",
+        "App",
+        "平板"
+      ],
+      "definition": "收银点餐、订位、排班与管理系统，支付方式的变化，餐饮科技公司的新产品。"
     },
     {
       "slug": "equipment",
       "name": "厨房设备",
       "group": "field",
-      "tags": ["厨房设备"],
-      "definition": "炉具、冷藏、清洗与烘焙设备：新产品、新用法和同行在用什么。",
-      "related": ["ai-automation", "store-design", "tech"]
+      "tags": [
+        "厨房设备"
+      ],
+      "chronicleTerms": [
+        "设备",
+        "炉",
+        "烤箱",
+        "冷藏",
+        "冰箱",
+        "咖啡机",
+        "洗碗",
+        "厨具"
+      ],
+      "definition": "炉具、冷藏、清洗与烘焙设备：新产品、新用法和同行在用什么。"
     },
     {
       "slug": "store-design",
       "name": "店面与装修",
       "group": "field",
-      "tags": ["店面/装修"],
-      "definition": "店面设计、装修与空间：怎么用更少的面积做更多生意，新店型的样子。",
-      "related": ["equipment", "opening-expansion", "coffee"]
+      "tags": [
+        "店面/装修"
+      ],
+      "chronicleTerms": [
+        "店面",
+        "装修",
+        "设计",
+        "空间",
+        "动线",
+        "面积",
+        "座位",
+        "店型",
+        "门头"
+      ],
+      "definition": "店面设计、装修与空间：怎么用更少的面积做更多生意，新店型的样子。"
     },
     {
       "slug": "opening-expansion",
       "name": "开店与扩张",
       "group": "field",
-      "tags": ["开店/扩张", "租金/选址"],
-      "definition": "开店选址、租金、单店模型与投资回报，品牌的扩张节奏与新店型。",
-      "related": ["franchising", "closures", "going-global"]
+      "tags": [
+        "开店/扩张",
+        "租金/选址"
+      ],
+      "chronicleTerms": [
+        "开店",
+        "开业",
+        "新店",
+        "选址",
+        "租金",
+        "扩张",
+        "分店",
+        "第二家",
+        "门店",
+        "店型",
+        "投资回报",
+        "回本"
+      ],
+      "definition": "开店选址、租金、单店模型与投资回报，品牌的扩张节奏与新店型。"
     },
     {
       "slug": "franchising",
       "name": "加盟",
       "group": "field",
-      "tags": ["加盟"],
-      "definition": "加盟还是直营，加盟商与总部的关系，加盟的账怎么算、坑在哪里。",
-      "related": ["opening-expansion", "closures", "people"]
+      "tags": [
+        "加盟"
+      ],
+      "chronicleTerms": [
+        "加盟",
+        "特许",
+        "直营",
+        "总部"
+      ],
+      "definition": "加盟还是直营，加盟商与总部的关系，加盟的账怎么算、坑在哪里。"
     },
     {
       "slug": "closures",
       "name": "关店与倒闭",
       "group": "field",
-      "tags": ["关店/倒闭"],
-      "definition": "谁在关店、为什么关：连锁收缩、倒闭与破产，失败的教训。",
-      "related": ["opening-expansion", "franchising", "cost-profit"]
+      "tags": [
+        "关店/倒闭"
+      ],
+      "chronicleTerms": [
+        "关店",
+        "关门",
+        "倒闭",
+        "破产",
+        "停业",
+        "闭店",
+        "结业",
+        "收缩",
+        "失败"
+      ],
+      "definition": "谁在关店、为什么关：连锁收缩、倒闭与破产，失败的教训。"
     },
     {
       "slug": "funding",
       "name": "融资与上市",
       "group": "field",
-      "tags": ["融资/上市"],
-      "definition": "餐饮品牌的融资、上市与并购，以及背后的经营数字。",
-      "related": ["opening-expansion", "going-global", "china"]
+      "tags": [
+        "融资/上市"
+      ],
+      "chronicleTerms": [
+        "融资",
+        "上市",
+        "IPO",
+        "并购",
+        "收购",
+        "投资",
+        "估值",
+        "募资"
+      ],
+      "definition": "餐饮品牌的融资、上市与并购，以及背后的经营数字。"
     },
     {
       "slug": "going-global",
       "name": "出海",
       "group": "field",
-      "tags": ["出海"],
-      "definition": "中国和亚洲餐饮品牌走向海外：去哪里、怎么开、遇到什么问题。",
-      "related": ["opening-expansion", "southeast-asia", "tea-drinks"]
+      "tags": [
+        "出海"
+      ],
+      "chronicleTerms": [
+        "出海",
+        "海外",
+        "进军",
+        "国际",
+        "首店"
+      ],
+      "definition": "中国和亚洲餐饮品牌走向海外：去哪里、怎么开、遇到什么问题。"
     },
     {
       "slug": "food-safety",
       "name": "食品安全与卫生",
       "group": "field",
-      "tags": ["食品安全/卫生"],
-      "definition": "食品安全与卫生的规定、检查重点与执法，后厨清洁与维护的做法。",
-      "related": ["halal", "packaging", "catering"]
+      "tags": [
+        "食品安全/卫生"
+      ],
+      "chronicleTerms": [
+        "食品安全",
+        "卫生",
+        "食安",
+        "检查",
+        "过敏",
+        "清洁",
+        "中毒",
+        "温度",
+        "消毒"
+      ],
+      "definition": "食品安全与卫生的规定、检查重点与执法，后厨清洁与维护的做法。"
     },
     {
       "slug": "halal",
       "name": "清真",
       "group": "field",
-      "tags": ["清真"],
-      "definition": "清真认证的规定与市场，清真餐饮在各地的发展。",
-      "related": ["food-safety", "middle-east", "southeast-asia"]
+      "tags": [
+        "清真"
+      ],
+      "chronicleTerms": [
+        "清真",
+        "Halal",
+        "穆斯林"
+      ],
+      "definition": "清真认证的规定与市场，清真餐饮在各地的发展。"
     },
     {
       "slug": "tax",
       "name": "税费",
       "group": "field",
-      "tags": ["税费"],
-      "definition": "跟餐饮店有关的税费变化：营业税、消费税、关税与各种收费，任何国家。",
-      "related": ["cost-profit", "people", "packaging"]
+      "tags": [
+        "税费"
+      ],
+      "chronicleTerms": [
+        "税",
+        "附加费",
+        "收费",
+        "发票"
+      ],
+      "definition": "跟餐饮店有关的税费变化：营业税、消费税、关税与各种收费，任何国家。"
     },
     {
       "slug": "packaging",
       "name": "包装与环保",
       "group": "field",
-      "tags": ["包装/环保"],
-      "definition": "外卖包装、减塑与环保规定，食物浪费的处理与做法。",
-      "related": ["delivery", "food-safety", "tax"]
+      "tags": [
+        "包装/环保"
+      ],
+      "chronicleTerms": [
+        "包装",
+        "环保",
+        "减塑",
+        "塑料",
+        "吸管",
+        "餐盒",
+        "浪费",
+        "回收"
+      ],
+      "definition": "外卖包装、减塑与环保规定，食物浪费的处理与做法。"
     },
     {
       "slug": "coffee",
       "name": "咖啡",
       "group": "genre",
-      "tags": ["咖啡"],
-      "definition": "咖啡店与咖啡连锁：品牌扩张、门店模型、咖啡豆价格与咖啡馆经营。",
-      "related": ["tea-drinks", "bakery", "store-design"]
+      "tags": [
+        "咖啡"
+      ],
+      "definition": "咖啡店与咖啡连锁：品牌扩张、门店模型、咖啡豆价格与咖啡馆经营。"
     },
     {
       "slug": "tea-drinks",
       "name": "茶饮",
       "group": "genre",
-      "tags": ["茶饮"],
-      "definition": "新茶饮与奶茶：品牌、门店数、出海和价格战。",
-      "related": ["coffee", "going-global", "new-products"]
+      "tags": [
+        "茶饮"
+      ],
+      "definition": "新茶饮与奶茶：品牌、门店数、出海和价格战。"
     },
     {
       "slug": "hotpot",
       "name": "火锅",
       "group": "genre",
-      "tags": ["火锅"],
-      "definition": "火锅品类的门店、价格、复购与新玩法。",
-      "related": ["full-service", "china", "traffic-loyalty"]
+      "tags": [
+        "火锅"
+      ],
+      "definition": "火锅品类的门店、价格、复购与新玩法。"
     },
     {
       "slug": "quick-service",
       "name": "快餐",
       "group": "genre",
-      "tags": ["快餐"],
-      "definition": "快餐店与快餐连锁：价格战、出餐效率、外卖与成本。",
-      "related": ["new-products", "delivery", "franchising"]
+      "tags": [
+        "快餐"
+      ],
+      "definition": "快餐店与快餐连锁：价格战、出餐效率、外卖与成本。"
     },
     {
       "slug": "full-service",
       "name": "正餐",
       "group": "genre",
-      "tags": ["正餐"],
-      "definition": "正餐与休闲餐厅：客单价、翻台、服务与成本。",
-      "related": ["hotpot", "menu-pricing", "people"]
+      "tags": [
+        "正餐"
+      ],
+      "definition": "正餐与休闲餐厅：客单价、翻台、服务与成本。"
     },
     {
       "slug": "bakery",
       "name": "烘焙与甜品",
       "group": "genre",
-      "tags": ["烘焙/甜品"],
-      "definition": "面包店、甜品与烘焙连锁：品类风向、价格与开店。",
-      "related": ["coffee", "new-products", "equipment"]
+      "tags": [
+        "烘焙/甜品"
+      ],
+      "definition": "面包店、甜品与烘焙连锁：品类风向、价格与开店。"
     },
     {
       "slug": "snacks-stalls",
       "name": "小吃与档口",
       "group": "genre",
-      "tags": ["小吃/档口"],
-      "definition": "小吃、街边档口与小店：小本生意怎么做、怎么活下来。",
-      "related": ["opening-expansion", "cost-profit", "china"]
+      "tags": [
+        "小吃/档口"
+      ],
+      "definition": "小吃、街边档口与小店：小本生意怎么做、怎么活下来。"
     },
     {
       "slug": "catering",
       "name": "团餐与中央厨房",
       "group": "genre",
-      "tags": ["团餐/中央厨房"],
-      "definition": "团餐、机构餐饮与中央厨房：规模化出餐的做法与生意。",
-      "related": ["ingredients", "food-safety", "equipment"]
+      "tags": [
+        "团餐/中央厨房"
+      ],
+      "definition": "团餐、机构餐饮与中央厨房：规模化出餐的做法与生意。"
     },
     {
       "slug": "bars",
       "name": "酒吧与酒饮",
       "group": "genre",
-      "tags": ["酒吧/酒饮"],
-      "definition": "酒吧、小酒馆与餐厅酒饮：品类风向和经营。",
-      "related": ["full-service", "new-products", "uk-europe"]
+      "tags": [
+        "酒吧/酒饮"
+      ],
+      "definition": "酒吧、小酒馆与餐厅酒饮：品类风向和经营。"
     },
     {
       "slug": "china",
       "name": "中国",
       "group": "genre",
-      "tags": ["中国"],
-      "definition": "中国餐饮业：品类与品牌的起落、价格战、开店关店与经营做法。",
-      "related": ["going-global", "tea-drinks", "hotpot"]
+      "tags": [
+        "中国"
+      ],
+      "definition": "中国餐饮业：品类与品牌的起落、价格战、开店关店与经营做法。"
     },
     {
       "slug": "hong-kong",
       "name": "香港",
       "group": "genre",
-      "tags": ["香港"],
-      "definition": "香港餐饮业的经营、开关店与政策。",
-      "related": ["china", "taiwan", "southeast-asia"]
+      "tags": [
+        "香港"
+      ],
+      "definition": "香港餐饮业的经营、开关店与政策。"
     },
     {
       "slug": "taiwan",
       "name": "台湾",
       "group": "genre",
-      "tags": ["台湾"],
-      "definition": "台湾餐饮业的经营、品牌与市场。",
-      "related": ["china", "hong-kong", "japan"]
+      "tags": [
+        "台湾"
+      ],
+      "definition": "台湾餐饮业的经营、品牌与市场。"
     },
     {
       "slug": "japan",
       "name": "日本",
       "group": "genre",
-      "tags": ["日本"],
-      "definition": "日本餐饮业：个人店与连锁的经营做法、人手短缺的应对、新业态。",
-      "related": ["korea", "taiwan", "menu-pricing"]
+      "tags": [
+        "日本"
+      ],
+      "definition": "日本餐饮业：个人店与连锁的经营做法、人手短缺的应对、新业态。"
     },
     {
       "slug": "korea",
       "name": "韩国",
       "group": "genre",
-      "tags": ["韩国"],
-      "definition": "韩国餐饮业：外卖、加盟、自动化与品牌出海。",
-      "related": ["japan", "ai-automation", "franchising"]
+      "tags": [
+        "韩国"
+      ],
+      "definition": "韩国餐饮业：外卖、加盟、自动化与品牌出海。"
     },
     {
       "slug": "southeast-asia",
       "name": "东南亚",
       "group": "genre",
-      "tags": ["东南亚", "马来西亚", "新加坡", "印尼", "泰国", "越南", "菲律宾"],
-      "definition": "东南亚各国的餐饮市场、品牌扩张与经营变化。",
-      "related": ["going-global", "halal", "india"]
+      "tags": [
+        "东南亚",
+        "马来西亚",
+        "新加坡",
+        "印尼",
+        "泰国",
+        "越南",
+        "菲律宾"
+      ],
+      "definition": "东南亚各国的餐饮市场、品牌扩张与经营变化。"
     },
     {
       "slug": "india",
       "name": "印度",
       "group": "genre",
-      "tags": ["印度"],
-      "definition": "印度餐饮市场：连锁扩张、外卖平台与消费变化。",
-      "related": ["southeast-asia", "middle-east", "delivery"]
+      "tags": [
+        "印度"
+      ],
+      "definition": "印度餐饮市场：连锁扩张、外卖平台与消费变化。"
     },
     {
       "slug": "middle-east",
       "name": "中东",
       "group": "genre",
-      "tags": ["中东"],
-      "definition": "中东餐饮市场：品牌进入、经济数据与经营。",
-      "related": ["halal", "india", "going-global"]
+      "tags": [
+        "中东"
+      ],
+      "definition": "中东餐饮市场：品牌进入、经济数据与经营。"
     },
     {
       "slug": "australia",
       "name": "澳洲",
       "group": "genre",
-      "tags": ["澳洲"],
-      "definition": "澳洲与新西兰的餐饮业：成本、用工与经营。",
-      "related": ["uk-europe", "usa", "people"]
+      "tags": [
+        "澳洲"
+      ],
+      "definition": "澳洲与新西兰的餐饮业：成本、用工与经营。"
     },
     {
       "slug": "usa",
       "name": "美国",
       "group": "genre",
-      "tags": ["美国"],
-      "definition": "美国餐饮业：独立餐厅与小店的经营做法、成本与用工，连锁的价格战。",
-      "related": ["quick-service", "canada", "latin-america"]
+      "tags": [
+        "美国"
+      ],
+      "definition": "美国餐饮业：独立餐厅与小店的经营做法、成本与用工，连锁的价格战。"
     },
     {
       "slug": "canada",
       "name": "加拿大",
       "group": "genre",
-      "tags": ["加拿大"],
-      "definition": "加拿大餐饮业的成本、客流与政策。",
-      "related": ["usa", "people", "cost-profit"]
+      "tags": [
+        "加拿大"
+      ],
+      "definition": "加拿大餐饮业的成本、客流与政策。"
     },
     {
       "slug": "uk-europe",
       "name": "英国与欧洲",
       "group": "genre",
-      "tags": ["英国", "欧洲"],
-      "definition": "英国和欧洲的餐饮业：独立餐厅与咖啡馆的经营做法、成本与税负。",
-      "related": ["usa", "australia", "bars"]
+      "tags": [
+        "英国",
+        "欧洲"
+      ],
+      "definition": "英国和欧洲的餐饮业：独立餐厅与咖啡馆的经营做法、成本与税负。"
     },
     {
       "slug": "latin-america",
       "name": "拉美",
       "group": "genre",
-      "tags": ["拉美"],
-      "definition": "拉丁美洲的餐饮市场与品牌。",
-      "related": ["usa", "going-global", "delivery"]
+      "tags": [
+        "拉美"
+      ],
+      "definition": "拉丁美洲的餐饮市场与品牌。"
     }
   ]
 }

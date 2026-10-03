@@ -16,7 +16,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -43,7 +42,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -72,7 +70,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -102,7 +99,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 60,
@@ -125,7 +121,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -153,7 +148,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 60,
@@ -181,7 +175,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -204,7 +197,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -227,7 +219,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 60,
@@ -257,7 +248,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 60,
@@ -280,7 +270,6 @@
         }
       },
       "tier": "T1",
-      "first_party": true,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -303,7 +292,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -326,7 +314,6 @@
         }
       },
       "tier": "T1",
-      "first_party": true,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -352,7 +339,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -380,7 +366,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -403,7 +388,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -426,7 +410,6 @@
         }
       },
       "tier": "T1_5",
-      "first_party": true,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -450,7 +433,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -474,7 +456,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -498,7 +479,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -522,7 +502,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -546,7 +525,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -570,7 +548,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -594,7 +571,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -618,7 +594,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -642,7 +617,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -666,7 +640,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -690,7 +663,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -714,7 +686,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -738,7 +709,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -762,7 +732,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -786,7 +755,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -810,7 +778,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -834,7 +801,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -858,7 +824,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -882,7 +847,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -906,7 +870,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -930,7 +893,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -954,7 +916,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -977,7 +938,6 @@
         }
       },
       "tier": "T1_5",
-      "first_party": true,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 180,
@@ -1000,7 +960,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1023,7 +982,6 @@
         }
       },
       "tier": "T1_5",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1046,7 +1004,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1069,7 +1026,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1093,7 +1049,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1117,7 +1072,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1143,7 +1097,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1167,7 +1120,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1191,7 +1143,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1215,7 +1166,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1239,7 +1189,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1263,7 +1212,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1287,7 +1235,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1311,7 +1258,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1335,7 +1281,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1359,7 +1304,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1383,7 +1327,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1407,7 +1350,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1431,7 +1373,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1455,7 +1396,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1479,7 +1419,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1503,7 +1442,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1527,7 +1465,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1551,7 +1488,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1575,7 +1511,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1599,7 +1534,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1623,7 +1557,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1647,7 +1580,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 240,
@@ -1681,7 +1613,6 @@
         ]
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1715,7 +1646,6 @@
         ]
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1738,7 +1668,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,
@@ -1774,7 +1703,6 @@
         }
       },
       "tier": "T2",
-      "first_party": false,
       "owner_entity_id": null,
       "participation_mode": "editorial",
       "interval_minutes": 120,

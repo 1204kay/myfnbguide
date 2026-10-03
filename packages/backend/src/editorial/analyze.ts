@@ -59,13 +59,10 @@ export const UNDERSTAND_FLOOR = SELECTION.understandFloor;
 
 /**
  * Call parameters per score model. The GLM scorer runs at temperature 1 with high reasoning (the model
- * registry adds top_p and thinking) and up to 180 s per call. DeepSeek Flash with thinking reasons for about
- * 600–5,000 tokens on the score prompt, sometimes more: the default 1,024 (+4,000 for -think models) cut an
- * answer off before its JSON.
+ * registry adds top_p and thinking) and up to 180 s per call.
  */
 const SCORE_CALL: Record<string, { temperature: number; maxTokens: number; timeoutMs: number }> = {
   "glm-5.3-flash-selection": { temperature: 1, maxTokens: 65_536, timeoutMs: 180_000 },
-  "deepseek-flash-think": { temperature: 0.2, maxTokens: 12_000, timeoutMs: 180_000 },
 };
 const scoreCall = (model: string) => SCORE_CALL[model] ?? { temperature: 0.2, maxTokens: 1024, timeoutMs: 120_000 };
 

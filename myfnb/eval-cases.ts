@@ -2,7 +2,7 @@
 // terminal: every case's average score in the order of myfnb/gold-labels.tsv, 20 to a line, which Claude
 // decodes against the labels kept in the repo. B = blocked by the prefilter, U<score> = no usable Chinese
 // copy, E = the case failed (often the llm budget: run the same command again later), - = no score.
-// --long prints one line per case and what every threshold would select instead.
+// --long prints one line per case and what every threshold would select instead; --sweep only the latter (30–60).
 // Run in the same container right after the eval (.data is not in the image; the app user cannot create it under
 // /app, hence -u root):
 //   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 > /dev/null && node myfnb/eval-cases.ts"
@@ -28,6 +28,15 @@ for (const [model, r] of Object.entries<any>(report.models)) {
     : c.score === null ? "-" : c.relevance === "unknown" ? `U${c.score}` : String(c.score);
   const errors = cases.filter((c) => c.error);
   console.log(`# ${path.basename(newest)} · ${model} · ${report.meta.promptVersion} · ${cases.length} cases · errors ${errors.length}${errors[0] ? ` (${errors[0].error!.slice(0, 60)})` : ""}`);
+  // --sweep: only what each threshold around ours would select, by the user's label (short enough for two models).
+  if (process.argv.includes("--sweep")) {
+    for (let t = 30; t <= 60; t += 2) {
+      const n = { select: 0, either: 0, reject: 0 };
+      for (const c of cases) if (c.relevance === "pass" && c.score !== null && c.score >= t) n[c.gold]++;
+      console.log(`t=${t} 必看 ${n.select} 可看 ${n.either} 不看 ${n.reject}`);
+    }
+    continue;
+  }
   if (process.argv.includes("--long")) {
     for (const c of [...cases].sort((a, b) => (b.score ?? -1) - (a.score ?? -1))) console.log(`${code(c)} ${LABEL[c.gold]} ${c.caseId}`);
     for (let t = 40; t <= 80; t += 2) {

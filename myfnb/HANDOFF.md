@@ -450,6 +450,11 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
   ```bash
   cd /opt/myfnbguide && until sudo docker compose exec -T worker grep -q "z.record" myfnb/debug-score.ts 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T db psql -U aihot -d aihot -c "UPDATE sources SET enabled = false, health = 'paused', updated_at = now() WHERE id = 'rss-italia-a-tavola' AND enabled RETURNING id AS paused;" && sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"; cd ~
   ```
+- ✅ 用户跑了上面这条：Italia a Tavola 已暂停。**评分调试第二次仍没拿到五轴**：20 条只回了 `{"attentionScore": N}`，有 7 条是 0。原因：评分提示词三处写死「只能输出 attentionScore」（输出要求、最后检查、口径校正的「单字段输出契约」），送去的材料第一行也写「只输出 attentionScore」，末尾追加的调试要求跟它们矛盾，模型照原规则只回分数。这一轮的分数不能用。已修（`f416155`）：调试时把这几句换成调试格式（逐句核对原文，提示词措辞变了脚本会直接报错），材料第一行也换掉；每条先按正式提示词评两次（「现评」），能看出播客改用订阅简介以后，这些必看现在的正式分数。本机核对 6 处替换都找到原句、没有残留；WSL 上用假的模型服务跑过（每条 2 次正式评分 + 1 次调试）。约 60 次调用。
+- **下一条给用户的命令**（等 `f416155` 部署好会自己往下走；输出复制文字贴回来）：
+  ```bash
+  cd /opt/myfnbguide && until sudo docker compose exec -T worker grep -q "debug-score-2" myfnb/debug-score.ts 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"; cd ~
+  ```
 - 还没做：用户看一周真实日报（§9 第 4 项）；评分调试的结果（上面这条命令）。
 
 **10/3 上午（上一会话，部分已被上面一段接手）**：

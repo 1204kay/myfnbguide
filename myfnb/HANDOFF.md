@@ -6,7 +6,7 @@
 >
 > 接手的 Claude：读完本文，再读根目录的 `AGENTS.md` 和 `docs/customize.md`，然后从 **§9 下一步** 开始。
 >
-> **当前状态（快照 2026-10-03 早上）**：**最新进展先看 §9 开头「10/3 早上」一段**：门槛 40 已上线，上游已合并，调用额度临时调高的命令已交给用户。以下是 10/3 凌晨的快照。
+> **当前状态（快照 2026-10-03 上午）**：**最新进展先看 §9 开头「10/3 早上」一段**：门槛 40 已上线，上游已合并；给作者提了 3 个 PR（#83–#85）；没有订阅源的小店网站查完，接了 4 个（来源 73）；两条服务器命令（调高调用额度；重判与评分调试）已交给用户，用户在外面，回家再跑。以下是 10/3 凌晨的快照。
 >
 > 10/3 凌晨：新方向的第一步已做完——文案、日报六节、预筛与评分标准、推荐理由的写法都改成站在一家小店里面看（`b400719`）；30 个品牌主题页已删（§5.2）。**三轮标注都做完了**：第二轮 113 条、第三轮 106 条（必看 18、可看 55、不看 33）。不看的线 Claude 已经对齐（第三轮判不看 33 条，27 条一致）；必看与可看的线用户自己在相近的题目上也两边都判，不再靠改措辞去追（§2.2）。评分标准与预筛按第一次评测和第三轮又改了两处（§5.3）；gold 333 条（必看 49）。来源 72 个：接回 10 个小店老板播客、停用开店笔记和红餐网·红厨（§9 第 3 项）；中文来源又查了一轮，没有能接的（§9 第 3 项第四轮）；现有来源每天约 2.4 条必看，免费、合规的路基本量完，「每天 5 条必看」先不追（§5.4）。第一次评测 10/2 晚跑了，第一行确认服务器用的是新标准，但 277 条里 243 条撞上每分钟调用上限（§9 第 2b 项）。**接下来**：用户在服务器上跑一条命令（恢复 9 个播客、停用开店笔记、带自动重试的评测 v3、规则 6 查询）→ Claude 看错例、定门槛 → 用户看一周真实日报（§9 第 4 项）。
 
@@ -184,7 +184,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 - **日报导语**（`report-daily-lead.md`）：先写一家小店最用得上的（能照着做的方法、避坑的教训、小店用得起的工具、会砸到小店生意的变化）。
 - **门槛** `selection.ts` 10/3 按评测 v3 定为三级都是 40，`understandFloor`（没入选但也用精选写法的分数）从 50 降到 30，`3f3f167` 上线（§9 开头）；原来是作者的 T1 60 / T1_5 65 / T2 76（作者规则：先改挑选标准，最后才动门槛）。新标准下分级的本意变了：协会（T1）多发本国规定与游说，现在多是不看；必看多来自媒体和播客（T2），所以三级用同一个门槛。再挪门槛不用改测试（§5.5）。
 
-### 5.4 信源（快照 2026-10-03 凌晨：72 个，第三轮后接回 10 个播客、停用开店笔记与红餐网·红厨，见 §9 第 3 项；以下 2026-10-02 晚：64 个；10/2 下午停用 547 个、傍晚按小店标准再停用 7 个、晚上第十七、十八批加 14 个，见 §9 第 3 项与 §9「记录」；全部只放摘要和原文链接；下表是加入时的批次记录）
+### 5.4 信源（快照 2026-10-03 上午：73 个：10/3 上午停用 3 个（Horecanews、식품외식경제、Daily Coffee News，剩 69）、第二十一批加 4 个，见 §9 开头；2026-10-03 凌晨：72 个，第三轮后接回 10 个播客、停用开店笔记与红餐网·红厨，见 §9 第 3 项；以下 2026-10-02 晚：64 个；10/2 下午停用 547 个、傍晚按小店标准再停用 7 个、晚上第十七、十八批加 14 个，见 §9 第 3 项与 §9「记录」；全部只放摘要和原文链接；下表是加入时的批次记录）
 
 清单以 `industry/sources.json` 为准；每个看过的候选（接或不接、为什么）在 `myfnb/sources-ledger.tsv`，一行一个，按批次记，下次不用重查。每天条数是试抓时的实测（快照，过滤后）。
 
@@ -207,6 +207,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 10/2 · 十四 | 8 | 1 | 25 | 没有订阅的网站：식품저널有订阅，接入；ET HospitalityWorld、美国餐馆协会、Hostelería de España 条款不许，창업경영신문 robots 全站禁止，sidae.com 已是综合新闻社，Foodizz 是卖课网站 |
 | 10/2 · 十七（小店标准） | 71 | 4 | 约 1 | 中文小店来源（播客、公众号在搜狐号百家号网易号头条的转载）与各国小店经营（咖啡店、面包店、独立餐厅的播客与收银系统商博客）；最合适的几个卡在规则上（§9 第 3 项 3b） |
 | 10/2 · 十八（小店标准；规则 5 改后重看） | 46 | 10 | 约 1.4 | 日本、韩国、东南亚、拉美写给小店老板的平台与收银系统商媒体（30 个，多数没有订阅、停更或卡在条款上）；之前因规则 5 被拒的 16 个按新规则重看，接 10 个小店与独立餐厅老板的播客 |
+| 10/3 · 二十一（没有订阅源的小店网站） | 28 | 4 | 约 1 | 前几批记成「找不到订阅源」的系统商博客与日韩、东南亚、拉美小店媒体：接ぐるなび通信两个栏目、店舗流通ネット 专栏、巴西 Goomer；5 个卡在条款，其余停更、写给连锁或泛内容（§9 开头） |
 
 快照 2026-10-02（`f6263ab`，601 个全量试抓，每天条数 = 过去 7 天的平均，过滤后）：PR TIMES 企业 426 个合计每天约 63 条；播客 100 个约 12 条；欧美新闻稿平台 13 个约 2 条；媒体、协会和其他 62 个约 99 条；**合计约 177 条**（红餐网各栏是网页列表，没算进去，线上实际每天多几十条）。**259 个信源过去 7 天一条都没有。**分级：协会 T1；品牌新闻稿与平台、服务商 T1_5（新品促销多，校准前门槛不放低）；媒体与播客 T2。**所有信源都要打开 `_aihot.initialBackfillOnly`**，首次回补 2–3 条：框架默认在首次导入之后把订阅里剩下的旧条目全部补进来、逐条走模型（作者的测试就是这么写的），PR TIMES 企业订阅一家约 200 条、播客几百集，第二次采集会把整个存档送进模型。打开后只收加入时间往前 48 小时以内发布的条目（10/2 加的配置，§5.5）。
 
@@ -232,7 +233,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 0. 先判它能不能给小店出必看：近两周标题按 §2.2 判。写给大连锁和投资者的媒体、企业新闻稿平台、协会（多是本国规定与游说）只出可看和不看，不用往下查（10/2：PR TIMES 424 家日本企业两周 0 条必看；傍晚按小店标准，GlobeNewswire 餐饮栏、澳洲餐饮协会也是 0）。
 1. 找订阅：给候选网站找 RSS（页面里的 `<link rel=alternate>`，再试 `/feed/`、`/rss`、`/rss.xml` 等常见路径）。日本企业用 PR TIMES 的企业订阅 `https://prtimes.jp/companyrdf.php?company_id=<编号>`，编号从 PR TIMES 搜索页按企业名取（要核对企业名，10/2 搜「日本マクドナルド」得到的是麦当劳之家慈善基金会）。
 2. 规则 1、2、5 和 TDMRep：`node myfnb/check-sources.mjs <候选.json>`（10/2 晚起按新的规则 5 判，并查跳转后的主机）（文件格式与 `sources.json` 相同）。**等它跑完再读结果**（10/2 有一次只等了 2 秒就读，漏掉两个 robots 读不到的播客，提交后全量复查才发现）；提交前对整份 `sources.json` 全量跑一遍。偶发的「robots.txt unreadable (no answer)」先隔几分钟重跑（红餐网 10/2 就是网络抖动，重跑通过），连续两次才算规则 5。
-3. 试抓与相关性：`node myfnb/vet-sources.ts <候选.json> --titles 10`，用框架自己的采集代码抓，按来源自己的过滤算每天几条、列最新标题；混杂的订阅先统计栏目名，再用 `allowCategories` / `denyCategories` 只收餐饮栏。
+3. 试抓与相关性：`node myfnb/vet-sources.ts <候选.json> --titles 10`，用框架自己的采集代码抓，按来源自己的过滤算每天几条、列最新标题（它只读列表；网页列表要进详情页取日期、标题时，再用 `node myfnb/sourcing/detail-check.ts <候选.json> <id> <文章网址…>` 试详情页）；混杂的订阅先统计栏目名，再用 `allowCategories` / `denyCategories` 只收餐饮栏。
 4. 规则 3：找到条款页，**全文**按禁止类关键词抽句子（scrape、crawl、robot、spider、automated、data mining、text and data、machine learning、personal non-commercial、internal use，以及各语言的对应词）逐句读。10/2 第一次只看前 12 句，漏掉了 5 个禁止抓取的，重查后撤下；所以必须全文。没有条款页的不算违规。
 5. 规则 6：部署后约 30 分钟（新来源都抓过一轮），用户在服务器上跑下面这一条：最近一次返回 403、405 的直接暂停（列在 `paused` 下），其余不正常的列出来给 Claude 判（429 限流、500 这类临时错误先不动；连续几次读不到订阅文件的也暂停），最后数各状态的个数（10/2 起合成一条，原来要用户跑两趟；在 WSL 测试库上验证过只停 403/405）。暂停的再从 `sources.json` 删掉、记进账本：
 
@@ -292,11 +293,11 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 | 文件 | 改了什么 | 对应 PR |
 |---|---|---|
-| `packages/backend/src/sources/collect.ts`、`sources/config-keys.ts`、`tests/core-collection-tail.test.ts` | 可选配置 `_aihot.initialBackfillOnly`：首次导入之后只收加入时间往前 48 小时以内发布的条目，长订阅（企业新闻室、播客存档）不会在第二次采集时把整个存档送进模型；默认不变（2026-10-02） | 可提 PR（§7.2 第 9 项） |
+| `packages/backend/src/sources/collect.ts`、`sources/config-keys.ts`、`tests/core-collection-tail.test.ts`、`docs/sources.md` | 可选配置 `_aihot.initialBackfillOnly`：首次导入之后只收加入时间往前 48 小时以内发布的条目，长订阅（企业新闻室、播客存档）不会在第二次采集时把整个存档送进模型；默认不变（2026-10-02） | 已提 #85（§7.2 第 9 项） |
 | `packages/backend/src/sources/rss.ts`、`tests/rss-podcast-link.test.ts` | RSS 条目没有网页链接、guid 又不是网址时，链接改用单集的音频或视频文件，身份仍按 guid（2026-10-02 深夜） | 已提 PR #78（§7.2 第 10 项） |
-| `packages/backend/src/sources/rss.ts`、`tests/rss-podcast-link.test.ts` | 声明 `summaryIsBody` 的 RSS 来源，订阅里的摘要不论长短都当正文（原来要超过 280 字，短的去抓单集网页；与 `json_list` 一致）（2026-10-03） | PR 分支已备好，§7.2 第 11 项 |
-| `tests/analyze.test.ts`、`tests/selection-eval-runtime.test.ts` | 示例分数按配置里的门槛和 `understandFloor` 推出来，评测测试用高于各级门槛的分数、另加一条不参与精选的分级；行业改门槛不用改测试（2026-10-03） | 可提 PR（§7.2 第 12 项） |
-| `tests/core-processing-recovery.test.ts`、`tests/core-source-promotion.test.ts`（上游 `8d5a39b` 新加）、`tests/default-model.test.ts`、`tests/analyze-shutdown.test.ts` | 按「宽召回」认预筛提示词（原来认「宽召回的AI相关性预筛」，换了行业就认不出）；分类、内容类型、标签的示例换成餐饮行业（2026-10-02） | §7.2 第 3 项，可提 PR |
+| `packages/backend/src/sources/rss.ts`、`tests/rss-summary-body.test.ts` | 声明 `summaryIsBody` 的 RSS 来源，订阅里的摘要不论长短都当正文（原来要超过 280 字，短的去抓单集网页；与 `json_list` 一致）（2026-10-03） | 已提 #83（§7.2 第 11 项；测试在 `tests/rss-summary-body.test.ts`） |
+| `tests/analyze.test.ts`、`tests/selection-eval-runtime.test.ts` | 示例分数按配置里的门槛和 `understandFloor` 推出来，评测测试的分数等于 T1 门槛、T2 选不选按配置算，另加一条不参与精选的分级；行业改门槛不用改测试（2026-10-03） | 已提 #84（§7.2 第 12 项） |
+| `tests/core-processing-recovery.test.ts`、`tests/core-source-promotion.test.ts`（上游 `8d5a39b` 新加）、`tests/default-model.test.ts`、`tests/analyze-shutdown.test.ts` | 按「宽召回」认预筛提示词（原来认「宽召回的AI相关性预筛」，换了行业就认不出）；分类、内容类型、标签的示例换成餐饮行业（2026-10-02） | §7.2 第 3 项，认提示词那一句已提 #84；示例换成餐饮是我们自己的 |
 
 10/3 合并上游 `3343fe2` 后，原来表里 PR 1–4 的改动（页面文案从 `industry/` 读、冒烟认转义站名、CI 比对信源数、Windows 上网站能起来）与作者的写法逐字一致，不再列。10/2 合并上游 `8d5a39b` 后：报头 `MOTTO` 和补发空刊两处已与作者的写法一致，`compose.ts` 取作者的版本，我们测旧行为的 `tests/report-catchup.test.ts` 删掉（作者的 `reports-oss-recovery` 测试覆盖新行为：没有精选的日报不写入、失败留在运行记录里）。`myfnb/` 下的文件是我们自己的，不算改核心。
 
@@ -372,16 +373,16 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 1. `sources/web-list.ts` 的日期解析不认马来文、印尼文月份（我们已不用马来文来源，只作记录）。
 2. 读者看得到的文案写死「北京时间」（我们是中文读者，不需要改，只作记录）。
-3. 测试靠「宽召回的AI相关性预筛」这几个字认出预筛提示词，换了行业就认不出；只认「宽召回」即可（作者的 `default-model` 测试就是这样写的）。10/2 合并 `8d5a39b` 后又多了两个这样的测试（`core-processing-recovery`、`core-source-promotion`），我们 fork 里四个都改了。**可以提 PR**：只改认提示词的那一句，跟行业无关；示例分类和标签的替换是我们行业自己的事，不放进 PR。
+3. 测试靠「宽召回的AI相关性预筛」这几个字认出预筛提示词，换了行业就认不出；只认「宽召回」即可（作者的 `default-model` 测试就是这样写的）。10/2 合并 `8d5a39b` 后又多了两个这样的测试（`core-processing-recovery`、`core-source-promotion`），我们 fork 里四个都改了。✅ 10/3 和第 12 项合成一个 PR 提交：[#84](https://github.com/KKKKhazix/AIHOT/pull/84)（只改认提示词的那一句；示例分类和标签的替换是我们行业自己的事，没放进 PR）。
 4. 框架不解析 PDF。
 5. 采集不读 robots.txt；我们用 `check-sources.mjs` 每月人工复查。
 6. `tests/selection-eval-runtime.test.ts:101` 连按秒取整的 `wallSeconds` 也比，跨秒时偶尔失败（10/1 CI 遇到一次，重跑即过）。
 7. **补发会给新站补出空刊**：`catchUpReports` 在没有任何日报时补最近 7 天，周报月报也补，内容为空也写进去。我们已修（§5.5）。10/1 用户同意提 PR，但作者当天的 `8d5a39b` 已经改掉了（没有刊时只补最近一期；没有精选的日报不写入），**不再提**。
 8. **日报报头写死「人工智能」**（`format.ts` 的 `MOTTO`）。我们已修（§5.5）；作者的 `8d5a39b` 也改成按行业词显示，写法与我们的相同，**不再提**。
-9. **长订阅在第二次采集时把整个存档送进模型**：首次导入只取 `initialBackfillLimit` 条，之后的普通采集把订阅里剩下的旧条目全部补进来（作为历史，不进今天，但照样预筛、评分、写摘要）。作者的信源订阅短，代价小；企业新闻室、播客一订阅就是几百条。我们加了可选的 `initialBackfillOnly`（§5.5），默认不变、作者的测试不动。**可以提 PR**，说明里写清动机和数字（10/2：PR TIMES 61 家约 1.2 万条旧新闻稿）。
+9. **长订阅在第二次采集时把整个存档送进模型**：首次导入只取 `initialBackfillLimit` 条，之后的普通采集把订阅里剩下的旧条目全部补进来（作为历史，不进今天，但照样预筛、评分、写摘要）。作者的信源订阅短，代价小；企业新闻室、播客一订阅就是几百条。我们加了可选的 `initialBackfillOnly`（§5.5），默认不变、作者的测试不动。✅ 10/3 已提 [#85](https://github.com/KKKKhazix/AIHOT/pull/85)，动机写的是 10/3 实测：Ristorazione Italiana 的订阅一次列出 400 条、最早到 15 个月前，一天里这个来源 183 次分析有 178 次花在这些旧条目上；`docs/sources.md` 同时补了首次导入的数量与时间限制。
 10. **播客单集没有网页链接时，「原文」是坏链接**：RSS 条目没有 `<link>`、guid 又不是网址时，`sources/rss.ts` 拿 guid 当网址（`Buzzsprout-19886508`、`gid://art19-…`）。我们已修（§5.5，10/2 深夜）：guid 是网址就用 guid，否则用单集的音频或视频文件地址；条目身份仍按 guid 算（与 `identityKeyFor` 对非网址的算法相同），已经收进来的不会重收，主机换媒体文件地址也不会多出新条目。跟行业无关，10/2 深夜用户同意后已提 [#78](https://github.com/KKKKhazix/AIHOT/pull/78)（分支 `pr/rss-episode-media-link`，基于上游 `3343fe2`；在 Linux 上对上游代码跑过：类型检查、后端 569 项、网站 31 项、冒烟全部通过。WSL 的 `~/checks.sh` 原来 PATH 里没有 `pg_dump`，上游 #63 新加的 11 个备份测试会因此误报失败，已补上）。
-11. **声明 `summaryIsBody` 的 RSS 来源，短摘要仍被当成摘要**：`feedText` 要正文超过 280 字才算正文，短的就去抓单集网页；播客的单集网页是播放器，Spotify 托管的抓到的是整个节目的介绍和课程广告（每集一样），每集都按那段文字评分（我们的日本播客 6 条用户必看全部 8–12 分）。`json_list` 本来就是声明了就不论长短。改法 3 行：声明了 `summaryIsBody` 就不看长度；没声明的不变。PR 分支 `pr/rss-summary-is-body`（基于上游 `3343fe2`，一个提交 `65a0893`，新测试 `tests/rss-summary-body.test.ts`）已推到我们的 fork、**还没开 PR，等用户点头**（对外发布）。在 Linux 上按作者 CI 的顺序（迁移、`seed.ts --topics-only`、测试）跑过：类型检查、后端 567/567、网站 31/31、冒烟全部通过。注意：WSL 的 `~/checks.sh` 跑完整 `seed.ts`，在作者的 AI 示例配置下会导入模型排行榜目录，`leaderboard-filter-pages` 一个测试因此撞唯一键失败，与改动无关（作者 CI 只导主题，不会撞）。
-12. **测试的示例分数写死了作者的门槛**：`tests/analyze.test.ts` 断言 T1 门槛是 60、各条示例分数按 60/50 写，`tests/selection-eval-runtime.test.ts` 靠 T1 60、T2 76 之间的 70 分区分两级。别的行业一改门槛（`docs/customize.md` 第 5 步要求重新校准）就有 5 个测试失败。我们改成按配置推分数（代入作者的 60/50 与原数字相同，两种配置下都通过，§5.5）。**可以提 PR**，跟行业无关。
+11. **声明 `summaryIsBody` 的 RSS 来源，短摘要仍被当成摘要**：`feedText` 要正文超过 280 字才算正文，短的就去抓单集网页；播客的单集网页是播放器，Spotify 托管的抓到的是整个节目的介绍和课程广告（每集一样），每集都按那段文字评分（我们的日本播客 6 条用户必看全部 8–12 分）。`json_list` 本来就是声明了就不论长短。改法 3 行：声明了 `summaryIsBody` 就不看长度；没声明的不变。PR 分支 `pr/rss-summary-is-body`（基于上游 `3343fe2`，一个提交 `65a0893`，新测试 `tests/rss-summary-body.test.ts`）已推到我们的 fork；✅ 10/3 用户交给 Claude 定，已提 [#83](https://github.com/KKKKhazix/AIHOT/pull/83)。在 Linux 上按作者 CI 的顺序（迁移、`seed.ts --topics-only`、测试）跑过：类型检查、后端 567/567、网站 31/31、冒烟全部通过。注意：WSL 的 `~/checks.sh` 跑完整 `seed.ts`，在作者的 AI 示例配置下会导入模型排行榜目录，`leaderboard-filter-pages` 一个测试因此撞唯一键失败，与改动无关（作者 CI 只导主题，不会撞）。
+12. **测试的示例分数写死了作者的门槛**：`tests/analyze.test.ts` 断言 T1 门槛是 60、各条示例分数按 60/50 写，`tests/selection-eval-runtime.test.ts` 靠 T1 60、T2 76 之间的 70 分区分两级。别的行业一改门槛（`docs/customize.md` 第 5 步要求重新校准）就有 5 个测试失败。我们改成按配置推分数（代入作者的 60/50 与原数字相同，两种配置下都通过，§5.5）。✅ 10/3 已提 [#84](https://github.com/KKKKhazix/AIHOT/pull/84)（和第 3 项合并；评测测试改成「分数正好等于 T1 门槛，T2 选不选按配置算」，作者的 60/76 下仍测到两级门槛不同）。
 
 ### 7.3 多语言
 
@@ -410,26 +411,29 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 
 **10/3 早上（最新，接手先读这段）**：
 - ✅ **核对**：`4dc16e9` 的 GitHub 检查通过、已部署（网站 69 个信源）。用户 10/3 早上跑了 `sources-2026-10-03.sql`：停用 4 个、114 个播客改读简介、开着 69 个、跳过 177 条排队的旧条目、115 个来源补上只回补 2–3 条。「删除排队任务 0」是正常的：调用额度用满时，框架把条目改回等待、任务本身就结束了（`jobs/content.ts` 的 `afterFailure`），队列里本来就没有这些条目的任务，跳过已经生效。
-- ✅ **门槛 40 上线**（`3f3f167`）：三级都是 40，`understandFloor` 50 → 30（作者是 T1 60 / 50，同样低 10 分；30–40 分多是差一点入选的可看和必看，在「全部动态」里也带推荐理由；不看的中位数 15，大多仍走翻译）。5 个失败的测试**没有用「三级留一点假的差别」去凑**（那是为了测试改产品）：`tests/analyze.test.ts` 的示例分数改成按配置里的 T1 门槛和 `understandFloor` 推出来（代入作者的 60/50 与原数字完全相同），`tests/selection-eval-runtime.test.ts` 用高于各级门槛的 80 分、另加一条不参与精选的分级 `EXCLUDE_MP`，「每条按自己分级的门槛判」照样测得到。以后再挪门槛不用改测试。四项检查通过；另把门槛临时改回作者的数字，这两个文件 11 项也全过。门槛只在分析时判，10/2 22:51 以前已经按 76 判过的条目不会重判。
+- ✅ **门槛 40 上线**（`3f3f167`）：三级都是 40，`understandFloor` 50 → 30（作者是 T1 60 / 50，同样低 10 分；30–40 分多是差一点入选的可看和必看，在「全部动态」里也带推荐理由；不看的中位数 15，大多仍走翻译）。5 个失败的测试**没有用「三级留一点假的差别」去凑**（那是为了测试改产品）：`tests/analyze.test.ts` 的示例分数改成按配置里的 T1 门槛和 `understandFloor` 推出来（代入作者的 60/50 与原数字完全相同），`tests/selection-eval-runtime.test.ts` 让模型给出正好等于 T1 门槛的分数，T2 选不选按配置算（作者的 60/76 下仍测到两级门槛不同），另加一条不参与精选的分级 `EXCLUDE_MP`。以后再挪门槛不用改测试。四项检查通过；另把门槛临时改回作者的数字，这两个文件 11 项也全过。门槛只在分析时判，10/2 22:51 以前已经按 76 判过的条目不会重判。
 - **额度（最急）**：公开接口最新一条停在 10/2 22:51，到 10/3 06:20 七个半小时没有新条目完成分析。每天上限按过去 24 小时滚动算（`receipts.ts` 只数 `origin = 'live'`，评测也算在内），昨天下午到晚上的回补把窗口占满，要到今天下午才陆续让出来，今天 08:00 的日报会是空的。**已发给用户一条命令**（下面），它先等运行中的 worker 换上门槛 40 的版本（不然积压的条目会按 76 判掉），再把 `llm` 每天上限临时调到 6000（预算每次调用都从数据库读，改了立刻生效），并打印过去 24 小时每小时的调用数和两天内条目的处理状态。多花约几块人民币（§11）。**等用户贴回输出**：看每小时的分布，确认积压在消化。
   ```bash
   cd /opt/myfnbguide && until sudo docker compose exec -T worker grep -q "T1: 40" industry/selection.ts 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T db psql -U aihot -d aihot -c "UPDATE budgets SET per_day = 6000, updated_at = now() WHERE service = 'llm' RETURNING service, per_minute, per_hour, per_day;" -c "SELECT to_char(date_trunc('hour', started_at) AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24') AS hour, count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' GROUP BY 1 ORDER BY 1;" -c "SELECT processing_state, count(*) FILTER (WHERE NOT backfill) AS live, count(*) FILTER (WHERE backfill) AS backfill FROM articles WHERE discovered_at > now() - interval '2 days' GROUP BY 1 ORDER BY 1;"; cd ~
   ```
 - ✅ **2c 合并上游**（`7725b30`，到作者的 `3343fe2`，5 个提交）：冲突 2 处取作者的写法（`scripts/smoke.ts` 站名转义多认引号、`routes/topics.tsx` 去掉分组类型断言）；我们 PR 1–4 的改动现在与作者逐字一致（§5.5）；我们的 `initialBackfillOnly`、播客链接、`summaryIsBody` 都保留。四项检查：后端 571/571、网站 31/31、冒烟全过、15 个页面无残留。**迁移 0041 绑定管理员会话：部署后后台要重新登录一次**（告诉用户）。
-- **给作者的 PR**：`summaryIsBody` 那处改动已在作者最新 main 上做成分支 `pr/rss-summary-is-body` 并推到我们的 fork，检查按作者 CI 的顺序跑过（§7.2 第 11 项）。**开 PR 是对外发布，等用户点头**；点头后用 `gh pr create --repo KKKKhazix/AIHOT --head 1204kay:pr/rss-summary-is-body`，正文照 #78 的三节写。§7.2 第 12 项（测试别写死门槛）也可以提，同样要用户点头。
+- ✅ **给作者的 PR**（10/3 上午，用户在外面跑不了命令，PR 交给 Claude 定：「pr你决定」）：开了三个，都基于作者最新 `3343fe2`，按作者 CI 的顺序（迁移、`seed.ts --topics-only`、后端测试）跑过：[#83](https://github.com/KKKKhazix/AIHOT/pull/83) `summaryIsBody` 不论长短（§7.2 第 11 项，后端 567/567）；[#84](https://github.com/KKKKhazix/AIHOT/pull/84) 测试不再写死示例行业的门槛和预筛措辞（§7.2 第 3、12 项合成一个，后端 566/566；换成三级 40、`understandFloor` 30、预筛去掉「AI」以后这 5 个测试文件 30/30 通过，同样的改动放在作者 main 上 11 过、7 败、12 超时）；[#85](https://github.com/KKKKhazix/AIHOT/pull/85) `initialBackfillOnly`（§7.2 第 9 项，后端 567/567，`docs/sources.md` 补了首次导入的限制和这个选项）。作者仓库对外部 PR 的检查要作者批准才跑，所以 PR 页面一开始显示 0 项检查。我们仓库里对应的测试和文档已改成与 PR 逐字一致（`summaryIsBody` 的测试挪到 `tests/rss-summary-body.test.ts`，`tests/rss-podcast-link.test.ts` 恢复成 #78 的版本），作者合并后同步不会冲突。
 - **访谈类必看偏低（还没查清）**：写了 `myfnb/debug-score.ts`：从最新一次评测（SelectBench 表里存着每条的分数）挑出用户必看、低于 40、没被预筛挡掉的条目，用同一套评分提示词、末尾加一段「调试输出」，让模型列出类型、五轴、用到的压分规则和一句理由，一条一行（每条一次调用，约 16 次）。WSL 测试库上空跑过（模型调用关闭，挑条目和流程都对）。同时 `build-gold.ts` 改成：来源声明了 `summaryIsBody` 的，优先用订阅里的单集简介（原来先用数据库里的正文，而那批播客入库时存的是抓错的整档节目介绍，照旧重建 gold 等于评测还按错的正文评）。**下一条给用户的命令**（第一条跑完就可以粘贴，它会等这一版部署好；输出复制文字贴回来）。前半是**重判**：门槛只在分析时判，10/2 白天按 76 判掉、平均分已到 40 的条目（例如 FULL COMP「把积分奖励改成俱乐部」60 分、Fresh Cup「冷萃浓缩液」60 分）不改就永远不进日报。`myfnb/rejudge-2026-10-03.sql` 把最近两天这类条目（还开着的来源、不是回补）的处理状态改回 `new`，worker 每 5 分钟的补漏会重新排队；回执按相同输入复用，40–49 分的要新写一次推荐理由，每条约 1 次调用。WSL 测试库上验证过：7 种情况只有该重判的那条改回、再跑一次是 0。后半是上面的调试脚本：
   ```bash
   cd /opt/myfnbguide && until sudo docker compose exec -T worker test -f myfnb/rejudge-2026-10-03.sql 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T db psql -U aihot -d aihot -At -f - < myfnb/rejudge-2026-10-03.sql && sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"; cd ~
   ```
   输出：第一行是重判的条数，然后 `#` 开头一行（用的哪次评测、几条），再一条一行的调试结果。
   Claude 拿到后：按五轴和理由改 `selection-score.md`（只改「什么算重要」的例子和压分规则，结构不动），推上线后跑评测 v4（2b 那条命令，标签改成「小店标准 v4」；额度现在 6000，评测约 1000 次调用够用），再看门槛要不要挪。
-- **10/4 请用户跑**（看回补的分析次数降没降、真实每天用多少；过去 24 小时用量低于 2000 次就自动把上限改回 3000，否则留在 6000 等 Claude 看）：
+- **10/4 请用户跑**（看回补的分析次数降没降、真实每天用多少；过去 24 小时用量低于 2000 次就自动把上限改回 3000，否则留在 6000 等 Claude 看；最后三段是规则 6，第二十一批 4 个新来源部署后抓过几轮了，对服务器 403/405 的自动暂停）：
   ```bash
-  cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "SELECT s.id, count(*) AS analyses, count(*) FILTER (WHERE a.backfill) AS backfill, count(*) FILTER (WHERE n.relevance = 'pass') AS passed FROM analyses n JOIN articles a ON a.id = n.article_id JOIN sources s ON s.id = a.source_id WHERE n.created_at > now() - interval '24 hours' GROUP BY 1 ORDER BY 2 DESC LIMIT 15;" -c "SELECT count(*) AS llm_calls_24h FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day';" -c "UPDATE budgets SET per_day = 3000, updated_at = now() WHERE service = 'llm' AND (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day') < 2000 RETURNING service, per_day;" -c "SELECT processing_state, count(*) FROM articles WHERE discovered_at > now() - interval '1 day' GROUP BY 1 ORDER BY 2 DESC;"; cd ~
+  cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -c "SELECT s.id, count(*) AS analyses, count(*) FILTER (WHERE a.backfill) AS backfill, count(*) FILTER (WHERE n.relevance = 'pass') AS passed FROM analyses n JOIN articles a ON a.id = n.article_id JOIN sources s ON s.id = a.source_id WHERE n.created_at > now() - interval '24 hours' GROUP BY 1 ORDER BY 2 DESC LIMIT 15;" -c "SELECT count(*) AS llm_calls_24h FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day';" -c "UPDATE budgets SET per_day = 3000, updated_at = now() WHERE service = 'llm' AND (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day') < 2000 RETURNING service, per_day;" -c "SELECT processing_state, count(*) FROM articles WHERE discovered_at > now() - interval '1 day' GROUP BY 1 ORDER BY 2 DESC;" -c "WITH last AS (SELECT DISTINCT ON (source_id) source_id, error FROM fetch_runs ORDER BY source_id, started_at DESC) UPDATE sources s SET enabled = false, health = 'paused', updated_at = now() FROM last WHERE last.source_id = s.id AND s.enabled AND s.health <> 'ok' AND last.error ~ '^HTTP 40[35]' RETURNING s.id AS paused, left(last.error, 60) AS error;" -c "SELECT s.id, s.health, s.fail_count, left(r.error, 80) AS error FROM sources s LEFT JOIN LATERAL (SELECT error FROM fetch_runs WHERE source_id = s.id ORDER BY started_at DESC LIMIT 1) r ON true WHERE s.enabled AND s.health NOT IN ('ok', 'unknown') ORDER BY s.id;" -c "SELECT health, count(*) FROM sources WHERE enabled GROUP BY health ORDER BY health;"; cd ~
   ```
   同一天看 `https://new.myfnbguide.com/api/site/stats` 的 `dailies` 和 `day.selected`：日报出了没有、一天选进几条（日报 5–10 条，太多或太少再挪门槛）。
 - ✅ §12 补上 10/2 晚的两份调研（X 的 12 家做法、给餐饮老板做内容的 12 家），从上一会话的记录里找回出处。
-- 还没做：30 个写给小店、没有订阅源的网站（名单在下面 10/3 上午那段）；播客逐字稿（44 个播客里 8 个附了 `podcast:transcript`）；§7.2 第 3、9、12 项的 PR；用户看一周真实日报（§9 第 4 项）。
+- **日报可能偏长（风险，先不动）**：日报是当天过线的全收、每节最多 8 条，没有总条数上限（`reports/compose.ts`）。用公开接口数 10/1、10/2 进站当天、分数到 40 的条目，各有 22、23 条；这些多是旧提示词评的分（例如 Greggs 利润 47、瑞幸融资 42、意大利通胀 42，新标准下都该压到很低），新标准下会少，按评测的比例粗算仍可能一天 15 条上下，比「5–10 条」多。照约定不提前改门槛：10/4 看 `day.selected` 和第一份真实日报，多了就往上挪（评测：44 分以上不看为 0，但必看只剩 16/49）。
+- ✅ **约 30 个没有订阅源的小店网站（第二十一批，账本 29 行）**：先用 robots、站点地图、WordPress 接口初筛 28 个，再对有希望的读真实发文日期、读条款全文。**接 4 个**：ぐるなび通信的「特集」和「今、繁盛している店」两个列表（日本，网页列表；繁盛店栏目每月 2–3 篇带营业额、原价率、回头率的真实店铺做法）、店舗流通ネット 的经营专栏（日本，订阅其实在 `/solution/feed/`，账本原来记成没有；钱和避坑多，一部分只适用日本）、Goomer 博客（巴西点餐系统商，每周约 2 篇，钱、人、客人多）。来源 73 个。**不接 25 个**：MarketMan、Nory、7shifts、Square、柴田書店 卡在条款（禁止机器人或数据挖掘、只许私的使用）；majoo 卡在规则 2；其余是停更、写给多店连锁、多行业泛内容、页面靠脚本渲染、域名被赌博广告占据等，每个的原因在账本。按标题估这 4 个合计每天多约 0.1–0.2 条必看（Claude 判必看偏乐观）；出不了必看就停用。规则 6 并在上面 10/4 那条命令里。新工具 `myfnb/sourcing/detail-check.ts`：用框架的 `fetchDetail` 试详情页的日期、标题和正文（试抓工具只读列表）。
+- **播客逐字稿：先不做**（上一会话说「44 个播客里 8 个附了逐字稿」）。10/3 重查 45 个播客最近 10 集：只有 6 个附了 `podcast:transcript`（HORECA AUDIO NEWS、Restaurant Technology Guys、RESTAURANT STRATEGY、Restaurant Wealth、Food Business Blueprint 和 A LA CARTE 的 1 集），而它们的简介中位数本来就有 500–1,200 字，只有 HORECA AUDIO NEWS 是空的（用户标过它 0 条必看）。值不值得做，等调试脚本的结果：模型要是常因为「材料不够」压分，再做。顺带看到：访谈类低分的 say86、Your Life and Restaurant 每集简介中位数 1,316 和 928 字，低分不是简介太短造成的。
+- 还没做：用户看一周真实日报（§9 第 4 项）；等两条服务器命令的输出（用户 10/3 上午在外面，回家再跑；两条命令都会自己等新版本上线，晚跑也有效）。
 
 **10/3 上午（上一会话，部分已被上面一段接手）**：
 - **评测 v3 跑完**（333 条，取到 329 条，0 报错）：不看分得开（中位数 15，44 分以上 0 条）；必看中位数 40，但 16 条在 22 分以下。查出两个原因：一、**播客正文 bug**：订阅没有完整正文时框架去抓单集网页，Spotify 托管的播客抓到的是整个节目的介绍和课程广告（每集一样），飲食店のAI活用ラジオ 6 条用户必看全部 8–12 分，Elevated Hospitality、Valor Coffee 被预筛挡掉；已修（所有播客 `summaryIsBody: true`，`rss.ts` 让 summaryIsBody 不论长短都当正文、与 json_list 一致，有测试），可提 PR（§7.2）。二、讲人、讲老板位置的访谈类必看常停在 22 分（say86、Your Life and Restaurant、会计师谈财务错误等，正文是对的），还没查清，下一步可写个调试脚本让模型对这十几条输出类型、五轴和理由。
@@ -592,7 +596,7 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 - RFC 9309 §2.3.1.3（2026-10-02 查原文）：robots.txt 返回 4xx 时「the crawler MAY access any resources on the server」；连不上（5xx、超时）时按全部禁止处理。播客主机实测（10/2 晚）：feed.firstory.me、rss.libsyn.com 的 robots.txt 是 S3 的 403 AccessDenied，feeds.transistor.fm 回 400，feeds.soundcloud.com 回 405，订阅本身都是 200；feeds.libsyn.com 会跳到 rss.libsyn.com。
 - RSS 信源可用 `allowCategories` / `denyCategories` 按订阅里的分类过滤；`detail` 的 `titleRegex` 可从文章页补标题（QSR Media 用 `og:title`）。
 - 反馈内容不进任何模型调用。
-- 本机是 Windows：WSL（Ubuntu 24.04）里有检查环境：克隆在 `~/myfnbguide`，PostgreSQL 在 `~/pgenv`（数据 `~/pgdata`，端口 5433），`~/checks-branch.sh <分支>` 把 Windows 仓库的某个分支拉进 WSL 跑四项检查。第 34 号迁移要用带 lz4 的 PostgreSQL（conda-forge 的可以）。
+- 本机是 Windows：WSL（Ubuntu 24.04）里有检查环境：克隆在 `~/myfnbguide`，PostgreSQL 在 `~/pgenv`（数据 `~/pgdata`，端口 5433），`~/checks-branch.sh <分支>` 把 Windows 仓库的某个分支拉进 WSL 跑四项检查（导入全部信源）。给作者的 PR 用 `~/ci-order.sh <分支>`：按作者 CI 的顺序（`seed.ts --topics-only`）跑，再把门槛和预筛措辞换成别的行业重跑 5 个挑选测试；加 `--no-variant` 只跑前半。单独跑几个后端测试文件时要带 `npm test` 的参数 `--test-concurrency=1 --test-timeout=120000`，不然几个文件并行用同一个测试库会互相卡住（10/3 卡过一次）。WSL 里另有 `postgrest`、nix 的 postgres 等进程，不是我们的，不要动。第 34 号迁移要用带 lz4 的 PostgreSQL（conda-forge 的可以）。
 - 新信源要用 `vet-sources.ts` 试抓、`check-sources.mjs` 查规则（§5.4「加新来源的做法」）。`sources.json` 里已存在的信源 `seed.ts` 不覆盖：改已上线信源的配置（过滤、分级）要在后台改，或在服务器上跑 SQL。
 - 公开统计 `https://new.myfnbguide.com/api/site/stats`：信源数、累计条数、入选数、日报数。部署后看信源数变没变，就知道新版本是否已上线、迁移是否成功（迁移失败时脚本退回旧版）。
 - 在本机用 Bash 工具改文件时，内容里有反引号、`${`、单引号的，用编辑工具，不要塞进 `node -e` 或 heredoc（会被 shell 吃掉）；工作区的文件是 CRLF。

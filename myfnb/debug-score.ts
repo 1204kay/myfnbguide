@@ -1,7 +1,8 @@
-// Why did the score model put items the user labelled 必看 low? Sends the production score prompt (SCORE_SYSTEM,
-// the same input as the score step in editorial/analyze.ts) with a debugging note at the end that asks for the item
-// type, the five axes, the noise rule it applied and one reason instead of the bare score. One line per case, short
-// enough to copy out of a web terminal; Claude reads them against the labels in myfnb/gold-labels.tsv.
+// Why did the score model put items the user labelled 必看 low? For each case: the production score twice (the
+// score step of editorial/analyze.ts on the current material), then the same prompt with its single-field output
+// contract swapped for a debugging format that asks for the item type, the five axes, the noise rule it applied and
+// one reason. One line per case, short enough to copy out of a web terminal; Claude reads them against the labels
+// in myfnb/gold-labels.tsv.
 // Without case ids it takes the 必看 cases of the newest SelectBench run (scripts/eval-selection.ts imports every run)
 // that scored below --below. Needs .data/gold.jsonl, so build it in the same container first:
 //   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"
@@ -12,7 +13,7 @@ import { parseArgs } from "node:util";
 import { z } from "zod";
 import { REPO_ROOT } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
-import { buildScoreInput, SCORE_SYSTEM, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
+import { buildScoreInput, runSelectionScores, SCORE_SYSTEM, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { chatJson, markReceiptsCompleted } from "@aihot/backend/providers/llm";
 
@@ -51,13 +52,31 @@ function toInput(r: GoldRow): AnalyzeInputArticle {
   };
 }
 
-const DEBUG = `
-
-## 调试输出（只用于这一次检查标准，取代上面的输出格式）
-
-这一次不是正式评分，是在检查评分标准哪里把内容压低了。照上面的全部规则在心里算完以后，不要只输出分数，改为只返回下面这个 JSON（不要 Markdown）：
-{"itemType": "七类之一", "sig": 0, "nov": 0, "cred": 0, "reson": 0, "act": 0, "attentionScore": 0, "rule": "用到的压分规则或上限，引原话的前十几个字；没有就写空字符串", "why": "一句中文，60 字以内：分数主要被哪一轴拉低、为什么"}
-五轴是 0–10 的整数，attentionScore 按上面的类型权重表算出。`;
+// The production prompt allows nothing but attentionScore (three times over, and the input's first line says it
+// again): on 10/3 a note appended at the end got bare scores back. The debugging prompt swaps those sentences for
+// the debugging format; each must be found, so a reworded prompt stops the script instead of silently failing.
+const FORMAT = `这一次是检查评分标准，不是正式评分。照上面的全部规则在心里算完以后，只返回下面这个 JSON（不要 Markdown，不要解释），每个键都要有：
+{"itemType": "七类之一", "sig": 0, "nov": 0, "cred": 0, "reson": 0, "act": 0, "attentionScore": 0, "rule": "用到的压分规则或分数上限，引原话的前十几个字；没有就写空字符串", "why": "一句中文，60 字以内：分数主要被哪一轴拉低、为什么"}
+五轴是 0–10 的整数，attentionScore 按类型权重表算出。`;
+const SWAPS: Array<[string, string]> = [
+  ["- 不输出理由、分类、五轴、置信度或精选结论。最终只有一个分数。\n", ""],
+  ["## 内部计算步骤（只在心里完成，不要输出）", "## 计算步骤"],
+  ["3. 确认你没有输出精选门槛、精选结论或任何额外字段。", "3. 确认你按最后的调试格式写出了类型、五轴和理由。"],
+  ["只返回合法 JSON，不要 Markdown，不要解释。顶层必须且只能包含 `attentionScore`：\n\n{\"attentionScore\": 0}", FORMAT],
+  ["五轴定义、类型权重和单字段输出契约不变", "五轴定义和类型权重不变"],
+  ["不要额外加奖励分，也不要输出任何额外字段。", "不要额外加奖励分，输出仍按调试格式。"],
+];
+let DEBUG_SYSTEM = SCORE_SYSTEM.replace(/\r\n/g, "\n");
+for (const [from, to] of SWAPS) {
+  if (!DEBUG_SYSTEM.includes(from)) throw new Error(`selection-score.md no longer contains: ${from.slice(0, 40)}`);
+  DEBUG_SYSTEM = DEBUG_SYSTEM.replace(from, to);
+}
+const SCORE_ONLY = "请按系统规则评估以下单篇材料所代表的事件。只输出 attentionScore。";
+const debugUser = (input: AnalyzeInputArticle) => {
+  const user = buildScoreInput(input);
+  if (!user.startsWith(SCORE_ONLY)) throw new Error("the score input no longer starts with its usual line");
+  return "请按系统规则评估以下单篇材料所代表的事件，按系统消息最后的调试格式输出。" + user.slice(SCORE_ONLY.length);
+};
 // Any JSON object is taken: the first run (10/3) lost every answer to a strict schema (a field came back null).
 // Fields are read leniently below, and an answer missing the axes is printed raw instead.
 const DebugSchema = z.record(z.string(), z.unknown());
@@ -70,14 +89,17 @@ for (const id of ids) {
   if (!r) { console.log(`${id} 不在 gold 里（先跑 build-gold.ts）`); continue; }
   const input = toInput(r);
   try {
+    // The production score on the material as it is built now (podcasts read from their feed's own text).
+    const prod = await runSelectionScores(input, {});
+    if (prod) await markReceiptsCompleted(prod.receiptIds);
     const res = await chatJson({
-      model, purpose: "debug_score", subject: `gold:${id}`, promptVersion: "debug-score-1", system: SCORE_SYSTEM + DEBUG,
-      user: buildScoreInput(input), schema: DebugSchema, temperature: 0.2, maxTokens: 1500,
+      model, purpose: "debug_score", subject: `gold:${id}`, promptVersion: "debug-score-2", system: DEBUG_SYSTEM,
+      user: debugUser(input), schema: DebugSchema, temperature: 0.2, maxTokens: 1500,
     });
     await markReceiptsCompleted([res.receiptId]);
     const d = res.data;
     const axes = ["sig", "nov", "cred", "reson", "act", "attentionScore"].map((k) => Number(d[k]));
-    const head = `${id} 评测${evalScore.get(id) ?? "-"} | 正文${(input.bodyText ?? "").length}字`;
+    const head = `${id} 评测${evalScore.get(id) ?? "-"} 现评${prod?.values.join("/") ?? "-"} | 正文${(input.bodyText ?? "").length}字`;
     if (axes.some((n) => !Number.isFinite(n))) { console.log(`${head} | 原样：${one(JSON.stringify(d)).slice(0, 300)}`); continue; }
     const [sig, nov, cred, reson, act, score] = axes;
     console.log(`${head} → ${text(d.itemType)} s${sig} n${nov} c${cred} r${reson} a${act} =${score}`

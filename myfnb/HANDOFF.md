@@ -310,7 +310,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
    cd /opt/myfnbguide && until [ -f myfnb/home-2026-10-04.sh ]; do echo "等新版本……"; sleep 30; done; sudo setsid nohup bash myfnb/home-2026-10-04.sh > /tmp/myfnb-home.txt 2>&1 < /dev/null & sleep 3; tail -F /tmp/myfnb-home.txt
    ```
 
-2. **看样页、定稿**。不公开的地址已经备好：https://new.myfnbguide.com/s/xxrjcgidcy （由参考库模块发布 `myfnb/samples/v2-busy-no-profit.html`，不让搜索引擎收录；claude.ai 的链接中国大陆打不开，这个打得开）。用户说定稿后，私下发给三五位认识的老板（最好中国大陆和马来西亚都有），只问三句：会看吗、会照着试吗、哪一篇最有用。**判法**：五位里三位以上说会看、会照着试，照计划做；多数说「外国的跟我没关系」，就调（多接中文和亚洲来源、只挑到哪里都一样的做法，必要时带数字谈付费公众号接口）。这一步不算公开亮相。
+2. **看样页、定稿**。不公开的地址已经备好：https://new.myfnbguide.com/s/xxrjcgidcy （由参考库模块发布 `myfnb/samples/v2-busy-no-profit.html`，不让搜索引擎收录；claude.ai 的链接中国大陆打不开，这个打得开）。**10/4 晚 Claude 定稿**（用户：「你自己思考吧」；理由：按用户对第一版的意见整套重做、用户看过说「看着不错」、用词按核对规则扫过一遍）。用户方便时私下发给三五位认识的老板（Claude 给了 6 种可以直接复制的消息）（最好中国大陆和马来西亚都有），只问三句：会看吗、会照着试吗、哪一篇最有用。**判法**：五位里三位以上说会看、会照着试，照计划做；多数说「外国的跟我没关系」，就调（多接中文和亚洲来源、只挑到哪里都一样的做法，必要时带数字谈付费公众号接口）。这一步不算公开亮相。
 3. **服务器 2026-11-01 到期**：做好要 5–7 周，会跨过这一天，10/25 前后提醒用户续费（每月 US$8.50）。
 4. **打开存档的钱**：Claude 先给准确数字（§9.2 第 4 项），用户同意后给 DeepSeek 充值；转文字若 Gemini 免费额度不够，要用户本人注册 Groq。
 5. 上线前一次性的事（Claude 到时一步步带）：用 CORE SYSTEM STUDIO 注册并认证微信服务号（认证费说法不一，注册前 Claude 先查官方页面，明显高于每年 99 美元就先问用户）；在 Meta 开发者后台建一个应用，连上 FB 专页和 IG 专业账号，把长期凭证贴到服务器。

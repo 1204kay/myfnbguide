@@ -11,21 +11,21 @@ export const SITE = {
    */
   subject: "餐饮",
   /** 首页的完整标题（浏览器标签、搜索结果）。 */
-  homeTitle: "MyF&B — 小店用得上的餐饮日报",
+  homeTitle: "MyF&B — 餐饮人自己的参考站",
   /** 主题目录页（/topics）的标题。 */
   topicsTitle: "餐饮主题：经营主题、品类与地区的最新动态",
   /** 反馈表单输入框里的示例。 */
   feedbackExample: "例如：我在搜索某个关键词时遇到……我原本想……",
   /** 一句话介绍：搜索引擎、分享卡片、RSS、llms.txt 会用。 */
-  description: "每天从全世界的餐饮同行和行业媒体里，挑出几条一家小店用得上的经验、做法和变化，写成中文摘要并附原文链接，早上八点出一份日报。",
+  description: "餐饮小店的经营参考：收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。",
   /** llms.txt 里一句话介绍下面的一段详细介绍（选填）。 */
-  llmsIntro: null as string | null,
+  llmsIntro: "MyF&B 从各国经营者的播客、访谈和文章里挑选与开店、经营有关的内容，由 AI 写成中文标题、摘要和收录理由，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
   /** 一行小字：分享图、海报下方。 */
-  tagline: "一家店用得上的餐饮消息",
+  tagline: "餐饮人自己的参考站",
   /** 搜索引擎读到的关键词（首页结构化数据）。 */
-  keywords: ["餐饮资讯", "餐饮新闻", "餐饮日报", "餐饮行业动态"] as string[],
+  keywords: ["餐饮经营", "餐饮小店", "开店经验", "餐饮成本", "餐饮管理"] as string[],
   /** 网站开始收录的年份（结构化数据的时间范围，选填）。 */
-  since: null as string | null,
+  since: "2026" as string | null,
   /** 界面语言（HTML lang、og:locale）。 */
   locale: "zh-MY",
   /** 默认域名，只在没设置 SITE_URL 时使用。 */
@@ -108,16 +108,16 @@ export const ABOUT = {
   /** 页面描述（搜索结果、分享卡片）。 */
   description: `关于 ${SITE.name}：${SITE.description}`,
   /** 大标题：第一行正常颜色，第二行强调色。 */
-  headline: ["餐饮每天都有很多新闻，", "一家小店用得上的，只有几条。"] as [string, string],
+  headline: ["餐饮经营的经验，散落在各地。", "我们把它汇集起来，整理成中文。"] as [string, string],
   /** 标题下面的一段话。{sources} 会换成实时的信源数；统计没取到时换成 sourcesFallback。 */
-  lead: `${SITE.name} 替你盯着 {sources} 个信源：抓取、归并、打分、精选，每天早上 8 点出一份日报。免费，不用注册。`,
+  lead: `${SITE.name} 由餐饮人发起，从 {sources} 个来源收集各地店家的做法和经验：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。免费，不用注册。`,
   sourcesFallback: "上百",
   /** 信源河动画下面的四个环节。 */
   steps: {
-    collect: "全世界写给餐饮老板的媒体、同行的播客和行业协会都在看：中国、台湾、日本、韩国、东南亚、印度、澳洲、欧洲和美洲；活跃的源 15 分钟就看一次。",
-    store: "抓到的都存下来，同一件事的多篇报道归到一起，热点榜就是从这里算出来的。",
-    select: "模型先看对一家小店有没有用，再写中文标题、摘要和推荐理由；大公司财报、人事任命、颁奖、美食推荐、营销稿和重复转发不进日报。",
-    publish: "每天 08:00 出日报，周一出周报，每月 1 日出月报。",
+    collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体：中国、台湾、日本、韩国、东南亚、印度、澳洲、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
+    store: "收进来的内容都保存下来，同一件事的多篇报道归为一组。",
+    select: "模型先判断内容是否与开店和经营有关，再写中文标题、摘要和收录理由；大公司财报、人事任命、颁奖、美食推荐、营销稿和重复转发不收录。",
+    publish: "日报在早上 8 点编排，当天没有够格的内容就不出；周一编周报，每月 1 日编月报。",
   },
   /**
    * 作者块（选填），null 就不显示。
@@ -150,7 +150,7 @@ export const ADMIN = {
 /** Agent 接入页的示例。 */
 export const AGENT = {
   /** MCP 工具表里“搜索”一行：能搜什么、可以怎么问。 */
-  search: { scope: "按公司、产品、人物或话题搜最近 7 天", ask: "这家公司最近发了什么？" },
+  search: { scope: "按品牌、平台或经营话题搜索最近 7 天", ask: "最近有哪些店家谈到外卖平台的抽成？" },
 };
 
 /** 日报、周报、月报版面上的小字。 */
@@ -159,6 +159,35 @@ export const REPORTS = {
   imprint: SITE.name.toUpperCase(),
   /** 报头旁边的一个词。 */
   motto: SITE.subject as string,
+  /** 每种报告什么时候编好：报头上的一句，关于页信源河里的日报也用它。 */
+  edition: { daily: "早上 8 点编排", weekly: "周一编排", monthly: "每月 1 日编排" },
+  /** 每种报告页面的描述（搜索结果、分享卡片）。 */
+  descriptions: {
+    daily: `${SITE.name} 的${withSubject("日报")}：早上 8 点编排，收录前一天挑选出的店家做法、经验和行业变化；当天没有够格的内容就不出。`,
+    weekly: `从上一周的${withSubject("日报")}里选出的内容，按类别分组。`,
+    monthly: `从上个月的${withSubject("日报")}里选出的内容，按类别分组。`,
+  },
+  /** 一期里的一条怎么称呼：没有头条时的标题（“这一天的 4 条……”）用它。 */
+  entry: { measure: "条", noun: "内容" },
+  /** 报头上各个数字后面的说法；写 null 的那一项不显示。 */
+  metricUnits: {
+    totalEvents: "条内容",
+    totalStories: "条内容",
+    sourcesCount: "个来源",
+    firstPartyEvents: null,
+    selectedCount: "条精选",
+    reportsCovered: "期日报",
+  } as Record<string, string | null>,
+  /** 报告分享图上“共几条”的说法。 */
+  shareUnit: "条内容",
+};
+
+/** 条目卡片和详情页上的几处说法。 */
+export const ITEM_COPY = {
+  /** 模型写的那句理由叫什么。 */
+  reasonLabel: "收录理由",
+  /** 读者看不看得到 AI 评分（后台照常显示）。 */
+  showScore: false,
 };
 
 /** 运维告警（只发给站长）里随部署而变的几处说法。 */
@@ -191,11 +220,11 @@ export const COMMUNITY_FEEDS: { dev: string[]; hn: string[] } = {
 /** 各页分享图（/og/pages/*.png）上的文字。主题目录页的那张按主题数自动生成。 */
 export const CARDS: Record<string, { kicker: string; title: string; subtitle: string; accent?: "hot" | "amber" }> = {
   site: { kicker: SITE.name, title: SITE.tagline, subtitle: SITE.description },
-  all: { kicker: subjectAfter("全部", "动态"), title: "所有信源的最新动态，一站看完", subtitle: "按时间汇总各信源的最新动态，可按类别与标签筛选。" },
+  all: { kicker: subjectAfter("全部", "动态"), title: "收进来的全部内容，按时间排列", subtitle: "可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
-  daily: { kicker: withSubject("日报"), title: subjectAfter("每天 8 点，一份读得完的", "日报"), subtitle: `${subjectAfter("前一天值得关注的", "动态")}。` },
-  weekly: { kicker: withSubject("周报"), title: "一周大事，一次看清", subtitle: "本周的主线、重要发布与值得回看的讨论。" },
-  monthly: { kicker: withSubject("月报"), title: "一个月的变化", subtitle: "月度主线与关键事件回顾。" },
+  daily: { kicker: withSubject("日报"), title: subjectAfter("早上 8 点编排的", "日报"), subtitle: "前一天收录并经过挑选的内容；当天没有够格的内容就不出。" },
+  weekly: { kicker: withSubject("周报"), title: "一周的内容汇编", subtitle: "从上一周的日报里选出，按类别分组。" },
+  monthly: { kicker: withSubject("月报"), title: "一个月的内容汇编", subtitle: "从上个月的日报里选出，按类别分组。" },
   about: { kicker: "关于", title: `关于 ${SITE.name}`, subtitle: SITE.description },
   terms: { kicker: "使用规则", title: `${SITE.name} 使用规则`, subtitle: "网站、API、RSS 与 MCP 的使用范围。" },
   privacy: { kicker: "隐私说明", title: `${SITE.name} 隐私说明`, subtitle: "访问日志、浏览器本地数据与反馈资料的处理方式。" },

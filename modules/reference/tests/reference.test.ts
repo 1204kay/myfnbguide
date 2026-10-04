@@ -115,9 +115,15 @@ const answers: Record<string, unknown[]> = {
 };
 const calls: string[] = [];
 const users: Record<string, string[]> = {};
+let styled = 0;
 const model = await stub((_hit, req) => {
-  const body = JSON.parse(req.body) as { messages: Array<{ content: string }> };
+  const body = JSON.parse(req.body) as { messages: Array<{ role: string; content: string }> };
   const user = body.messages.at(-1)!.content;
+  // The last pass over a story that passed: hands it back with one spoken word made written.
+  if (body.messages.some((m) => m.role === "system" && m.content.includes("把口语词、方言词"))) {
+    styled += 1;
+    return { id: `stub-style-${styled}`, model: "stub", choices: [{ message: { content: user.replace("账单每周都在涨", "账单每周都在上涨") } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+  }
   const marker = Object.keys(answers).find((m) => user.includes(`${m}-${T}`))!;
   calls.push(marker);
   (users[marker] ??= []).push(user);
@@ -151,6 +157,7 @@ test("cases are written for selected items, once more when the checks find probl
   assert.deepEqual(await writeCase(ids.TEXTONLY!), { status: "story", problems: [] });
   assert.ok(users.TEXTONLY!.length === 2 && !users.TEXTONLY![1]!.includes(SOURCE) && users.TEXTONLY![1]!.includes("用了“讲”"), "a word alone goes back as an edit, without the material");
   assert.ok(users.FIRST![1]!.includes(SOURCE), "a number not in the original goes back with the material");
+  assert.equal(styled, 3, "every story that passed got the wording pass, the held and thin ones none");
   assert.equal((await writeCase(ids.THIN!))!.status, "thin");
   assert.equal((await writeCase(ids.NEWS!))!.status, "thin", "news is not a story either");
   const wrong = await writeCase(ids.WRONG!);
@@ -164,7 +171,9 @@ test("cases are written for selected items, once more when the checks find probl
   await writeCase(ids.THIN!);
   const [stored] = await sql<{ story: CaseStory; situations: string[]; receipt_ids: string[] }[]>`SELECT story, situations, receipt_ids FROM reference_cases WHERE article_id = ${ids.FIRST!}`;
   assert.deepEqual(stored!.situations, ["busy-no-profit"]);
-  assert.equal(stored!.receipt_ids.length, 2);
+  assert.equal(stored!.receipt_ids.length, 3, "the answer, the one sent back, and the wording pass");
+  const [edited] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.TEXTONLY!}`;
+  assert.equal(edited!.story.lead, "账单每周都在上涨。", "the wording pass is kept when the checks still pass");
   const compare = stored!.story.parts[0]!.blocks[0]!;
   assert.ok(compare.type === "compare" && compare.change?.amount === 638 && compare.change.yearly === 638 * 52, "the change is computed");
 });

@@ -33,8 +33,15 @@ export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL
  */
 const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译/.test(problem) && !/国家名|城市名/.test(problem);
 const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
-// The prompt, the edit request and the length limit the checks apply: changing any writes every case again.
-const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
+/**
+ * The last pass over a story that passed the checks: its wording made plain written Chinese, nothing else (the
+ * writer kept spoken words the checks cannot list: 撑、活、盯、攒、往上走; reviews of 10/5). Kept only when the
+ * checks still pass and no number changed.
+ */
+const STYLE_SYSTEM = promptFromText("reference/style", readFileSync(new URL("../prompts/style.md", import.meta.url), "utf8"));
+// The prompts, the edit request and the length limit the checks apply: changing any writes every case again.
+const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(STYLE_SYSTEM).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
+const numbersOf = (story: CaseStory) => (JSON.stringify(story).match(/\d+(?:\.\d+)?/g) ?? []).sort().join(",");
 
 const text = z.string().trim().min(1);
 const number = z.coerce.number().finite().positive();
@@ -136,8 +143,8 @@ export function readOutput(raw: unknown): { written: Written | null; problems: s
   if (out.material === "news") return { written: { status: "thin", reason: `新闻或数据：${out.reason}` }, problems: [] };
   try {
     const { material: _, ...story } = out;
-    // A story is in a situation once: a second placement in the same situation (another group) is dropped.
-    const placements = story.placements.filter((p, i) => story.placements.findIndex((q) => q.situation === p.situation) === i);
+    // One situation, the writer's first: the second was mostly a stretch (reviews of 10/5: 10 of 23 misplaced).
+    const placements = story.placements.slice(0, 1);
     return { written: { status: "story", story: { ...story, placements, parts: story.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: [] };
   } catch (error) {
     return { written: null, problems: [`举例算不出来：${(error as Error).message}`] };
@@ -158,6 +165,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   const receiptIds: number[] = [];
   let user = ["请按系统规则把以下材料写成一个故事，只输出 JSON。", material].join("\n\n");
   let written: Written | null = null;
+  let answer: unknown = null;
   let problems: string[] = [];
   // The first answer, and up to two more with its problems named.
   for (let attempt = 0; attempt < 3; attempt++) {
@@ -168,6 +176,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
     receiptIds.push(res.receiptId);
     const read = readOutput(res.data);
     written = read.written;
+    answer = res.data;
     problems = written?.status === "story" ? checkStory(written.story, material) : read.problems;
     if (!problems.length) break;
     const list = problems.map((p) => `- ${p}`).join("\n");
@@ -178,6 +187,15 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
         `你上一次的输出：\n${JSON.stringify(res.data)}`,
         `上一次的输出有以下问题，请改正后重新输出完整的 JSON，其余保持不变：\n${list}`,
       ].join("\n\n");
+  }
+  if (!problems.length && written?.status === "story") {
+    const styled = await chatJson({
+      model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
+      system: STYLE_SYSTEM, user: JSON.stringify(answer), schema: z.unknown(), temperature: 0.2, maxTokens: 6000, timeoutMs: 180_000,
+    });
+    receiptIds.push(styled.receiptId);
+    const read = readOutput(styled.data);
+    if (read.written?.status === "story" && !checkStory(read.written.story, material).length && numbersOf(read.written.story) === numbersOf(written.story)) written = read.written;
   }
   const status: CaseResult["status"] = problems.length || !written ? "held" : written.status;
   const story = written?.status === "story" ? written.story : null;

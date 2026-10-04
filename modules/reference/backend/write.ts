@@ -12,6 +12,7 @@ import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { renderContext } from "@aihot/backend/editorial/writing";
 import { chatJson } from "@aihot/backend/providers/llm";
+import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { selectedCondition } from "@aihot/backend/publication/scope";
 import { SITUATIONS } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
@@ -139,13 +140,17 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   const story = written?.status === "story" ? written.story : null;
   const shopKey = story?.shop.name ? createHash("sha256").update(`${story.shop.country}|${story.shop.name.toLowerCase().replace(/\s+/g, " ")}`).digest("hex").slice(0, 12) : null;
   const situations = status === "story" && story ? story.placements.map((p) => p.situation) : [];
-  await sql`
-    INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, problems, receipt_ids, prompt_version, updated_at)
-    VALUES (${a.id}, ${a.revision}, ${status}, ${story ? sql.json(story as never) : null}, ${situations}, ${shopKey},
-            ${sql.json((written?.status === "thin" ? [written.reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())
-    ON CONFLICT (article_id) DO UPDATE SET revision = EXCLUDED.revision, status = EXCLUDED.status, story = EXCLUDED.story,
-      situations = EXCLUDED.situations, shop_key = EXCLUDED.shop_key, problems = EXCLUDED.problems, receipt_ids = EXCLUDED.receipt_ids,
-      prompt_version = EXCLUDED.prompt_version, updated_at = now()`;
+  await sql.begin(async (tx) => {
+    await tx`
+      INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, problems, receipt_ids, prompt_version, updated_at)
+      VALUES (${a.id}, ${a.revision}, ${status}, ${story ? sql.json(story as never) : null}, ${situations}, ${shopKey},
+              ${sql.json((written?.status === "thin" ? [written.reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())
+      ON CONFLICT (article_id) DO UPDATE SET revision = EXCLUDED.revision, status = EXCLUDED.status, story = EXCLUDED.story,
+        situations = EXCLUDED.situations, shop_key = EXCLUDED.shop_key, problems = EXCLUDED.problems, receipt_ids = EXCLUDED.receipt_ids,
+        prompt_version = EXCLUDED.prompt_version, updated_at = now()`;
+    // The answers are used (stored, or held with their problems): their receipts are done, like the engine's.
+    for (const id of receiptIds) await completeReceipt(tx, id);
+  });
   return { status, problems };
 }
 

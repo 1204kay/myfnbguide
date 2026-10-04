@@ -1,7 +1,7 @@
 // Reports: a scheduled run that starts late still writes the issue it was due for, never one whose
 // window is still open; an issue with nothing in it is refused rather than published empty; and an
 // older weekly that froze no summaries shows the cited articles' public summaries.
-import { tag } from "./setup.ts";
+import { editionAt, tag } from "./setup.ts";
 import assert from "node:assert/strict";
 import { after, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
@@ -21,17 +21,15 @@ after(async () => {
   await closeDb();
 });
 
-const bj = (s: string) => new Date(`${s}+08:00`);
-
 test("a late run writes the issue that was due, not today's", () => {
-  assert.equal(dueDaily(bj("2026-09-29T08:00:05")), "2026-09-29");
-  assert.equal(dueDaily(bj("2026-09-30T01:00:00")), "2026-09-29", "the 29th's run delayed past midnight");
-  assert.equal(dueWeekly(bj("2026-09-28T10:00:00")), "2026-W39");
-  assert.equal(dueWeekly(bj("2026-10-05T09:00:00")), "2026-W39", "Monday before 10:00: the next week is not due yet");
-  assert.equal(dueWeekly(bj("2026-10-05T10:01:00")), "2026-W40");
-  assert.equal(dueMonthly(bj("2026-10-01T10:30:00")), "2026-09");
-  assert.equal(dueMonthly(bj("2026-10-01T09:00:00")), "2026-08");
-  assert.equal(dueMonthly(bj("2027-01-15T12:00:00")), "2026-12");
+  assert.equal(dueDaily(editionAt("daily", "2026-09-29", 6)), "2026-09-29");
+  assert.equal(dueDaily(editionAt("daily", "2026-09-30", -60)), "2026-09-29", "the 29th's run delayed until just before the next issue");
+  assert.equal(dueWeekly(editionAt("weekly", "2026-09-28")), "2026-W39");
+  assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", -60)), "2026-W39", "Monday before its edition time: the next week is not due yet");
+  assert.equal(dueWeekly(editionAt("weekly", "2026-10-05", 60)), "2026-W40");
+  assert.equal(dueMonthly(editionAt("monthly", "2026-10-01")), "2026-09");
+  assert.equal(dueMonthly(editionAt("monthly", "2026-10-01", -60)), "2026-08");
+  assert.equal(dueMonthly(editionAt("monthly", "2027-01-15")), "2026-12");
 });
 
 test("a daily with nothing in its window is refused, not published empty", async () => {

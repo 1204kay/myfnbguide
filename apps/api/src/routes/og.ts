@@ -3,13 +3,13 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
 import { beijingDate } from "@aihot/contracts/time";
-import { loadItemShare } from "@aihot/backend/publication/og";
+import { loadItemOgCard, loadItemShare } from "@aihot/backend/publication/og";
 import { loadReport, type ReportKind } from "@aihot/backend/publication/reports";
 import { findTopic, TOPIC_GROUPS, TOPICS } from "@aihot/backend/publication/topics";
 import { loadStoryDetail, resolveStory } from "@aihot/backend/publication/stories";
-import { ogEtag, renderOg, type OgCard } from "../og/render.ts";
-import { posterEtag, renderPoster, type Poster } from "../og/poster.ts";
-import { CARDS, REPORTS, subjectAfter, withSubject } from "@aihot/site";
+import { ogEtag, renderOg, type OgCard } from "@aihot/backend/media/og";
+import { posterEtag, renderPoster, type Poster } from "@aihot/backend/media/poster";
+import { CARDS, ITEM_COPY, REPORTS, subjectAfter, withSubject } from "@aihot/site";
 import { config } from "@aihot/backend/config";
 
 /** The pages' share cards: the site's texts, and the topic count of the topic list. */
@@ -19,12 +19,10 @@ const PAGES: Record<string, OgCard> = {
 };
 
 /**
- * Article and event share images carry current content, so shared caches keep them for an hour at most:
- * after a withdrawal or a correction they are gone from any cache within the hour. A reverse proxy in front
- * of the api keeps its copy for five minutes.
+ * Article, event and report images carry editable content. A reader may keep a copy for five
+ * minutes; shared caches are refreshed on publication changes. Brand images keep their own lifetime.
  */
-const CONTENT_IMAGE_CACHE = "public, max-age=3600, s-maxage=3600, stale-while-revalidate=600";
-const CONTENT_IMAGE_ORIGIN_SECONDS = "300";
+const CONTENT_IMAGE_CACHE = "public, max-age=300, s-maxage=3600, must-revalidate";
 
 async function send(req: FastifyRequest, reply: FastifyReply, card: OgCard, maxAge: number, cacheControl = `public, max-age=${maxAge}, s-maxage=${maxAge * 7}, stale-while-revalidate=86400`) {
   const tag = `"og-${ogEtag(card)}"`;
@@ -52,16 +50,9 @@ export function registerOg(app: FastifyInstance) {
   app.get("/og/items/:file", async (req, reply) => {
     const file = (req.params as { file: string }).file;
     if (!file.endsWith(".png")) return notFound(reply);
-    const d = await loadItemShare(file.slice(0, -4));
-    if (!d) return notFound(reply);
-    reply.header("X-Accel-Expires", CONTENT_IMAGE_ORIGIN_SECONDS);
-    return send(req, reply, {
-      kicker: d.category ? CATEGORY_LABELS[d.category] : withSubject("动态"),
-      title: d.title,
-      subtitle: d.summary,
-      meta: `${d.source.name} · ${beijingDate(d.timelineAt)}`,
-      badge: d.selected && d.score !== null ? { value: String(Math.round(d.score)), label: "精选评分" } : null,
-    }, 3600, CONTENT_IMAGE_CACHE);
+    const card = await loadItemOgCard(file.slice(0, -4));
+    if (!card) return notFound(reply);
+    return send(req, reply, card, 3600, CONTENT_IMAGE_CACHE);
   });
 
   // Phone share poster for an article (1080×1440), generated on first request and cached by content.
@@ -77,10 +68,10 @@ export function registerOg(app: FastifyInstance) {
       summary: d.summary,
       source: d.source.name,
       date: beijingDate(d.timelineAt),
-      score: d.selected ? d.score : null,
+      score: d.selected && ITEM_COPY.showScore ? d.score : null,
     };
     const tag = `"poster-${posterEtag(poster)}"`;
-    reply.header("ETag", tag).header("Cache-Control", CONTENT_IMAGE_CACHE).header("X-Accel-Expires", CONTENT_IMAGE_ORIGIN_SECONDS);
+    reply.header("ETag", tag).header("Cache-Control", CONTENT_IMAGE_CACHE);
     if (String(req.headers["if-none-match"] ?? "").split(",").some((t) => t.trim().replace(/^W\//, "") === tag)) return reply.code(304).send();
     return reply.type("image/png").send((await renderPoster(poster)).png);
   });
@@ -95,7 +86,7 @@ export function registerOg(app: FastifyInstance) {
       title: r.lead?.title ?? r.title,
       subtitle: r.lead?.leadParagraph ?? r.overview,
       meta: `${r.sections.reduce((n, s) => n + s.items.length, 0)} ${REPORTS.shareUnit} · 约 ${r.readingMinutes} 分钟读完`,
-    }, 86400);
+    }, 3600, CONTENT_IMAGE_CACHE);
   });
 
   app.get("/og/topics/:file", async (req, reply) => {
@@ -112,7 +103,6 @@ export function registerOg(app: FastifyInstance) {
     if (found.kind !== "found") return notFound(reply);
     const s = await loadStoryDetail(found.storyId);
     if (!s) return notFound(reply);
-    reply.header("X-Accel-Expires", CONTENT_IMAGE_ORIGIN_SECONDS);
     return send(req, reply, {
       kicker: s.whyHot.rank ? `热点第 ${s.whyHot.rank} · 事件` : "事件",
       title: s.title,

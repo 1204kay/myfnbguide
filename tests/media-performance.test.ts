@@ -13,8 +13,8 @@ process.env.AIHOT_DATA_DIR = dir;
 process.env.ALLOW_PRIVATE_NETWORK_FETCH = "true";
 process.env.MODEL_CALLS_ENABLED = "false";
 const { produceImage } = await import("@aihot/backend/media/images");
-const { renderOg } = await import("../apps/api/src/og/render.ts");
-const { renderPoster } = await import("../apps/api/src/og/poster.ts");
+const { renderOg } = await import("@aihot/backend/media/og");
+const { renderPoster } = await import("@aihot/backend/media/poster");
 const { xView } = await import("@aihot/backend/publication/items");
 
 let imageHits = 0;
@@ -314,4 +314,48 @@ test("tracking pixels are omitted from old and new bodies without removing artic
     assert.equal((body.match(/<img\b/g) ?? []).length, 1);
     assert.match(decodeURIComponent(body), /example.org\/chart.png/);
   }
+});
+
+// Extracted Markdown can mislabel a video page as an image. New ingestion and previously saved
+// bodies must both stop signing those pages; RSS, Markdown, responsive media and posters must agree.
+// Real thumbnails/icons and existing video links or video elements must keep working.
+test("video pages mislabeled as images are excluded across ingestion and public image outputs", async () => {
+  const { sanitizeBody } = await import("@aihot/backend/content/sanitize");
+  const { markdownBody, bodyToMarkdown } = await import("@aihot/backend/content/markdown");
+  const { proxiedImage, proxiedImageSet, proxyBodyImages } = await import("@aihot/backend/media/imgproxy");
+  const pages = [
+    "https://www.youtube.com/watch?v=example&t=1",
+    "https://youtube.com/shorts/example",
+    "https://m.youtube.com/watch?v=example",
+    "https://www.youtube.com/shorts/example",
+  ];
+  const pictures = [
+    "https://www.youtube.com/s/desktop/example/favicon_32x32.png",
+    "https://i.ytimg.com/vi/example/hqdefault.jpg",
+    "https://example.org/watch.png",
+    "https://youtube.com.example.org/watch?v=example",
+  ];
+  const stored = [...pages, ...pictures].map((url) => `<img src="${url.replaceAll("&", "&amp;")}" alt="Image" width="800" height="400">`).join("");
+  const markdown = [...pages, ...pictures].map((url) => `![Image](${url})`).join("\n\n");
+  for (const html of [sanitizeBody(stored), markdownBody(markdown, "https://example.org/post"), proxyBodyImages(stored), proxyBodyImages(stored, true)]) {
+    assert.equal((html.match(/<img\b/g) ?? []).length, pictures.length, html);
+    assert.doesNotMatch(decodeURIComponent(html), /https:\/\/(?:www\.|m\.)?youtube\.com\/(?:watch|shorts)/);
+  }
+  assert.equal((bodyToMarkdown(stored).match(/!\[/g) ?? []).length, pictures.length);
+  for (const url of pages) {
+    assert.equal(proxiedImage(url, "full"), null);
+    assert.equal(proxiedImageSet(url, "body"), null);
+    assert.equal(xView({ zh_text: null, x_post: { media: [{ url }] } }, true)!.media.length, 0);
+  }
+  for (const url of pictures) {
+    assert.ok(proxiedImage(url, "full"));
+    assert.ok(proxiedImageSet(url, "body"));
+  }
+  const video = `<a href="${pages[0]!.replaceAll("&", "&amp;")}">Watch video</a><video src="https://example.org/video.mp4" poster="${pictures[1]}"></video>`;
+  for (const html of [sanitizeBody(video), proxyBodyImages(video), proxyBodyImages(video, true)]) {
+    assert.match(html, /<a href="https:\/\/www\.youtube\.com\/watch/);
+    assert.match(html, /<video src="https:\/\/example\.org\/video\.mp4"/);
+    assert.match(decodeURIComponent(html), /i\.ytimg\.com\/vi\/example\/hqdefault\.jpg/);
+  }
+  assert.doesNotMatch(proxyBodyImages(`<video src="https://example.org/video.mp4" poster="${pages[1]}"></video>`), /poster=/);
 });

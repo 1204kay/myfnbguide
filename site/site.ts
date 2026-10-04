@@ -2,6 +2,20 @@
 // 网页和后端都读它；改完重新构建（docker compose up --build）即可生效。
 // 域名不在这里：部署时用环境变量 SITE_URL 设置。
 
+/**
+ * 日报、周报、月报什么时候出（北京时间，HH:mm）：日报收这个时间之前的 24 小时，周报在每个自然周之后的周一出，
+ * 月报在每月 1 日出。排程、成刊时间窗口、缺期告警和所有提到时间的文案都读它（public/ 里的文件写占位
+ * {{dailyTime}}、{{weeklyTime}}、{{monthlyTime}}）；排程每半小时检查一次，所以写整点或半点。
+ */
+export const EDITION_TIMES = { daily: "08:00", weekly: "10:00", monthly: "10:30" };
+
+/** “08:00”“每周一 10:00”“每月 1 日 10:30”：写进句子里的出刊时间。日报不写“每天”：当天没有够格的内容就不出。 */
+export const EDITION_WHEN = {
+  daily: EDITION_TIMES.daily,
+  weekly: `每周一 ${EDITION_TIMES.weekly}`,
+  monthly: `每月 1 日 ${EDITION_TIMES.monthly}`,
+};
+
 export const SITE = {
   /** 站名：导航、页面标题、分享图、RSS、MCP、后台都用它。 */
   name: "MyF&B",
@@ -93,6 +107,14 @@ export const POLICY = {
   xPostIsFullText: true,
 } as const;
 
+/** 条目卡片和详情页上的几处说法和显示。 */
+export const ITEM_COPY = {
+  /** 模型写的那句理由叫什么：卡片、详情页、Markdown 导出、给 Agent 的回答和群推送都用它。 */
+  reasonLabel: "收录理由",
+  /** 读者在网页和分享图上看不看得到 AI 评分。只管显示：公开 API 和 MCP 的数据照样带 score，后台照常显示。 */
+  showScore: false,
+};
+
 /** 关于页的一张二维码卡片。 */
 interface ContactCard {
   kind: string;
@@ -114,10 +136,10 @@ export const ABOUT = {
   sourcesFallback: "上百",
   /** 信源河动画下面的四个环节。 */
   steps: {
-    collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体：中国、台湾、日本、韩国、东南亚、印度、澳洲、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
+    collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体：中国、日本、韩国、东南亚、印度、澳大利亚、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
     store: "收进来的内容都保存下来，同一件事的多篇报道归为一组。",
-    select: "模型先判断内容是否与开店和经营有关，再写中文标题、摘要和收录理由；大公司财报、人事任命、颁奖、美食推荐、营销稿和重复转发不收录。",
-    publish: "日报在早上 8 点编排，当天没有够格的内容就不出；周一编周报，每月 1 日编月报。",
+    select: `模型先判断内容是否与开店和经营有关，再写中文标题、摘要和${ITEM_COPY.reasonLabel}；大公司财报、人事任命、颁奖、美食推荐、营销稿和重复转发不收录。`,
+    publish: `日报在早上 ${spokenTime(EDITION_TIMES.daily)}编排，当天没有够格的内容就不出；周一编周报，每月 1 日编月报。`,
   },
   /**
    * 作者块（选填），null 就不显示。
@@ -153,41 +175,27 @@ export const AGENT = {
   search: { scope: "按品牌、平台或经营话题搜索最近 7 天", ask: "最近有哪些店家谈到外卖平台的抽成？" },
 };
 
-/** 日报、周报、月报版面上的小字。 */
+/** 日报、周报、月报版面上的说法。 */
 export const REPORTS = {
   /** 报头下面的出版者一行。 */
   imprint: SITE.name.toUpperCase(),
   /** 报头旁边的一个词。 */
   motto: SITE.subject as string,
-  /** 每种报告什么时候编好：报头上的一句，关于页信源河里的日报也用它。 */
-  edition: { daily: "早上 8 点编排", weekly: "周一编排", monthly: "每月 1 日编排" },
-  /** 每种报告页面的描述（搜索结果、分享卡片）。 */
+  /** 每种报告页面的描述（搜索结果、分享卡片），不带句号；llms.txt 介绍周报、月报时也用它。 */
   descriptions: {
-    daily: `${SITE.name} 的${withSubject("日报")}：早上 8 点编排，收录前一天挑选出的店家做法、经验和行业变化；当天没有够格的内容就不出。`,
-    weekly: `从上一周的${withSubject("日报")}里选出的内容，按类别分组。`,
-    monthly: `从上个月的${withSubject("日报")}里选出的内容，按类别分组。`,
+    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，收录前一天挑选出的店家做法、经验和行业变化；当天没有够格的内容就不出`,
+    weekly: `从上一周的${withSubject("日报")}里选出的内容，按类别分组`,
+    monthly: `从上个月的${withSubject("日报")}里选出的内容，按类别分组`,
   },
-  /** 一期里的一条怎么称呼：没有头条时的标题（“这一天的 4 条……”）用它。 */
+  /**
+   * 一期里的一条怎么称呼（“4 条内容”）：没有头条时的标题（“这一天的 4 条餐饮内容”）、报头和往期目录的条数、
+   * 周报月报没有总述时的那句话，以及订阅说明里的“按栏目分好的内容”都用它。
+   */
   entry: { measure: "条", noun: "内容" },
-  /** 报头上各个数字后面的说法；写 null 的那一项不显示。 */
-  metricUnits: {
-    totalEvents: "条内容",
-    totalStories: "条内容",
-    sourcesCount: "个来源",
-    firstPartyEvents: null,
-    selectedCount: "条精选",
-    reportsCovered: "期日报",
-  } as Record<string, string | null>,
+  /** 报头上其余几个数字后面的说法；写 null 的那一项不显示。精选数和日报期数在关于页、主题页也这样写。 */
+  metricUnits: { sourcesCount: "个来源", firstPartyEvents: null as string | null, selectedCount: "条精选", reportsCovered: "期日报" },
   /** 报告分享图上“共几条”的说法。 */
   shareUnit: "条内容",
-};
-
-/** 条目卡片和详情页上的几处说法。 */
-export const ITEM_COPY = {
-  /** 模型写的那句理由叫什么。 */
-  reasonLabel: "收录理由",
-  /** 读者看不看得到 AI 评分（后台照常显示）。 */
-  showScore: false,
 };
 
 /** 运维告警（只发给站长）里随部署而变的几处说法。 */
@@ -222,7 +230,7 @@ export const CARDS: Record<string, { kicker: string; title: string; subtitle: st
   site: { kicker: SITE.name, title: SITE.tagline, subtitle: SITE.description },
   all: { kicker: subjectAfter("全部", "动态"), title: "收进来的全部内容，按时间排列", subtitle: "可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
-  daily: { kicker: withSubject("日报"), title: subjectAfter("早上 8 点编排的", "日报"), subtitle: "前一天收录并经过挑选的内容；当天没有够格的内容就不出。" },
+  daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "前一天收录并经过挑选的内容；当天没有够格的内容就不出。" },
   weekly: { kicker: withSubject("周报"), title: "一周的内容汇编", subtitle: "从上一周的日报里选出，按类别分组。" },
   monthly: { kicker: withSubject("月报"), title: "一个月的内容汇编", subtitle: "从上个月的日报里选出，按类别分组。" },
   about: { kicker: "关于", title: `关于 ${SITE.name}`, subtitle: SITE.description },
@@ -258,8 +266,11 @@ export const DEPLOYMENT = {
    * null 就不设上限。环境变量 IMGPROXY_UPSTREAM_MB_PER_MINUTE、IMGPROXY_UPSTREAM_GB_PER_DAY 优先。
    */
   imageUpstreamBudget: null as null | { mbPerMinute: number; gbPerDay: number },
-  /** 图片代理不走出网代理（EGRESS_PROXY_URL）、直接连的图片域名（选填）。 */
-  directImageHosts: [] as string[],
+  /**
+   * 已实测应由服务器直接连接、不走出网代理（EGRESS_PROXY_URL）的域名，采集和图片共用（选填）。
+   * 每次重定向重新按目标域名选路，直连仍检查实际连接地址。
+   */
+  directFetchHosts: [] as string[],
   /**
    * 精选评测（scripts/eval-selection.ts）不带参数时用的金标集：文件（相对仓库根目录）、抽样条数、只抽哪一份、门槛扫描范围。
    * null 就用 .data/gold.jsonl 的全部样本（最多 200 条），在 40–90 之间扫描。
@@ -292,4 +303,10 @@ export function withSubject(noun: string): string {
 export function subjectAfter(text: string, noun?: string): string {
   const gap = /^[A-Za-z0-9]/.test(SITE.subject) ? " " : "";
   return `${text}${gap}${noun ? withSubject(noun) : SITE.subject}`;
+}
+
+/** “8 点”“10 点 30 分”：口语里的 HH:mm。 */
+function spokenTime(time: string): string {
+  const [hour, minute] = time.split(":").map(Number) as [number, number];
+  return `${hour} 点${minute ? ` ${minute} 分` : ""}`;
 }

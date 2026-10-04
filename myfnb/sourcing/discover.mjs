@@ -49,7 +49,7 @@ await Promise.all(Array.from({ length: 8 }, async () => {
     const row = rows[i++];
     const d = await discover(row);
     if (d.feed) {
-      out.push({ id: row.id, name: row.name, kind: "rss", config: { feedUrl: d.feed, _aihot: { initialBackfillLimit: 3, initialBackfillOnly: true } }, tier: row.tier, first_party: row.tier !== "T2", owner_entity_id: null, participation_mode: "editorial", interval_minutes: 120, tags: row.tags, site_fulltext: false, syndicate_fulltext: false });
+      out.push({ id: row.id, name: row.name, kind: "rss", config: { feedUrl: d.feed, _aihot: { initialBackfillLimit: 3 } }, tier: row.tier, first_party: row.tier !== "T2", owner_entity_id: null, participation_mode: "editorial", interval_minutes: 120, tags: row.tags, site_fulltext: false, syndicate_fulltext: false });
       console.log(`✓ ${row.id}  ${d.feed}  (${d.items}, ${d.how})`);
     } else { miss.push(`${row.id}|${row.name}|${row.url}|${d.error}`); console.log(`✗ ${row.id}  ${d.error}`); }
   }

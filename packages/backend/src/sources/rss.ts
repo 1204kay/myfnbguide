@@ -3,7 +3,10 @@ import { XMLParser } from "fast-xml-parser";
 import { guardedFetch } from "../lib/http-fetch.ts";
 import { collapseWhitespace, stripTags } from "../lib/text.ts";
 import { sanitizeBody } from "../content/sanitize.ts";
+import { identityKeyFor } from "../content/materials.ts";
 import { sha256, stableJson } from "../lib/ids.ts";
+import { normalizeUrl } from "../lib/url.ts";
+import { isVideoPageUrl } from "../lib/video-url.ts";
 import { FetchError, type Candidate, type SourceRow } from "./types.ts";
 
 const parser = new XMLParser({
@@ -34,6 +37,19 @@ function text(v: unknown): string {
 function arr<T>(v: T | T[] | undefined | null): T[] {
   if (v === undefined || v === null) return [];
   return Array.isArray(v) ? v : [v];
+}
+
+/** Media RSS descriptions describe the video; even a long description is not a transcript. */
+function mediaDescription(entry: Record<string, any>): string | null {
+  const groups = arr<Record<string, any>>(entry["media:group"]);
+  const containers = [...groups.flatMap(group => arr<Record<string, any>>(group["media:content"])), ...arr<Record<string, any>>(entry["media:content"]), ...groups, entry];
+  for (const container of containers) {
+    const description = container["media:description"];
+    const value = text(description);
+    if (!value) continue;
+    return collapseWhitespace(description?.["@type"] === "html" ? stripTags(value) : value).slice(0, 2000) || null;
+  }
+  return null;
 }
 
 function parseDate(v: string): Date | null {
@@ -91,17 +107,17 @@ export function isTeaser(text: string): boolean {
 
 /**
  * The body and excerpt of a feed entry: its text when it is the article, else no body (a summary, or
- * a teaser that stands in as the excerpt when the entry has none).
+ * a teaser that stands in as the excerpt when the entry has none) until extraction reads the entry's
+ * page; an entry without a page has none. A short text is taken for a summary, unless the source
+ * declares its summary to be the body.
  */
-function feedText(bodyHtml: string | null, summaryHtml: string, source: SourceRow): Pick<Candidate, "excerpt" | "bodyHtml" | "bodyText" | "bodyStatus"> {
+function feedText(bodyHtml: string | null, summaryHtml: string, source: SourceRow, hasPage = true): Pick<Candidate, "excerpt" | "bodyHtml" | "bodyText" | "bodyStatus"> {
   const bodyText = bodyHtml ? stripTags(bodyHtml) : null;
   const teaser = !!bodyText && source.participation_mode === "editorial" && isTeaser(bodyText);
   const excerpt = summaryHtml ? collapseWhitespace(stripTags(summaryHtml)).slice(0, 2000) : teaser ? collapseWhitespace(bodyText!) : null;
-  // A source that declares its summary to be the body keeps it whatever its length (as json_list does): its
-  // pages are no better (a podcast episode's page is a player, often the show's blurb for every episode).
   return bodyText && (bodyText.length > 280 || source.config.summaryIsBody === true) && !teaser
     ? { excerpt, bodyHtml, bodyText, bodyStatus: "ok" }
-    : { excerpt, bodyHtml: null, bodyText: null, bodyStatus: "pending" };
+    : { excerpt, bodyHtml: null, bodyText: null, bodyStatus: hasPage ? "pending" : "none" };
 }
 
 interface RssValidator {
@@ -154,18 +170,19 @@ export async function fetchRss(source: SourceRow, opts: { force?: boolean } = {}
     const items = arr(doc.rss?.channel?.item ?? doc["rdf:RDF"]?.item);
     for (const it of items) {
       const guid = text(it.guid);
+      const page = text(it.link) || (normalizeUrl(guid) ? guid : "");
       const enclosures = arr(it.enclosure as Record<string, string> | Array<Record<string, string>>);
-      const page = text(it.link) || (/^https?:\/\//i.test(guid) ? guid : "");
-      // Podcast episodes often have no <link> and a guid that is not an address: readers get the episode's
-      // media file instead. The identity stays the one the guid gives (as in identityKeyFor), so episodes
-      // already stored are not collected again, and a host moving its media files creates no new items.
-      const mediaFile = page ? "" : enclosures.find((e) => /^(audio|video)\//.test(e?.["@type"] ?? ""))?.["@url"] ?? "";
+      // An episode with no page (no <link>, a guid that is no address) links to its audio or video file,
+      // which a browser plays. Its identity stays the one its guid gives, and it has no page to read a body from.
+      const mediaFile = !page && guid ? enclosures.find((e) => /^(audio|video)\//.test(e?.["@type"] ?? ""))?.["@url"] ?? "" : "";
       const link = page || mediaFile || guid;
       const title = collapseWhitespace(stripTags(text(it.title)));
       if (!link || !title) continue;
       const contentEncoded = text(it["content:encoded"]);
       const description = text(it.description);
-      const bodyHtmlRaw = contentEncoded || (summaryIsBody ? description : "");
+      const video = isVideoPageUrl(link);
+      const videoExcerpt = video ? mediaDescription(it) : null;
+      const bodyHtmlRaw = contentEncoded || (summaryIsBody && !video ? description : "");
       const bodyHtml = bodyHtmlRaw ? sanitizeBody(bodyHtmlRaw, link) : null;
       const enclosure = enclosures.find((e) => /^image\//.test(e?.["@type"] ?? ""));
       const media = [
@@ -174,14 +191,15 @@ export async function fetchRss(source: SourceRow, opts: { force?: boolean } = {}
       ];
       out.push({
         url: link,
-        ...(mediaFile && guid ? { identityKey: `src:${source.id}:${sha256(guid + "\u0001" + title).slice(0, 32)}` } : {}),
+        ...(mediaFile ? { identityKey: identityKeyFor({ sourceId: source.id, url: guid, title, via: "fetch" }) } : {}),
         title,
         author: text(it["dc:creator"]) || text(it.author) || null,
         publishedAt: parseDate(text(it.pubDate) || text(it["dc:date"]) || text(it.published)),
-        ...feedText(bodyHtml, description, source),
+        ...feedText(bodyHtml, description, source, !mediaFile && !video),
+        ...(videoExcerpt ? { excerpt: videoExcerpt } : {}),
         media: media.slice(0, 6),
         categories: arr(it.category).map((c) => text(c)).filter(Boolean),
-        raw: { guid: text(it.guid) || null },
+        raw: { guid: guid || null },
       });
     }
     return { candidates: out, validator, notModified: false };
@@ -198,15 +216,19 @@ export async function fetchRss(source: SourceRow, opts: { force?: boolean } = {}
       if (!entryUrl || !title) continue;
       const content = text(e.content);
       const summary = text(e.summary);
-      const bodyHtml = content ? sanitizeBody(content, entryUrl) : null;
+      const video = isVideoPageUrl(entryUrl);
+      const videoExcerpt = video ? mediaDescription(e) : null;
+      const bodyHtmlRaw = content || (summaryIsBody && !video ? summary : "");
+      const bodyHtml = bodyHtmlRaw ? sanitizeBody(bodyHtmlRaw, entryUrl) : null;
       out.push({
         url: entryUrl,
         title,
         author: text(arr(e.author)[0]?.name) || null,
         publishedAt: parseDate(text(e.published) || text(e.updated)),
         sourceUpdatedAt: parseDate(text(e.updated)),
-        ...feedText(bodyHtml, summary, source),
-        media: content ? imagesFrom(content, entryUrl) : [],
+        ...feedText(bodyHtml, summary, source, !video),
+        ...(videoExcerpt ? { excerpt: videoExcerpt } : {}),
+        media: bodyHtmlRaw ? imagesFrom(bodyHtmlRaw, entryUrl) : [],
         categories: arr(e.category).map((c: any) => c?.["@term"] ?? text(c)).filter(Boolean),
         raw: { id: text(e.id) || null },
       });

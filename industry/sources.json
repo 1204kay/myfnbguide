@@ -11,8 +11,7 @@
           "Feature"
         ],
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -37,8 +36,7 @@
           "Digital Issue"
         ],
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -65,8 +63,7 @@
           "maxFetches": 12
         },
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -94,8 +91,7 @@
           "publishedAtAuthoritative": true
         },
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -116,8 +112,7 @@
       "config": {
         "feedUrl": "https://www.baristamagazine.com/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -138,8 +133,7 @@
       "config": {
         "feedUrl": "https://qsrmedia.com/rss.xml",
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         },
         "detail": {
           "maxFetches": 20,
@@ -171,8 +165,7 @@
           "Openings"
         ],
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -193,8 +186,7 @@
       "config": {
         "feedUrl": "https://www.ristorazioneitalianamagazine.it/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -215,8 +207,7 @@
       "config": {
         "feedUrl": "https://www.foodrink.co.jp/rss.xml",
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -244,8 +235,7 @@
           "publishedAtAuthoritative": true
         },
         "_aihot": {
-          "initialBackfillLimit": 8,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 8
         }
       },
       "tier": "T2",
@@ -266,8 +256,7 @@
       "config": {
         "feedUrl": "https://ahresp.com/feed/",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T1",
@@ -288,8 +277,7 @@
       "config": {
         "feedUrl": "https://www.bargiornale.it/feed/",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -310,8 +298,7 @@
       "config": {
         "feedUrl": "https://www.fipe.it/feed/",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T1",
@@ -335,8 +322,7 @@
           "Sponsored"
         ],
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -362,8 +348,7 @@
           "Gastro-Großhandel"
         ],
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -384,8 +369,7 @@
       "config": {
         "feedUrl": "https://www.hospitalityireland.com/feed",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -406,8 +390,7 @@
       "config": {
         "feedUrl": "https://www.marginedge.com/blog/rss.xml",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T1_5",
@@ -429,8 +412,7 @@
         "feedUrl": "https://anchor.fm/s/10a46fcd4/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -452,8 +434,7 @@
         "feedUrl": "https://anchor.fm/s/10c589b40/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -475,8 +456,7 @@
         "feedUrl": "https://feed.ausha.co/n5zJxIRnq5Vk",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -498,8 +478,7 @@
         "feedUrl": "https://anchor.fm/s/1167eb294/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -521,8 +500,7 @@
         "feedUrl": "https://anchor.fm/s/969bbcc0/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -544,8 +522,7 @@
         "feedUrl": "https://www.spreaker.com/show/5143519/episodes/feed",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -567,8 +544,7 @@
         "feedUrl": "https://feeds.soundon.fm/podcasts/04c60255-df49-4568-ba89-83a69b96ea61.xml",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -590,8 +566,7 @@
         "feedUrl": "https://api.riverside.fm/hosting/mMIUQRyf.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -613,8 +588,7 @@
         "feedUrl": "https://rss.podengine.io/strategic-business-growth-systems-restaurant-edition",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -636,8 +610,7 @@
         "feedUrl": "https://rss.podengine.io/marketing-morsels-for-restaurants",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -659,8 +632,7 @@
         "feedUrl": "https://feeds.castos.com/p49k",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -682,8 +654,7 @@
         "feedUrl": "https://totalfood.com/feed/podcast/",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -705,8 +676,7 @@
         "feedUrl": "https://rss.buzzsprout.com/2128805.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -728,8 +698,7 @@
         "feedUrl": "https://rss.buzzsprout.com/238017.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -751,8 +720,7 @@
         "feedUrl": "https://rss.art19.com/the-build",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -774,8 +742,7 @@
         "feedUrl": "https://anchor.fm/s/10c84feec/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -797,8 +764,7 @@
         "feedUrl": "https://anchor.fm/s/11481fce4/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -820,8 +786,7 @@
         "feedUrl": "https://anchor.fm/s/fb372db8/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -843,8 +808,7 @@
         "feedUrl": "https://feeds.megaphone.fm/JPFMN9974221305",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -866,8 +830,7 @@
         "feedUrl": "https://api.riverside.com/hosting/iybPknYu.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -889,8 +852,7 @@
         "feedUrl": "https://feeds.blubrry.com/feeds/3956510.xml",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -912,8 +874,7 @@
         "feedUrl": "https://rss.buzzsprout.com/2419583.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -934,8 +895,7 @@
       "config": {
         "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=141863",
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T1_5",
@@ -956,8 +916,7 @@
       "config": {
         "feedUrl": "https://www.foodnews.co.kr/rss/allArticle.xml",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -978,8 +937,7 @@
       "config": {
         "feedUrl": "https://www.eats365pos.com/rss.xml",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T1_5",
@@ -1000,8 +958,7 @@
       "config": {
         "feedUrl": "https://www.hospitalitybusiness.co.nz/feed/",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -1022,8 +979,7 @@
       "config": {
         "feedUrl": "https://www.ristorando.eu/feed/",
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         }
       },
       "tier": "T2",
@@ -1045,8 +1001,7 @@
         "feedUrl": "https://anchor.fm/s/101fb6240/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1068,8 +1023,7 @@
         "feedUrl": "https://feeds.captivate.fm/restaurant-prosperity-formula/",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1093,8 +1047,7 @@
           "https://blog.petpooja.com/finance-compliance/"
         ],
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1116,8 +1069,7 @@
         "feedUrl": "https://anchor.fm/s/2f316c24/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1139,8 +1091,7 @@
         "feedUrl": "https://feed.firstory.me/rss/user/ckiji29qfd9s108192s6mujil",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1162,8 +1113,7 @@
         "feedUrl": "https://feeds.transistor.fm/full-comp-the-voice-of-the-restaurant-industry-revolution",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1185,8 +1135,7 @@
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:554457540/sounds.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1208,8 +1157,7 @@
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:158297519/sounds.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1231,8 +1179,7 @@
         "feedUrl": "https://rss.libsyn.com/shows/418643/destinations/3475718.xml",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1254,8 +1201,7 @@
         "feedUrl": "https://rss.libsyn.com/shows/187310/destinations/1290941.xml",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1277,8 +1223,7 @@
         "feedUrl": "https://rss.libsyn.com/shows/477066/destinations/4050717.xml",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1300,8 +1245,7 @@
         "feedUrl": "https://feeds.libsyn.com/537872/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1323,8 +1267,7 @@
         "feedUrl": "https://rss.libsyn.com/shows/85579/destinations/412105.xml",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1346,8 +1289,7 @@
         "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1369,8 +1311,7 @@
         "feedUrl": "https://rss.buzzsprout.com/1625317.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1392,8 +1333,7 @@
         "feedUrl": "https://feed.ausha.co/4A7QwTm2zARD",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1415,8 +1355,7 @@
         "feedUrl": "https://anchor.fm/s/1133b4cdc/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1438,8 +1377,7 @@
         "feedUrl": "https://anchor.fm/s/fd40eaf4/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1461,8 +1399,7 @@
         "feedUrl": "https://rss.buzzsprout.com/2447330.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1484,8 +1421,7 @@
         "feedUrl": "https://anchor.fm/s/fb0da358/podcast/rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1507,8 +1443,7 @@
         "feedUrl": "https://app.kajabi.com/podcasts/2147882667/feed",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1530,8 +1465,7 @@
         "feedUrl": "https://feeds.captivate.fm/restaurant-deal-making/",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1553,8 +1487,7 @@
         "feedUrl": "http://therestaurantcoachpodcast.blubrry.net/feed/podcast/",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1576,8 +1509,7 @@
         "feedUrl": "https://api.substack.com/feed/podcast/3892076.rss",
         "summaryIsBody": true,
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1606,8 +1538,7 @@
           "https://pro.gnavi.co.jp/magazine/t_"
         ],
         "_aihot": {
-          "initialBackfillLimit": 3,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 3
         },
         "denyUrlPrefixes": [
           "https://pro.gnavi.co.jp/magazine/t_fc/"
@@ -1639,8 +1570,7 @@
           "https://pro.gnavi.co.jp/magazine/t_"
         ],
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         },
         "denyUrlPrefixes": [
           "https://pro.gnavi.co.jp/magazine/t_fc/"
@@ -1664,8 +1594,7 @@
       "config": {
         "feedUrl": "https://www.tenpo.biz/solution/feed/",
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",
@@ -1699,8 +1628,7 @@
           "publishedAtUtcOffset": "-03:00"
         },
         "_aihot": {
-          "initialBackfillLimit": 2,
-          "initialBackfillOnly": true
+          "initialBackfillLimit": 2
         }
       },
       "tier": "T2",

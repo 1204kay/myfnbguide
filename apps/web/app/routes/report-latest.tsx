@@ -21,7 +21,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export function meta({ loaderData, location }: Route.MetaArgs) {
   const kind = loaderData?.kind ?? "daily";
-  const description = REPORTS.descriptions[kind];
+  const description = `${REPORTS.descriptions[kind]}。`;
   const report = loaderData?.report;
   return [...pageMeta({
     title: withSubject(KIND_LABEL[kind]),

@@ -77,6 +77,12 @@ export function topicLinks(slugs: string[]): TopicLink[] {
   return slugs.map((s) => findTopic(s)).filter((t): t is Topic => !!t).map((t) => ({ slug: t.slug, name: t.name }));
 }
 
+/** One membership rule for topic discovery and a single topic's page and count. */
+function topicMatch(tags: ReturnType<typeof sql>, pattern: ReturnType<typeof sql>) {
+  return sql`p.tags && ${tags} AND (${pattern} IS NULL OR p.title ~* ${pattern} OR coalesce(p.original_title, '') ~* ${pattern}
+    OR (SELECT count(*) FROM unnest(p.tags) AS e(tag) WHERE e.tag LIKE 'entity:%') = 1)`;
+}
+
 /**
  * The topics report `p` belongs to, in topic order: its tags meet the topic's and, for a company, the
  * title names it or it is the report's only subject company.
@@ -85,14 +91,14 @@ export function topicMembership(topics: Topic[] = TOPICS) {
   const rows = topics.map((t) => ({ slug: t.slug, tags: t.tags, pattern: t.pattern, position: position(t.slug) }));
   return sql`ARRAY(
     SELECT t.slug FROM jsonb_to_recordset(${sql.json(rows)}::jsonb) AS t(slug text, tags text[], pattern text, position int)
-    WHERE p.tags && t.tags AND (t.pattern IS NULL OR p.title ~* t.pattern OR coalesce(p.original_title, '') ~* t.pattern
-      OR (SELECT count(*) FROM unnest(p.tags) AS e(tag) WHERE e.tag LIKE 'entity:%') = 1)
+    WHERE ${topicMatch(sql`t.tags`, sql`t.pattern`)}
     ORDER BY t.position)`;
 }
 
 /** Report `p` is in topic `t`; the tag overlap comes first, for the tags index. */
 function inTopic(t: Topic) {
-  return sql`p.tags && ${t.tags}::text[] AND ${t.slug} = ANY(${topicMembership([t])})`;
+  const pattern: ReturnType<typeof sql> = t.pattern === null ? sql`NULL::text` : sql`${t.pattern}::text`;
+  return topicMatch(sql`${t.tags}::text[]`, pattern);
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -195,7 +201,7 @@ async function readIndex(now: Date): Promise<TopicIndex> {
   return { at: now, bySlug, modules: new Map(await Promise.all(parts.map(async (p) => [p.name, await p.index(members, now)] as const))) };
 }
 
-const indexCache = cached(() => readIndex(new Date()), { freshMs: 60_000, maxStaleMs: 10 * 60_000 });
+const indexCache = cached(() => readIndex(new Date()), { freshMs: 60_000, maxStaleMs: 60_000 });
 
 /** A given `now` reads afresh (tests, a clock other than this minute's). */
 const topicIndex = (now?: Date) => (now ? readIndex(now) : indexCache.get());
@@ -267,8 +273,8 @@ export interface TopicCount {
 }
 
 /** For the sitemap and IndexNow: every topic's pages and when they last changed. */
-export async function topicPageCounts(): Promise<TopicCount[]> {
-  const index = await topicIndex();
+export async function topicPageCounts(now?: Date): Promise<TopicCount[]> {
+  const index = await topicIndex(now);
   return TOPICS.map((t) => {
     const seats = index.bySlug.get(t.slug)!;
     return {
@@ -287,7 +293,7 @@ function poolTotal(t: Topic, now?: Date): Promise<number> {
   const read = async (at: Date) => (await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM publications p WHERE ${listedCondition(at)} AND ${inTopic(t)}`)[0]?.n ?? 0;
   if (now) return read(now);
   let count = poolCounts.get(t.slug);
-  if (!count) poolCounts.set(t.slug, (count = cached(() => read(new Date()), { freshMs: 60_000, maxStaleMs: 10 * 60_000 })));
+  if (!count) poolCounts.set(t.slug, (count = cached(() => read(new Date()), { freshMs: 60_000, maxStaleMs: 60_000 })));
   return count.get();
 }
 

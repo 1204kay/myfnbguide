@@ -73,7 +73,7 @@ test("each episode's audio is found by its title", () => {
 
 test("an opened archive comes in as history, and only episodes whose notes score at the floor are transcribed", async () => {
   const result = await importSource({ id: SOURCE });
-  assert.deepEqual([result.found, result.created, result.withAudio], [3, 3, 3]);
+  assert.deepEqual([result.found, result.created, result.withAudio, result.finished], [3, 3, 3, true]);
   const rows = await sql<{ id: string; title: string; backfill: boolean; backfill_reason: string; audio_url: string }[]>`
     SELECT a.id, a.title, a.backfill, a.backfill_reason, e.audio_url FROM articles a JOIN archive_episodes e ON e.article_id = a.id WHERE a.source_id = ${SOURCE} ORDER BY a.title`;
   assert.ok(rows.every((r) => r.backfill && r.backfill_reason === "archive"), "history: not today, not in the daily");
@@ -114,7 +114,12 @@ test("an opened archive comes in as history, and only episodes whose notes score
 
 test("a blog's older pages come in until the first empty one, through the source's own filters", async () => {
   const result = await importSource({ id: `${SOURCE}-blog`, pages: { url: `${BASE}/blog.xml?paged={n}`, to: 5 } });
-  assert.deepEqual([result.found, result.created, result.withAudio], [2, 2, 0], "the excluded article stays out; page 3 is empty");
+  assert.deepEqual([result.pages, result.found, result.created, result.withAudio, result.finished], [2, 2, 2, 0, true], "the excluded article stays out; page 3 is empty");
+  const [mark] = await sql<{ pages: number; finished_at: Date | null }[]>`SELECT pages, finished_at FROM archive_sources WHERE source_id = ${`${SOURCE}-blog`}`;
+  assert.ok(mark!.pages === 2 && mark!.finished_at, "finished once the empty page was read");
+  const broken = await importSource({ id: `${SOURCE}-blog`, pages: { url: "http://127.0.0.1:1/blog.xml?paged={n}", to: 3 } });
+  assert.ok(!broken.finished && broken.error, "an unreachable page stops the run with its error, not finished");
+  assert.equal((await sql`SELECT finished_at FROM archive_sources WHERE source_id = ${`${SOURCE}-blog`}`)[0]!.finished_at, null);
   const urls = (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id = ${`${SOURCE}-blog`} ORDER BY url`).map((r) => r.url);
   assert.deepEqual(urls, [`${BASE}/blog/tips/a`, `${BASE}/blog/tips/c`]);
 });

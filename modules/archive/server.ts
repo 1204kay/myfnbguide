@@ -24,7 +24,7 @@ export default defineServerModule({
       // Reading feeds is collection: off unless COLLECT_ENABLED, like the engine's.
       when: () => process.env.COLLECT_ENABLED === "true",
       run: async () => {
-        const done = new Set((await sql<{ source_id: string }[]>`SELECT DISTINCT source_id FROM archive_episodes`).map((r) => r.source_id));
+        const done = new Set((await sql<{ source_id: string }[]>`SELECT source_id FROM archive_sources WHERE finished_at IS NOT NULL`).map((r) => r.source_id));
         const results = [];
         for (const plan of ARCHIVE.filter((p) => !done.has(p.id))) results.push(await importSource(plan));
         return { imported: results };
@@ -41,11 +41,13 @@ export default defineServerModule({
     },
   ],
   http: (app) => {
-    // Episodes by status, and how many wait for transcription (their notes scored at least the floor).
+    // In numbers: each source's import, its entries by status, why transcriptions failed (the start of each
+    // error, which names no secret), and how many wait for transcription (notes at least at the floor).
     app.get("/api/archive/status", async (_req, reply) => {
-      const rows = await sql<{ source_id: string; status: string; n: number; chars: number | null }[]>`
-        SELECT source_id, status, count(*)::int AS n, sum(transcript_chars)::int AS chars FROM archive_episodes GROUP BY 1, 2 ORDER BY 1, 2`;
-      return reply.header("Cache-Control", "no-store").send({ episodes: rows, waiting: (await episodesToTranscribe(1000)).length });
+      const sources = await sql`SELECT source_id, pages, found, finished_at, left(error, 200) AS error FROM archive_sources ORDER BY source_id`;
+      const episodes = await sql`SELECT source_id, status, count(*)::int AS n, sum(transcript_chars)::int AS chars FROM archive_episodes GROUP BY 1, 2 ORDER BY 1, 2`;
+      const failures = await sql`SELECT left(error, 160) AS error, count(*)::int AS n FROM archive_episodes WHERE status = 'failed' GROUP BY 1 ORDER BY 2 DESC`;
+      return reply.header("Cache-Control", "no-store").send({ sources, episodes, failures, waiting: (await episodesToTranscribe(1000)).length });
     });
   },
 });

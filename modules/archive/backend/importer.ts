@@ -29,9 +29,12 @@ export function audioByTitle(feed: string): Map<string, { url: string; type: str
 
 export interface ImportResult {
   sourceId: string;
+  pages: number;
   found: number;
   created: number;
   withAudio: number;
+  finished: boolean;
+  error?: string;
 }
 
 /** One listing of the source: its entries, through the source's own URL and noise filters as the collection applies them. */
@@ -46,29 +49,41 @@ async function readListing(source: SourceRow, feedUrl: string): Promise<{ listed
   };
 }
 
-/** Takes in every entry of the source's feed (and of its older pages) that the site does not have yet. Entries it has are recorded too. */
+/**
+ * Takes in every entry of the source's feed (and of its older pages) that the site does not have yet; entries it
+ * has are recorded too. The source is finished once its last page, or an empty one, was read; an error stops the
+ * run at that page and is kept, and the next run reads from the first page again (what it has costs nothing).
+ */
 export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
   const sourceId = plan.id;
   const [source] = await sql<SourceRow[]>`SELECT * FROM sources WHERE id = ${sourceId}`;
   if (!source || source.kind !== "rss") throw new Error(`archive: ${sourceId} is not an RSS source`);
   const urls = plan.pages ? Array.from({ length: plan.pages.to }, (_, i) => plan.pages!.url.replace("{n}", String(i + 1))) : [source.config.feedUrl as string];
-  let found = 0;
-  let created = 0;
-  let withAudio = 0;
-  for (const url of urls) {
-    const { listed, candidates, audio } = await readListing(source, url);
-    // The end of the archive is an empty page; a page whose entries the filters all drop is not.
-    if (!listed) break;
-    found += candidates.length;
-    for (const c of candidates) {
-      const res = await upsertMaterial({ ...c, sourceId, via: "archive", backfill: "archive" });
-      if (res.created || res.revised || res.processingNeeded) await queueProcessing(res.articleId);
-      if (res.created) created += 1;
-      const file = audio.get(key(c.title));
-      if (file) withAudio += 1;
-      await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
-        VALUES (${res.articleId}, ${sourceId}, ${file?.url ?? null}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+  const result: ImportResult = { sourceId, pages: 0, found: 0, created: 0, withAudio: 0, finished: false };
+  try {
+    for (const url of urls) {
+      const { listed, candidates, audio } = await readListing(source, url);
+      // The end of the archive is an empty page; a page whose entries the filters all drop is not.
+      if (!listed) break;
+      result.pages += 1;
+      result.found += candidates.length;
+      for (const c of candidates) {
+        const res = await upsertMaterial({ ...c, sourceId, via: "archive", backfill: "archive" });
+        if (res.created || res.revised || res.processingNeeded) await queueProcessing(res.articleId);
+        if (res.created) result.created += 1;
+        const file = audio.get(key(c.title));
+        if (file) result.withAudio += 1;
+        await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
+          VALUES (${res.articleId}, ${sourceId}, ${file?.url ?? null}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+      }
     }
+    result.finished = true;
+  } catch (error) {
+    result.error = String((error as Error).message ?? error).slice(0, 500);
   }
-  return { sourceId, found, created, withAudio };
+  await sql`INSERT INTO archive_sources (source_id, pages, found, finished_at, error, updated_at)
+    VALUES (${sourceId}, ${result.pages}, ${result.found}, ${result.finished ? new Date() : null}, ${result.error ?? null}, now())
+    ON CONFLICT (source_id) DO UPDATE SET pages = EXCLUDED.pages, found = EXCLUDED.found, finished_at = EXCLUDED.finished_at,
+      error = EXCLUDED.error, updated_at = now()`;
+  return result;
 }

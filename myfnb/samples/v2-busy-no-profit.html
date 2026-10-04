@@ -90,13 +90,6 @@ main:has(.page:target) .home { display: none; }
 .tline li.bad::before { background: var(--loss); }
 .tline b { display: block; font-size: 12px; color: var(--accent); letter-spacing: 0.06em; }
 .tline li.bad b { color: var(--loss); }
-.recap { margin-top: 38px; }
-.recap .rows { margin-top: 12px; border-bottom: 1px solid var(--line); }
-.recap .rows a { display: grid; grid-template-columns: 1fr auto; gap: 2px 14px; padding: 12px 0; border-top: 1px solid var(--line); }
-.recap .w { grid-column: 1; font-size: 12px; color: var(--ink-4); }
-.recap .d { grid-column: 1; font-size: 15px; font-weight: 600; line-height: 1.55; color: var(--ink); }
-.recap .x { grid-column: 2; grid-row: 1 / span 2; align-self: center; text-align: right; font-weight: 900; font-size: 15px; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.recap .x.loss { color: var(--loss); }
 /* 故事页 */
 .back { display: inline-block; margin-top: 18px; color: var(--ink-4); font-size: 13px; }
 .story > .kicker { margin-top: 22px; }
@@ -237,15 +230,15 @@ main:has(.page:target) .home { display: none; }
   <div class="section" id="g1">
     <div class="ghead"><span class="n num">1</span><h2>食材用得比配方多</h2></div>
     <div class="items">
-      <a class="item" href="#d-goomer"><span class="src">巴西 · Goomer 博客 · 2026 年 8 月</span><b>配方表做好了，食材钱为什么还是超支</b><p>把「应该花的」和「实际花的」放在一起比，差额就是漏掉的钱。一家点餐系统商写给餐厅老板。</p></a>
-      <a class="item" href="#d-trc"><span class="src">美国 · The Restaurant Coach 播客 · 2026 年 9 月</span><b>实际食材钱，最多比配方算的高 2 个百分点</b><p>看到食材成本率 30% 就放心？一档餐厅经营播客谈这个数字背后漏掉的钱。</p></a>
+      <a class="item" href="#d-goomer"><span class="src">巴西 · Goomer 博客 · 2026 年 8 月</span><b>配方表做好了，食材钱为什么还是超支</b><p>把「应该花的」和「实际花的」食材钱放在一起比，差额就是漏掉的钱，一次只追查差得最多的一项。</p></a>
+      <a class="item" href="#d-trc"><span class="src">美国 · The Restaurant Coach 播客 · 2026 年 9 月</span><b>实际食材钱，最多比配方算的高 2 个百分点</b><p>看到食材成本率 30% 就放心？节目的规则是：盘点出来的实际比例，最多比配方算的高 2 个百分点。</p></a>
     </div>
   </div>
 
   <div class="section" id="g2">
     <div class="ghead"><span class="n num">2</span><h2>固定费用悄悄上涨</h2></div>
     <div class="items">
-      <a class="item" href="#d-linen"><span class="src">美国 · Total Food Service · 2026 年 10 月</span><b>布草租金四年涨了 74%，一家餐馆怎样把多付的钱找出来</b><p>每周自动付的账单，一年多付 3.3 万美元，直到财务看账才发现。</p></a>
+      <a class="item" href="#d-linen"><span class="src">美国 · Total Food Service · 2026 年 10 月</span><b>布草租金四年涨了 74%，一家餐馆怎样把多付的钱找出来</b><p>每周自动付的账单，一年多付 3.3 万美元。顾问把第一张和最新一张账单逐行对比，查了出来。</p></a>
       <a class="item" href="#d-jpcosts"><span class="src">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 10 月</span><b>用 AI 把每月自动扣走的钱列出来</b><p>一位个体店主把存折和信用卡明细交给 AI，一项项检查还要不要。</p></a>
     </div>
   </div>
@@ -253,18 +246,7 @@ main:has(.page:target) .home { display: none; }
   <div class="section" id="g3">
     <div class="ghead"><span class="n num">3</span><h2>抽成和房租太重</h2></div>
     <div class="items">
-      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>平台抽走营收的两成多，一家一个月亏 3,810 美元，最后三家全部关闭。</p></a>
-    </div>
-  </div>
-  <div class="recap">
-    <div class="kicker">放在一起看</div>
-    <div class="rows">
-      <a href="#d-jpprofit"><span class="w">日本 · 开店 26 年的个体店主</span><span class="d">把店里的数字交给 AI 整理，分清毛利、固定费用、保本点、利润和现金</span></a>
-      <a href="#d-goomer"><span class="w">巴西 · 点餐系统商 Goomer</span><span class="d">对比配方算的和盘点算的食材钱，一次只追查差得最多的一项</span></a>
-      <a href="#d-trc"><span class="w">美国 · The Restaurant Coach 播客</span><span class="d">实际食材比例，最多比配方算的高 2 个百分点</span><span class="x">≤ 2 个百分点</span></a>
-      <a href="#d-linen"><span class="w">美国 · 一家餐馆和布草顾问</span><span class="d">第一张和最新一张账单逐行对比，指定一个人管合同</span><span class="x">4 年 +74%</span></a>
-      <a href="#d-jpcosts"><span class="w">日本 · 开店 26 年的个体店主</span><span class="d">把存折和信用卡明细交给 AI，列出每月自动扣走的钱</span></a>
-      <a href="#d-calibbq"><span class="w">美国 · 烧烤店 Cali BBQ</span><span class="d">关闭三个外卖厨房，改做不经过平台的大单合作</span><span class="x loss">月亏 3,810 美元</span></a>
+      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>平台抽走营收的两成多，一家一个月亏 3,810 美元。三家全部关闭后，他们改做不经过平台的大单合作。</p></a>
     </div>
   </div>
 </section>
@@ -555,8 +537,8 @@ main:has(.page:target) .home { display: none; }
     <div class="ghead"><h2>路线撞在一起</h2></div>
     <p class="gwhy">出餐和收碗走同一条路，员工的时间花在互相让路上。</p>
     <div class="items">
-      <a class="item" href="#d-foodnews"><span class="src">韩国 · 식품저널 专栏 · 2026 年 10 月</span><b>漂亮的餐厅，为什么一到 12 点 20 分就乱</b><p>一位做了 30 多年餐厅设计的顾问：一次让路 3 秒，高峰时重复二三十次。</p></a>
-      <a class="item" href="#d-ristorazione"><span class="src">意大利 · Ristorazione Italiana · 2026 年 9 月</span><b>好用的店不一定最漂亮：坐满的时候怎么运转</b><p>客人、服务员、外卖员挤在同一个门口；满座时要提高嗓门才能说话。</p></a>
+      <a class="item" href="#d-foodnews"><span class="src">韩国 · 식품저널 专栏 · 2026 年 10 月</span><b>漂亮的餐厅，为什么一到 12 点 20 分就乱</b><p>一次让路 3 秒，高峰时重复二三十次。一位做了 30 多年餐厅设计的顾问，动工前先拿图纸把高峰演一遍。</p></a>
+      <a class="item" href="#d-ristorazione"><span class="src">意大利 · Ristorazione Italiana · 2026 年 9 月</span><b>好用的店不一定最漂亮：坐满的时候怎么运转</b><p>客人、服务员、外卖员挤在同一个门口。文章建议给外卖单独留一块取餐区，货走的路不穿过客人。</p></a>
     </div>
   </div>
 
@@ -565,14 +547,6 @@ main:has(.page:target) .home { display: none; }
     <p class="gwhy">物料不在手边、分工不清楚，高峰时就有人离开岗位。</p>
     <div class="items">
       <a class="item" href="#shop-revolucion"><span class="src">美国 · Barista Magazine · 2026 年 9 月</span><b>排队排到门口的时候，一家咖啡吧怎么出杯</b><p>开门前 5 到 8 分钟的准备，四个人的分工，不用喊叫的口令和手势。</p></a>
-    </div>
-  </div>
-  <div class="recap">
-    <div class="kicker">放在一起看</div>
-    <div class="rows">
-      <a href="#d-foodnews"><span class="w">韩国 · 餐厅设计顾问 Jin Ik-jun</span><span class="d">动工前用图纸把高峰演一遍；先改备料和摆放，拆墙放在最后</span><span class="x">3 米 × 100 次</span></a>
-      <a href="#d-ristorazione"><span class="w">意大利 · Ristorazione Italiana</span><span class="d">外卖单独留取餐区，货走的路不穿过客人</span></a>
-      <a href="#shop-revolucion"><span class="w">美国 · 奥斯汀咖啡吧 Revolución</span><span class="d">开门前备好物料，四个人分工，用口令和手势代替喊叫</span><span class="x">拿铁 90–150 秒</span></a>
     </div>
   </div>
 </section>
@@ -600,20 +574,13 @@ main:has(.page:target) .home { display: none; }
   <div class="section">
     <div class="ghead"><h2>人和制度跟不上</h2></div>
     <div class="items">
-      <a class="item" href="#shop-bigeasy"><span class="src">澳大利亚 · Hospitality 杂志 · 2026 年 10 月</span><b>从两家开到三家，差点把公司拖垮</b><p>半年内连开两家，又过了半年，三家店赚的比只有一家时还少。</p></a>
+      <a class="item" href="#shop-bigeasy"><span class="src">澳大利亚 · Hospitality 杂志 · 2026 年 10 月</span><b>从两家开到三家，差点把公司拖垮</b><p>半年内连开两家，三家店赚的比只有一家时还少。创办人说，缺的是写下来的制度和专业的人。</p></a>
     </div>
   </div>
   <div class="section">
     <div class="ghead"><h2>开得多，不等于赚得多</h2></div>
     <div class="items">
-      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>用三个只做外卖的小厨房扩张，平台抽走两成多，最后三家全部关闭。</p></a>
-    </div>
-  </div>
-  <div class="recap">
-    <div class="kicker">放在一起看</div>
-    <div class="rows">
-      <a href="#shop-bigeasy"><span class="w">澳大利亚 · Big Easy Group</span><span class="d">第三家开业半年后，利润比一家时还少；缺的是书面的制度和专业的人</span><span class="x loss">利润不升反降</span></a>
-      <a href="#d-calibbq"><span class="w">美国 · 烧烤店 Cali BBQ</span><span class="d">用三个外卖厨房扩张，订单不断却在亏钱，最后全部关闭</span><span class="x loss">月亏 3,810 美元</span></a>
+      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>用三个只做外卖的小厨房扩张，平台抽走两成多，三家全部关闭，后来改做大单合作。</p></a>
     </div>
   </div>
 </section>

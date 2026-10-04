@@ -46,7 +46,7 @@ export function Figure({ children, caption, kind }: { children: ReactNode; capti
 }
 
 /** One horizontal bar split into parts; widths are shares of the whole (0–1). */
-function Fill({ parts }: { parts: Array<{ label: string; share: number; tone: "accent" | "loss" | number }> }) {
+export function Fill({ parts }: { parts: Array<{ label: string; share: number; tone: "accent" | "loss" | number }> }) {
   const tones = ["bg-ink-3/70", "bg-ink-4/70", "bg-ink-4/45", "bg-line-strong", "bg-line"];
   return (
     <div className="flex h-7 overflow-hidden rounded-md bg-bg-sunk text-[11.5px] font-semibold">

@@ -82,7 +82,8 @@ export function unfoundNumbers(text: string, source: Set<string>): string[] {
  * a country left as “全国/本地”, teaching the reader. Each with what to write instead, for the second try.
  */
 const WORDING: Array<[RegExp, string]> = [
-  [/讲(?![述解座究义课台])/u, "“讲”改成“说”“介绍”“谈到”"],
+  // 演讲、主讲、讲座、讲究、讲话（名词）这类书面词不算。
+  [/(?<![演主听宣])讲(?![述解座究义课台话师稿])/u, "“讲”改成“说”“介绍”“谈到”"],
   [/砍|废掉|废了/u, "“砍”“废掉”改成“削减”“取消”"],
   [/搞|弄(?!清)/u, "“搞”“弄”改成“做”“处理”"],
   [/啥|咋/u, "“啥”“咋”改成“什么”“怎么”"],
@@ -98,8 +99,8 @@ const WORDING: Array<[RegExp, string]> = [
   [/本地|本市/u, "写成“当地”或具体的城市名"],
   [/限额以上/u, "统计口径换成白话"],
   [/用得上|帮你|少走弯路|干货|揭秘|必看|权威|最全/u, "不替内容担保，不说读者会得到什么"],
-  [/你应该|建议你|务必|一定要|老板要/u, "只说明这家店怎么做，不教读者"],
-  [/先看|再看|首先|其次|第一步|第二步/u, "不用说明顺序的词"],
+  [/你应该|建议你|务必|一定要|老板要(?!求)/u, "只说明这家店怎么做，不教读者"],
+  [/先看|(?<!不)再看(?!重)|首先|其次|第一步|第二步/u, "不用说明顺序的词"],
   [/原价率|原価率/u, "写成“食材成本率”"],
 ];
 
@@ -177,7 +178,8 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     if (missing.length) problems.push(`${where}的数字 ${missing.join("、")} 在原文里找不到：删掉，或改成原文写的数字；要算出来的数放进图，由程序计算`);
     for (const [pattern, fix] of WORDING) {
       const hit = pattern.exec(text);
-      if (hit) problems.push(`${where}用了“${hit[0]}”：${fix}`);
+      // The words around it, so the second try (and whoever reads the held cases) finds the very place.
+      if (hit) problems.push(`${where}用了“${hit[0]}”（“${text.slice(Math.max(0, hit.index - 8), hit.index + hit[0].length + 8)}”）：${fix}`);
     }
   }
   // Example captions may only name the example's own numbers.

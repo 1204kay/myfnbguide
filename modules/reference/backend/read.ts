@@ -54,7 +54,7 @@ function card(r: Row, line: string): CaseCard {
 export async function readHome(now = new Date()): Promise<ReferenceHome> {
   const rows = await shownCases(sql`true`, now);
   const bySituation = new Map<string, Row[]>();
-  for (const r of rows) for (const p of r.story.placements) bySituation.set(p.situation, [...(bySituation.get(p.situation) ?? []), r]);
+  for (const r of rows) for (const slug of new Set(r.story.placements.map((p) => p.situation))) bySituation.set(slug, [...(bySituation.get(slug) ?? []), r]);
   const shops = new Map<string, Row[]>();
   for (const r of rows) if (r.shop_key) shops.set(r.shop_key, [...(shops.get(r.shop_key) ?? []), r]);
   const countries = (list: Row[]) => new Set(list.map((r) => r.story.shop.country)).size;

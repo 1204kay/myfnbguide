@@ -44,7 +44,7 @@ const StorySchema = z.object({
   title: text.max(40),
   lead: text,
   who: text,
-  parts: z.array(z.object({ heading: text.max(40), blocks: z.array(BlockSchema).min(1).max(6) })).min(2).max(6),
+  parts: z.array(z.object({ heading: text.max(40), blocks: z.array(BlockSchema).min(1).max(6) })).min(1).max(6),
   open: z.string().trim().nullable().default(null),
   shop: z.object({
     name: z.string().trim().nullable().default(null),
@@ -95,7 +95,9 @@ export function readOutput(raw: unknown): { written: Written | null; problems: s
   if (out.material === "news") return { written: { status: "thin", reason: `新闻或数据：${out.reason}` }, problems: [] };
   try {
     const { material: _, ...story } = out;
-    return { written: { status: "story", story: { ...story, parts: story.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: [] };
+    // A story is in a situation once: a second placement in the same situation (another group) is dropped.
+    const placements = story.placements.filter((p, i) => story.placements.findIndex((q) => q.situation === p.situation) === i);
+    return { written: { status: "story", story: { ...story, placements, parts: story.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: [] };
   } catch (error) {
     return { written: null, problems: [`举例算不出来：${(error as Error).message}`] };
   }

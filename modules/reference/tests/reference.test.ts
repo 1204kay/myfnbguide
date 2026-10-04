@@ -86,7 +86,8 @@ const answers: Record<string, unknown[]> = {
     { material: "story", ...story({ who: "顾问讲，一年多付 33,159 美元。" }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }, { heading: "假设你的餐饮店也这样做", blocks: [{ type: "example", example: { kind: "margin", price: 30, cost: 12 }, caption: "一份卖 30 元。" }] }] },
     { material: "story", ...story(), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }, { heading: "他把账单逐行对比", blocks: [{ type: "flow", steps: ["收齐合同和账单", "第一张和最近一张逐行对比"] }] }] },
   ],
-  SECOND: [{ material: "story", ...story({ title: "另一家店的账", placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
+  // Placed twice in one situation (two groups): it counts once, under the first.
+  SECOND: [{ material: "story", ...story({ title: "另一家店的账", placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
   THIN: [{ material: "thin", reason: "只有节目的题目" }],
   NEWS: [{ material: "news", reason: "一个国家的新规" }],
   WRONG: [{ material: "story", ...story({ who: "一年多付 99,999 美元。" }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "多了 88,888 美元。" }] })) }],

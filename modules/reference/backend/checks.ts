@@ -51,10 +51,11 @@ export function sourceNumbers(text: string): Set<string> {
     if (n !== null) found.add(String(n));
   }
   for (const word of normal.toLowerCase().match(/[a-z]+/g) ?? []) if (word in WORDS) found.add(String(WORDS[word]));
-  // "2.5 million", "1.2 万", "3 mil": the value written out.
-  for (const m of normal.matchAll(/(\d+(?:[.,]\d+)?)\s*(million|万|mil\b|k\b)/gi)) {
+  // "2.5 million", "1,2 milhão", "1.2 万", "3만", "5 mil" (thousand in Portuguese and Spanish), "55k": the value written out.
+  const SCALES: Array<[RegExp, number]> = [[/^(million|millions|milh(?:ão|ões)|millones?|milioni?|億|억)$/i, 1_000_000], [/^(万|만)$/, 10_000], [/^(mil|k|千|천|thousand)$/i, 1000]];
+  for (const m of normal.matchAll(/(\d+(?:[.,]\d+)?)\s*(millions?|milh(?:ão|ões)|millones?|milioni?|thousand|mil\b|k\b|[万만億억千천])/gi)) {
     const n = Number(m[1]!.replace(",", "."));
-    const scale = /^million|mil$/i.test(m[2]!) ? 1_000_000 : m[2] === "万" ? 10_000 : 1000;
+    const scale = SCALES.find(([word]) => word.test(m[2]!))![1] * (/^(億|억)$/.test(m[2]!) ? 100 : 1);
     found.add(String(Math.round(n * scale)));
   }
   return found;
@@ -82,7 +83,7 @@ export function unfoundNumbers(text: string, source: Set<string>): string[] {
  */
 const WORDING: Array<[RegExp, string]> = [
   [/讲(?![述解座究义课台])/u, "“讲”改成“说”“介绍”“谈到”"],
-  [/砍/u, "“砍”改成“削减”“取消”"],
+  [/砍|废掉|废了/u, "“砍”“废掉”改成“削减”“取消”"],
   [/搞|弄(?!清)/u, "“搞”“弄”改成“做”“处理”"],
   [/啥|咋/u, "“啥”“咋”改成“什么”“怎么”"],
   [/掉了/u, "“掉了”改成“下降”“失去”"],

@@ -1,5 +1,6 @@
 // A case as the pages draw it: what the writer produced, with the example figures computed by the program
 // (backend/examples.ts). Shared by the backend that stores it and the web that renders it.
+import type { ShopKind } from "./situations.ts";
 
 /** Who tells the story: the owner, their staff, an adviser or vendor, or a publication about the shop. */
 export type Speaker = "owner" | "staff" | "adviser" | "vendor" | "media";
@@ -9,8 +10,8 @@ export interface Shop {
   name: string | null;
   country: string;
   city: string | null;
-  /** 咖啡吧、烧烤店…; null when the original does not say. */
-  kind: string | null;
+  /** Its 品类 (situations.ts SHOP_KINDS); null when the original does not say or none fits. */
+  kind: ShopKind | null;
   /** 一家店、8 家店…; null when the original does not say. */
   size: string | null;
   speaker: Speaker;
@@ -95,7 +96,8 @@ export interface CaseCard {
 
 export interface ReferenceHome {
   categories: Array<{ key: string; title: string; situations: Array<{ slug: string; title: string; dek: string; cases: number; countries: number }> }>;
-  shops: Array<{ key: string; name: string; line: string; src: string; cases: number }>;
+  /** The shop kinds that have cases. */
+  kinds: Array<{ slug: string; title: string; cases: number }>;
   totals: { situations: number; cases: number; countries: number };
 }
 
@@ -116,7 +118,16 @@ export interface CasePage {
   source: { name: string; country: string | null; url: string; language: string | null; publishedAt: string | null; audioOnly: boolean };
   /** The situations it is placed in, for the way back. */
   situations: Array<{ slug: string; title: string; group: string | null }>;
-  shopKey: string | null;
+  /** The shop's page, when the shop has more cases than this one. */
+  shop: { key: string; cases: number } | null;
+}
+
+export interface KindPage {
+  slug: string;
+  title: string;
+  dek: string;
+  cases: CaseCard[];
+  metrics: { cases: number; countries: number; updatedAt: string | null };
 }
 
 export interface ShopPage {

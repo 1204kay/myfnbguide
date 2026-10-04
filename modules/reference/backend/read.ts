@@ -5,8 +5,8 @@ import { beijingDate } from "@aihot/contracts/time";
 import { sql } from "@aihot/backend/db";
 import { publicSourceName } from "@aihot/backend/publication/rules";
 import { selectedCondition } from "@aihot/backend/publication/scope";
-import { categoryTitle, CATEGORIES, findSituation, SITUATIONS } from "../situations.ts";
-import type { CaseCard, CasePage, CaseStory, ReferenceHome, ShopPage, SituationPage } from "../types.ts";
+import { categoryTitle, CATEGORIES, findShopKind, findSituation, SHOP_KINDS, SITUATIONS } from "../situations.ts";
+import type { CaseCard, CasePage, CaseStory, KindPage, ReferenceHome, ShopPage, SituationPage } from "../types.ts";
 import { problemKind } from "./checks.ts";
 
 /** Source tags that say what a source is, not where it is. */
@@ -55,8 +55,6 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
   const rows = await shownCases(sql`true`, now);
   const bySituation = new Map<string, Row[]>();
   for (const r of rows) for (const slug of new Set(r.story.placements.map((p) => p.situation))) bySituation.set(slug, [...(bySituation.get(slug) ?? []), r]);
-  const shops = new Map<string, Row[]>();
-  for (const r of rows) if (r.shop_key) shops.set(r.shop_key, [...(shops.get(r.shop_key) ?? []), r]);
   const countries = (list: Row[]) => new Set(list.map((r) => r.story.shop.country)).size;
   // A situation shows once two cases are in it (HANDOFF §9.2): one alone is not a page yet.
   const shown = SITUATIONS.filter((s) => (bySituation.get(s.slug)?.length ?? 0) >= 2);
@@ -65,10 +63,7 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
       key: c.key, title: c.title,
       situations: shown.filter((s) => s.category === c.key).map((s) => ({ slug: s.slug, title: s.title, dek: s.dek, cases: bySituation.get(s.slug)!.length, countries: countries(bySituation.get(s.slug)!) })),
     })),
-    shops: [...shops.entries()].map(([key, list]) => {
-      const shop = list[0]!.story.shop;
-      return { key, name: shop.name!, line: list[0]!.story.title, src: [shop.country, shop.city, shop.kind ?? shop.size].filter(Boolean).join(" · "), cases: list.length };
-    }),
+    kinds: SHOP_KINDS.map((k) => ({ slug: k.slug, title: k.title, cases: rows.filter((r) => r.story.shop.kind === k.slug).length })).filter((k) => k.cases),
     totals: { situations: shown.length, cases: rows.length, countries: countries(rows) },
   };
 }
@@ -91,13 +86,29 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
   const [r] = await shownCases(sql`c.article_id = ${id}`, now);
   if (!r) return null;
   const country = sourceCountry(r);
+  // A shop's page lists its cases; with this one alone it would only repeat it.
+  const shopCases = r.shop_key ? (await shownCases(sql`c.shop_key = ${r.shop_key}`, now)).length : 0;
   return {
-    id: r.id, story: r.story, shopKey: r.shop_key,
+    id: r.id, story: r.story, shop: shopCases > 1 ? { key: r.shop_key!, cases: shopCases } : null,
     source: { name: publicSourceName(r.source_name), country, url: r.url, language: (country && LANGUAGE[country]) ?? null, publishedAt: (r.published_at ?? r.timeline_at).toISOString(), audioOnly: r.source_tags.includes("播客") },
     situations: r.story.placements.flatMap((p) => {
       const s = findSituation(p.situation);
       return s ? [{ slug: s.slug, title: s.title, group: s.groups.find((g) => g.key === p.group)?.title ?? null }] : [];
     }),
+  };
+}
+
+/** One shop kind's cases, newest first; none is no page. */
+export async function readKind(slug: string, now = new Date()): Promise<KindPage | null> {
+  const kind = findShopKind(slug);
+  if (!kind) return null;
+  const rows = await shownCases(sql`c.story->'shop'->>'kind' = ${slug}`, now);
+  if (!rows.length) return null;
+  const latest = rows.reduce<Date | null>((at, r) => (!at || r.updated_at > at ? r.updated_at : at), null);
+  return {
+    slug, title: kind.title, dek: kind.dek,
+    cases: rows.map((r) => card(r, r.story.placements[0]?.card ?? r.story.lead)),
+    metrics: { cases: rows.length, countries: new Set(rows.map((r) => r.story.shop.country)).size, updatedAt: latest?.toISOString() ?? null },
   };
 }
 

@@ -66,10 +66,12 @@ caption 写这个举例想说明什么，只能用举例自己的输入数字，
 
 七、店
 
-shop：{"name": 店名或 null, "country": 国家, "city": 城市或 null, "kind": 店的种类或 null, "size": 规模或 null, "speaker": "owner" | "staff" | "adviser" | "vendor" | "media"}。
+shop：{"name": 店名或 null, "country": 国家, "city": 城市或 null, "kind": 品类或 null, "size": 规模或 null, "speaker": "owner" | "staff" | "adviser" | "vendor" | "media"}。
 - country 写中文国家名：中国、美国、日本、韩国、澳大利亚、英国……；台湾写“中国台湾”，香港写“中国香港”。原文没写店在哪里时，写来源的国家。
 - speaker：店主或创办人自己说的是 owner；店里员工是 staff；顾问、教练、会计是 adviser；卖系统、设备、服务的公司是 vendor；媒体报道一家店是 media。
-- 没有具体的店（顾问的一般建议、系统商的指南），name 写 null，kind 写说话的是什么人（“餐厅顾问”“点餐系统商”）。
+- kind：这家店属于哪个品类，从下面的清单里选一个，写它的英文代号（例如 coffee）；原文没说是什么店、不属于其中任何一类，或者谈的是各类店都适用的做法，写 null。
+{{kinds}}
+- 没有具体的店（顾问的一般建议、系统商的指南），name 写 null；kind 写建议针对的那一类店，各类店都适用就写 null。
 
 {{> rules-anti-hallucination}}
 

@@ -1,7 +1,8 @@
 // Failure cases: an example shows arithmetic the program did not do; a number the original never wrote, a
 // spoken word or a label heading reaches a reader; a story with problems is shown without a second try, or
 // shown after failing it; thin material becomes a story; a withdrawn item stays in the reference pages; a
-// situation with one case is listed.
+// situation with one case is listed; a kind is listed or paged without cases, or a wrong kind holds a story;
+// a story points to its shop's page when that page would only repeat it.
 import { pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -52,7 +53,7 @@ const story = (over: Partial<CaseStory> = {}): CaseStory => ({
     { heading: "假设你的餐饮店也这样做", blocks: [example({ kind: "margin", price: 30, cost: 12 }, "一份卖 30 元，食材 12 元。")] },
   ],
   open: "原文没有说这笔钱最后有没有追回。",
-  shop: { name: null, country: "美国", city: null, kind: "餐馆", size: null, speaker: "adviser" },
+  shop: { name: null, country: "美国", city: null, kind: "dining", size: null, speaker: "adviser" },
   placements: [{ situation: "busy-no-profit", group: "fixed-costs-creep", card: "顾问把第一张和最新一张账单逐行对比，查出了多付的钱。" }],
   ...over,
 });
@@ -78,6 +79,12 @@ test("a story the checks pass; each problem is named for the writer", () => {
   assert.ok(caption.some((p) => /6,570/.test(p)) && !caption.some((p) => /“18”|\b18\b.*找不到/.test(p)), caption.join(" / "));
 });
 
+test("a kind outside the list is no kind, and the story still stands", () => {
+  const { written } = readOutput({ material: "story", ...story({ shop: { ...story().shop, kind: "餐馆" as never } }) });
+  assert.equal(written?.status, "story");
+  assert.equal(written?.status === "story" && written.story.shop.kind, null);
+});
+
 test("a block over its ceiling comes back named, with its length", () => {
   const long = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。".repeat(25) }] }] };
   const { written, problems } = readOutput(long);
@@ -86,15 +93,16 @@ test("a block over its ceiling comes back named, with its length", () => {
 });
 
 // The model: a story with a stray number and a spoken word first, fixed when told; thin material; and one
-// that stays wrong.
+// that stays wrong. The first two are about the same shop.
 const T = tag();
+const bistro = { ...story().shop, name: "Corner Bistro" };
 const answers: Record<string, unknown[]> = {
   FIRST: [
-    { material: "story", ...story({ who: "顾问讲，一年多付 33,159 美元。" }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }, { heading: "假设你的餐饮店也这样做", blocks: [{ type: "example", example: { kind: "margin", price: 30, cost: 12 }, caption: "一份卖 30 元。" }] }] },
-    { material: "story", ...story(), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }, { heading: "他把账单逐行对比", blocks: [{ type: "flow", steps: ["收齐合同和账单", "第一张和最近一张逐行对比"] }] }] },
+    { material: "story", ...story({ who: "顾问讲，一年多付 33,159 美元。", shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }, { heading: "假设你的餐饮店也这样做", blocks: [{ type: "example", example: { kind: "margin", price: 30, cost: 12 }, caption: "一份卖 30 元。" }] }] },
+    { material: "story", ...story({ shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }, { heading: "他把账单逐行对比", blocks: [{ type: "flow", steps: ["收齐合同和账单", "第一张和最近一张逐行对比"] }] }] },
   ],
   // Placed twice in one situation (two groups): it counts once, under the first.
-  SECOND: [{ material: "story", ...story({ title: "另一家店的账", placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
+  SECOND: [{ material: "story", ...story({ title: "同一家店的另一笔账", shop: bistro, placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
   THIN: [{ material: "thin", reason: "只有节目的题目" }],
   NEWS: [{ material: "news", reason: "一个国家的新规" }],
   WRONG: [{ material: "story", ...story({ who: "一年多付 99,999 美元。" }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "多了 88,888 美元。" }] })) }],
@@ -150,8 +158,12 @@ test("cases are written for selected items, once more when the checks find probl
   assert.ok(compare.type === "compare" && compare.change?.amount === 638 && compare.change.yearly === 638 * 52, "the change is computed");
 });
 
-test("the pages show public cases only, and a situation once two cases are in it", async () => {
+test("the pages show public cases only, a situation once two cases are in it, and each kind with its cases", async () => {
   const home = JSON.parse((await app.inject("/api/reference")).body);
+  assert.deepEqual(home.kinds, [{ slug: "dining", title: "正餐", cases: 2 }]);
+  const kind = JSON.parse((await app.inject("/api/reference/kinds/dining")).body);
+  assert.deepEqual([kind.title, kind.metrics.cases, kind.cases.length], ["正餐", 2, 2]);
+  for (const none of ["coffee", "no-such-kind"]) assert.equal((await app.inject(`/api/reference/kinds/${none}`)).statusCode, 404, `${none}: no cases, no page`);
   const cost = home.categories.find((c: { key: string }) => c.key === "cost");
   assert.deepEqual(cost.situations.map((s: { slug: string; cases: number }) => [s.slug, s.cases]), [["busy-no-profit", 2]]);
   const page = JSON.parse((await app.inject("/api/reference/situations/busy-no-profit")).body);
@@ -159,12 +171,15 @@ test("the pages show public cases only, and a situation once two cases are in it
     [["food-over-recipe", "美国 · Total Food Service"], ["fixed-costs-creep", "美国 · Total Food Service"]]);
   const one = JSON.parse((await app.inject(`/api/reference/cases/${ids.FIRST}`)).body);
   assert.deepEqual([one.source.name, one.source.language, one.situations[0].group], ["Total Food Service", "英文", "固定费用悄悄上涨"]);
+  assert.equal(one.shop.cases, 2, "the shop's page holds both of its cases");
   for (const hidden of [ids.THIN, ids.NEWS, ids.WRONG]) assert.equal((await app.inject(`/api/reference/cases/${hidden}`)).statusCode, 404);
   assert.equal((await app.inject("/api/reference/situations/no-such-situation")).statusCode, 404);
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${ids.SECOND!}`;
   assert.equal((await app.inject(`/api/reference/cases/${ids.SECOND}`)).statusCode, 404);
   const after = JSON.parse((await app.inject("/api/reference")).body);
   assert.equal(after.categories.find((c: { key: string }) => c.key === "cost").situations.length, 0, "one case left is not a page");
+  assert.deepEqual(after.kinds, [{ slug: "dining", title: "正餐", cases: 1 }]);
+  assert.equal(JSON.parse((await app.inject(`/api/reference/cases/${ids.FIRST}`)).body).shop, null, "a shop with one case left has no page to point to");
 });
 
 test("the sample pages are served at their unlisted address, kept from search engines", async () => {

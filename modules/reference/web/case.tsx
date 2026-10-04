@@ -38,7 +38,7 @@ export default function CaseRoute() {
       <p className="mt-5 text-[18px] font-semibold leading-relaxed text-ink">{story.lead}</p>
       <p className="mt-3 text-[15.5px] leading-[1.85] text-ink-2">
         {story.who}
-        {c.shopKey && story.shop.name && <> <Link viewTransition to={`/reference/shops/${c.shopKey}`} className="whitespace-nowrap text-accent hover:text-accent-ink">{story.shop.name} ›</Link></>}
+        {c.shop && story.shop.name && <> <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="whitespace-nowrap text-accent hover:text-accent-ink">{story.shop.name} · {c.shop.cases} 条原文 ›</Link></>}
       </p>
       {story.parts.map((part, i) => (
         <section key={i} className="mt-8">

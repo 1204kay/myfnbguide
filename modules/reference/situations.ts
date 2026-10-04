@@ -304,3 +304,25 @@ export function findSituation(slug: string): Situation | undefined {
 export function categoryTitle(key: string): string | undefined {
   return CATEGORIES.find((c) => c.key === key)?.title;
 }
+
+/**
+ * 按品类浏览: the kind of shop a case is about, named as the taxonomy's 业态 tags with "/" written 和
+ * (industry/taxonomy.ts). The writer picks one or none; slugs are addresses, never renamed once public.
+ */
+export const SHOP_KINDS = [
+  { slug: "coffee", title: "咖啡", dek: "咖啡馆、咖啡吧和外带咖啡店。" },
+  { slug: "tea", title: "茶饮", dek: "奶茶、果茶和现泡茶的饮品店。" },
+  { slug: "hotpot", title: "火锅", dek: "火锅店和各种涮锅店。" },
+  { slug: "fast-food", title: "快餐", dek: "点单快、出餐快，以外带和简单堂食为主的店。" },
+  { slug: "dining", title: "正餐", dek: "以堂食为主、有座位和服务的餐厅。" },
+  { slug: "bakery", title: "烘焙和甜品", dek: "面包店、蛋糕店和甜品店。" },
+  { slug: "snacks", title: "小吃和档口", dek: "小吃店、街边摊档，以及美食广场和小贩中心里的档口。" },
+  { slug: "catering", title: "团餐和中央厨房", dek: "为公司、学校、医院供餐，或为多家店集中备餐的厨房。" },
+  { slug: "bar", title: "酒吧和酒饮", dek: "酒吧、小酒馆和以酒饮为主的店。" },
+] as const;
+
+export type ShopKind = (typeof SHOP_KINDS)[number]["slug"];
+
+export function findShopKind(slug: string | null | undefined) {
+  return SHOP_KINDS.find((k) => k.slug === slug);
+}

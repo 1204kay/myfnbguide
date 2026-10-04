@@ -14,7 +14,7 @@ import { renderContext } from "@aihot/backend/editorial/writing";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { selectedCondition } from "@aihot/backend/publication/scope";
-import { SITUATIONS } from "../situations.ts";
+import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
 import { checkStory, MAX_CHARS } from "./checks.ts";
 import { computeExample, ExampleInputSchema } from "./examples.ts";
@@ -23,7 +23,8 @@ export const MODEL_STEP = "referenceCase";
 const PURPOSE = "reference_case";
 
 const SITUATION_LIST = SITUATIONS.map((s) => `- ${s.slug}：${s.title} | ${s.groups.map((g) => `${g.key}：${g.title}`).join("；")}`).join("\n");
-export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL("../prompts/case.md", import.meta.url), "utf8"), { situations: SITUATION_LIST });
+const KIND_LIST = SHOP_KINDS.map((k) => `  - ${k.slug}：${k.title}（${k.dek.replace(/。$/, "")}）`).join("\n");
+export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL("../prompts/case.md", import.meta.url), "utf8"), { situations: SITUATION_LIST, kinds: KIND_LIST });
 // The prompt and the length limit the checks apply: either changing writes every case again.
 const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
 
@@ -54,7 +55,8 @@ const StorySchema = z.object({
     name: z.string().trim().nullable().default(null),
     country: text.max(12),
     city: z.string().trim().nullable().default(null),
-    kind: z.string().trim().nullable().default(null),
+    // A kind outside the list is no kind: the case still shows under its situations.
+    kind: z.enum(SHOP_KINDS.map((k) => k.slug) as [ShopKind, ...ShopKind[]]).nullable().catch(null),
     size: z.string().trim().nullable().default(null),
     speaker: z.enum(["owner", "staff", "adviser", "vendor", "media"]),
   }),

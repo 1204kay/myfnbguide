@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { config } from "@aihot/backend/config";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
-import { readCase, readHome, readShop, readSituation, readStatus } from "./backend/read.ts";
+import { readCase, readHome, readKind, readShop, readSituation, readStatus } from "./backend/read.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
 const CASES = defineQueue<{ articleId: string }>({
@@ -53,6 +53,10 @@ export default defineServerModule({
     });
     app.get("/api/reference/cases/:id", async (req, reply) => {
       const page = await readCase((req.params as { id: string }).id);
+      return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
+    });
+    app.get("/api/reference/kinds/:slug", async (req, reply) => {
+      const page = await readKind((req.params as { slug: string }).slug);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/shops/:key", async (req, reply) => {

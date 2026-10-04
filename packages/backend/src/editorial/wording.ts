@@ -10,15 +10,19 @@ export interface ReaderCopy {
 
 const FIELDS: Array<[keyof ReaderCopy, string]> = [["titleZh", "标题"], ["summaryZh", "摘要"], ["reasonZh", "收录理由"]];
 
-/** Every word of the list a copy uses, as a line the model can act on: where, the words around it, and the fix. */
+/**
+ * Every use of a word of the list in a copy, each as a line the model can act on: where, the words around it,
+ * and the fix. Each use is its own line, so a copy that mends one of two has fewer.
+ */
 export function wordingProblems(copy: ReaderCopy): string[] {
   const problems: string[] = [];
   for (const [field, name] of FIELDS) {
     const text = copy[field];
     if (!text) continue;
     for (const [pattern, fix] of READER_WORDING) {
-      const hit = pattern.exec(text);
-      if (hit) problems.push(`${name}用了“${hit[0]}”（“${text.slice(Math.max(0, hit.index - 8), hit.index + hit[0].length + 8)}”）：${fix}`);
+      for (const hit of text.matchAll(new RegExp(pattern.source, `${pattern.flags.replace("g", "")}g`))) {
+        problems.push(`${name}用了“${hit[0]}”（“${text.slice(Math.max(0, hit.index - 8), hit.index + hit[0].length + 8)}”）：${fix}`);
+      }
     }
   }
   return problems;

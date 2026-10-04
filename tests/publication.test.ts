@@ -1,9 +1,9 @@
 // Public scope and sync through the real api routes: a licence revocation or a withdrawal reaches
 // every exit, reports stop quoting withdrawn items, the hot board drops a withdrawn item at once, item
-// pages follow one rule, a withdrawal next to an unresolved selection leaves new snapshots
-// at once, and snapshots answer conditional requests.
+// pages follow one rule, a withdrawal next to an unresolved selection leaves new snapshots at once, and
+// snapshots answer conditional requests.
 import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
-import { withSubject } from "@aihot/industry/site";
+import { withSubject } from "@aihot/site";
 import { beijingDate } from "@aihot/contracts/time";
 import { ogEtag } from "../apps/api/src/og/render.ts";
 import { posterEtag } from "../apps/api/src/og/poster.ts";
@@ -170,6 +170,31 @@ test("revoking a source's licence takes its articles off every exit", async () =
   await sql`UPDATE sources SET participation_mode = 'editorial', site_fulltext = true, syndicate_fulltext = true WHERE id = ${SOURCE}`;
 });
 
+// Losing redistribution permission must remove the RSS body without also withdrawing the item or
+// its licensed website body. Revoking all three source permissions at once cannot exercise this case.
+test("revoking only redistribution keeps the website body and removes it from full RSS", async () => {
+  const id = await article();
+  await sql`UPDATE articles SET grouping_status = 'complete' WHERE id = ${id}`;
+  await publishArticle(id, released());
+  const feedItem = async () => (await get("/feed/full.xml")).body.split("<item>").find((item) => item.includes(`<guid isPermaLink="false">${id}</guid>`));
+  assert.ok((await feedItem())?.includes(`FULLTEXT-${T}`));
+
+  const [source] = await sql<{ updated_at: Date }[]>`SELECT updated_at FROM sources WHERE id = ${SOURCE}`;
+  try {
+    await updateSource(SOURCE, { patch: { syndicate_fulltext: false }, version: source!.updated_at.toISOString(), reason: "test" }, "test");
+    await republishSource(SOURCE);
+    const item = await feedItem();
+    assert.ok(item, "the article remains in RSS");
+    assert.ok(!item.includes(`FULLTEXT-${T}`), "RSS no longer carries the body");
+    assert.ok(!item.includes("<content:encoded>"));
+    const detail = await get(`/api/site/items/${id}`);
+    assert.equal(detail.status, 200);
+    assert.ok(detail.body.includes(`FULLTEXT-${T}`), "the website retains its separate full-text permission");
+  } finally {
+    await sql`UPDATE sources SET syndicate_fulltext = true WHERE id = ${SOURCE}`;
+  }
+});
+
 test("a withdrawn item leaves every report exit", async () => {
   const id = await article();
   await publishArticle(id, released());
@@ -183,16 +208,15 @@ test("a withdrawn item leaves every report exit", async () => {
   assert.ok((await get(`/api/v1/dailies/${REPORT_KEY}`)).body.includes(`QUOTED-${T}`), "the report quotes the item before");
 
   await setVisibility(id, { visibility: "withdrawn", reason: "test", version: 0 }, "test");
-  for (const url of [`/api/v1/dailies/${REPORT_KEY}`, `/api/site/reports/daily/${REPORT_KEY}`, `/api/v1/agent/daily/${REPORT_KEY}`, "/api/v1/agent/daily"]) {
+  const reports = [`/api/v1/dailies/${REPORT_KEY}`, `/api/site/reports/daily/${REPORT_KEY}`, `/api/v1/agent/daily/${REPORT_KEY}`, "/api/v1/agent/daily"];
+  for (const url of reports) {
     const res = await get(url);
     assert.equal(res.status, 200, url);
     assert.ok(!res.body.includes(`QUOTED-${T}`) && !res.body.includes(`original-${T}`), `${url} still quotes the withdrawn item`);
   }
-  for (const url of ["/api/v1/dailies"]) {
-    const res = await get(url);
-    assert.ok(res.body.includes(REPORT_KEY), `${url} lists the report`);
-    assert.ok(!res.body.includes(`LEAD-${T}`), `${url} headlines the withdrawn title`);
-  }
+  const list = await get("/api/v1/dailies");
+  assert.ok(list.body.includes(REPORT_KEY), "/api/v1/dailies lists the report");
+  assert.ok(!list.body.includes(`LEAD-${T}`), "/api/v1/dailies headlines the withdrawn title");
 });
 
 test("story changes refresh share images and a withdrawal takes down only the stories citing it", async () => {
@@ -302,11 +326,9 @@ test("unresolved selection does not delay a withdrawal or its sync watermark", a
   await publishArticle(y); // unresolved: no selected ledger entry yet
   await setVisibility(x, { visibility: "withdrawn", reason: "test", version: 0 }, "test");
 
-  for (const url of ["/api/v1/selected/snapshot?fields=minimal&limit=1000"]) {
-    const body = (await get(url)).body;
-    assert.ok(!body.includes(x), `${url} still lists the withdrawn item`);
-    assert.ok(!body.includes(y), `${url} lists an item before its release`);
-  }
+  const listed = (await get("/api/v1/selected/snapshot?fields=minimal&limit=1000")).body;
+  assert.ok(!listed.includes(x), "the snapshot still lists the withdrawn item");
+  assert.ok(!listed.includes(y), "the snapshot lists an item before its release");
   // This snapshot already includes the withdrawal; completing y adds only y afterwards.
   const snapshot = JSON.parse((await get("/api/v1/selected/snapshot?fields=minimal&limit=1000")).body) as { cursor: string };
   await sql`UPDATE articles SET grouping_status = 'complete', grouped_at = now() WHERE id = ${y}`;
@@ -319,11 +341,10 @@ test("unresolved selection does not delay a withdrawal or its sync watermark", a
 });
 
 test("snapshots answer 304 to their own ETag", async () => {
-  for (const url of ["/api/v1/selected/snapshot?fields=minimal&limit=1000"]) {
-    const first = await get(url);
-    assert.ok(first.etag, `${url} has an ETag`);
-    assert.equal((await get(url, { "if-none-match": first.etag! })).status, 304, url);
-  }
+  const url = "/api/v1/selected/snapshot?fields=minimal&limit=1000";
+  const first = await get(url);
+  assert.ok(first.etag, `${url} has an ETag`);
+  assert.equal((await get(url, { "if-none-match": first.etag! })).status, 304, url);
 });
 
 // Failure cases: an offline client resumes before a withdrawal; a one-entry page must not send the
@@ -335,16 +356,14 @@ test('historical sync never redistributes withdrawn content, even on a one-entry
       const id = await article();
       await publishArticle(id, released());
       await setVisibility(id, { visibility, reason: 'test offline sync', version: 0 }, 'test');
-      for (const [prefix, limit] of [['v1', 'limit']]) {
-        const response = await get(`/api/${prefix}/selected/changes?${limit}=1&cursor=${encodeURIComponent(start)}`);
-        assert.equal(response.status, 200);
-        const page = JSON.parse(response.body);
-        assert.equal(page.changes[0].op, 'remove', `${prefix} ${fields} ${visibility}`);
-        assert.equal(page.changes[0].id, id);
-        assert.equal(page.changes[0].item, undefined);
-        assert.notEqual(page.cursor, start, 'redacting a historical upsert must still advance');
-        assert.equal(page.hasMore, true, 'the later removal is still resumable');
-      }
+      const response = await get(`/api/v1/selected/changes?limit=1&cursor=${encodeURIComponent(start)}`);
+      assert.equal(response.status, 200);
+      const page = JSON.parse(response.body);
+      assert.equal(page.changes[0].op, 'remove', `${fields} ${visibility}`);
+      assert.equal(page.changes[0].id, id);
+      assert.equal(page.changes[0].item, undefined);
+      assert.notEqual(page.cursor, start, 'redacting a historical upsert must still advance');
+      assert.equal(page.hasMore, true, 'the later removal is still resumable');
     }
   }
 });
@@ -388,7 +407,6 @@ test('event neighbors disappear when their last readable evidence is withdrawn',
   assert.equal((await get(`/api/v1/stories/${neighbor}`)).status, 404);
   for (const url of exits) assert.ok(!(await get(url)).body.includes(neighbor), `${url} must not advertise an unreadable neighbor`);
 });
-
 
 test("unchanged republishing preserves freshness, while URL-only changes still reach the projection and ledger", async () => {
   const id = await article();

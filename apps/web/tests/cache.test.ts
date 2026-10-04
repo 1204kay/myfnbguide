@@ -98,7 +98,7 @@ test("HTML and navigation share freshness; cookies do not personalize public res
   assert.equal(html.headers.get("X-Accel-Expires"), `@${deadline}`);
   assert.match(await html.text(), /精选/);
   const plain = await fetch(`${origin}/about.data`);
-  const signedIn = await fetch(`${origin}/about.data?_routes=root`, { headers: { cookie: "admin_session=private; aihot_vid=reader" } });
+  const signedIn = await fetch(`${origin}/about.data?_routes=root`, { headers: { cookie: "admin_session=private; reader=returning" } });
   assert.match(plain.headers.get("Cache-Control")!, /^public,/);
   assert.match(plain.headers.get("X-Accel-Expires")!, /^@\d+$/);
   assert.equal(plain.headers.get("Cache-Control"), "public, max-age=300, s-maxage=300, must-revalidate");
@@ -129,7 +129,7 @@ test("admin data and actions never become public cache entries", async () => {
   assert.equal(admin.status, 202);
   assert.equal(admin.headers.get("Cache-Control"), "private, no-store");
   assert.equal(admin.headers.get("X-Accel-Expires"), "0");
-  assert.match(await admin.text(), /admin\/login/);
+  assert.match(await admin.text(), /api\/auth\/login/);
   const action = await fetch(`${origin}/hot.data`, { method: "POST" });
   assert.equal(action.status, 405);
   assert.equal(action.headers.get("Cache-Control"), "private, no-store");

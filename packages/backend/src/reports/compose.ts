@@ -4,7 +4,7 @@
 // dailies and a model only writes its overview and introductions, from the brief in the industry pack
 // (industry/prompts/report-period*.md).
 import { z } from "zod";
-import { SITE } from "@aihot/industry/site";
+import { SITE } from "@aihot/site";
 import { PLAIN_TERMS, RELEASE } from "@aihot/industry/taxonomy";
 import { promptText, promptVersion } from "../editorial/prompts.ts";
 import { modelFor } from "../editorial/models.ts";
@@ -14,9 +14,10 @@ import { sql } from "../db.ts";
 import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
+import { emit } from "../modules.ts";
 import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
 
-export const REPORT_VERSION = promptVersion("report-period", "report-period-sections");
+export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
 /**
  * The masthead's figures, counted in events: sources over every report its entries cite; releases
@@ -46,13 +47,14 @@ async function savedReport(kind: ReportKind, key: string) {
 /**
  * Without a reason (the scheduled run) only a missing issue is written: one already published stays as
  * it is. With a reason (an explicit regeneration) the issue is replaced and the edition it replaces is
- * kept as a revision.
+ * kept as a revision. Says whether the issue was written.
  */
-async function saveReport(kind: ReportKind, key: string, start: Date, end: Date, content: Record<string, unknown>, reason: string | undefined, model: string | null, receiptIds: number[]) {
-  await sql.begin(async (tx) => {
-    const insert = () => tx`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, model, origin)
-      VALUES (${kind}, ${key}, ${start}, ${end}, ${tx.json(content as never)}, now(), ${model}, 'model') ON CONFLICT (kind, key) DO NOTHING`;
-    if (reason === undefined) await insert();
+async function saveReport(kind: ReportKind, key: string, start: Date, end: Date, content: Record<string, unknown>, reason: string | undefined, model: string | null, receiptIds: number[]): Promise<boolean> {
+  return sql.begin(async (tx) => {
+    const insert = async () => (await tx`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at, model, origin)
+      VALUES (${kind}, ${key}, ${start}, ${end}, ${tx.json(content as never)}, now(), ${model}, 'model') ON CONFLICT (kind, key) DO NOTHING`).count > 0;
+    let written: boolean;
+    if (reason === undefined) written = await insert();
     else {
       const [existing] = await tx<{ id: number; revision: number; content: unknown; generated_at: Date }[]>`
         SELECT id, revision, content, generated_at FROM reports WHERE kind = ${kind} AND key = ${key} FOR UPDATE`;
@@ -61,9 +63,13 @@ async function saveReport(kind: ReportKind, key: string, start: Date, end: Date,
                  VALUES (${existing.id}, ${existing.revision}, ${tx.json(existing.content as never)}, ${existing.generated_at}, ${reason}) ON CONFLICT DO NOTHING`;
         await tx`UPDATE reports SET content = ${tx.json(content as never)}, window_start = ${start}, window_end = ${end}, generated_at = now(),
                    model = ${model}, revision = revision + 1, origin = 'model', updated_at = now() WHERE id = ${existing.id}`;
-      } else await insert();
+        written = true;
+      } else written = await insert();
     }
+    // A new issue changes the latest page, the archive, its neighbours' navigation and the report feeds.
+    if (written) await emit("reportsChanged", { reason: `${kind} ${key} published` }, tx);
     for (const id of receiptIds) await completeReceipt(tx, id);
+    return written;
   });
 }
 
@@ -128,7 +134,7 @@ export function periodPrompt(kind: "weekly" | "monthly", startDate: string, endD
   return {
     system: promptText("report-period", {
       ...BRIEF[kind],
-      sections: introduced.length ? promptText("report-period-sections", { columns: introduced.map((l) => `「${l}」`).join("") }) : "",
+      sections: introduced.length ? promptText("report-period-sections", { columns: introduced.map((l) => `「${l}」`).join("") }) : promptText("report-period-no-sections"),
       sectionsExample: introduced.length ? `{"${introduced[0]}": "..."}` : "{}",
     }),
     user: `本期：${startDate} 至 ${endDateInclusive}\n${list}`,

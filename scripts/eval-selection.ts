@@ -1,14 +1,15 @@
 // Checks the selection against your own labelled samples (a "gold set"): each case runs the site's
 // selection steps (editorial/analyze.ts) — the prefilter, then the score prompt twice with every model in
 // --models, the two scores deciding against the source tier's threshold — and is compared with your
-// decision. A threshold sweep shows what another threshold would have done. The format of the gold file
-// is in docs/selection.md (industry/gold.example.jsonl has two made-up cases).
-// Usage: node --env-file=.env scripts/eval-selection.ts --gold .data/gold.jsonl [--models default,deepseek-flash] [--n 200] [--label "..."]
+// decision. A threshold sweep shows what another threshold would have done. The gold file has one case
+// per line as GoldRow below describes; lines starting with // are skipped.
+// Usage: node --env-file=.env scripts/eval-selection.ts [--gold .data/gold.jsonl] [--models default,deepseek-flash] [--n 200] [--split all] [--label "..."]
 // Receipts make re-runs free; "either" cases are excluded from decisive metrics. Each run is also
 // imported into SelectBench (admin → SelectBench) with every case, unless --no-import is given.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { DEPLOYMENT } from "@aihot/site";
 import { REPO_ROOT } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import {
@@ -24,12 +25,19 @@ import {
 import { modelFor } from "@aihot/backend/editorial/models";
 import { importSelectBenchRun } from "@aihot/backend/admin/selectbench";
 
+// Without options: the site's gold set (site.ts DEPLOYMENT.selectionGold), else the whole of .data/gold.jsonl
+// (up to 200 cases), swept over a wide range of thresholds.
+const own = DEPLOYMENT.selectionGold;
+const defaults = own
+  ? { gold: own.file, n: String(own.sample), split: own.split, sweep: own.sweep }
+  : { gold: ".data/gold.jsonl", n: "200", split: "all", sweep: [40, 90] };
+
 const { values } = parseArgs({
   options: {
-    gold: { type: "string", default: ".data/gold.jsonl" },
+    gold: { type: "string", default: defaults.gold },
     models: { type: "string" },
-    n: { type: "string", default: "200" },
-    split: { type: "string", default: "all" },
+    n: { type: "string", default: defaults.n },
+    split: { type: "string", default: defaults.split },
     concurrency: { type: "string", default: "6" },
     seed: { type: "string", default: "7" },
     label: { type: "string" },
@@ -189,7 +197,7 @@ for (const model of models) {
   console.log(JSON.stringify(summary));
   // Threshold sweep on the raw attention score (selection rule = relevance pass && score >= t).
   const sweep: Array<Record<string, number>> = [];
-  for (let t = 40; t <= 90; t += 2) {
+  for (let t = defaults.sweep[0]; t <= defaults.sweep[1]; t += 2) {
     let a = 0, b = 0, c = 0, d = 0;
     for (const x of results) {
       if (!x.out || x.r.gold.decision === "either") continue;

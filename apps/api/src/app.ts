@@ -1,10 +1,9 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import { randomUUID } from "node:crypto";
-import { FEATURES } from "@aihot/industry/features";
 import { OAUTH_PROBE_PATHS, resolveRedirect } from "@aihot/contracts/http-policy";
 import { sql } from "@aihot/backend/db";
+import { serverModules } from "@aihot/backend/modules";
 import { registerSite } from "./routes/site.ts";
-import { registerLeaderboard } from "./routes/leaderboard.ts";
 import { registerOg } from "./routes/og.ts";
 import { registerAdminAuth } from "./routes/admin-auth.ts";
 import { registerAdmin } from "./routes/admin.ts";
@@ -35,6 +34,7 @@ export async function buildApp(): Promise<FastifyInstance> {
     if (reply.statusCode >= 500 || (ms >= 1000 && path !== "/api/mcp" && !path.startsWith("/api/img-proxy"))) {
       req.log.warn({ method: req.method, path, status: reply.statusCode, ms }, "request");
     }
+    for (const m of serverModules()) m.on?.requestAnswered?.(req, reply, path);
   });
 
   // Central redirect table (shared with the web server).
@@ -61,7 +61,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   registerSite(app);
-  if (FEATURES.leaderboard) registerLeaderboard(app);
   registerOg(app);
   registerAdminAuth(app);
   registerAdmin(app);
@@ -72,6 +71,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   registerFeeds(app);
   registerStatic(app);
   registerMcp(app);
+  for (const m of serverModules()) m.http?.(app);
   registerV1Fallbacks(app);
 
   app.setNotFoundHandler((req, reply) => {

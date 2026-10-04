@@ -1,5 +1,5 @@
 // Recovery must finish the same evaluation that failed, and commit the release, queue and audit together.
-import { gate, Reply, stub, tag } from "./setup.ts";
+import { gate, pointModels, Reply, stub, tag } from "./setup.ts";
 import assert from "node:assert/strict";
 import { setTimeout as delay } from "node:timers/promises";
 import { after, afterEach, before, test } from "node:test";
@@ -40,8 +40,7 @@ const provider = await stub(async (_hit, request) => {
     : { itemType: "industry_event", authorRole: "principal", tags: ["行业动态"], editorialJudgment: "连锁扩张", titleZh: `新判断 ${T}`, summaryZh: "连锁品牌公布新店计划和开店数。" };
   return { choices: [{ message: { content: JSON.stringify(content) } }] };
 });
-for (const name of ["DASHSCOPE_BASE_URL", "ZHIPU_BASE_URL", "DEEPSEEK_BASE_URL"]) process.env[name] = `${provider.url}/v1`;
-for (const name of ["DASHSCOPE_API_KEY", "ZHIPU_API_KEY", "DEEPSEEK_API_KEY"]) process.env[name] = "test-key";
+pointModels(provider.url);
 
 before(async () => {
   await sql`INSERT INTO sources (id,name,kind,tier,participation_mode,next_fetch_at)

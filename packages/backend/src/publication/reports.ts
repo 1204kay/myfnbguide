@@ -1,7 +1,7 @@
 // Reports through the public read layer: website DTOs and the v1 shapes. Only real reports are
 // listed; a missing date is a 404, never another day. Withdrawn citations are marked, not shown.
 import type { ReportCitation, ReportDetail, ReportIndexEntry, ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
-import { SITE, withSubject } from "@aihot/industry/site";
+import { SITE, withSubject } from "@aihot/site";
 import { sql } from "../db.ts";
 import { cached, type Cached } from "../lib/cache.ts";
 import { proxiedImage, proxiedImageSet } from "../media/imgproxy.ts";
@@ -140,7 +140,8 @@ function periodOverview(content: Record<string, any>, kind: "weekly" | "monthly"
 /** A weekly or monthly's own headline; the composer's "<site name> 周报 · 2026-W38" names the issue, not its news. */
 function periodicHeadline(content: Record<string, any>): string | null {
   const text = String(content.headline ?? content.title ?? "");
-  return text && /^(.+) [周月]报 · /.exec(text)?.[1] !== SITE.name ? text : null;
+  const issueName = text.startsWith(`${SITE.name} `) && /^[周月]报 · /.test(text.slice(SITE.name.length + 1));
+  return text && !issueName ? text : null;
 }
 
 /** Check only the first possible lead of each report; advance reports whose candidate was withdrawn. */
@@ -598,5 +599,5 @@ export async function loadReportNavigation(kind: ReportKind, key: string) {
 }
 
 export async function loadReportMonth(kind: ReportKind, month: string) {
-  return (await listReports(kind)).filter((e) => e.key.startsWith(month)).map(({ key, title, issueNumber }) => ({ key, title, issueNumber }));
+  return (await listReports(kind)).filter((e) => e.key.startsWith(month)).map(({ key, issueNumber, title }) => ({ key, issueNumber, title }));
 }

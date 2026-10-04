@@ -19,12 +19,4 @@ export const ARCHIVE: ArchivePlan[] = [
   { id: "rss-kojinkuroji", pages: { url: "https://kojinkuroji.com/feed/?paged={n}", to: 10 } },
   { id: "rss-ryourigaka", pages: { url: "https://ryourigaka.jp/feed/?paged={n}", to: 21 } },
   { id: "rss-yoshitencho", pages: { url: "https://yoshitencho.com/category/restaurant/feed?paged={n}", to: 14 } },
-  // The first batch of owners' own podcasts (10/5, the user agreed to the cost; see HANDOFF §9.2 item 4): episodes
-  // whose notes score at the floor are transcribed. Consultants' and media podcasts wait until this batch's cost is known.
-  { id: "pod-full-comp" },
-  { id: "pod-valor-coffee" },
-  { id: "pod-tw-kaidian-zhejianshi" },
-  { id: "pod-pulling-shots" },
-  { id: "pod-jp-inshoku-ai-radio" },
-  { id: "pod-panaderia-facil" },
 ];

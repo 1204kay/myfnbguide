@@ -55,9 +55,9 @@ async function readListing(source: SourceRow, feedUrl: string, podcast: boolean)
 }
 
 /**
- * Takes in every entry of the source's feed (and of its older pages) that the site does not have yet; entries it
- * has are recorded too. The source is finished once its last page, an empty one, or a 404 past the first (WordPress
- * past its last page) was read; an error stops the run at that page and is kept, and the next run reads from the
+ * Takes in every entry of the source's feed (and of its older pages) that the site does not have yet, or only the
+ * ones the plan picked; entries it has are recorded too. The source is finished once its last page, an empty one,
+ * or a 404 past the first (WordPress past its last page) was read; an error stops the run at that page and is kept, and the next run reads from the
  * first page again (what it has costs nothing).
  */
 export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
@@ -65,6 +65,7 @@ export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
   const [source] = await sql<Array<SourceRow & { tags: string[] }>>`SELECT * FROM sources WHERE id = ${sourceId}`;
   if (!source || source.kind !== "rss") throw new Error(`archive: ${sourceId} is not an RSS source`);
   const urls = plan.pages ? Array.from({ length: plan.pages.to }, (_, i) => plan.pages!.url.replace("{n}", String(i + 1))) : [source.config.feedUrl as string];
+  const only = plan.only ? new Set(plan.only) : null;
   const result: ImportResult = { sourceId, pages: 0, found: 0, created: 0, withAudio: 0, finished: false };
   try {
     for (const [i, url] of urls.entries()) {
@@ -76,9 +77,10 @@ export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
         if (i > 0 && error instanceof FetchError && error.status === 404) break;
         throw error;
       }
-      const { listed, candidates, audio } = listing;
+      const { listed, audio } = listing;
       // The end of the archive is an empty page; a page whose entries the filters all drop is not.
       if (!listed) break;
+      const candidates = only ? listing.candidates.filter((c) => only.has(c.url)) : listing.candidates;
       result.pages += 1;
       result.found += candidates.length;
       for (const c of candidates) {

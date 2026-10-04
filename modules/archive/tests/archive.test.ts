@@ -1,6 +1,7 @@
 // Failure cases: an opened archive enters today or the daily instead of history; an episode is transcribed though
 // its notes scored below the floor, or while the service has no budget row; the transcript does not become the
-// article's body or is not analysed again; a rate limit marks an episode failed for good.
+// article's body or is not analysed again; a rate limit marks an episode failed for good; an archive that names
+// its picks takes in others.
 import { tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import http from "node:http";
@@ -25,10 +26,12 @@ const server = http.createServer((req, res) => {
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
   req.resume();
   req.on("end", () => {
-    if (url === "/feed.xml") {
+    // The podcast's feed, and another podcast's whose archive takes in only the episodes it picked.
+    if (url === "/feed.xml" || url === "/picked.xml") {
+      const name = url === "/feed.xml" ? "episodes" : "picked";
       res.writeHead(200, { "content-type": "application/rss+xml" });
       res.end(`<?xml version="1.0"?><rss version="2.0"><channel><title>Cafe talk</title>${[1, 2, 3].map((n) => `<item><title>Episode ${n} ${T}</title>
-        <link>${base}/episodes/${n}</link><guid>${base}/episodes/${n}</guid><pubDate>Mon, 0${n} Jan 2024 10:00:00 GMT</pubDate>
+        <link>${base}/${name}/${n}</link><guid>${base}/${name}/${n}</guid><pubDate>Mon, 0${n} Jan 2024 10:00:00 GMT</pubDate>
         <description>Episode ${n} notes: how one cafe owner handled the morning rush and kept the team.</description>
         <enclosure url="${base}/audio/${n}.mp3" type="audio/mpeg" length="4"/></item>`).join("")}</channel></rss>`);
       return;
@@ -67,6 +70,7 @@ GEMINI.base = BASE;
 before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${SOURCE}, 'Cafe talk', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/feed.xml`, summaryIsBody: true })})`;
   await sql`UPDATE sources SET tags = ARRAY['播客'] WHERE id = ${SOURCE}`;
+  await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${`${SOURCE}-picked`}, 'Cafe talk 2', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/picked.xml`, summaryIsBody: true })})`;
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${`${SOURCE}-blog`}, 'Blog', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/blog.xml?paged=1`, denyUrlPrefixes: [`${BASE}/blog/compliance/`] })})`;
 });
 after(async () => { server.close(); await stopBoss(); await closeDb(); });
@@ -136,4 +140,11 @@ test("a blog's older pages come in until the first empty one, through the source
   assert.deepEqual(urls, [`${BASE}/blog/tips/a`, `${BASE}/blog/tips/c`]);
   const wordpress = await importSource({ id: `${SOURCE}-blog`, pages: { url: `${BASE}/wp.xml?paged={n}`, to: 5 } });
   assert.ok(wordpress.finished && !wordpress.error && wordpress.pages === 1, "a 404 past the first page is the end of the archive");
+});
+
+test("an archive with picks takes in only the episodes it names", async () => {
+  const result = await importSource({ id: `${SOURCE}-picked`, only: [`${BASE}/picked/2`, `${BASE}/picked/9`] });
+  assert.deepEqual([result.found, result.created, result.finished], [1, 1, true], "an episode no longer listed is not looked for");
+  const urls = (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id = ${`${SOURCE}-picked`}`).map((r) => r.url);
+  assert.deepEqual(urls, [`${BASE}/picked/2`]);
 });

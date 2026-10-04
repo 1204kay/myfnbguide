@@ -112,7 +112,7 @@ export const POLICY = {
 } as const;
 
 /**
- * 导航（选填）：手机底栏放哪些标签、按什么顺序，侧栏和“我的”页不显示哪些入口，入口叫什么。
+ * 导航（选填）：手机底栏放哪些标签、按什么顺序，侧栏和“我的”页不显示哪些入口，入口叫什么，筛选里有没有“一手”。
  * 不显示的页面照样能打开，只是不出现在导航里。
  */
 export const NAV = {
@@ -122,6 +122,8 @@ export const NAV = {
   order: ["/reference", "/", "/all", "/daily"] as string[],
   /** 侧栏和“我的”页不显示的入口，写路径。 */
   hidden: ["/hot", "/topics"] as string[],
+  /** 精选和全部动态的筛选里有没有“一手”（官方一手发布）。 */
+  firstPartyFilter: false,
   /** 入口在侧栏和底栏上的名字，路径 → 名字；不写的用默认。 */
   labels: { "/": "最新" } as Record<string, string>,
 };

@@ -154,6 +154,11 @@ export const SITUATIONS: Situation[] = [
     g("reply", "回复评价", "差评下面怎么回"),
     g("delivery-menu", "外卖菜单", "适合外送的菜"),
   ] },
+  { slug: "takeout", category: "customers", title: "想加做外带或外卖", dek: "店里已经有堂食，想多卖外带和外卖，厨房、人手和账都要重新算。", groups: [
+    g("what-to-sell", "卖哪些菜、怎么包装", "放一段时间还好吃、好拿的菜"),
+    g("pricing-costs", "外带的定价和成本", "容器、包装和平台抽成都算进去"),
+    g("kitchen-flow", "厨房和人手接得住吗", "堂食和外带挤在同一个厨房"),
+  ] },
   { slug: "competition", category: "customers", title: "附近开了竞争对手", dek: "隔壁开了同类的店，或大品牌降价抢客人。", groups: [
     g("no-price-war", "不打价格战的做法", "不降价，留住客人"),
     g("be-different", "找出自己的不同", "客人为什么来你这里"),

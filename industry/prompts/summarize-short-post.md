@@ -10,6 +10,8 @@
 
 {{> rules-anti-hallucination}}
 
+{{> rules-reader-copy}}
+
 输出格式（严格遵守）：
 title_zh: <10-15字中文标题>
 body_zh: <中文翻译>

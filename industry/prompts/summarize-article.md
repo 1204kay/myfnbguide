@@ -17,6 +17,8 @@
 
 {{> rules-anti-hallucination}}
 
+{{> rules-reader-copy}}
+
 输出格式（严格遵守）：
 title_zh: <中文标题>
 summary_zh: <80-160字、最多3句的中文摘要>

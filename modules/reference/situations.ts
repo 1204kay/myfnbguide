@@ -221,7 +221,7 @@ export const SITUATIONS: Situation[] = [
   { slug: "opening-cost", category: "open-close", title: "开一家店要多少钱", dek: "装修、设备、押金、开业前的周转金，加起来常常超出预算。", groups: [
     g("build-out", "装修和设备", "最大的一笔开支"),
     g("working-capital", "开业前后的周转金", "开业以后几个月还要付的钱"),
-    g("by-format", "不同店型的开店成本", "档口、小店、正式餐厅各要多少"),
+    g("by-format", "不同店型的开店成本", "摊位、小店、正式餐厅各要多少"),
   ] },
   { slug: "location", category: "open-close", title: "店开在哪里", dek: "位置决定了客流，也决定了房租。", groups: [
     g("traffic", "看客流", "什么时段、什么人经过"),
@@ -248,8 +248,8 @@ export const SITUATIONS: Situation[] = [
     g("contract", "合同里的条款", "签之前要看清楚的地方"),
     g("franchisee-stories", "加盟主的经历", "做加盟的人怎么说"),
   ] },
-  { slug: "small-formats", category: "open-close", title: "档口、外卖店、共享厨房适不适合", dek: "店小、房租低，适不适合自己的生意。", groups: [
-    g("kiosk", "档口和小店", "小面积怎么做"),
+  { slug: "small-formats", category: "open-close", title: "摊位、外卖店、共享厨房适不适合", dek: "店小、房租低，适不适合自己的生意。", groups: [
+    g("kiosk", "摊位和小店", "小面积怎么做"),
     g("delivery-only", "只做外卖", "没有门面的店"),
     g("shared-kitchen", "共享厨房和快闪", "先试再开店"),
   ] },

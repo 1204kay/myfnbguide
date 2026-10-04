@@ -1641,6 +1641,111 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-caroline-bower",
+      "name": "Bluebird Bread Co. · Caroline Bower（美国 · 微型面包店老板）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.carolinebower.com/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-miraishokudo",
+      "name": "未来食堂日記（日本 · 定食屋店主）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://miraishokudo.hatenablog.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-kojinkuroji",
+      "name": "小さなお店の黒字力（日本 · 个人饮食店店主）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kojinkuroji.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ryourigaka",
+      "name": "料理画家クチーナカメヤマ（日本 · 意大利酒馆店主）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ryourigaka.jp/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-yoshitencho",
+      "name": "ヨッシー店長の家 · 飲食店開業（日本 · 咖啡店店主）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://yoshitencho.com/category/restaurant/feed",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

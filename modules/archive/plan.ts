@@ -13,4 +13,11 @@ export const ARCHIVE: ArchivePlan[] = [
   // Practice blogs whose old articles are whole text already: stories without transcription.
   { id: "rss-petpooja", pages: { url: "https://blog.petpooja.com/feed/?paged={n}", to: 30 } },
   { id: "rss-tenpo-biz-column", pages: { url: "https://www.tenpo.biz/solution/feed/?paged={n}", to: 20 } },
+  // Owners' own blogs (10/5): most stopped or write rarely, so their value is the archive. Bluebird Bread's feed
+  // (Wix) lists only its latest 20 and does not page; はてな pages its feed by ?page=n.
+  { id: "rss-caroline-bower" },
+  { id: "rss-miraishokudo", pages: { url: "https://miraishokudo.hatenablog.com/feed?page={n}", to: 6 } },
+  { id: "rss-kojinkuroji", pages: { url: "https://kojinkuroji.com/feed/?paged={n}", to: 10 } },
+  { id: "rss-ryourigaka", pages: { url: "https://ryourigaka.jp/feed/?paged={n}", to: 21 } },
+  { id: "rss-yoshitencho", pages: { url: "https://yoshitencho.com/category/restaurant/feed?paged={n}", to: 14 } },
 ];

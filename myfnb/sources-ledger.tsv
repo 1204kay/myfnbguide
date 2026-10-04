@@ -8335,3 +8335,41 @@ sub-cheferichuang	Chef Eric Huang（Substack）	https://cheferichuang.substack.c
 sub-davidrmann3	Restaurant 101 · David R. Mann（Substack）	https://davidrmann3.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；几乎每天一篇，熟客、团队与名厨访谈混在一起
 sub-schedulefly	Schedulefly（Substack）	https://schedulefly.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；排班软件商自家推广多
 sub-culinarywoman	Culinary Woman（Substack）	https://culinarywoman.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；名厨八卦、购物与食谱，与经营无关
+rss-byego-tw	BYEGO 營運日誌（中国台湾 · 茶饮小店）	https://medium.com/feed/@ego1go0000	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则 3：Medium 规则禁止用机器人和爬虫访问，整个平台不接；另外内容以产品营销为主，经营经验很少，2026-05 以后已停更。
+rss-cafeworker	CAFEWORKER 咖啡工人（中国台湾 · 烘豆机业者）	https://cafeworker.pixnet.net/feed.rss	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者不是店主（烘豆机业者）；痞客邦条款只许个人在站内使用（规则 3）；近半年没有新文章。
+rss-vocus-swdorder	餐飲老闆的數位筆記本（中国台湾 · 点餐系统商的方格子账号）	https://vocus.cc/api/rss/user/69c1e64afd89780001c36e56/articles	2026-10-05·店主博客（四路搜索，子代理核对）	不接	系统商的内容营销（属于不要的类型）；规则 1：方格子的作者订阅路径被 robots.txt 禁止。
+rss-vocus-pupuking	柴氣噗噗王（中国台湾 · 方格子推广账号）	https://vocus.cc/api/rss/user/6800f395fd89780001037446/articles	2026-10-05·店主博客（四路搜索，子代理核对）	不接	不是店主（推广人设，内容主要是联盟推广）；规则 1：订阅路径被 robots.txt 禁止。
+rss-cafe-muller	穆勒咖啡館（中国台湾 · 前咖啡馆店主）	https://cafemullerdotblog.wordpress.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则全部通过，作者也确实经营过咖啡馆，但写的不是经营经验，且 2024-01 以后停更。
+rss-akatsuki-coffee	Akatsuki 曉咖啡（中国台湾 · 网路咖啡豆卖家）	https://akatsukicoffee.blogspot.com/feeds/posts/default	2026-10-05·店主博客（四路搜索，子代理核对）	不接	不是店主（网拍卖豆）；2015 年停更，全站只有 24 篇。
+rss-heartbeat-cafe	洞心咖啡（中国台湾 · 咖啡馆官网）	https://heartbeat-cafe.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	订阅和 robots.txt 都返回挡机器的验证页，采集读不到，作者身份和条款也查不清（与账本里 iCHEF 香港网志的处理相同）。
+rss-candao-academy	餐道（马来西亚 · 餐饮培训机构，Medium）	https://medium.com/feed/@candao.academy	2026-10-05·店主博客（四路搜索，子代理核对）	不接	不是店主（培训机构）；规则 3：Medium 规则禁止爬虫访问；近一年停更。
+rss-ecup-hk	ecup.hk 博客 · 开咖啡店心得问答（中国香港 · 杯具供应商）	https://ecup.hk/blogs/blog.atom	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则 5：robots.txt 连不上；而且是供应商的博客，不是店主本人的。
+rss-caroline-bower	Caroline Bower · Bluebird Bread Co.（美国 · 微型面包店老板）	https://www.carolinebower.com/blog-feed.xml	2026-10-05·店主博客（四路搜索，子代理核对）	接入	店主本人写自己店里的钱、人、客人；规则 1–5 与 TDMRep 通过（check-sources、条款页、平台条款已读），订阅只有最新 20 篇
+rss-janelle-copeland	Janelle Copeland 博客（美国 · 前纸杯蛋糕店老板）	https://www.janellecopeland.com/blog?format=rss	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则 3：站点使用条款只许个人使用。内容本身很好，作者确是前店主。
+rss-sarahs-sourdough-bakery	Sarah's Sourdough · Behind the Bakery（美国 · 家庭微型面包坊）	https://sarahssourdough.com/category/behind-the-bakery/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则 2：robots.txt 拒绝代用户读网页的 ChatGPT-User。另外经营栏目一年多没有更新，只有 4 篇。
+rss-josh-kopel	Josh Kopel 博客（美国 · FULL COMP 播客的文字版）	https://joshkopel.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则 3：使用条款禁止抓取、爬取网站内容，并只许个人或内部业务查看。内容与已接的 pod-full-comp 重复。
+rss-smart-pub-tools	Smart Pub Tools（英国 · 酒馆老板做的软件网站）	https://smartpubtools.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	本质是软件商的推广网站，文章全是英国酒馆租约法规，2026-05-18 以后没有更新。
+rss-bikeeny	Bikeeny 博客（美国 · 家庭咖啡店）	https://bikeeny.com/blog/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	量太少：只有 5 篇，2019 年以后不再写，既不在更新，也没有可补的存档。
+rss-wood-st-coffee	Wood St Coffee 博客（英国 · 咖啡店与烘焙坊）	https://www.woodstcoffee.co.uk/blogs/wsc.atom	2026-10-05·店主博客（四路搜索，子代理核对）	不接	一年只有三四篇，而且大多是咖啡豆产地和冲煮，不是经营经验。
+rss-green-joe-coffee	Green Joe Coffee School（美国 · 前咖啡餐车老板的课程网站）	https://greenjoecoffeeschool.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者 2019 年起已是顾问兼咖啡车制造商；近一年的文章是美国各州的开业手续，2024-11 到 2026-09 之间没有更新。
+rss-zingermans-community	Zingerman's Community（美国 · 熟食店集团的通讯）	https://www.zingermanscommunity.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	企业集团的官方通讯，以产品和活动为主，店主随笔占比很低；集团规模也不属于小店。
+rss-jeffrey-morgenthaler	Jeffrey Morgenthaler（美国 · 酒吧合伙人）	https://jeffreymorgenthaler.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	内容是调酒配方和工具，不是经营经验，而且半年多没有更新。
+rss-the-pink-crumbb	The Pink Crumbb 博客（美国 · 家庭面包坊）	https://thepinkcrumbb.shop/blogs/the-blog.atom	2026-10-05·店主博客（四路搜索，子代理核对）	不接	已经停更一年多，旧文章只有 15 篇，网站已转为卖包装和资料。
+rss-miraishokudo	未来食堂日記（日本 · 定食屋店主）	https://miraishokudo.hatenablog.com/feed	2026-10-05·店主博客（四路搜索，子代理核对）	接入	店主本人写自己店里的钱、人、客人；规则 1–5 与 TDMRep 通过（check-sources、条款页、平台条款已读），存档按页导入
+rss-ryourigaka	料理画家クチーナカメヤマ（日本 · 意大利酒馆店主）	https://ryourigaka.jp/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	接入	店主本人写自己店里的钱、人、客人；规则 1–5 与 TDMRep 通过（check-sources、条款页、平台条款已读），存档按页导入
+rss-kojinkuroji	小さなお店の黒字力（日本 · 个人饮食店店主）	https://kojinkuroji.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	接入	店主本人写自己店里的钱、人、客人；规则 1–5 与 TDMRep 通过（check-sources、条款页、平台条款已读），存档按页导入
+rss-ekiura-takasi	飲食やろうよ（日本 · 居酒屋店主）	https://ekiura-takasi.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	标题多是连锁新闻和日本单一国家的事件评论（§2.2 多为不看），本店数字的文章很少；规则通过
+rss-yoshitencho	ヨッシー店長の家 · 飲食店開業（日本 · 泰国菜咖啡店店主）	https://yoshitencho.com/category/restaurant/feed	2026-10-05·店主博客（四路搜索，子代理核对）	接入	店主本人写自己店里的钱、人、客人；规则 1–5 与 TDMRep 通过（check-sources、条款页、平台条款已读），存档按页导入
+rss-sakaduki	酒月（日本 · 居酒屋店主）	https://www.sakaduki.net/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	多是心态议论（「低学历的人更该开店」之类），没有关于页确认店主身份；规则通过
+rss-cafeverrine	あらしまのスナップ（日本 · 咖啡店店主）	https://cafeverrine.work/feed	2026-10-05·店主博客（四路搜索，子代理核对）	不接	文章是招揽咨询客户的营销写法（心理学操控客人、卖 POP 技巧），不是本店经过；规则通过
+rss-afroaster	AFRO BLOG · カフェ開業（日本 · 自家烘焙咖啡店店主）	https://afroaster.com/category/coffeework/feed	2026-10-05·店主博客（四路搜索，子代理核对）	不接	卖豆、课程和联盟推广的文章占多数，本店经过很少；规则通过
+rss-brunch-imicoffee	이미커피의 브런치（韩国 · 咖啡店店主）	https://brunch.co.kr/rss/@@16J9	2026-10-05·店主博客（四路搜索，子代理核对）	待定	规则通过，作者确是首尔咖啡店店主，内容是人和店本身。缺的是：订阅只能取到最新 20 篇、不能翻页，作者 2022 年 9 月后停更，接入只能一次性得到 20 篇，不满足「还在写」或「旧文章很多可翻页」；是否为 20 篇单独接一个来源，需要权衡。这是本轮韩文方向唯一像样的候选：韩国小店店主几乎都写在 Naver。
+rss-nakanisimanabu	飲食店経営を4か月で廃業した男のブログ（日本 · 前餐厅店主）	https://nakanisimanabu.hatenablog.com/feed	2026-10-05·店主博客（四路搜索，子代理核对）	不接	规则全部通过，作者也是前店主，但只有 6 篇、最长约 1,500 字、没有数字和经过，按 §3.1「材料不够写成故事的不进情况页」，为它单独维护一个来源不值得。
+rss-wielandshoehe-klink	Wielandshöhe 店主日记（德国 · 餐厅老板 Vincent Klink）	https://www.wielandshoehe.de/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	待定	作者确是店主，规则 1、2、3、5 和 TDMRep 都已查清并通过。不能定为「接」，是因为缺产出判断：内容以文化、书信、政治评论和菜谱为主，写店里经营的约占 8%，而且没有数字。要决定，需要按 §2.2 对这 4 篇写店里的文章做一次判定（或请用户盲标）。如果只得到可看，建议只接日常订阅、不打开存档，因为约 1,200 篇旧文同样大多与经营无关。
+rss-quinta-do-arneiro	A vida de uma alface（葡萄牙 · 有机农场主，兼营农场杂货店、面包房和餐厅）	https://avidadeumaalface.blogspot.com/feeds/posts/default	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者是店主本人，规则全部通过。不接的原因有两条：一是主体是农场的蔬菜箱生意，餐饮内容约占 4%；二是 2026 年 1 月以后停更。
+rss-ecoopan	Ecoopan（西班牙 · 自主管理的合作社面包房）	https://ecoopan.wordpress.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	确是店家自己写，规则全部通过，但内容不是经营经验，以活动和理念为主，估计没有必看。
+rss-baecker-suepke	Bäcker Süpke`s Welt（德国 · 面包店老板）	https://baeckersuepke.wordpress.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者是店主本人，规则全部通过。不接是因为 2018 年 8 月以后停更，内容以食谱和手艺为主，几乎没有经营经验。
+rss-baeckerei-schefer	Bäckerei Schefer 博客（瑞士 · 面包店老板）	https://www.baeckerei-schefer.ch/cms/xml/rss.xml	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者是店主本人，规则通过。不接是因为订阅不更新（只有 5 篇无日期旧文），而且内容以产品和公告为主。
+rss-toni-negre	Toni Negre 博客（西班牙 · 餐饮食材供应商）	https://toninegre.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者是供应商，不是店主；而且 2023 年 11 月以后停更。
+rss-pienissimo	Pienissimo（意大利 · 里米尼 Bounty 店主 Giuliano Lanzetti，兼卖餐厅营销课程）	https://www.pienissimo.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者确是店主，规则通过。不接的原因有三条：2024 年 7 月以后停更两年多；订阅不能翻页，取不到存档；内容主要是推销营销课程的文章，不是自家店的经营经过。
+web-hostelero-fiestero	Hostelero Fiestero（西班牙 · 前餐厅老板，现卖培训课程）	没有找到订阅	2026-10-05·店主博客（四路搜索，子代理核对）	不接	有三条原因：作者已不经营店，现在卖课程；没有带日期的博客和订阅；网站对我们的抓取器返回机器人验证页。

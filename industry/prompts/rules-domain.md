@@ -9,7 +9,7 @@
    - Ghost kitchen / cloud kitchen = 云厨房；central kitchen / commissary = 中央厨房；back of house = 后厨；front of house = 前厅
    - Drive-thru = 得来速（汽车餐道）；kiosk = 自助点餐机；POS = 收银系统
    - Labor cost = 人工成本；turnover（人事语境）= 流失率；minimum wage = 最低工资；foreign worker = 外籍劳工
-   - Hawker / stall = 小贩、摊位；hawker centre（新加坡）= 小贩中心；food court = 美食广场
+   - Hawker / stall = 小贩、摊位；hawker centre（新加坡）= 小贩中心；food court = 美食广场；food truck = 餐车
    - LTO（limited-time offer）= 限时供应；menu engineering = 菜单设计与定价分析
    - 中国大陆的行业用语照用：闭店、拓店、下沉市场、私域、团购、翻台率、坪效、人效；读者不一定熟悉，首次出现时括注一个简短说明，例如下沉市场（三四线城市与县镇）
 

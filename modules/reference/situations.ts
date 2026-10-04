@@ -306,19 +306,23 @@ export function categoryTitle(key: string): string | undefined {
 }
 
 /**
- * 按品类浏览: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in
- * standard written words ("/" written 和). The writer picks one or none; slugs are addresses, never renamed once public.
+ * 按店型浏览: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in
+ * standard written words ("/" written 和), in the order the page lists them. Settled 10/5 from 40 classification
+ * tables (myfnb/research-2026-10-05-shop-types.md): most say what a shop mainly sells; 摊位和餐车 is the form and
+ * 团餐和宴会承办 who the customer is, and those two are judged first (prompts/case.md). The writer picks one or
+ * none; slugs are addresses, never renamed once public.
  */
 export const SHOP_KINDS = [
-  { slug: "coffee", title: "咖啡", dek: "咖啡馆、咖啡吧和外带咖啡店。" },
-  { slug: "tea", title: "茶饮", dek: "奶茶、果茶和现泡茶的饮品店。" },
-  { slug: "hotpot", title: "火锅", dek: "火锅店和各种涮锅店。" },
-  { slug: "fast-food", title: "快餐", dek: "点单快、出餐快，以外带和简单堂食为主的店。" },
-  { slug: "dining", title: "正餐", dek: "以堂食为主、有座位和服务的餐厅。" },
-  { slug: "bakery", title: "烘焙和甜品", dek: "面包店、蛋糕店和甜品店。" },
-  { slug: "snacks", title: "小吃和摊位", dek: "小吃店、街边摊，以及美食广场和小贩中心里的摊位。" },
-  { slug: "catering", title: "团餐和中央厨房", dek: "为公司、学校、医院供餐，或为多家店集中备餐的厨房。" },
-  { slug: "bar", title: "酒吧和酒饮", dek: "酒吧、小酒馆和以酒饮为主的店。" },
+  { slug: "stalls", title: "摊位和餐车", dek: "在摊位或餐车上做生意的，不论卖什么：路边摊、夜市摊、小贩中心和美食广场里的摊位、咖啡店里租的摊位、餐车。" },
+  { slug: "snacks", title: "小吃", dek: "有门面、专做面、粉、饺子、煎饼、卤味这类一两样传统食物的小店。" },
+  { slug: "fast-food", title: "快餐", dek: "柜台点餐、先付款、出餐快的店：汉堡炸鸡、米饭快餐、便当和经济饭。" },
+  { slug: "dining", title: "正餐", dek: "服务员点菜上菜、吃完再付款的餐馆，从社区小馆到高级餐厅。" },
+  { slug: "hotpot", title: "火锅", dek: "顾客在桌上自己涮煮食材的店。" },
+  { slug: "coffee", title: "咖啡", dek: "主要卖咖啡的店，包括马来西亚、新加坡的传统咖啡店。" },
+  { slug: "tea", title: "茶饮", dek: "主要卖现做的茶和其他饮料的店：奶茶、果茶、现泡茶、凉茶、果汁。" },
+  { slug: "bakery", title: "烘焙和甜品", dek: "卖面包、蛋糕、西点和各种甜品的店，包括糖水和冰品。" },
+  { slug: "bar", title: "酒吧和酒馆", dek: "主要卖酒的店：酒吧、小酒馆、餐酒吧、居酒屋。" },
+  { slug: "catering", title: "团餐和宴会承办", dek: "不靠散客上门，按合同为公司、学校、医院供餐，或上门承办宴会和活动餐饮。" },
 ] as const;
 
 export type ShopKind = (typeof SHOP_KINDS)[number]["slug"];

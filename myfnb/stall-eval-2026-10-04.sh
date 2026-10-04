@@ -16,8 +16,8 @@ docker compose exec -T db psql -U aihot -d aihot -At -f - < myfnb/llm-budget-202
 echo "== 来源名：Your Life and Restaurant 标明是家庭餐馆老板的播客"
 docker compose exec -T db psql -U aihot -d aihot -At -v ON_ERROR_STOP=1 -f - < myfnb/sources-names-2026-10-05.sql
 
-echo "== 1/3 已入库条目的旧标签「小吃/档口」改为「小吃/摊位」，重新发布这些条目"
-until w node myfnb/retag-2026-10-04.ts; do
+echo "== 1/3 已入库条目的旧标签改为新标签（10/5 起：「小吃/摊位」改为「摊位/餐车」），重新发布这些条目"
+until w node myfnb/retag-2026-10-05.ts; do
   echo "没有跑完（多半是部署重启了 worker），30 秒后再跑"
   sleep 30
   until w true 2>/dev/null; do sleep 20; done

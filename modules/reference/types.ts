@@ -10,7 +10,7 @@ export interface Shop {
   name: string | null;
   country: string;
   city: string | null;
-  /** Its 品类 (situations.ts SHOP_KINDS); null when the original does not say or none fits. */
+  /** Its 店型 (situations.ts SHOP_KINDS); null when the original does not say or none fits. */
   kind: ShopKind | null;
   /** 一家店、8 家店…; null when the original does not say. */
   size: string | null;

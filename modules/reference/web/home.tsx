@@ -33,7 +33,7 @@ export default function ReferenceHomePage() {
       {!categories.length && !data.kinds.length && <EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会出现在这里。</EmptyState>}
       {data.kinds.length > 0 && (
         <section className="mt-9">
-          <Kicker>按品类浏览</Kicker>
+          <Kicker>按店型浏览</Kicker>
           <div className="mt-3.5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {data.kinds.map((k) => (
               <Link key={k.slug} viewTransition to={`/reference/kinds/${k.slug}`} className="card block px-4 py-3.5 transition-colors hover:border-accent">

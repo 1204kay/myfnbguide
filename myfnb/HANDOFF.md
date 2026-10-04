@@ -6,7 +6,7 @@
 >
 > 接手的 Claude：读完本文，再读 `AGENTS.md`、`docs/customize.md` 和 `docs/architecture.md` 的「模块」一节（以作者最新版为准：`git fetch upstream` 后用 `git show upstream/main:<文件>` 读），然后从 **§9 下一步** 开头一段开始。
 >
-> **当前状态（快照 2026-10-04 下午）**：**方向定了：餐饮人自己的参考站**（§0、§2）。执行顺序第 1–3 步做完、已上线；5 个样页做好，交给用户私下转发给几位老板（§9 开头「10/4 下午进度」）。**下一步从第 4 步开始**，样页的反馈回来以后按规则判；做好之前不对外（不发社媒、不切 www）。读者看得到的文字守 §3 五条。§9 里「10/4 凌晨」及更早的段落是历史。
+> **当前状态（快照 2026-10-04 下午）**：**方向定了：餐饮人自己的参考站**（§0、§2）。执行顺序第 1–3 步做完、已上线；样页改用第二版的写法（小岛经济学式的小故事），「生意很忙，钱却留不下来」用户看过说不错，另外四页照这个写法重做后再给老板看（§9 开头「10/4 下午进度」）。**下一步：重做四个样页，然后第 4 步**；做好之前不对外（不发社媒、不切 www）。读者看得到的文字守 §3 五条。§9 里「10/4 凌晨」及更早的段落是历史。
 
 ---
 
@@ -439,7 +439,12 @@ Windows 上：类型检查和网站构建通过；作者原版的网页服务器
 - **日报头条**：4.0 的日报头条不再由模型综合写，按规则取当天排第一的条目、带 `leadItemId`，网页上点得进去，下面有来源和原文（`reports/compose.ts`、`ReportPaper.tsx`）；10/4 那一期是合并前的代码编的。**10/5 08:00 那一期出来后核对**：头条点得进去；头条不是单一国家的统计（这取决于评分，跟下面的评测一起看；`report-daily-lead.md` 在 4.0 已不存在，不用改）。
 - ✅ **给作者的 PR [#100](https://github.com/KKKKhazix/AIHOT/pull/100)**（`pr/site-report-copy`）：报告版面和条目上写死的说法改从 `site.ts` 读，默认值与作者原文逐字相同（§7.2 第 14 项）。
 - ✅ **来源名统一**（`ab84461`）：72 个改成「名字（国家 · 类型）」，原来的备注留在 `sources-ledger.tsv` 的名称列。逐个核对时发现 6 个国家标签标错（Restaurant Reset、Restaurant Wealth 是美国，Hospitality Talks 是英国，Great Work for Restaurants、Restaurant Growth Accelerator 是加拿大，面包店创业播客是阿根廷），一起改了：标签也给写作的模型看。澳洲写作澳大利亚，台湾、香港写作中国台湾、中国香港。线上要跑 `sources-names-2026-10-04.sql`（下面那条命令）。
-- ✅ **5 个样页**（`e8affb3`、`a4b735d`；内容 `myfnb/samples/pages.mjs`，排版 `render.mjs`，输出在 `.data/samples/`）：情况页「生意很忙，钱却留不下来」「午市高峰时段出餐混乱」「想开第二家店」，店页美国奥斯汀 Revolución Coffee + Juice、澳大利亚 Big Easy Group；14 篇原文和节目简介逐句核对过（改掉原文没有的说法 4 处）。每页切成几张长图（微信），另有一份 6 页的 PDF（原文链接点得开，WhatsApp）。10/4 下午已发给用户。**判法**：五位里三位以上说会看、会照着试，照计划做；多数说「外国的跟我没关系」，就调（多接中文和亚洲来源、只挑到哪都一样的做法，§9「样页给老板看」）。等反馈期间做第 4、5 步：情况清单和参考库不管反馈怎样都要做，反馈只会改来源的比例和挑法。
+- **样页（进行中）**。第一版 5 页（`e8affb3`，`myfnb/samples/pages.mjs` + `render.mjs`，内容逐句核对过）用户看过以后不发给老板，**改用第二版的写法重做**：
+  - 用户对第一版的意见：同一来源出现好几次；点不进去；区域不清楚；整段文字，要「像报告，用表格、颜色、画面」。Claude 按 11 家网站的共同做法改（`research-2026-10-04.md` §17），用户又指出：只剩图和标签，**没有谁、没有前因后果、标签没有解释**；毛利、保本点这些词看不懂，要举例，像《小岛经济学》那样把难懂的事讲简单；颜色太多；还有「讲」这种口语词。
+  - **定下来的写法**（第二版「生意很忙，钱却留不下来」，`myfnb/samples/v2-busy-no-profit.html`，截图脚本 `shoot-v2.mjs`；用户 10/4 傍晚说「看着不错」）：总览一张「漏水的桶」说明整件事，每个洞一组，每一行写清是谁、遇到什么、怎么做；点一行进一个连环画式的小故事：这是谁 → 遇到什么 → 发生了什么 → 为什么 → 怎么做、结果如何，每格一张图、几句话，原文没写的注明。难懂的词用同一家假设的小面馆举例；**举例和示意图用灰底虚线框并标「举例」，原文的数字用实线并标「原文」，两种不混**。颜色只有网站的青绿色、灰色和红色（红色只用于亏损和超支）。不出现没有解释的标签，不打分。读者看得到的文字守 §3 五条，发布前逐词查一遍口语词（这次写出 12 处，用户抓到「他讲」）。
+  - **材料不够讲故事的不进情况页**：西班牙汉堡店那条只有节目简介（一串话题和口号，没有他几点开门、为什么、结果），用户看不懂在说什么，已拿掉；这类播客等第 7 步转成文字以后再用。同理，只有简介的单集要么像日本店主那两集那样有明确的做法、能配举例说明，要么不收。
+  - **下一步**：用这个写法重做另外四页（「午市高峰时段出餐混乱」「想开第二家店」、两个店页），内容从 `pages.mjs` 取（已核对），重新按故事组织；完成以后放到试运行站一个不公开的地址发给用户（claude.ai 的链接只有用户能开，中国大陆也打不开），再由用户私下发给老板。**判法**：五位里三位以上说会看、会照着试，照计划做；多数说「外国的跟我没关系」，就调（多接中文和亚洲来源、只挑到哪都一样的做法，§9「样页给老板看」）。
+  - 这套写法也是第 4、5 步（情况清单、参考库模块）要做成的样子：每条内容在写作时要多产出「谁、遇到什么、为什么、怎么做、结果」几段和可画图的数字；举例由模型写、算式由程序核对。动手前先把这一条写进第 4、5 步的设计。
 - **等用户在服务器上跑**（10/4 下午发出）：先改来源名，再用 333 条 gold 重跑评测（评分提示词改成书面语，来源名也进模型的输入，两样一起测）。对照 v4（直接报分、40 分：必看 35、可看 41、不看 2）：选进的必看、可看、不看没有明显变化就不动；有变化先查是哪一样引起的，调措辞，不动门槛。
   ```bash
   cd /opt/myfnbguide && until sudo docker compose exec -T worker test -f myfnb/sources-names-2026-10-04.sql 2>/dev/null; do echo "等新版本部署，每 30 秒看一次……"; sleep 30; done; echo "新版本已上线"; sudo docker compose exec -T db psql -U aihot -d aihot -At -v ON_ERROR_STOP=1 -f - < myfnb/sources-names-2026-10-04.sql && sudo docker compose exec -T db psql -U aihot -d aihot -Atc "SELECT 'llm per_day ' || per_day || ', used 24h ' || (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day') FROM budgets WHERE service = 'llm'" && sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && for i in 1 2 3 4 5 6 7 8; do node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 --concurrency 2 --label '小店标准 v5：书面语与新来源名' > /dev/null; node myfnb/eval-cases.ts | head -1 | grep -q 'errors 0$' && break; sleep 65; done; node myfnb/eval-cases.ts; node myfnb/eval-cases.ts --sweep"; cd ~

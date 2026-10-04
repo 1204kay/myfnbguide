@@ -101,7 +101,7 @@ test("an opened archive comes in as history, and only episodes whose notes score
 
   const done = await transcribeEpisode(high!.id);
   assert.equal(done.status, "transcribed");
-  assert.deepEqual(geminiCalls, ["POST /upload/v1beta/files", "POST /upload-session", "POST /v1beta/models/gemini-2.5-flash-lite:generateContent", "DELETE /v1beta/files/f1"]);
+  assert.deepEqual(geminiCalls, ["POST /upload/v1beta/files", "POST /upload-session", `POST /v1beta/models/${GEMINI.model}:generateContent`, "DELETE /v1beta/files/f1"]);
   const [article] = await sql<{ revision: number; body_text: string; backfill: boolean; processing_state: string }[]>`
     SELECT revision, body_text, backfill, processing_state FROM articles WHERE id = ${high!.id}`;
   assert.deepEqual([article!.revision, article!.body_text, article!.backfill], [2, TRANSCRIPT.trim(), true], "the transcript is the new revision, still history");
@@ -110,6 +110,13 @@ test("an opened archive comes in as history, and only episodes whose notes score
   assert.equal(episode!.transcript_chars, TRANSCRIPT.trim().length);
   assert.equal((await sql`SELECT status FROM receipts WHERE id = ${episode!.receipt_id}`)[0]!.status, "completed");
   assert.deepEqual(await episodesToTranscribe(10).then((ids) => ids.filter((id) => rows.some((r) => r.id === id))), [], "done once");
+
+  // A failure is tried again under another model, not under the same one (scores are read for the current revision).
+  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${high!.id}, 2, 'rule', 'pass', 55, false)`;
+  await sql`UPDATE archive_episodes SET status = 'failed', error = 'gemini-older-model: gemini HTTP 404' WHERE article_id = ${high!.id}`;
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
+  await sql`UPDATE archive_episodes SET error = ${`${GEMINI.model}: gemini HTTP 400`} WHERE article_id = ${high!.id}`;
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), []);
 });
 
 test("a blog's older pages come in until the first empty one, through the source's own filters", async () => {

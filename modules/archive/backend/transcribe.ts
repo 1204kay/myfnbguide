@@ -12,8 +12,11 @@ import { guardedFetch } from "@aihot/backend/lib/http-fetch";
 import { assertAccepted, BudgetExceededError, completeReceipt, paidRequest, ProviderRejectedError } from "@aihot/backend/providers/receipts";
 
 export const SERVICE = "transcribe";
-/** Gemini's address and model; tests point the address at a stub. Free tier (no card): no charge, Google may use the audio. */
-export const GEMINI = { base: "https://generativelanguage.googleapis.com", model: "gemini-2.5-flash-lite" };
+/**
+ * Gemini's address and model; tests point the address at a stub. Free tier (no card): no charge, Google may use the
+ * audio. 2.5 models are only open to projects that used them before (ai.google.dev/gemini-api/docs/models, 2026-10-04).
+ */
+export const GEMINI = { base: "https://generativelanguage.googleapis.com", model: "gemini-3.5-flash-lite" };
 const MAX_AUDIO_BYTES = 300 * 1024 * 1024;
 
 const PROMPT = [
@@ -24,13 +27,17 @@ const PROMPT = [
   "只输出转写的文字。",
 ].join("\n");
 
-/** Episodes to transcribe next: imported with an audio file, whose notes scored at least the understand floor. */
+/**
+ * Episodes to transcribe next: with an audio file, notes that scored at least the understand floor, and not done.
+ * A failure is tried again once the model is another than the one it failed with (its error starts with that model).
+ */
 export async function episodesToTranscribe(limit: number): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`
     SELECT e.article_id AS id FROM archive_episodes e
     JOIN articles a ON a.id = e.article_id
     JOIN LATERAL (SELECT score FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
-    WHERE e.status = 'imported' AND e.audio_url IS NOT NULL AND n.score >= ${UNDERSTAND_FLOOR}
+    WHERE e.audio_url IS NOT NULL AND n.score >= ${UNDERSTAND_FLOOR}
+      AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${GEMINI.model}:%`}))
     ORDER BY n.score DESC, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }
@@ -90,7 +97,7 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
   const [row] = await sql<{ audio_url: string | null; status: string; source_id: string; url: string; identity_key: string; title: string }[]>`
     SELECT e.audio_url, e.status, a.source_id, a.url, a.identity_key, a.title FROM archive_episodes e JOIN articles a ON a.id = e.article_id
     WHERE e.article_id = ${articleId}`;
-  if (!row?.audio_url || row.status !== "imported") return { status: "skipped" };
+  if (!row?.audio_url || row.status === "transcribed") return { status: "skipped" };
   try {
     const receipt = await paidRequest(
       { service: SERVICE, model: GEMINI.model, purpose: "transcribe_episode", subject: `article:${articleId}`, identity: { model: GEMINI.model, audio: row.audio_url, prompt: PROMPT }, requestSummary: { audio: row.audio_url } },
@@ -116,7 +123,8 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
     return { status: "transcribed", chars: text.length };
   } catch (error) {
     const cause = (error as Error).cause;
-    const message = `${String((error as Error).message ?? error)}${cause ? ` (${String((cause as Error).message ?? cause)})` : ""}`.slice(0, 1000);
+    // The model first: a failure is tried again only under another model (episodesToTranscribe).
+    const message = `${GEMINI.model}: ${String((error as Error).message ?? error)}${cause ? ` (${String((cause as Error).message ?? cause)})` : ""}`.slice(0, 1000);
     // A full budget, a rate limit or a server error is no fault of the episode: it stays imported and is tried again later.
     if (error instanceof BudgetExceededError || (error instanceof ProviderRejectedError && error.retryable)) return { status: "skipped", error: message };
     await sql`UPDATE archive_episodes SET status = 'failed', error = ${message}, updated_at = now() WHERE article_id = ${articleId}`;

@@ -44,4 +44,6 @@ w node myfnb/eval-cases.ts --sweep
 
 echo "== 3/3 用量"
 docker compose exec -T db psql -U aihot -d aihot -Atc "SELECT 'llm per_day ' || per_day || ', used 24h ' || (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day') FROM budgets WHERE service = 'llm'"
+echo "== 规则 6：新来源对服务器返回 403、405 的暂停，其余不正常的列出来"
+docker compose exec -T db psql -U aihot -d aihot -c "WITH last AS (SELECT DISTINCT ON (source_id) source_id, error FROM fetch_runs ORDER BY source_id, started_at DESC) UPDATE sources s SET enabled = false, health = 'paused', updated_at = now() FROM last WHERE last.source_id = s.id AND s.enabled AND s.health <> 'ok' AND last.error ~ '^HTTP 40[35]' RETURNING s.id AS paused, left(last.error, 60) AS error;" -c "SELECT s.id, s.health, s.fail_count, left(r.error, 80) AS error FROM sources s LEFT JOIN LATERAL (SELECT error FROM fetch_runs WHERE source_id = s.id ORDER BY started_at DESC LIMIT 1) r ON true WHERE s.enabled AND s.health NOT IN ('ok', 'unknown') ORDER BY s.id;"
 echo "== 全部完成"

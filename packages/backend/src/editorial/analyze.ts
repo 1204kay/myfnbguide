@@ -384,15 +384,22 @@ async function mendWording(a: AnalyzeInputArticle, w: AnalysisRun["writing"], op
   if (!problems.length) return w;
   const t = translateInputOf(a);
   checkAnalysisRunning();
-  const res = await chatJson({
-    model: await modelFor("wording"), purpose: "mend_wording", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.wording, system: MEND_SYSTEM,
-    user: [
-      `来源：${t.sourceName ?? "（未注明）"}`, `原题：${t.title}`,
-      `中文稿：\n${JSON.stringify({ titleZh: w.titleZh, summaryZh: w.summaryZh, reasonZh: w.reasonZh })}`,
-      `问题：\n${problems.map((p) => `- ${p}`).join("\n")}`,
-    ].join("\n\n"),
-    schema: MendSchema, temperature: 0.1, maxTokens: 2048, attemptTag: tagged(opts.attemptTag, "wording"),
-  });
+  let res;
+  try {
+    res = await chatJson({
+      model: await modelFor("wording"), purpose: "mend_wording", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.wording, system: MEND_SYSTEM,
+      user: [
+        `来源：${t.sourceName ?? "（未注明）"}`, `原题：${t.title}`,
+        `中文稿：\n${JSON.stringify({ titleZh: w.titleZh, summaryZh: w.summaryZh, reasonZh: w.reasonZh })}`,
+        `问题：\n${problems.map((p) => `- ${p}`).join("\n")}`,
+      ].join("\n\n"),
+      schema: MendSchema, temperature: 0.1, maxTokens: 2048, attemptTag: tagged(opts.attemptTag, "wording"),
+    });
+  } catch (error) {
+    // An answer that is not the copy asked for leaves the first copy; its receipt is settled with the others.
+    if (error instanceof ModelOutputError) return { ...w, receiptIds: [...w.receiptIds, ...(error.receiptId === null ? [] : [error.receiptId])], reused: false };
+    throw error;
+  }
   const copy = finalizeCopy(t, { titleZh: res.data.titleZh, summaryZh: res.data.summaryZh });
   const mended = { titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: w.reasonZh === null ? null : res.data.reasonZh || w.reasonZh };
   const paid = { receiptIds: [...w.receiptIds, res.receiptId], reused: w.reused && res.reused };

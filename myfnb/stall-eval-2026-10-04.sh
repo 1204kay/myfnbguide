@@ -23,13 +23,6 @@ until w node myfnb/retag-2026-10-04.ts; do
   until w true 2>/dev/null; do sleep 20; done
 done
 
-echo "== 公开条目里带「讲」这类词的标题、摘要和收录理由：按新的处理流程重写（约 60 条，每条几次调用）"
-until w node myfnb/rewrite-copy-2026-10-05.ts; do
-  echo "没有跑完（多半是部署重启了 worker），30 秒后再跑"
-  sleep 30
-  until w true 2>/dev/null; do sleep 20; done
-done
-
 echo "== 2/3 评测：333 条 gold，评分提示词的书面语措辞（约半小时）"
 for round in $(seq 1 12); do
   until w true 2>/dev/null; do sleep 20; done
@@ -41,6 +34,13 @@ for round in $(seq 1 12); do
 done
 w node myfnb/eval-cases.ts
 w node myfnb/eval-cases.ts --sweep
+
+echo "== 入选条目里带「讲」这类词的标题、摘要和收录理由：按新的处理流程重写（约 60 条，每条几次调用；评测之后跑）"
+until w node myfnb/rewrite-copy-2026-10-05.ts; do
+  echo "没有跑完（多半是部署重启了 worker），30 秒后再跑"
+  sleep 30
+  until w true 2>/dev/null; do sleep 20; done
+done
 
 echo "== 3/3 用量"
 docker compose exec -T db psql -U aihot -d aihot -Atc "SELECT 'llm per_day ' || per_day || ', used 24h ' || (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day') FROM budgets WHERE service = 'llm'"

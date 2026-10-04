@@ -5,7 +5,8 @@
 //   2. score: two independent scores against the source tier's threshold (industry/selection.ts) decide 精选;
 //   3. structure: category, tags, subjects and the current news fact, beside scoring;
 //   4. writing, once the structure is in: the Chinese title, summary and reason by the content
-//      understanding for selected and near-selected items, by the cheaper title/summary prompts for the rest.
+//      understanding for selected and near-selected items, by the cheaper title/summary prompts for the rest;
+//      copy that uses a word the site keeps from readers (industry/wording.ts) goes back once to change only those.
 // Material with only a title or a feed summary has its article page fetched before it is judged.
 import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
@@ -396,15 +397,18 @@ async function mendWording(a: AnalyzeInputArticle, w: AnalysisRun["writing"], op
       schema: MendSchema, temperature: 0.1, maxTokens: 2048, attemptTag: tagged(opts.attemptTag, "wording"),
     });
   } catch (error) {
-    // An answer that is not the copy asked for leaves the first copy; its receipt is settled with the others.
-    if (error instanceof ModelOutputError) return { ...w, receiptIds: [...w.receiptIds, ...(error.receiptId === null ? [] : [error.receiptId])], reused: false };
+    // An answer that is not the copy asked for leaves the first copy; its receipt stays failed (seen on the
+    // runs page, and asked again the next time the item is analysed).
+    if (error instanceof ModelOutputError) return w;
     throw error;
   }
   const copy = finalizeCopy(t, { titleZh: res.data.titleZh, summaryZh: res.data.summaryZh });
   const mended = { titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: w.reasonZh === null ? null : res.data.reasonZh || w.reasonZh };
   const paid = { receiptIds: [...w.receiptIds, res.receiptId], reused: w.reused && res.reused };
-  // A guard that emptied the title or summary (a company the input does not name) leaves the first copy.
-  if (!mended.titleZh || !mended.summaryZh || wordingProblems(mended).length >= problems.length) return { ...w, ...paid };
+  // A guard that emptied the title or summary (a company the input does not name), a number changed or dropped, or
+  // no fewer such words: the first copy stands.
+  const numbers = (c: { titleZh: string; summaryZh: string; reasonZh: string | null }) => (`${c.titleZh} ${c.summaryZh} ${c.reasonZh ?? ""}`.match(/\d+(?:[.,]\d+)*/g) ?? []).sort().join(" ");
+  if (!mended.titleZh || !mended.summaryZh || numbers(mended) !== numbers(w) || wordingProblems(mended).length >= problems.length) return { ...w, ...paid };
   return { ...w, ...mended, identityGuard: copy.identityGuard ?? w.identityGuard, ...paid };
 }
 

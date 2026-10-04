@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { Await, isRouteErrorResponse, Link, useAsyncError, useLoaderData, useNavigate, useRevalidator } from "react-router";
 import type { Route } from "./+types/item";
 import type { FeedItemSummary, SiteItemDetail } from "@aihot/contracts/site";
-import { SITE } from "@aihot/site";
+import { ITEM_COPY, SITE } from "@aihot/site";
 import { edgeTtl, loadOr404 } from "../lib/api.server";
 import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "../lib/seo";
 import { fullDateTime, relativeTime } from "../lib/format";
@@ -194,7 +194,7 @@ function ItemPreview({ preview }: { preview: FeedItemSummary }) {
         )}
         {preview.reason && (
           <section className="mt-6 border-t border-line pt-4">
-            <div className="mb-1 text-[12px] font-semibold text-ink-3">推荐理由</div>
+            <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
             <p className="text-[15px] leading-[1.75] text-ink-2">{preview.reason}</p>
           </section>
         )}
@@ -338,7 +338,7 @@ function ItemView({ item }: { item: SiteItemDetail }) {
       {moreMenu}
     </div>
   );
-  const verdict = (item.selected || item.score !== null) && (
+  const verdict = (item.selected || (ITEM_COPY.showScore && item.score !== null)) && (
     <div className="flex items-center gap-2">
       {item.selected && (item.sameEvent ? <SameEventBadge /> : <SelectedBadge />)}
       <ScoreLabel score={item.score} />
@@ -380,12 +380,12 @@ function ItemView({ item }: { item: SiteItemDetail }) {
   const notes = (
     <>
       {item.reason && !summaryOnly ? (
-        <RailSection title="推荐理由">
+        <RailSection title={ITEM_COPY.reasonLabel}>
           {verdict && <div className="mb-3">{verdict}</div>}
           <p className="text-[13.5px] leading-[1.8] text-ink-2">{item.reason}</p>
         </RailSection>
       ) : (
-        verdict && <RailSection title="AI 评分">{verdict}</RailSection>
+        verdict && <RailSection title={ITEM_COPY.showScore ? "AI 评分" : "精选"}>{verdict}</RailSection>
       )}
       {item.topics.length > 0 && (
         <RailSection title="主题">
@@ -477,7 +477,7 @@ function ItemView({ item }: { item: SiteItemDetail }) {
 
           {item.reason && !summaryOnly && (
             <section className="mt-6 border-t border-line pt-4 lg:hidden">
-              <div className="mb-1 text-[12px] font-semibold text-ink-3">推荐理由</div>
+              <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
               <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
             </section>
           )}

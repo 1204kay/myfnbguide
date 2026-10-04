@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router";
 import type { ReportIndexEntry, ReportIndexResponse } from "@aihot/contracts/site";
-import { SITE, withSubject } from "@aihot/site";
+import { REPORTS, SITE, withSubject } from "@aihot/site";
 import { apiGet, edgeTtl } from "../lib/api.server";
 import { archiveLd, pageMeta } from "../lib/seo";
 import { beijingDate } from "@aihot/contracts/time";
@@ -60,7 +60,7 @@ export default function DailyArchive() {
                   <span className="min-w-0">
                     <span className="block text-[15px] font-bold leading-[1.55] text-ink transition-colors group-hover:text-accent">{e.title ?? `${withSubject("日报")} ${e.key}`}</span>
                     <span className="mt-1 block text-[12px] text-ink-4">
-                      <span className="num">{e.count}</span> 件大事
+                      <span className="num">{e.count}</span> {REPORTS.entry.measure}{REPORTS.entry.noun}
                     </span>
                   </span>
                 </Link>

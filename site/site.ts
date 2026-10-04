@@ -159,6 +159,35 @@ export const REPORTS = {
   imprint: SITE.name.toUpperCase(),
   /** 报头旁边的一个词。 */
   motto: SITE.subject as string,
+  /** 每种报告什么时候出：报头上的一句，关于页信源河里的日报也用它。 */
+  edition: { daily: "每天 08:00 出刊", weekly: "每周一出刊", monthly: "每月 1 日出刊" },
+  /** 每种报告页面的描述（搜索结果、分享卡片）。 */
+  descriptions: {
+    daily: `${SITE.name} ${subjectAfter("每天 08:00（北京时间）发布的", "行业精编日报")}。`,
+    weekly: `${subjectAfter("每周", "行业综合回顾")}。`,
+    monthly: `${subjectAfter("每月", "行业盘点")}。`,
+  },
+  /** 一期里的一条怎么称呼：没有头条时的标题（“这一天的 4 件 AI 大事”）和往期目录用它。 */
+  entry: { measure: "件", noun: "大事" },
+  /** 报头上各个数字后面的说法；写 null 的那一项不显示。 */
+  metricUnits: {
+    totalEvents: "件大事",
+    totalStories: "件大事",
+    sourcesCount: "个来源",
+    firstPartyEvents: "件一手发布",
+    selectedCount: "条精选",
+    reportsCovered: "期日报",
+  } as Record<string, string | null>,
+  /** 报告分享图上“共几条”的说法。 */
+  shareUnit: "条核心新闻",
+};
+
+/** 条目卡片和详情页上的几处说法。 */
+export const ITEM_COPY = {
+  /** 模型写的那句理由叫什么。 */
+  reasonLabel: "推荐理由",
+  /** 读者看不看得到 AI 评分（后台照常显示）。 */
+  showScore: true,
 };
 
 /** 运维告警（只发给站长）里随部署而变的几处说法。 */

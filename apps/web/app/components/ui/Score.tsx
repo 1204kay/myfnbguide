@@ -1,5 +1,7 @@
+import { ITEM_COPY } from "@aihot/site";
+
 /**
- * The AI score as a small pill, tinted by tier instead of drawn as a bar: strong picks (85+) in a wash of
+ * The AI score as a small pill (none when the site keeps scores from readers, ITEM_COPY.showScore), tinted by tier instead of drawn as a bar: strong picks (85+) in a wash of
  * warm red, solid ones (70+) in the accent, the rest as quiet text. The score itself is unchanged.
  */
 const TIERS = [
@@ -10,7 +12,7 @@ const TIERS = [
 
 /** "AI 评分 · 88" on desktop cards; `compact` keeps only the number (phones). */
 export function ScoreLabel({ score, compact = false }: { score: number | null; compact?: boolean }) {
-  if (score === null) return null;
+  if (score === null || !ITEM_COPY.showScore) return null;
   const value = Math.round(score);
   const tier = TIERS.find((t) => value >= t.min)!;
   return (

@@ -306,8 +306,8 @@ export function categoryTitle(key: string): string | undefined {
 }
 
 /**
- * 按品类浏览: the kind of shop a case is about, named as the taxonomy's 业态 tags with "/" written 和
- * (industry/taxonomy.ts). The writer picks one or none; slugs are addresses, never renamed once public.
+ * 按品类浏览: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in
+ * standard written words: "/" written 和, the Cantonese 档口 written 摊位. The writer picks one or none; slugs are addresses, never renamed once public.
  */
 export const SHOP_KINDS = [
   { slug: "coffee", title: "咖啡", dek: "咖啡馆、咖啡吧和外带咖啡店。" },
@@ -316,7 +316,7 @@ export const SHOP_KINDS = [
   { slug: "fast-food", title: "快餐", dek: "点单快、出餐快，以外带和简单堂食为主的店。" },
   { slug: "dining", title: "正餐", dek: "以堂食为主、有座位和服务的餐厅。" },
   { slug: "bakery", title: "烘焙和甜品", dek: "面包店、蛋糕店和甜品店。" },
-  { slug: "snacks", title: "小吃和档口", dek: "小吃店、街边摊档，以及美食广场和小贩中心里的档口。" },
+  { slug: "snacks", title: "小吃和摊位", dek: "小吃店、街边摊，以及美食广场和小贩中心里的摊位。" },
   { slug: "catering", title: "团餐和中央厨房", dek: "为公司、学校、医院供餐，或为多家店集中备餐的厨房。" },
   { slug: "bar", title: "酒吧和酒饮", dek: "酒吧、小酒馆和以酒饮为主的店。" },
 ] as const;

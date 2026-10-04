@@ -80,7 +80,7 @@ test("a story the checks pass; each problem is named for the writer", () => {
 });
 
 test("a kind outside the list is no kind, and the story still stands", () => {
-  const { written } = readOutput({ material: "story", ...story({ shop: { ...story().shop, kind: "餐馆" as never } }) });
+  const { written } = readOutput({ material: "story", ...story({ shop: { ...story().shop, kind: "餐馆" as never } }), parts: [{ heading: "账单", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }] });
   assert.equal(written?.status, "story");
   assert.equal(written?.status === "story" && written.story.shop.kind, null);
 });

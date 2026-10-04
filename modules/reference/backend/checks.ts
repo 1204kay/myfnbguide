@@ -92,6 +92,9 @@ const WORDING: Array<[RegExp, string]> = [
   [/档口|摊档/u, "“档口”“摊档”改成“摊位”"],
   [/逛/u, "“逛”改成“浏览”“走访”“参观”"],
   [/关掉/u, "“关掉”改成“关闭”"],
+  [/扛|干活|管用/u, "口语词，改成“承担”“工作”“有效”这类书面说法"],
+  // Japanese words written in Chinese characters that a Chinese reader does not use this way.
+  [/配膳|下膳|即战力|即戦力|月额|现地调查/u, "日文词，换成中文说法（送餐、收碗盘、马上能独当一面的人、月费、现场勘查）"],
   [/网红/u, "“网红”改成“在社交媒体上走红”"],
   [/老板们|别家店|做餐饮的人/u, "改成“经营者”“其他店家”"],
   [/同行/u, "不用“同行”，写“其他店家”“经营者”或店名"],
@@ -169,7 +172,7 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
       .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, c]) => `第 ${n} 段 ${c} 字`).join("、");
     problems.push(`全文 ${total} 字，太长：要在 800 字以内。${parts}，人物 ${chars(story.who)} 字；每段删到 200 字以内，人物删到 100 字以内，次要的段落整段删掉，只留经过、做法和数字`);
   }
-  if ((all.match(/原文(?:说|提到|还说|还提到|认为|强调|指出)/g)?.length ?? 0) > 2) problems.push("反复写“原文说”“原文提到”：直接写这家店或这个人做了什么，不逐条转述原文的论点");
+  if ((all.match(/(?:原文|文章)(?:说|提到|还说|还提到|认为|强调|指出|建议|列出|举了)/g)?.length ?? 0) > 2) problems.push("反复写“原文说”“文章提到”：直接写这家店或这个人做了什么，不逐条转述原文的论点");
   for (const [where, text, fromSource] of texts(story)) {
     if (!text) continue;
     const foreign = untranslated(text);

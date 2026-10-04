@@ -22,7 +22,7 @@ import { computeExample, ExampleInputSchema } from "./examples.ts";
 export const MODEL_STEP = "referenceCase";
 const PURPOSE = "reference_case";
 
-const SITUATION_LIST = SITUATIONS.map((s) => `- ${s.slug}：${s.title} | ${s.groups.map((g) => `${g.key}：${g.title}`).join("；")}`).join("\n");
+const SITUATION_LIST = SITUATIONS.map((s) => `- ${s.slug}：${s.title} | ${s.groups.map((g) => `${g.key}：${g.title}（${g.line}）`).join("；")}`).join("\n");
 const KIND_LIST = SHOP_KINDS.map((k) => `  - ${k.slug}：${k.title}（${k.dek.replace(/。$/, "")}）`).join("\n");
 export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL("../prompts/case.md", import.meta.url), "utf8"), { situations: SITUATION_LIST, kinds: KIND_LIST });
 // The prompt and the length limit the checks apply: either changing writes every case again.

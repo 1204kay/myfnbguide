@@ -30,6 +30,10 @@ export default defineServerModule({
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
   },
   queues: [CASES],
+  // The site's main page for readers, so llms.txt names it beside the engine's pages.
+  llms: () => ({
+    pages: [`- [参考](${config.siteUrl}/reference): 按老板遇到的事查找各地店家的做法和经验，也可以按店的品类浏览；每个故事附原文出处`],
+  }),
   schedules: [{
     name: "reference.cases",
     cron: "*/10 * * * *",

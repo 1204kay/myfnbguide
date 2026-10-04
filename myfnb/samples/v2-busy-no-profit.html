@@ -1,30 +1,27 @@
 <title>生意很忙，钱却留不下来</title>
 <style>
-/* 小岛经济学式：总览用一张图讲清整件事（漏水的桶），每一行写清谁、遇到什么、怎么做；
+/* 小岛经济学式：总览用一张图说明整件事（漏水的桶），每一行写清谁、遇到什么、怎么做；
    点进去是一个连环画式的小故事：这是谁 → 遇到什么 → 发生了什么 → 为什么 → 怎么做、结果如何，每格一张图、几句话。
    难懂的词用同一家假设的小面馆举例。举例和示意用虚线框、灰底，原文的数字用实线，两种不混。 */
 :root {
   --bg: #faf9f6; --surface: #ffffff; --sunk: #f1f2ee; --ink: #202a30; --ink-2: #3a464c; --ink-3: #5f6b71; --line: #dfe4e1;
   --accent: #176b75; --accent-soft: rgba(23, 107, 117, 0.09);
-  --calc: #2b65a8; --calc-soft: rgba(43, 101, 168, 0.10);
-  --save: #9a6514; --save-soft: rgba(184, 135, 58, 0.14);
+  --calc: var(--accent); --calc-soft: var(--accent-soft); --save: var(--accent); --save-soft: var(--accent-soft);
+  --adj: var(--accent); --adj-soft: var(--accent-soft);
   --stop: #b3402a; --stop-soft: rgba(179, 64, 42, 0.10);
-  --adj: #2f7d5c; --adj-soft: rgba(47, 125, 92, 0.11);
   --seg-1: #4a565c; --seg-2: #76838a; --seg-3: #a3aeb3; --seg-5: #ccd3d6; --water: rgba(23, 107, 117, 0.16);
   --font: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121618; --surface: #1a2023; --sunk: #20272a; --ink: #e6ebec; --ink-2: #c5cdd0; --ink-3: #93a0a5; --line: #2e383c;
   --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.12);
-  --calc: #7fb0ec; --calc-soft: rgba(127, 176, 236, 0.13); --save: #e2b46a; --save-soft: rgba(226, 180, 106, 0.14);
-  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13); --adj: #7cc9a4; --adj-soft: rgba(124, 201, 164, 0.13);
+  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13);
   --seg-1: #cfd7da; --seg-2: #a3afb4; --seg-3: #77848a; --seg-5: #4c585d; --water: rgba(63, 193, 204, 0.18); color-scheme: dark;
 } }
 :root[data-theme="dark"] {
   --bg: #121618; --surface: #1a2023; --sunk: #20272a; --ink: #e6ebec; --ink-2: #c5cdd0; --ink-3: #93a0a5; --line: #2e383c;
   --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.12);
-  --calc: #7fb0ec; --calc-soft: rgba(127, 176, 236, 0.13); --save: #e2b46a; --save-soft: rgba(226, 180, 106, 0.14);
-  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13); --adj: #7cc9a4; --adj-soft: rgba(124, 201, 164, 0.13);
+  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13);
   --seg-1: #cfd7da; --seg-2: #a3afb4; --seg-3: #77848a; --seg-5: #4c585d; --water: rgba(63, 193, 204, 0.18); color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -40,7 +37,7 @@ h1 { font-size: 26px; line-height: 1.3; margin: 4px 0 8px; text-wrap: balance; }
 .dek { color: var(--ink-2); }
 .updated { color: var(--ink-3); font-size: 12px; margin-top: 6px; }
 .calc { --c: var(--calc); --soft: var(--calc-soft); } .save { --c: var(--save); --soft: var(--save-soft); }
-.stop { --c: var(--stop); --soft: var(--stop-soft); } .adj { --c: var(--adj); --soft: var(--adj-soft); }
+.stop { --c: var(--accent); --soft: var(--accent-soft); } .adj { --c: var(--adj); --soft: var(--adj-soft); }
 .base { --c: var(--accent); --soft: var(--accent-soft); }
 .num { width: 26px; height: 26px; border-radius: 50%; background: var(--c); color: var(--surface); font-weight: 800; font-size: 13px; display: grid; place-items: center; flex: none; }
 
@@ -149,6 +146,11 @@ main:has(.detail:target) .overview { display: none; }
 .svgbox text { fill: var(--ink-3); font-size: 11px; font-family: var(--font); }
 .svgbox .strong { fill: var(--ink); font-weight: 700; font-size: 12px; }
 .note { font-size: 12px; color: var(--ink-3); }
+.ledger { display: grid; gap: 7px; }
+.ledger > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ledger i { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--accent); }
+.ledger .unused { color: var(--stop); } .ledger .unused i { background: var(--stop); }
+.ledger small { font-size: 11px; margin-left: 4px; }
 .out { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px; background: var(--sunk); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: var(--ink-2); }
 .out a { flex: none; background: var(--accent); color: var(--surface); border-radius: 8px; padding: 7px 12px; font-weight: 700; font-size: 13px; }
 .foot { color: var(--ink-3); font-size: 12px; margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--line); }
@@ -167,7 +169,7 @@ main:has(.detail:target) .overview { display: none; }
 
   <div class="bucket">
     <svg viewBox="0 0 320 262" role="img" aria-label="一只水桶：客人付的钱从上面倒进来，从四个洞漏出去，桶里剩下的才是月底的钱">
-      <g style="fill:var(--save)"><circle cx="140" cy="16" r="9"/><circle cx="162" cy="30" r="9"/><circle cx="184" cy="13" r="9"/></g>
+      <g style="fill:var(--seg-3)"><circle cx="140" cy="16" r="9"/><circle cx="162" cy="30" r="9"/><circle cx="184" cy="13" r="9"/></g>
       <path d="M160 44 v12 M154 50 l6 8 l6 -8" style="fill:none;stroke:var(--ink-3);stroke-width:2;stroke-linecap:round"/>
       <text x="200" y="28" style="fill:var(--ink-3);font-size:12px">客人付的钱</text>
       <path d="M84.8 104 Q122 96 160 104 T235.2 104 L220 232 L100 232 Z" style="fill:var(--water)"/>
@@ -175,13 +177,13 @@ main:has(.detail:target) .overview { display: none; }
       <text x="160" y="190" text-anchor="middle" style="fill:var(--accent);font-size:12px;font-weight:700">月底剩下的钱</text>
       <path d="M89 140 Q64 142 52 172" style="fill:none;stroke:var(--calc);stroke-width:5;stroke-linecap:round"/>
       <path d="M229.8 150 Q254 152 266 182" style="fill:none;stroke:var(--save);stroke-width:5;stroke-linecap:round"/>
-      <path d="M95.7 196 Q72 198 62 226" style="fill:none;stroke:var(--stop);stroke-width:5;stroke-linecap:round"/>
+      <path d="M95.7 196 Q72 198 62 226" style="fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round"/>
       <path d="M223 206 Q246 208 256 236" style="fill:none;stroke:var(--adj);stroke-width:5;stroke-linecap:round"/>
       <g style="fill:var(--ink-2)"><circle cx="89" cy="140" r="4"/><circle cx="229.8" cy="150" r="4"/><circle cx="95.7" cy="196" r="4"/><circle cx="223" cy="206" r="4"/></g>
       <g text-anchor="middle" style="font-size:13px;font-weight:800">
         <circle cx="32" cy="182" r="12" style="fill:var(--calc)"/><text x="32" y="186.5" style="fill:var(--surface)">1</text>
         <circle cx="288" cy="190" r="12" style="fill:var(--save)"/><text x="288" y="194.5" style="fill:var(--surface)">2</text>
-        <circle cx="40" cy="240" r="12" style="fill:var(--stop)"/><text x="40" y="244.5" style="fill:var(--surface)">3</text>
+        <circle cx="40" cy="240" r="12" style="fill:var(--accent)"/><text x="40" y="244.5" style="fill:var(--surface)">3</text>
         <circle cx="280" cy="246" r="12" style="fill:var(--adj)"/><text x="280" y="250.5" style="fill:var(--surface)">4</text>
       </g>
     </svg>
@@ -198,7 +200,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="ghead"><span class="num">?</span><h2>先看懂自己的账</h2></div>
     <p class="gwhy">洞在哪里，要先会看账才找得到。</p>
     <div class="rows">
-      <a class="row base" href="#d-jpprofit"><span class="what"><b>日本一位开店 26 年的店主</b>说：很忙却没钱时，按顺序看四个数，<strong>每碗赚多少、每月固定要付多少、至少要卖多少、账上的钱和手上的钱</strong>。我们用一家小面馆把这四个数讲清楚。<span class="who">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 9 月</span></span><span class="go">›</span></a>
+      <a class="row base" href="#d-jpprofit"><span class="what"><b>日本一位开店 26 年的店主</b>说：很忙却没钱时，按顺序看四个数，<strong>每碗赚多少、每月固定要付多少、至少要卖多少、账上的钱和手上的钱</strong>。下面用一家小面馆举例说明这四个数。<span class="who">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 9 月</span></span><span class="go">›</span></a>
     </div>
   </div>
 
@@ -215,7 +217,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="ghead"><span class="num">2</span><h2>固定费用悄悄上涨</h2></div>
     <p class="gwhy">每月自动付的钱，一次涨一点，几年下来就是一大笔。</p>
     <div class="rows">
-      <a class="row save" href="#d-linen"><span class="what"><b>美国一家餐馆</b>每周自动付的布草租金，<strong>4 年从 865 美元涨到 1,503 美元</strong>，一年多付 3.3 万美元，直到财务看账才发现。一位顾问讲他怎么查出来。<span class="who">美国 · Total Food Service · 2026 年 10 月</span></span><span class="go">›</span></a>
+      <a class="row save" href="#d-linen"><span class="what"><b>美国一家餐馆</b>每周自动付的布草租金，<strong>4 年从 865 美元涨到 1,503 美元</strong>，一年多付 3.3 万美元，直到财务看账才发现。一位顾问介绍了他怎样查出来。<span class="who">美国 · Total Food Service · 2026 年 10 月</span></span><span class="go">›</span></a>
       <a class="row save" href="#d-jpcosts"><span class="what"><b>同一位日本店主</b>：把存折和信用卡明细交给 AI，<strong>列出每个月自动扣走的钱</strong>，再一项项检查还要不要。<span class="who">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 10 月</span></span><span class="go">›</span></a>
     </div>
   </div>
@@ -224,7 +226,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="ghead"><span class="num">3</span><h2>抽成和房租太重</h2></div>
     <p class="gwhy">订单多不等于赚钱：先扣掉平台抽成和房租，剩下的可能不够。</p>
     <div class="rows">
-      <a class="row stop" href="#d-calibbq"><span class="what"><b>美国烧烤店 Cali BBQ</b> 开了 3 个只做外卖的厨房，订单不断，但平台抽走营收的两成多，<strong>一家一个月亏 3,810 美元</strong>，最后全关了。创办人自己讲了这段经历。<span class="who">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span></span><span class="go">›</span></a>
+      <a class="row stop" href="#d-calibbq"><span class="what"><b>美国烧烤店 Cali BBQ</b> 开了 3 个只做外卖的厨房，订单不断，但平台抽走营收的两成多，<strong>一家一个月亏 3,810 美元</strong>，最后全关了。创办人公开了这段经历。<span class="who">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span></span><span class="go">›</span></a>
     </div>
   </div>
 
@@ -248,7 +250,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="frame"><span class="num">1</span><div class="card">
       <h3>这是谁</h3>
       <div class="id"><span class="avatar">店主</span><div><b>节目主持人，一位个体餐饮店的店主</b><span>日本 · 59 岁 · 开店 26 年，现在还在经营</span></div></div>
-      <p>他做这档播客，讲个体餐饮店怎么用 AI 处理日常的事。</p>
+      <p>他做这档播客，介绍个体餐饮店怎样用 AI 处理日常的事务。</p>
     </div></div>
     <div class="frame"><span class="num">2</span><div class="card">
       <h3>他说的问题</h3>
@@ -343,7 +345,7 @@ main:has(.detail:target) .overview { display: none; }
         <div><span><b>员工不知道为什么</b>：没人解释为什么要称重、标日期、登记报损，就没人照做。</span></div>
       </div>
       <div class="card eg" style="padding:10px 12px">
-        <p><span class="chip eg" style="margin-left:0;margin-right:6px">举例</span>配方写一碗面放牛肉 100 克，厨房每碗多抓 20 克；一个月卖 1,300 碗，就多用了 <b>26 公斤</b>牛肉。账上看不出来，盘点才看得到。</p>
+        <p><span class="chip eg" style="margin-left:0;margin-right:6px">举例</span>配方写一碗面放牛肉 100 克，厨房实际每碗多放了 20 克；一个月卖 1,300 碗，就多用了 <b>26 公斤</b>牛肉。账上看不出来，盘点才看得到。</p>
       </div>
     </div></div>
     <div class="frame"><span class="num">5</span><div class="card">
@@ -382,7 +384,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="frame"><span class="num">4</span><div class="card">
       <h3>多出来的钱，节目列出的去处</h3>
       <div class="grid2">
-        <div class="box"><b>厨房里</b>分量给多了；食材浪费、放坏了；没登记就送出去的菜；同一道菜每人做法不同。</div>
+        <div class="box"><b>厨房里</b>分量给多了；食材浪费、变质；没登记就送出去的菜；同一道菜每人做法不同。</div>
         <div class="box"><b>进货时</b>收货时数量、品质没核对清楚；发票算错；供货商换了替代品，没人记录。</div>
         <div class="box"><b>切配时</b>出成率不对：例如一公斤鸡，能用的肉比预计的少，成本就高了。</div>
         <div class="box"><b>管理上</b>库存管得乱；有人私自拿走食材。</div>
@@ -406,7 +408,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="frame"><span class="num">1</span><div class="card">
       <h3>这是谁</h3>
       <div class="id"><span class="avatar">顾问</span><div><b>Eddie Ferguson，布草租赁顾问</b><span>帮餐馆审查布草租赁的合同和账单</span></div></div>
-      <p>他讲的是他审过的<b>美国一家餐馆</b>（文章没写店名）。</p>
+      <p>文章介绍的是他审查过的<b>美国一家餐馆</b>（文章没有写店名）。</p>
       <p class="note">布草：桌布、餐巾、毛巾、围裙。很多餐馆是租的，供应商每周送来干净的、收走脏的，按周收钱。</p>
     </div></div>
     <div class="frame"><span class="num">2</span><div class="card">
@@ -450,7 +452,7 @@ main:has(.detail:target) .overview { display: none; }
   <div class="story">
     <div class="frame"><span class="num">1</span><div class="card">
       <h3>这是谁</h3>
-      <div class="id"><span class="avatar">店主</span><div><b>同一位日本店主</b><span>开个体餐饮店 26 年，做播客讲小店怎么用 AI</span></div></div>
+      <div class="id"><span class="avatar">店主</span><div><b>同一位日本店主</b><span>开个体餐饮店 26 年，做播客介绍小店怎样用 AI</span></div></div>
     </div></div>
     <div class="frame"><span class="num">2</span><div class="card">
       <h3>他说的问题</h3>
@@ -461,10 +463,25 @@ main:has(.detail:target) .overview { display: none; }
       <h3>他的办法</h3>
       <div class="vflow"><span>拿出存折和信用卡明细</span><i>↓</i><span>交给 AI，做成一张费用表</span><i>↓</i><span>用四个问题逐项检查</span><i>↓</i><span>不需要的削减，需要的调整</span></div>
     </div></div>
-    <div class="frame"><span class="num">4</span><div class="card">
+    <div class="frame"><span class="num">4</span><div class="card eg">
+      <h3>举例：小面馆的自动扣款清单<span class="chip eg">数字是我们举的例子</span></h3>
+      <p class="note">把三个月的存折和信用卡明细交给 AI，整理出每个月自动扣走的钱（单位：元）：</p>
+      <div class="ledger">
+        <div><span>美食网站的刊登费</span><span>800</span><i style="width:100%"></i></div>
+        <div><span>外卖平台的推广费</span><span>600</span><i style="width:75%"></i></div>
+        <div><span>手机点餐系统</span><span>450</span><i style="width:56%"></i></div>
+        <div><span>收银系统月费</span><span>300</span><i style="width:37.5%"></i></div>
+        <div class="unused"><span>旧网站的域名和主机<small>网站两年没更新</small></span><span>150</span><i style="width:18.8%"></i></div>
+        <div><span>背景音乐订阅</span><span>120</span><i style="width:15%"></i></div>
+        <div class="unused"><span>记账软件<small>去年已换成别的</small></span><span>90</span><i style="width:11.3%"></i></div>
+      </div>
+      <p class="big">每月一共 <b>2,510 元</b>，一年 <b>30,120 元</b>。</p>
+      <p>其中两项（红色）已经不用了，每月 240 元，一年 <b>2,880 元</b>，仍在每月扣款。每一项分开看都不大，列在一起才看得出来。</p>
+    </div></div>
+    <div class="frame"><span class="num">5</span><div class="card">
       <h3>节目还谈到</h3>
       <p>自动扣款费用的具体例子和一年下来的金额；<b>解约有什么风险</b>；怎样让这种检查定期做下去。</p>
-      <p class="note">这些细节在节目音频里，简介没有写出四个问题是什么。</p>
+      <p class="note">这些细节在节目音频里。简介没有写出四个问题是什么，这里不自行补写。</p>
     </div></div>
   </div>
   <div class="out"><span>原文 · 日文 · 节目简介（节目本身是音频）</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/AI-e3pqjmj" target="_blank" rel="noopener">打开原文 ↗</a></div>
@@ -479,7 +496,7 @@ main:has(.detail:target) .overview { display: none; }
     <div class="frame"><span class="num">1</span><div class="card">
       <h3>这是谁</h3>
       <div class="id"><span class="avatar">CB</span><div><b>Cali BBQ，美国圣地亚哥的烧烤店</b><span>老店在圣地亚哥县的 Spring Valley</span></div></div>
-      <p>写这篇文章的是创办人 <b>Shawn Walchef</b>。他说他们的原则是公开做事，失败也要讲出来。</p>
+      <p>写这篇文章的是创办人 <b>Shawn Walchef</b>。他说他们的原则是公开经营的过程，失败也要公开。</p>
     </div></div>
     <div class="frame"><span class="num">2</span><div class="card">
       <h3>他们想做什么</h3>
@@ -514,7 +531,7 @@ main:has(.detail:target) .overview { display: none; }
     </div></div>
     <div class="frame"><span class="num">5</span><div class="card">
       <h3>结果</h3>
-      <div class="quote">有量没有利润，不是增长，是在慢慢走向死亡。<small>创办人的原话。三个外卖厨房全部关掉。</small></div>
+      <div class="quote">有量没有利润，不是增长，是在慢慢走向死亡。<small>创办人的原话。三个外卖厨房全部关闭。</small></div>
       <p>他说这次失败没有白费：当时练出来的中央厨房备餐流程，后来用在<b>体育场和海军基地的大单合作</b>上。</p>
     </div></div>
   </div>
@@ -568,6 +585,6 @@ main:has(.detail:target) .overview { display: none; }
   <div class="out"><span>原文 · 西班牙文 · 节目简介（节目本身是一个多小时的访谈）</span><a href="https://podcasters.spotify.com/pod/show/entre-hosteleros/episodes/JORGE-GIMNEZ-LO-QUE-NADIE-TE-CUENTA-DE-TENER-UNA-HAMBURGUESERA-e3omvbv" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<div class="foot">MyF&amp;B 样页（2026 年 10 月）。收集各地店家的做法和经验，附原文出处，由你自己判断。文字和图由 AI 根据原文整理；标「举例」「示意图」的是为了讲清楚而举的例子，不是原文的数据。</div>
+<div class="foot">MyF&amp;B 样页（2026 年 10 月）。收集各地店家的做法和经验，附原文出处，由你自己判断。文字和图由 AI 根据原文整理；标「举例」「示意图」的是为了说明而举的例子，不是原文的数据。</div>
 </main>
 </div>

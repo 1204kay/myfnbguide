@@ -1,0 +1,344 @@
+<title>生意很忙，钱却留不下来</title>
+<style>
+/* 一页纸报告：头部三格数字 → 一张主图 → 按做法分色的对照表，点一行进详情（同一个文件，用 #锚点切换）。配色沿用网站的 token，另加四个做法类别色。 */
+:root {
+  --bg: #faf9f6; --surface: #ffffff; --sunk: #f1f2ee; --ink: #202a30; --ink-2: #3a464c; --ink-3: #5f6b71; --line: #dfe4e1;
+  --accent: #176b75; --accent-soft: rgba(23, 107, 117, 0.08);
+  --calc: #2b65a8; --calc-soft: rgba(43, 101, 168, 0.09);
+  --save: #9a6514; --save-soft: rgba(184, 135, 58, 0.13);
+  --stop: #b3402a; --stop-soft: rgba(179, 64, 42, 0.09);
+  --adj: #2f7d5c; --adj-soft: rgba(47, 125, 92, 0.10);
+  --seg-1: #4a565c; --seg-2: #76838a; --seg-3: #a3aeb3; --seg-5: #ccd3d6;
+  --font: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121618; --surface: #1a2023; --sunk: #20272a; --ink: #e6ebec; --ink-2: #c5cdd0; --ink-3: #93a0a5; --line: #2e383c;
+  --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.12);
+  --calc: #7fb0ec; --calc-soft: rgba(127, 176, 236, 0.13); --save: #e2b46a; --save-soft: rgba(226, 180, 106, 0.14);
+  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13); --adj: #7cc9a4; --adj-soft: rgba(124, 201, 164, 0.13);
+  --seg-1: #cfd7da; --seg-2: #a3afb4; --seg-3: #77848a; --seg-5: #4c585d; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #121618; --surface: #1a2023; --sunk: #20272a; --ink: #e6ebec; --ink-2: #c5cdd0; --ink-3: #93a0a5; --line: #2e383c;
+  --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.12);
+  --calc: #7fb0ec; --calc-soft: rgba(127, 176, 236, 0.13); --save: #e2b46a; --save-soft: rgba(226, 180, 106, 0.14);
+  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13); --adj: #7cc9a4; --adj-soft: rgba(124, 201, 164, 0.13);
+  --seg-1: #cfd7da; --seg-2: #a3afb4; --seg-3: #77848a; --seg-5: #4c585d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.65 var(--font); }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 520px; margin: 0 auto; padding-inline: 16px; padding-block: 0 32px; }
+.bar { display: flex; align-items: baseline; gap: 10px; padding: 14px 0 12px; border-bottom: 1px solid var(--line); }
+.logo { font-weight: 800; letter-spacing: 0.14em; } .logo b { color: var(--accent); }
+.bar span { color: var(--ink-3); font-size: 12px; }
+.crumb { color: var(--ink-3); font-size: 13px; margin-top: 18px; }
+h1 { font-size: 26px; line-height: 1.3; margin: 4px 0 6px; text-wrap: balance; }
+.dek { color: var(--ink-2); margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.stat b { display: block; font-size: 24px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--ink-3); font-size: 12px; }
+.updated { color: var(--ink-3); font-size: 12px; margin-top: 6px; }
+.label { display: flex; align-items: center; gap: 8px; margin: 26px 0 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: var(--ink-3); }
+.label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* 主图：每收入 100 美元，支出多少 */
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.chart h2 { font-size: 17px; line-height: 1.4; margin: 0; text-wrap: balance; }
+.chart .sub { color: var(--ink-3); font-size: 12px; margin: 2px 0 12px; }
+.track { position: relative; display: grid; gap: 8px; }
+.line { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); }
+.fill { height: 26px; border-radius: 5px; display: flex; overflow: hidden; }
+.rev { background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; align-items: center; padding-left: 8px; }
+.seg { height: 100%; }
+.s1 { background: var(--seg-1); } .s2 { background: var(--seg-2); } .s3 { background: var(--seg-3); } .s4 { background: var(--stop); } .s5 { background: var(--seg-5); }
+.costwrap { position: relative; }
+.over { position: absolute; top: -4px; bottom: -4px; right: -4px; border: 2px dashed var(--stop); border-radius: 8px; }
+.legend-cap { font-size: 12px; color: var(--ink-3); margin-top: 12px; }
+.loss { display: flex; justify-content: flex-end; margin-top: 6px; color: var(--stop); font-weight: 700; font-size: 14px; }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; margin-top: 4px; font-size: 12px; color: var(--ink-2); }
+.legend div { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.legend em { font-style: normal; margin-left: auto; color: var(--ink-3); }
+.src { font-size: 12px; color: var(--ink-3); margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.src a { color: var(--accent); }
+
+/* 对照表 */
+.hint { font-size: 12px; color: var(--ink-3); margin: -4px 0 8px; }
+.group { margin-top: 12px; }
+.ghead { display: flex; align-items: baseline; gap: 8px; font-size: 13px; margin-bottom: 6px; }
+.ghead b { color: var(--c); font-size: 15px; }
+.ghead span { color: var(--ink-3); }
+.rows { display: grid; gap: 6px; }
+.row { display: grid; grid-template-columns: 1fr auto 14px; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--c); border-radius: 10px; padding: 10px 10px 10px 12px; }
+.row:hover, .row:focus-visible { background: var(--soft); outline: none; }
+.what { font-weight: 700; line-height: 1.4; min-width: 0; }
+.who { display: block; font-weight: 400; color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+.key { color: var(--c); font-weight: 800; font-size: 15px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.go { color: var(--ink-3); font-size: 18px; }
+.calc { --c: var(--calc); --soft: var(--calc-soft); } .save { --c: var(--save); --soft: var(--save-soft); }
+.stop { --c: var(--stop); --soft: var(--stop-soft); } .adj { --c: var(--adj); --soft: var(--adj-soft); }
+.foot { color: var(--ink-3); font-size: 12px; margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* 详情：点一行打开，其余收起 */
+.detail { display: none; }
+.detail:target { display: block; }
+main:has(.detail:target) .overview { display: none; }
+.back { display: inline-block; margin-top: 16px; color: var(--accent); font-size: 14px; }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--c); background: var(--soft); border-radius: 5px; padding: 1px 8px; margin-top: 14px; }
+.detail h2 { font-size: 22px; line-height: 1.35; margin: 6px 0 4px; text-wrap: balance; }
+.meta { color: var(--ink-3); font-size: 13px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 14px; }
+.panel h3 { font-size: 14px; margin: 0 0 10px; color: var(--ink-3); letter-spacing: 0.04em; }
+.sum { color: var(--ink-2); margin: 12px 0 0; }
+.points { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.points li { display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
+.points li::before { content: "✓"; color: var(--c); font-weight: 800; }
+.points b { color: var(--ink); }
+.pair { display: grid; gap: 8px; }
+.pair .line { grid-template-columns: 74px 1fr; }
+.pair .fill { background: var(--c); color: #fff; font-weight: 700; font-size: 12px; align-items: center; padding-left: 8px; }
+.pair .fill.old { background: var(--seg-3); color: var(--ink); }
+.callout { margin-top: 10px; font-size: 14px; } .callout b { color: var(--c); font-size: 18px; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.flow span { background: var(--soft); color: var(--c); border-radius: 6px; padding: 4px 9px; font-size: 13px; font-weight: 700; }
+.flow i { color: var(--ink-3); font-style: normal; }
+.scale { position: relative; height: 30px; border-radius: 6px; overflow: hidden; display: flex; }
+.scale div { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+.ok { background: var(--adj-soft); color: var(--adj); } .bad { background: var(--stop-soft); color: var(--stop); }
+.out { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; background: var(--sunk); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: var(--ink-2); }
+.out a { flex: none; background: var(--accent); color: #fff; border-radius: 8px; padding: 7px 12px; font-weight: 700; font-size: 13px; }
+@media (prefers-reduced-motion: no-preference) { .detail:target { animation: in 0.18s ease-out; } @keyframes in { from { opacity: 0.6; transform: translateY(4px); } } }
+</style>
+
+<div class="wrap">
+<header class="bar"><span class="logo"><b>MY</b>F&amp;B</span><span>餐饮人自己的参考站</span></header>
+<main id="top">
+
+<section class="overview">
+  <div class="crumb">参考 › 成本与利润</div>
+  <h1>生意很忙，钱却留不下来</h1>
+  <p class="dek">客人不少，月底却没剩多少钱。各地店家从四个方面找原因。</p>
+  <div class="stats">
+    <div class="stat"><b>7</b><span>条原文</span></div>
+    <div class="stat"><b>4</b><span>个国家</span></div>
+    <div class="stat"><b>4</b><span>类做法</span></div>
+  </div>
+  <div class="updated">最近更新 2026 年 10 月 4 日</div>
+
+  <div class="label">一个例子</div>
+  <a class="chart" href="#d-calibbq" style="display:block">
+    <h2>订单不断，一个月仍亏 3,810 美元</h2>
+    <p class="sub">美国 Cali BBQ 的一家外卖厨房，2022 年 12 月：每收入 100 美元，支出 128 美元</p>
+    <div class="track" aria-label="收入 100，支出 128">
+      <div class="line"><span>收入</span><div class="fill rev" style="width:78.1%">100</div></div>
+      <div class="line"><span>支出</span><div class="costwrap"><div class="fill">
+        <div class="seg s1" style="width:30.6%"></div><div class="seg s2" style="width:23.4%"></div><div class="seg s3" style="width:21.2%"></div><div class="seg s4" style="width:19.5%"></div><div class="seg s5" style="width:5.3%"></div>
+      </div><div class="over" style="left:calc(78.1% - 4px)"></div></div></div>
+    </div>
+    <div class="loss">虚线框里是超出收入的部分：亏 3,810 美元</div>
+    <div class="legend-cap">每收入 100 美元，各项支出：</div>
+    <div class="legend">
+      <div><i class="s1"></i>房租水电<em>39</em></div>
+      <div><i class="s2"></i>食材<em>30</em></div>
+      <div><i class="s3"></i>人工<em>27</em></div>
+      <div><i class="s4"></i>外卖平台佣金<em>25</em></div>
+      <div><i class="s5"></i>杂费与维修<em>7</em></div>
+    </div>
+    <div class="src">原文：Cali BBQ 创办人 Shawn Walchef 公开的一家店当月的账（2026-09-11） · 点开看详情</div>
+  </a>
+
+  <div class="label">各地店家怎么做</div>
+  <p class="hint">颜色是做法的类别，右边是原文里的关键数字。点一行看详情。</p>
+
+  <div class="group calc">
+    <div class="ghead"><b>算账</b><span>先找出钱漏在哪里</span></div>
+    <div class="rows">
+      <a class="row calc" href="#d-goomer"><span class="what">对比配方成本和盘点成本<span class="who">巴西 · Goomer 博客 · 2026</span></span><span class="key">分 5 步</span><span class="go">›</span></a>
+      <a class="row calc" href="#d-trc"><span class="what">理论成本加 2 的规则<span class="who">美国 · The Restaurant Coach 播客 · 2026</span></span><span class="key">≤ 2 个百分点</span><span class="go">›</span></a>
+      <a class="row calc" href="#d-jpprofit"><span class="what">按顺序核对 4 组数字<span class="who">日本 · 个体店主的播客 · 2026</span></span><span class="key">4 组数字</span><span class="go">›</span></a>
+    </div>
+  </div>
+  <div class="group save">
+    <div class="ghead"><b>省钱</b><span>固定费用悄悄上涨</span></div>
+    <div class="rows">
+      <a class="row save" href="#d-linen"><span class="what">逐行比较最早和最新的账单<span class="who">美国 · 一家餐馆 · 2026</span></span><span class="key">4 年 +74%</span><span class="go">›</span></a>
+      <a class="row save" href="#d-jpcosts"><span class="what">用 AI 列出每月自动扣款<span class="who">日本 · 个体店主的播客 · 2026</span></span><span class="key">4 个问题</span><span class="go">›</span></a>
+    </div>
+  </div>
+  <div class="group stop">
+    <div class="ghead"><b>止损</b><span>有订单不等于赚钱</span></div>
+    <div class="rows">
+      <a class="row stop" href="#d-calibbq"><span class="what">算清每个出餐点自己的账<span class="who">美国 · Cali BBQ · 2026</span></span><span class="key">月亏 3,810 美元</span><span class="go">›</span></a>
+    </div>
+  </div>
+  <div class="group adj">
+    <div class="ghead"><b>调整</b><span>营业时间和付款方式</span></div>
+    <div class="rows">
+      <a class="row adj" href="#d-venice"><span class="what">只在有营业额的时段开门<span class="who">西班牙 · 一家汉堡店 · 2026</span></span><span class="key">现金付款</span><span class="go">›</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="detail calc" id="d-goomer">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">算账</span>
+  <h2>标准配方表做好了，食材成本为什么还是偏高</h2>
+  <div class="meta">巴西 · Goomer 博客（点餐系统商） · 2026 年 8 月</div>
+  <div class="panel">
+    <h3>文章里的例子：同一个月的两笔食材成本</h3>
+    <div class="pair">
+      <div class="line"><span>按配方算</span><div class="fill old" style="width:85.7%">30,000</div></div>
+      <div class="line"><span>按盘点算</span><div class="fill" style="width:100%">35,000</div></div>
+    </div>
+    <div class="callout">差出 <b>5,000 雷亚尔</b>，没有变成营业额</div>
+  </div>
+  <p class="sum">按配方算的是理论成本，按盘点（期初库存 + 进货 − 期末库存）算的是实际成本，两者的差额就是漏损所在。</p>
+  <div class="panel">
+    <h3>文章的做法</h3>
+    <ul class="points">
+      <li><span><b>固定日期盘点</b>，最好在不营业时。</span></li>
+      <li><span><b>算实际成本和理论成本</b>，理论成本按最新的配方表算。</span></li>
+      <li><span><b>差额换算成营业额的百分比。</b></span></li>
+      <li><span><b>一次只查差距最大的一项</b>，查到原因再查下一项。</span></li>
+      <li><span>漏损常见在 5 处：采购没有计划、库存不盘点、<b>分量不统一</b>、配方表过期、员工没受过训练。</span></li>
+    </ul>
+  </div>
+  <div class="out"><span>文章还引用了 Abrasel 2025 年 8 月的调查：巴西 55% 的酒吧和餐厅当月没有盈利。</span></div>
+  <div class="out"><span>原文 · 葡萄牙文</span><a href="https://goomer.com.br/blog/por-que-o-cmv-do-restaurante-esta-alto" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<section class="detail calc" id="d-trc">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">算账</span>
+  <h2>只看食材成本率不够：理论成本和实际成本相差不应超过 2 个百分点</h2>
+  <div class="meta">美国 · The Restaurant Coach 播客第 186 集，嘉宾 Bo Bryant（食材成本与采购顾问） · 2026-09-11</div>
+  <div class="panel">
+    <h3>节目用的规则：实际成本比理论成本高出多少</h3>
+    <div class="scale"><div class="ok">+0</div><div class="ok">+1</div><div class="ok">+2</div><div class="bad">+3</div><div class="bad">+4 …</div></div>
+    <div class="callout">在 <b>2 个百分点</b>以内算正常；差得更多，节目认为是执行出了问题</div>
+  </div>
+  <div class="panel">
+    <h3>节目谈到的差距来源</h3>
+    <div class="flow"><span>分量过大</span><span>浪费和变质</span><span>未经许可的出品</span><span>配方不统一</span><span>收货错误</span><span>发票错误</span><span>偷盗</span><span>出成率不对</span><span>没记录的替换品</span></div>
+  </div>
+  <div class="panel">
+    <h3>和供货商谈价格时，节目提到要看的</h3>
+    <ul class="points">
+      <li><span><b>不只看单价</b>：还有加价方式、返利、运费和燃油附加费、起送量、合同条款。</span></li>
+      <li><span>业务员可能<b>压低几样显眼商品的价格</b>，再从订货单的其他商品赚回来。</span></li>
+      <li><span>谈之前准备好进货记录、用量报表，<b>事后核对优惠有没有出现在发票上</b>。</span></li>
+    </ul>
+  </div>
+  <div class="out"><span>原文 · 英文 · 节目简介</span><a href="http://therestaurantcoachpodcast.blubrry.net/2026/09/11/episode-186-stop-chasing-food-cost-percentage-with-bo-bryant/" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<section class="detail calc" id="d-jpprofit">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">算账</span>
+  <h2>很忙却不赚钱：先分清毛利、人工和固定费用、保本点、利润和现金</h2>
+  <div class="meta">日本 · 飲食店のAI活用ラジオ（主持人自己开店 26 年） · 2026-09-26</div>
+  <div class="panel">
+    <h3>节目核对数字的顺序</h3>
+    <div class="flow"><span>① 毛利</span><i>→</i><span>② 人工和固定费用</span><i>→</i><span>③ 保本点</span><i>→</i><span>④ 利润和现金的差别</span></div>
+  </div>
+  <p class="sum">月底钱不够时，只看营业额找不到原因。节目把 AI 当作整理数字的助手，经营判断由经营者自己做。</p>
+  <div class="out"><span>原文 · 日文 · 节目简介</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/ep-e3pe66l" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<section class="detail save" id="d-linen">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">省钱</span>
+  <h2>布草服务费四年涨了 74%：美国一家餐馆怎样把多付的钱找出来</h2>
+  <div class="meta">美国 · Total Food Service，布草租赁顾问 Eddie Ferguson 的文章 · 2026-10-02</div>
+  <div class="panel">
+    <h3>每周的布草服务费（美元）</h3>
+    <div class="pair">
+      <div class="line"><span>最早</span><div class="fill old" style="width:57.6%">864.97</div></div>
+      <div class="line"><span>约四年后</span><div class="fill" style="width:100%">1,502.65</div></div>
+    </div>
+    <div class="callout">一年多付 <b>33,159 美元</b>，费用藏在每周的发票里</div>
+  </div>
+  <div class="panel">
+    <h3>顾问的做法</h3>
+    <ul class="points">
+      <li><span><b>收齐资料</b>：完整合同、价目表、最早和最新的发票、至少 12 个月的账单。</span></li>
+      <li><span><b>逐行比较第一张和最近一张发票</b>，把用量增长和单价上涨、新增费用分开。</span></li>
+      <li><span><b>价格通知立刻交给管账的人</b>：有的合同允许单方面涨价，提出异议的期限很短。</span></li>
+      <li><span><b>连续几次清点</b>送来和收走的布草，和发票数量对照。</span></li>
+      <li><span><b>指定一个人负责这份合同</b>，续约和通知期限记进日历。</span></li>
+    </ul>
+  </div>
+  <div class="out"><span>原文 · 英文</span><a href="https://totalfood.com/how-restaurant-linen-service-bill-grew-865-1503-week/" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<section class="detail save" id="d-jpcosts">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">省钱</span>
+  <h2>用 AI 把每月自动扣款的费用列成清单，逐项复查</h2>
+  <div class="meta">日本 · 飲食店のAI活用ラジオ（主持人自己开店 26 年） · 2026-10-03</div>
+  <div class="panel">
+    <h3>节目介绍的步骤</h3>
+    <div class="flow"><span>存折和信用卡明细</span><i>→</i><span>交给 AI 做成费用表</span><i>→</i><span>4 个问题逐项复查</span><i>→</i><span>削减或调整</span></div>
+  </div>
+  <p class="sum">节目还谈到自动扣款费用的具体例子和一年下来的金额、解约的风险，以及怎样让这种盘点定期做下去。</p>
+  <div class="out"><span>原文 · 日文 · 节目简介</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/AI-e3pqjmj" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<section class="detail stop" id="d-calibbq">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">止损</span>
+  <h2>三家外卖厨房订单不断，却在亏钱：美国一家烧烤店的复盘</h2>
+  <div class="meta">美国 · Cali BBQ 创办人 Shawn Walchef 的文章 · 2026-09-11</div>
+  <div class="panel">
+    <h3>其中一家外卖厨房 2022 年 12 月的账（美元）</h3>
+    <div class="pair">
+      <div class="line"><span>营收</span><div class="fill" style="width:78.1%;background:var(--accent)">13,564</div></div>
+      <div class="line"><span>支出</span><div class="fill" style="width:100%">17,374</div></div>
+    </div>
+    <div class="legend">
+      <div><i class="s1"></i>房租水电<em>5,320</em></div>
+      <div><i class="s2"></i>食材<em>4,069</em></div>
+      <div><i class="s3"></i>人工<em>3,687</em></div>
+      <div><i class="s4"></i>外卖平台佣金<em>3,391</em></div>
+      <div><i class="s5"></i>杂费与维修<em>907</em></div>
+    </div>
+    <div class="callout">当月净亏 <b>3,810 美元</b></div>
+  </div>
+  <div class="panel">
+    <h3>经过</h3>
+    <ul class="points">
+      <li><span><b>设想</b>：中央厨房做好烤肉，送到圣地亚哥各地约 200 平方英尺的出餐点，最后一段交给外卖平台。</span></li>
+      <li><span><b>每个出餐点投入不到 5 万美元</b>，当时看起来风险很低。</span></li>
+      <li><span><b>问题在单店的账</b>：小空间也要付高租金，没有门面和过路客；客人属于平台，平台抽走营收的 20% 到 25%。</span></li>
+      <li><span><b>三家全部关闭</b>；中央厨房的流程后来用在体育场和海军基地的大单合作上。</span></li>
+    </ul>
+  </div>
+  <div class="out"><span>原文 · 英文</span><a href="https://restauranttechnology.substack.com/p/we-opened-3-ghost-kitchens-they-failed" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<section class="detail adj" id="d-venice">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
+  <span class="tag">调整</span>
+  <h2>店里坐满不等于赚钱：西班牙一家汉堡店老板的经营账</h2>
+  <div class="meta">西班牙 · ENTRE HOSTELEROS 播客，嘉宾是 Venice Street Food Albir 的创办人 Jorge Giménez · 2026-09-14</div>
+  <div class="panel">
+    <h3>节目简介里他的几个做法</h3>
+    <ul class="points">
+      <li><span><b>只在真正有营业额的时段开门</b>；开更长时间、开更多店不等于营业额更高。</span></li>
+      <li><span><b>用现金付供货商和员工的钱</b>，他说这样心里踏实。</span></li>
+      <li><span><b>不只卖汉堡</b>：他说只卖汉堡的话，店早就关了；节目谈到开胃菜和甜点的交叉销售。</span></li>
+      <li><span><b>开店前没人说明的事</b>：税务、会计顾问和每道菜的成本核算。</span></li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h3>他的经历</h3>
+    <div class="flow"><span>17 岁做酒吧服务员</span><i>→</i><span>经营一家店 10 年</span><i>→</i><span>在阿尔比尔开自己的汉堡店</span></div>
+  </div>
+  <div class="out"><span>原文 · 西班牙文 · 节目简介</span><a href="https://podcasters.spotify.com/pod/show/entre-hosteleros/episodes/JORGE-GIMNEZ-LO-QUE-NADIE-TE-CUENTA-DE-TENER-UNA-HAMBURGUESERA-e3omvbv" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<div class="foot">MyF&amp;B 样页（2026 年 10 月）。收集各地店家的做法和经验，附原文出处，由你自己判断。摘要和要点由 AI 根据原文整理。</div>
+</main>
+</div>

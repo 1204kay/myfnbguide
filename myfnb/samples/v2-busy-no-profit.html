@@ -55,6 +55,10 @@ h1 { font-size: 30px; font-weight: 900; line-height: 1.28; letter-spacing: -0.03
 .ghead h2 { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.3; margin: 0; }
 .gwhy { color: var(--ink-3); margin-top: 6px; }
 .items { display: grid; gap: 10px; margin-top: 14px; }
+.kinds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.kinds a { display: inline-flex; align-items: baseline; gap: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-weight: 700; transition: border-color 0.15s; }
+.kinds a:hover, .kinds a:focus-visible { border-color: var(--accent); outline: none; }
+.kinds small { font-size: 12.5px; font-weight: 400; color: var(--ink-4); }
 .item { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; transition: border-color 0.15s; }
 .item:hover, .item:focus-visible { border-color: var(--accent); outline: none; }
 .item .src { font-size: 12.5px; color: var(--ink-4); }
@@ -163,7 +167,17 @@ main:has(.page:target) .home { display: none; }
 <section class="home">
   <h1>参考</h1>
   <p class="dek">按遇到的事，查各地店家的做法和经验。每一条都附原文出处，由你自己判断。</p>
-  <div class="metrics"><span><b class="num">3</b>个情况</span><span><b class="num">2</b>家店</span><span><b class="num">6</b>个国家</span><span>样页 · 2026 年 10 月</span></div>
+  <div class="metrics"><span><b class="num">3</b>种情况</span><span><b class="num">10</b>条原文</span><span><b class="num">6</b>个国家</span><span>样页 · 2026 年 10 月</span></div>
+
+  <div class="section">
+    <div class="kicker">按品类逛</div>
+    <div class="kinds">
+      <a href="#c-dining">正餐<small>6 条</small></a>
+      <a href="#c-coffee">咖啡<small>1 条</small></a>
+      <a href="#c-bar">酒吧和酒饮<small>1 条</small></a>
+    </div>
+    <p class="muted">完整的网站分九个品类：咖啡、茶饮、火锅、快餐、正餐、烘焙和甜品、小吃和档口、团餐和中央厨房、酒吧和酒饮。样页只放了其中三类。</p>
+  </div>
 
   <div class="section">
     <div class="kicker">按遇到的事查</div>
@@ -172,16 +186,9 @@ main:has(.page:target) .home { display: none; }
       <a class="item" href="#s-rush"><span class="src">门店运营 · 3 条原文 · 3 个国家</span><b>午市高峰一到，出餐就乱</b><p>平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。</p></a>
       <a class="item" href="#s-second"><span class="src">开店与关店 · 2 条原文 · 2 个国家</span><b>想开第二家店</b><p>第一家做起来以后，再开一家，老板要面对的是什么。</p></a>
     </div>
-    <p class="muted">完整的网站分六大类：成本与利润、人员与团队、顾客与营销、门店运营、开店与关店、工具与法规。样页只做了其中三类各一个情况。</p>
+    <p class="muted">完整的网站分六大类：成本与利润、人员与团队、顾客与营销、门店运营、开店与关店、工具与法规。样页只做了其中三类，每类一种情况。</p>
   </div>
 
-  <div class="section">
-    <div class="kicker">按店逛</div>
-    <div class="items">
-      <a class="item" href="#shop-revolucion"><span class="src">美国 · 得克萨斯州奥斯汀 · 咖啡吧</span><b>Revolución Coffee + Juice</b><p>排队排到门口的时候，这家咖啡吧怎么分工、怎么沟通、每杯多久出杯。</p></a>
-      <a class="item" href="#shop-bigeasy"><span class="src">澳大利亚 · 南澳大利亚州 · 8 家店</span><b>Big Easy Group</b><p>十年从零开到 8 家店，最难的是从两家开到三家。</p></a>
-    </div>
-  </div>
 </section>
 
 
@@ -585,6 +592,56 @@ main:has(.page:target) .home { display: none; }
   </div>
 </section>
 
+<!-- KIND: 正餐 -->
+<section class="page" id="c-dining">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="crumb">参考 · 按品类逛</div>
+  <h1>正餐</h1>
+  <p class="dek">以堂食为主、有座位和服务的餐厅。</p>
+  <div class="metrics"><span><b class="num">6</b>条原文</span><span><b class="num">4</b>个国家</span><span>2026 年 10 月 4 日更新</span></div>
+
+  <div class="section">
+    <div class="items">
+      <a class="item" href="#d-linen"><span class="src">美国 · Total Food Service · 2026 年 10 月</span><b>布草租金四年涨了 74%，一家餐馆怎样把多付的钱找出来</b><p>每周自动付的账单，一年多付 3.3 万美元。顾问把第一张和最新一张账单逐行对比，查了出来。</p></a>
+      <a class="item" href="#d-foodnews"><span class="src">韩国 · 식품저널 专栏 · 2026 年 10 月</span><b>漂亮的餐厅，为什么一到 12 点 20 分就乱</b><p>一次让路 3 秒，高峰时重复二三十次。一位做了 30 多年餐厅设计的顾问，动工前先拿图纸把高峰演一遍。</p></a>
+      <a class="item" href="#d-trc"><span class="src">美国 · The Restaurant Coach 播客 · 2026 年 9 月</span><b>实际食材钱，最多比配方算的高 2 个百分点</b><p>看到食材成本率 30% 就放心？节目的规则是：盘点出来的实际比例，最多比配方算的高 2 个百分点。</p></a>
+      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>用三个只做外卖的小厨房扩张，平台抽走两成多，三家全部关闭，后来改做大单合作。</p></a>
+      <a class="item" href="#d-ristorazione"><span class="src">意大利 · Ristorazione Italiana · 2026 年 9 月</span><b>好用的店不一定最漂亮：坐满的时候怎么运转</b><p>客人、服务员、外卖员挤在同一个门口。文章建议给外卖单独留一块取餐区，货走的路不穿过客人。</p></a>
+      <a class="item" href="#d-goomer"><span class="src">巴西 · Goomer 博客 · 2026 年 8 月</span><b>配方表做好了，食材钱为什么还是超支</b><p>把「应该花的」和「实际花的」食材钱放在一起比，差额就是漏掉的钱，一次只追查差得最多的一项。</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- KIND: 咖啡 -->
+<section class="page" id="c-coffee">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="crumb">参考 · 按品类逛</div>
+  <h1>咖啡</h1>
+  <p class="dek">咖啡馆、咖啡吧和外带咖啡店。</p>
+  <div class="metrics"><span><b class="num">1</b>条原文</span><span><b class="num">1</b>个国家</span><span>2026 年 10 月 4 日更新</span></div>
+
+  <div class="section">
+    <div class="items">
+      <a class="item" href="#shop-revolucion"><span class="src">美国 · Barista Magazine · 2026 年 9 月</span><b>排队排到门口的时候，一家咖啡吧怎么出杯</b><p>开门前 5 到 8 分钟的准备，四个人的分工，不用喊叫的口令和手势。</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- KIND: 酒吧和酒饮 -->
+<section class="page" id="c-bar">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="crumb">参考 · 按品类逛</div>
+  <h1>酒吧和酒饮</h1>
+  <p class="dek">酒吧、小酒馆和以酒饮为主的店。</p>
+  <div class="metrics"><span><b class="num">1</b>条原文</span><span><b class="num">1</b>个国家</span><span>2026 年 10 月 4 日更新</span></div>
+
+  <div class="section">
+    <div class="items">
+      <a class="item" href="#shop-bigeasy"><span class="src">澳大利亚 · Hospitality 杂志 · 2026 年 10 月</span><b>从两家开到三家，差点把公司拖垮</b><p>半年内连开两家，三家店赚的比只有一家时还少。创办人说，缺的是写下来的制度和专业的人。</p></a>
+    </div>
+  </div>
+</section>
+
 <!-- STORY: FOODNEWS -->
 <section class="page story" id="d-foodnews">
   <a class="back" href="#s-rush">‹ 午市高峰一到，出餐就乱</a>
@@ -674,10 +731,10 @@ main:has(.page:target) .home { display: none; }
   <div class="out"><span>原文 · 意大利文</span><a href="https://www.ristorazioneitalianamagazine.it/locale-ristorante-spazio-funzionale/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<!-- SHOP: REVOLUCION -->
+<!-- STORY: REVOLUCION -->
 <section class="page story" id="shop-revolucion">
   <a class="back" href="#top">‹ 参考</a>
-  <div class="kicker">按店逛 · 咖啡吧</div>
+  <div class="kicker">人在找东西、在喊叫</div>
   <h2>排队排到门口的时候，一家咖啡吧怎么出杯</h2>
   <div class="byline"><span class="dot">RV</span>美国 · Barista Magazine · 2026-09-25</div>
   <p class="lead">排队排到门口的时候，最贵的不是做坏一杯咖啡，而是熟练的咖啡师离开岗位，去找杯盖、重启收银机。</p>
@@ -753,10 +810,10 @@ main:has(.page:target) .home { display: none; }
   <div class="out"><span>原文 · 英文</span><a href="https://www.baristamagazine.com/cafe-hacks-how-to-survive-the-rush-like-a-pro/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<!-- SHOP: BIG EASY -->
+<!-- STORY: BIG EASY -->
 <section class="page story" id="shop-bigeasy">
   <a class="back" href="#top">‹ 参考</a>
-  <div class="kicker">按店逛 · 餐饮公司</div>
+  <div class="kicker">人和制度跟不上</div>
   <h2>从两家开到三家，差点把公司拖垮</h2>
   <div class="byline"><span class="dot">BE</span>澳大利亚 · Hospitality 杂志 · 2026-10-01</div>
   <p class="lead">十年里，他们从零开到 8 家店，员工 250 多人，关闭过 3 个品牌，两次险些破产。最难的一段，是从两家开到三家。</p>

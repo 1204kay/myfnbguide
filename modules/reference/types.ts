@@ -96,7 +96,7 @@ export interface CaseCard {
 export interface ReferenceHome {
   categories: Array<{ key: string; title: string; situations: Array<{ slug: string; title: string; dek: string; cases: number; countries: number }> }>;
   shops: Array<{ key: string; name: string; line: string; src: string; cases: number }>;
-  totals: { situations: number; cases: number; countries: number; shops: number };
+  totals: { situations: number; cases: number; countries: number };
 }
 
 export interface SituationPage {

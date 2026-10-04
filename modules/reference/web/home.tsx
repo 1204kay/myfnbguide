@@ -29,7 +29,7 @@ export default function ReferenceHomePage() {
     <div className="mx-auto max-w-[760px] px-4 pb-14 pt-6 lg:px-0">
       <h1 className="text-[30px] font-black leading-tight tracking-tight text-ink">参考</h1>
       <p className="mt-2 text-[16px] leading-relaxed text-ink-3">按遇到的事，查各地店家的做法和经验。每一条都附原文出处，由你自己判断。</p>
-      <Metrics items={[[data.totals.situations, "个情况"], [data.totals.shops, "家店"], [data.totals.countries, "个国家"]]} />
+      <Metrics items={[[data.totals.situations, "种情况"], [data.totals.cases, "条原文"], [data.totals.countries, "个国家"]]} />
       {!categories.length && <EmptyState title="还没有整理好的情况">每个情况收到两家以上店家的做法以后，才会出现在这里。</EmptyState>}
       {categories.map((c) => (
         <section key={c.key} className="mt-9">

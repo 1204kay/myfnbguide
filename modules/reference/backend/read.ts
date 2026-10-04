@@ -69,7 +69,7 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
       const shop = list[0]!.story.shop;
       return { key, name: shop.name!, line: list[0]!.story.title, src: [shop.country, shop.city, shop.kind ?? shop.size].filter(Boolean).join(" · "), cases: list.length };
     }),
-    totals: { situations: shown.length, cases: rows.length, countries: countries(rows), shops: shops.size },
+    totals: { situations: shown.length, cases: rows.length, countries: countries(rows) },
   };
 }
 

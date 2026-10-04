@@ -30,6 +30,10 @@ export const SITE = {
   topicsTitle: "餐饮主题：经营主题、品类与地区的最新动态",
   /** 反馈表单输入框里的示例。 */
   feedbackExample: "例如：我在搜索某个关键词时遇到……我原本想……",
+  /** 反馈页标题下面的一句话。 */
+  feedbackLead: "内容有误、页面出错，或者希望增加的功能，都可以在这里告诉我们。",
+  /** 反馈表单邮箱框里的提示。 */
+  feedbackEmailHint: "留下邮箱，方便我们回信",
   /** 一句话介绍：搜索引擎、分享卡片、RSS、llms.txt 会用。 */
   description: "餐饮小店的经营参考：收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。",
   /** llms.txt 里一句话介绍下面的一段详细介绍（选填）。 */
@@ -56,11 +60,11 @@ export const SITE = {
    * 改了接口里已有的字段或含义时升主版本，并在部署说明里写清。
    */
   interfaceVersion: "4.0.0",
-  /** 对外联系邮箱（选填）：llms.txt、响应头里会写。 */
+  /** 对外联系邮箱（选填）：llms.txt 和给 Agent 的使用说明里会写。 */
   contactEmail: "myfb.guide.my@gmail.com" as string | null,
-  /** 页脚的一行小字（选填）。 */
+  /** 关于页底部的一行小字（选填）。 */
   footerNote: "由 AIHOT 开源框架驱动",
-  /** 中国大陆网站的 ICP 备案号（选填），填了就显示在页脚并链接到工信部备案系统。 */
+  /** 中国大陆网站的 ICP 备案号（选填），填了就显示在侧栏底部和“我的”页底部，并链接到工信部备案系统。 */
   icp: null as string | null,
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
   github: null as string | null,
@@ -79,7 +83,7 @@ export const POLICY = {
   terms: {
     /** 页面名：导航、页脚、页面标题都用它。 */
     name: "使用规则",
-    description: "本站网站、RSS、公开 API 与 MCP 的使用规则。",
+    description: "本站网页、RSS、公开 API 与 MCP 的使用规则。",
     /** llms.txt 里对这一页的一句说明（选填）。 */
     covers: null as string | null,
     /** Agent 接入页的 RSS、API 两栏各自提醒的使用规则（选填）。 */
@@ -131,9 +135,9 @@ export const ABOUT = {
   description: `关于 ${SITE.name}：${SITE.description}`,
   /** 大标题：第一行正常颜色，第二行强调色。 */
   headline: ["餐饮经营的经验，散落在各地。", "我们把它汇集起来，整理成中文。"] as [string, string],
-  /** 标题下面的一段话。{sources} 会换成实时的信源数；统计没取到时换成 sourcesFallback。 */
-  lead: `${SITE.name} 由餐饮人发起，从 {sources} 个来源收集各地店家的做法和经验：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。免费，不用注册。`,
-  sourcesFallback: "上百",
+  /** 标题下面的一段话。{sources} 会换成实时的信源数（两边自动加空格，所以 {sources} 两边不写空格）；统计没取到时换成 sourcesFallback。 */
+  lead: `${SITE.name} 由餐饮人发起，从{sources}个来源收集各地店家的做法和经验：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。免费，不用注册。`,
+  sourcesFallback: "数十",
   /** 信源河动画下面的四个环节。 */
   steps: {
     collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体：中国、日本、韩国、东南亚、印度、澳大利亚、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
@@ -227,14 +231,15 @@ export const COMMUNITY_FEEDS: { dev: string[]; hn: string[] } = {
 
 /** 各页分享图（/og/pages/*.png）上的文字。主题目录页的那张按主题数自动生成。 */
 export const CARDS: Record<string, { kicker: string; title: string; subtitle: string; accent?: "hot" | "amber" }> = {
-  site: { kicker: SITE.name, title: SITE.tagline, subtitle: SITE.description },
+  // 分享图左上角已有站名，这里不再写站名：用介绍的前半句，副标题是介绍的其余部分。
+  site: { kicker: "餐饮小店的经营参考", title: SITE.tagline, subtitle: "收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。" },
   all: { kicker: subjectAfter("全部", "动态"), title: "收进来的全部内容，按时间排列", subtitle: "可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
   daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "前一天收录并经过挑选的内容；当天没有够格的内容就不出。" },
   weekly: { kicker: withSubject("周报"), title: "一周的内容汇编", subtitle: "从上一周的日报里选出，按类别分组。" },
   monthly: { kicker: withSubject("月报"), title: "一个月的内容汇编", subtitle: "从上个月的日报里选出，按类别分组。" },
   about: { kicker: "关于", title: `关于 ${SITE.name}`, subtitle: SITE.description },
-  terms: { kicker: "使用规则", title: `${SITE.name} 使用规则`, subtitle: "网站、API、RSS 与 MCP 的使用范围。" },
+  terms: { kicker: "使用规则", title: `${SITE.name} 使用规则`, subtitle: "网页、API、RSS 与 MCP 的使用范围。" },
   privacy: { kicker: "隐私说明", title: `${SITE.name} 隐私说明`, subtitle: "访问日志、浏览器本地数据与反馈资料的处理方式。" },
   changelog: { kicker: "更新日志", title: `${SITE.name} 更新日志`, subtitle: "功能更新、优化、公告与下线记录。" },
   feedback: { kicker: "反馈", title: "告诉我们哪里可以更好", subtitle: "内容、功能、接入，或来源方的更正与下架请求。" },

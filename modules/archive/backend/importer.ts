@@ -6,9 +6,8 @@ import { sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { queueProcessing } from "@aihot/backend/jobs/content";
 import { guardedFetch } from "@aihot/backend/lib/http-fetch";
-import { noiseFiltered } from "@aihot/backend/sources/collect";
+import { admitListing } from "@aihot/backend/sources/filters";
 import { fetchRss } from "@aihot/backend/sources/rss";
-import { allowed } from "@aihot/backend/sources/web-list";
 import type { Candidate, SourceRow } from "@aihot/backend/sources/types";
 import type { ArchivePlan } from "../plan.ts";
 
@@ -44,7 +43,7 @@ async function readListing(source: SourceRow, feedUrl: string): Promise<{ listed
   const feed = await guardedFetch(feedUrl, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 });
   return {
     listed: read.candidates.length,
-    candidates: read.candidates.filter((c) => allowed(c.url, source) && !noiseFiltered(c, source)),
+    candidates: admitListing(read.candidates, source),
     audio: feed.status === 200 ? audioByTitle(feed.text()) : new Map(),
   };
 }

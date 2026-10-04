@@ -6,9 +6,9 @@
 //   node myfnb/vet-sources.ts <candidates.json> [--out report.json] [--titles 8]
 import { readFileSync, writeFileSync } from "node:fs";
 import { fetchRss } from "@aihot/backend/sources/rss";
-import { allowed, fetchWebList } from "@aihot/backend/sources/web-list";
+import { fetchWebList } from "@aihot/backend/sources/web-list";
 import { fetchJsonList } from "@aihot/backend/sources/json-list";
-import { noiseFiltered } from "@aihot/backend/sources/collect";
+import { admitListing } from "@aihot/backend/sources/filters";
 import { unsupportedConfig } from "@aihot/backend/sources/config-keys";
 import type { Candidate, SourceRow } from "@aihot/backend/sources/types";
 
@@ -35,7 +35,7 @@ async function vet(s: Omit<SourceRow, "enabled" | "cursor" | "fail_count">): Pro
   } catch (e) {
     return { ...base, ok: false, error: String((e as Error).message ?? e).slice(0, 160) };
   }
-  const kept = [...new Map(found.filter((c) => allowed(c.url, row) && !noiseFiltered(c, row)).map((c) => [c.url, c])).values()];
+  const kept = [...new Map(admitListing(found, row).map((c) => [c.url, c])).values()];
   const now = Date.now();
   const dated = kept.map((c) => c.publishedAt?.getTime()).filter((t): t is number => !!t && t <= now + DAY).sort((a, b) => b - a);
   // Items a day: over the last week when the listing reaches further back, else over what it spans.

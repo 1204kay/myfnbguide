@@ -1,6 +1,7 @@
 // Words the site keeps out of what readers read (industry/wording.ts): each use in a written title, summary or
 // reason, named with what to write instead, for the one call that mends them (analyze.ts, mendWording).
 import { READER_WORDING } from "@aihot/industry/wording";
+import { ITEM_COPY } from "@aihot/site";
 
 export interface ReaderCopy {
   titleZh: string;
@@ -8,7 +9,7 @@ export interface ReaderCopy {
   reasonZh: string | null;
 }
 
-const FIELDS: Array<[keyof ReaderCopy, string]> = [["titleZh", "标题"], ["summaryZh", "摘要"], ["reasonZh", "收录理由"]];
+const FIELDS: Array<[keyof ReaderCopy, string]> = [["titleZh", "标题"], ["summaryZh", "摘要"], ["reasonZh", ITEM_COPY.reasonLabel]];
 
 /**
  * Every use of a word of the list in a copy, each as a line the model can act on: where, the words around it,

@@ -12,6 +12,7 @@ import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
 import { SELECTION } from "@aihot/industry/selection";
+import { ITEM_COPY } from "@aihot/site";
 import { sql } from "../db.ts";
 import { chatJson, MODELS, ModelOutputError, type ContentPart } from "../providers/llm.ts";
 import { completeReceipt, ProviderRejectedError, ReceiptUnknownError } from "../providers/receipts.ts";
@@ -371,7 +372,7 @@ export async function runUnderstand(a: AnalyzeInputArticle, opts: StepOpts = {})
   };
 }
 
-export const MEND_SYSTEM = promptText("mend-wording");
+export const MEND_SYSTEM = promptText("mend-wording", { reasonLabel: ITEM_COPY.reasonLabel });
 const MendSchema = z.object({ titleZh: z.string().trim().min(1), summaryZh: z.string().trim().min(1), reasonZh: z.string().trim().nullable().catch(null) });
 
 /**

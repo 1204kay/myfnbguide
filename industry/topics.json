@@ -252,12 +252,12 @@
     },
     {
       "slug": "snacks-stalls",
-      "name": "小吃与档口",
+      "name": "小吃与摊位",
       "group": "genre",
       "tags": [
-        "小吃/档口"
+        "小吃/摊位"
       ],
-      "definition": "小吃、街边档口与小店：小本生意的做法，以及如何维持经营。"
+      "definition": "小吃、街边摊位与小店：小本生意的做法，以及如何维持经营。"
     },
     {
       "slug": "catering",

@@ -307,7 +307,7 @@ export function categoryTitle(key: string): string | undefined {
 
 /**
  * 按品类浏览: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in
- * standard written words: "/" written 和, the Cantonese 档口 written 摊位. The writer picks one or none; slugs are addresses, never renamed once public.
+ * standard written words ("/" written 和). The writer picks one or none; slugs are addresses, never renamed once public.
  */
 export const SHOP_KINDS = [
   { slug: "coffee", title: "咖啡", dek: "咖啡馆、咖啡吧和外带咖啡店。" },

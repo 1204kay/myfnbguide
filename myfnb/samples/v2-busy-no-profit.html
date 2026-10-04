@@ -1,160 +1,132 @@
 <title>生意很忙，钱却留不下来</title>
 <style>
-/* 小岛经济学式：总览用一张图说明整件事（漏水的桶），每一行写清谁、遇到什么、怎么做；
-   点进去是一个连环画式的小故事：这是谁 → 遇到什么 → 发生了什么 → 为什么 → 怎么做、结果如何，每格一张图、几句话。
-   难懂的词用同一家假设的小面馆举例。举例和示意用虚线框、灰底，原文的数字用实线，两种不混。 */
+/* 跟 AIHOT 同一套版面语言：暖白底、细边白卡、层次靠字号和粗细，小标题前一条短青绿线，大号数字做重点，颜色只用青绿；红色只用于亏损。
+   总览：一张漏水的桶，三个洞各一组；点一行进一个小故事（没有分格标签和编号），图放在细边卡片里，图下注明是原文数据还是举例。 */
 :root {
-  --bg: #faf9f6; --surface: #ffffff; --sunk: #f1f2ee; --ink: #202a30; --ink-2: #3a464c; --ink-3: #5f6b71; --line: #dfe4e1;
-  --accent: #176b75; --accent-soft: rgba(23, 107, 117, 0.09);
-  --calc: var(--accent); --calc-soft: var(--accent-soft); --save: var(--accent); --save-soft: var(--accent-soft);
-  --adj: var(--accent); --adj-soft: var(--accent-soft);
-  --stop: #b3402a; --stop-soft: rgba(179, 64, 42, 0.10);
-  --seg-1: #4a565c; --seg-2: #76838a; --seg-3: #a3aeb3; --seg-5: #ccd3d6; --water: rgba(23, 107, 117, 0.16);
-  --font: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --bg: #faf9f6; --surface: #ffffff; --sunk: #f3f3ef; --ink: #202a30; --ink-2: #303c42; --ink-3: #59656b; --ink-4: #8a959a;
+  --line: #e4e8e5; --accent: #176b75; --accent-soft: rgba(23, 107, 117, 0.08); --water: rgba(23, 107, 117, 0.12);
+  --loss: #b3402a; --loss-soft: rgba(179, 64, 42, 0.08);
+  --g1: #4f5b61; --g2: #7b878d; --g3: #a7b1b5; --g4: #cfd5d8;
+  --font: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #121618; --surface: #1a2023; --sunk: #20272a; --ink: #e6ebec; --ink-2: #c5cdd0; --ink-3: #93a0a5; --line: #2e383c;
-  --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.12);
-  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13);
-  --seg-1: #cfd7da; --seg-2: #a3afb4; --seg-3: #77848a; --seg-5: #4c585d; --water: rgba(63, 193, 204, 0.18); color-scheme: dark;
+  --bg: #111517; --surface: #181e21; --sunk: #1d2427; --ink: #e8ecec; --ink-2: #ccd3d5; --ink-3: #9aa6aa; --ink-4: #76838a;
+  --line: #2a3337; --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.10); --water: rgba(63, 193, 204, 0.14);
+  --loss: #ec8a74; --loss-soft: rgba(236, 138, 116, 0.10); --g1: #cdd5d8; --g2: #a1adb2; --g3: #75838a; --g4: #4b575c; color-scheme: dark;
 } }
 :root[data-theme="dark"] {
-  --bg: #121618; --surface: #1a2023; --sunk: #20272a; --ink: #e6ebec; --ink-2: #c5cdd0; --ink-3: #93a0a5; --line: #2e383c;
-  --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.12);
-  --stop: #ec8a74; --stop-soft: rgba(236, 138, 116, 0.13);
-  --seg-1: #cfd7da; --seg-2: #a3afb4; --seg-3: #77848a; --seg-5: #4c585d; --water: rgba(63, 193, 204, 0.18); color-scheme: dark;
+  --bg: #111517; --surface: #181e21; --sunk: #1d2427; --ink: #e8ecec; --ink-2: #ccd3d5; --ink-3: #9aa6aa; --ink-4: #76838a;
+  --line: #2a3337; --accent: #3fc1cc; --accent-soft: rgba(63, 193, 204, 0.10); --water: rgba(63, 193, 204, 0.14);
+  --loss: #ec8a74; --loss-soft: rgba(236, 138, 116, 0.10); --g1: #cdd5d8; --g2: #a1adb2; --g3: #75838a; --g4: #4b575c; color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font: 15px/1.7 var(--font); }
+body { background: var(--bg); color: var(--ink); font: 15px/1.75 var(--font); }
 a { color: inherit; text-decoration: none; }
 p { margin: 0; }
-.wrap { max-width: 520px; margin: 0 auto; padding-inline: 16px; padding-block: 0 32px; }
-.bar { display: flex; align-items: baseline; gap: 10px; padding: 14px 0 12px; border-bottom: 1px solid var(--line); }
-.logo { font-weight: 800; letter-spacing: 0.14em; } .logo b { color: var(--accent); }
-.bar span { color: var(--ink-3); font-size: 12px; }
-.crumb { color: var(--ink-3); font-size: 13px; margin-top: 18px; }
-h1 { font-size: 26px; line-height: 1.3; margin: 4px 0 8px; text-wrap: balance; }
-.dek { color: var(--ink-2); }
-.updated { color: var(--ink-3); font-size: 12px; margin-top: 6px; }
-.calc { --c: var(--calc); --soft: var(--calc-soft); } .save { --c: var(--save); --soft: var(--save-soft); }
-.stop { --c: var(--accent); --soft: var(--accent-soft); } .adj { --c: var(--adj); --soft: var(--adj-soft); }
-.base { --c: var(--accent); --soft: var(--accent-soft); }
-.num { width: 26px; height: 26px; border-radius: 50%; background: var(--c); color: var(--surface); font-weight: 800; font-size: 13px; display: grid; place-items: center; flex: none; }
+.num { font-variant-numeric: tabular-nums; }
+.wrap { max-width: 560px; margin: 0 auto; padding-inline: 16px; padding-block: 0 40px; }
+.bar { display: flex; align-items: center; gap: 10px; padding: 16px 0 14px; border-bottom: 1px solid var(--line); }
+.logo { font-weight: 800; letter-spacing: 0.16em; font-size: 15px; } .logo b { color: var(--accent); }
+.bar span { color: var(--ink-4); font-size: 12px; }
+.kicker { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.3em; color: var(--accent); }
+.kicker::before { content: ""; width: 24px; height: 2px; border-radius: 2px; background: var(--accent); }
 
-/* 总览：漏水的桶 */
-.bucket { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 16px; }
-.bucket svg { display: block; width: 100%; max-width: 320px; height: auto; margin: 0 auto; }
-.bucket .cap { text-align: center; font-size: 13px; color: var(--ink-3); margin: 4px 0 10px; }
-.holes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.hole { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: start; background: var(--soft); border-radius: 10px; padding: 10px; }
-.hole b { display: block; line-height: 1.35; }
-.hole:last-child:nth-child(odd) { grid-column: 1 / -1; }
-.hole span span { font-size: 12px; color: var(--ink-2); }
+/* 总览 */
+.crumb { color: var(--ink-4); font-size: 13px; margin-top: 26px; }
+h1 { font-size: 30px; font-weight: 900; line-height: 1.28; letter-spacing: -0.03em; margin: 6px 0 10px; text-wrap: balance; }
+.dek { color: var(--ink-3); font-size: 16px; }
+.metrics { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; margin-top: 18px; padding: 14px 0; border-block: 1px solid var(--line); color: var(--ink-4); font-size: 13px; }
+.metrics b { font-size: 22px; font-weight: 800; color: var(--ink); margin-right: 4px; letter-spacing: -0.02em; }
+.metrics span:last-child { margin-left: auto; }
+.section { margin-top: 34px; }
+.figure { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 14px; }
+.figure svg { display: block; width: 100%; height: auto; }
+.figure text { fill: var(--ink-3); font-size: 11px; font-family: var(--font); }
+.figure .strong { fill: var(--ink); font-weight: 700; font-size: 12px; }
+.bucket svg { max-width: 300px; margin: 0 auto; }
+.ranks { margin-top: 6px; }
+.rank { display: grid; grid-template-columns: 30px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.rank:first-child { border-top: 0; }
+.rank .n { font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; color: var(--accent); }
+.rank b { display: block; font-size: 16px; line-height: 1.4; }
+.rank span span { color: var(--ink-3); font-size: 13px; }
+.ghead { display: flex; align-items: baseline; gap: 12px; margin-top: 10px; }
+.ghead .n { font-size: 28px; font-weight: 900; letter-spacing: -0.03em; line-height: 1; color: var(--accent); }
+.ghead h2 { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.3; margin: 0; }
+.gwhy { color: var(--ink-3); margin-top: 6px; }
+.items { display: grid; gap: 10px; margin-top: 14px; }
+.item { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; transition: border-color 0.15s; }
+.item:hover, .item:focus-visible { border-color: var(--accent); outline: none; }
+.item .src { font-size: 12.5px; color: var(--ink-4); }
+.item b { display: block; font-size: 17px; line-height: 1.5; margin-top: 4px; letter-spacing: -0.01em; }
+.item p { color: var(--ink-3); margin-top: 4px; }
+.foot { color: var(--ink-4); font-size: 12px; margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line); }
 
-/* 总览：分组与行 */
-.group { margin-top: 28px; }
-.ghead { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: center; }
-.ghead h2 { font-size: 18px; line-height: 1.35; margin: 0; color: var(--c); }
-.gwhy { font-size: 13px; color: var(--ink-3); margin: 4px 0 8px 34px; }
-.rows { display: grid; gap: 8px; }
-.row { display: grid; grid-template-columns: 1fr 14px; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--c); border-radius: 10px; padding: 11px 10px 11px 12px; }
-.row:hover, .row:focus-visible { background: var(--soft); outline: none; }
-.what { line-height: 1.6; min-width: 0; }
-.what b { color: var(--ink); }
-.what strong { color: var(--c); }
-.who { display: block; color: var(--ink-3); font-size: 12px; margin-top: 4px; }
-.go { color: var(--ink-3); font-size: 18px; }
-
-/* 详情：连环画式的故事 */
+/* 详情：一个小故事 */
 .detail { display: none; }
 .detail:target { display: block; }
 main:has(.detail:target) .overview { display: none; }
-.back { display: inline-block; margin-top: 16px; color: var(--accent); font-size: 14px; }
-.tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--c); background: var(--soft); border-radius: 5px; padding: 1px 8px; margin-top: 14px; }
-.detail h2 { font-size: 22px; line-height: 1.35; margin: 6px 0 2px; text-wrap: balance; }
-.meta { color: var(--ink-3); font-size: 13px; }
-.story { position: relative; margin-top: 16px; display: grid; gap: 14px; }
-.story::before { content: ""; position: absolute; left: 12px; top: 14px; bottom: 14px; width: 2px; background: var(--line); }
-.frame { position: relative; display: grid; grid-template-columns: 26px 1fr; gap: 10px; }
-.frame .num { position: relative; z-index: 1; margin-top: 12px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-width: 0; display: grid; gap: 10px; }
-.card.eg { border: 1.5px dashed var(--ink-3); background: var(--sunk); }
-.card h3 { font-size: 13px; letter-spacing: 0.06em; color: var(--c); margin: 0; }
-.card p { color: var(--ink-2); }
-.card p b { color: var(--ink); }
-.chip { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 0 6px; margin-left: 6px; vertical-align: 1px; letter-spacing: 0; }
-.chip.real { background: var(--accent); color: var(--surface); }
-.chip.eg { border: 1px dashed var(--ink-3); color: var(--ink-3); }
-
-.id { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; }
-.avatar { width: 52px; height: 52px; border-radius: 14px; background: var(--soft); color: var(--c); font-weight: 800; font-size: 17px; display: grid; place-items: center; }
-.id b { display: block; font-size: 17px; line-height: 1.35; }
-.id span { font-size: 13px; color: var(--ink-3); }
-.facts { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; }
-.facts dt { color: var(--ink-3); } .facts dd { margin: 0; color: var(--ink-2); }
-.quote { border-left: 3px solid var(--c); padding: 2px 0 2px 12px; font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.6; }
-.quote small { display: block; font-size: 12px; font-weight: 400; color: var(--ink-3); margin-top: 4px; }
-
-.vflow { display: grid; gap: 4px; justify-items: start; }
-.vflow span { background: var(--soft); color: var(--c); border-radius: 8px; padding: 5px 11px; font-weight: 700; font-size: 14px; }
-.vflow i { font-style: normal; color: var(--ink-3); padding-left: 14px; line-height: 1; }
-.vflow small { font-weight: 400; color: var(--ink-2); font-size: 12px; margin-left: 4px; }
-.line { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); }
+.back { display: inline-block; margin-top: 18px; color: var(--ink-4); font-size: 13px; }
+.detail .kicker { margin-top: 22px; }
+.detail h2 { font-size: 26px; font-weight: 900; line-height: 1.32; letter-spacing: -0.03em; margin: 10px 0 12px; text-wrap: balance; }
+.byline { display: flex; align-items: center; gap: 8px; color: var(--ink-3); font-size: 13px; }
+.dot { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 10px; font-weight: 800; display: grid; place-items: center; flex: none; }
+.lead { font-size: 18px; line-height: 1.75; color: var(--ink); margin-top: 22px; }
+.who { color: var(--ink-3); margin-top: 10px; }
+.who b { color: var(--ink); }
+.part { margin-top: 30px; }
+.part h3 { font-size: 19px; font-weight: 800; line-height: 1.45; letter-spacing: -0.01em; margin: 0 0 8px; }
+.part > p { color: var(--ink-2); margin-top: 8px; }
+.part > p b, .figure p b { color: var(--ink); }
+.cap { font-size: 12px; color: var(--ink-4); margin-top: 10px; }
+.cap.eg::before { content: "举例 · "; color: var(--ink-3); font-weight: 700; }
+.cap.real::before { content: "原文数据 · "; color: var(--accent); font-weight: 700; }
+.quote { border-left: 2px solid var(--accent); padding-left: 14px; font-size: 18px; font-weight: 700; line-height: 1.65; color: var(--ink); margin-top: 18px; }
+.quote small { display: block; font-size: 13px; font-weight: 400; color: var(--ink-3); margin-top: 4px; }
+.list { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 10px; }
+.list li { position: relative; padding-left: 18px; color: var(--ink-2); }
+.list li::before { content: ""; position: absolute; left: 0; top: 0.85em; width: 8px; height: 2px; background: var(--accent); }
+.list b { color: var(--ink); }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; color: var(--ink); font-weight: 600; font-size: 14px; }
+.flow i { font-style: normal; color: var(--ink-4); font-weight: 400; }
+.pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+.pairs div { color: var(--ink-2); font-size: 14px; line-height: 1.6; }
+.pairs b { display: block; color: var(--accent); font-size: 13px; letter-spacing: 0.1em; margin-bottom: 2px; }
+.line { display: grid; grid-template-columns: 58px 1fr; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-3); }
 .bars { display: grid; gap: 8px; }
-.fill { height: 28px; border-radius: 5px; display: flex; overflow: hidden; font-size: 12px; font-weight: 700; }
-.fill > div { display: flex; align-items: center; padding-left: 6px; white-space: nowrap; overflow: hidden; }
+.fill { height: 26px; border-radius: 4px; display: flex; overflow: hidden; font-size: 12px; font-weight: 700; }
+.fill > div { display: flex; align-items: center; padding-left: 7px; white-space: nowrap; overflow: hidden; }
 .rev { background: var(--accent); color: var(--surface); }
-.s1 { background: var(--seg-1); color: var(--surface); } .s2 { background: var(--seg-2); color: var(--surface); }
-.s3 { background: var(--seg-3); color: var(--ink); } .s4 { background: var(--stop); color: var(--surface); } .s5 { background: var(--seg-5); color: var(--ink); }
-.cc { background: var(--c); color: var(--surface); }
-.big { font-size: 15px; color: var(--ink-2); } .big b { color: var(--c); font-size: 20px; font-variant-numeric: tabular-nums; }
-.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 14px; font-size: 12px; color: var(--ink-2); }
-.legend div { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
-.legend i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
-.legend em { font-style: normal; margin-left: auto; color: var(--ink-3); }
-.why { display: grid; gap: 8px; }
-.why div { display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
-.why div::before { content: "!"; width: 20px; height: 20px; border-radius: 50%; background: var(--soft); color: var(--c); font-weight: 800; font-size: 12px; display: grid; place-items: center; margin-top: 3px; }
-.why b { color: var(--ink); }
-.why span { color: var(--ink-2); }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.box { background: var(--soft); border-radius: 10px; padding: 9px 10px; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
-.box b { display: block; color: var(--c); font-size: 14px; margin-bottom: 2px; }
-.tl { display: grid; gap: 0; }
-.tl div { display: grid; grid-template-columns: 14px 1fr; gap: 10px; padding-bottom: 10px; position: relative; }
-.tl div::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--c); margin-top: 6px; }
-.tl div:not(:last-child)::after { content: ""; position: absolute; left: 5px; top: 20px; bottom: 0; width: 2px; background: var(--soft); }
-.tl b { display: block; color: var(--c); font-size: 13px; }
-.tl span { color: var(--ink-2); font-size: 14px; }
-.scale { display: flex; border-radius: 6px; overflow: hidden; height: 30px; }
-.scale div { flex: 1; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
-.ok { background: var(--adj-soft); color: var(--adj); } .bad { background: var(--stop-soft); color: var(--stop); }
-.marks { display: flex; font-size: 11px; }
-.marks div { flex: 1; text-align: center; color: var(--ink-3); }
-.eq { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
-.eq span { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 2px 9px; }
-.eq b { color: var(--c); font-size: 18px; }
-.mini { display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
-.mini .num { width: 22px; height: 22px; font-size: 12px; }
-.mini h4 { margin: 0; font-size: 15px; color: var(--ink); }
-.mini .q { font-size: 12px; color: var(--ink-3); margin-bottom: 6px; }
-.jars { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.jar { border-radius: 10px; padding: 9px; text-align: center; font-size: 12px; color: var(--ink-2); }
-.jar b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
-.jar.up { background: var(--adj-soft); } .jar.up b { color: var(--adj); }
-.jar.down { background: var(--stop-soft); } .jar.down b { color: var(--stop); }
-.svgbox svg { display: block; width: 100%; height: auto; }
-.svgbox text { fill: var(--ink-3); font-size: 11px; font-family: var(--font); }
-.svgbox .strong { fill: var(--ink); font-weight: 700; font-size: 12px; }
-.note { font-size: 12px; color: var(--ink-3); }
-.ledger { display: grid; gap: 7px; }
-.ledger > div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.ledger i { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--accent); }
-.ledger .unused { color: var(--stop); } .ledger .unused i { background: var(--stop); }
-.ledger small { font-size: 11px; margin-left: 4px; }
-.out { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 16px; background: var(--sunk); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: var(--ink-2); }
-.out a { flex: none; background: var(--accent); color: var(--surface); border-radius: 8px; padding: 7px 12px; font-weight: 700; font-size: 13px; }
-.foot { color: var(--ink-3); font-size: 12px; margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--line); }
+.b1 { background: var(--g1); color: var(--surface); } .b2 { background: var(--g2); color: var(--surface); } .b3 { background: var(--g3); color: var(--ink); } .b4 { background: var(--g4); color: var(--ink); }
+.bl { background: var(--loss); color: var(--surface); }
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 18px; font-size: 12px; color: var(--ink-3); margin-top: 10px; font-variant-numeric: tabular-nums; }
+.legend div { display: flex; align-items: center; gap: 6px; }
+.legend i { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.legend em { font-style: normal; margin-left: auto; color: var(--ink-2); }
+.total { margin-top: 12px; font-size: 14px; color: var(--ink-3); }
+.total b { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink); margin: 0 2px; }
+.total b.loss { color: var(--loss); }
+.eq { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 16px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.eq span { color: var(--ink); font-weight: 600; }
+.eq b { font-size: 24px; font-weight: 900; color: var(--accent); letter-spacing: -0.02em; }
+.sub { padding-top: 16px; margin-top: 16px; border-top: 1px solid var(--line); }
+.sub:first-of-type { border-top: 0; margin-top: 4px; padding-top: 0; }
+.sub h4 { margin: 0 0 8px; font-size: 16px; font-weight: 800; }
+.sub p { color: var(--ink-3); font-size: 14px; margin-top: 8px; }
+.twin { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
+.twin div { padding: 10px 6px; border-radius: 10px; background: var(--sunk); font-size: 12px; color: var(--ink-3); }
+.twin b { display: block; font-size: 22px; font-weight: 900; letter-spacing: -0.02em; color: var(--accent); }
+.twin .down b { color: var(--loss); }
+.scale { display: flex; height: 28px; border-radius: 4px; overflow: hidden; }
+.scale div { flex: 1; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-soft); }
+.scale div.over { color: var(--loss); background: var(--loss-soft); }
+.ledger { display: grid; gap: 9px; }
+.ledger > div { display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.ledger i { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--g3); }
+.ledger .unused { color: var(--loss); } .ledger .unused i { background: var(--loss); }
+.ledger small { font-size: 11px; margin-left: 6px; color: var(--ink-4); }
+.out { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 34px; padding: 14px 0; border-block: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
+.out a { flex: none; color: var(--accent); font-weight: 700; }
 @media (prefers-reduced-motion: no-preference) { .detail:target { animation: in 0.18s ease-out; } @keyframes in { from { opacity: 0.6; transform: translateY(4px); } } }
 </style>
 
@@ -163,302 +135,244 @@ main:has(.detail:target) .overview { display: none; }
 <main id="top">
 
 <section class="overview">
-  <div class="crumb">参考 › 成本与利润</div>
+  <div class="crumb">参考 · 成本与利润</div>
   <h1>生意很忙，钱却留不下来</h1>
-  <p class="dek">客人不少、订单不断，月底却没剩多少钱。这一页收了 3 个国家的 6 条原文：钱从哪里漏掉，各地店家怎么堵住。</p>
-  <div class="updated">最近更新 2026 年 10 月 4 日</div>
+  <p class="dek">客人不少、订单不断，月底却没剩多少钱。钱从哪里漏掉，各地店家怎么堵住。</p>
+  <div class="metrics"><span><b class="num">6</b>条原文</span><span><b class="num">3</b>个国家</span><span>2026 年 10 月 4 日更新</span></div>
 
-  <div class="bucket">
-    <svg viewBox="0 0 320 262" role="img" aria-label="一只水桶：客人付的钱从上面倒进来，从三个洞漏出去，桶里剩下的才是月底的钱">
-      <g style="fill:var(--seg-3)"><circle cx="140" cy="16" r="9"/><circle cx="162" cy="30" r="9"/><circle cx="184" cy="13" r="9"/></g>
-      <path d="M160 44 v12 M154 50 l6 8 l6 -8" style="fill:none;stroke:var(--ink-3);stroke-width:2;stroke-linecap:round"/>
-      <text x="200" y="28" style="fill:var(--ink-3);font-size:12px">客人付的钱</text>
-      <path d="M84.8 104 Q122 96 160 104 T235.2 104 L220 232 L100 232 Z" style="fill:var(--water)"/>
-      <path d="M80 64 L240 64 L220 232 L100 232 Z" style="fill:none;stroke:var(--ink-2);stroke-width:3;stroke-linejoin:round"/>
-      <text x="160" y="190" text-anchor="middle" style="fill:var(--accent);font-size:12px;font-weight:700">月底剩下的钱</text>
-      <path d="M89 140 Q64 142 52 172" style="fill:none;stroke:var(--calc);stroke-width:5;stroke-linecap:round"/>
-      <path d="M229.8 150 Q254 152 266 182" style="fill:none;stroke:var(--save);stroke-width:5;stroke-linecap:round"/>
-      <path d="M95.7 196 Q72 198 62 226" style="fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round"/>
-      <g style="fill:var(--ink-2)"><circle cx="89" cy="140" r="4"/><circle cx="229.8" cy="150" r="4"/><circle cx="95.7" cy="196" r="4"/></g>
-      <g text-anchor="middle" style="font-size:13px;font-weight:800">
-        <circle cx="32" cy="182" r="12" style="fill:var(--calc)"/><text x="32" y="186.5" style="fill:var(--surface)">1</text>
-        <circle cx="288" cy="190" r="12" style="fill:var(--save)"/><text x="288" y="194.5" style="fill:var(--surface)">2</text>
-        <circle cx="40" cy="240" r="12" style="fill:var(--accent)"/><text x="40" y="244.5" style="fill:var(--surface)">3</text>
-      </g>
-    </svg>
-    <p class="cap">钱从上面倒进来，从三个洞漏出去，桶里剩下的才是月底的钱。</p>
-    <div class="holes">
-      <a class="hole calc" href="#g1"><span class="num">1</span><span><b>食材用得比配方多</b><span>分量、浪费、进货出错</span></span></a>
-      <a class="hole save" href="#g2"><span class="num">2</span><span><b>固定费用悄悄上涨</b><span>自动扣的钱没人核对</span></span></a>
-      <a class="hole stop" href="#g3"><span class="num">3</span><span><b>抽成和房租太重</b><span>订单再多也不赚钱</span></span></a>
+  <div class="section">
+    <div class="kicker">钱从哪里漏掉</div>
+    <div class="figure bucket">
+      <svg viewBox="0 0 300 250" role="img" aria-label="一只水桶：客人付的钱从上面倒进来，从三个洞漏出去，桶里剩下的才是月底的钱">
+        <g style="fill:none;stroke:var(--ink-4);stroke-width:1.5"><circle cx="130" cy="16" r="8"/><circle cx="151" cy="29" r="8"/><circle cx="172" cy="13" r="8"/></g>
+        <path d="M150 42 v12 M145 49 l5 7 l5 -7" style="fill:none;stroke:var(--ink-4);stroke-width:1.5;stroke-linecap:round"/>
+        <text x="188" y="26">客人付的钱</text>
+        <path d="M74.8 100 Q112 92 150 100 T225.2 100 L210 226 L90 226 Z" style="fill:var(--water)"/>
+        <path d="M70 62 L230 62 L210 226 L90 226 Z" style="fill:none;stroke:var(--ink-3);stroke-width:2;stroke-linejoin:round"/>
+        <text x="150" y="186" text-anchor="middle" style="fill:var(--accent);font-weight:700">月底剩下的钱</text>
+        <path d="M79 136 Q56 138 44 166" style="fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round"/>
+        <path d="M220 146 Q243 148 255 176" style="fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round"/>
+        <path d="M85.5 190 Q63 192 53 218" style="fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round"/>
+        <g text-anchor="middle" style="font-size:18px;font-weight:900">
+          <text x="30" y="182" style="fill:var(--accent);font-size:18px;font-weight:900">1</text>
+          <text x="268" y="194" style="fill:var(--accent);font-size:18px;font-weight:900">2</text>
+          <text x="40" y="240" style="fill:var(--accent);font-size:18px;font-weight:900">3</text>
+        </g>
+      </svg>
+      <div class="ranks">
+        <a class="rank" href="#g1"><span class="n num">1</span><span><b>食材用得比配方多</b><span>分量、浪费、进货出错，差出来的钱没有变成营业额</span></span></a>
+        <a class="rank" href="#g2"><span class="n num">2</span><span><b>固定费用悄悄上涨</b><span>每月自动付的钱，一次涨一点，几年就是一大笔</span></span></a>
+        <a class="rank" href="#g3"><span class="n num">3</span><span><b>抽成和房租太重</b><span>订单再多，扣掉平台抽成和房租也可能不够</span></span></a>
+      </div>
     </div>
   </div>
 
-  <div class="group base">
-    <div class="ghead"><span class="num">?</span><h2>先看懂自己的账</h2></div>
-    <p class="gwhy">洞在哪里，要先会看账才找得到。</p>
-    <div class="rows">
-      <a class="row base" href="#d-jpprofit"><span class="what"><b>日本一位开店 26 年的店主</b>说：很忙却没钱时，按顺序看四个数，<strong>每碗赚多少、每月固定要付多少、至少要卖多少、账上的钱和手上的钱</strong>。下面用一家小面馆举例说明这四个数。<span class="who">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 9 月</span></span><span class="go">›</span></a>
+  <div class="section">
+    <div class="kicker">看懂自己的账</div>
+    <div class="items">
+      <a class="item" href="#d-jpprofit"><span class="src">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 9 月</span><b>很忙，钱却不够用：一位开店 26 年的店主怎么看账</b><p>毛利、固定费用、保本点、账上的钱和手上的钱。用一家小面馆，一个数一个数地算。</p></a>
     </div>
   </div>
 
-  <div class="group calc" id="g1">
-    <div class="ghead"><span class="num">1</span><h2>食材用得比配方多</h2></div>
-    <p class="gwhy">配方上算好了，实际却用掉更多，差出来的钱没有变成营业额。</p>
-    <div class="rows">
-      <a class="row calc" href="#d-goomer"><span class="what"><b>巴西一家点餐系统商</b>写给餐厅老板：配方表做好了，食材钱还是超支？把「应该花的」和「实际花的」放在一起比，<strong>差额就是漏掉的钱</strong>，再一项一项追查。<span class="who">巴西 · Goomer 博客 · 2026 年 8 月</span></span><span class="go">›</span></a>
-      <a class="row calc" href="#d-trc"><span class="what"><b>美国一档餐厅经营播客</b>的规则：实际花的食材钱占营业额的比例，<strong>最多比配方算的高 2 个百分点</strong>；超过了，节目认为是厨房、进货或管理哪里出了问题。<span class="who">美国 · The Restaurant Coach 播客 · 2026 年 9 月</span></span><span class="go">›</span></a>
+  <div class="section" id="g1">
+    <div class="ghead"><span class="n num">1</span><h2>食材用得比配方多</h2></div>
+    <div class="items">
+      <a class="item" href="#d-goomer"><span class="src">巴西 · Goomer 博客 · 2026 年 8 月</span><b>配方表做好了，食材钱为什么还是超支</b><p>把「应该花的」和「实际花的」放在一起比，差额就是漏掉的钱。一家点餐系统商写给餐厅老板。</p></a>
+      <a class="item" href="#d-trc"><span class="src">美国 · The Restaurant Coach 播客 · 2026 年 9 月</span><b>实际食材钱，最多比配方算的高 2 个百分点</b><p>看到食材成本率 30% 就放心？一档餐厅经营播客谈这个数字背后漏掉的钱。</p></a>
     </div>
   </div>
 
-  <div class="group save" id="g2">
-    <div class="ghead"><span class="num">2</span><h2>固定费用悄悄上涨</h2></div>
-    <p class="gwhy">每月自动付的钱，一次涨一点，几年下来就是一大笔。</p>
-    <div class="rows">
-      <a class="row save" href="#d-linen"><span class="what"><b>美国一家餐馆</b>每周自动付的布草租金，<strong>4 年从 865 美元涨到 1,503 美元</strong>，一年多付 3.3 万美元，直到财务看账才发现。一位顾问介绍了他怎样查出来。<span class="who">美国 · Total Food Service · 2026 年 10 月</span></span><span class="go">›</span></a>
-      <a class="row save" href="#d-jpcosts"><span class="what"><b>同一位日本店主</b>：把存折和信用卡明细交给 AI，<strong>列出每个月自动扣走的钱</strong>，再一项项检查还要不要。<span class="who">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 10 月</span></span><span class="go">›</span></a>
+  <div class="section" id="g2">
+    <div class="ghead"><span class="n num">2</span><h2>固定费用悄悄上涨</h2></div>
+    <div class="items">
+      <a class="item" href="#d-linen"><span class="src">美国 · Total Food Service · 2026 年 10 月</span><b>布草租金四年涨了 74%，一家餐馆怎样把多付的钱找出来</b><p>每周自动付的账单，一年多付 3.3 万美元，直到财务看账才发现。</p></a>
+      <a class="item" href="#d-jpcosts"><span class="src">日本 · 播客「飲食店のAI活用ラジオ」 · 2026 年 10 月</span><b>用 AI 把每月自动扣走的钱列出来</b><p>一位个体店主把存折和信用卡明细交给 AI，一项项检查还要不要。</p></a>
     </div>
   </div>
 
-  <div class="group stop" id="g3">
-    <div class="ghead"><span class="num">3</span><h2>抽成和房租太重</h2></div>
-    <p class="gwhy">订单多不等于赚钱：先扣掉平台抽成和房租，剩下的可能不够。</p>
-    <div class="rows">
-      <a class="row stop" href="#d-calibbq"><span class="what"><b>美国烧烤店 Cali BBQ</b> 开了 3 个只做外卖的厨房，订单不断，但平台抽走营收的两成多，<strong>一家一个月亏 3,810 美元</strong>，最后全关了。创办人公开了这段经历。<span class="who">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span></span><span class="go">›</span></a>
+  <div class="section" id="g3">
+    <div class="ghead"><span class="n num">3</span><h2>抽成和房租太重</h2></div>
+    <div class="items">
+      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>平台抽走营收的两成多，一家一个月亏 3,810 美元，最后三家全部关闭。</p></a>
     </div>
   </div>
-
-
-
 </section>
 
 <!-- ============ 详情 ============ -->
 
-<section class="detail base" id="d-jpprofit">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
-  <span class="tag">先看懂自己的账</span>
-  <h2>很忙却不赚钱：先分清四个数</h2>
-  <div class="meta">日本 · 播客「飲食店のAI活用ラジオ」 · 2026-09-26</div>
-  <div class="story">
-    <div class="frame"><span class="num">1</span><div class="card">
-      <h3>这是谁</h3>
-      <div class="id"><span class="avatar">店主</span><div><b>节目主持人，一位个体餐饮店的店主</b><span>日本 · 59 岁 · 开店 26 年，现在还在经营</span></div></div>
-      <p>他做这档播客，介绍个体餐饮店怎样用 AI 处理日常的事务。</p>
-    </div></div>
-    <div class="frame"><span class="num">2</span><div class="card">
-      <h3>他说的问题</h3>
-      <div class="quote">每天都很忙，月底一看，钱没有想象中剩得多。<small>只看营业额，找不到原因。</small></div>
-    </div></div>
-    <div class="frame"><span class="num">3</span><div class="card">
-      <h3>他的办法：按顺序看四个数</h3>
-      <div class="vflow"><span>毛利</span><i>↓</i><span>人工和固定费用</span><i>↓</i><span>保本点</span><i>↓</i><span>利润和现金的差别</span></div>
-      <p>这四个词什么意思？下面用一家小面馆举例。</p>
-    </div></div>
-    <div class="frame"><span class="num">4</span><div class="card eg">
-      <h3>举例：一家小面馆<span class="chip eg">数字是我们举的例子</span></h3>
-      <div class="mini"><span class="num">1</span><div>
-        <h4>毛利：卖一碗赚多少</h4><p class="q">售价减掉这碗用的食材钱</p>
-        <div class="fill"><div class="s3" style="width:40%">食材 12 元</div><div class="rev" style="width:60%">毛利 18 元</div></div>
-        <p class="note">一碗卖 30 元</p>
-      </div></div>
-      <div class="mini"><span class="num">2</span><div>
-        <h4>固定费用：卖不卖都要付的钱</h4><p class="q">每月一共 18,000 元</p>
-        <div class="fill"><div class="s1" style="width:44.4%">房租 8,000</div><div class="s2" style="width:50%">人工 9,000</div><div class="s5" style="width:5.6%"></div></div>
-        <p class="note">最后一小段是水电杂费 1,000 元</p>
-      </div></div>
-      <div class="mini"><span class="num">3</span><div>
-        <h4>保本点：每月至少要卖多少碗</h4><p class="q">卖到这个数，毛利刚好付完固定费用</p>
+<section class="detail" id="d-jpprofit">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+  <div class="kicker">看懂自己的账</div>
+  <h2>很忙，钱却不够用：一位开店 26 年的店主怎么看账</h2>
+  <div class="byline"><span class="dot">店</span>日本 · 播客「飲食店のAI活用ラジオ」 · 2026-09-26</div>
+  <div class="quote">每天都很忙，月底一看，钱没有想象中剩得多。<small>日本一位个体餐饮店的店主，59 岁，开店 26 年，现在还在店里。他在自己的播客里说，只看营业额，找不到原因。</small></div>
+  <div class="part">
+    <h3>假设你开了一家小面馆</h3>
+    <div class="figure">
+      <div class="sub">
+        <h4>每碗剩 18 元</h4>
+        <div class="fill"><div class="b3" style="width:40%">食材 12 元</div><div class="rev" style="width:60%">毛利 18 元</div></div>
+        <p>一碗卖 30 元，面、肉和菜用掉 12 元，剩下的 18 元是毛利。</p>
+      </div>
+      <div class="sub">
+        <h4>每月 18,000 元，卖不卖都要付</h4>
+        <div class="fill"><div class="b1" style="width:44.4%">房租 8,000</div><div class="b2" style="width:50%">人工 9,000</div><div class="b4" style="width:5.6%"></div></div>
+        <p>房租、两个人的工资，加上水电杂费 1,000 元，这些是固定费用。</p>
+      </div>
+      <div class="sub">
+        <h4>一个月至少要卖 1,000 碗</h4>
         <div class="eq"><span>18,000 元</span>÷<span>每碗 18 元</span>=<b>1,000 碗</b></div>
-        <div class="svgbox" style="margin-top:8px">
-          <svg viewBox="0 0 320 200" role="img" aria-label="保本点图：卖到 1,000 碗以前在亏，以后在赚">
-            <polygon points="40,80 202.5,80 40,170" style="fill:var(--stop-soft)"/>
-            <polygon points="202.5,80 300,80 300,26" style="fill:var(--adj-soft)"/>
-            <line x1="40" y1="170" x2="300" y2="170" style="stroke:var(--line);stroke-width:1.5"/>
-            <line x1="40" y1="80" x2="300" y2="80" style="stroke:var(--seg-1);stroke-width:2;stroke-dasharray:5 4"/>
-            <line x1="40" y1="170" x2="300" y2="26" style="stroke:var(--accent);stroke-width:3"/>
-            <circle cx="202.5" cy="80" r="5" style="fill:var(--ink)"/>
-            <text x="44" y="73">每月固定费用 18,000 元</text>
-            <text x="126" y="146">卖出的毛利（每碗 18 元）</text>
-            <text x="78" y="106" class="strong" style="fill:var(--stop)">亏</text>
-            <text x="276" y="72" class="strong" style="fill:var(--adj)">赚</text>
-            <text x="208" y="98" class="strong">保本点 1,000 碗</text>
-            <text x="40" y="186" text-anchor="middle">0</text><text x="121.25" y="186" text-anchor="middle">500</text><text x="202.5" y="186" text-anchor="middle">1,000</text><text x="283.75" y="186" text-anchor="middle">1,500 碗</text>
-          </svg>
-        </div>
-        <p class="note">一个月 30 天，大约每天要卖 34 碗。</p>
-      </div></div>
-      <div class="mini"><span class="num">4</span><div>
-        <h4>利润和现金：账上赚了，钱却不够用</h4><p class="q">这个月卖了 1,300 碗，比保本点多 300 碗</p>
-        <div class="jars">
-          <div class="jar up">账上的利润<b>+5,400 元</b>300 碗 × 18 元</div>
-          <div class="jar down">手上的现金<b>−18,600 元</b>又预付了下一季房租 24,000 元</div>
-        </div>
-        <p class="note" style="margin-top:6px">预付房租、多进一批货、还贷款，都会让手上的钱比账上的利润少。</p>
-      </div></div>
-    </div></div>
-    <div class="frame"><span class="num">5</span><div class="card">
-      <h3>他的提议</h3>
-      <p>把 AI 当作<b>整理这些数字的助手</b>；经营上的判断，由店主自己做。</p>
-    </div></div>
+        <svg viewBox="0 0 320 200" role="img" aria-label="保本点图：卖到 1,000 碗以前在亏，以后在赚" style="margin-top:8px">
+          <polygon points="40,80 202.5,80 40,170" style="fill:var(--loss-soft)"/>
+          <polygon points="202.5,80 300,80 300,26" style="fill:var(--accent-soft)"/>
+          <line x1="40" y1="170" x2="300" y2="170" style="stroke:var(--line);stroke-width:1.5"/>
+          <line x1="40" y1="80" x2="300" y2="80" style="stroke:var(--ink-4);stroke-width:1.5;stroke-dasharray:5 4"/>
+          <line x1="40" y1="170" x2="300" y2="26" style="stroke:var(--accent);stroke-width:2.5"/>
+          <circle cx="202.5" cy="80" r="4.5" style="fill:var(--ink)"/>
+          <text x="44" y="73">每月固定费用 18,000 元</text>
+          <text x="126" y="146">卖出的毛利（每碗 18 元）</text>
+          <text x="78" y="106" class="strong" style="fill:var(--loss)">亏</text>
+          <text x="276" y="72" class="strong" style="fill:var(--accent)">赚</text>
+          <text x="208" y="98" class="strong">保本点 1,000 碗</text>
+          <text x="40" y="186" text-anchor="middle">0</text><text x="121.25" y="186" text-anchor="middle">500</text><text x="202.5" y="186" text-anchor="middle">1,000</text><text x="283.75" y="186" text-anchor="middle">1,500 碗</text>
+        </svg>
+        <p>卖到 1,000 碗，毛利刚好付完固定费用，这就是保本点，平均每天 34 碗左右。少于这个数在亏，多出来的才是赚的。</p>
+      </div>
+      <div class="sub">
+        <h4>账上赚了 5,400 元，手上却少了 18,600 元</h4>
+        <div class="twin"><div>账上的利润<b class="num">+5,400</b>多卖 300 碗 × 18 元</div><div class="down">手上的现金<b class="num">−18,600</b>预付下一季房租 24,000 元</div></div>
+        <p>这个月你卖了 1,300 碗，同时预付了下一季的房租。利润记在账上，现金在手上，两者不一样；预付房租、多进一批货、还贷款，都会让手上的钱比账上的少。</p>
+      </div>
+      <p class="cap eg">数字是我们举的例子，不是原文的数据。</p>
+    </div>
   </div>
-  <div class="out"><span>原文 · 日文 · 节目简介（节目本身是音频）</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/ep-e3pe66l" target="_blank" rel="noopener">打开原文 ↗</a></div>
+  <div class="part">
+    <h3>数字交给 AI 整理，判断自己做</h3>
+    <p>这位店主让 AI 帮他整理这些数字，经营上的判断由他自己做。</p>
+  </div>
+  <div class="out"><span>原文 · 日文 · 节目简介，节目本身是音频</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/ep-e3pe66l" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail calc" id="d-goomer">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
-  <span class="tag">1 · 食材用得比配方多</span>
+<section class="detail" id="d-goomer">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+  <div class="kicker">食材用得比配方多</div>
   <h2>配方表做好了，食材钱为什么还是超支</h2>
-  <div class="meta">巴西 · Goomer 博客 · 2026 年 8 月</div>
-  <div class="story">
-    <div class="frame"><span class="num">1</span><div class="card">
-      <h3>这是谁</h3>
-      <div class="id"><span class="avatar">G</span><div><b>Goomer，巴西的点餐系统商</b><span>这篇是他们博客上写给餐厅老板的文章</span></div></div>
-    </div></div>
-    <div class="frame"><span class="num">2</span><div class="card">
-      <h3>遇到的问题</h3>
-      <p>老板已经把每道菜的配方表做好，也跟供货商谈好了价格。<b>月底一算，食材成本还是偏高</b>，好像怎么算都不对。</p>
-      <p>文章说，这时候靠涨价也难：巴西餐饮协会 2025 年 8 月的调查，<b>55% 的酒吧和餐厅当月没有赚钱</b>，33% 过去一年没能涨价。</p>
-    </div></div>
-    <div class="frame"><span class="num">3</span><div class="card">
-      <h3>原因：其实有两笔食材钱<span class="chip real">原文的例子</span></h3>
+  <div class="byline"><span class="dot">G</span>巴西 · Goomer 博客 · 2026 年 8 月</div>
+  <p class="lead">你已经把每道菜的配方表做好，也跟供货商谈好了价格。月底一算，食材成本还是偏高。</p>
+  <p class="who">巴西点餐系统商 <b>Goomer</b> 在博客上写给餐厅老板的，就是这种情况。按巴西餐饮协会 2025 年 8 月的调查，55% 的酒吧和餐厅当月没有赚钱，33% 过去一年没能涨价；成本转不到客人身上，只能在店里找。</p>
+  <div class="part">
+    <h3>其实有两笔食材钱</h3>
+    <div class="figure">
       <div class="bars">
-        <div class="line"><span>应该花</span><div class="fill"><div class="s3" style="width:85.7%">按配方算 30,000</div></div></div>
-        <div class="line"><span>实际花了</span><div class="fill"><div class="s4" style="width:100%">按盘点算 35,000</div></div></div>
+        <div class="line"><span>应该花</span><div class="fill"><div class="b3" style="width:85.7%">按配方算 30,000</div></div></div>
+        <div class="line"><span>实际花了</span><div class="fill"><div class="bl" style="width:100%">按盘点算 35,000</div></div></div>
       </div>
-      <p class="big">差出 <b>5,000 雷亚尔</b>，没有变成营业额。</p>
-      <p class="note">实际花了多少 = 月初库存 + 本月进货 − 月底库存。</p>
-    </div></div>
-    <div class="frame"><span class="num">4</span><div class="card">
-      <h3>钱是这样一点点漏掉的</h3>
-      <div class="why">
-        <div><span><b>凭感觉进货</b>：进多了放到过期；缺了临时去买，价格更高。</span></div>
-        <div><span><b>库存乱、不盘点</b>：东西没标日期，过期了、重复买了都不知道。</span></div>
-        <div><span><b>分量不统一</b>：没有秤，每个人装得不一样；每份多几克，乘上每天几百份。</span></div>
-        <div><span><b>配方表过期</b>：还用两年前的价格算成本，以为这道菜赚钱，其实没赚。</span></div>
-        <div><span><b>员工不知道为什么</b>：没人解释为什么要称重、标日期、登记报损，就没人照做。</span></div>
-      </div>
-      <div class="card eg" style="padding:10px 12px">
-        <p><span class="chip eg" style="margin-left:0;margin-right:6px">举例</span>配方写一碗面放牛肉 100 克，厨房实际每碗多放了 20 克；一个月卖 1,300 碗，就多用了 <b>26 公斤</b>牛肉。账上看不出来，盘点才看得到。</p>
-      </div>
-    </div></div>
-    <div class="frame"><span class="num">5</span><div class="card">
-      <h3>文章的做法和结果</h3>
-      <div class="vflow"><span>固定日期盘点</span><i>↓</i><span>算出两笔钱：应该花的、实际花的</span><i>↓</i><span>差额换算成占营业额的百分比</span><i>↓</i><span>只追查差得最多的一项，查清楚再查下一项</span></div>
-      <p>文章说，一周推出五种新规定，下一周就没人执行了；一次查一项，才做得下去。</p>
-      <p>文章引用的研究：12 个国家 114 家餐厅，减少浪费<b>每投入 1，三年收回约 7</b>；中间水平的餐厅，食材成本省下 2% 以上。</p>
-    </div></div>
+      <p class="total">差出 <b class="num loss">5,000</b> 雷亚尔，没有变成营业额</p>
+      <p class="cap real">文章里的例子。实际花了多少 = 月初库存 + 本月进货 − 月底库存。</p>
+    </div>
+  </div>
+  <div class="part">
+    <h3>钱是这样一点点漏掉的</h3>
+    <ul class="list">
+      <li><b>凭感觉进货</b>：进多了放到过期；缺了临时去买，价格更高。</li>
+      <li><b>库存乱、不盘点</b>：东西没标日期，过期了、重复买了都不知道。</li>
+      <li><b>分量不统一</b>：没有秤，每个人装得不一样；每份多几克，乘上每天几百份。</li>
+      <li><b>配方表过期</b>：还用两年前的价格算成本，以为这道菜赚钱，其实没赚。</li>
+      <li><b>员工不知道为什么</b>：没人解释为什么要称重、标日期、登记报损，就没人照做。</li>
+    </ul>
+    <div class="figure">
+      <div class="eq"><span>每碗多放 20 克牛肉</span>×<span>1,300 碗</span>=<b>26 公斤</b></div>
+      <p class="cap eg">你的面馆，配方写一碗放牛肉 100 克，厨房实际每碗放了 120 克。账上看不出来，盘点才看得到。</p>
+    </div>
+  </div>
+  <div class="part">
+    <h3>一次只查一项</h3>
+    <div class="flow">固定日期盘点 <i>→</i> 算出两笔钱 <i>→</i> 差额换算成占营业额的百分比 <i>→</i> 只追查差得最多的一项</div>
+    <p>一周推出五种新规定，下一周往往就没人执行了。查清楚一项，再查下一项。</p>
+    <p>文章引用的研究：12 个国家 114 家餐厅，减少浪费<b>每投入 1，三年收回约 7</b>；中间水平的餐厅，食材成本省下 2% 以上。</p>
   </div>
   <div class="out"><span>原文 · 葡萄牙文</span><a href="https://goomer.com.br/blog/por-que-o-cmv-do-restaurante-esta-alto" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail calc" id="d-trc">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
-  <span class="tag">1 · 食材用得比配方多</span>
+<section class="detail" id="d-trc">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+  <div class="kicker">食材用得比配方多</div>
   <h2>实际食材钱，最多比配方算的高 2 个百分点</h2>
-  <div class="meta">美国 · The Restaurant Coach 播客第 186 集 · 2026-09-11</div>
-  <div class="story">
-    <div class="frame"><span class="num">1</span><div class="card">
-      <h3>这是谁</h3>
-      <div class="id"><span class="avatar">播客</span><div><b>The Restaurant Coach，美国的餐厅经营播客</b><span>主持人 Donald Burns 是餐厅经营顾问</span></div></div>
-      <p>这一集的嘉宾是 <b>Bo Bryant</b>，专做食材成本和餐饮批发采购。</p>
-    </div></div>
-    <div class="frame"><span class="num">2</span><div class="card">
-      <h3>他们说的问题</h3>
-      <div class="quote">很多独立餐厅老板知道自己的食材成本率，看到 30% 就以为没问题。<small>节目说，这个数字好看，钱照样可能在采购、分量、浪费、发票上流失。</small></div>
-    </div></div>
-    <div class="frame"><span class="num">3</span><div class="card eg">
-      <h3>他们的规则：理论成本加 2<span class="chip eg">举例是我们的</span></h3>
-      <p>先按配方算出食材「应该」占营业额多少，再看盘点后「实际」占多少。<b>实际最多比应该高 2 个百分点</b>；超过了，节目认为是执行出了问题。</p>
-      <p class="note">举例：小面馆一碗卖 30 元，配方食材 12 元，应该占 40%。</p>
-      <div class="scale"><div class="ok">40%</div><div class="ok">41%</div><div class="ok">42%</div><div class="bad">43%</div><div class="bad">44%</div><div class="bad">45%</div></div>
-      <div class="marks"><div>应该</div><div></div><div>上限</div><div></div><div></div><div>超了</div></div>
-      <p>一个月营业额 39,000 元。实际占 42% 以内算正常；如果占到 45%，就比配方多花了 <b>1,950 元</b>。</p>
-    </div></div>
-    <div class="frame"><span class="num">4</span><div class="card">
-      <h3>多出来的钱，节目列出的去处</h3>
-      <div class="grid2">
-        <div class="box"><b>厨房里</b>分量给多了；食材浪费、变质；没登记就送出去的菜；同一道菜每人做法不同。</div>
-        <div class="box"><b>进货时</b>收货时数量、品质没核对清楚；发票算错；供货商换了替代品，没人记录。</div>
-        <div class="box"><b>切配时</b>出成率不对：例如一公斤鸡，能用的肉比预计的少，成本就高了。</div>
-        <div class="box"><b>管理上</b>库存管得乱；有人私自拿走食材。</div>
-      </div>
-    </div></div>
-    <div class="frame"><span class="num">5</span><div class="card">
-      <h3>节目还提醒：跟供货商谈价格</h3>
-      <p>只请业务员「便宜一点」不算谈判。业务员可能把<b>几样显眼商品的价格压低</b>，再从订货单上的其他商品赚回来。</p>
-      <p>节目说要看的不只是单价，还有加价方式、返利、运费和燃油附加费、起送量；谈之前准备好进货记录和用量，<b>谈完核对优惠有没有出现在发票上</b>。</p>
-    </div></div>
+  <div class="byline"><span class="dot">播</span>美国 · The Restaurant Coach 播客第 186 集 · 2026-09-11</div>
+  <p class="lead">看到食材成本率 30%，很多独立餐厅老板就觉得没问题。</p>
+  <p class="who">美国餐厅经营播客 <b>The Restaurant Coach</b>（主持人 Donald Burns）这一集请来专做食材成本和餐饮批发采购的 <b>Bo Bryant</b>，谈的就是这个数字背后漏掉的钱：采购、分量、浪费、发票，都可能在流失。</p>
+  <div class="part">
+    <h3>假设你的面馆，食材应该占 40%</h3>
+    <p>一碗卖 30 元，配方食材 12 元。节目用的规则叫「理论成本加 2」：盘点出来的实际比例，最多比应该的高 2 个百分点。</p>
+    <div class="figure">
+      <div class="scale"><div>40%</div><div>41%</div><div>42%</div><div class="over">43%</div><div class="over">44%</div><div class="over">45%</div></div>
+      <p class="total">占到 45%，一个月就比配方多花 <b class="num loss">1,950</b> 元</p>
+      <p class="cap eg">一个月营业额 39,000 元，42% 以内算正常。节目认为，超出的部分是执行出了问题。</p>
+    </div>
   </div>
-  <div class="out"><span>原文 · 英文 · 节目简介（节目本身是音频）</span><a href="http://therestaurantcoachpodcast.blubrry.net/2026/09/11/episode-186-stop-chasing-food-cost-percentage-with-bo-bryant/" target="_blank" rel="noopener">打开原文 ↗</a></div>
+  <div class="part">
+    <h3>多出来的钱去了哪里</h3>
+    <div class="pairs">
+      <div><b>厨房里</b>分量给多了；食材浪费、变质；没登记就送出去的菜；同一道菜每人做法不同。</div>
+      <div><b>进货时</b>收货时数量、品质没核对清楚；发票算错；供货商换了替代品，没人记录。</div>
+      <div><b>切配时</b>出成率不对：例如一公斤鸡，能用的肉比预计的少，成本就高了。</div>
+      <div><b>管理上</b>库存管得乱；有人私自拿走食材。</div>
+    </div>
+  </div>
+  <div class="part">
+    <h3>跟供货商谈价格的时候</h3>
+    <p>只请业务员「便宜一点」不算谈判。业务员可能把<b>几样显眼商品的价格压低</b>，再从订货单上的其他商品赚回来。</p>
+    <p>节目提到要看的不只是单价，还有加价方式、返利、运费和燃油附加费、起送量；谈之前准备好进货记录和用量，<b>谈完核对优惠有没有出现在发票上</b>。</p>
+  </div>
+  <div class="out"><span>原文 · 英文 · 节目简介，节目本身是音频</span><a href="http://therestaurantcoachpodcast.blubrry.net/2026/09/11/episode-186-stop-chasing-food-cost-percentage-with-bo-bryant/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail save" id="d-linen">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
-  <span class="tag">2 · 固定费用悄悄上涨</span>
-  <h2>布草租金四年涨了 74%：一家餐馆怎样把多付的钱找出来</h2>
-  <div class="meta">美国 · Total Food Service，布草租赁顾问 Eddie Ferguson 的文章 · 2026-10-02</div>
-  <div class="story">
-    <div class="frame"><span class="num">1</span><div class="card">
-      <h3>这是谁</h3>
-      <div class="id"><span class="avatar">顾问</span><div><b>Eddie Ferguson，布草租赁顾问</b><span>帮餐馆审查布草租赁的合同和账单</span></div></div>
-      <p>文章介绍的是他审查过的<b>美国一家餐馆</b>（文章没有写店名）。</p>
-      <p class="note">布草：桌布、餐巾、毛巾、围裙。很多餐馆是租的，供应商每周送来干净的、收走脏的，按周收钱。</p>
-    </div></div>
-    <div class="frame"><span class="num">2</span><div class="card">
-      <h3>发生了什么</h3>
-      <p>财务看损益表时发现，<b>布草这一项比预想的高很多</b>，才开始追问。</p>
-    </div></div>
-    <div class="frame"><span class="num">3</span><div class="card">
-      <h3>查出来的数字<span class="chip real">原文</span></h3>
+<section class="detail" id="d-linen">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+  <div class="kicker">固定费用悄悄上涨</div>
+  <h2>布草租金四年涨了 74%，一家餐馆怎样把多付的钱找出来</h2>
+  <div class="byline"><span class="dot">TF</span>美国 · Total Food Service · 2026-10-02</div>
+  <p class="lead">每周都有一张布草账单，自动付掉，没有人细看。</p>
+  <p class="who">美国一家餐馆就是这样（文章没有写店名）。布草租赁顾问 <b>Eddie Ferguson</b> 审查了这家店的账。布草是桌布、餐巾、毛巾、围裙，很多餐馆租用，供应商每周送来干净的、收走脏的，按周收钱。</p>
+  <div class="part">
+    <h3>直到财务发现这一项高得不正常</h3>
+    <div class="figure">
       <div class="bars">
-        <div class="line"><span>最早</span><div class="fill"><div class="s3" style="width:57.6%">每周 865 美元</div></div></div>
-        <div class="line"><span>约四年后</span><div class="fill"><div class="cc" style="width:100%">每周 1,503 美元</div></div></div>
+        <div class="line"><span>最早</span><div class="fill"><div class="b3" style="width:57.6%">每周 865 美元</div></div></div>
+        <div class="line"><span>约四年后</span><div class="fill"><div class="rev" style="width:100%">每周 1,503 美元</div></div></div>
       </div>
-      <p class="big">一年从 44,978 涨到 78,137 美元，<b>多付 33,159 美元</b>。</p>
-      <p>店里没有人批准过一次大涨价。钱是在每周的发票里一点点加上去的。</p>
-    </div></div>
-    <div class="frame"><span class="num">4</span><div class="card">
-      <h3>为什么没人发现</h3>
-      <p class="note">这一段是顾问说的常见情况，不是专指这家店。</p>
-      <div class="tl">
-        <div><span><b>签合同时</b>店长或老板签了约，店里却没有完整的合同副本；换了管理层，就更找不到了。</span></div>
-        <div><span><b>付钱时</b>发票寄到某一家店、没人看的邮箱，或者直接自动扣款；看损益表的人看不到明细。</span></div>
-        <div><span><b>涨价时</b>有的合同允许供应商单方面涨价，通知只印在发票上，提出异议的期限很短。</span></div>
-        <div><span><b>几年以后</b>没在期限内提出异议，新价格就成了下一次涨价的起点。</span></div>
-      </div>
-    </div></div>
-    <div class="frame"><span class="num">5</span><div class="card">
-      <h3>他怎么查，结果如何</h3>
-      <div class="vflow"><span>收齐合同、价目表和至少 12 个月的账单</span><i>↓</i><span>第一张和最近一张发票，逐行对比</span><i>↓</i><span>分开三种：用量变多、单价上涨、新加的费用</span><i>↓</i><span>连续几次清点送来和收走的布草，对照发票</span></div>
-      <p>他建议<b>指定一个人负责这份合同</b>，把续约和提出异议的期限记进日历。</p>
-      <p class="note">原文没有说多付的钱有没有追回。</p>
-    </div></div>
+      <p class="total">一年从 44,978 涨到 78,137 美元，多付 <b class="num loss">33,159</b> 美元</p>
+      <p class="cap real">Eddie Ferguson 审过的这家餐馆的账单。</p>
+    </div>
+    <p>店里没有人批准过一次大涨价，钱是在每周的发票里一点点加上去的。</p>
+  </div>
+  <div class="part">
+    <h3>顾问说，这种事常常这样发生</h3>
+    <ul class="list">
+      <li><b>签合同时</b>，店长或老板签了约，店里却没有完整的合同副本；换了管理层，就更找不到了。</li>
+      <li><b>付钱时</b>，发票寄到某一家店、没人看的邮箱，或者直接自动扣款；看损益表的人看不到明细。</li>
+      <li><b>涨价时</b>，有的合同允许供应商单方面涨价，通知只印在发票上，提出异议的期限很短。</li>
+      <li><b>几年以后</b>，没在期限内提出异议，新价格就成了下一次涨价的起点。</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>他怎么查出来</h3>
+    <div class="flow">收齐合同、价目表和至少 12 个月的账单 <i>→</i> 第一张和最近一张发票逐行对比 <i>→</i> 分出用量变多、单价上涨、新加的费用 <i>→</i> 连续几次清点送来和收走的布草</div>
+    <p>他建议<b>指定一个人负责这份合同</b>，把续约和提出异议的期限记进日历。文章没有说这笔钱最后有没有追回。</p>
   </div>
   <div class="out"><span>原文 · 英文</span><a href="https://totalfood.com/how-restaurant-linen-service-bill-grew-865-1503-week/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail save" id="d-jpcosts">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
-  <span class="tag">2 · 固定费用悄悄上涨</span>
+<section class="detail" id="d-jpcosts">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+  <div class="kicker">固定费用悄悄上涨</div>
   <h2>用 AI 把每月自动扣走的钱列出来</h2>
-  <div class="meta">日本 · 播客「飲食店のAI活用ラジオ」 · 2026-10-03</div>
-  <div class="story">
-    <div class="frame"><span class="num">1</span><div class="card">
-      <h3>这是谁</h3>
-      <div class="id"><span class="avatar">店主</span><div><b>同一位日本店主</b><span>开个体餐饮店 26 年，做播客介绍小店怎样用 AI</span></div></div>
-    </div></div>
-    <div class="frame"><span class="num">2</span><div class="card">
-      <h3>他说的问题</h3>
-      <p>个体餐饮店每个月有一些<b>没意识到的支出</b>，自动从账户里扣走。</p>
-      <p class="note">节目的频道介绍里说，个体店老板向美食网站的刊登、手机点餐这类外部服务，付了不少钱。</p>
-    </div></div>
-    <div class="frame"><span class="num">3</span><div class="card">
-      <h3>他的办法</h3>
-      <div class="vflow"><span>拿出存折和信用卡明细</span><i>↓</i><span>交给 AI，做成一张费用表</span><i>↓</i><span>用四个问题逐项检查</span><i>↓</i><span>不需要的削减，需要的调整</span></div>
-    </div></div>
-    <div class="frame"><span class="num">4</span><div class="card eg">
-      <h3>举例：小面馆的自动扣款清单<span class="chip eg">数字是我们举的例子</span></h3>
-      <p class="note">把三个月的存折和信用卡明细交给 AI，整理出每个月自动扣走的钱（单位：元）：</p>
+  <div class="byline"><span class="dot">店</span>日本 · 播客「飲食店のAI活用ラジオ」 · 2026-10-03</div>
+  <p class="lead">每个月都有一些钱自动从账户里扣走，自己却没意识到。</p>
+  <p class="who">说这句话的是日本一位开个体餐饮店 26 年的店主。他说，美食网站的刊登费、手机点餐系统的费用，个体店付出去的都不少。他把存折和信用卡明细交给 AI，做成一张费用表，再用四个问题逐项检查，不需要的削减，需要的调整。</p>
+  <div class="part">
+    <h3>假设你的面馆也这样做</h3>
+    <div class="figure">
       <div class="ledger">
         <div><span>美食网站的刊登费</span><span>800</span><i style="width:100%"></i></div>
         <div><span>外卖平台的推广费</span><span>600</span><i style="width:75%"></i></div>
@@ -468,65 +382,59 @@ main:has(.detail:target) .overview { display: none; }
         <div><span>背景音乐订阅</span><span>120</span><i style="width:15%"></i></div>
         <div class="unused"><span>记账软件<small>去年已换成别的</small></span><span>90</span><i style="width:11.3%"></i></div>
       </div>
-      <p class="big">每月一共 <b>2,510 元</b>，一年 <b>30,120 元</b>。</p>
-      <p>其中两项（红色）已经不用了，每月 240 元，一年 <b>2,880 元</b>，仍在每月扣款。每一项分开看都不大，列在一起才看得出来。</p>
-    </div></div>
-    <div class="frame"><span class="num">5</span><div class="card">
-      <h3>节目还谈到</h3>
-      <p>自动扣款费用的具体例子和一年下来的金额；<b>解约有什么风险</b>；怎样让这种检查定期做下去。</p>
-      <p class="note">这些细节在节目音频里。简介没有写出四个问题是什么，这里不自行补写。</p>
-    </div></div>
+      <p class="total">每月 <b class="num">2,510</b> 元，一年 <b class="num">30,120</b> 元</p>
+      <p class="cap eg">红色的两项早就不用了，一年 2,880 元仍在扣款。每一项分开看都不大，列在一起才看得出来。</p>
+    </div>
   </div>
-  <div class="out"><span>原文 · 日文 · 节目简介（节目本身是音频）</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/AI-e3pqjmj" target="_blank" rel="noopener">打开原文 ↗</a></div>
+  <div class="part">
+    <h3>节目里还谈到</h3>
+    <p>一年下来的金额，<b>解约有什么风险</b>，怎样让这种检查定期做下去。四个问题是什么，简介没有写，这里不自行补写。</p>
+  </div>
+  <div class="out"><span>原文 · 日文 · 节目简介，节目本身是音频</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/AI-e3pqjmj" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail stop" id="d-calibbq">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a><br>
-  <span class="tag">3 · 抽成和房租太重</span>
+<section class="detail" id="d-calibbq">
+  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+  <div class="kicker">抽成和房租太重</div>
   <h2>三个外卖厨房订单不断，却在亏钱</h2>
-  <div class="meta">美国 · Cali BBQ 创办人 Shawn Walchef 的文章 · 2026-09-11</div>
-  <div class="story">
-    <div class="frame"><span class="num">1</span><div class="card">
-      <h3>这是谁</h3>
-      <div class="id"><span class="avatar">CB</span><div><b>Cali BBQ，美国圣地亚哥的烧烤店</b><span>老店在圣地亚哥县的 Spring Valley</span></div></div>
-      <p>写这篇文章的是创办人 <b>Shawn Walchef</b>。他说他们的原则是公开经营的过程，失败也要公开。</p>
-    </div></div>
-    <div class="frame"><span class="num">2</span><div class="card">
-      <h3>他们想做什么</h3>
-      <p>圣地亚哥县有 300 多万人，不能指望大家都开车到老店吃烤肉。疫情期间，他们开了 <b>3 个只做外卖的小厨房</b>，每个约 200 平方英尺，投入不到 5 万美元。</p>
-      <div class="vflow"><span>中央厨房做好烤肉和配菜</span><i>↓</i><span>送到各地 3 个外卖小厨房</span><i>↓</i><span>外卖平台送到客人手里</span></div>
-    </div></div>
-    <div class="frame"><span class="num">3</span><div class="card">
-      <h3>发生了什么<span class="chip real">原文</span></h3>
-      <p>订单不断，钱却在亏。其中一家 <b>2022 年 12 月</b>的账（单位：美元）：</p>
+  <div class="byline"><span class="dot">CB</span>美国 · Cali BBQ 创办人 Shawn Walchef 的文章 · 2026-09-11</div>
+  <p class="lead">圣地亚哥县有 300 多万人，Cali BBQ 却只有 Spring Valley 一家老店。</p>
+  <p class="who">创办人 <b>Shawn Walchef</b> 认为，不能指望大家都开车到老店吃烤肉。他说他们的原则是公开经营的过程，失败也要公开。</p>
+  <div class="part">
+    <h3>开三个只做外卖的小厨房</h3>
+    <p>疫情期间，他们开了 3 个只做外卖的小厨房，每个约 200 平方英尺，投入不到 5 万美元，看起来风险很低。</p>
+    <div class="figure"><div class="flow">中央厨房做好烤肉和配菜 <i>→</i> 送到各地 3 个小厨房 <i>→</i> 外卖平台送到客人手里</div></div>
+  </div>
+  <div class="part">
+    <h3>订单不断，钱却在亏</h3>
+    <div class="figure">
       <div class="bars">
         <div class="line"><span>收入</span><div class="fill"><div class="rev" style="width:78.1%">13,564</div></div></div>
-        <div class="line"><span>支出</span><div class="fill"><div class="s1" style="width:30.6%">房租</div><div class="s2" style="width:23.4%">食材</div><div class="s3" style="width:21.2%">人工</div><div class="s4" style="width:19.5%">抽成</div><div class="s5" style="width:5.3%"></div></div></div>
+        <div class="line"><span>支出</span><div class="fill"><div class="b1" style="width:30.6%">房租</div><div class="b2" style="width:23.4%">食材</div><div class="b3" style="width:21.2%">人工</div><div class="bl" style="width:19.5%">抽成</div><div class="b4" style="width:5.3%"></div></div></div>
       </div>
       <div class="legend">
-        <div><i class="s1"></i>房租水电<em>5,320</em></div>
-        <div><i class="s2"></i>食材<em>4,069</em></div>
-        <div><i class="s3"></i>人工<em>3,687</em></div>
-        <div><i class="s4"></i>外卖平台佣金<em>3,391</em></div>
-        <div><i class="s5"></i>杂费与维修<em>907</em></div>
+        <div><i class="b1"></i>房租水电<em>5,320</em></div>
+        <div><i class="b2"></i>食材<em>4,069</em></div>
+        <div><i class="b3"></i>人工<em>3,687</em></div>
+        <div><i class="bl"></i>外卖平台佣金<em>3,391</em></div>
+        <div><i class="b4"></i>杂费与维修<em>907</em></div>
       </div>
-      <p class="big">支出 17,374，比收入多 <b>3,810 美元</b>。</p>
-    </div></div>
-    <div class="frame"><span class="num">4</span><div class="card">
-      <h3>为什么</h3>
-      <div class="why">
-        <div><span><b>房租不便宜</b>：小厨房只用来出餐，租金照样高。</span></div>
-        <div><span><b>没有门面</b>：没有过路的客人，也没有地方让附近的人认识这家店。</span></div>
-        <div><span><b>客人是平台的</b>：平台抽走营收的 20% 到 25%，客人资料也在平台手里。</span></div>
-      </div>
-      <p class="note">每 100 美元的外卖营收，平台先拿走 20 到 25 美元：</p>
-      <div class="fill"><div class="s4" style="width:22.5%">平台</div><div class="s3" style="width:77.5%">剩下的付房租、食材、人工</div></div>
-    </div></div>
-    <div class="frame"><span class="num">5</span><div class="card">
-      <h3>结果</h3>
-      <div class="quote">有量没有利润，不是增长，是在慢慢走向死亡。<small>创办人的原话。三个外卖厨房全部关闭。</small></div>
-      <p>他说这次失败没有白费：当时练出来的中央厨房备餐流程，后来用在<b>体育场和海军基地的大单合作</b>上。</p>
-    </div></div>
+      <p class="total">支出 17,374 美元，一个月亏 <b class="num loss">3,810</b> 美元</p>
+      <p class="cap real">其中一家 2022 年 12 月的账，单位美元。</p>
+    </div>
+  </div>
+  <div class="part">
+    <h3>钱去了哪里</h3>
+    <ul class="list">
+      <li><b>房租不便宜</b>：小厨房只用来出餐，租金照样高。</li>
+      <li><b>没有门面</b>：没有过路的客人，也没有地方让附近的人认识这家店。</li>
+      <li><b>客人是平台的</b>：每 100 美元的营收，平台先拿走 20 到 25 美元，客人资料也在平台手里。</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>三家全部关闭</h3>
+    <div class="quote">有量没有利润，不是增长，是在慢慢走向死亡。<small>Shawn Walchef 的原话。</small></div>
+    <p>当时练出来的中央厨房备餐流程，后来用在<b>体育场和海军基地的大单合作</b>上。</p>
   </div>
   <div class="out"><span>原文 · 英文</span><a href="https://restauranttechnology.substack.com/p/we-opened-3-ghost-kitchens-they-failed" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>

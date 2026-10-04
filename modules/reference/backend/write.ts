@@ -29,8 +29,9 @@ export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL
  * Problems the writer can mend in its own text: too long, a word, retelling the original, a label for a heading,
  * an untranslated sentence. Those go back without the material, as an edit of the story: given the whole material
  * again, the writer wrote it afresh and as long as before (10/5: 53 of 65 held were too long after two more tries).
+ * A country or city left unnamed (全国、本地) is not one of them: only the material says which.
  */
-const TEXT_ONLY = /太长|用了“|原文说|分格标签|没有翻译/;
+const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译/.test(problem) && !/国家名|城市名/.test(problem);
 const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
 // The prompt, the edit request and the length limit the checks apply: changing any writes every case again.
 const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
@@ -158,8 +159,8 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   let user = ["请按系统规则把以下材料写成一个故事，只输出 JSON。", material].join("\n\n");
   let written: Written | null = null;
   let problems: string[] = [];
-  // The first answer, and up to three more with its problems named.
-  for (let attempt = 0; attempt < 4; attempt++) {
+  // The first answer, and up to two more with its problems named.
+  for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
       model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
       system: CASE_SYSTEM, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,
@@ -170,7 +171,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
     problems = written?.status === "story" ? checkStory(written.story, material) : read.problems;
     if (!problems.length) break;
     const list = problems.map((p) => `- ${p}`).join("\n");
-    user = problems.every((p) => TEXT_ONLY.test(p))
+    user = problems.every(textOnly)
       ? [EDIT, `故事：\n${JSON.stringify(res.data)}`, `问题：\n${list}`].join("\n\n")
       : [
         "请按系统规则把以下材料写成一个故事，只输出 JSON。", material,
@@ -198,7 +199,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
 
 /**
  * Selected items with no case yet, or whose article or the writing prompt changed since: newest first. A
- * changed prompt rewrites every case, which the library's size makes cheap for now (four calls a case at most, the later ones short edits).
+ * changed prompt rewrites every case, which the library's size makes cheap for now (three calls a case at most).
  */
 export async function articlesToWrite(limit: number, now = new Date()): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`

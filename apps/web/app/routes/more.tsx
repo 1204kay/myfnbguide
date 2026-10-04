@@ -32,12 +32,12 @@ type Row = { to: string; label: string; icon: ReactNode; detail?: ReactNode };
 /** The ways in that the agent page offers, the modules' first; its row names the first three. */
 const agentWays = () => [...webModules().flatMap((m) => m.agentWays ?? []), "MCP", "RSS", "API"];
 
-/** The modules' tools first, then the engine's; those the site hides from its navigation left out. */
+/** The modules' tools first, then the engine's. */
 const tools = (): Row[] => [
   ...webModules().flatMap((m) => m.tools ?? []),
   { to: "/topics", label: "主题", icon: <IconGrid size={20} /> },
   { to: "/agent", label: "Agent 接入", icon: <IconPlug size={20} />, detail: agentWays().slice(0, 3).join(" · ") },
-].filter((row) => navShown(row.to));
+];
 
 function Group({ title, children }: { title?: string; children: ReactNode }) {
   return (
@@ -48,7 +48,9 @@ function Group({ title, children }: { title?: string; children: ReactNode }) {
   );
 }
 
+/** A row of the page; none for a way in the site hides from its navigation (site.ts NAV.hidden). */
 function RowLink({ row, dot = false }: { row: Row; dot?: boolean }) {
+  if (!navShown(row.to)) return null;
   return (
     <li>
       <Link viewTransition to={row.to} className="flex min-h-[52px] items-center gap-3 px-4 text-[16px] font-medium text-ink transition-colors active:bg-bg-sunk lg:hover:bg-bg-sunk">

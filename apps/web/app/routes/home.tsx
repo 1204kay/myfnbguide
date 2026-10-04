@@ -7,6 +7,11 @@ import type { Screen } from "../components/shell/screens";
 import { Timeline } from "../features/feed/Timeline";
 import { HotTopics } from "../features/feed/HotTopics";
 import { ActiveFilters, CategoryTabs, FeedBar, SearchField } from "../features/feed/Filters";
+import { navShown } from "../components/shell/nav";
+import { NAV } from "@aihot/site";
+
+/** What the navigation calls this page (site.ts NAV.labels), 精选 by default. */
+const NAME = NAV.labels["/"] ?? "精选";
 
 export const handle: Screen = { tab: "featured", name: "精选" };
 
@@ -24,7 +29,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 export function meta({ loaderData }: Route.MetaArgs) {
   const path = listPath("/", loaderData ? filterParams(loaderData.filters) : {});
   const titles = loaderData?.data.cards.map((c) => c.item.title) ?? [];
-  return pageMeta({ path, jsonLd: path === "/" ? [...siteLd(), itemListLd("/", "精选", titles)] : undefined });
+  return pageMeta({ path, jsonLd: path === "/" ? [...siteLd(), itemListLd("/", NAME, titles)] : undefined });
 }
 
 export function headers({ loaderHeaders }: Route.HeadersArgs) {
@@ -33,7 +38,7 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
 
 export default function Home() {
   const { data, filters } = useLoaderData<typeof loader>();
-  const title = filters.tag ? `#${filters.tag}` : "精选";
+  const title = filters.tag ? `#${filters.tag}` : NAME;
   return (
     <div className="pb-6">
       {/* Phones: the bar (精选 | 全部, filter, search), the filter in use, today's hot topics, the feed. */}
@@ -47,7 +52,7 @@ export default function Home() {
         </div>
       </div>
 
-      {data.hot && <HotTopics entries={data.hot} />}
+      {data.hot && navShown("/hot") && <HotTopics entries={data.hot} />}
 
       <Timeline initial={data} filters={data.filters} />
     </div>

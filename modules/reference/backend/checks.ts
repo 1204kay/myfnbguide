@@ -1,7 +1,7 @@
 // The program's reading of a written case before anyone sees it: every number must be found in the original
 // (examples excepted: their numbers are the program's own), and the reader-facing wording rules hold
-// (myfnb/HANDOFF.md §3, §3.1). No model is asked; a case that fails is written once more with the problems
-// named, and held back if it still fails.
+// (myfnb/HANDOFF.md §3, §3.1). No model is asked; a case that fails goes back to the writer with the problems
+// named, at most twice (backend/write.ts), and is held back if it still fails.
 import type { Block, CaseStory } from "../types.ts";
 import { exampleNumbers } from "./examples.ts";
 import { SITUATIONS } from "../situations.ts";
@@ -79,7 +79,7 @@ export function unfoundNumbers(text: string, source: Set<string>): string[] {
 
 /**
  * Words a reader must not meet (HANDOFF §3): spoken or slang words, promises about the content, “同行”,
- * a country left as “全国/本地”, teaching the reader. Each with what to write instead, for the second try.
+ * a country left as “全国/本地”, teaching the reader. Each with what to write instead, for the next try.
  */
 const WORDING: Array<[RegExp, string]> = [
   // 演讲、主讲、讲座、讲究、讲话（名词）这类书面词不算。
@@ -167,7 +167,7 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   const all = texts(story).filter(([, , fromSource]) => fromSource).map(([, text]) => text).join("");
   const total = chars(all);
   if (total > MAX_CHARS) {
-    // Name the longest parts, so the second try knows where to cut.
+    // Name the longest parts, so the next try knows where to cut.
     const parts = story.parts.map((part, i) => [i + 1, chars(part.heading + part.blocks.filter((b) => b.type !== "example").flatMap(blockTexts).join(""))] as const)
       .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, c]) => `第 ${n} 段 ${c} 字`).join("、");
     problems.push(`全文 ${total} 字，太长：要在 800 字以内。${parts}，人物 ${chars(story.who)} 字；每段删到 200 字以内，人物删到 100 字以内，次要的段落整段删掉，只留经过、做法和数字`);
@@ -181,7 +181,7 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     if (missing.length) problems.push(`${where}的数字 ${missing.join("、")} 在原文里找不到：删掉，或改成原文写的数字；要算出来的数放进图，由程序计算`);
     for (const [pattern, fix] of WORDING) {
       const hit = pattern.exec(text);
-      // The words around it, so the second try (and whoever reads the held cases) finds the very place.
+      // The words around it, so the next try (and whoever reads the held cases) finds the very place.
       if (hit) problems.push(`${where}用了“${hit[0]}”（“${text.slice(Math.max(0, hit.index - 8), hit.index + hit[0].length + 8)}”）：${fix}`);
     }
   }

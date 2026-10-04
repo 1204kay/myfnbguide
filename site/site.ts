@@ -120,11 +120,11 @@ export const NAV = {
   tabs: ["reference", "featured", "daily", "me"] as string[] | null,
   /** 侧栏每一组里排在前面的入口，按这里的顺序，写路径；没写的照默认顺序排在后面。 */
   order: ["/reference", "/", "/all", "/daily"] as string[],
-  /** 侧栏和“我的”页不显示的入口，写路径。 */
+  /** 侧栏、“我的”页和首页不显示的入口，写路径（例如 "/hot" 也去掉首页的当前热点）。 */
   hidden: ["/hot", "/topics"] as string[],
   /** 精选和全部动态的筛选里有没有“一手”（官方一手发布）。 */
   firstPartyFilter: false,
-  /** 入口在侧栏和底栏上的名字，路径 → 名字；不写的用默认。 */
+  /** 入口的名字，路径 → 名字，侧栏、底栏和那一页的标题都用；不写的用默认。 */
   labels: { "/": "最新" } as Record<string, string>,
 };
 

@@ -17,7 +17,7 @@ const body = readFileSync(path.join(HERE, file), "utf8");
 mkdirSync(OUT, { recursive: true });
 const html = path.join(OUT, `${name}.html`);
 writeFileSync(html, `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}</style></head><body>${body}</body></html>`);
-const ids = [...body.matchAll(/class="detail[^"]*" id="([a-z0-9-]+)"/g)].map((m) => m[1]);
+const ids = [...body.matchAll(/class="page[^"]*" id="([a-z0-9-]+)"/g)].map((m) => m[1]);
 
 const browser = await chromium.launch();
 const tab = await (await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3 })).newPage();

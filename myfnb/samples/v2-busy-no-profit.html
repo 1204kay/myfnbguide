@@ -1,4 +1,4 @@
-<title>生意很忙，钱却留不下来</title>
+<title>MyF&B 参考样页</title>
 <style>
 /* 跟 AIHOT 同一套版面语言：暖白底、细边白卡、层次靠字号和粗细，小标题前一条短青绿线，大号数字做重点，颜色只用青绿；红色只用于亏损。
    总览：一张漏水的桶，三个洞各一组；点一行进一个小故事（没有分格标签和编号），图放在细边卡片里，图下注明是原文数据还是举例。 */
@@ -62,13 +62,38 @@ h1 { font-size: 30px; font-weight: 900; line-height: 1.28; letter-spacing: -0.03
 .item p { color: var(--ink-3); margin-top: 4px; }
 .foot { color: var(--ink-4); font-size: 12px; margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line); }
 
-/* 详情：一个小故事 */
-.detail { display: none; }
-.detail:target { display: block; }
-main:has(.detail:target) .overview { display: none; }
+/* 页面切换：首页常显，点开的情况页或故事页显示时首页收起（#锚点，不用脚本） */
+.page { display: none; }
+.page:target { display: block; }
+main:has(.page:target) .home { display: none; }
+.home h1 { margin-top: 26px; font-size: 34px; }
+.muted { color: var(--ink-4); font-size: 13px; margin-top: 14px; }
+.key { display: flex; gap: 18px; font-size: 12px; color: var(--ink-3); margin-top: 8px; }
+.key span { display: flex; align-items: center; gap: 6px; }
+.key i { width: 18px; height: 0; border-top: 2.5px solid var(--accent); }
+.key i.k-g { border-top: 2px dashed var(--ink-4); }
+.cap.sk::before { content: "示意 · "; color: var(--ink-3); font-weight: 700; }
+.split { display: grid; gap: 10px; }
+.split > div { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-3); }
+.split .row { display: flex; gap: 4px; }
+.split .row i { height: 26px; border-radius: 4px; background: var(--accent); color: var(--surface); font-style: normal; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.sub-line { font-size: 13px; color: var(--ink-3); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.ranges { display: grid; gap: 9px; }
+.ranges > div { display: grid; grid-template-columns: 112px 1fr 74px; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); }
+.ranges .t { height: 10px; border-radius: 5px; background: var(--sunk); display: flex; }
+.ranges .t i { height: 100%; border-radius: 5px; background: var(--accent); }
+.ranges em { font-style: normal; text-align: right; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.tline { list-style: none; padding: 0; margin: 0; display: grid; }
+.tline li { position: relative; padding: 0 0 12px 20px; color: var(--ink-2); font-size: 14px; }
+.tline li::before { content: ""; position: absolute; left: 0; top: 7px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+.tline li:not(:last-child)::after { content: ""; position: absolute; left: 4px; top: 18px; bottom: 0; width: 1px; background: var(--line); }
+.tline li.bad::before { background: var(--loss); }
+.tline b { display: block; font-size: 12px; color: var(--accent); letter-spacing: 0.06em; }
+.tline li.bad b { color: var(--loss); }
+/* 故事页 */
 .back { display: inline-block; margin-top: 18px; color: var(--ink-4); font-size: 13px; }
-.detail .kicker { margin-top: 22px; }
-.detail h2 { font-size: 26px; font-weight: 900; line-height: 1.32; letter-spacing: -0.03em; margin: 10px 0 12px; text-wrap: balance; }
+.story > .kicker { margin-top: 22px; }
+.story > h2 { font-size: 26px; font-weight: 900; line-height: 1.32; letter-spacing: -0.03em; margin: 10px 0 12px; text-wrap: balance; }
 .byline { display: flex; align-items: center; gap: 8px; color: var(--ink-3); font-size: 13px; }
 .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 10px; font-weight: 800; display: grid; place-items: center; flex: none; }
 .lead { font-size: 18px; line-height: 1.75; color: var(--ink); margin-top: 22px; }
@@ -134,7 +159,35 @@ main:has(.detail:target) .overview { display: none; }
 <header class="bar"><span class="logo"><b>MY</b>F&amp;B</span><span>餐饮人自己的参考站</span></header>
 <main id="top">
 
-<section class="overview">
+<!-- HOME -->
+<section class="home">
+  <h1>参考</h1>
+  <p class="dek">按遇到的事，查各地店家的做法和经验。每一条都附原文出处，由你自己判断。</p>
+  <div class="metrics"><span><b class="num">3</b>个情况</span><span><b class="num">2</b>家店</span><span><b class="num">6</b>个国家</span><span>样页 · 2026 年 10 月</span></div>
+
+  <div class="section">
+    <div class="kicker">按遇到的事查</div>
+    <div class="items">
+      <a class="item" href="#s-busy"><span class="src">成本与利润 · 6 条原文 · 3 个国家</span><b>生意很忙，钱却留不下来</b><p>客人不少、订单不断，月底却没剩多少钱。钱从哪里漏掉，各地店家怎么堵住。</p></a>
+      <a class="item" href="#s-rush"><span class="src">门店运营 · 3 条原文 · 3 个国家</span><b>午市高峰一到，出餐就乱</b><p>平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。</p></a>
+      <a class="item" href="#s-second"><span class="src">开店与关店 · 2 条原文 · 2 个国家</span><b>想开第二家店</b><p>第一家做起来以后，再开一家，老板要面对的是什么。</p></a>
+    </div>
+    <p class="muted">完整的网站分六大类：成本与利润、人员与团队、顾客与营销、门店运营、开店与关店、工具与法规。样页只做了其中三类各一个情况。</p>
+  </div>
+
+  <div class="section">
+    <div class="kicker">按店逛</div>
+    <div class="items">
+      <a class="item" href="#shop-revolucion"><span class="src">美国 · 得克萨斯州奥斯汀 · 咖啡吧</span><b>Revolución Coffee + Juice</b><p>排队排到门口的时候，这家咖啡吧怎么分工、怎么沟通、每杯多久出杯。</p></a>
+      <a class="item" href="#shop-bigeasy"><span class="src">澳大利亚 · 南澳大利亚州 · 8 家店</span><b>Big Easy Group</b><p>十年从零开到 8 家店，最难的是从两家开到三家。</p></a>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="page" id="s-busy">
+  <a class="back" href="#top">‹ 参考</a>
   <div class="crumb">参考 · 成本与利润</div>
   <h1>生意很忙，钱却留不下来</h1>
   <p class="dek">客人不少、订单不断，月底却没剩多少钱。钱从哪里漏掉，各地店家怎么堵住。</p>
@@ -160,9 +213,9 @@ main:has(.detail:target) .overview { display: none; }
         </g>
       </svg>
       <div class="ranks">
-        <a class="rank" href="#g1"><span class="n num">1</span><span><b>食材用得比配方多</b><span>分量、浪费、进货出错，差出来的钱没有变成营业额</span></span></a>
-        <a class="rank" href="#g2"><span class="n num">2</span><span><b>固定费用悄悄上涨</b><span>每月自动付的钱，一次涨一点，几年就是一大笔</span></span></a>
-        <a class="rank" href="#g3"><span class="n num">3</span><span><b>抽成和房租太重</b><span>订单再多，扣掉平台抽成和房租也可能不够</span></span></a>
+        <a class="rank" href="#s-busy" onclick="document.getElementById('g1').scrollIntoView({behavior:'smooth'});return false"><span class="n num">1</span><span><b>食材用得比配方多</b><span>分量、浪费、进货出错，差出来的钱没有变成营业额</span></span></a>
+        <a class="rank" href="#s-busy" onclick="document.getElementById('g2').scrollIntoView({behavior:'smooth'});return false"><span class="n num">2</span><span><b>固定费用悄悄上涨</b><span>每月自动付的钱，一次涨一点，几年就是一大笔</span></span></a>
+        <a class="rank" href="#s-busy" onclick="document.getElementById('g3').scrollIntoView({behavior:'smooth'});return false"><span class="n num">3</span><span><b>抽成和房租太重</b><span>订单再多，扣掉平台抽成和房租也可能不够</span></span></a>
       </div>
     </div>
   </div>
@@ -200,8 +253,8 @@ main:has(.detail:target) .overview { display: none; }
 
 <!-- ============ 详情 ============ -->
 
-<section class="detail" id="d-jpprofit">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+<section class="page story" id="d-jpprofit">
+  <a class="back" href="#s-busy">‹ 生意很忙，钱却留不下来</a>
   <div class="kicker">看懂自己的账</div>
   <h2>很忙，钱却不够用：一位开店 26 年的店主怎么看账</h2>
   <div class="byline"><span class="dot">店</span>日本 · 播客「飲食店のAI活用ラジオ」 · 2026-09-26</div>
@@ -250,8 +303,8 @@ main:has(.detail:target) .overview { display: none; }
   <div class="out"><span>原文 · 日文 · 节目简介，节目本身是音频</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/ep-e3pe66l" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail" id="d-goomer">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+<section class="page story" id="d-goomer">
+  <a class="back" href="#s-busy">‹ 生意很忙，钱却留不下来</a>
   <div class="kicker">食材用得比配方多</div>
   <h2>配方表做好了，食材钱为什么还是超支</h2>
   <div class="byline"><span class="dot">G</span>巴西 · Goomer 博客 · 2026 年 8 月</div>
@@ -291,8 +344,8 @@ main:has(.detail:target) .overview { display: none; }
   <div class="out"><span>原文 · 葡萄牙文</span><a href="https://goomer.com.br/blog/por-que-o-cmv-do-restaurante-esta-alto" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail" id="d-trc">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+<section class="page story" id="d-trc">
+  <a class="back" href="#s-busy">‹ 生意很忙，钱却留不下来</a>
   <div class="kicker">食材用得比配方多</div>
   <h2>实际食材钱，最多比配方算的高 2 个百分点</h2>
   <div class="byline"><span class="dot">播</span>美国 · The Restaurant Coach 播客第 186 集 · 2026-09-11</div>
@@ -324,8 +377,8 @@ main:has(.detail:target) .overview { display: none; }
   <div class="out"><span>原文 · 英文 · 节目简介，节目本身是音频</span><a href="http://therestaurantcoachpodcast.blubrry.net/2026/09/11/episode-186-stop-chasing-food-cost-percentage-with-bo-bryant/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail" id="d-linen">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+<section class="page story" id="d-linen">
+  <a class="back" href="#s-busy">‹ 生意很忙，钱却留不下来</a>
   <div class="kicker">固定费用悄悄上涨</div>
   <h2>布草租金四年涨了 74%，一家餐馆怎样把多付的钱找出来</h2>
   <div class="byline"><span class="dot">TF</span>美国 · Total Food Service · 2026-10-02</div>
@@ -360,8 +413,8 @@ main:has(.detail:target) .overview { display: none; }
   <div class="out"><span>原文 · 英文</span><a href="https://totalfood.com/how-restaurant-linen-service-bill-grew-865-1503-week/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail" id="d-jpcosts">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+<section class="page story" id="d-jpcosts">
+  <a class="back" href="#s-busy">‹ 生意很忙，钱却留不下来</a>
   <div class="kicker">固定费用悄悄上涨</div>
   <h2>用 AI 把每月自动扣走的钱列出来</h2>
   <div class="byline"><span class="dot">店</span>日本 · 播客「飲食店のAI活用ラジオ」 · 2026-10-03</div>
@@ -386,8 +439,8 @@ main:has(.detail:target) .overview { display: none; }
   <div class="out"><span>原文 · 日文 · 节目简介，节目本身是音频</span><a href="https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/AI-e3pqjmj" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
-<section class="detail" id="d-calibbq">
-  <a class="back" href="#top">‹ 生意很忙，钱却留不下来</a>
+<section class="page story" id="d-calibbq">
+  <a class="back" href="#s-busy">‹ 生意很忙，钱却留不下来</a>
   <div class="kicker">抽成和房租太重</div>
   <h2>三个外卖厨房订单不断，却在亏钱</h2>
   <div class="byline"><span class="dot">CB</span>美国 · Cali BBQ 创办人 Shawn Walchef 的文章 · 2026-09-11</div>
@@ -445,6 +498,324 @@ main:has(.detail:target) .overview { display: none; }
     </div>
   </div>
   <div class="out"><span>原文 · 英文</span><a href="https://restauranttechnology.substack.com/p/we-opened-3-ghost-kitchens-they-failed" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<!-- SITUATION: RUSH -->
+<section class="page" id="s-rush">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="crumb">参考 · 门店运营</div>
+  <h1>午市高峰一到，出餐就乱</h1>
+  <p class="dek">平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。各地店家查到的原因，和他们的做法。</p>
+  <div class="metrics"><span><b class="num">3</b>条原文</span><span><b class="num">3</b>个国家</span><span>2026 年 10 月 4 日更新</span></div>
+
+  <div class="section">
+    <div class="kicker">12 点 20 分的厨房</div>
+    <div class="figure">
+      <svg viewBox="0 0 320 200" role="img" aria-label="示意图：出餐的路线和收碗的路线在出餐口交叉">
+        <defs>
+          <marker id="ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" style="fill:var(--accent)"/></marker>
+          <marker id="ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" style="fill:var(--ink-4)"/></marker>
+        </defs>
+        <rect x="6" y="14" width="200" height="176" rx="10" style="fill:none;stroke:var(--line);stroke-width:1.5"/>
+        <rect x="226" y="14" width="88" height="176" rx="10" style="fill:none;stroke:var(--line);stroke-width:1.5"/>
+        <text x="16" y="32" class="strong">厨房</text><text x="236" y="32" class="strong">餐厅</text>
+        <rect x="206" y="88" width="20" height="40" style="fill:var(--sunk);stroke:var(--line)"/>
+        <g style="fill:var(--sunk);stroke:var(--line)"><rect x="22" y="46" width="48" height="26" rx="5"/><rect x="22" y="120" width="48" height="26" rx="5"/><rect x="118" y="46" width="48" height="26" rx="5"/><rect x="118" y="150" width="48" height="26" rx="5"/></g>
+        <g text-anchor="middle" style="font-size:12px"><text x="46" y="63.5" class="strong">冰箱</text><text x="46" y="137.5" class="strong">备料</text><text x="142" y="63.5" class="strong">炉灶</text><text x="142" y="167.5" class="strong">洗碗</text></g>
+        <g style="fill:none;stroke:var(--accent);stroke-width:2.5" marker-end="url(#ar-a)"><path d="M46 74 V116"/><path d="M72 126 Q104 104 122 76"/><path d="M168 66 Q194 78 206 98"/><path d="M228 100 H290"/></g>
+        <g style="fill:none;stroke:var(--ink-4);stroke-width:2;stroke-dasharray:5 4" marker-end="url(#ar-g)"><path d="M290 118 H230"/><path d="M206 120 Q190 146 170 158"/></g>
+        <circle cx="216" cy="109" r="15" style="fill:var(--loss-soft);stroke:var(--loss);stroke-width:2"/>
+        <text x="216" y="80" text-anchor="middle" style="fill:var(--loss);font-weight:700;font-size:12px">交叉</text>
+        <text x="216" y="146" text-anchor="middle" style="font-size:11px">出餐口</text>
+      </svg>
+      <div class="key"><span><i class="k-a"></i>出餐的路线</span><span><i class="k-g"></i>收碗的路线</span></div>
+      <p class="cap sk">根据韩国一篇专栏的描述画出：做好的菜从出餐口出去，吃完的空盘从同一个地方回来。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ghead"><h2>路线撞在一起</h2></div>
+    <p class="gwhy">出餐和收碗走同一条路，员工的时间花在互相让路上。</p>
+    <div class="items">
+      <a class="item" href="#d-foodnews"><span class="src">韩国 · 식품저널 专栏 · 2026 年 10 月</span><b>漂亮的餐厅，为什么一到 12 点 20 分就乱</b><p>一位做了 30 多年餐厅设计的顾问：一次让路 3 秒，高峰时重复二三十次。</p></a>
+      <a class="item" href="#d-ristorazione"><span class="src">意大利 · Ristorazione Italiana · 2026 年 9 月</span><b>好用的店不一定最漂亮：坐满的时候怎么运转</b><p>客人、服务员、外卖员挤在同一个门口；满座时要提高嗓门才能说话。</p></a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ghead"><h2>人在找东西、在喊叫</h2></div>
+    <p class="gwhy">物料不在手边、分工不清楚，高峰时就有人离开岗位。</p>
+    <div class="items">
+      <a class="item" href="#shop-revolucion"><span class="src">美国 · Barista Magazine · 2026 年 9 月</span><b>排队排到门口的时候，一家咖啡吧怎么出杯</b><p>开门前 5 到 8 分钟的准备，四个人的分工，不用喊叫的口令和手势。</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- SITUATION: SECOND STORE -->
+<section class="page" id="s-second">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="crumb">参考 · 开店与关店</div>
+  <h1>想开第二家店</h1>
+  <p class="dek">第一家店做起来以后，很多经营者会考虑再开一家。两个经营者的经历。</p>
+  <div class="metrics"><span><b class="num">2</b>条原文</span><span><b class="num">2</b>个国家</span><span>2026 年 10 月 4 日更新</span></div>
+
+  <div class="section">
+    <div class="kicker">老板只有一个</div>
+    <div class="figure">
+      <div class="split">
+        <div><span>一家店</span><div class="row"><i style="flex:1">12 小时</i></div></div>
+        <div><span>两家店</span><div class="row"><i style="flex:1">6</i><i style="flex:1">6</i></div></div>
+        <div><span>三家店</span><div class="row"><i style="flex:1">4</i><i style="flex:1">4</i><i style="flex:1">4</i></div></div>
+      </div>
+      <p class="cap eg">假设老板一天在店里 12 个小时。店越多，每家店分到的时间越少。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ghead"><h2>人和制度跟不上</h2></div>
+    <div class="items">
+      <a class="item" href="#shop-bigeasy"><span class="src">澳大利亚 · Hospitality 杂志 · 2026 年 10 月</span><b>从两家开到三家，差点把公司拖垮</b><p>半年内连开两家，又过了半年，三家店赚的比只有一家时还少。</p></a>
+    </div>
+  </div>
+  <div class="section">
+    <div class="ghead"><h2>开得多，不等于赚得多</h2></div>
+    <div class="items">
+      <a class="item" href="#d-calibbq"><span class="src">美国 · Cali BBQ 创办人的文章 · 2026 年 9 月</span><b>三个外卖厨房订单不断，却在亏钱</b><p>用三个只做外卖的小厨房扩张，平台抽走两成多，最后三家全部关闭。</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- STORY: FOODNEWS -->
+<section class="page story" id="d-foodnews">
+  <a class="back" href="#s-rush">‹ 午市高峰一到，出餐就乱</a>
+  <div class="kicker">路线撞在一起</div>
+  <h2>漂亮的餐厅，为什么一到 12 点 20 分就乱</h2>
+  <div class="byline"><span class="dot">食</span>韩国 · 식품저널 专栏 · 2026-10-01</div>
+  <p class="lead">11 点 50 分，店里放着轻音乐，通道看起来很宽。12 点 20 分，打单机不停出单，八张单同时进来。</p>
+  <p class="who">写这篇专栏的是韩国餐厅设计顾问 <b>Jin Ik-jun</b>（진익준），做商业空间和餐厅的设计、改造 30 多年。</p>
+  <div class="part">
+    <h3>一次让路，只花 3 秒</h3>
+    <p>窄通道里两个人迎面碰上，一个人贴着墙让路，只花 3 秒。高峰时这样的 3 秒重复二三十次，员工的时间就花在让路上了。</p>
+  </div>
+  <div class="part">
+    <h3>出餐的路和收碗的路，在出餐口撞在一起</h3>
+    <p>做好的菜从出餐口出去，客人吃完的空盘从同一个地方回来。他说，12 点 20 分乱成一团，不是因为客人太多，是设计时没有为高峰做准备。</p>
+  </div>
+  <div class="part">
+    <h3>冰箱离操作台 3 米</h3>
+    <div class="figure">
+      <div class="eq"><span>3 米</span>× 往返 ×<span>100 次</span>=<b>600 米</b></div>
+      <p class="cap real">专栏里的例子：午市要去冰箱拿食材 100 次。</p>
+    </div>
+    <p>他建议先算一天要开几次冰箱，能不能把食材提前分装到操作台旁的小冰箱里。</p>
+  </div>
+  <div class="part">
+    <h3>动工之前，拿着图纸把 12 点 20 分演一遍</h3>
+    <p>他把这叫作「运营模拟」：在图纸上把高峰走一遍，找出最先堵住的地方。改的时候先用最便宜、最容易改回来的办法：换备料的方式，调整台面上东西的摆放，加一个移动货架。拆墙放在最后。</p>
+  </div>
+  <div class="part">
+    <h3>座位不能比出餐快</h3>
+    <div class="figure">
+      <div class="twin"><div>厨房每小时出餐<b class="num">20 份</b></div><div class="down">店里摆了<b class="num">40 个座位</b></div></div>
+      <p class="cap real">专栏里的例子。他说，多出来的座位不是生意，是让客人坐着等、越等越不满。</p>
+    </div>
+    <p>他的顺序是：想清楚给客人什么，再定菜单、做法、人手和设备、操作台和通道，空间放在最后。</p>
+  </div>
+  <div class="out"><span>原文 · 韩文</span><a href="http://www.foodnews.co.kr/news/articleView.html?idxno=120368" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<!-- STORY: RISTORAZIONE -->
+<section class="page story" id="d-ristorazione">
+  <a class="back" href="#s-rush">‹ 午市高峰一到，出餐就乱</a>
+  <div class="kicker">路线撞在一起</div>
+  <h2>好用的店不一定最漂亮：坐满的时候怎么运转</h2>
+  <div class="byline"><span class="dot">RI</span>意大利 · Ristorazione Italiana Magazine · 2026-09-18</div>
+  <p class="lead">80 个人同时在说话的时候，这间开放式的大厅还舒服吗？</p>
+  <p class="who">意大利餐饮杂志 <b>Ristorazione Italiana</b> 的这篇文章说，走进一家新店，第一眼看到的是吧台、灯光和装潢；天天经营这家店的人，要问的却是另一件事：坐满的时候，它怎么运转？</p>
+  <div class="part">
+    <h3>坐满时要回答的几个问题</h3>
+    <ul class="list">
+      <li>货从哪里进来，在哪里准备？</li>
+      <li>菜从哪里出去？</li>
+      <li>外卖员在哪里等？</li>
+      <li>服务员往返厨房一趟要多久？</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>一个门口，挤着三种人</h3>
+    <div class="figure">
+      <svg viewBox="0 0 320 120" role="img" aria-label="示意图：左边一个门口同时进出客人、服务员和外卖员；右边外卖另开取餐口">
+        <defs><marker id="ar-c" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" style="fill:var(--accent)"/></marker><marker id="ar-b" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" style="fill:var(--ink-3)"/></marker></defs>
+        <text x="74" y="14" text-anchor="middle" class="strong">一个门口</text>
+        <rect x="104" y="40" width="14" height="50" rx="2" style="fill:var(--sunk);stroke:var(--ink-3)"/>
+        <g style="fill:none;stroke:var(--ink-3);stroke-width:1.8" marker-end="url(#ar-b)"><path d="M14 36 Q60 40 100 56"/><path d="M14 104 Q60 100 100 76"/><path d="M100 66 H44"/></g>
+        <text x="12" y="30">客人进</text><text x="12" y="116">外卖员取餐</text><text x="22" y="62">服务员出</text>
+        <circle cx="111" cy="65" r="17" style="fill:var(--loss-soft);stroke:var(--loss);stroke-width:2"/>
+        <line x1="160" y1="10" x2="160" y2="110" style="stroke:var(--line)"/>
+        <text x="245" y="14" text-anchor="middle" class="strong">外卖另开取餐口</text>
+        <rect x="282" y="30" width="14" height="40" rx="2" style="fill:var(--sunk);stroke:var(--accent)"/>
+        <rect x="282" y="84" width="14" height="24" rx="2" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+        <g style="fill:none;stroke:var(--accent);stroke-width:1.8" marker-end="url(#ar-c)"><path d="M184 44 H276"/><path d="M184 96 H276"/></g>
+        <text x="184" y="38">客人、服务员</text><text x="184" y="90">外卖员</text>
+      </svg>
+      <p class="cap sk">根据文章画出。外卖单多的店，留一小块打包、等候、取餐的区域，有条件就单独开一个出入口。</p>
+    </div>
+  </div>
+  <div class="part">
+    <h3>货走的路，不穿过客人</h3>
+    <div class="flow">收货 <i>→</i> 储存 <i>→</i> 预处理 <i>→</i> 烹饪 <i>→</i> 出餐口 <i>→</i> 餐厅</div>
+    <p>文章说，这条路线越简单越好，而且不要一次次穿过客人走的路。</p>
+  </div>
+  <div class="part">
+    <h3>满座时要提高嗓门，就不舒服了</h3>
+    <p>声音常常是装修最后才想到的事。文章认为，吸音材料、帘子、墙板、处理过的天花板，以及各区之间的距离，要和座位布局一起考虑；中午 12 点半和晚上 10 点半，灯光也不该一样。</p>
+  </div>
+  <div class="quote">这是秒数的问题。几秒钟乘上一整天，就是员工的工作量。<small>文章的话。</small></div>
+  <div class="out"><span>原文 · 意大利文</span><a href="https://www.ristorazioneitalianamagazine.it/locale-ristorante-spazio-funzionale/" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<!-- SHOP: REVOLUCION -->
+<section class="page story" id="shop-revolucion">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="kicker">按店逛 · 咖啡吧</div>
+  <h2>排队排到门口的时候，一家咖啡吧怎么出杯</h2>
+  <div class="byline"><span class="dot">RV</span>美国 · Barista Magazine · 2026-09-25</div>
+  <p class="lead">排队排到门口的时候，最贵的不是做坏一杯咖啡，而是熟练的咖啡师离开岗位，去找杯盖、重启收银机。</p>
+  <p class="who">说这句话的是 <b>Yehor Chekalov</b>，美国奥斯汀市中心咖啡吧 Revolución Coffee + Juice 的首席烘焙师兼领班咖啡师，曾在乌克兰基辅与人合开两家咖啡馆。他把店里的高峰期做法，写成了一套简单的流程。</p>
+  <div class="part">
+    <h3>开门之前的 5 到 8 分钟</h3>
+    <ul class="list">
+      <li>校准当天的萃取参数，不沿用昨天的数字。</li>
+      <li>算好滴滤咖啡的批次，下一批在上一批用完时刚好煮好。</li>
+      <li>奶、杯、盖、糖浆、纸巾、糕点袋，放到各个岗位伸手可及的地方。</li>
+      <li>备好备用的磨豆机配件，奶缸和毛巾轮换着用。</li>
+      <li>收银机和读卡器先重启，不等到 8 点 15 分才出问题。</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>四个人，各守一个位置</h3>
+    <div class="figure">
+      <div class="flow">收银点单 <i>→</i> 萃取 <i>→</i> 打奶和出杯 <i>→</i> 交给客人</div>
+      <p class="sub-line">补位跑腿：照看滴滤、糕点和补货；哪个岗位落后，就上去帮 60 到 120 秒，不长期换岗。</p>
+      <p class="cap sk">根据文章画出的分工。高峰前 15 分钟确认谁在哪个位置，另定一个人在排队变长时机动。</p>
+    </div>
+    <p>出杯的地方不放杯盖、奶和手机；奶缸放在蒸汽棒旁边，最常用的牛奶放在腰的高度。</p>
+  </div>
+  <div class="part">
+    <h3>不喊叫</h3>
+    <div class="pairs">
+      <div><b>「两杯出」</b>两杯饮品正在交给客人。</div>
+      <div><b>「缺奶」</b>岗位上缺牛奶或燕麦奶。</div>
+      <div><b>两指一指</b>马上要奶缸或杯盖。</div>
+      <div><b>手掌向下</b>排队放慢 30 秒。</div>
+    </div>
+    <p>叫饮品时报名字加饮品，交杯时看着客人的眼睛，少一句「这是我的吗」。</p>
+  </div>
+  <div class="part">
+    <h3>每种饮品多久出杯</h3>
+    <div class="figure">
+      <div class="ranges">
+        <div><span>滴滤咖啡</span><div class="t"><i style="margin-left:5.9%;width:3.9%"></i></div><em>15–25 秒</em></div>
+        <div><span>12 盎司美式</span><div class="t"><i style="margin-left:17.6%;width:11.8%"></i></div><em>45–75 秒</em></div>
+        <div><span>拿铁、卡布奇诺</span><div class="t"><i style="margin-left:35.3%;width:23.5%"></i></div><em>90–150 秒</em></div>
+        <div><span>两杯含奶咖啡</span><div class="t"><i style="margin-left:58.8%;width:23.6%"></i></div><em>150–210 秒</em></div>
+        <div><span>两杯含奶加一杯滴滤</span><div class="t"><i style="margin-left:76.5%;width:23.5%"></i></div><em>195–255 秒</em></div>
+      </div>
+      <p class="cap real">两人吧台加一人支援的参考时间。作者说要按自己的设备调整，这是用来带新人的参照，不是用来罚人的。</p>
+    </div>
+  </div>
+  <div class="part">
+    <h3>出了错怎么说</h3>
+    <ul class="list">
+      <li>燕麦奶用完了：直接问客人「燕麦奶没有了，杏仁奶或全脂奶同价，可以吗？」</li>
+      <li>做错了饮品：重做；原来那杯可以安全饮用，就让客人留下，再给一张有期限的单次优惠券。</li>
+      <li>奶泡打坏了：这杯不出。重做的成本，比一杯不好的咖啡加一条差评低。</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>只有一两个人的时候</h3>
+    <p>他的做法是合并角色：收银兼补位，萃取兼打奶和出杯；早上 8 点到 9 点半暂停冰沙类饮品；替代奶提前倒进小奶缸。</p>
+  </div>
+  <div class="part">
+    <h3>新人分 10 个班次学</h3>
+    <ul class="list">
+      <li><b>第 1–2 班</b>：吧台安全、工具放在哪里、点单复述、滴滤咖啡。</li>
+      <li><b>第 3–4 班</b>：浓缩咖啡的基础、冲洗的节奏、打奶的基础。</li>
+      <li><b>第 5–6 班</b>：完整走一遍岗位，再加上交杯和叫名字。</li>
+      <li><b>第 7–8 班</b>：练补位，跑两次 10 分钟的小高峰。</li>
+      <li><b>第 9–10 班</b>：在有人带的情况下，跑一次真正的高峰。</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>高峰过后的 5 分钟</h3>
+    <p>排队一少，就花 5 分钟复位：擦吧台和蒸汽棒，换毛巾，补奶、杯和盖，清空渣盒，给下一班留两行字：缺什么、坏了什么、哪里变顺了。然后开 60 秒的碰头会，说一件这一班做对的事，一件下次高峰要改的事。</p>
+  </div>
+  <div class="out"><span>原文 · 英文</span><a href="https://www.baristamagazine.com/cafe-hacks-how-to-survive-the-rush-like-a-pro/" target="_blank" rel="noopener">打开原文 ↗</a></div>
+</section>
+
+<!-- SHOP: BIG EASY -->
+<section class="page story" id="shop-bigeasy">
+  <a class="back" href="#top">‹ 参考</a>
+  <div class="kicker">按店逛 · 餐饮公司</div>
+  <h2>从两家开到三家，差点把公司拖垮</h2>
+  <div class="byline"><span class="dot">BE</span>澳大利亚 · Hospitality 杂志 · 2026-10-01</div>
+  <p class="lead">十年里，他们从零开到 8 家店，员工 250 多人，关闭过 3 个品牌，两次险些破产。最难的一段，是从两家开到三家。</p>
+  <p class="who">写这段复盘的是 <b>Oliver Brown</b>，南澳大利亚 Big Easy Group 的联合创始人兼董事总经理。</p>
+  <div class="part">
+    <h3>第一家店，什么都凭感觉</h3>
+    <p>只有 NOLA 一家时，员工、订货、排班都由他们自己管，琐碎的事凭感觉就顾得过来。他认为这是单店的优势：不用设一堆规定，管理成本低。</p>
+  </div>
+  <div class="part">
+    <h3>第二家开业就坐满</h3>
+    <p>2018 年开第二家 Anchovy Bandit，靠第一家的口碑，开业就坐满，几乎不用学营销。他们以为已经掌握了经营，半年后又开了第三家 The Stag Public House。</p>
+  </div>
+  <div class="part">
+    <h3>三家店，赚得比一家还少</h3>
+    <div class="figure">
+      <ul class="tline">
+        <li><b>第一家</b>NOLA，创办人自己管</li>
+        <li><b>2018 年</b>第二家 Anchovy Bandit，开业就坐满</li>
+        <li><b>半年后</b>第三家 The Stag Public House</li>
+        <li class="bad"><b>再过半年</b>三家店的利润，比只有一家时还少</li>
+      </ul>
+      <p class="cap real">文章里的经过。</p>
+    </div>
+    <p>团队被拉到极限。创办人没法在任何一家待得够久，去店里像是探访，而不是经营。</p>
+  </div>
+  <div class="part">
+    <h3>假设你一天在店里 12 个小时</h3>
+    <div class="figure">
+      <div class="split">
+        <div><span>一家店</span><div class="row"><i style="flex:1">12 小时</i></div></div>
+        <div><span>两家店</span><div class="row"><i style="flex:1">6</i><i style="flex:1">6</i></div></div>
+        <div><span>三家店</span><div class="row"><i style="flex:1">4</i><i style="flex:1">4</i><i style="flex:1">4</i></div></div>
+      </div>
+      <p class="cap eg">每家店分到的时间越来越少，原来靠老板照看的事，就没人照看了。</p>
+    </div>
+  </div>
+  <div class="part">
+    <h3>问题不在努力不够</h3>
+    <p>他们比以前更辛苦。问题是没有写下来的制度，团队得不到清楚的方向和标准。</p>
+  </div>
+  <div class="part">
+    <h3>死亡之谷</h3>
+    <div class="figure">
+      <svg viewBox="0 0 320 150" role="img" aria-label="示意图：开支先涨上去，利润落在后面，中间是死亡之谷">
+        <rect x="70" y="20" width="170" height="104" rx="6" style="fill:var(--loss-soft)"/>
+        <text x="155" y="40" text-anchor="middle" style="fill:var(--loss);font-weight:700;font-size:12px">死亡之谷</text>
+        <line x1="20" y1="124" x2="304" y2="124" style="stroke:var(--line);stroke-width:1.5"/>
+        <path d="M20 100 C70 98 90 56 140 52 S250 46 300 44" style="fill:none;stroke:var(--ink-4);stroke-width:2.5"/>
+        <path d="M20 96 C70 100 100 118 150 112 S240 60 300 30" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>
+        <text x="300" y="58" text-anchor="end">开支</text>
+        <text x="300" y="24" text-anchor="end" style="fill:var(--accent);font-weight:700">利润</text>
+        <text x="304" y="140" text-anchor="end">时间</text>
+      </svg>
+      <p class="cap sk">根据他的描述画出：开支要先涨上去，利润才追得上来。</p>
+    </div>
+    <p>他们需要专业的人，来代替什么都做的人，可是钱已经花在开新店上了。请人要有利润，利润要靠更好的毛利，更好的毛利又要学会不靠创办人事事亲为。他把这段开支必须先跑在利润前面的时期，叫作「死亡之谷」。当时他们觉得，这些本事只属于有总部、压得下供货价、借得到银行贷款的大公司。</p>
+  </div>
+  <div class="quote">如果重来，我会去找导师和社群，向正在经历或者经历过的人学习。<small>Oliver Brown。他们最后渡过了难关，但走的是最难的那条路。</small></div>
+  <div class="out"><span>原文 · 英文</span><a href="https://www.hospitalitymagazine.com.au/how-expansion-almost-killed-a-hospitality-group/" target="_blank" rel="noopener">打开原文 ↗</a></div>
 </section>
 
 <div class="foot">MyF&amp;B 样页（2026 年 10 月）。收集各地店家的做法和经验，附原文出处，由你自己判断。文字和图由 AI 根据原文整理；标「举例」的是为了说明而举的例子，不是原文的数据。</div>

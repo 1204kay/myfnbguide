@@ -14,7 +14,7 @@ import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
-import { articlesToWrite, writeCase } from "../backend/write.ts";
+import { articlesToWrite, readOutput, writeCase } from "../backend/write.ts";
 import type { CaseStory } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
@@ -76,6 +76,13 @@ test("a story the checks pass; each problem is named for the writer", () => {
   assert.ok(long.some((p) => /太长/.test(p)), long.join(" / "));
   const caption = checkStory(story({ parts: [story().parts[0]!, { heading: "假设你的餐饮店", blocks: [example({ kind: "margin", price: 30, cost: 12 }, "毛利是 18 元，占 60%，所以一年 6,570 元。")] }] }), SOURCE);
   assert.ok(caption.some((p) => /6,570/.test(p)) && !caption.some((p) => /“18”|\b18\b.*找不到/.test(p)), caption.join(" / "));
+});
+
+test("a block over its ceiling comes back named, with its length", () => {
+  const long = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。".repeat(25) }] }] };
+  const { written, problems } = readOutput(long);
+  assert.equal(written, null);
+  assert.deepEqual(problems, ["第 1 段第 1 块的文字太长：最多 240 字，现在 350 字；删去次要的内容，不要拆成更多块"]);
 });
 
 // The model: a story with a stray number and a spoken word first, fixed when told; thin material; and one

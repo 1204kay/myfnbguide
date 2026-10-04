@@ -30,23 +30,25 @@ const text = z.string().trim().min(1);
 const number = z.coerce.number().finite().positive();
 const item = z.object({ label: text.max(30), value: number });
 
+// Every part has a ceiling a little above what the prompt asks (prompts/case.md), so a long story comes back
+// with the very block to shorten named (see `where`), not only its total.
 const BlockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("text"), text }),
-  z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().nullable().default(null), text })).min(1).max(8) }),
-  z.object({ type: z.literal("flow"), steps: z.array(text).min(2).max(6) }),
-  z.object({ type: z.literal("quote"), text: text.max(80), who: text }),
-  z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text }),
-  z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text }),
-  z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text }),
+  z.object({ type: z.literal("text"), text: text.max(240) }),
+  z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().max(14).nullable().default(null), text: text.max(90) })).min(1).max(6) }),
+  z.object({ type: z.literal("flow"), steps: z.array(text.max(40)).min(2).max(6) }),
+  z.object({ type: z.literal("quote"), text: text.max(80), who: text.max(60) }),
+  z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text.max(90) }),
+  z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text.max(90) }),
+  z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(120) }),
 ]);
 
 const StorySchema = z.object({
   material: z.literal("story"),
   title: text.max(40),
-  lead: text,
-  who: text,
-  parts: z.array(z.object({ heading: text.max(40), blocks: z.array(BlockSchema).min(1).max(6) })).min(1).max(6),
-  open: z.string().trim().nullable().default(null),
+  lead: text.max(80),
+  who: text.max(140),
+  parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(3) })).min(1).max(4),
+  open: z.string().trim().max(90).nullable().default(null),
   shop: z.object({
     name: z.string().trim().nullable().default(null),
     country: text.max(12),
@@ -86,10 +88,37 @@ function computeBlock(block: z.infer<typeof BlockSchema>): Block {
   }
 }
 
+const NAMES: Record<string, string> = {
+  title: "标题", lead: "开头", who: "人物", open: "结尾说明", heading: "小标题", text: "文字", items: "列表", steps: "流程",
+  caption: "图的说明", card: "卡片", blocks: "内容块", parts: "段落", placements: "情况", shop: "店", example: "举例",
+};
+
+/** Where in the answer a problem is, as the writer reads it: ["parts", 2, "blocks", 0, "text"] → "第 3 段第 1 块的文字". */
+function where(path: PropertyKey[]): string {
+  let out = "";
+  for (const [i, key] of path.entries()) {
+    const next = path[i + 1];
+    if (typeof key === "number") continue;
+    if (typeof next === "number" && key === "parts") out += `第 ${next + 1} 段`;
+    else if (typeof next === "number" && key === "blocks") out += `第 ${next + 1} 块`;
+    else if (typeof next === "number" && (key === "items" || key === "steps")) out += `第 ${next + 1} 项`;
+    else if (typeof next === "number" && key === "placements") out += `第 ${next + 1} 个情况`;
+    else out += `${out ? "的" : ""}${key === "lead" && path.includes("items") ? "要点" : NAMES[String(key)] ?? String(key)}`;
+  }
+  return out || "整体";
+}
+
 /** The model's answer as a story, or what is wrong with it. */
 export function readOutput(raw: unknown): { written: Written | null; problems: string[] } {
   const parsed = OutputSchema.safeParse(raw);
-  if (!parsed.success) return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) => `格式不对：${i.path.join(".") || "整体"} ${i.message}`) };
+  if (!parsed.success) {
+    return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) => {
+      if (i.code !== "too_big") return `格式不对：${where(i.path)} ${i.message}`;
+      const value = i.path.reduce<unknown>((v, k) => (v as Record<PropertyKey, unknown> | undefined)?.[k], raw);
+      const now = typeof value === "string" ? `，现在 ${[...value].length} 字` : Array.isArray(value) ? `，现在 ${value.length} 个` : "";
+      return `${where(i.path)}太长：最多 ${String(i.maximum)} ${i.origin === "array" ? "个" : "字"}${now}；删去次要的内容，不要拆成更多块`;
+    }) };
+  }
   const out: Output = parsed.data;
   // Not a story either way: too little material, or news and data with no shop's practice in it (they stay in 最新).
   if (out.material === "thin") return { written: { status: "thin", reason: `材料不够：${out.reason}` }, problems: [] };

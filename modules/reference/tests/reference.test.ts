@@ -13,7 +13,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
-import { checkStory, kanjiNumber, sourceNumbers, unfoundNumbers } from "../backend/checks.ts";
+import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, writeCase } from "../backend/write.ts";
 import type { CaseStory } from "../types.ts";
 
@@ -68,6 +68,12 @@ test("a story the checks pass; each problem is named for the writer", () => {
   for (const expected of [/33,159/, /“讲”/, /“全国”/, /“你应该”/, /分格标签/, /nowhere 不在清单/, /没有 no-such-group/]) {
     assert.ok(bad.some((p) => expected.test(p)), `${expected}: ${bad.join(" / ")}`);
   }
+  assert.equal(untranslated("店主说：「うちはお酒が出る杯数が多いです」"), "日文");
+  assert.equal(untranslated("名物是「馬とろ生つくね」，店名「あんぽんたん」"), null, "a name in brackets stays");
+  assert.equal(untranslated("He said the linen bill kept growing every single week"), "外文句子");
+  assert.equal(untranslated("Australian Restaurant & Cafe Association 表示"), null);
+  const long = checkStory(story({ parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。".repeat(Math.ceil(MAX_CHARS / 14)) }] }, story().parts[1]!] }), SOURCE);
+  assert.ok(long.some((p) => /太长/.test(p)), long.join(" / "));
   const caption = checkStory(story({ parts: [story().parts[0]!, { heading: "假设你的餐饮店", blocks: [example({ kind: "margin", price: 30, cost: 12 }, "毛利是 18 元，占 60%，所以一年 6,570 元。")] }] }), SOURCE);
   assert.ok(caption.some((p) => /6,570/.test(p)) && !caption.some((p) => /“18”|\b18\b.*找不到/.test(p)), caption.join(" / "));
 });
@@ -82,6 +88,7 @@ const answers: Record<string, unknown[]> = {
   ],
   SECOND: [{ material: "story", ...story({ title: "另一家店的账", placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
   THIN: [{ material: "thin", reason: "只有节目的题目" }],
+  NEWS: [{ material: "news", reason: "一个国家的新规" }],
   WRONG: [{ material: "story", ...story({ who: "一年多付 99,999 美元。" }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "多了 88,888 美元。" }] })) }],
 };
 const calls: string[] = [];
@@ -118,10 +125,15 @@ test("cases are written for selected items, once more when the checks find probl
   assert.deepEqual(calls.filter((c) => c === "FIRST").length, 2, "the problems were sent back once");
   assert.equal((await writeCase(ids.SECOND!))!.status, "story");
   assert.equal((await writeCase(ids.THIN!))!.status, "thin");
+  assert.equal((await writeCase(ids.NEWS!))!.status, "thin", "news is not a story either");
   const wrong = await writeCase(ids.WRONG!);
   assert.equal(wrong!.status, "held");
   assert.ok(wrong!.problems.some((p) => /99,999|88,888/.test(p)));
   assert.deepEqual(await articlesToWrite(50), [], "every selected item has its case");
+  assert.deepEqual(JSON.parse((await app.inject("/api/reference/status")).body), { story: 2, thin: 2, held: 1, waiting: 0 });
+  await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
+  assert.deepEqual(await articlesToWrite(50), [ids.THIN], "a changed prompt writes the case again");
+  await writeCase(ids.THIN!);
   const [stored] = await sql<{ story: CaseStory; situations: string[]; receipt_ids: string[] }[]>`SELECT story, situations, receipt_ids FROM reference_cases WHERE article_id = ${ids.FIRST!}`;
   assert.deepEqual(stored!.situations, ["busy-no-profit"]);
   assert.equal(stored!.receipt_ids.length, 2);
@@ -138,7 +150,7 @@ test("the pages show public cases only, and a situation once two cases are in it
     [["food-over-recipe", "美国 · Total Food Service"], ["fixed-costs-creep", "美国 · Total Food Service"]]);
   const one = JSON.parse((await app.inject(`/api/reference/cases/${ids.FIRST}`)).body);
   assert.deepEqual([one.source.name, one.source.language, one.situations[0].group], ["Total Food Service", "英文", "固定费用悄悄上涨"]);
-  for (const hidden of [ids.THIN, ids.WRONG]) assert.equal((await app.inject(`/api/reference/cases/${hidden}`)).statusCode, 404);
+  for (const hidden of [ids.THIN, ids.NEWS, ids.WRONG]) assert.equal((await app.inject(`/api/reference/cases/${hidden}`)).statusCode, 404);
   assert.equal((await app.inject("/api/reference/situations/no-such-situation")).statusCode, 404);
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${ids.SECOND!}`;
   assert.equal((await app.inject(`/api/reference/cases/${ids.SECOND}`)).statusCode, 404);

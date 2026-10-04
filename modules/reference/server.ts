@@ -3,7 +3,7 @@
 import { config } from "@aihot/backend/config";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
-import { readCase, readHome, readShop, readSituation } from "./backend/read.ts";
+import { readCase, readHome, readShop, readSituation, readStatus } from "./backend/read.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
 const CASES = defineQueue<{ articleId: string }>({
@@ -34,6 +34,9 @@ export default defineServerModule({
   }],
   http: (app) => {
     app.get("/api/reference", async (_req, reply) => reply.header("Cache-Control", CACHE).send(await readHome()));
+    // Written, not written (thin: too little or only news), held by the checks, and still to write.
+    app.get("/api/reference/status", async (_req, reply) =>
+      reply.header("Cache-Control", "no-store").send({ ...(await readStatus()), waiting: (await articlesToWrite(1000)).length }));
     app.get("/api/reference/situations/:slug", async (req, reply) => {
       const page = await readSituation((req.params as { slug: string }).slug);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });

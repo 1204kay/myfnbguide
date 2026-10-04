@@ -57,7 +57,11 @@ const StorySchema = z.object({
   placements: z.array(z.object({ situation: text, group: z.string().trim().nullable().default(null), card: text.max(80) })).max(2),
 });
 
-const OutputSchema = z.discriminatedUnion("material", [z.object({ material: z.literal("thin"), reason: z.string().default("") }), StorySchema]);
+const OutputSchema = z.discriminatedUnion("material", [
+  z.object({ material: z.literal("thin"), reason: z.string().default("") }),
+  z.object({ material: z.literal("news"), reason: z.string().default("") }),
+  StorySchema,
+]);
 
 type Output = z.infer<typeof OutputSchema>;
 type Written = { status: "thin"; reason: string } | { status: "story"; story: CaseStory };
@@ -86,7 +90,9 @@ export function readOutput(raw: unknown): { written: Written | null; problems: s
   const parsed = OutputSchema.safeParse(raw);
   if (!parsed.success) return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) => `格式不对：${i.path.join(".") || "整体"} ${i.message}`) };
   const out: Output = parsed.data;
-  if (out.material === "thin") return { written: { status: "thin", reason: out.reason }, problems: [] };
+  // Not a story either way: too little material, or news and data with no shop's practice in it (they stay in 最新).
+  if (out.material === "thin") return { written: { status: "thin", reason: `材料不够：${out.reason}` }, problems: [] };
+  if (out.material === "news") return { written: { status: "thin", reason: `新闻或数据：${out.reason}` }, problems: [] };
   try {
     const { material: _, ...story } = out;
     return { written: { status: "story", story: { ...story, parts: story.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: [] };
@@ -140,13 +146,16 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   return { status, problems };
 }
 
-/** Selected items with no case yet, or whose article changed since: newest first. */
+/**
+ * Selected items with no case yet, or whose article or the writing prompt changed since: newest first. A
+ * changed prompt rewrites every case, which the library's size makes cheap for now (two calls a case at most).
+ */
 export async function articlesToWrite(limit: number, now = new Date()): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`
     SELECT p.article_id AS id FROM publications p
     JOIN articles a ON a.id = p.article_id
     LEFT JOIN reference_cases c ON c.article_id = p.article_id
-    WHERE ${selectedCondition(now)} AND (c.article_id IS NULL OR c.revision < a.revision)
+    WHERE ${selectedCondition(now)} AND (c.article_id IS NULL OR c.revision < a.revision OR c.prompt_version <> ${PROMPT_VERSION})
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }

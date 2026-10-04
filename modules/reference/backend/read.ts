@@ -105,3 +105,12 @@ export async function readShop(key: string, now = new Date()): Promise<ShopPage 
   if (!rows.length) return null;
   return { key, shop: rows[0]!.story.shop, cases: rows.map((r) => card(r, r.story.lead)) };
 }
+
+/** How far the writing is, in numbers only (like /api/site/stats): the selected items' cases by status. */
+export async function readStatus(now = new Date()): Promise<Record<string, number>> {
+  const rows = await sql<{ status: string; n: number }[]>`
+    SELECT c.status, count(*)::int AS n FROM reference_cases c
+    JOIN publications p ON p.article_id = c.article_id
+    WHERE ${selectedCondition(now)} GROUP BY c.status`;
+  return Object.fromEntries(rows.map((r) => [r.status, r.n]));
+}

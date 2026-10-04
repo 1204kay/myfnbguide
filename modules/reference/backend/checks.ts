@@ -95,7 +95,23 @@ const WORDING: Array<[RegExp, string]> = [
   [/用得上|帮你|少走弯路|干货|揭秘|必看|权威|最全/u, "不替内容担保，不说读者会得到什么"],
   [/你应该|建议你|务必|一定要|老板要/u, "只说明这家店怎么做，不教读者"],
   [/先看|再看|首先|其次|第一步|第二步/u, "不用说明顺序的词"],
+  [/原价率|原価率/u, "写成“食材成本率”"],
 ];
+
+/** At most this many characters a reader reads, examples left out (HANDOFF §2.3: no whole rewrite). */
+export const MAX_CHARS = 1100;
+
+/**
+ * Text left in a foreign language: Japanese or Korean beyond a short name in 「」, or a run of eight Latin
+ * words (a sentence, not a name).
+ */
+export function untranslated(text: string): string | null {
+  const bare = text.replace(/「[^「」]{1,12}」/g, "");
+  if ((bare.match(/[\u3040-\u309f]/g)?.length ?? 0) >= 6) return "日文";
+  if ((bare.match(/[\uac00-\ud7af]/g)?.length ?? 0) >= 6) return "韩文";
+  if (/(?:[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’-]*[\s,;:]+){7,}[A-Za-zÀ-ÿ]/.test(text)) return "外文句子";
+  return null;
+}
 
 /** Headings that are labels instead of content (HANDOFF §3.1). */
 const LABELS = /^(这是谁|是谁|谁|发生了什么|经过|为什么|原因|怎么做|做法|结果|总结|小结|结语|背景|启示|要点)$/u;
@@ -134,8 +150,13 @@ function dataValues(story: CaseStory): Array<[string, number]> {
 export function checkStory(story: CaseStory, sourceText: string): string[] {
   const source = sourceNumbers(sourceText);
   const problems: string[] = [];
+  const all = texts(story).filter(([, , fromSource]) => fromSource).map(([, text]) => text).join("");
+  if ([...all.replace(/\s/g, "")].length > MAX_CHARS) problems.push(`全文 ${[...all.replace(/\s/g, "")].length} 字，太长：压缩到 900 字以内，只留经过、做法和数字，不逐段复述原文`);
+  if ((all.match(/原文(?:说|提到|还说|还提到|认为|强调|指出)/g)?.length ?? 0) > 2) problems.push("反复写“原文说”“原文提到”：直接写这家店或这个人做了什么，不逐条转述原文的论点");
   for (const [where, text, fromSource] of texts(story)) {
     if (!text) continue;
+    const foreign = untranslated(text);
+    if (foreign) problems.push(`${where}有没有翻译的${foreign}：原话和说明都译成中文，只有店名、人名、菜名可以保留原文`);
     const missing = fromSource ? unfoundNumbers(text, source) : [];
     if (missing.length) problems.push(`${where}的数字 ${missing.join("、")} 在原文里找不到：删掉，或改成原文写的数字；要算出来的数放进图，由程序计算`);
     for (const [pattern, fix] of WORDING) {

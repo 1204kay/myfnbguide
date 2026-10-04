@@ -103,18 +103,26 @@ const answers: Record<string, unknown[]> = {
   ],
   // Placed twice in one situation (two groups): it counts once, under the first.
   SECOND: [{ material: "story", ...story({ title: "同一家店的另一笔账", shop: bistro, placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
+  // Only a spoken word: sent back as an edit of the story, without the material (its title carries the marker);
+  // in no situation and of no kind, so the pages below count as before.
+  TEXTONLY: [
+    { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "顾问讲，账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
+    { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
+  ],
   THIN: [{ material: "thin", reason: "只有节目的题目" }],
   NEWS: [{ material: "news", reason: "一个国家的新规" }],
   WRONG: [{ material: "story", ...story({ who: "一年多付 99,999 美元。" }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "多了 88,888 美元。" }] })) }],
 };
 const calls: string[] = [];
+const users: Record<string, string[]> = {};
 const model = await stub((_hit, req) => {
   const body = JSON.parse(req.body) as { messages: Array<{ content: string }> };
   const user = body.messages.at(-1)!.content;
   const marker = Object.keys(answers).find((m) => user.includes(`${m}-${T}`))!;
   calls.push(marker);
+  (users[marker] ??= []).push(user);
   const list = answers[marker]!;
-  const out = user.includes("上一次的输出有以下问题") ? list.at(-1) : list[0];
+  const out = user.includes("有以下问题") ? list.at(-1) : list[0];
   return { id: `stub-${calls.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
 });
 pointModels(model.url, ["deepseek-flash"]);
@@ -140,6 +148,9 @@ test("cases are written for selected items, once more when the checks find probl
   assert.deepEqual(await writeCase(ids.FIRST!), { status: "story", problems: [] });
   assert.deepEqual(calls.filter((c) => c === "FIRST").length, 2, "the problems were sent back once");
   assert.equal((await writeCase(ids.SECOND!))!.status, "story");
+  assert.deepEqual(await writeCase(ids.TEXTONLY!), { status: "story", problems: [] });
+  assert.ok(users.TEXTONLY!.length === 2 && !users.TEXTONLY![1]!.includes(SOURCE) && users.TEXTONLY![1]!.includes("用了“讲”"), "a word alone goes back as an edit, without the material");
+  assert.ok(users.FIRST![1]!.includes(SOURCE), "a number not in the original goes back with the material");
   assert.equal((await writeCase(ids.THIN!))!.status, "thin");
   assert.equal((await writeCase(ids.NEWS!))!.status, "thin", "news is not a story either");
   const wrong = await writeCase(ids.WRONG!);
@@ -147,7 +158,7 @@ test("cases are written for selected items, once more when the checks find probl
   assert.ok(wrong!.problems.some((p) => /99,999|88,888/.test(p)));
   assert.deepEqual(await articlesToWrite(50), [], "every selected item has its case");
   assert.deepEqual(JSON.parse((await app.inject("/api/reference/status")).body),
-    { counts: { story: 2, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, waiting: 0 });
+    { counts: { story: 3, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, waiting: 0 });
   await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
   assert.deepEqual(await articlesToWrite(50), [ids.THIN], "a changed prompt writes the case again");
   await writeCase(ids.THIN!);

@@ -4,6 +4,7 @@ import { POLICY, SITE } from "@aihot/site";
 import type { loader as rootLoader } from "../root";
 import { useChangelogDot } from "../components/shell/Sidebar";
 import { PhoneBar } from "../components/shell/PhoneBar";
+import { navShown } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 import { edgeTtl } from "../lib/api.server";
 import { webModules } from "../site-modules";
@@ -31,12 +32,12 @@ type Row = { to: string; label: string; icon: ReactNode; detail?: ReactNode };
 /** The ways in that the agent page offers, the modules' first; its row names the first three. */
 const agentWays = () => [...webModules().flatMap((m) => m.agentWays ?? []), "MCP", "RSS", "API"];
 
-/** The modules' tools first, then the engine's. */
+/** The modules' tools first, then the engine's; those the site hides from its navigation left out. */
 const tools = (): Row[] => [
   ...webModules().flatMap((m) => m.tools ?? []),
   { to: "/topics", label: "主题", icon: <IconGrid size={20} /> },
   { to: "/agent", label: "Agent 接入", icon: <IconPlug size={20} />, detail: agentWays().slice(0, 3).join(" · ") },
-];
+].filter((row) => navShown(row.to));
 
 function Group({ title, children }: { title?: string; children: ReactNode }) {
   return (

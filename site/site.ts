@@ -111,6 +111,21 @@ export const POLICY = {
   xPostIsFullText: true,
 } as const;
 
+/**
+ * 导航（选填）：手机底栏放哪些标签、按什么顺序，侧栏和“我的”页不显示哪些入口，入口叫什么。
+ * 不显示的页面照样能打开，只是不出现在导航里。
+ */
+export const NAV = {
+  /** 手机底栏依次放的标签：引擎的 featured（首页）、hot、daily、me，或模块标签的 key；null 是默认（引擎的在前，模块的排在“我的”前面）。 */
+  tabs: ["reference", "featured", "daily", "me"] as string[] | null,
+  /** 侧栏每一组里排在前面的入口，按这里的顺序，写路径；没写的照默认顺序排在后面。 */
+  order: ["/reference", "/", "/all", "/daily"] as string[],
+  /** 侧栏和“我的”页不显示的入口，写路径。 */
+  hidden: ["/hot", "/topics"] as string[],
+  /** 入口在侧栏和底栏上的名字，路径 → 名字；不写的用默认。 */
+  labels: { "/": "最新" } as Record<string, string>,
+};
+
 /** 条目卡片和详情页上的几处说法和显示。 */
 export const ITEM_COPY = {
   /** 模型写的那句理由叫什么：卡片、详情页、Markdown 导出、给 Agent 的回答和群推送都用它。 */

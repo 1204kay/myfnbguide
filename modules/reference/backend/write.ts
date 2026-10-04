@@ -1,8 +1,8 @@
 // Writing a case: one model call turns a selected item into a story placed in the situations
 // (prompts/case.md), the program computes the examples and checks the numbers and wording (checks.ts),
-// and a story with problems is written once more with them named. Every call goes through the engine's
-// receipts and budget; the second call differs in its input, so it is a new paid answer, and a run again
-// over the same input reuses both.
+// and a story with problems goes back with them named: as an edit of its own text when only the text needs
+// mending, with the material again otherwise. Every call goes through the engine's receipts and budget; each
+// later call differs in its input, so it is a new paid answer, and a run again over the same input reuses them.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
@@ -25,8 +25,15 @@ const PURPOSE = "reference_case";
 const SITUATION_LIST = SITUATIONS.map((s) => `- ${s.slug}：${s.title} | ${s.groups.map((g) => `${g.key}：${g.title}（${g.line}）`).join("；")}`).join("\n");
 const KIND_LIST = SHOP_KINDS.map((k) => `  - ${k.slug}：${k.title}（${k.dek.replace(/。$/, "")}）`).join("\n");
 export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL("../prompts/case.md", import.meta.url), "utf8"), { situations: SITUATION_LIST, kinds: KIND_LIST });
-// The prompt and the length limit the checks apply: either changing writes every case again.
-const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
+/**
+ * Problems the writer can mend in its own text: too long, a word, retelling the original, a label for a heading,
+ * an untranslated sentence. Those go back without the material, as an edit of the story: given the whole material
+ * again, the writer wrote it afresh and as long as before (10/5: 53 of 65 held were too long after two more tries).
+ */
+const TEXT_ONLY = /太长|用了“|原文说|分格标签|没有翻译/;
+const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
+// The prompt, the edit request and the length limit the checks apply: changing any writes every case again.
+const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
 
 const text = z.string().trim().min(1);
 const number = z.coerce.number().finite().positive();
@@ -151,8 +158,8 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   let user = ["请按系统规则把以下材料写成一个故事，只输出 JSON。", material].join("\n\n");
   let written: Written | null = null;
   let problems: string[] = [];
-  // The first answer, and up to two more with its problems named.
-  for (let attempt = 0; attempt < 3; attempt++) {
+  // The first answer, and up to three more with its problems named.
+  for (let attempt = 0; attempt < 4; attempt++) {
     const res = await chatJson({
       model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
       system: CASE_SYSTEM, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,
@@ -162,11 +169,14 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
     written = read.written;
     problems = written?.status === "story" ? checkStory(written.story, material) : read.problems;
     if (!problems.length) break;
-    user = [
-      "请按系统规则把以下材料写成一个故事，只输出 JSON。", material,
-      `你上一次的输出：\n${JSON.stringify(res.data)}`,
-      `上一次的输出有以下问题，请改正后重新输出完整的 JSON，其余保持不变：\n${problems.map((p) => `- ${p}`).join("\n")}`,
-    ].join("\n\n");
+    const list = problems.map((p) => `- ${p}`).join("\n");
+    user = problems.every((p) => TEXT_ONLY.test(p))
+      ? [EDIT, `故事：\n${JSON.stringify(res.data)}`, `问题：\n${list}`].join("\n\n")
+      : [
+        "请按系统规则把以下材料写成一个故事，只输出 JSON。", material,
+        `你上一次的输出：\n${JSON.stringify(res.data)}`,
+        `上一次的输出有以下问题，请改正后重新输出完整的 JSON，其余保持不变：\n${list}`,
+      ].join("\n\n");
   }
   const status: CaseResult["status"] = problems.length || !written ? "held" : written.status;
   const story = written?.status === "story" ? written.story : null;
@@ -188,7 +198,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
 
 /**
  * Selected items with no case yet, or whose article or the writing prompt changed since: newest first. A
- * changed prompt rewrites every case, which the library's size makes cheap for now (two calls a case at most).
+ * changed prompt rewrites every case, which the library's size makes cheap for now (four calls a case at most, the later ones short edits).
  */
 export async function articlesToWrite(limit: number, now = new Date()): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`

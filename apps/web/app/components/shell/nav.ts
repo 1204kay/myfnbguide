@@ -1,7 +1,7 @@
 // Site navigation in one place: the desktop sidebar's sections and the phone tab bar's tabs, the engine's
 // and the site's modules'.
 import type { ReactNode } from "react";
-import { subjectAfter, withSubject } from "@aihot/site";
+import { NAV, subjectAfter, withSubject } from "@aihot/site";
 import { webModules } from "../../site-modules";
 import {
   IconBolt, IconBookmark, IconDoc, IconFlame, IconGrid, IconHeart, IconHistory, IconList, IconMessage, IconPlug, IconUser,
@@ -40,9 +40,26 @@ const SECTIONS: Array<{ title: string; items: NavItem[] }> = [
   },
 ];
 
+/** Whether a way in appears in the navigation at all (site.ts NAV.hidden): its page still opens. */
+export function navShown(to: string): boolean {
+  return !NAV.hidden.includes(to);
+}
+
+/** Where a way in goes within its sidebar section: the ones the site lists first (NAV.order), the rest as they were. */
+function rank(to: string): number {
+  const at = NAV.order.indexOf(to);
+  return at < 0 ? NAV.order.length : at;
+}
+
+/** A way in under the name the site gives it (site.ts NAV.labels). */
+function named<T extends { to: string; label: string }>(item: T): T {
+  const label = NAV.labels[item.to];
+  return label ? { ...item, label } : item;
+}
+
 /**
  * The sidebar: the engine's sections with the modules' between 内容 and 更多; a module naming a section
- * that is already there adds to it.
+ * that is already there adds to it. The site may hide some and rename others (NAV).
  */
 export function sidebar(): Array<{ title: string; items: NavItem[] }> {
   const [content, ...rest] = SECTIONS;
@@ -54,7 +71,9 @@ export function sidebar(): Array<{ title: string; items: NavItem[] }> {
     if (section) section.items.push(...m.sidebar.items);
     else sections.push({ title: m.sidebar.section, items: [...m.sidebar.items] });
   }
-  return [...sections, more];
+  return [...sections, more]
+    .map((s) => ({ ...s, items: s.items.filter((i) => navShown(i.to)).map(named).sort((a, b) => rank(a.to) - rank(b.to)) }))
+    .filter((s) => s.items.length > 0);
 }
 
 /** A sidebar entry is lit on its pages; 日报 also covers weekly and monthly reports. */
@@ -92,7 +111,8 @@ const ENGINE_TABS: Tab[] = [
   { key: "me", to: "/more", label: "我的", icon: IconUser, changelog: true },
 ];
 
-/** The tab bar: the engine's, the modules' before 我的. */
+/** The tab bar: the engine's, the modules' before 我的; or the ones the site lists, in its order (NAV.tabs). */
 export function tabs(): Tab[] {
-  return [...ENGINE_TABS.slice(0, -1), ...webModules().flatMap((m) => m.tabs ?? []), ENGINE_TABS.at(-1)!];
+  const all = [...ENGINE_TABS.slice(0, -1), ...webModules().flatMap((m) => m.tabs ?? []), ENGINE_TABS.at(-1)!];
+  return (NAV.tabs ? NAV.tabs.flatMap((key) => all.filter((t) => t.key === key)) : all).map(named);
 }

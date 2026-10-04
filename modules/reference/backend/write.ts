@@ -118,7 +118,8 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   let user = ["请按系统规则把以下材料写成一个故事，只输出 JSON。", material].join("\n\n");
   let written: Written | null = null;
   let problems: string[] = [];
-  for (let attempt = 0; attempt < 2; attempt++) {
+  // The first answer, and up to two more with its problems named.
+  for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
       model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
       system: CASE_SYSTEM, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,

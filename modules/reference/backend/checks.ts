@@ -91,7 +91,8 @@ const WORDING: Array<[RegExp, string]> = [
   [/网红/u, "“网红”改成“在社交媒体上走红”"],
   [/老板们|别家店|做餐饮的人/u, "改成“经营者”“其他店家”"],
   [/同行/u, "不用“同行”，写“其他店家”“经营者”或店名"],
-  [/全国|我国|国内|本地|本市/u, "写出具体的国家或城市名"],
+  [/全国|我国|国内/u, "写出具体的国家名"],
+  [/本地|本市/u, "写成“当地”或具体的城市名"],
   [/限额以上/u, "统计口径换成白话"],
   [/用得上|帮你|少走弯路|干货|揭秘|必看|权威|最全/u, "不替内容担保，不说读者会得到什么"],
   [/你应该|建议你|务必|一定要|老板要/u, "只说明这家店怎么做，不教读者"],
@@ -99,8 +100,10 @@ const WORDING: Array<[RegExp, string]> = [
   [/原价率|原価率/u, "写成“食材成本率”"],
 ];
 
-/** At most this many characters a reader reads, examples left out (HANDOFF §2.3: no whole rewrite). */
+/** At most this many characters a reader reads, examples left out (HANDOFF §2.3: no whole rewrite). The sample's stories are 325–1,109. */
 export const MAX_CHARS = 1100;
+
+const chars = (text: string) => [...text.replace(/\s/g, "")].length;
 
 /**
  * Text left in a foreign language: Japanese or Korean beyond a short name in 「」, or a run of eight Latin
@@ -152,7 +155,13 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   const source = sourceNumbers(sourceText);
   const problems: string[] = [];
   const all = texts(story).filter(([, , fromSource]) => fromSource).map(([, text]) => text).join("");
-  if ([...all.replace(/\s/g, "")].length > MAX_CHARS) problems.push(`全文 ${[...all.replace(/\s/g, "")].length} 字，太长：压缩到 900 字以内，只留经过、做法和数字，不逐段复述原文`);
+  const total = chars(all);
+  if (total > MAX_CHARS) {
+    // Name the longest parts, so the second try knows where to cut.
+    const parts = story.parts.map((part, i) => [i + 1, chars(part.heading + part.blocks.filter((b) => b.type !== "example").flatMap(blockTexts).join(""))] as const)
+      .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, c]) => `第 ${n} 段 ${c} 字`).join("、");
+    problems.push(`全文 ${total} 字，太长：要在 800 字以内。${parts}，人物 ${chars(story.who)} 字；每段删到 200 字以内，人物删到 100 字以内，次要的段落整段删掉，只留经过、做法和数字`);
+  }
   if ((all.match(/原文(?:说|提到|还说|还提到|认为|强调|指出)/g)?.length ?? 0) > 2) problems.push("反复写“原文说”“原文提到”：直接写这家店或这个人做了什么，不逐条转述原文的论点");
   for (const [where, text, fromSource] of texts(story)) {
     if (!text) continue;
@@ -168,9 +177,10 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   // Example captions may only name the example's own numbers.
   for (const [i, part] of story.parts.entries()) for (const b of part.blocks) {
     if (b.type !== "example") continue;
+    // The caption may set the example against the original ("原文的规则是加 2"): its own numbers or the original's.
     const own = new Set(exampleNumbers(b).flatMap(forms));
-    const stray = (b.caption.normalize("NFKC").match(DIGITS) ?? []).filter((t) => !forms(t).some((f) => own.has(f)) && Number(t.replace(/,/g, "")) > SMALL);
-    if (stray.length) problems.push(`第 ${i + 1} 段举例的说明里有 ${stray.join("、")}：说明里只能用举例自己的数字，计算结果由程序写`);
+    const stray = (b.caption.normalize("NFKC").match(DIGITS) ?? []).filter((t) => !forms(t).some((f) => own.has(f) || source.has(f)) && Number(t.replace(/,/g, "")) > SMALL);
+    if (stray.length) problems.push(`第 ${i + 1} 段举例的说明里有 ${stray.join("、")}：说明里只能用举例的输入和原文写的数字，计算结果由程序写`);
   }
   for (const [where, value] of dataValues(story)) {
     if (value > SMALL && !forms(String(value)).some((f) => source.has(f))) problems.push(`${where}里的 ${value} 在原文里找不到：图里只放原文写的数字`);

@@ -9,5 +9,6 @@ export default defineModule({
     { path: "reference/shops/:key", file: "web/shop.tsx", id: "reference-shop" },
     { path: "reference/:slug", file: "web/situation.tsx", id: "reference-situation" },
   ],
-  apiPaths: [/^\/api\/reference(?:\/|$)/],
+  // The api also answers the unlisted sample pages (server.ts SAMPLE_PATH).
+  apiPaths: [/^\/api\/reference(?:\/|$)/, /^\/s\/xxrjcgidcy$/],
 });

@@ -11,7 +11,7 @@ import { publishArticle } from "@aihot/backend/publication/publish";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
-import reference from "../server.ts";
+import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, writeCase } from "../backend/write.ts";
@@ -165,4 +165,12 @@ test("the pages show public cases only, and a situation once two cases are in it
   assert.equal((await app.inject(`/api/reference/cases/${ids.SECOND}`)).statusCode, 404);
   const after = JSON.parse((await app.inject("/api/reference")).body);
   assert.equal(after.categories.find((c: { key: string }) => c.key === "cost").situations.length, 0, "one case left is not a page");
+});
+
+test("the sample pages are served at their unlisted address, kept from search engines", async () => {
+  const res = await app.inject(SAMPLE_PATH);
+  assert.equal(res.statusCode, 200);
+  assert.match(String(res.headers["content-type"]), /text\/html/);
+  assert.equal(res.headers["x-robots-tag"], "noindex");
+  assert.ok(res.body.startsWith("<!doctype html>") && res.body.includes("生意很忙，钱却留不下来"));
 });

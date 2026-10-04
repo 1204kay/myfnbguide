@@ -8,6 +8,8 @@ import { stopBoss } from '@aihot/backend/jobs/queue';
 import { publishArticle } from '@aihot/backend/publication/publish';
 import { upsertMaterial } from '@aihot/backend/content/materials';
 import { buildApp } from '../apps/api/src/app.ts';
+import { CATEGORIES } from '@aihot/industry/taxonomy';
+const CATEGORY = CATEGORIES[0]!.key;
 
 const app = await buildApp();
 const T = tag();
@@ -18,7 +20,7 @@ before(async () => {
   id = (await upsertMaterial({ sourceId:T, url:`https://example.com/${T}`,title:'公开缓存示例',
     bodyText:'允许公开的正文。'.repeat(50),bodyStatus:'ok',via:'fetch',publishedAt:new Date() })).articleId;
   await sql`INSERT INTO analyses(article_id,input_revision,origin,relevance,category,title_zh,summary_zh,score,selected)
-    VALUES(${id},1,'rule','pass','ai-models','公开缓存示例','公开缓存摘要',90,true)`;
+    VALUES(${id},1,'rule','pass',${CATEGORY},'公开缓存示例','公开缓存摘要',90,true)`;
   await publishArticle(id,{releasedAt:new Date(Date.now()-60000)});
   for (const [kind,key] of [['daily','2099-10-04'],['weekly','2099-W40'],['monthly','2099-10']]) {
     const entry = {itemId:id,title:'公开缓存示例',summary:'公开缓存摘要'};

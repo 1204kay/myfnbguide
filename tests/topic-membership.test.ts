@@ -6,11 +6,12 @@ import { tag } from "./setup.ts";
 import assert from "node:assert/strict";
 import { after, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
-import { findTopic, loadTopicPage, topicMembership } from "@aihot/backend/publication/topics";
+import { findTopic, loadTopicPage, topicMembership, TOPICS } from "@aihot/backend/publication/topics";
 
 after(closeDb);
 
-test("topic lists and pool counts share the exact membership predicate", async () => {
+// The cases are company topics matched by their names, beside one tag topic.
+test("topic lists and pool counts share the exact membership predicate", { skip: !TOPICS.some((t) => t.entityId) && "the industry has no company topics" }, async () => {
   const prefix = `membership-${tag()}`;
   const at = new Date("2026-01-01T00:00:00Z");
   const now = new Date(+at + 1000);

@@ -3,7 +3,8 @@
 // pages follow one rule, a withdrawal next to an unresolved selection leaves new snapshots at once, and
 // snapshots answer conditional requests.
 import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
-import { withSubject } from "@aihot/site";
+import { ITEM_COPY, withSubject } from "@aihot/site";
+import { CATEGORIES } from "@aihot/industry/taxonomy";
 import { beijingDate } from "@aihot/contracts/time";
 import { ogEtag } from "@aihot/backend/media/og";
 import { posterEtag } from "@aihot/backend/media/poster";
@@ -24,6 +25,7 @@ import { computeHotRanking } from "@aihot/backend/events/hot";
 import { latestHotRanking } from "@aihot/backend/publication/hot";
 import { loadItemShare } from "@aihot/backend/publication/og";
 import { buildApp } from "../apps/api/src/app.ts";
+const CATEGORY = CATEGORIES[0]!.key;
 
 const T = tag();
 const SOURCE = `test-publication-${T}`;
@@ -49,7 +51,7 @@ async function article(): Promise<string> {
     sourceId: SOURCE, url: `https://example.com/${T}-${n}`, title: `Test ${n}`, bodyText: BODY, bodyHtml: `<p>${BODY}</p>`, bodyStatus: "ok", via: "fetch", publishedAt: new Date(),
   });
   await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, reason_zh, score, selected)
-            VALUES (${articleId}, 1, 'rule', 'pass', 'ai-models', ${`标题${n}-${T}`}, ${`SUMMARY-${n}-${T}`}, '理由', 90, true)`;
+            VALUES (${articleId}, 1, 'rule', 'pass', ${CATEGORY}, ${`标题${n}-${T}`}, ${`SUMMARY-${n}-${T}`}, '理由', 90, true)`;
   return articleId;
 }
 
@@ -440,8 +442,8 @@ test("share images keep detail metadata and access rules while conditional reads
   const source = d.source.name;
   const date = beijingDate(d.timelineAt);
   const card = { kicker, title: d.title, subtitle: d.summary, meta: `${source} · ${date}`,
-    badge: d.selected && d.score !== null ? { value: String(Math.round(d.score)), label: "精选评分" } : null };
-  const poster = { url: `${config.siteUrl}/items/${id}`, kicker, title: d.title, summary: d.summary, source, date, score: d.selected ? d.score : null };
+    badge: d.selected && d.score !== null && ITEM_COPY.showScore ? { value: String(Math.round(d.score)), label: "精选评分" } : null };
+  const poster = { url: `${config.siteUrl}/items/${id}`, kicker, title: d.title, summary: d.summary, source, date, score: d.selected && ITEM_COPY.showScore ? d.score : null };
   const paths = [[`/og/items/${id}.png`, `"og-${ogEtag(card)}"`], [`/og/posters/${id}.png`, `"poster-${posterEtag(poster)}"`]];
   const queries: string[] = [];
   const previous = sql.options.debug;

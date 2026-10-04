@@ -9,6 +9,7 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
+import { TOPICS } from "@aihot/backend/publication/topics";
 import { textToHtml } from "@aihot/backend/content/sanitize";
 import { buildApp } from "../apps/api/src/app.ts";
 
@@ -65,7 +66,7 @@ test("a folded card's other sources are those of the fact its representative rep
   assert.equal(card.group?.additionalSourceCount, 1, "the launch's other source, not the leak's");
 });
 
-test("a query that names a company also finds the articles about it", async () => {
+test("a query that names a company also finds the articles about it", { skip: !TOPICS.some((t) => t.entityId) && "the industry has no company topics, so no query names a company" }, async () => {
   const about = await report(MEDIA, { selected: false, hoursAgo: 3, subjects: ["anthropic"], title: `Sonnet 上线 Conductor ${T}` });
   const mention = await report(MEDIA, { selected: false, hoursAgo: 4, title: `claude 被一篇盘点顺带提到 ${T}` });
   const other = await report(MEDIA, { selected: false, hoursAgo: 5, title: `无关的新闻 ${T}` });

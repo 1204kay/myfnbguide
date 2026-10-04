@@ -17,10 +17,14 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { loadTopicPage, listTopicSummaries, topicsOfStory } from "@aihot/backend/publication/topics";
+import { loadTopicPage, listTopicSummaries, topicsOfStory, TOPIC_GROUPS, TOPICS } from "@aihot/backend/publication/topics";
 import { buildApp } from "../apps/api/src/app.ts";
 
 const T = tag();
+// Topics that take reports by a tag no other topic has (the industry pack decides which).
+const TAGGED = TOPICS.filter((t) => !t.entityId && t.tags.length > 0 && TOPICS.every((o) => o === t || !o.tags.includes(t.tags[0]!)));
+const [STORY_TOPIC, WITHDRAWAL_TOPIC] = TAGGED;
+const EMPTY_TOPIC = TAGGED.at(-1)!;
 const OFFICIAL = `test-topics-official-${T}`;
 const MEDIA = `test-topics-media-${T}`;
 const app = await buildApp();
@@ -90,7 +94,7 @@ async function members(slug: string): Promise<string[]> {
   return out;
 }
 
-test("a company topic takes the articles about it, not the ones that only mention it", async () => {
+test("a company topic takes the articles about it, not the ones that only mention it", { skip: !TOPICS.some((t) => t.entityId) && "the industry has no company topics" }, async () => {
   const about = await report({ at: hoursAgo(30), title: `Claude Code 推出插件 ${T}`, subjects: ["anthropic"] });
   const product = await report({ at: hoursAgo(31), title: `Sonnet 新版上线 ${T}`, subjects: ["anthropic"] });
   const english = await report({ at: hoursAgo(32), title: `新模型发布 ${T}`, originalTitle: `Anthropic launches a model ${T}`, subjects: ["anthropic", "openai"] });
@@ -126,30 +130,34 @@ test("a company topic takes the articles about it, not the ones that only mentio
 
 test("a story page names the topics of its reports", async () => {
   const launch = await story(`智能体框架 V2 发布 ${T}`);
-  await report({ source: OFFICIAL, at: hoursAgo(26), title: `智能体框架 V2 发布 ${T}`, tags: ["Agent"], fact: await fact(launch.id, "发布 V2") });
-  assert.deepEqual(await topicsOfStory(launch.id), [{ slug: "agent", name: "Agent 智能体" }, { slug: "model-releases", name: "模型发布" }]);
+  await report({ source: OFFICIAL, at: hoursAgo(26), title: `智能体框架 V2 发布 ${T}`, tags: [STORY_TOPIC!.tags[0]!], fact: await fact(launch.id, "发布 V2") });
+  // The report carries its category's tag (report() above) and the topic's tag, nothing else.
+  const tags = ["模型发布", STORY_TOPIC!.tags[0]!];
+  const expected = TOPICS.filter((t) => !t.entityId && t.tags.some((x) => tags.includes(x))).map((t) => ({ slug: t.slug, name: t.name }));
+  assert.ok(expected.some((t) => t.slug === STORY_TOPIC!.slug));
+  assert.deepEqual(await topicsOfStory(launch.id), expected);
 });
 
 test("withdrawn articles stay out of lists and counts", async () => {
-  const kept = await report({ at: hoursAgo(5), title: `Kimi 发布新模型 ${T}`, subjects: ["kimi"] });
-  const withdrawn = await report({ at: hoursAgo(4), title: `Kimi 撤回的消息 ${T}`, subjects: ["kimi"] });
+  const kept = await report({ at: hoursAgo(5), title: `留下的消息 ${T}`, tags: [WITHDRAWAL_TOPIC!.tags[0]!] });
+  const withdrawn = await report({ at: hoursAgo(4), title: `撤回的消息 ${T}`, tags: [WITHDRAWAL_TOPIC!.tags[0]!] });
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${withdrawn}`;
 
-  const data = await page("kimi");
+  const data = await page(WITHDRAWAL_TOPIC!.slug);
   assert.deepEqual(ids(data.items), [kept]);
   assert.equal(data.topic.total, 1);
-  const summary = (await listTopicSummaries()).topics.find((t) => t.slug === "kimi")!;
-  assert.equal(summary.latest?.title, `Kimi 发布新模型 ${T}`, "the index shows the newest public article");
+  const summary = (await listTopicSummaries()).topics.find((t) => t.slug === WITHDRAWAL_TOPIC!.slug)!;
+  assert.equal(summary.latest?.title, `留下的消息 ${T}`, "the index shows the newest public article");
 });
 
 test("every topic has a page; unknown topics and pages past the end have none", async () => {
-  const empty = await page("cursor");
+  const empty = await page(EMPTY_TOPIC.slug);
   assert.equal(empty.topic.indexable, false, "a topic without content is not indexed");
   assert.deepEqual(empty.items, []);
   assert.equal(await loadTopicPage("not-a-topic", 1, new Date()), null);
-  assert.equal(await loadTopicPage("cursor", 2, new Date()), null);
+  assert.equal(await loadTopicPage(EMPTY_TOPIC.slug, 2, new Date()), null);
   const index = await app.inject({ method: "GET", url: "/api/site/topics" });
   const body = JSON.parse(index.body) as { groups: Array<{ key: string }>; topics: Array<{ slug: string }> };
-  assert.deepEqual(body.groups.map((g) => g.key), ["company", "field", "genre"]);
-  assert.equal(body.topics.length, 38);
+  assert.deepEqual(body.groups.map((g) => g.key), TOPIC_GROUPS.map((g) => g.key));
+  assert.equal(body.topics.length, TOPICS.length);
 });

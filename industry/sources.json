@@ -3,7 +3,7 @@
   "sources": [
     {
       "id": "rss-fsr",
-      "name": "FSR Magazine",
+      "name": "FSR Magazine（美国 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.fsrmagazine.com/feed/",
@@ -28,7 +28,7 @@
     },
     {
       "id": "rss-totalfood",
-      "name": "Total Food Service",
+      "name": "Total Food Service（美国 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.totalfood.com/feed/",
@@ -54,7 +54,7 @@
     },
     {
       "id": "web-qsrmedia-asia",
-      "name": "QSR Media Asia",
+      "name": "QSR Media Asia（亚洲 · 快餐与连锁媒体）",
       "kind": "web_list",
       "config": {
         "url": "https://qsrmedia.asia/news",
@@ -82,7 +82,7 @@
     },
     {
       "id": "web-canyin88-zhuanlan",
-      "name": "红餐网 · 专栏",
+      "name": "红餐网 · 专栏（中国 · 餐饮媒体）",
       "kind": "web_list",
       "config": {
         "url": "https://www.canyin88.com/zhuanlan/",
@@ -111,7 +111,7 @@
     },
     {
       "id": "rss-barista-magazine",
-      "name": "Barista Magazine（咖啡馆经营）",
+      "name": "Barista Magazine（美国 · 咖啡媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.baristamagazine.com/feed/",
@@ -133,7 +133,7 @@
     },
     {
       "id": "rss-qsrmedia-au",
-      "name": "QSR Media（澳洲与英国，快餐与连锁）",
+      "name": "QSR Media（澳大利亚、英国 · 快餐与连锁媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://qsrmedia.com/rss.xml",
@@ -152,7 +152,8 @@
       "participation_mode": "editorial",
       "interval_minutes": 60,
       "tags": [
-        "澳洲",
+        "澳大利亚",
+        "英国",
         "媒体"
       ],
       "site_fulltext": false,
@@ -160,7 +161,7 @@
     },
     {
       "id": "rss-hospitality-au",
-      "name": "Hospitality（澳洲）",
+      "name": "Hospitality（澳大利亚 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.hospitalitymagazine.com.au/feed/",
@@ -179,7 +180,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "澳洲",
+        "澳大利亚",
         "媒体"
       ],
       "site_fulltext": false,
@@ -187,7 +188,7 @@
     },
     {
       "id": "rss-ristorazione-italiana",
-      "name": "Ristorazione Italiana Magazine（意大利）",
+      "name": "Ristorazione Italiana Magazine（意大利 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.ristorazioneitalianamagazine.it/feed/",
@@ -201,7 +202,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 120,
       "tags": [
-        "欧洲",
+        "意大利",
         "媒体"
       ],
       "site_fulltext": false,
@@ -209,7 +210,7 @@
     },
     {
       "id": "rss-foodrink",
-      "name": "フードリンクニュース（日本，外食业）",
+      "name": "フードリンクニュース（日本 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.foodrink.co.jp/rss.xml",
@@ -231,7 +232,7 @@
     },
     {
       "id": "web-canyin88-zixun",
-      "name": "红餐网 · 资讯（中国）",
+      "name": "红餐网 · 资讯（中国 · 餐饮媒体）",
       "kind": "web_list",
       "config": {
         "url": "https://www.canyin88.com/zixun/",
@@ -260,7 +261,7 @@
     },
     {
       "id": "rss-ahresp",
-      "name": "AHRESP",
+      "name": "AHRESP（葡萄牙 · 餐饮协会）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://ahresp.com/feed/",
@@ -282,7 +283,7 @@
     },
     {
       "id": "rss-bargiornale",
-      "name": "Bargiornale",
+      "name": "Bargiornale（意大利 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.bargiornale.it/feed/",
@@ -304,7 +305,7 @@
     },
     {
       "id": "rss-fipe",
-      "name": "FIPE",
+      "name": "FIPE（意大利 · 餐饮协会）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.fipe.it/feed/",
@@ -326,7 +327,7 @@
     },
     {
       "id": "rss-fresh-cup",
-      "name": "Fresh Cup",
+      "name": "Fresh Cup（美国 · 咖啡媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://freshcup.com/feed/",
@@ -351,7 +352,7 @@
     },
     {
       "id": "rss-gast-at",
-      "name": "Gast",
+      "name": "Gast（奥地利 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.gast.at/feed/",
@@ -378,7 +379,7 @@
     },
     {
       "id": "rss-hospitality-ireland",
-      "name": "Hospitality Ireland",
+      "name": "Hospitality Ireland（爱尔兰 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.hospitalityireland.com/feed",
@@ -400,7 +401,7 @@
     },
     {
       "id": "rss-marginedge",
-      "name": "MarginEdge",
+      "name": "MarginEdge（美国 · 餐厅财务软件商）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.marginedge.com/blog/rss.xml",
@@ -422,7 +423,7 @@
     },
     {
       "id": "pod-hospitality-talks",
-      "name": "Hospitality Talks（播客）",
+      "name": "Hospitality Talks（英国 · 餐饮咨询公司的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10a46fcd4/podcast/rss",
@@ -437,7 +438,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "澳洲",
+        "英国",
         "播客"
       ],
       "site_fulltext": false,
@@ -445,7 +446,7 @@
     },
     {
       "id": "pod-restaurant-reset",
-      "name": "Restaurant Reset（播客）",
+      "name": "Restaurant Reset（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10c589b40/podcast/rss",
@@ -460,7 +461,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "法国",
+        "美国",
         "播客"
       ],
       "site_fulltext": false,
@@ -468,7 +469,7 @@
     },
     {
       "id": "pod-a-la-carte-par-fooddy-le-podcast-qui-par",
-      "name": "A LA CARTE par Fooddy, le podcast qui parle aux restaurateurs. Ici on parle de création & développement, de marketing & man（播客）",
+      "name": "A LA CARTE par Fooddy（法国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/n5zJxIRnq5Vk",
@@ -491,7 +492,7 @@
     },
     {
       "id": "pod-jp-inshoku-ai-radio",
-      "name": "飲食店のAI活用ラジオ（播客）",
+      "name": "飲食店のAI活用ラジオ（日本 · 餐厅老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/1167eb294/podcast/rss",
@@ -514,7 +515,7 @@
     },
     {
       "id": "pod-horeca-channel-italia",
-      "name": "HORECA CHANNEL ITALIA 🇮🇹（播客）",
+      "name": "HORECA CHANNEL ITALIA（意大利 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/969bbcc0/podcast/rss",
@@ -529,7 +530,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "欧洲",
+        "意大利",
         "播客"
       ],
       "site_fulltext": false,
@@ -537,7 +538,7 @@
     },
     {
       "id": "pod-horeca-audio-news-le-pillole-quotidiane",
-      "name": "HORECA AUDIO NEWS - Le pillole quotidiane（播客）",
+      "name": "HORECA AUDIO NEWS（意大利 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.spreaker.com/show/5143519/episodes/feed",
@@ -552,7 +553,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "欧洲",
+        "意大利",
         "播客"
       ],
       "site_fulltext": false,
@@ -560,7 +561,7 @@
     },
     {
       "id": "pod-tw-renren-canyin",
-      "name": "人人品牌 · 餐飲經營筆記（播客）",
+      "name": "人人品牌 · 餐飲經營筆記（中国台湾 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundon.fm/podcasts/04c60255-df49-4568-ba89-83a69b96ea61.xml",
@@ -575,7 +576,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "台湾",
+        "中国台湾",
         "播客"
       ],
       "site_fulltext": false,
@@ -583,7 +584,7 @@
     },
     {
       "id": "pod-the-restaurant-technology-guys-podcast-b",
-      "name": "The Restaurant Technology Guys Podcast brought to you by Custom Business Solutions（播客）",
+      "name": "The Restaurant Technology Guys Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.riverside.fm/hosting/mMIUQRyf.rss",
@@ -606,7 +607,7 @@
     },
     {
       "id": "pod-strategic-business-growth-systems-restau",
-      "name": "Strategic Business Growth Systems: Restaurant Edition（播客）",
+      "name": "Strategic Business Growth Systems（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.podengine.io/strategic-business-growth-systems-restaurant-edition",
@@ -629,7 +630,7 @@
     },
     {
       "id": "pod-marketing-morsels-for-restaurants",
-      "name": "Marketing Morsels for Restaurants（播客）",
+      "name": "Marketing Morsels for Restaurants（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.podengine.io/marketing-morsels-for-restaurants",
@@ -652,7 +653,7 @@
     },
     {
       "id": "pod-restaurant-strategy",
-      "name": "RESTAURANT STRATEGY（播客）",
+      "name": "Restaurant Strategy（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.castos.com/p49k",
@@ -675,7 +676,7 @@
     },
     {
       "id": "pod-total-food-service",
-      "name": "Total Food Service（播客）",
+      "name": "Total Food Service（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://totalfood.com/feed/podcast/",
@@ -698,7 +699,7 @@
     },
     {
       "id": "pod-the-bar-business-podcast-bar-pub-owner-p",
-      "name": "The Bar Business Podcast: Bar & Pub Owner Profits, Marketing & Operations（播客）",
+      "name": "The Bar Business Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2128805.rss",
@@ -721,7 +722,7 @@
     },
     {
       "id": "pod-qsr-uncut",
-      "name": "QSR Uncut（播客）",
+      "name": "QSR Uncut（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/238017.rss",
@@ -744,7 +745,7 @@
     },
     {
       "id": "pod-the-build-restuarant-201",
-      "name": "The Build: Restuarant 201（播客）",
+      "name": "The Build: Restuarant 201（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.art19.com/the-build",
@@ -767,7 +768,7 @@
     },
     {
       "id": "pod-der-gastro-podcast",
-      "name": "DER GASTRO PODCAST（播客）",
+      "name": "DER GASTRO PODCAST（德国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10c84feec/podcast/rss",
@@ -790,7 +791,7 @@
     },
     {
       "id": "pod-fettgespraeche",
-      "name": "Fettgespräche - Der Gastro-Podcast（播客）",
+      "name": "Fettgespräche（德国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/11481fce4/podcast/rss",
@@ -813,7 +814,7 @@
     },
     {
       "id": "pod-the-ristoratori",
-      "name": "The Ristoratori（播客）",
+      "name": "The Ristoratori（意大利 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fb372db8/podcast/rss",
@@ -836,7 +837,7 @@
     },
     {
       "id": "pod-jp-omise-radio-smaregi",
-      "name": "お店ラジオ2 supported by スマレジ（播客）",
+      "name": "お店ラジオ2（日本 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.megaphone.fm/JPFMN9974221305",
@@ -859,7 +860,7 @@
     },
     {
       "id": "pod-restaurant-wealth",
-      "name": "Restaurant Wealth Podcast（播客）",
+      "name": "Restaurant Wealth Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.riverside.com/hosting/iybPknYu.rss",
@@ -874,7 +875,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "新加坡",
+        "美国",
         "播客"
       ],
       "site_fulltext": false,
@@ -882,7 +883,7 @@
     },
     {
       "id": "pod-restaurant-finance-podcast",
-      "name": "The Restaurant Finance Podcast（播客）",
+      "name": "The Restaurant Finance Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.blubrry.com/feeds/3956510.xml",
@@ -905,7 +906,7 @@
     },
     {
       "id": "pod-restaurant-growth-accelerator",
-      "name": "Restaurant Growth Accelerator: More Profit, More Locations, And More Time With Your Family（播客）",
+      "name": "Restaurant Growth Accelerator（加拿大 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2419583.rss",
@@ -920,7 +921,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "美国",
+        "加拿大",
         "播客"
       ],
       "site_fulltext": false,
@@ -928,7 +929,7 @@
     },
     {
       "id": "prt-141863",
-      "name": "株式会社ExpreTech（PR TIMES）",
+      "name": "ExpreTech（日本 · 服务商新闻稿）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=141863",
@@ -950,7 +951,7 @@
     },
     {
       "id": "rss-foodnews-kr",
-      "name": "식품저널（韩国，食品与外食产业）",
+      "name": "식품저널（韩国 · 食品与餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.foodnews.co.kr/rss/allArticle.xml",
@@ -972,7 +973,7 @@
     },
     {
       "id": "blog-eats365",
-      "name": "Eats365 餐厅经营指南（香港收银系统商，写亚太与北美）",
+      "name": "Eats365 博客（中国香港 · 收银系统商）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.eats365pos.com/rss.xml",
@@ -988,13 +989,13 @@
       "site_fulltext": false,
       "syndicate_fulltext": false,
       "tags": [
-        "亚太",
+        "中国香港",
         "服务商"
       ]
     },
     {
       "id": "rss-hospitality-nz",
-      "name": "Hospitality Business（新西兰）",
+      "name": "Hospitality Business（新西兰 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.hospitalitybusiness.co.nz/feed/",
@@ -1016,7 +1017,7 @@
     },
     {
       "id": "rss-ristorando",
-      "name": "Ristorando（意大利，餐饮企业经营）",
+      "name": "Ristorando（意大利 · 餐饮媒体）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.ristorando.eu/feed/",
@@ -1038,7 +1039,7 @@
     },
     {
       "id": "pod-valor-coffee",
-      "name": "Valor Coffee Podcast（咖啡店老板，播客）",
+      "name": "Valor Coffee Podcast（美国 · 咖啡店老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/101fb6240/podcast/rss",
@@ -1061,7 +1062,7 @@
     },
     {
       "id": "pod-restaurant-prosperity-formula",
-      "name": "The Restaurant Prosperity Formula（独立餐厅老板，播客）",
+      "name": "The Restaurant Prosperity Formula（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.captivate.fm/restaurant-prosperity-formula/",
@@ -1084,7 +1085,7 @@
     },
     {
       "id": "rss-petpooja",
-      "name": "Petpooja 博客（印度收银系统商，写给小餐馆）",
+      "name": "Petpooja 博客（印度 · 收银系统商）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://blog.petpooja.com/feed/",
@@ -1109,7 +1110,7 @@
     },
     {
       "id": "pod-panaderia-facil",
-      "name": "Panadería fácil para emprendedores（小面包店创业，西班牙语播客）",
+      "name": "Panadería fácil para emprendedores（阿根廷 · 面包店创业播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/2f316c24/podcast/rss",
@@ -1124,7 +1125,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "拉美",
+        "阿根廷",
         "播客"
       ],
       "site_fulltext": false,
@@ -1132,7 +1133,7 @@
     },
     {
       "id": "pod-tw-kaidian-zhejianshi",
-      "name": "開店這件事 by PeiPeiTalks（台湾小店老板访谈，播客）",
+      "name": "開店這件事（中国台湾 · 小店老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.firstory.me/rss/user/ckiji29qfd9s108192s6mujil",
@@ -1147,7 +1148,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "台湾",
+        "中国台湾",
         "播客"
       ],
       "site_fulltext": false,
@@ -1155,7 +1156,7 @@
     },
     {
       "id": "pod-full-comp",
-      "name": "FULL COMP: Restaurant Tactics, Tools, & Strategies（独立餐厅老板，播客）",
+      "name": "FULL COMP（美国 · 餐厅老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.transistor.fm/full-comp-the-voice-of-the-restaurant-industry-revolution",
@@ -1178,7 +1179,7 @@
     },
     {
       "id": "pod-build-a-better-restaurant",
-      "name": "Build A Better Restaurant with Peter Harman（独立餐厅老板，播客）",
+      "name": "Build A Better Restaurant（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:554457540/sounds.rss",
@@ -1201,7 +1202,7 @@
     },
     {
       "id": "pod-restaurant-rockstars",
-      "name": "Restaurant Rockstars Podcast（餐厅老板的利润与团队，播客）",
+      "name": "Restaurant Rockstars Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:158297519/sounds.rss",
@@ -1224,7 +1225,7 @@
     },
     {
       "id": "pod-restaurant-marketing-secrets",
-      "name": "Restaurant Marketing Secrets（餐厅营销做法，播客）",
+      "name": "Restaurant Marketing Secrets（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/418643/destinations/3475718.xml",
@@ -1247,7 +1248,7 @@
     },
     {
       "id": "pod-great-work-for-restaurants",
-      "name": "Great Work for Restaurants（餐厅营销与回头客，播客）",
+      "name": "Great Work for Restaurants（加拿大 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/187310/destinations/1290941.xml",
@@ -1262,7 +1263,7 @@
       "participation_mode": "editorial",
       "interval_minutes": 240,
       "tags": [
-        "美国",
+        "加拿大",
         "播客"
       ],
       "site_fulltext": false,
@@ -1270,7 +1271,7 @@
     },
     {
       "id": "pod-coffee-experts-club",
-      "name": "The Coffee Experts Club Podcast（咖啡馆老板，播客）",
+      "name": "The Coffee Experts Club Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/477066/destinations/4050717.xml",
@@ -1293,7 +1294,7 @@
     },
     {
       "id": "pod-pulling-shots",
-      "name": "Pulling Shots（小咖啡店老板，播客）",
+      "name": "Pulling Shots（美国 · 咖啡店老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.libsyn.com/537872/rss",
@@ -1316,7 +1317,7 @@
     },
     {
       "id": "pod-keys-to-the-shop",
-      "name": "Keys To The Shop: Equipping Coffee Shop Leaders（咖啡店经营，播客）",
+      "name": "Keys To The Shop（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/85579/destinations/412105.xml",
@@ -1339,7 +1340,7 @@
     },
     {
       "id": "pod-food-business-blueprint",
-      "name": "The Food Business Blueprint Podcast（餐饮老板的经营心得，播客）",
+      "name": "The Food Business Blueprint Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
@@ -1362,7 +1363,7 @@
     },
     {
       "id": "pod-your-life-and-restaurant",
-      "name": "Your Life and Restaurant（餐厅老板的工作与生活，播客）",
+      "name": "Your Life and Restaurant（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/1625317.rss",
@@ -1385,7 +1386,7 @@
     },
     {
       "id": "pod-fr-passe-moi-le-sel",
-      "name": "Passe moi le sel（法国餐厅老板的经营与带人，播客）",
+      "name": "Passe moi le sel（法国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/4A7QwTm2zARD",
@@ -1408,7 +1409,7 @@
     },
     {
       "id": "pod-kr-baemin-owner-talk",
-      "name": "사장님 라이브 토크 · 배민아카데미（韩国外卖平台的小店老板讲座，播客）",
+      "name": "사장님 라이브 토크（韩国 · 外卖平台 Baemin 的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/1133b4cdc/podcast/rss",
@@ -1431,7 +1432,7 @@
     },
     {
       "id": "pod-entre-hosteleros",
-      "name": "ENTRE HOSTELEROS（西班牙小店老板访谈，播客）",
+      "name": "ENTRE HOSTELEROS（西班牙 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fd40eaf4/podcast/rss",
@@ -1454,7 +1455,7 @@
     },
     {
       "id": "pod-say86-hospitality",
-      "name": "say86 Hospitality Podcast（英国餐旅，播客）",
+      "name": "say86 Hospitality Podcast（英国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2447330.rss",
@@ -1477,7 +1478,7 @@
     },
     {
       "id": "pod-elevated-hospitality",
-      "name": "The Elevated Hospitality Podcast（餐旅带人，播客）",
+      "name": "The Elevated Hospitality Podcast（美国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fb0da358/podcast/rss",
@@ -1500,7 +1501,7 @@
     },
     {
       "id": "pod-restaurant-hero",
-      "name": "Restaurant Hero（德国餐饮老板访谈，播客）",
+      "name": "Restaurant Hero（德国 · 播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://app.kajabi.com/podcasts/2147882667/feed",
@@ -1523,7 +1524,7 @@
     },
     {
       "id": "pod-restaurant-deal-making-exposed-with-patr",
-      "name": "Restaurant Deal Making EXPOSED!（餐厅买卖经纪人，播客）",
+      "name": "Restaurant Deal Making EXPOSED!（美国 · 餐厅买卖经纪人的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.captivate.fm/restaurant-deal-making/",
@@ -1546,7 +1547,7 @@
     },
     {
       "id": "pod-restaurant-coach",
-      "name": "The Restaurant Coach Podcast（独立餐厅教练，播客）",
+      "name": "The Restaurant Coach Podcast（美国 · 餐厅顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "http://therestaurantcoachpodcast.blubrry.net/feed/podcast/",
@@ -1569,7 +1570,7 @@
     },
     {
       "id": "pod-restaurant-technology-podcast",
-      "name": "Restaurant Technology Podcast（Cali BBQ 老板，播客）",
+      "name": "Restaurant Technology Podcast（美国 · Cali BBQ 老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.substack.com/feed/podcast/3892076.rss",
@@ -1592,7 +1593,7 @@
     },
     {
       "id": "web-gnavi-pro-tokushu",
-      "name": "ぐるなび通信 · 特集（日本，飲食店の経営・販促・開業）",
+      "name": "ぐるなび通信 · 特集（日本 · 餐饮信息平台）",
       "kind": "web_list",
       "config": {
         "url": "https://pro.gnavi.co.jp/magazine/cont_1/",
@@ -1625,7 +1626,7 @@
     },
     {
       "id": "web-gnavi-pro-hanjo",
-      "name": "ぐるなび通信 · 今、繁盛している店（日本，繁盛店の数字と做法）",
+      "name": "ぐるなび通信 · 今、繁盛している店（日本 · 餐饮信息平台）",
       "kind": "web_list",
       "config": {
         "url": "https://pro.gnavi.co.jp/magazine/cont_23/",
@@ -1658,7 +1659,7 @@
     },
     {
       "id": "rss-tenpo-biz-column",
-      "name": "店舗流通ネット · 飲食店経営コラム（日本，開業・閉店・資金繰り）",
+      "name": "店舗流通ネット（日本 · 店铺租赁服务商）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.tenpo.biz/solution/feed/",
@@ -1680,7 +1681,7 @@
     },
     {
       "id": "web-goomer-blog",
-      "name": "Goomer 博客（巴西点餐系统商，写给餐厅老板）",
+      "name": "Goomer 博客（巴西 · 点餐系统商）",
       "kind": "web_list",
       "config": {
         "url": "https://goomer.com.br/blog/",

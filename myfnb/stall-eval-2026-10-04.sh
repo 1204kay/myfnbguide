@@ -10,6 +10,9 @@ w() { docker compose exec -T -u root worker "$@"; }
 echo "== 部署中的版本：$(git log -1 --format='%h %s' | cut -c1-60)"
 until w true 2>/dev/null; do echo "等 worker 启动……"; sleep 20; done
 
+echo "== 0/3 模型调用：每天上限、过去 24 小时按用途的调用数、两天内条目的处理状态（只读）"
+docker compose exec -T db psql -U aihot -d aihot -At -f - < myfnb/llm-budget-2026-10-04.sql
+
 echo "== 1/3 已入库条目的旧标签「小吃/档口」改为「小吃/摊位」，重新发布这些条目"
 until w node myfnb/retag-2026-10-04.ts; do
   echo "没有跑完（多半是部署重启了 worker），30 秒后再跑"

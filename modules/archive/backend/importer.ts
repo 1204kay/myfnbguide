@@ -8,8 +8,11 @@ import { queueProcessing } from "@aihot/backend/jobs/content";
 import { guardedFetch } from "@aihot/backend/lib/http-fetch";
 import { admitListing } from "@aihot/backend/sources/filters";
 import { fetchRss } from "@aihot/backend/sources/rss";
-import type { Candidate, SourceRow } from "@aihot/backend/sources/types";
+import { FetchError, type Candidate, type SourceRow } from "@aihot/backend/sources/types";
 import type { ArchivePlan } from "../plan.ts";
+
+/** The pause between two pages of one archive: a blog answered 429 to pages read back to back (Petpooja, 10/4). Tests set 0. */
+export const PACE = { pageMs: 10_000 };
 
 const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@" });
 const key = (title: unknown) => String(title ?? "").replace(/\s+/g, " ").trim();
@@ -36,32 +39,44 @@ export interface ImportResult {
   error?: string;
 }
 
-/** One listing of the source: its entries, through the source's own URL and noise filters as the collection applies them. */
-async function readListing(source: SourceRow, feedUrl: string): Promise<{ listed: number; candidates: Candidate[]; audio: Map<string, { url: string; type: string }> }> {
+/**
+ * One listing of the source: its entries, through the source's own URL and noise filters as the collection applies
+ * them, and for a podcast the audio of each episode (the feed read once more: the engine's reader keeps no enclosures).
+ */
+async function readListing(source: SourceRow, feedUrl: string, podcast: boolean): Promise<{ listed: number; candidates: Candidate[]; audio: Map<string, { url: string; type: string }> }> {
   const page = { ...source, config: { ...source.config, feedUrl } };
   const read = await fetchRss(page, { force: true });
-  const feed = await guardedFetch(feedUrl, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 });
+  const feed = podcast ? await guardedFetch(feedUrl, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 }) : null;
   return {
     listed: read.candidates.length,
     candidates: admitListing(read.candidates, source),
-    audio: feed.status === 200 ? audioByTitle(feed.text()) : new Map(),
+    audio: feed?.status === 200 ? audioByTitle(feed.text()) : new Map(),
   };
 }
 
 /**
  * Takes in every entry of the source's feed (and of its older pages) that the site does not have yet; entries it
- * has are recorded too. The source is finished once its last page, or an empty one, was read; an error stops the
- * run at that page and is kept, and the next run reads from the first page again (what it has costs nothing).
+ * has are recorded too. The source is finished once its last page, an empty one, or a 404 past the first (WordPress
+ * past its last page) was read; an error stops the run at that page and is kept, and the next run reads from the
+ * first page again (what it has costs nothing).
  */
 export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
   const sourceId = plan.id;
-  const [source] = await sql<SourceRow[]>`SELECT * FROM sources WHERE id = ${sourceId}`;
+  const [source] = await sql<Array<SourceRow & { tags: string[] }>>`SELECT * FROM sources WHERE id = ${sourceId}`;
   if (!source || source.kind !== "rss") throw new Error(`archive: ${sourceId} is not an RSS source`);
   const urls = plan.pages ? Array.from({ length: plan.pages.to }, (_, i) => plan.pages!.url.replace("{n}", String(i + 1))) : [source.config.feedUrl as string];
   const result: ImportResult = { sourceId, pages: 0, found: 0, created: 0, withAudio: 0, finished: false };
   try {
-    for (const url of urls) {
-      const { listed, candidates, audio } = await readListing(source, url);
+    for (const [i, url] of urls.entries()) {
+      if (i > 0 && PACE.pageMs) await new Promise((resolve) => setTimeout(resolve, PACE.pageMs));
+      let listing;
+      try {
+        listing = await readListing(source, url, source.tags.includes("播客"));
+      } catch (error) {
+        if (i > 0 && error instanceof FetchError && error.status === 404) break;
+        throw error;
+      }
+      const { listed, candidates, audio } = listing;
       // The end of the archive is an empty page; a page whose entries the filters all drop is not.
       if (!listed) break;
       result.pages += 1;

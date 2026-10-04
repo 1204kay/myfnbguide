@@ -10,7 +10,8 @@ process.env.ALLOW_PRIVATE_NETWORK_FETCH = "true";
 process.env.EMBEDDING_API_KEY = "test-gemini-key";
 const { closeDb, sql } = await import("@aihot/backend/db");
 const { stopBoss } = await import("@aihot/backend/jobs/queue");
-const { audioByTitle, importSource } = await import("../backend/importer.ts");
+const { audioByTitle, importSource, PACE } = await import("../backend/importer.ts");
+PACE.pageMs = 0;
 const { episodesToTranscribe, GEMINI, SERVICE, transcribeEpisode } = await import("../backend/transcribe.ts");
 
 const T = tag();
@@ -34,7 +35,10 @@ const server = http.createServer((req, res) => {
     }
     if (url.startsWith("/audio/")) { res.writeHead(200, { "content-type": "audio/mpeg" }); res.end(Buffer.from("ID3x")); return; }
     // A blog's paged feed: two pages, the first with one article its source excludes, then an empty one.
-    const blogPage = /^\/blog\.xml\?paged=(\d+)$/.exec(url);
+    // The same blog as WordPress serves it: a page past the last answers 404.
+    const wpPage = /^\/wp\.xml\?paged=(\d+)$/.exec(url);
+    if (wpPage && Number(wpPage[1]) > 1) { res.writeHead(404); res.end(); return; }
+    const blogPage = /^\/(?:blog|wp)\.xml\?paged=(\d+)$/.exec(url);
     if (blogPage) {
       const n = Number(blogPage[1]);
       const items = n === 1 ? [`${base}/blog/tips/a`, `${base}/blog/compliance/b`] : n === 2 ? [`${base}/blog/tips/c`] : [];
@@ -62,6 +66,7 @@ GEMINI.base = BASE;
 
 before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${SOURCE}, 'Cafe talk', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/feed.xml`, summaryIsBody: true })})`;
+  await sql`UPDATE sources SET tags = ARRAY['播客'] WHERE id = ${SOURCE}`;
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${`${SOURCE}-blog`}, 'Blog', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/blog.xml?paged=1`, denyUrlPrefixes: [`${BASE}/blog/compliance/`] })})`;
 });
 after(async () => { server.close(); await stopBoss(); await closeDb(); });
@@ -129,4 +134,6 @@ test("a blog's older pages come in until the first empty one, through the source
   assert.equal((await sql`SELECT finished_at FROM archive_sources WHERE source_id = ${`${SOURCE}-blog`}`)[0]!.finished_at, null);
   const urls = (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id = ${`${SOURCE}-blog`} ORDER BY url`).map((r) => r.url);
   assert.deepEqual(urls, [`${BASE}/blog/tips/a`, `${BASE}/blog/tips/c`]);
+  const wordpress = await importSource({ id: `${SOURCE}-blog`, pages: { url: `${BASE}/wp.xml?paged={n}`, to: 5 } });
+  assert.ok(wordpress.finished && !wordpress.error && wordpress.pages === 1, "a 404 past the first page is the end of the archive");
 });

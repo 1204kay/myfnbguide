@@ -33,6 +33,16 @@ const server = http.createServer((req, res) => {
       return;
     }
     if (url.startsWith("/audio/")) { res.writeHead(200, { "content-type": "audio/mpeg" }); res.end(Buffer.from("ID3x")); return; }
+    // A blog's paged feed: two pages, the first with one article its source excludes, then an empty one.
+    const blogPage = /^\/blog\.xml\?paged=(\d+)$/.exec(url);
+    if (blogPage) {
+      const n = Number(blogPage[1]);
+      const items = n === 1 ? [`${base}/blog/tips/a`, `${base}/blog/compliance/b`] : n === 2 ? [`${base}/blog/tips/c`] : [];
+      res.writeHead(200, { "content-type": "application/rss+xml" });
+      res.end(`<?xml version="1.0"?><rss version="2.0"><channel><title>Blog</title>${items.map((link, i) => `<item><title>Post ${n}-${i} ${T}</title><link>${link}</link><guid>${link}</guid>
+        <pubDate>Mon, 0${n} Jan 2024 10:00:00 GMT</pubDate><description>How a restaurant counts its stock every week, step by step, with the numbers it keeps.</description></item>`).join("")}</channel></rss>`);
+      return;
+    }
     geminiCalls.push(`${req.method} ${url.split("?")[0]}`);
     if (url === "/upload/v1beta/files") { res.writeHead(200, { "x-goog-upload-url": `${base}/upload-session` }); res.end("{}"); return; }
     if (url === "/upload-session") { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify({ file: { name: "files/f1", uri: `${base}/files/f1`, state: "ACTIVE" } })); return; }
@@ -52,6 +62,7 @@ GEMINI.base = BASE;
 
 before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${SOURCE}, 'Cafe talk', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/feed.xml`, summaryIsBody: true })})`;
+  await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${`${SOURCE}-blog`}, 'Blog', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/blog.xml?paged=1`, denyUrlPrefixes: [`${BASE}/blog/compliance/`] })})`;
 });
 after(async () => { server.close(); await stopBoss(); await closeDb(); });
 
@@ -61,13 +72,13 @@ test("each episode's audio is found by its title", () => {
 });
 
 test("an opened archive comes in as history, and only episodes whose notes score at the floor are transcribed", async () => {
-  const result = await importSource(SOURCE);
+  const result = await importSource({ id: SOURCE });
   assert.deepEqual([result.found, result.created, result.withAudio], [3, 3, 3]);
   const rows = await sql<{ id: string; title: string; backfill: boolean; backfill_reason: string; audio_url: string }[]>`
     SELECT a.id, a.title, a.backfill, a.backfill_reason, e.audio_url FROM articles a JOIN archive_episodes e ON e.article_id = a.id WHERE a.source_id = ${SOURCE} ORDER BY a.title`;
   assert.ok(rows.every((r) => r.backfill && r.backfill_reason === "archive"), "history: not today, not in the daily");
   assert.deepEqual(rows.map((r) => r.audio_url), [1, 2, 3].map((n) => `${BASE}/audio/${n}.mp3`));
-  assert.deepEqual((await importSource(SOURCE)).created, 0, "a second import adds nothing");
+  assert.deepEqual((await importSource({ id: SOURCE })).created, 0, "a second import adds nothing");
 
   // Scores of the notes: one above the floor, one below, one not analysed yet.
   const [high, low] = rows;
@@ -99,4 +110,11 @@ test("an opened archive comes in as history, and only episodes whose notes score
   assert.equal(episode!.transcript_chars, TRANSCRIPT.trim().length);
   assert.equal((await sql`SELECT status FROM receipts WHERE id = ${episode!.receipt_id}`)[0]!.status, "completed");
   assert.deepEqual(await episodesToTranscribe(10).then((ids) => ids.filter((id) => rows.some((r) => r.id === id))), [], "done once");
+});
+
+test("a blog's older pages come in until the first empty one, through the source's own filters", async () => {
+  const result = await importSource({ id: `${SOURCE}-blog`, pages: { url: `${BASE}/blog.xml?paged={n}`, to: 5 } });
+  assert.deepEqual([result.found, result.created, result.withAudio], [2, 2, 0], "the excluded article stays out; page 3 is empty");
+  const urls = (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id = ${`${SOURCE}-blog`} ORDER BY url`).map((r) => r.url);
+  assert.deepEqual(urls, [`${BASE}/blog/tips/a`, `${BASE}/blog/tips/c`]);
 });

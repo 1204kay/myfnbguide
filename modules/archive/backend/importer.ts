@@ -6,8 +6,11 @@ import { sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { queueProcessing } from "@aihot/backend/jobs/content";
 import { guardedFetch } from "@aihot/backend/lib/http-fetch";
+import { noiseFiltered } from "@aihot/backend/sources/collect";
 import { fetchRss } from "@aihot/backend/sources/rss";
-import type { SourceRow } from "@aihot/backend/sources/types";
+import { allowed } from "@aihot/backend/sources/web-list";
+import type { Candidate, SourceRow } from "@aihot/backend/sources/types";
+import type { ArchivePlan } from "../plan.ts";
 
 const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@" });
 const key = (title: unknown) => String(title ?? "").replace(/\s+/g, " ").trim();
@@ -31,23 +34,41 @@ export interface ImportResult {
   withAudio: number;
 }
 
-/** Takes in every entry of the source's feed that the site does not have yet. Entries it has are recorded too. */
-export async function importSource(sourceId: string): Promise<ImportResult> {
+/** One listing of the source: its entries, through the source's own URL and noise filters as the collection applies them. */
+async function readListing(source: SourceRow, feedUrl: string): Promise<{ listed: number; candidates: Candidate[]; audio: Map<string, { url: string; type: string }> }> {
+  const page = { ...source, config: { ...source.config, feedUrl } };
+  const read = await fetchRss(page, { force: true });
+  const feed = await guardedFetch(feedUrl, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 });
+  return {
+    listed: read.candidates.length,
+    candidates: read.candidates.filter((c) => allowed(c.url, source) && !noiseFiltered(c, source)),
+    audio: feed.status === 200 ? audioByTitle(feed.text()) : new Map(),
+  };
+}
+
+/** Takes in every entry of the source's feed (and of its older pages) that the site does not have yet. Entries it has are recorded too. */
+export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
+  const sourceId = plan.id;
   const [source] = await sql<SourceRow[]>`SELECT * FROM sources WHERE id = ${sourceId}`;
   if (!source || source.kind !== "rss") throw new Error(`archive: ${sourceId} is not an RSS source`);
-  const read = await fetchRss(source, { force: true });
-  const feed = await guardedFetch(source.config.feedUrl as string, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 });
-  const audio = feed.status === 200 ? audioByTitle(feed.text()) : new Map();
+  const urls = plan.pages ? Array.from({ length: plan.pages.to }, (_, i) => plan.pages!.url.replace("{n}", String(i + 1))) : [source.config.feedUrl as string];
+  let found = 0;
   let created = 0;
   let withAudio = 0;
-  for (const c of read.candidates) {
-    const res = await upsertMaterial({ ...c, sourceId, via: "archive", backfill: "archive" });
-    if (res.created || res.revised || res.processingNeeded) await queueProcessing(res.articleId);
-    if (res.created) created += 1;
-    const file = audio.get(key(c.title));
-    if (file) withAudio += 1;
-    await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
-      VALUES (${res.articleId}, ${sourceId}, ${file?.url ?? null}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+  for (const url of urls) {
+    const { listed, candidates, audio } = await readListing(source, url);
+    // The end of the archive is an empty page; a page whose entries the filters all drop is not.
+    if (!listed) break;
+    found += candidates.length;
+    for (const c of candidates) {
+      const res = await upsertMaterial({ ...c, sourceId, via: "archive", backfill: "archive" });
+      if (res.created || res.revised || res.processingNeeded) await queueProcessing(res.articleId);
+      if (res.created) created += 1;
+      const file = audio.get(key(c.title));
+      if (file) withAudio += 1;
+      await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
+        VALUES (${res.articleId}, ${sourceId}, ${file?.url ?? null}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+    }
   }
-  return { sourceId, found: read.candidates.length, created, withAudio };
+  return { sourceId, found, created, withAudio };
 }

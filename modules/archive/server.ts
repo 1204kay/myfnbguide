@@ -3,7 +3,7 @@
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { sql } from "@aihot/backend/db";
-import { ARCHIVE_SOURCES } from "./plan.ts";
+import { ARCHIVE } from "./plan.ts";
 import { importSource } from "./backend/importer.ts";
 import { episodesToTranscribe, transcribeEpisode } from "./backend/transcribe.ts";
 
@@ -26,7 +26,7 @@ export default defineServerModule({
       run: async () => {
         const done = new Set((await sql<{ source_id: string }[]>`SELECT DISTINCT source_id FROM archive_episodes`).map((r) => r.source_id));
         const results = [];
-        for (const sourceId of ARCHIVE_SOURCES.filter((id) => !done.has(id))) results.push(await importSource(sourceId));
+        for (const plan of ARCHIVE.filter((p) => !done.has(p.id))) results.push(await importSource(plan));
         return { imported: results };
       },
     },

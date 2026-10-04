@@ -231,7 +231,6 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 文件 | 改了什么 | 去向 |
 |---|---|---|
 | `apps/web/app/features/report/format.ts` | 报头的数字可以不显示某一项（单位写 `null`）；本站不显示「一手发布」。作者整合 #100 时去掉了这一项 | 跟行业无关，可以单独提给作者 |
-| `packages/backend/src/sources/config-keys.ts` | 暂时还认已删掉的旧键 `_aihot.initialBackfillOnly`：服务器上 72 个来源的配置还带着它，作者的新代码遇到不认识的键会让该来源每次采集都失败，作者的迁移规则又不许在迁移里批量 UPDATE | 服务器跑完 `myfnb/drop-backfill-only-2026-10-04.sql`（§9.1）以后删掉这一行，跟作者一致 |
 | `tests/` 里十几个文件 | 作者按 AI 示例行业写的例子改成从行业包取（类别、内容类型、分类标签、只属于一个主题的标签）；公司主题、新模型发布这类我们没有的功能按配置跳过；`analyze.test.ts` 用餐饮例子；分享图测试按 `showScore` 算 | 我们自己的；同步上游时照同一原则处理新测试 |
 
 ### 5.6 风险处理（按最低风险定案）
@@ -262,6 +261,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 - `~/checks-branch.sh <分支>`：把 Windows 仓库的某个分支拉进 WSL（克隆在 `~/myfnbguide`，PostgreSQL 在 `~/pgenv`、数据 `~/pgdata`、端口 5433），跑类型检查、网站构建与网页测试、迁移、后端测试、**完整导入信源**（`seed.ts`）、冒烟，并逐页抓 15 个页面查残留字样。日志在 `~/checks/`。
 - 单独跑几个后端测试文件：`cd ~/myfnbguide && git fetch -q /mnt/c/myfnbguide claude/myfnb-handoff && git reset -q --hard FETCH_HEAD && PATH="$HOME/pgenv/bin:$PATH" DATABASE_URL=postgres://postgres@127.0.0.1:5433/myfnb_test node --test-global-setup=tests/databases.ts --import ./tests/databases.ts --test --test-concurrency=1 --test-timeout=120000 tests/<文件>`（数据库没起来先照 `~/checks-branch.sh` 里的 `pg_ctl` 启动）。
 - 给作者的 PR 用 `~/ci-order.sh <分支>`（按作者 CI 的顺序，只导入主题）。
+- `~/checks.sh` 也对 `myfnb/` 下的脚本跑类型检查（`myfnb/tsconfig.json`，10/4 加）：作者改了 `extractFromUrl` 的参数，`build-gold.ts` 照旧写法传参，评测准备材料时每次都退出，合并时没有任何检查发现。
 - 本机检查要导入全部信源：10/2 有一次本机全过，GitHub 的检查却在导入信源时失败（企业名里夹着 NUL 字符）。
 - WSL 里另有 `postgrest`、nix 的 postgres 等进程，不是我们的，不要动。
 

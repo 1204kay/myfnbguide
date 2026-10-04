@@ -70,7 +70,9 @@ if (fromFeeds.length) {
       const a = done.get(r.url);
       if (a && !(feedFirst && c?.bodyText)) { byId.set(r.id, a); continue; }
       let body = c?.bodyText || null;
-      if (!body && /^https?:\/\//.test(r.url)) body = (await extractFromUrl(r.url, { allowJina: false, subject: "gold" }))?.text ?? null;
+      // The page itself, read locally; extractFromUrl falls back to Jina, which this deployment has no key for: a page
+      // that cannot be read here is "not retrievable" (?), never the end of the whole build.
+      if (!body && /^https?:\/\//.test(r.url)) body = (await extractFromUrl(r.url, "gold").catch(() => null))?.text ?? null;
       if (!c && !body) continue;
       byId.set(r.id, {
         id: r.id, title: c?.title || r.title, language: c?.language ?? null, published_at: c?.publishedAt ?? null,

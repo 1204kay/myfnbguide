@@ -15,7 +15,11 @@ import { REPO_ROOT } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import { buildScoreInput, runSelectionScores, SCORE_SYSTEM, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
 import { modelFor } from "@aihot/backend/editorial/models";
-import { chatJson, markReceiptsCompleted } from "@aihot/backend/providers/llm";
+import { chatJson } from "@aihot/backend/providers/llm";
+import { completeReceipt } from "@aihot/backend/providers/receipts";
+
+// The engine dropped markReceiptsCompleted: each answer used here is completed like the engine does.
+const markReceiptsCompleted = async (ids: number[]) => { for (const id of ids) await completeReceipt(sql, id); };
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,

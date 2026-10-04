@@ -26,9 +26,7 @@ const KEYS: Record<SourceRow["kind"], string[]> = {
 
 // Objects with fixed keys (headers and bodyJson are request data, free-form).
 const NESTED: Record<string, string[]> = {
-  // initialBackfillOnly: the fork's old opt-in, now what collection always does; still in this deployment's
-  // stored configs until myfnb/drop-backfill-only-2026-10-04.sql runs, then this entry goes.
-  _aihot: ["initialBackfillLimit", "initialBackfillMonths", "initialBackfillOnly"],
+  _aihot: ["initialBackfillLimit", "initialBackfillMonths"],
   ingestNoiseFilter: ["dropMarkers", "dropMarkersTitleOnly", "keepIfMatches"],
   itemUrlPrefixRewrite: ["from", "to"],
   requireBoolean: ["path", "equals"],

@@ -8373,3 +8373,4 @@ rss-baeckerei-schefer	Bäckerei Schefer 博客（瑞士 · 面包店老板）	ht
 rss-toni-negre	Toni Negre 博客（西班牙 · 餐饮食材供应商）	https://toninegre.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者是供应商，不是店主；而且 2023 年 11 月以后停更。
 rss-pienissimo	Pienissimo（意大利 · 里米尼 Bounty 店主 Giuliano Lanzetti，兼卖餐厅营销课程）	https://www.pienissimo.com/feed/	2026-10-05·店主博客（四路搜索，子代理核对）	不接	作者确是店主，规则通过。不接的原因有三条：2024 年 7 月以后停更两年多；订阅不能翻页，取不到存档；内容主要是推销营销课程的文章，不是自家店的经营经过。
 web-hostelero-fiestero	Hostelero Fiestero（西班牙 · 前餐厅老板，现卖培训课程）	没有找到订阅	2026-10-05·店主博客（四路搜索，子代理核对）	不接	有三条原因：作者已不经营店，现在卖课程；没有带日期的博客和订阅；网站对我们的抓取器返回机器人验证页。
+pod-restaurant-technology-podcast	Restaurant Technology Podcast（美国 · Cali BBQ 老板的播客）	https://api.substack.com/feed/podcast/3892076.rss	2026-10-05·复查托管平台	停用	订阅由 Substack 托管（api.substack.com），10/4 已定 Substack 条款禁止爬取、整个平台不接（规则 3）；这个来源接在那之前，10/5 请用户在服务器停用

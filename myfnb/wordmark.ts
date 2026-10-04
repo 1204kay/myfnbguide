@@ -12,7 +12,7 @@ const font = opentype.parse(readFileSync(path.join(pkg, "files/noto-sans-sc-lati
 
 /** Cap height in the mark's units, and the space between two letters' inks. */
 const CAP = 100;
-const TRACK = CAP * 0.22;
+const TRACK = CAP * 0.3;
 const parts = [{ text: "MY", accent: true }, { text: "F&B", accent: false }];
 
 const scale = CAP / (font.tables.os2.sCapHeight as number);

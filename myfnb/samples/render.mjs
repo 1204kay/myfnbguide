@@ -1,4 +1,4 @@
-// 把 pages.mjs 的五个样页排成手机宽度的页面：每页一张长图（微信里转发），另合成一份 PDF（原文链接点得开，WhatsApp 里转发）。
+// 把 pages.mjs 的五个样页排成手机宽度的页面：每页一张长图（JPG）（微信里转发），另合成一份 PDF（原文链接点得开，WhatsApp 里转发）。
 // 用法：node myfnb/samples/render.mjs   输出在 .data/samples/（不进仓库）
 import { mkdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -139,10 +139,28 @@ writeFileSync(path.join(OUT, "samples-all.html"), book);
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3 });
 const tab = await ctx.newPage();
+// 长页切成几张，每张不超过 SLICE 高：太高太大的图在手机上传不上去（10/4 实测 1.1MB、8,000 多像素高的被拒）。
+// 只在段落、卡片之间切，不切断文字。
+const SLICE = 2000;
 for (const { p } of all) {
   await tab.goto(pathToFileURL(path.join(OUT, `${p.file}.html`)).href);
-  await tab.screenshot({ path: path.join(OUT, `${p.file}.png`), fullPage: true });
-  console.log(`${p.file}.png  ${await tab.evaluate(() => document.documentElement.scrollHeight)} px tall`);
+  const { height, gaps } = await tab.evaluate(() => ({
+    height: document.documentElement.scrollHeight,
+    gaps: [...document.querySelectorAll("header, nav, h1, h2, p, li, .card, .facts, table, footer")].map((e) => Math.ceil(e.getBoundingClientRect().bottom + window.scrollY) + 4),
+  }));
+  // 切成高度相近的几张：每一刀取离等分点最近的段落间隙。
+  const n = Math.ceil(height / SLICE);
+  const cuts = [0];
+  for (let k = 1; k < n; k++) {
+    const target = (k * height) / n;
+    cuts.push(gaps.filter((g) => g > cuts.at(-1) + 300).reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a)));
+  }
+  cuts.push(height);
+  for (let i = 1; i < cuts.length; i++) {
+    const name = cuts.length > 2 ? `${p.file}-${i}.jpg` : `${p.file}.jpg`;
+    await tab.screenshot({ path: path.join(OUT, name), fullPage: true, type: "jpeg", quality: 80, clip: { x: 0, y: cuts[i - 1], width: 390, height: cuts[i] - cuts[i - 1] } });
+    console.log(`${name}  ${cuts[i] - cuts[i - 1]} px tall`);
+  }
 }
 await tab.goto(pathToFileURL(path.join(OUT, "samples-all.html")).href);
 await tab.emulateMedia({ media: "print" });

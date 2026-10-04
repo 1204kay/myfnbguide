@@ -184,3 +184,14 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   }
   return problems;
 }
+
+/** What kind of problem a sentence of checkStory (or readOutput) names, for counting which check holds cases back. */
+export function problemKind(problem: string): string {
+  const number = /^(.+?)(?:的数字|里的 [\d.]+) .*在原文里找不到/.exec(problem);
+  if (number) return `数字不在原文：${number[1]!.replace(/第 \d+ 段/, "正文").replace(/（.*）/, "")}`;
+  const word = /用了“([^”]+)”/.exec(problem);
+  if (word) return `用词：${word[1]}`;
+  for (const [pattern, kind] of [[/太长/, "太长"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"],
+    [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
+  return "其他";
+}

@@ -7,6 +7,7 @@ import { publicSourceName } from "@aihot/backend/publication/rules";
 import { selectedCondition } from "@aihot/backend/publication/scope";
 import { categoryTitle, CATEGORIES, findSituation, SITUATIONS } from "../situations.ts";
 import type { CaseCard, CasePage, CaseStory, ReferenceHome, ShopPage, SituationPage } from "../types.ts";
+import { problemKind } from "./checks.ts";
 
 /** Source tags that say what a source is, not where it is. */
 const KINDS = new Set(["媒体", "协会", "平台", "播客", "服务商"]);
@@ -106,11 +107,20 @@ export async function readShop(key: string, now = new Date()): Promise<ShopPage 
   return { key, shop: rows[0]!.story.shop, cases: rows.map((r) => card(r, r.story.lead)) };
 }
 
-/** How far the writing is, in numbers only (like /api/site/stats): the selected items' cases by status. */
-export async function readStatus(now = new Date()): Promise<Record<string, number>> {
-  const rows = await sql<{ status: string; n: number }[]>`
-    SELECT c.status, count(*)::int AS n FROM reference_cases c
+/**
+ * How far the writing is, in numbers only (like /api/site/stats): the selected items' cases by status, and
+ * how many held cases each kind of problem stopped (a case counts once for each kind it has).
+ */
+export async function readStatus(now = new Date()): Promise<{ counts: Record<string, number>; held: Record<string, number> }> {
+  const rows = await sql<{ status: string; problems: string[] }[]>`
+    SELECT c.status, c.problems FROM reference_cases c
     JOIN publications p ON p.article_id = c.article_id
-    WHERE ${selectedCondition(now)} GROUP BY c.status`;
-  return Object.fromEntries(rows.map((r) => [r.status, r.n]));
+    WHERE ${selectedCondition(now)}`;
+  const counts: Record<string, number> = {};
+  const held: Record<string, number> = {};
+  for (const r of rows) {
+    counts[r.status] = (counts[r.status] ?? 0) + 1;
+    if (r.status === "held") for (const kind of new Set(r.problems.map(problemKind))) held[kind] = (held[kind] ?? 0) + 1;
+  }
+  return { counts, held };
 }

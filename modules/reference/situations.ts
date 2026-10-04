@@ -90,7 +90,7 @@ export const SITUATIONS: Situation[] = [
   { slug: "retention", category: "people", title: "员工留不住", dek: "新人来了又走，老员工也在考虑离开。", groups: [
     g("beyond-pay", "薪水以外的理由", "留住人的从来不只是薪水"),
     g("first-weeks", "头几周怎么带", "新人最容易在头几周离开"),
-    g("workload", "排班和工作量", "累到撑不住的人会走"),
+    g("workload", "排班和工作量", "工作量长期过大，人就会离开"),
   ] },
   { slug: "key-person-leaves", category: "people", title: "厨师或骨干突然离职", dek: "主厨或店长一走，菜的味道和店里的运转都受影响。", groups: [
     g("write-it-down", "把配方和流程写下来", "不只存在一个人的脑子里"),

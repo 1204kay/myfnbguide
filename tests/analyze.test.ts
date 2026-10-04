@@ -23,7 +23,7 @@ const X_SOURCE = `test-analyze-x-${T}`;
 
 interface Req { step: AnalysisStep; marker: string; user: string }
 const requests: Req[] = [];
-const MARKERS = ["CLEAR", "RESCUE", "LOW", "OFFTOPIC", "BARE", "VAGUE", "THIN", "SENSITIVE", "推文"];
+const MARKERS = ["CLEAR", "RESCUE", "LOW", "OFFTOPIC", "BARE", "VAGUE", "THIN", "SENSITIVE", "推文", "WORDY"];
 // The scores sit a few points around the pack's T1 threshold and understand floor, so each case means
 // the same after a site recalibrates them: selected when the two add up to 2 × T1, written like a
 // selected item when they add up to more than 2 × FLOOR, translated otherwise.
@@ -31,7 +31,7 @@ const T1 = tierThreshold("T1")!;
 const FLOOR = UNDERSTAND_FLOOR;
 const scoreAnswers: Record<string, number[]> = {
   CLEAR: [T1 + 3, T1 - 1], RESCUE: [FLOOR + 1, FLOOR], LOW: [FLOOR, FLOOR - 1], THIN: [T1, T1], SENSITIVE: [T1, T1], 推文: [FLOOR, FLOOR],
-  BARE: [FLOOR - 2, FLOOR - 4], VAGUE: [T1, T1 + 2],
+  BARE: [FLOOR - 2, FLOOR - 4], VAGUE: [T1, T1 + 2], WORDY: [T1, T1],
 };
 
 // One stub stands in for DashScope (prefilter, structure), Zhipu (score, understand) and DeepSeek (summarize).
@@ -45,6 +45,9 @@ const provider = await stub((_hit, req) => {
   const answer = (content: unknown) => ({ id: `stub-${requests.length}`, model: "stub", choices: [{ message: { content: typeof content === "string" ? content : JSON.stringify(content) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } });
   if (step === "prefilter") return answer({ label: marker === "OFFTOPIC" || marker === "BARE" ? "BLOCK" : marker === "VAGUE" ? "UNKNOWN" : "PASS", reason: "测试" });
   if (step === "score") return answer({ attentionScore: scoreAnswers[marker]!.shift() });
+  // Copy with a word the site keeps from readers (industry/wording.ts), and its mended form.
+  if (step === "understand" && marker === "WORDY") return answer({ itemType: "practice_howto", authorRole: "principal", tags: ["实战/经验"], editorialJudgment: "原文讲的是 WORDY 的排班", titleZh: "播客讲了 WORDY 的三件事", summaryZh: "WORDY 的摘要。第二句补充一个关键数字。" });
+  if (step === "wording") return answer({ titleZh: "播客谈到 WORDY 的三件事", summaryZh: "WORDY 的摘要。第二句补充一个关键数字。", reasonZh: "原文谈的是 WORDY 的排班" });
   if (step === "understand") {
     if (marker === "SENSITIVE") return new Reply(400, { contentFilter: [{ level: 1, role: "user" }], error: { code: "1301", message: "系统检测到输入或生成内容可能包含不安全或敏感内容" } });
     return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "工资", "外劳", "不存在的标签"], editorialJudgment: `理由 ${marker}`, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
@@ -111,6 +114,17 @@ test("a selected item: prefilter, two scores, the content understanding and the 
   assert.ok(understand.user.startsWith("请按系统规则理解以下单篇材料，一次返回全部六个字段。"));
   const prefilter = requests.find((q) => q.marker === "CLEAR" && q.step === "prefilter")!;
   assert.ok(JSON.parse(prefilter.user).includes("【材料质量】"), "the material context, sent as a JSON string");
+});
+
+test("a word the site keeps from readers goes back once to be changed; copy without one is not sent", async () => {
+  const id = await article("WORDY");
+  await analyzeArticle(id);
+  assert.deepEqual(calls("WORDY").filter((s) => s === "wording").length, 1);
+  const r = await row(id);
+  assert.deepEqual([r.title_zh, r.reason_zh, r.receipt_ids.length], ["播客谈到 WORDY 的三件事", "原文谈的是 WORDY 的排班", 6], "the mended copy is stored, its call among the receipts");
+  const sent = requests.find((q) => q.marker === "WORDY" && q.step === "wording")!;
+  assert.ok(sent.user.includes("标题用了“讲”") && sent.user.includes("收录理由用了“讲”") && sent.user.includes("原题：WORDY"), "each use named, with the original title");
+  assert.ok(!requests.some((q) => q.step === "wording" && q.marker !== "WORDY"), "the other items' copy uses none");
 });
 
 test("structure retains grounded conditions, rejects invented or unseen quotes, and does not infer missing scope", async () => {

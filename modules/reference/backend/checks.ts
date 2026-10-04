@@ -2,6 +2,7 @@
 // (examples excepted: their numbers are the program's own), and the reader-facing wording rules hold
 // (myfnb/HANDOFF.md §3, §3.1). No model is asked; a case that fails goes back to the writer with the problems
 // named, at most twice (backend/write.ts), and is held back if it still fails.
+import { READER_WORDING } from "@aihot/industry/wording";
 import type { Block, CaseStory } from "../types.ts";
 import { exampleNumbers } from "./examples.ts";
 import { SITUATIONS } from "../situations.ts";
@@ -78,31 +79,11 @@ export function unfoundNumbers(text: string, source: Set<string>): string[] {
 }
 
 /**
- * Words a reader must not meet (HANDOFF §3): spoken or slang words, promises about the content, “同行”,
- * a country left as “全国/本地”, teaching the reader. Each with what to write instead, for the next try.
+ * Words a reader must not meet: the site's list (industry/wording.ts, also read when items are written), and
+ * two of a story's own (HANDOFF §3.1). Each with what to write instead, for the next try.
  */
-const WORDING: Array<[RegExp, string]> = [
-  // 演讲、主讲、讲座、讲究、讲话（名词）这类书面词不算。
-  [/(?<![演主听宣])讲(?![述解座究义课台话师稿])/u, "“讲”改成“说”“介绍”“谈到”"],
-  [/砍|废掉|废了/u, "“砍”“废掉”改成“削减”“取消”"],
-  [/搞|弄(?!清)/u, "“搞”“弄”改成“做”“处理”"],
-  [/啥|咋/u, "“啥”“咋”改成“什么”“怎么”"],
-  [/掉了/u, "“掉了”改成“下降”“失去”"],
-  [/坑/u, "“坑”改成“风险”“陷阱”"],
-  [/档口|摊档/u, "“档口”“摊档”改成“摊位”"],
-  [/逛/u, "“逛”改成“浏览”“走访”“参观”"],
-  [/关掉/u, "“关掉”改成“关闭”"],
-  [/扛|干活|管用/u, "口语词，改成“承担”“工作”“有效”这类书面说法"],
-  // Japanese words written in Chinese characters that a Chinese reader does not use this way.
-  [/配膳|下膳|即战力|即戦力|月额|现地调查/u, "日文词，换成中文说法（送餐、收碗盘、马上能独当一面的人、月费、现场勘查）"],
-  [/网红/u, "“网红”改成“在社交媒体上走红”"],
-  [/老板们|别家店|做餐饮的人/u, "改成“经营者”“其他店家”"],
-  [/同行/u, "不用“同行”，写“其他店家”“经营者”或店名"],
-  [/全国|我国|国内/u, "写出具体的国家名"],
-  [/本地|本市/u, "写成“当地”或具体的城市名"],
-  [/限额以上/u, "统计口径换成白话"],
-  [/用得上|帮你|少走弯路|干货|揭秘|必看|权威|最全/u, "不替内容担保，不说读者会得到什么"],
-  [/你应该|建议你|务必|一定要|老板要(?!求)/u, "只说明这家店怎么做，不教读者"],
+const WORDING: ReadonlyArray<readonly [RegExp, string]> = [
+  ...READER_WORDING,
   [/先看|(?<!不)再看(?!重)|首先|其次|第一步|第二步/u, "不用说明顺序的词"],
   [/原价率|原価率/u, "写成“食材成本率”"],
 ];

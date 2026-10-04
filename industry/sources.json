@@ -1305,7 +1305,7 @@
     },
     {
       "id": "pod-your-life-and-restaurant",
-      "name": "Your Life and Restaurant（美国 · 播客）",
+      "name": "Your Life and Restaurant（美国 · 家庭餐馆老板的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/1625317.rss",

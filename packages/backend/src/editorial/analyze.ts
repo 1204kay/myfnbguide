@@ -26,6 +26,7 @@ import {
 } from "./writing.ts";
 import { CATEGORY_GUIDE, CATEGORY_TAGS, ENTITIES, ENTITY_TAGS, ITEM_TYPES, normalizeTags, TOPIC_TAGS } from "./vocabulary.ts";
 import { promptText, promptVersion } from "./prompts.ts";
+import { wordingProblems } from "./wording.ts";
 
 export { buildMaterial, loadAnalyzeInput, type AnalyzeInputArticle };
 
@@ -35,6 +36,7 @@ export const PROMPT_VERSIONS = {
   understand: promptVersion("understand"),
   summarize: promptVersion("summarize-article", "summarize-article-empty", "summarize-short-post", "summarize-short-post-quoted", "summarize-long-post", "summarize-long-post-quoted", "identity-context"),
   structure: promptVersion("structure"),
+  wording: promptVersion("mend-wording"),
 } as const;
 /** Every step's prompt, as stored on each judgement. */
 export const SELECTION_PROMPT_VERSION = [PROMPT_VERSIONS.prefilter, PROMPT_VERSIONS.score].join("+");
@@ -368,6 +370,37 @@ export async function runUnderstand(a: AnalyzeInputArticle, opts: StepOpts = {})
   };
 }
 
+export const MEND_SYSTEM = promptText("mend-wording");
+const MendSchema = z.object({ titleZh: z.string().trim().min(1), summaryZh: z.string().trim().min(1), reasonZh: z.string().trim().nullable().catch(null) });
+
+/**
+ * Written copy that uses a word the site keeps from its readers (industry/wording.ts) goes back once, those words
+ * named, to change only them: the writing prompts say so too, but the model still wrote 讲 in 64 of 166 selected
+ * items (10/5). The mended copy keeps the identity guard and is used only when it leaves fewer such words.
+ */
+async function mendWording(a: AnalyzeInputArticle, w: AnalysisRun["writing"], opts: StepOpts): Promise<AnalysisRun["writing"]> {
+  if (!w || (w.kind !== "understand" && w.kind !== "summarize")) return w;
+  const problems = wordingProblems(w);
+  if (!problems.length) return w;
+  const t = translateInputOf(a);
+  checkAnalysisRunning();
+  const res = await chatJson({
+    model: await modelFor("wording"), purpose: "mend_wording", subject: subjectOf(a), promptVersion: PROMPT_VERSIONS.wording, system: MEND_SYSTEM,
+    user: [
+      `来源：${t.sourceName ?? "（未注明）"}`, `原题：${t.title}`,
+      `中文稿：\n${JSON.stringify({ titleZh: w.titleZh, summaryZh: w.summaryZh, reasonZh: w.reasonZh })}`,
+      `问题：\n${problems.map((p) => `- ${p}`).join("\n")}`,
+    ].join("\n\n"),
+    schema: MendSchema, temperature: 0.1, maxTokens: 2048, attemptTag: tagged(opts.attemptTag, "wording"),
+  });
+  const copy = finalizeCopy(t, { titleZh: res.data.titleZh, summaryZh: res.data.summaryZh });
+  const mended = { titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: w.reasonZh === null ? null : res.data.reasonZh || w.reasonZh };
+  const paid = { receiptIds: [...w.receiptIds, res.receiptId], reused: w.reused && res.reused };
+  // A guard that emptied the title or summary (a company the input does not name) leaves the first copy.
+  if (!mended.titleZh || !mended.summaryZh || wordingProblems(mended).length >= problems.length) return { ...w, ...paid };
+  return { ...w, ...mended, identityGuard: copy.identityGuard ?? w.identityGuard, ...paid };
+}
+
 /** The title/summary prompts (articles, long and short posts). */
 async function runSummarize(a: AnalyzeInputArticle, opts: StepOpts): Promise<NonNullable<AnalysisRun["writing"]>> {
   const t = translateInputOf(a);
@@ -418,7 +451,7 @@ export async function runAnalysis(a: AnalyzeInputArticle, opts: StepOpts = {}): 
     const near = sum !== null && (sum >= scores!.threshold * SCORE_CALLS || sum > UNDERSTAND_FLOOR * SCORE_CALLS);
     const s = await structure;
     if ("error" in s) throw s.error;
-    const writing = (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts));
+    const writing = await mendWording(a, (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts)), opts);
     return { prefilter, scores, writing, structure: s.value };
   } finally {
     // A score/writing error or deploy must not let the job finish while a paid structure request

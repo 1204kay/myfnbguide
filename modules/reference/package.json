@@ -10,6 +10,7 @@
   "dependencies": {
     "@aihot/backend": "*",
     "@aihot/contracts": "*",
+    "@aihot/industry": "*",
     "zod": "4.6.5"
   }
 }

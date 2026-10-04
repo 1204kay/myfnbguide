@@ -68,8 +68,8 @@ export function unfoundNumbers(text: string, source: Set<string>): string[] {
     const token = m[0];
     const value = Number(token.replace(/,/g, ""));
     if (Number.isFinite(value) && value <= SMALL && !token.includes(".")) continue;
-    // "120 万" for an original's "1.2 million".
-    const unit = /^\s*([万亿])/.exec(normal.slice(m.index + token.length))?.[1];
+    // "120 万", "300 多万" for an original's "1.2 million", "3 million".
+    const unit = /^\s*多?([万亿])/.exec(normal.slice(m.index + token.length))?.[1];
     const scaled = unit ? [String(Math.round(value * (unit === "万" ? 10_000 : 100_000_000)))] : [];
     if (![...forms(token), ...scaled].some((f) => source.has(f))) missing.push(token);
   }

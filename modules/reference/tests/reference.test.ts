@@ -40,6 +40,7 @@ test("numbers are looked up in the original in the forms it may write them", () 
   assert.equal(kanjiNumber("一万二千"), 12000);
   const source = sourceNumbers("The bill grew from $865 to $1,503 a week; twenty-six years; 1.2 million guests; 開業二十六年; 1.503 euro");
   assert.deepEqual(unfoundNumbers("每周从 865 涨到 1,503 美元，开店 26 年，120 万客人", source), []);
+  assert.deepEqual(unfoundNumbers("300 多万人", sourceNumbers("more than 3 million people")), []);
   assert.deepEqual(unfoundNumbers("一年多付 33,159 美元，开了 3 家店", source), ["33,159"], "a derived number is not in the original; small counts are words");
   assert.deepEqual(unfoundNumbers("1503 欧元", source), []);
 });

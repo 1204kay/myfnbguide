@@ -8329,3 +8329,9 @@ web-toteat	Toteat（智利）	https://www.toteat.com/blog	2026-10-03·第二十�
 web-consumer-br	Consumer（巴西）	https://programaconsumer.com.br/blog/	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	博客跳到 blog.consumer.com.br，内容很少
 web-urbanpiper	UrbanPiper（印度）	https://www.urbanpiper.com/blog	2026-10-03·第二十一批（没有订阅源的小店网站：系统商博客与日本、巴西小店媒体）	不接	2026-04 以后没有更新
 rss-italia-a-tavola	Italia a Tavola	https://www.italiaatavola.net/rss/feed.xml	2026-10-03·停用（规则 6）	停用	对服务器连续 6 次返回 HTTP 429（10/2 已连续 3 次；本机实测限额每分钟 600 次，我们 2 小时才抓一次），按规则 6 当作对方不欢迎数据中心的机器，不用代理绕
+sub-patlight	Pat Light（Substack）	https://patlight.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取、抓取任何页面或数据，并禁止复制或存储大量内容（规则 3，2026-10-04 读 substack.com/tos）；内容是多店老板的菜单、酒水定价、营收做法，2025-10 起停更
+sub-howmyrestaurantworks	How My Restaurant Works（Substack）	https://howmyrestaurantworks.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；顾问团队，两周一篇，有厨房施工指南和店主访谈
+sub-cheferichuang	Chef Eric Huang（Substack）	https://cheferichuang.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；店主随笔，约一个月一篇
+sub-davidrmann3	Restaurant 101 · David R. Mann（Substack）	https://davidrmann3.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；几乎每天一篇，熟客、团队与名厨访谈混在一起
+sub-schedulefly	Schedulefly（Substack）	https://schedulefly.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；排班软件商自家推广多
+sub-culinarywoman	Culinary Woman（Substack）	https://culinarywoman.substack.com/feed	2026-10-04·店主电子报	不接	Substack 使用条款禁止爬取（规则 3）；名厨八卦、购物与食谱，与经营无关

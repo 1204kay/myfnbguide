@@ -7,7 +7,7 @@ import { filterParams, itemListLd, listPath, pageMeta, readFilters, siteLd } fro
 import type { Screen } from "../components/shell/screens";
 import { Timeline } from "../features/feed/Timeline";
 import { HotTopics } from "../features/feed/HotTopics";
-import { ActiveFilters, CategoryTabs, FeedBar, SearchField } from "../features/feed/Filters";
+import { ActiveFilters, CategoryTabs, FeedBar, PHONE_ROW, PhoneFilterRow, SearchField } from "../features/feed/Filters";
 
 export const handle: Screen = { tab: "featured", name: "精选" };
 export { shouldRevalidate } from "../lib/page-reuse";
@@ -41,6 +41,7 @@ export default function Home() {
     <div className="pb-6">
       {/* Phones: the bar (精选 | 全部, filter, search), the filter in use, today's hot topics, the feed. */}
       <FeedBar base="/" category={filters.category} channel={filters.channel} />
+      {PHONE_ROW && <PhoneFilterRow base="/" category={filters.category} channel={filters.channel} layoutId="featured-cat-phone" />}
       <ActiveFilters base="/" category={filters.category} channel={filters.channel} tag={filters.tag} />
       <div className="hidden lg:block">
         <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">{title}</h1>

@@ -207,6 +207,15 @@ export const REPORTS = {
   dailyScope: "pool" as "selected" | "pool",
 };
 
+/** 精选和全部两个列表。 */
+export const FEED = {
+  /**
+   * 手机上的分类筛选：`"sheet"`（默认）是顶栏的筛选按钮和弹出的选项单；`"row"` 和电脑一样是一排选项，左右滑动。
+   * 用户 10/6：「手机的这个筛选应该要和桌面版的一样，直接展示出来，左右滑动的那种」。
+   */
+  phoneFilter: "row" as "sheet" | "row",
+};
+
 /** 导航（电脑侧栏、手机底栏）。 */
 export const NAV = {
   /**

@@ -1,9 +1,9 @@
 // Feed filters: the channel and category choice (a row of tabs on desktop, a sheet behind the bar's filter
-// button on phones), the phone bar of 精选 and 全部, and search.
+// button on phones, or the row there too: site.ts FEED.phoneFilter), the phone bar of 精选 and 全部, and search.
 import { useEffect, useRef, useState } from "react";
 import { Form, Link, useNavigation, useSearchParams } from "react-router";
 import { CATEGORY_KEYS, CATEGORY_LABELS, CHANNEL_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
-import { SITE } from "@aihot/site";
+import { FEED, SITE } from "@aihot/site";
 import { IconCheck, IconClose, IconFilter, IconSearch } from "../../components/icons";
 import { PillTabs } from "../../components/ui/Tabs";
 import { Sheet } from "../../components/ui/Sheet";
@@ -47,9 +47,30 @@ export function CategoryTabs({ base, category, channel = "all", layoutId, classN
   return <PillTabs items={filterOptions(base, params, "全部").map(o => ({ ...o, prefetch: 'intent' as const }))} active={filterKey(category, channel)} layoutId={layoutId} label="筛选" className={className} />;
 }
 
+/** Phones show the filter as the desktop's row of options, sliding sideways, instead of a button and a sheet (site.ts FEED.phoneFilter). */
+export const PHONE_ROW = FEED.phoneFilter === "row";
+
+/**
+ * Phones (PHONE_ROW): the filter as a row of options under the bar, running to the screen's edges while it slides; the
+ * option in use, which may sit past the edge, is brought into view. Its first option is 不限, as in the sheet: 全部 is the bar's.
+ */
+export function PhoneFilterRow({ base, category, channel, layoutId }: { base: string; category: CategoryKey | null; channel: ChannelKey; layoutId: string }) {
+  const [params] = useSearchParams();
+  const row = useRef<HTMLDivElement>(null);
+  const active = filterKey(category, channel);
+  useEffect(() => {
+    row.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [active]);
+  return (
+    <div ref={row} className="ml-[calc(-1*var(--gutter-l))] mr-[calc(-1*var(--gutter-r))] pb-3 pt-1 lg:hidden">
+      <PillTabs items={filterOptions(base, params, "不限").map((o) => ({ ...o, prefetch: "intent" as const }))} active={active} layoutId={layoutId} label="筛选" className="pl-[var(--gutter-l)] pr-[var(--gutter-r)]" />
+    </div>
+  );
+}
+
 /**
  * The phone bar of 精选 and 全部: the brand, the 精选 | 全部 switch (a filter in use carries over), and
- * buttons for the filter sheet and search.
+ * buttons for the filter sheet (none where the row shows the filter, PHONE_ROW) and search.
  */
 export function FeedBar({ base, category, channel }: { base: "/" | "/all"; category: CategoryKey | null; channel: ChannelKey }) {
   const [params] = useSearchParams();
@@ -78,15 +99,17 @@ export function FeedBar({ base, category, channel }: { base: "/" | "/all"; categ
         }
         actions={
           <>
-            <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
-              <IconFilter size={21} />
-              {filtered && <span aria-hidden="true" className="absolute right-[9px] top-[9px] size-[7px] rounded-full bg-accent ring-2 ring-bg" />}
-            </BarButton>
+            {!PHONE_ROW && (
+              <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
+                <IconFilter size={21} />
+                {filtered && <span aria-hidden="true" className="absolute right-[9px] top-[9px] size-[7px] rounded-full bg-accent ring-2 ring-bg" />}
+              </BarButton>
+            )}
             <SearchButton />
           </>
         }
       />
-      <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={filterKey(category, channel)} />
+      {!PHONE_ROW && <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={filterKey(category, channel)} />}
     </>
   );
 }
@@ -118,10 +141,10 @@ function FilterSheet({ open, onClose, base, active }: { open: boolean; onClose: 
   );
 }
 
-/** Phones: the filter and tag in use as chips under the bar; each one clears itself when tapped. */
+/** Phones: the filter (unless the row shows it, PHONE_ROW) and tag in use as chips under the bar; each one clears itself when tapped. */
 export function ActiveFilters({ base, category, channel, tag }: { base: string; category: CategoryKey | null; channel: ChannelKey; tag: string | null }) {
   const [params] = useSearchParams();
-  const label = channel === "firstParty" ? CHANNEL_LABELS.firstParty : category ? CATEGORY_LABELS[category] : null;
+  const label = PHONE_ROW ? null : channel === "firstParty" ? CHANNEL_LABELS.firstParty : category ? CATEGORY_LABELS[category] : null;
   if (!label && !tag) return null;
   const chip = "inline-flex min-h-11 max-w-full items-center gap-1 rounded-full bg-accent-soft pl-3 pr-2 text-[13px] font-medium text-accent transition-opacity active:opacity-60";
   return (

@@ -213,16 +213,27 @@ export async function membersBySituation(now = new Date()): Promise<Map<string, 
   return out;
 }
 
+/** How many situations 店家谈得最多的事 lists on the home page. */
+const RANKED = 5;
+
+/**
+ * 店家谈得最多的事: the situations the most shops shared a practice in (counted as every count is, tellerOf), then
+ * the most stories, then the library's order. How many shops told it, not how many owners meet it (HANDOFF §3 rule 1).
+ */
+export const rankSituations = (rows: SituationRow[]): SituationRow[] =>
+  [...rows].sort((a, b) => b.count.shops - a.count.shops || b.count.cases - a.count.cases).slice(0, RANKED);
+
 export async function readHome(now = new Date()): Promise<ReferenceHome> {
   const rows = await shownCases(sql`true`, now);
   const stored = await groupings();
   const placed = bySituation(rows);
   const shown = SITUATIONS.filter((s) => (placed.get(s.slug)?.length ?? 0) >= SHOWN_FROM);
+  const listed = new Map(shown.map((s) => [s.slug, situationRow(s, placed.get(s.slug)!, stored.get(s.slug))]));
   return {
     categories: CATEGORIES.map((c) => ({
-      key: c.key, title: c.title,
-      situations: shown.filter((s) => s.category === c.key).map((s) => situationRow(s, placed.get(s.slug)!, stored.get(s.slug))),
+      key: c.key, title: c.title, situations: shown.filter((s) => s.category === c.key).map((s) => listed.get(s.slug)!),
     })).filter((c) => c.situations.length),
+    ranking: rankSituations([...listed.values()]),
     // A kind shows from two stories, like a situation.
     kinds: SHOP_KINDS.map((k) => ({ slug: k.slug, title: k.title, cases: rows.filter((r) => r.story.shop.kind === k.slug).length })).filter((k) => k.cases >= SHOWN_FROM),
     totals: { situations: shown.length, cases: rows.length, countries: new Set(rows.map((r) => r.story.shop.country)).size },

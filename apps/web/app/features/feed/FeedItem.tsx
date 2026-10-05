@@ -66,6 +66,12 @@ function SameEventLine({ item }: { item: FeedItemSummary }) {
 }
 
 /**
+ * A list card's smaller paragraphs (summary, reason) run about 44 characters a line at their own size, as the 17px
+ * body does in the 760px column; across the card's full width at 13px they ran 55.
+ */
+const MEASURE = "max-w-[44em]";
+
+/**
  * The list card: the source with the list's date where it has no date headings (`at`) and 精选 where it mixes
  * (`marked`), the bookmark at the end; the title, three lines of summary, then under a hairline two lines of the
  * reason and the other reports of the same news.
@@ -93,7 +99,7 @@ function ListCard({ item, group, filters, read = false, onOpen, at, marked = fal
       ) : (
         <>
           <ItemText item={item} read={read} onOpen={onOpen} className="mt-1.5 text-[16px] font-[650] leading-[1.5] lg:text-[17px]" />
-          {item.summary && <p className="mt-1 line-clamp-3 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{item.summary}</p>}
+          {item.summary && <p className={`mt-1 line-clamp-3 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px] ${MEASURE}`}>{item.summary}</p>}
         </>
       )}
 
@@ -102,7 +108,9 @@ function ListCard({ item, group, filters, read = false, onOpen, at, marked = fal
       <SameEventLine item={item} />
 
       {item.reason && (
-        <p className="mt-3 line-clamp-2 border-t border-line-soft pt-2.5 text-[13px] leading-[1.6] text-note">{`${ITEM_COPY.reasonLabel}：`}{item.reason}</p>
+        <div className="mt-3 border-t border-line-soft pt-2.5">
+          <p className={`line-clamp-2 text-[13px] leading-[1.6] text-note ${MEASURE}`}>{`${ITEM_COPY.reasonLabel}：`}{item.reason}</p>
+        </div>
       )}
       {group && showSources && (
         <>

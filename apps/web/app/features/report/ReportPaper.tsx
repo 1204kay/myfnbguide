@@ -174,7 +174,8 @@ function Story({ c, dated, className = "" }: { c: ReportCitation; dated: boolean
               c.title
             )}
           </h3>
-          {c.summary && <p className="mt-2 line-clamp-4 text-[15px] leading-[1.85] text-ink-2 [overflow-wrap:anywhere] @[560px]:text-justify">{c.summary}</p>}
+          {/* About 44 characters a line in a one-column page (760px wide it ran 51). */}
+          {c.summary && <p className="mt-2 line-clamp-4 max-w-[44em] text-[15px] leading-[1.85] text-ink-2 [overflow-wrap:anywhere] @[560px]:text-justify">{c.summary}</p>}
           {!!c.related?.length && <Related items={c.related} className="mt-3" />}
           <div className="mt-auto pt-3">
             <Original c={c} />

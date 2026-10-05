@@ -25,7 +25,7 @@ export interface Shop {
 export interface Placement {
   situation: string;
   group: string | null;
-  /** What this shop did, in a sentence: read by the grouping of practices (backend/methods.ts). */
+  /** What this shop did, in a sentence: read by the grouping of practices, and the sum-up of a story it left alone (backend/methods.ts). */
   card: string;
 }
 
@@ -178,6 +178,8 @@ export interface CategoryRows {
 
 export interface ReferenceHome {
   categories: CategoryRows[];
+  /** 店家谈得最多的事: the situations the most shops shared a practice in, at most five (backend/read.ts rankSituations). */
+  ranking: SituationRow[];
   /** The shop kinds with two stories or more. */
   kinds: Array<{ slug: string; title: string; cases: number }>;
   totals: { situations: number; cases: number; countries: number };

@@ -7,7 +7,7 @@ import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { findShopKind } from "../situations.ts";
 import type { ShopPage } from "../types.ts";
-import { Metrics, Page, StoryCards, Title, Updated } from "./ui";
+import { MEASURE, Metrics, Page, StoryCards, Title, Updated } from "./ui";
 
 export const handle: Screen = { home: "reference" };
 
@@ -37,7 +37,7 @@ export default function ShopRoute() {
       <BackRow to="/" label="参考" />
       <div className="mt-3 lg:mt-4"><Kicker>店家</Kicker></div>
       <Title>{nameOf(data)}</Title>
-      <p className="mt-2 text-[13px] leading-[1.5] text-ink-4 [overflow-wrap:anywhere]">
+      <p className={`mt-2 text-[13px] leading-[1.5] text-ink-4 [overflow-wrap:anywhere] ${MEASURE}`}>
         {[original, shop.country, shop.city, findShopKind(shop.kind)?.title, shop.size].filter(Boolean).join(" · ")}
       </p>
       <Metrics items={[[cases.length, "条原文"]]} />

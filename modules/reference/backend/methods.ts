@@ -1,11 +1,12 @@
 // Grouping a situation's stories by the practice they tell (layout D1; the owner, 10/5: "多篇原文说的同一种方式、
 // 方法、经验"): one model call a situation puts the stories that tell the same practice together, titles and sums
 // up each practice, gives each shop in it a line, and writes a short overview of the situation
-// (prompts/methods.md). The program checks that every story is placed once and within its group, that a line
-// holds one shop's stories and a shop has one line, and that every number is from the stories it stands for; a
-// grouping with problems goes back once with them named, and is not stored if it still fails (the page keeps
-// the last good one, or shows one card a story). How many shops and countries stand behind a practice the
-// program counts, never the model.
+// (prompts/methods.md). Where the stories sit the program mends itself (a story outside its group, placed twice
+// or nowhere, one shop on two lines); what the model wrote it checks (lengths, words, every number from the
+// stories it stands for), and a grouping with such problems goes back with them named, at most twice, and is not
+// stored if it still fails (the page keeps the last good one, or shows one card a story). The live run of 10/5
+// failed 19 of 45 situations, most of them on where stories sat or on a length named in zod's English. How many
+// shops and countries stand behind a practice the program counts, never the model.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
@@ -22,8 +23,15 @@ import { sourceNumbers, unfoundNumbers, untranslated, WORDING } from "./checks.t
 export const METHODS_STEP = "referenceMethods";
 const PURPOSE = "reference_methods";
 const SYSTEM = promptFromText("reference/methods", readFileSync(new URL("../prompts/methods.md", import.meta.url), "utf8"));
-/** The prompt and the stored shape: a grouping made under another is not read (backend/read.ts) and is made again. */
-export const PROMPT_VERSION = `reference-methods@${createHash("sha256").update(SYSTEM).digest("hex").slice(0, 10)}`;
+/**
+ * Problems the model can mend in its own text: too long, a word, an untranslated sentence, digits in the overview.
+ * Those go back as an edit of its answer, without the stories (the case writer, given its material again, wrote
+ * afresh and as long as before: write.ts).
+ */
+const textOnly = (problem: string) => /太长|用了“|没有翻译|综述里写了数字/.test(problem);
+const EDIT = "下面是你按系统规则写好的归并（JSON），有以下问题。只修改有问题的地方：太长就删去次要的条件和数字，用词按提示改；不加新的内容和数字，不改 caseIds 和 group。其余保持不变，输出完整的 JSON。";
+/** The prompt, the edit request and the stored shape: a grouping made under another is not read (backend/read.ts) and is made again. */
+export const PROMPT_VERSION = `reference-methods@${createHash("sha256").update(SYSTEM).update(EDIT).digest("hex").slice(0, 10)}`;
 
 /** A story as the grouping reads it: where it sits in the situation, who tells it (read.ts tellerOf) and what it tells. */
 export interface Member {
@@ -48,16 +56,27 @@ export interface Grouping {
   methods: Method[];
 }
 
-// Each ceiling a little above what the prompt asks, so an answer slightly over is not sent back for that alone.
+// The answer's shape only: the lengths are read below, so a long text comes back named in words the model acts on.
 const OutputSchema = z.object({
-  overview: z.string().trim().min(1).max(130),
+  overview: z.string().trim().min(1),
   methods: z.array(z.object({
     group: z.string().trim().min(1).nullable().default(null),
-    title: z.string().trim().min(1).max(24),
-    summary: z.string().trim().min(1).max(160),
-    shops: z.array(z.object({ caseIds: z.array(z.string().trim().min(1)).min(1), line: z.string().trim().min(1).max(30) })).min(1),
+    title: z.string().trim().min(1),
+    summary: z.string().trim().min(1),
+    shops: z.array(z.object({ caseIds: z.array(z.string().trim().min(1)), line: z.string().trim().min(1) })),
   })).min(1),
 });
+
+/**
+ * What the prompt asks of each text, what to cut when it is over, and a ceiling a little above the ask, so an
+ * answer slightly over is not sent back for that alone.
+ */
+const LENGTHS = {
+  overview: { asked: 120, ceiling: 130, cut: "删去次要的原因和做法，只留最常见的几种" },
+  title: { asked: 20, ceiling: 24, cut: "只写怎么做，删去条件和结果" },
+  summary: { asked: 150, ceiling: 160, cut: "删去次要的条件和数字，只留共同的做法和最关键的差别" },
+  line: { asked: 24, ceiling: 30, cut: "删去次要的条件，只留这家店的关键数字或结果" },
+};
 
 /** Which stories a situation holds, who tells them and how they read: a change in any of them groups it again. */
 export function membersKey(members: Member[]): string {
@@ -72,67 +91,103 @@ function tellerNames(members: Member[]): Map<string, string> {
   return names;
 }
 
-/** The model's answer as a grouping, or what is wrong with it, each problem as a sentence it can act on. */
-export function readGrouping(raw: unknown, members: Member[]): { grouping: Grouping | null; problems: string[] } {
+/**
+ * A story the grouping left out, as a practice of its own in its group, a card like any one-shop practice (layout
+ * A7-3): the story's title, its sentence of what the shop did, and its last heading (not an example's) as the
+ * shop's line. Texts the case's checks passed when it was written.
+ */
+function alone(m: Member): Omit<Method, "key"> {
+  const s = m.story;
+  const heading = s.parts.filter((p) => !p.blocks.some((b) => b.type === "example")).at(-1)?.heading;
+  return { group: m.group, title: s.title, summary: s.placements[0]?.card || s.lead, shops: [{ caseIds: [m.id], line: heading || s.title }] };
+}
+
+/** A practice's anchor on the page, from its stories (stable while its first story stays in it). */
+const keyOf = (caseIds: string[]) => createHash("sha256").update([...caseIds].sort()[0]!).digest("hex").slice(0, 8);
+
+/**
+ * The model's answer as a grouping, or what is wrong with it, each problem as a sentence it can act on (named by
+ * its place in the answer: 第 N 个做法, 第 M 家). Where the stories sit is mended, each mend noted in `repairs`:
+ * an id not of this situation is dropped; a story in a practice of another group is taken out of it; a story
+ * placed again keeps its first place; one shop's lines in a practice become its first line, with all their
+ * stories; a practice left without stories is dropped; a story left without a practice stands alone (`alone`).
+ */
+export function readGrouping(raw: unknown, members: Member[]): { grouping: Grouping | null; problems: string[]; repairs: string[] } {
   const parsed = OutputSchema.safeParse(raw);
-  if (!parsed.success) return { grouping: null, problems: parsed.error.issues.slice(0, 6).map((i) => `格式不对：${i.path.join(".")} ${i.message}`) };
+  if (!parsed.success) return { grouping: null, problems: parsed.error.issues.slice(0, 6).map((i) => `格式不对：${i.path.join(".")} ${i.message}`), repairs: [] };
   const out = parsed.data;
   const byId = new Map(members.map((m) => [m.id, m]));
   const names = tellerNames(members);
   const problems: string[] = [];
-  const seen = new Set<string>();
-  const numbersOf = (ids: string[]) => sourceNumbers(ids.flatMap((id) => (byId.get(id) ? [JSON.stringify(byId.get(id)!.story)] : [])).join("\n"));
-  const texts: Array<[string, string]> = [["综述", out.overview]];
-  for (const [i, m] of out.methods.entries()) {
-    const name = `第 ${i + 1} 个做法「${m.title}」`;
-    const tellers = new Set<string>();
-    for (const shop of m.shops) {
-      const own = new Set<string>();
-      for (const id of shop.caseIds) {
+  const repairs: string[] = [];
+  const placed = new Set<string>();
+  const kept = out.methods.flatMap((m, i) => {
+    const name = `第 ${i + 1} 个做法`;
+    const lines: Array<{ n: number; caseIds: string[]; line: string; teller: string | null }> = [];
+    for (const [j, shop] of m.shops.entries()) {
+      const caseIds = shop.caseIds.filter((id) => {
         const member = byId.get(id);
-        if (!member) problems.push(`${name}里的 ${id} 不是这种情况的故事：只用给出的 id`);
+        if (!member) repairs.push(`${name}里的 ${id} 不是这种情况的故事，已删去`);
+        else if (member.group !== m.group) repairs.push(`故事 ${id} 属于${member.group ? `原因组 ${member.group}` : "没有原因组的故事"}，已从${name}移出`);
+        else if (placed.has(id)) repairs.push(`故事 ${id} 放进了不止一处，只留在第一处，已从${name}删去`);
         else {
-          if (member.group !== m.group) problems.push(`${name}放进了另一个原因组的故事 ${id}：只在同一个原因组里归并`);
-          own.add(member.teller);
+          placed.add(id);
+          return true;
         }
-        if (seen.has(id)) problems.push(`故事 ${id} 出现了两次：每篇只放进一个做法的一行`);
-        seen.add(id);
-      }
-      if (own.size > 1) problems.push(`${name}的一行放了不同店家（${[...own].map((t) => names.get(t)).join("、")}）的故事：一行只写一家店`);
-      for (const t of own) {
-        if (tellers.has(t)) problems.push(`${name}里同一家店（${names.get(t)}）写了两行：同一家店的故事合成一行`);
-        tellers.add(t);
-      }
-      // A line's numbers are its shop's; a sum-up's, its practice's.
-      const missing = unfoundNumbers(shop.line, numbersOf(shop.caseIds));
-      if (missing.length) problems.push(`${name}里「${shop.line}」的数字 ${missing.join("、")} 在这家店的故事里找不到：删掉，或改成故事写的数字`);
-      texts.push([`${name}的店家一行`, shop.line]);
+        return false;
+      });
+      const tellers = [...new Set(caseIds.map((id) => byId.get(id)!.teller))];
+      if (tellers.length > 1) problems.push(`${name}第 ${j + 1} 家的那一行放了不同店家（${tellers.map((t) => names.get(t)).join("、")}）的故事：一行只写一家店`);
+      const same = tellers.length === 1 ? lines.find((l) => l.teller === tellers[0]) : undefined;
+      if (same) {
+        same.caseIds.push(...caseIds);
+        repairs.push(`${name}里同一家店（${names.get(tellers[0]!)}）写了两行，已把第 ${j + 1} 家的那一行合进第 ${same.n + 1} 家的那一行`);
+      } else if (caseIds.length) lines.push({ n: j, caseIds, line: shop.line, teller: tellers.length === 1 ? tellers[0]! : null });
     }
-    const missing = unfoundNumbers(m.summary, numbersOf(m.shops.flatMap((s) => s.caseIds)));
-    if (missing.length) problems.push(`${name}的归纳里的数字 ${missing.join("、")} 在这些故事里找不到：删掉，或改成故事写的数字`);
-    texts.push([`${name}的标题`, m.title], [`${name}的归纳`, m.summary]);
+    return lines.length ? [{ ...m, n: i, lines }] : [];
+  });
+  const left = members.filter((m) => !placed.has(m.id));
+  for (const m of left) repairs.push(`故事 ${m.id}（${m.story.title}）没有放进任何做法，已单独列为一个做法`);
+
+  // What the model wrote, in the practices it keeps: its lengths, its words, and every number from the stories it stands for.
+  const numbersOf = (ids: string[]) => sourceNumbers(ids.map((id) => JSON.stringify(byId.get(id)!.story)).join("\n"));
+  const texts: Array<[where: string, text: string, kind: keyof typeof LENGTHS]> = [["综述", out.overview, "overview"]];
+  for (const m of kept) {
+    const name = `第 ${m.n + 1} 个做法`;
+    texts.push([`${name}的标题`, m.title, "title"], [`${name}的归纳`, m.summary, "summary"]);
+    for (const l of m.lines) {
+      const where = `${name}第 ${l.n + 1} 家的那一行`;
+      texts.push([where, l.line, "line"]);
+      const missing = unfoundNumbers(l.line, numbersOf(l.caseIds));
+      if (missing.length) problems.push(`${where}「${l.line}」的数字 ${missing.join("、")} 在这家店的故事里找不到：删掉，或改成故事写的数字`);
+    }
+    const missing = unfoundNumbers(m.summary, numbersOf(m.lines.flatMap((l) => l.caseIds)));
+    if (missing.length) problems.push(`${name}的归纳里的数字 ${missing.join("、")} 在这个做法的故事里找不到：删掉，或改成故事写的数字`);
   }
-  for (const m of members) if (!seen.has(m.id)) problems.push(`故事 ${m.id}（${m.story.title}）没有放进任何做法：每篇都要放进一个做法`);
-  if (/\d/.test(out.overview.normalize("NFKC"))) problems.push("综述里写了数字：综述不写数字");
-  for (const [where, text] of texts) {
+  const digits = out.overview.normalize("NFKC").match(/\d+(?:[.,]\d+)*%?/g);
+  if (digits) problems.push(`综述里写了数字 ${[...new Set(digits)].join("、")}：综述不写数字，删去带数字的说法`);
+  for (const [where, text, kind] of texts) {
+    const { asked, ceiling, cut } = LENGTHS[kind];
+    const length = [...text.replace(/\s/g, "")].length;
+    if (length > ceiling) problems.push(`${where}太长：最多 ${asked} 字，现在 ${length} 字；${cut}`);
     const foreign = untranslated(text);
     if (foreign) problems.push(`${where}有没有翻译的${foreign}：译成中文，只有店名、人名可以保留原文`);
     for (const [pattern, fix] of WORDING) {
       const hit = pattern.exec(text);
-      if (hit) problems.push(`${where}用了“${hit[0]}”：${fix}`);
+      if (hit) problems.push(`${where}用了“${hit[0]}”（“${text.slice(Math.max(0, hit.index - 8), hit.index + hit[0].length + 8)}”）：${fix}`);
     }
   }
-  if (problems.length) return { grouping: null, problems };
+  if (problems.length) return { grouping: null, problems, repairs };
+  const methods = [...kept.map((m) => ({ group: m.group, title: m.title, summary: m.summary, shops: m.lines.map((l) => ({ caseIds: l.caseIds, line: l.line })) })), ...left.map(alone)];
   return {
     grouping: {
       overview: spaced(out.overview),
-      methods: out.methods.map((m) => ({
-        key: createHash("sha256").update([...m.shops.flatMap((s) => s.caseIds)].sort()[0]!).digest("hex").slice(0, 8),
-        group: m.group, title: spaced(m.title), summary: spaced(m.summary),
+      methods: methods.map((m) => ({
+        key: keyOf(m.shops.flatMap((s) => s.caseIds)), group: m.group, title: spaced(m.title), summary: spaced(m.summary),
         shops: m.shops.map((s) => ({ caseIds: s.caseIds, line: spaced(s.line) })),
       })),
     },
-    problems,
+    problems, repairs,
   };
 }
 
@@ -154,9 +209,9 @@ export async function groupSituation(slug: string, members: Member[]): Promise<{
   const model = await modelFor(METHODS_STEP);
   const receiptIds: number[] = [];
   let user = `请按系统规则归并以下故事，只输出 JSON。\n\n${material}`;
-  let read: ReturnType<typeof readGrouping> = { grouping: null, problems: [] };
-  // The first answer, and one more with its problems named.
-  for (let attempt = 0; attempt < 2; attempt++) {
+  let read: ReturnType<typeof readGrouping> = { grouping: null, problems: [], repairs: [] };
+  // The first answer, and up to two more with its problems named.
+  for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
       model, purpose: PURPOSE, subject: `situation:${slug}@${membersKey(members)}`, promptVersion: PROMPT_VERSION,
       system: SYSTEM, user, schema: z.unknown(), temperature: 0.2, maxTokens: 5000, timeoutMs: 180_000,
@@ -164,8 +219,15 @@ export async function groupSituation(slug: string, members: Member[]): Promise<{
     receiptIds.push(res.receiptId);
     read = readGrouping(res.data, members);
     if (read.grouping) break;
-    user = [`请按系统规则归并以下故事，只输出 JSON。`, material, `你上一次的输出：\n${JSON.stringify(res.data)}`,
-      `上一次的输出有以下问题，请改正后重新输出完整的 JSON：\n${read.problems.map((p) => `- ${p}`).join("\n")}`].join("\n\n");
+    const list = (lines: string[]) => lines.map((p) => `- ${p}`).join("\n");
+    // With the material again, the mends are named too: a number of a story taken out of a practice reads as missing.
+    user = read.problems.every(textOnly)
+      ? [EDIT, `归并：\n${JSON.stringify(res.data)}`, `问题：\n${list(read.problems)}`].join("\n\n")
+      : [
+        `请按系统规则归并以下故事，只输出 JSON。`, material, `你上一次的输出：\n${JSON.stringify(res.data)}`,
+        ...(read.repairs.length ? [`程序已经按规则调整了上一次的输出：\n${list(read.repairs)}`] : []),
+        `上一次的输出有以下问题，请改正后重新输出完整的 JSON：\n${list(read.problems)}`,
+      ].join("\n\n");
   }
   const key = membersKey(members);
   await sql.begin(async (tx) => {

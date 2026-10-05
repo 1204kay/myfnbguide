@@ -18,6 +18,12 @@ export function Page({ children }: { children: ReactNode }) {
   return <div className="mx-auto pb-14" style={{ maxWidth: LAYOUT.column ?? 760 }}>{children}</div>;
 }
 
+/**
+ * A smaller paragraph's measure: about 44 characters a line at its own size, as the 17px body runs in the 760px
+ * column (layout A5); at 13px the full column would run 58. Narrower columns are untouched.
+ */
+export const MEASURE = "max-w-[44em]";
+
 /** A small label above a title that leads somewhere: its line is 44px tall to tap. */
 export const KICKER_LINK = "mt-1 inline-flex min-h-11 items-center lg:mt-2";
 
@@ -68,7 +74,7 @@ export function Avatars({ sources, max, size, className = "flex" }: { sources: S
         </span>
       ))}
       {sources.length > max && (
-        <span className="-ml-1.5 inline-flex items-center rounded-md bg-bg-sunk px-1.5 text-[11px] font-medium text-ink-3 ring-2 ring-surface" style={{ height: size }}>
+        <span className="-ml-1.5 inline-flex items-center rounded-md bg-bg-sunk px-1.5 text-[12px] font-medium leading-none text-ink-3 ring-2 ring-surface" style={{ height: size }}>
           +{sources.length - max}
         </span>
       )}
@@ -92,7 +98,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
       <h3 className="mt-1 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">
         <Link viewTransition to={`/reference/cases/${c.id}`} className={STRETCH}>{c.title}</Link>
       </h3>
-      {c.reason && <p className="mt-1.5 line-clamp-2 text-[13px] leading-[1.5] text-note">{ITEM_COPY.reasonLabel}：{c.reason}</p>}
+      {c.reason && <p className={`mt-1.5 line-clamp-2 text-[13px] leading-[1.5] text-note ${MEASURE}`}>{ITEM_COPY.reasonLabel}：{c.reason}</p>}
       {c.shop && (
         <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="relative z-10 -mb-2 mt-0.5 flex min-h-11 items-center text-[13px] text-accent hover:text-accent-ink">
           这家店另有 {c.shop.others} 条原文 ›
@@ -152,45 +158,57 @@ export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode })
   );
 }
 
+/** A situation's place in 店家谈得最多的事, in front of its title. */
+const RANK = "num shrink-0 font-extrabold text-accent";
+
 /**
  * A category's situations (layout A7-4): the first as a card with its picture, its opening and its counts, the
- * rest as compact rows in the same card. `kind` narrows the links to that shop kind (?kind=).
+ * rest as compact rows in the same card; without `lead`, every one a row (the home page's categories: the ranking
+ * above them carries the pictures). `ranked` numbers them and counts their shops (店家谈得最多的事). `kind`
+ * narrows the links to that shop kind (?kind=).
  */
-export function SituationCards({ rows, kind }: { rows: SituationRow[]; kind?: string }) {
-  const [first, ...rest] = rows;
-  if (!first) return null;
+export function SituationCards({ rows, kind, lead = true, ranked = false }: { rows: SituationRow[]; kind?: string; lead?: boolean; ranked?: boolean }) {
+  if (!rows.length) return null;
+  const first = lead ? rows[0]! : null;
   const href = (s: SituationRow) => `/reference/${s.slug}${kind ? `?kind=${kind}` : ""}`;
-  const drawing = <SituationDrawing slug={first.slug} />;
+  const of = ranked ? "practice" : "situation";
   return (
     <div className="card mt-3 overflow-hidden">
-      <Link viewTransition to={href(first)} className="block px-4 py-4 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-6">
-        <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[200px] lg:order-2 lg:mb-0 lg:w-full lg:[&_svg]:max-h-[180px]">{drawing}</div>
-        <div>
-          <b className="block text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">{first.title}</b>
-          <p className="mt-1.5 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{first.overview ?? first.dek}</p>
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4">
-            <Avatars sources={first.sources} max={4} size={20} className="flex sm:hidden" />
-            <Avatars sources={first.sources} max={6} size={22} className="hidden sm:flex" />
-            <span>{countText(first.count)}</span>
+      {first && (
+        <Link viewTransition to={href(first)} className="block px-4 py-4 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-6">
+          <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[200px] lg:order-2 lg:mb-0 lg:w-full lg:[&_svg]:max-h-[180px]"><SituationDrawing slug={first.slug} /></div>
+          <div>
+            <b className="block text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">{ranked && <span className={`${RANK} mr-2`}>1</span>}{first.title}</b>
+            <p className="mt-1.5 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{first.overview ?? first.dek}</p>
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4">
+              <Avatars sources={first.sources} max={4} size={20} className="flex sm:hidden" />
+              <Avatars sources={first.sources} max={6} size={22} className="hidden sm:flex" />
+              <span>{countText(first.count, of)}</span>
+            </div>
           </div>
-        </div>
-      </Link>
-      {rest.map((s) => <SituationLine key={s.slug} s={s} href={href(s)} className="border-t border-line" />)}
+        </Link>
+      )}
+      {rows.slice(first ? 1 : 0).map((s, i) => (
+        <SituationLine key={s.slug} s={s} href={href(s)} of={of} rank={ranked ? i + (first ? 2 : 1) : undefined} className={first || i ? "border-t border-line" : ""} />
+      ))}
     </div>
   );
 }
 
-/** A compact row: two lines on phones (title, counts), one from 641px (title, avatars, counts). */
-export function SituationLine({ s, href, className = "", category = false }: { s: SituationRow; href: string; className?: string; category?: boolean }) {
+/** A compact row: two lines on phones (title, counts), one from 641px (title, avatars, counts); its place in front when ranked. */
+export function SituationLine({ s, href, className = "", category = false, rank, of = "situation" }: {
+  s: SituationRow; href: string; className?: string; category?: boolean; rank?: number; of?: "situation" | "practice";
+}) {
   return (
     <Link viewTransition to={href} className={`flex min-h-14 items-center gap-3 px-4 py-2.5 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:min-h-[52px] sm:px-5 ${className}`}>
+      {rank !== undefined && <span className={`${RANK} w-4 text-[17px]`}>{rank}</span>}
       <span className="min-w-0 flex-1">
         {category && <span className="block text-[13px] text-ink-4">{s.category}</span>}
         <b className="block text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{s.title}</b>
-        <span className="block text-[13px] text-ink-4 sm:hidden">{countText(s.count)}</span>
+        <span className="block text-[13px] text-ink-4 sm:hidden">{countText(s.count, of)}</span>
       </span>
       <Avatars sources={s.sources} max={3} size={20} className="hidden sm:flex" />
-      <span className="hidden shrink-0 whitespace-nowrap text-[13px] text-ink-4 sm:block">{countText(s.count)}</span>
+      <span className="hidden shrink-0 whitespace-nowrap text-[13px] text-ink-4 sm:block">{countText(s.count, of)}</span>
       <IconChevronRight size={16} />
     </Link>
   );
@@ -281,11 +299,14 @@ export function Figure({ children, caption, kind, after }: { children: ReactNode
   );
 }
 
-/** One horizontal bar split into parts; widths are shares of the whole (0–1). */
+/**
+ * One horizontal bar split into parts; widths are shares of the whole (0–1). Its labels are page text, not a
+ * picture's (it is drawn in HTML and does not scale), so they keep the site's smallest size, 12px (layout A6).
+ */
 export function Fill({ parts }: { parts: Array<{ label: string; share: number; tone: "accent" | "loss" | number }> }) {
   const tones = ["bg-ink-3/70", "bg-ink-4/70", "bg-ink-4/45", "bg-line-strong", "bg-line"];
   return (
-    <div className="flex h-7 overflow-hidden rounded-md bg-bg-sunk text-[11.5px] font-semibold">
+    <div className="flex h-7 overflow-hidden rounded-md bg-bg-sunk text-[12px] font-semibold">
       {parts.filter((p) => p.share > 0).map((p, i) => (
         <div key={i} style={{ width: `${Math.min(p.share, 1) * 100}%` }}
           className={`flex items-center overflow-hidden whitespace-nowrap px-1.5 ${p.tone === "accent" ? "bg-accent text-accent-contrast" : p.tone === "loss" ? "bg-hot text-white" : `${tones[p.tone % tones.length]} text-ink`}`}>
@@ -314,7 +335,7 @@ function Compare({ b }: { b: CompareBlock }) {
               <div className="min-w-0" style={{ width: `${share * 100}%` }}>
                 <Fill parts={[{ label: share >= FITS ? label : "", share: 1, tone: i === b.items.length - 1 ? "accent" : 1 }]} />
               </div>
-              {share < FITS && <span className="shrink-0 whitespace-nowrap text-[11.5px] font-semibold text-ink-2">{label}</span>}
+              {share < FITS && <span className="shrink-0 whitespace-nowrap text-[12px] font-semibold text-ink-2">{label}</span>}
             </div>,
           ];
         })}

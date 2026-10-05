@@ -550,7 +550,8 @@ function ItemView({ item, parts }: Loaded) {
         )}
       </div>
       {!isX && <h1 data-page-title="" className={`text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink ${COLUMN ? "lg:text-[30px] lg:leading-[1.3]" : "lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]"}`}>{item.title}</h1>}
-      {!isX && item.originalTitle && <p className="mt-2.5 text-[14px] leading-relaxed text-ink-4">{item.originalTitle}</p>}
+      {/* About 44 characters a line at its size, as the body runs (a long original title ran 54 across the 760px column). */}
+      {!isX && item.originalTitle && <p className="mt-2.5 max-w-[44em] text-[14px] leading-relaxed text-ink-4">{item.originalTitle}</p>}
 
       {item.summary && (
         <section className={isX ? "mt-4" : "mt-7 xl:mt-8"}>

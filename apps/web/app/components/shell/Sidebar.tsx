@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { NAV, SITE } from "@aihot/site";
 import { Wordmark } from "@aihot/site/brand/Logo.tsx";
@@ -109,13 +109,14 @@ export function Sidebar({ changelogVersion }: { changelogVersion: string | null 
         <ThemeSwitch className={NAV.themeText ? "-mx-1" : "mx-1"} />
         {foot.length > 0 && (
           <nav aria-label="站点说明" className="flex flex-wrap items-center px-1.5 text-[12.5px] leading-snug text-ink-4">
+            {/* Each separator wraps with the link after it: no line ends on a "·". */}
             {foot.map((item, i) => (
-              <Fragment key={item.to}>
+              <span key={item.to} className="inline-flex items-center">
                 {i > 0 && <span aria-hidden="true" className="px-1">·</span>}
                 <Link to={item.to} prefetch="intent" className="inline-flex min-h-8 items-center transition-colors hover:text-ink-2 touch:min-h-11">
                   {item.label}
                 </Link>
-              </Fragment>
+              </span>
             ))}
           </nav>
         )}

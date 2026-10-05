@@ -13,7 +13,7 @@ const CASES = defineQueue<{ articleId: string }>({
   name: "reference.case",
   options: { policy: "short", retryLimit: 3, retryDelay: 120, retryBackoff: true, expireInSeconds: 900 },
   worker: { localConcurrency: 2, pollingIntervalSeconds: 5 },
-  run: ({ articleId }) => writeCase(articleId),
+  run: async (jobs) => { for (const { articleId } of jobs) await writeCase(articleId); },
 });
 
 const METHODS = defineQueue<{ slug: string }>({
@@ -21,7 +21,7 @@ const METHODS = defineQueue<{ slug: string }>({
   options: { policy: "short", retryLimit: 2, retryDelay: 300, retryBackoff: true, expireInSeconds: 900 },
   worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
   // The stories as they are when the job runs, not when it was queued.
-  run: async ({ slug }) => groupSituation(slug, (await membersBySituation()).get(slug) ?? []),
+  run: async (jobs) => { for (const { slug } of jobs) await groupSituation(slug, (await membersBySituation()).get(slug) ?? []); },
 });
 
 /**

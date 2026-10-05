@@ -11,7 +11,7 @@ const TRANSCRIBE = defineQueue<{ articleId: string }>({
   name: "archive.transcribe",
   options: { policy: "short", retryLimit: 1, retryDelay: 600, expireInSeconds: 1800 },
   worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
-  run: ({ articleId }) => transcribeEpisode(articleId),
+  run: async (jobs) => { for (const { articleId } of jobs) await transcribeEpisode(articleId); },
 });
 
 export default defineServerModule({

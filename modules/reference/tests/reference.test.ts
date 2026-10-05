@@ -204,7 +204,7 @@ const model = await stub((_hit, req) => {
   const user = body.messages.at(-1)!.content;
   // The grouping of practices: first two stories of two groups in one practice, then each in its own group,
   // the shop in Japan beside the shop in California in one practice.
-  if (body.messages.some((m) => m.role === "system" && m.content.includes("说同一种做法"))) {
+  if (body.messages.some((m) => m.role === "system" && m.content.includes("店家编号"))) {
     grouped += 1;
     const out = user.includes("有以下问题")
       ? { overview: "固定费用和食材钱都在没人核对时上涨，各家逐项对比账单和配方。", methods: [

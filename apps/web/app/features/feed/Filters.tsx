@@ -58,8 +58,13 @@ export function PhoneFilterRow({ base, category, channel, layoutId }: { base: st
   const [params] = useSearchParams();
   const row = useRef<HTMLDivElement>(null);
   const active = filterKey(category, channel);
+  // Only the row slides: scrollIntoView would also move the page, away from where a reader came back to.
   useEffect(() => {
-    row.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    const track = row.current?.firstElementChild;
+    const on = track?.querySelector('[aria-current="page"]');
+    if (!track || !on) return;
+    const t = track.getBoundingClientRect(), o = on.getBoundingClientRect();
+    if (o.left < t.left || o.right > t.right) track.scrollLeft += o.left - t.left - (t.width - o.width) / 2;
   }, [active]);
   return (
     <div ref={row} className="ml-[calc(-1*var(--gutter-l))] mr-[calc(-1*var(--gutter-r))] pb-3 pt-1 lg:hidden">

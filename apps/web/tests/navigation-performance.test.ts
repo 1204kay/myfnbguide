@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { chromium, webkit, expect, type Browser } from "@playwright/test";
 import type { FeedItemSummary, SiteItemDetail, ReportDetail } from "@aihot/contracts/site";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
+import { FEED } from "@aihot/site";
 
 // Two of the industry pack's categories, as the filter names them (the example pack's 模型 and 产品).
 const [A, B] = CATEGORIES;
@@ -113,10 +114,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
       await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
       assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/timeline')).length,1,'returning to an SSR list needs no new data request');
       await context.setOffline(false);
-      if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
+      // Phones show the filter as a sheet behind a button, or as the desktop's row (site.ts FEED.phoneFilter).
+      if(width===390&&FEED.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
       await page.getByRole('link',{name:A!.label,exact:true}).click();
       await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible();
-      if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
+      if(width===390&&FEED.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
       await page.getByRole('link',{name:B!.label,exact:true}).click();
       await expect(page.getByRole('link',{name:'分类 '+B!.key,exact:true})).toBeVisible();
       await context.setOffline(true);

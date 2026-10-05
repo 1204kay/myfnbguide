@@ -3,13 +3,14 @@ import {
   type ShouldRevalidateFunction,
 } from "react-router";
 import type { SiteMeta } from "@aihot/contracts/site";
-import { SITE } from "@aihot/site";
+import { NAV, SITE } from "@aihot/site";
 import { RingMark } from "@aihot/site/brand/Logo.tsx";
 import { useEffect, useState, type ReactNode } from "react";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Sidebar } from "./components/shell/Sidebar";
 import { TabBar } from "./components/shell/TabBar";
+import { feedPath, navName } from "./components/shell/nav";
 import { PullToRefresh } from "./components/shell/PullToRefresh";
 import { usePageTransition } from "./components/shell/transitions";
 import { SearchOverlay } from "./features/search/SearchOverlay";
@@ -153,11 +154,20 @@ export function ErrorBoundary() {
             重新加载
           </Link>}
           <Link reloadDocument to="/" className={buttonClass(notFound ? "primary" : "secondary")}>
-            回到精选
+            回到{navName("/")}
           </Link>
-          <Link reloadDocument to="/all" className={buttonClass("secondary")}>
-            浏览全部动态
-          </Link>
+          {/* With a module page at / (NAV.home) a missing page also offers the featured list; otherwise 全部动态. */}
+          {NAV.home ? (
+            notFound && (
+              <Link reloadDocument to={feedPath()} className={buttonClass("secondary")}>
+                看{navName(feedPath())}
+              </Link>
+            )
+          ) : (
+            <Link reloadDocument to="/all" className={buttonClass("secondary")}>
+              浏览全部动态
+            </Link>
+          )}
         </div>
       </div>
     </div>

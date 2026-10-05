@@ -28,8 +28,10 @@ export const SITE = {
   homeTitle: "MyF&B — 餐饮人自己的参考站",
   /** 主题目录页（/topics）的标题。 */
   topicsTitle: "餐饮主题：经营主题、品类与地区的最新动态",
+  /** 反馈页的标题（页面大标题和手机顶栏都用它）；null 是默认：顶栏“意见反馈”、大标题“说说你的想法”。 */
+  feedbackTitle: "反馈" as string | null,
   /** 反馈表单输入框里的示例。 */
-  feedbackExample: "例如：我在搜索某个关键词时遇到……我原本想……",
+  feedbackExample: "例如：某一篇故事里的数字和原文对不上……",
   /** 反馈页标题下面的一句话。 */
   feedbackLead: "内容有误、页面出错，或者希望增加的功能，都可以在这里告诉我们。",
   /** 反馈表单邮箱框里的提示。 */
@@ -112,20 +114,108 @@ export const POLICY = {
 } as const;
 
 /**
- * 导航（选填）：手机底栏放哪些标签、按什么顺序，侧栏和“我的”页不显示哪些入口，入口叫什么，筛选里有没有“一手”。
- * 不显示的页面照样能打开，只是不出现在导航里。
+ * 导航（选填）：首页放什么，手机底栏和电脑侧栏放哪些入口、按什么顺序、叫什么，搜索放在哪，“我的”页怎么分组，
+ * 筛选里有没有“一手”。不显示的页面照样能打开，只是不出现在导航里。
  */
 export const NAV = {
-  /** 手机底栏依次放的标签：引擎的 featured（首页）、hot、daily、me，或模块标签的 key；null 是默认（引擎的在前，模块的排在“我的”前面）。 */
+  /**
+   * 首页（/）显示哪个模块页：写它在 module.ts 里的 id。设了以后，引擎的精选列表搬到 /latest，导航、错误页、RSS、
+   * llms.txt 和网站地图里指向精选的地方一起改；模块导航项里指向这一页原地址的，改为指向 /。模块页原来的地址
+   * 要在模块的 module.ts 里 301 到 /。null 是默认：首页是精选。
+   */
+  home: "reference-home" as string | null,
+  /** 手机底栏依次放的标签：引擎的 featured（精选）、hot、daily、me，或模块标签的 key；null 是默认（引擎的在前，模块的排在“我的”前面）。 */
   tabs: ["reference", "featured", "daily", "me"] as string[] | null,
-  /** 侧栏每一组里排在前面的入口，按这里的顺序，写路径；没写的照默认顺序排在后面。 */
-  order: ["/reference", "/", "/all", "/daily"] as string[],
-  /** 侧栏、“我的”页和首页不显示的入口，写路径（例如 "/hot" 也去掉首页的当前热点）。 */
-  hidden: ["/hot", "/topics"] as string[],
+  /**
+   * 电脑侧栏的入口，一组一个数组，写路径，按这里的顺序：组和组之间一条细线，不写组名；第一组是带图标的主入口，
+   * 其余各组是不带图标的次入口。null 是默认：引擎的“内容”“更多”两组，模块的入口在两组之间，带组名。
+   */
+  sidebar: [["/", "/latest", "/daily", "/starred"], ["/about", "/changelog", "/feedback"]] as string[][] | null,
+  /** 侧栏最下面的一行小字链接，写路径（选填）。 */
+  sidebarFoot: ["/terms", "/privacy", "/agent"] as string[],
+  /**
+   * 搜索放在哪：pages 是默认，精选和全部动态两页各有自己的搜索框；shell 是由外壳统一提供：电脑侧栏 Logo 下面一个
+   * 搜索框（点按或按“/”打开），手机上底栏各页的顶栏左边是 Logo、右边是放大镜，电脑上的搜索层是屏幕上方的对话框。
+   */
+  search: "shell" as "pages" | "shell",
+  /** 外观切换写文字（浅色｜深色｜跟随系统）；false 是默认的三个图标。 */
+  themeText: true,
+  /** 更新日志有新条目时，侧栏、底栏的“我的”和“我的”页上亮红点（默认 true）。 */
+  changelogDot: false,
+  /**
+   * “我的”页的分组：每组一个小标题（null 不写）和几行，行写路径，"theme" 是外观切换；电脑上也是一栏。
+   * null 是默认：收藏与外观、工具与入口、关于三组，页底一行小字链接（含 RSS），电脑上分栏。
+   */
+  meGroups: [
+    { title: null, rows: ["/starred", "theme"] },
+    { title: "关于本站", rows: ["/about", "/changelog", "/feedback", "/terms", "/privacy"] },
+    { title: "给开发者", rows: ["/agent"] },
+  ] as Array<{ title: string | null; rows: string[] }> | null,
+  /** 侧栏、“我的”页、搜索层和精选页不显示的入口，写路径（例如 "/hot" 也去掉精选页的当前热点）；"/all" 不显示时，全部动态的页面点亮精选的入口。 */
+  hidden: ["/hot", "/topics", "/all"] as string[],
   /** 精选和全部动态的筛选里有没有“一手”（官方一手发布）。 */
   firstPartyFilter: false,
-  /** 入口的名字，路径 → 名字，侧栏、底栏和那一页的标题都用；不写的用默认。 */
-  labels: { "/": "最新" } as Record<string, string>,
+  /** 入口的名字，路径 → 名字，侧栏、底栏、“我的”页、返回按钮和那一页的标题都用；不写的用默认。 */
+  labels: { "/": "参考", "/latest": "最新", "/daily": "日报", "/about": "关于", "/feedback": "反馈" } as Record<string, string>,
+};
+
+/** 版心（选填）。 */
+export const LAYOUT = {
+  /**
+   * 电脑上（宽度 ≥ 961px）读者主路径各页的正文栏宽度（px），在主区里居中，不设右栏：参考各页、最新、搜索、标签、条目、
+   * 收藏、我的、日报、合订本。null 是默认：各页用框架自己的宽度（列表铺满，条目页三栏）。
+   */
+  column: 760 as number | null,
+};
+
+/** 精选和全部动态两种列表。 */
+export const FEED = {
+  /**
+   * 列表的样子：timeline 是默认（电脑上是时间轴旁的卡片，手机上是无框的行，按天分组）；cards 是手机和电脑同一种带边框的卡
+   * （来源行、标题、摘要、收录理由），不显示时刻、分类和标签，精选平铺、日期写在卡上，全部按天分组。
+   */
+  style: "cards" as "timeline" | "cards",
+  /** 页头标题下面的一句说明，精选和全部各一句；null 是默认（不写）。 */
+  leads: {
+    featured: "入选的条目，按时间排列，每条附收录理由；日报从中挑出一部分编成一期。",
+    all: "收集到的全部条目，按时间排列；标有「精选」的条目已入选，并附收录理由。",
+  } as null | { featured: string; all: string },
+  /** 分类筛选上写什么：label 是默认（行业包里分类的 label）；section 是日报里的分节名。 */
+  filterNames: "section" as "label" | "section",
+};
+
+/** 读者页面上的日期。 */
+export const DATES = {
+  /** 数字与汉字之间加空格（“10 月 5 日”），星期写“周日”；false 是默认（“10月5日”）。 */
+  spaced: true,
+  /** 读者页面显示时刻（列表上的 10:59、搜索结果的“更新于 06:41”、收藏时间）；false 只写到日（默认 true）。 */
+  clock: false,
+};
+
+/** 搜索的几处说法。 */
+export const SEARCH = {
+  /** 搜索框里的提示（默认“搜索标题、摘要和正文”）。 */
+  placeholder: "搜索情况、店名或关键词",
+  /** 搜索层里输入框下面的一句，说明搜得到什么；null 是默认（不写）。 */
+  note: "参考里的情况和故事、最新里的全部条目都会搜到。" as string | null,
+  /** 搜索结果的两种排序（默认“最新（标题与摘要）”“全文相关”）。 */
+  sorts: { time: "按时间", relevance: "按相关" },
+  /** 排序下面的一句说明；null 是默认（不写）。 */
+  sortNote: "按时间只搜标题和摘要；按相关连正文一起搜。" as string | null,
+  /** 搜索结果里引擎那一节的标题（模块在它前面各放一节时用来分开）；null 是默认（不写）。 */
+  itemsTitle: "全部条目" as string | null,
+};
+
+/** 收藏页的说法。 */
+export const STARRED = {
+  /** 标题下面的一句；null 不写（默认“本机收藏的 <站名> 内容，适合稍后阅读和回看。”）。 */
+  lead: null as string | null,
+  /** 收藏存在哪里（默认“收藏只保存在当前浏览器；清除浏览器数据或换设备后不会同步。”）。 */
+  note: "收藏保存在这台设备的浏览器里：清除浏览器数据会一并删除，换一台设备看不到。",
+  /** 没有收藏时的一句（默认“还没有收藏内容。点开任意一条内容，在详情页点击收藏即可添加。”）。 */
+  empty: "还没有收藏。在列表、条目页或故事页点书签图标，就能收藏。",
+  /** 页尾“备份”一节的说明（导出、导入两个按钮在它上面）；null 是默认：没有这一节，导入、导出在标题旁边。 */
+  backup: "换设备时，先在这里导出文件，再到新设备上导入。" as string | null,
 };
 
 /** 条目卡片和详情页上的几处说法和显示。 */
@@ -134,6 +224,10 @@ export const ITEM_COPY = {
   reasonLabel: "收录理由",
   /** 读者在网页和分享图上看不看得到 AI 评分。只管显示：公开 API 和 MCP 的数据照样带 score，后台照常显示。 */
   showScore: false,
+  /** 条目页的标签前面写不写“#”（默认 true）。 */
+  tagHash: false,
+  /** 条目页显示不显示分类标签（每条的第一个标签，例如“行业动态”）（默认 true）。 */
+  categoryTags: false,
 };
 
 /** 关于页的一张二维码卡片。 */
@@ -153,8 +247,19 @@ export const ABOUT = {
   /** 大标题：第一行正常颜色，第二行强调色。 */
   headline: ["餐饮经营的经验，散落在各地。", "我们把它汇集起来，整理成中文。"] as [string, string],
   /** 标题下面的一段话。{sources} 会换成实时的信源数（两边自动加空格，所以 {sources} 两边不写空格）；统计没取到时换成 sourcesFallback。 */
-  lead: `${SITE.name} 由餐饮人发起，从{sources}个来源收集各地店家的做法和经验：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。免费，不用注册。`,
+  lead: `${SITE.name} 由餐饮人发起，从{sources}个来源收集各地店家的做法和经验，按经营者遇到的事整理成参考：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。`,
   sourcesFallback: "数十",
+  /** 页面的几处版面；写 null 的用默认。 */
+  page: {
+    /** 标题旁的两个按钮：[文字, 地址]，第一个是实心的（默认“看今天的精选”去精选、“读最新日报”）。 */
+    actions: [["去参考", "/"], ["看日报", "/daily"]] as Array<[string, string]> | null,
+    /** 示意图下面四个环节的名字（默认“采集、收录、精选、成刊”）。 */
+    stepTitles: { collect: "收集", store: "保存", select: "挑选", publish: "整理" } as null | { collect: string; store: string; select: string; publish: string },
+    /** 示意图的说明里，说经过挑选以后去了哪里的那半句（默认“经过精选的闸门，只有少数几束通过，汇入每天的日报”）。 */
+    riverNote: "入选的整理进参考，也编进日报" as string | null,
+    /** 四个环节下面的统计小字（过去 24 小时的数字、各类来源的个数）（默认 true）。 */
+    statNotes: false,
+  },
   /** 信源河动画下面的四个环节。 */
   steps: {
     collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体：中国、日本、韩国、东南亚、印度、澳大利亚、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
@@ -194,10 +299,23 @@ export const ADMIN = {
 export const AGENT = {
   /** MCP 工具表里“搜索”一行：能搜什么、可以怎么问。 */
   search: { scope: "按品牌、平台或经营话题搜索最近 7 天", ask: "最近有哪些店家谈到外卖平台的抽成？" },
+  /** 页面开头一句里，几种方式读到的内容（默认“精选、热点、日报、周报和月报”）。 */
+  covers: "最新、日报、周报和月报",
+  /** MCP 工具表里其他工具“可以这样问”的例子，工具 → 一句；没写的用默认的问法。 */
+  examples: {
+    latest: "关于员工留不住，各地店家有哪些做法？",
+    weekly: "上一周的周报里有哪些内容？",
+    monthly: "上个月的月报里有哪些内容？",
+  } as Partial<Record<"latest" | "hot" | "story" | "daily" | "weekly" | "monthly", string>>,
 };
 
 /** 日报、周报、月报版面上的说法。 */
 export const REPORTS = {
+  /**
+   * 紧凑版：不显示往期栏和日历点阵；“日报｜周报｜月报”放在报头上方，手机和电脑相同；最近几期的日期在各宽度都显示，
+   * 只有一期时不显示；报纸放进读者主路径的版心（LAYOUT.column）；不印“每日要闻”这类刊头语和出刊时间。false 是默认。
+   */
+  compact: true,
   /** 报头下面的出版者一行。 */
   imprint: SITE.name.toUpperCase(),
   /** 报头旁边的一个词。 */
@@ -259,7 +377,7 @@ export const CARDS: Record<string, { kicker: string; title: string; subtitle: st
   terms: { kicker: "使用规则", title: `${SITE.name} 使用规则`, subtitle: "网页、API、RSS 与 MCP 的使用范围。" },
   privacy: { kicker: "隐私说明", title: `${SITE.name} 隐私说明`, subtitle: "访问日志、浏览器本地数据与反馈资料的处理方式。" },
   changelog: { kicker: "更新日志", title: `${SITE.name} 更新日志`, subtitle: "功能更新、优化、公告与下线记录。" },
-  feedback: { kicker: "反馈", title: "告诉我们哪里可以更好", subtitle: "内容、功能、接入，或来源方的更正与下架请求。" },
+  feedback: { kicker: "反馈", title: `${SITE.name} 反馈`, subtitle: "内容、功能、接入，或来源方的更正与下架请求。" },
   agent: { kicker: "Agent 接入", title: `把 ${SITE.name} 接进你的 Agent`, subtitle: "MCP、RSS、API 三种方式，匿名只读，无需 API Key。" },
 };
 

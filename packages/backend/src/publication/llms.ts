@@ -1,5 +1,6 @@
 // /llms.txt — generated from the site's own configuration; only real, available resources are listed.
 import { PUBLIC_INTERFACE_VERSION } from "@aihot/contracts/http-policy";
+import { feedPath } from "@aihot/contracts/routes";
 import { MCP_TOOL_NAMES as T, MCP_TOOLS, mcpToolName } from "@aihot/contracts/mcp";
 import { PUBLIC_API_CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
 import { ACCESS, EDITION_WHEN, POLICY, REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
@@ -109,7 +110,8 @@ export function llmsTxt(opts: {
   if (ACCESS.ratePerMinute) lines.push(`- 单个 IP 超过约每分钟 ${ACCESS.ratePerMinute} 次会收到 429；请按 Retry-After 等待，不要并发重试。`);
   lines.push("");
   lines.push("## 网站主要页面", "");
-  lines.push(`- [首页 · 精选](${u("/")}): ${subjectAfter("每日", "精选动态")}`);
+  // The featured list is the home page unless the site shows a module page there (NAV.home), which the modules list.
+  lines.push(`- [${feedPath() === "/" ? "首页 · 精选" : "精选"}](${u(feedPath())}): ${subjectAfter("每日", "精选动态")}`);
   lines.push(`- [${withSubject("热点榜")}](${u("/hot")}): 过去 48 小时内被多个独立信源${subjectAfter("共同讨论的", "事件")}；可进入事件页查看最新进展、热度变化、报道时间线和 AI 综述`);
   lines.push(`- [全部动态](${u("/all")}): ${subjectAfter("全量", "资讯流")}，可按分类筛选`);
   if (opts.hasDailies) {

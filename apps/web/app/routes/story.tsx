@@ -17,9 +17,15 @@ import { PillTabs } from "../components/ui/Tabs";
 import { Select } from "../components/ui/Controls";
 import { IconArrowLeft, IconChevronRight, IconClock, IconDoc, IconUsers } from "../components/icons";
 import { PhoneBar } from "../components/shell/PhoneBar";
+import { feedPath, navName, navShown } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 
-export const handle: Screen = { home: "hot" };
+/** Where an event page sits: under 热点, or under the featured list while 热点 is not in the navigation (NAV.hidden). */
+const PARENT = navShown("/hot")
+  ? { to: "/hot", label: "热点", name: "热点榜", tab: "hot" }
+  : { to: feedPath(), label: navName(feedPath()), name: navName(feedPath()), tab: "featured" };
+
+export const handle: Screen = { home: PARENT.tab };
 export { shouldRevalidate } from "../lib/page-reuse";
 export const clientLoader = cachedLoader<typeof loader>();
 
@@ -37,7 +43,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     path: `/story/${s.publicId}`,
     image: `/og/stories/${s.publicId}.png`,
     type: "article",
-    jsonLd: breadcrumbLd([{ name: SITE.name, path: "/" }, { name: "热点榜", path: "/hot" }, { name: s.title, path: `/story/${s.publicId}` }]),
+    jsonLd: breadcrumbLd([{ name: SITE.name, path: "/" }, { name: PARENT.name, path: PARENT.to }, { name: s.title, path: `/story/${s.publicId}` }]),
   });
 }
 
@@ -213,10 +219,10 @@ export default function StoryPage() {
 
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-10">
-      <PhoneBar back={{ to: "/hot", label: "热点" }} title={story.title} />
+      <PhoneBar back={{ to: PARENT.to, label: PARENT.label }} title={story.title} />
       <nav aria-label="位置" className="hidden items-center gap-2.5 pb-5 pt-4 text-[12px] text-ink-4 lg:flex">
-        <Link to="/hot" className="inline-flex items-center gap-1.5 transition-colors hover:text-ink">
-          <IconArrowLeft size={15} /> 热点榜
+        <Link to={PARENT.to} className="inline-flex items-center gap-1.5 transition-colors hover:text-ink">
+          <IconArrowLeft size={15} /> {PARENT.name}
         </Link>
         <span className="h-3 w-px bg-line-strong" aria-hidden="true" />
         <span>事件详情</span>

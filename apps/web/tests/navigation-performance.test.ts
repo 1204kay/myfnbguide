@@ -18,6 +18,13 @@ import { before, after, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { chromium, webkit, expect, type Browser } from "@playwright/test";
 import type { FeedItemSummary, SiteItemDetail, ReportDetail } from "@aihot/contracts/site";
+import { feedPath } from "@aihot/contracts/routes";
+import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
+import { NAV } from "@aihot/site";
+
+// The featured list's address and two of the industry's categories, as this site has them.
+const FEED = feedPath();
+const [TIP, TOOLS] = [CATEGORY_LABELS.tip, CATEGORY_LABELS.tools];
 
 const at = '2026-10-04T08:00:00.000Z';
 const item: FeedItemSummary = {id:'navigation-fixture',title:'性能检查文章',summary:'固定摘要',reason:'固定推荐理由',source:{name:'Fixture'},publishedAt:at,timelineAt:at,category:'tip',tags:[],score:80,selected:true,channel:'news',x:null};
@@ -99,7 +106,7 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     const page=await context.newPage();
     try{
       const start=hits.length;
-      await page.goto(origin+'/');
+      await page.goto(origin+FEED);
       await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
       await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
       await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
@@ -110,15 +117,15 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
       assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/timeline')).length,1,'returning to an SSR list needs no new data request');
       await context.setOffline(false);
       if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
-      await page.getByRole('link',{name:'模型',exact:true}).click();
+      await page.getByRole('link',{name:TIP,exact:true}).click();
       await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
       if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
-      await page.getByRole('link',{name:'产品',exact:true}).click();
-      await expect(page.getByRole('link',{name:'分类 ai-products',exact:true})).toBeVisible();
+      await page.getByRole('link',{name:TOOLS,exact:true}).click();
+      await expect(page.getByRole('link',{name:'分类 tools',exact:true})).toBeVisible();
       await context.setOffline(true);
       await page.goBack();
       await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible({timeout:1500});
-      await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category=tip');
+      await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+FEED+'?category=tip');
     }finally{await context.close();}
   });
 }
@@ -126,11 +133,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
 test('hover still fetches article data, touches that move do not, and failed prefetch does not replace the current page',async()=>{
   const context=await chrome.newContext();const page=await context.newPage();
   try{
-    await page.goto(origin+'/');
+    await page.goto(origin+FEED);
     const link=page.getByRole('link',{name:'性能检查文章',exact:true});
     const start=hits.length;
     await link.dispatchEvent('touchstart');await link.dispatchEvent('touchmove');
-    await page.getByRole('heading',{name:'精选',exact:true}).click();
+    await page.locator('main h1').first().click();
     assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/items/')).length,0);
     const response=page.waitForResponse(r=>r.url().includes('/items/navigation-fixture.data'));
     await link.hover();await response;
@@ -139,10 +146,10 @@ test('hover still fetches article data, touches that move do not, and failed pre
     assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/items/')).length,1,'navigation reuses its intent-prefetched response');
     const fresh=await chrome.newContext();const freshPage=await fresh.newPage();
     try{
-      await freshPage.goto(origin+'/');failing='/api/site/items/navigation-fixture';
+      await freshPage.goto(origin+FEED);failing='/api/site/items/navigation-fixture';
       const failed=freshPage.waitForResponse(r=>r.url().includes('/items/navigation-fixture.data')&&r.status()===503);
       await freshPage.getByRole('link',{name:'性能检查文章',exact:true}).hover();await failed;
-      await expect(freshPage.getByRole('heading',{name:'精选',exact:true})).toBeVisible();
+      await expect(freshPage.locator('main h1').first()).toBeVisible();
     }finally{await fresh.close();}
   }finally{failing='';await context.close();}
 });
@@ -156,9 +163,9 @@ test('SSR all-pages and report kinds return offline with their own content',asyn
     await context.setOffline(true);await page.goBack();
     await expect(page.getByRole('link',{name:'全部第 1 页',exact:true})).toBeVisible({timeout:1500});
     await context.setOffline(false);await page.goto(origin+'/daily');
-    await page.getByRole('link',{name:'周报',exact:true}).click();
+    await page.locator('main').getByRole('link',{name:'周报',exact:true}).click();
     await expect(page.locator('#report-start')).toContainText('周报');
-    await context.setOffline(true);await page.getByRole('link',{name:'日报',exact:true}).click();
+    await context.setOffline(true);await page.locator('main').getByRole('link',{name:'日报',exact:true}).click();
     await expect(page.locator('#report-start')).toContainText('日报',{timeout:1500});
   }finally{await context.close();}
 });
@@ -171,17 +178,17 @@ test('intent on a selected link preserves visited data and the next revisit star
   await context.route('**/*.data*',route=>route.continue());
   page.on('request',request=>{if(request.url().includes('.data'))requests.push(request.url());});
   try{
-    await page.goto(origin+'/');
-    await page.getByRole('link',{name:'模型',exact:true}).click();
+    await page.goto(origin+FEED);
+    await page.getByRole('link',{name:TIP,exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
-    await page.getByRole('link',{name:'模型',exact:true}).focus();
+    await page.getByRole('link',{name:TIP,exact:true}).focus();
     await page.waitForTimeout(150);
-    await page.getByRole('link',{name:'产品',exact:true}).click();
-    await expect(page.getByRole('link',{name:'分类 ai-products',exact:true})).toBeVisible();
-    await page.getByRole('link',{name:'产品',exact:true}).focus();
+    await page.getByRole('link',{name:TOOLS,exact:true}).click();
+    await expect(page.getByRole('link',{name:'分类 tools',exact:true})).toBeVisible();
+    await page.getByRole('link',{name:TOOLS,exact:true}).focus();
     await page.waitForTimeout(150);
     const before=requests.length;
-    await page.getByRole('link',{name:'模型',exact:true}).click();
+    await page.getByRole('link',{name:TIP,exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
     assert.deepEqual(requests.slice(before),[],'neither prefetch nor navigation may evict and reload a still-valid visited page');
   }finally{await context.close();}
@@ -191,7 +198,7 @@ test('a revisit never renews the original deadline; an expired read shows an err
   const context=await chrome.newContext();const page=await context.newPage();
   try{
     await page.clock.install();ttl=1;
-    await page.goto(origin+'/');
+    await page.goto(origin+FEED);
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
     failing='/api/site/timeline';
     await page.clock.runFor(1500);
@@ -204,7 +211,7 @@ test('a revisit never renews the original deadline; an expired read shows an err
 test('SSR freshness spent in an upstream cache is not renewed by HTML hydration',async()=>{
   const context=await chrome.newContext();const page=await context.newPage();
   try{
-    ttl=0;await page.goto(origin+'/');
+    ttl=0;await page.goto(origin+FEED);
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
     const start=hits.length;ttl=60;
     await page.goBack();await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
@@ -241,10 +248,11 @@ test('Agent tabs finish offline with matching canonical; invalid direct tabs and
   }finally{await context.close();}
 });
 
-test('phone suggestions load only on opening, use one small read, retry failures and update on reopening',async()=>{
+// Suggestions are topics and what is hot; a site that keeps both out of its navigation suggests neither.
+test('phone suggestions load only on opening, use one small read, retry failures and update on reopening',{skip:NAV.hidden.includes('/hot')&&NAV.hidden.includes('/topics')&&'no suggestions on this site'},async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});const page=await context.newPage();
   try{
-    suggestionsVersion=1;await page.goto(origin+'/');
+    suggestionsVersion=1;await page.goto(origin+FEED);
     assert.equal(hits.filter(x=>x==='/api/site/search/suggestions').length,0);
     let start=hits.length;
     await page.getByRole('button',{name:'搜索',exact:true}).click();
@@ -321,7 +329,7 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     });
     const page=await context.newPage();
     try{
-      await page.goto(origin+'/?tag=long-reading');
+      await page.goto(origin+FEED+'?tag=long-reading');
       await expect(page.locator('[data-card-key]')).toHaveCount(180);
       await page.getByRole('button',{name:'收起10月4日',exact:true}).click();
       await expect(page.locator('[data-card-key]')).toHaveCount(120);

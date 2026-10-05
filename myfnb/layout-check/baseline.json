@@ -1,0 +1,9599 @@
+{
+ "base": "https://new.myfnbguide.com",
+ "takenAt": "2026-10-05T04:58:02.311Z",
+ "problems": [
+  {
+   "profile": "1024x768",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "about",
+   "rule": "每行字数",
+   "detail": "约 58 字（MyF&B 是聚合摘要和阅读索引）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "23 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "788px，超过 760px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "248 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 56 字（12:38QSR Media A）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "all",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "archive",
+   "rule": "点按区",
+   "detail": "15 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "archive",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "case",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "262px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "34 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "788px，超过 760px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "82 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 56 字（10:59Total Food ）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "home",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "25 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "item",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "kind",
+   "rule": "每行字数",
+   "detail": "约 52 字（美国一家餐馆的布草费在每周账单里）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "kind",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "222px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "latest",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "latest",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "more",
+   "rule": "版心宽度",
+   "detail": "788px，超过 760px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "18 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "more",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "788px，超过 760px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "161 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 56 字（00:56飲食店のAI活用ラジオ）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "search",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "shop",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "222px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "situation",
+   "rule": "每行字数",
+   "detail": "约 52 字（日本一位经营26年的店主每天用表）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最大 18px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "situation",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1024x768",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "222px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "starred",
+   "rule": "版心宽度",
+   "detail": "788px，超过 760px"
+  },
+  {
+   "profile": "1024x768",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1024x768",
+   "page": "starred",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "about",
+   "rule": "每行字数",
+   "detail": "约 71 字（MyF&B 是聚合摘要和阅读索引）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "23 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "958px，超过 760px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "255 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 68 字（12:38QSR Media A）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "all",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "archive",
+   "rule": "点按区",
+   "detail": "15 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "archive",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "case",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "347px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "37 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "daily",
+   "rule": "每行字数",
+   "detail": "约 47 字（2为什么漂亮的餐厅一到 12 点）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "958px，超过 760px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "82 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 68 字（10:59Total Food ）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "home",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "25 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "item",
+   "rule": "每行字数",
+   "detail": "约 48 字（Weekly Global Wr）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "item",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "kind",
+   "rule": "每行字数",
+   "detail": "约 52 字（美国一家餐馆的布草费在每周账单里）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "kind",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "307px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "latest",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "latest",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "more",
+   "rule": "版心宽度",
+   "detail": "958px，超过 760px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "18 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "more",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "958px，超过 760px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "161 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 68 字（00:56飲食店のAI活用ラジオ）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "search",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "shop",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "307px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "situation",
+   "rule": "每行字数",
+   "detail": "约 52 字（日本一位经营26年的店主每天用表）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最大 18px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "situation",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1194x834",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "307px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "starred",
+   "rule": "版心宽度",
+   "detail": "958px，超过 760px"
+  },
+  {
+   "profile": "1194x834",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：参考 155×40、最新 155×40、全部餐饮动态 155×40、餐饮日报 155×40、收藏 155×40、Agent 接入 155×40"
+  },
+  {
+   "profile": "1194x834",
+   "page": "starred",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "about",
+   "rule": "每行字数",
+   "detail": "约 77 字（MyF&B 是聚合摘要和阅读索引）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "agent",
+   "rule": "每行字数",
+   "detail": "约 51 字（客户端显示调用了 myfnb_g）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "1044px，超过 760px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 75 字（12:38QSR Media A）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "all",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "archive",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "case",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "390px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "daily",
+   "rule": "每行字数",
+   "detail": "约 53 字（2为什么漂亮的餐厅一到 12 点）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "1044px，超过 760px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 75 字（10:59Total Food ）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "home",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "item",
+   "rule": "每行字数",
+   "detail": "约 54 字（Weekly Global Wr）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "item",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "kind",
+   "rule": "每行字数",
+   "detail": "约 52 字（美国一家餐馆的布草费在每周账单里）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "kind",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "350px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "latest",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "more",
+   "rule": "版心宽度",
+   "detail": "1044px，超过 760px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "more",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "1044px，超过 760px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 75 字（00:56飲食店のAI活用ラジオ）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "search",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "shop",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "350px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "situation",
+   "rule": "每行字数",
+   "detail": "约 52 字（日本一位经营26年的店主每天用表）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最大 18px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "situation",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1280x800",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "350px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "starred",
+   "rule": "版心宽度",
+   "detail": "1044px，超过 760px"
+  },
+  {
+   "profile": "1280x800",
+   "page": "starred",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "about",
+   "rule": "每行字数",
+   "detail": "约 90 字（MyF&B 是聚合摘要和阅读索引）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "agent",
+   "rule": "每行字数",
+   "detail": "约 63 字（客户端显示调用了 myfnb_g）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "1204px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 86 字（12:38QSR Media A）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "all",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "archive",
+   "rule": "版心宽度",
+   "detail": "900px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "archive",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "case",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "470px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "900px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "500px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "1204px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 86 字（10:59Total Food ）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "home",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "item",
+   "rule": "每行字数",
+   "detail": "约 54 字（Weekly Global Wr）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "item",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "item",
+   "rule": "左边缘",
+   "detail": "286px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "kind",
+   "rule": "每行字数",
+   "detail": "约 52 字（美国一家餐馆的布草费在每周账单里）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "kind",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "430px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "latest",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "more",
+   "rule": "版心宽度",
+   "detail": "1204px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "more",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "1204px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 86 字（00:56飲食店のAI活用ラジオ）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "search",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "shop",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "430px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "situation",
+   "rule": "每行字数",
+   "detail": "约 52 字（日本一位经营26年的店主每天用表）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最大 18px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "situation",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1440x900",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "430px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "starred",
+   "rule": "版心宽度",
+   "detail": "1204px，超过 760px"
+  },
+  {
+   "profile": "1440x900",
+   "page": "starred",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "about",
+   "rule": "每行字数",
+   "detail": "约 126 字（MyF&B 是聚合摘要和阅读索引）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "agent",
+   "rule": "每行字数",
+   "detail": "约 97 字（客户端显示调用了 myfnb_g）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "1684px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 120 字（12:38QSR Media A）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "all",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "archive",
+   "rule": "版心宽度",
+   "detail": "1160px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "archive",
+   "rule": "左边缘",
+   "detail": "610px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "case",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "710px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "1160px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "610px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "1684px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 120 字（10:59Total Food ）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "home",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "item",
+   "rule": "每行字数",
+   "detail": "约 54 字（Weekly Global Wr）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "item",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "item",
+   "rule": "左边缘",
+   "detail": "670px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "kind",
+   "rule": "每行字数",
+   "detail": "约 52 字（美国一家餐馆的布草费在每周账单里）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "kind",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "670px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "latest",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "more",
+   "rule": "版心宽度",
+   "detail": "1684px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "more",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "1684px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 120 字（00:56飲食店のAI活用ラジオ）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "search",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "shop",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "670px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "situation",
+   "rule": "每行字数",
+   "detail": "约 52 字（日本一位经营26年的店主每天用表）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最大 18px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "situation",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "670px，其他主路径页是 208px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "starred",
+   "rule": "版心宽度",
+   "detail": "1684px，超过 760px"
+  },
+  {
+   "profile": "1920x1080",
+   "page": "starred",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "about",
+   "rule": "每行字数",
+   "detail": "约 176 字（MyF&B 是聚合摘要和阅读索引）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "agent",
+   "rule": "每行字数",
+   "detail": "约 146 字（客户端显示调用了 myfnb_g）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "2324px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 169 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "all",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "archive",
+   "rule": "版心宽度",
+   "detail": "1160px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "archive",
+   "rule": "左边缘",
+   "detail": "930px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "case",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "1030px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "1160px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "10px（周日）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "930px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "2324px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 169 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "home",
+   "rule": "最小字号",
+   "detail": "10.5px（/）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "item",
+   "rule": "每行字数",
+   "detail": "约 54 字（Weekly Global Wr）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "item",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "item",
+   "rule": "左边缘",
+   "detail": "990px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "kind",
+   "rule": "每行字数",
+   "detail": "约 52 字（美国一家餐馆的布草费在每周账单里）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "kind",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "990px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "latest",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "more",
+   "rule": "版心宽度",
+   "detail": "2324px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "more",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "2324px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 169 字（收录理由：对日本开小店的人来说，）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "search",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "shop",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "990px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "situation",
+   "rule": "每行字数",
+   "detail": "约 52 字（日本一位经营26年的店主每天用表）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最大 18px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "situation",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "990px，其他主路径页是 208px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "starred",
+   "rule": "版心宽度",
+   "detail": "2324px，超过 760px"
+  },
+  {
+   "profile": "2560x1440",
+   "page": "starred",
+   "rule": "最小字号",
+   "detail": "11px（内容）"
+  },
+  {
+   "profile": "320x568",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "320x568",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "320x568",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "320x568",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "320x568",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "300px，超过 288px"
+  },
+  {
+   "profile": "320x568",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：麦当劳否认在美国用 AI 定 267×21"
+  },
+  {
+   "profile": "320x568",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "320x568",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "320x568",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "320x568",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "320px，超过 288px"
+  },
+  {
+   "profile": "320x568",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：01同行经验5 件 288×33、02老板说1 件 288×33、03省人省钱2 件 288×33、04生意风向1 件 288×33、阅读Goomer 博客原文： 39×28、阅读식품저널原文：为什么漂亮 39×28"
+  },
+  {
+   "profile": "320x568",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "320x568",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "0px，其他主路径页是 16px"
+  },
+  {
+   "profile": "320x568",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "300px，超过 288px"
+  },
+  {
+   "profile": "320x568",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "320x568",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "320x568",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "320x568",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "320x568",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "300px，超过 288px"
+  },
+  {
+   "profile": "320x568",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "320x568",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "320x568",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "320x568",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最小 8.1px"
+  },
+  {
+   "profile": "320x568",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "320x568",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "360x780",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "360x780",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "360x780",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "360x780",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "360x780",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "340px，超过 328px"
+  },
+  {
+   "profile": "360x780",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "3 个不足 44px：麦当劳否认在美国用 AI 定 267×21、PAUL 在伦敦等地 31  319×21、意大利白松露季开局产量偏少， 323×21"
+  },
+  {
+   "profile": "360x780",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "360x780",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "360x780",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "360x780",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "360px，超过 328px"
+  },
+  {
+   "profile": "360x780",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "13 个不足 44px：01同行经验5 件 328×33、02老板说1 件 328×33、03省人省钱2 件 328×33、04生意风向1 件 328×33、阅读Goomer 博客原文： 39×28、阅读식품저널原文：为什么漂亮 39×28"
+  },
+  {
+   "profile": "360x780",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "360x780",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "0px，其他主路径页是 16px"
+  },
+  {
+   "profile": "360x780",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "340px，超过 328px"
+  },
+  {
+   "profile": "360x780",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "360x780",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "360x780",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "360x780",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "360x780",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "340px，超过 328px"
+  },
+  {
+   "profile": "360x780",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：日本餐饮店如何制定和管理营业 289×21、日本餐饮店削减经费的七个做法 306×21"
+  },
+  {
+   "profile": "360x780",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "360x780",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "360x780",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "360x780",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最小 9.6px"
+  },
+  {
+   "profile": "360x780",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "360x780",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "390x844",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "390x844",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "390x844",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "390x844",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "390x844",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "370px，超过 358px"
+  },
+  {
+   "profile": "390x844",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "5 个不足 44px：麦当劳否认在美国用 AI 定 267×21、PAUL 在伦敦等地 31  319×21、Tampopo 周一到周四学 341×21、美国播客建议餐厅别做积分会员 340×21、意大利白松露季开局产量偏少， 323×21"
+  },
+  {
+   "profile": "390x844",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "390x844",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "390x844",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "390px，超过 358px"
+  },
+  {
+   "profile": "390x844",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：01同行经验5 件 358×33、02老板说1 件 358×33、03省人省钱2 件 358×33、04生意风向1 件 358×33、阅读Goomer 博客原文： 39×28、阅读식품저널原文：为什么漂亮 39×28"
+  },
+  {
+   "profile": "390x844",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "390x844",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "0px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "370px，超过 358px"
+  },
+  {
+   "profile": "390x844",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：美国微型面包店主用四个问题筛 340×21、雀巢报告列出2026年重塑咖 331×21"
+  },
+  {
+   "profile": "390x844",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "390x844",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "390x844",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "390x844",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "370px，超过 358px"
+  },
+  {
+   "profile": "390x844",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：日本餐饮店如何制定和管理营业 289×21、日本餐饮店削减经费的七个做法 306×21、日本咖啡店店主总结自宅兼店铺 357×21、日本一家意大利酒馆店主谈餐饮 357×21"
+  },
+  {
+   "profile": "390x844",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "390x844",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "390x844",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最小 10.7px"
+  },
+  {
+   "profile": "390x844",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "370px，超过 358px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：麦当劳否认在美国用 AI 定 265×22、PAUL 在伦敦等地 31  314×22、Tampopo 周一到周四学 335×22、日本餐饮店老板介绍用AI盘点 357×22、美国播客建议餐厅别做积分会员 340×22、意大利白松露季开局产量偏少， 323×22"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "390px，超过 358px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "14 个不足 44px：01同行经验5 件 358×33、02老板说1 件 358×33、03省人省钱2 件 358×33、04生意风向1 件 358×33、阅读Goomer 博客原文： 39×28、阅读식품저널原文：为什么漂亮 39×28"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "0px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "370px，超过 358px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：美国微型面包店主用四个问题筛 340×22、雀巢报告列出2026年重塑咖 328×22"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 84×26、开店与扩张 82×26、美国 46×26、#行业动态 77×26、#AI/自动化 81×26、#开店/扩张 82×26"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 20×24"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "370px，超过 358px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：日本餐饮店如何制定和管理营业 289×22、日本餐饮店削减经费的七个做法 306×22、日本咖啡店店主总结自宅兼店铺 357×22、日本一家意大利酒馆店主谈餐饮 357×22"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "situation",
+   "rule": "图中字号",
+   "detail": "最小 10.7px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "390x844-wechat",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 64×19"
+  },
+  {
+   "profile": "430x932",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "430x932",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "430x932",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "430x932",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "430x932",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "410px，超过 398px"
+  },
+  {
+   "profile": "430x932",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：Molly Tea 新加坡第 377×21、麦当劳否认在美国用 AI 定 267×21、PAUL 在伦敦等地 31  319×21、Tampopo 周一到周四学 341×21、日本拉面店倒闭再次增加，20 373×21、日本餐饮店老板介绍用AI盘点 359×21"
+  },
+  {
+   "profile": "430x932",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "430x932",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "430x932",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "430x932",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "430px，超过 398px"
+  },
+  {
+   "profile": "430x932",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "17 个不足 44px：01同行经验5 件 398×33、02老板说1 件 398×33、03省人省钱2 件 398×33、04生意风向1 件 398×33、为什么餐厅做好了标准配方表， 389×24、阅读Goomer 博客原文： 39×28"
+  },
+  {
+   "profile": "430x932",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "430x932",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "0px，其他主路径页是 16px"
+  },
+  {
+   "profile": "430x932",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "410px，超过 398px"
+  },
+  {
+   "profile": "430x932",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：美国微型面包店主用四个问题筛 340×21、雀巢报告列出2026年重塑咖 331×21、阿根廷面包店接活动订单：如何 374×21、咖啡店顾问谈如何建立团队真正 391×21"
+  },
+  {
+   "profile": "430x932",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "430x932",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "430x932",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "430x932",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "430x932",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "410px，超过 398px"
+  },
+  {
+   "profile": "430x932",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "8 个不足 44px：日本餐饮店如何制定和管理营业 289×21、日本餐饮店削减经费的七个做法 306×21、日本咖啡店店主总结自宅餐饮店 384×21、日本咖啡店店主：自宅开店省下 391×21、日本咖啡店店主总结自宅兼店铺 357×21、日本一位意大利酒馆店主算账： 391×21"
+  },
+  {
+   "profile": "430x932",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "430x932",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "430x932",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "430x932",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "430x932",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "600x960",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "600x960",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "600x960",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "600x960",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "600x960",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "580px，超过 568px"
+  },
+  {
+   "profile": "600x960",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "27 个不足 44px：Molly Tea 新加坡第 377×21、澳洲酸奶连锁 Yo-Chi  508×21、麦当劳否认在美国用 AI 定 454×21、Molly Tea 在新加坡 510×21、Jersey Mike’s  445×21、麦当劳否认在美国用 AI 定 267×21"
+  },
+  {
+   "profile": "600x960",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "600x960",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "600x960",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "600x960",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "600px，超过 568px"
+  },
+  {
+   "profile": "600x960",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "20 个不足 44px：01同行经验5 件 568×33、02老板说1 件 568×33、03省人省钱2 件 568×33、04生意风向1 件 568×33、为什么餐厅做好了标准配方表， 389×24、阅读Goomer 博客原文： 39×28"
+  },
+  {
+   "profile": "600x960",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "600x960",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "0px，其他主路径页是 16px"
+  },
+  {
+   "profile": "600x960",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "580px，超过 568px"
+  },
+  {
+   "profile": "600x960",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "17 个不足 44px：一家餐馆的布草服务费如何从每 430×21、澳洲储备银行刷卡附加费禁令生 561×21、东京高圆寺居酒屋「あんぽんた 480×21、餐厅账单附加费是好主意还是坏 565×21、德国餐饮播客谈招人难：从学徒 476×21、日本餐饮店开始做外带：营业许 503×21"
+  },
+  {
+   "profile": "600x960",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "600x960",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "600x960",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "600x960",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "600x960",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "580px，超过 568px"
+  },
+  {
+   "profile": "600x960",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "22 个不足 44px：日本餐饮店主谈为何忙却不赚钱 459×21、餐厅要留多少周转资金，才不会 408×21、日本餐饮店需要多少运转资金？ 408×21、印度咖啡馆的生意模型：饮品毛 477×21、日本町中华为什么不容易倒闭， 469×21、日本咖啡店店主复盘：靠自宅开 531×21"
+  },
+  {
+   "profile": "600x960",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "600x960",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "600x960",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "600x960",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "32px，其他主路径页是 16px"
+  },
+  {
+   "profile": "600x960",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "768x1024",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "768x1024",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "768x1024",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "30 个不足 44px：Molly Tea 新加坡第 377×21、澳洲酸奶连锁 Yo-Chi  508×21、麦当劳否认在美国用 AI 定 454×21、Molly Tea 在新加坡 510×21、Jersey Mike’s  445×21、麦当劳否认在美国用 AI 定 267×21"
+  },
+  {
+   "profile": "768x1024",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "768x1024",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "96px，其他主路径页是 80px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "640px，超过 608px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "22 个不足 44px：01同行经验5 件 608×33、02老板说1 件 608×33、03省人省钱2 件 608×33、04生意风向1 件 608×33、为什么餐厅做好了标准配方表， 389×24、阅读Goomer 博客原文： 39×28"
+  },
+  {
+   "profile": "768x1024",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "64px，其他主路径页是 80px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "20 个不足 44px：一家餐馆的布草服务费如何从每 430×21、巴西餐饮集团经营者谈：员工流 578×21、澳洲储备银行刷卡附加费禁令生 561×21、Meaningful Vis 577×21、东京高圆寺居酒屋「あんぽんた 480×21、餐厅账单附加费是好主意还是坏 565×21"
+  },
+  {
+   "profile": "768x1024",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "768x1024",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "768x1024",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "96px，其他主路径页是 80px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "768x1024",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "23 个不足 44px：日本餐饮店主谈为何忙却不赚钱 459×21、餐厅要留多少周转资金，才不会 408×21、日本餐饮店需要多少运转资金？ 408×21、印度咖啡馆的生意模型：饮品毛 477×21、日本町中华为什么不容易倒闭， 469×21、日本咖啡店店主复盘：靠自宅开 531×21"
+  },
+  {
+   "profile": "768x1024",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对日本开小店的人来说，）"
+  },
+  {
+   "profile": "768x1024",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "768x1024",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "96px，其他主路径页是 80px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "768x1024",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "96px，其他主路径页是 80px"
+  },
+  {
+   "profile": "768x1024",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "834x1194",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "834x1194",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "834x1194",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "30 个不足 44px：Molly Tea 新加坡第 377×21、澳洲酸奶连锁 Yo-Chi  508×21、麦当劳否认在美国用 AI 定 454×21、Molly Tea 在新加坡 510×21、Jersey Mike’s  445×21、麦当劳否认在美国用 AI 定 267×21"
+  },
+  {
+   "profile": "834x1194",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "834x1194",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "129px，其他主路径页是 113px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "640px，超过 608px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "22 个不足 44px：01同行经验5 件 608×33、02老板说1 件 608×33、03省人省钱2 件 608×33、04生意风向1 件 608×33、为什么餐厅做好了标准配方表， 389×24、阅读Goomer 博客原文： 39×28"
+  },
+  {
+   "profile": "834x1194",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "97px，其他主路径页是 113px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "20 个不足 44px：一家餐馆的布草服务费如何从每 430×21、巴西餐饮集团经营者谈：员工流 578×21、澳洲储备银行刷卡附加费禁令生 561×21、Meaningful Vis 577×21、东京高圆寺居酒屋「あんぽんた 480×21、餐厅账单附加费是好主意还是坏 565×21"
+  },
+  {
+   "profile": "834x1194",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "834x1194",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "834x1194",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "129px，其他主路径页是 113px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "834x1194",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "23 个不足 44px：日本餐饮店主谈为何忙却不赚钱 459×21、餐厅要留多少周转资金，才不会 408×21、日本餐饮店需要多少运转资金？ 408×21、印度咖啡馆的生意模型：饮品毛 477×21、日本町中华为什么不容易倒闭， 469×21、日本咖啡店店主复盘：靠自宅开 531×21"
+  },
+  {
+   "profile": "834x1194",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对日本开小店的人来说，）"
+  },
+  {
+   "profile": "834x1194",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "834x1194",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "129px，其他主路径页是 113px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "834x1194",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "129px，其他主路径页是 113px"
+  },
+  {
+   "profile": "834x1194",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  },
+  {
+   "profile": "844x390",
+   "page": "about",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：使用规则 50×19、隐私说明 50×19"
+  },
+  {
+   "profile": "844x390",
+   "page": "about",
+   "rule": "最小字号",
+   "detail": "11px（最近精选）"
+  },
+  {
+   "profile": "844x390",
+   "page": "agent",
+   "rule": "点按区",
+   "detail": "4 个不足 44px：复制 60×28、复制 60×28、复制 60×28、去反馈 57×20"
+  },
+  {
+   "profile": "844x390",
+   "page": "agent",
+   "rule": "最小字号",
+   "detail": "11.5px（MCP · 4.0.0）"
+  },
+  {
+   "profile": "844x390",
+   "page": "all",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "844x390",
+   "page": "all",
+   "rule": "点按区",
+   "detail": "30 个不足 44px：Molly Tea 新加坡第 377×21、澳洲酸奶连锁 Yo-Chi  508×21、麦当劳否认在美国用 AI 定 454×21、Molly Tea 在新加坡 510×21、Jersey Mike’s  445×21、麦当劳否认在美国用 AI 定 267×21"
+  },
+  {
+   "profile": "844x390",
+   "page": "all",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "844x390",
+   "page": "archive",
+   "rule": "最小字号",
+   "detail": "10.5px（周日）"
+  },
+  {
+   "profile": "844x390",
+   "page": "case",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：打开原文 ↗ 69×20"
+  },
+  {
+   "profile": "844x390",
+   "page": "case",
+   "rule": "左边缘",
+   "detail": "134px，其他主路径页是 118px"
+  },
+  {
+   "profile": "844x390",
+   "page": "daily",
+   "rule": "版心宽度",
+   "detail": "640px，超过 608px"
+  },
+  {
+   "profile": "844x390",
+   "page": "daily",
+   "rule": "点按区",
+   "detail": "22 个不足 44px：01同行经验5 件 608×33、02老板说1 件 608×33、03省人省钱2 件 608×33、04生意风向1 件 608×33、为什么餐厅做好了标准配方表， 389×24、阅读Goomer 博客原文： 39×28"
+  },
+  {
+   "profile": "844x390",
+   "page": "daily",
+   "rule": "最小字号",
+   "detail": "11px（第 1 期）"
+  },
+  {
+   "profile": "844x390",
+   "page": "daily",
+   "rule": "左边缘",
+   "detail": "102px，其他主路径页是 118px"
+  },
+  {
+   "profile": "844x390",
+   "page": "home",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "844x390",
+   "page": "home",
+   "rule": "点按区",
+   "detail": "20 个不足 44px：一家餐馆的布草服务费如何从每 430×21、巴西餐饮集团经营者谈：员工流 578×21、澳洲储备银行刷卡附加费禁令生 561×21、Meaningful Vis 577×21、东京高圆寺居酒屋「あんぽんた 480×21、餐厅账单附加费是好主意还是坏 565×21"
+  },
+  {
+   "profile": "844x390",
+   "page": "home",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对开餐馆的人来说，原文）"
+  },
+  {
+   "profile": "844x390",
+   "page": "item",
+   "rule": "点按区",
+   "detail": "9 个不足 44px：AI 与自动化 86×26、开店与扩张 82×26、美国 46×26、#行业动态 78×26、#AI/自动化 83×26、#开店/扩张 83×26"
+  },
+  {
+   "profile": "844x390",
+   "page": "kind",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "844x390",
+   "page": "kind",
+   "rule": "左边缘",
+   "detail": "134px，其他主路径页是 118px"
+  },
+  {
+   "profile": "844x390",
+   "page": "more",
+   "rule": "点按区",
+   "detail": "6 个不足 44px：深色 39×26、跟随系统 39×26、浅色 39×26、使用规则 48×24、隐私说明 48×24、RSS 22×24"
+  },
+  {
+   "profile": "844x390",
+   "page": "search",
+   "rule": "版心宽度",
+   "detail": "620px，超过 608px"
+  },
+  {
+   "profile": "844x390",
+   "page": "search",
+   "rule": "点按区",
+   "detail": "23 个不足 44px：日本餐饮店主谈为何忙却不赚钱 459×21、餐厅要留多少周转资金，才不会 408×21、日本餐饮店需要多少运转资金？ 408×21、印度咖啡馆的生意模型：饮品毛 477×21、日本町中华为什么不容易倒闭， 469×21、日本咖啡店店主复盘：靠自宅开 531×21"
+  },
+  {
+   "profile": "844x390",
+   "page": "search",
+   "rule": "每行字数",
+   "detail": "约 47 字（收录理由：对日本开小店的人来说，）"
+  },
+  {
+   "profile": "844x390",
+   "page": "shop",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "844x390",
+   "page": "shop",
+   "rule": "左边缘",
+   "detail": "134px，其他主路径页是 118px"
+  },
+  {
+   "profile": "844x390",
+   "page": "situation",
+   "rule": "点按区",
+   "detail": "1 个不足 44px：‹ 参考 34×44"
+  },
+  {
+   "profile": "844x390",
+   "page": "situation",
+   "rule": "左边缘",
+   "detail": "134px，其他主路径页是 118px"
+  },
+  {
+   "profile": "844x390",
+   "page": "starred",
+   "rule": "点按区",
+   "detail": "2 个不足 44px：导入文件 50×19、去看精选 → 66×19"
+  }
+ ],
+ "results": {
+  "320x568": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 300
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": {
+     "max": 22,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 300
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "麦当劳否认在美国用 AI 定 267×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 22,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 300
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": {
+     "max": 22,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 256
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 8.1,
+     "max": 13.3
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 16,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 256
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 17,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 256
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 256
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 16,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 288
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 288
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 288
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 0,
+     "width": 320
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 288×33",
+     "02老板说1 件 288×33",
+     "03省人省钱2 件 288×33",
+     "04生意风向1 件 288×33",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "阅读FULL COMP原文： 39×28",
+     "阅读Ristorazione 39×28",
+     "阅读Total Food S 39×28",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 288
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 288
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "01采集75个信源来源是各国经营"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 288
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  },
+  "360x780": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 340
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": {
+     "max": 25,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 52,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 340
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "意大利白松露季开局产量偏少， 323×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 25,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 340
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店削减经费的七个做法 306×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 25,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 296
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 9.6,
+     "max": 15.7
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 18,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 296
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 19,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 296
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 296
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 18,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 328
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 23,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 328
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 328
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 0,
+     "width": 360
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 328×33",
+     "02老板说1 件 328×33",
+     "03省人省钱2 件 328×33",
+     "04生意风向1 件 328×33",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "阅读FULL COMP原文： 39×28",
+     "阅读Ristorazione 39×28",
+     "阅读Total Food S 39×28",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 23,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 328
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 328
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 23,
+     "text": "01采集75个信源来源是各国经营"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 328
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 23,
+     "text": "标准 Streamable HT"
+    }
+   }
+  },
+  "390x844": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 370
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "美国微型面包店主用四个问题筛 340×21",
+     "雀巢报告列出2026年重塑咖 331×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 67,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 370
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "Tampopo 周一到周四学 341×21",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "意大利白松露季开局产量偏少， 323×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 370
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "日本一家意大利酒馆店主谈餐饮 357×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 10.7,
+     "max": 17.5
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 0,
+     "width": 390
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 358×33",
+     "02老板说1 件 358×33",
+     "03省人省钱2 件 358×33",
+     "04生意风向1 件 358×33",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "阅读FULL COMP原文： 39×28",
+     "阅读Ristorazione 39×28",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "01采集75个信源来源是各国经营"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  },
+  "430x932": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 410
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "美国微型面包店主用四个问题筛 340×21",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 31,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 87,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 410
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "Molly Tea 新加坡第 377×21",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "Tampopo 周一到周四学 341×21",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "意大利白松露季开局产量偏少， 323×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 31,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 410
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "日本意大利酒馆店主谈一人经营 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 31,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 366
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 23,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 366
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 24,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 366
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 366
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 23,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 398
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 398
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 398
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 0,
+     "width": 430
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 398×33",
+     "02老板说1 件 398×33",
+     "03省人省钱2 件 398×33",
+     "04生意风向1 件 398×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 398
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 398
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "01采集75个信源来源是各国经营"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 398
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  },
+  "844x390": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "一家餐馆的布草服务费如何从每 430×21",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "澳洲储备银行刷卡附加费禁令生 561×21",
+     "Meaningful Vis 577×21",
+     "东京高圆寺居酒屋「あんぽんた 480×21",
+     "餐厅账单附加费是好主意还是坏 565×21",
+     "葡萄牙餐饮业吸收原材料与能源 602×21",
+     "德国餐饮播客谈招人难：从学徒 476×21",
+     "日本餐饮店开始做外带：营业许 503×21",
+     "餐饮业老将 Matt Wal 527×21",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "美国微型面包店主用四个问题筛 340×21",
+     "加拿大餐馆协会：八成加拿大人 459×21",
+     "日本餐饮店怎么做外卖：许可、 493×21",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "阿根廷播客请设备顾问谈面包房 561×21",
+     "美国播客：菜单上别人抄不走的 459×21",
+     "贷款顾问 Ami Kassa 440×21",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 294,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "Molly Tea 新加坡第 377×21",
+     "澳洲酸奶连锁 Yo-Chi  508×21",
+     "麦当劳否认在美国用 AI 定 454×21",
+     "Molly Tea 在新加坡 510×21",
+     "Jersey Mike’s  445×21",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "Tampopo 周一到周四学 341×21",
+     "日本博多めんちゃんこ亭靠多世 501×21",
+     "播客提出渠道测试：堂食、外带 493×21",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "日本天丼连锁「てんや」9月同 505×21",
+     "播客：餐厅满座却不赚钱，Am 506×21",
+     "Tipsy Putt 创始人 430×21",
+     "日本播客谈店主如何用「不做的 410×21",
+     "朗生集团凌飞：用标准化营建重 408×21",
+     "阿根廷播客谈面包店与餐饮门店 459×21",
+     "The Ristorator 527×21",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "餐饮连锁化进入下半场：后端交 425×21",
+     "汪小菲：麻六记2.0版本推进 538×21",
+     "翠宏辣业钟书红：从辣椒种子到 493×21",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "Toast IQ 为何答不出 597×21",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "意大利POS与电子收银机强制 579×21",
+     "意大利白松露季开局产量偏少， 323×21",
+     "Italian Wine B 490×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "餐厅要留多少周转资金，才不会 408×21",
+     "日本餐饮店需要多少运转资金？ 408×21",
+     "印度咖啡馆的生意模型：饮品毛 477×21",
+     "日本町中华为什么不容易倒闭， 469×21",
+     "日本咖啡店店主复盘：靠自宅开 531×21",
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店关店要花多少钱？费 527×21",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "播客：爱你的顾客——餐饮业者 479×21",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "日本咖啡店店主比较六种个人餐 578×21",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "日本一家餐饮店主决定不与房东 544×21",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "日本一位意大利酒馆店主谈餐饮 527×21",
+     "日本意大利酒馆店主谈一人经营 391×21",
+     "日本一家意大利酒馆店主算账： 408×21",
+     "日本一家个人饮食店每月固定开 561×21",
+     "日本个人饮食店店主复盘：资金 510×21",
+     "在日本开餐车还是开固定门店？ 544×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 134,
+     "width": 576
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 38,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 134,
+     "width": 576
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 37,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 134,
+     "width": 576
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 134,
+     "width": 576
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 38,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 608
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 43,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 608
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 608
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 102,
+     "width": 640
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 608×33",
+     "02老板说1 件 608×33",
+     "03省人省钱2 件 608×33",
+     "04生意风向1 件 608×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "为什么漂亮的餐厅一到 12  595×24",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "把积分奖励改成俱乐部：一家餐 414×24",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "一家餐馆的布草服务费如何从每 476×24",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "餐厅该不该换管理系统，以及如 508×24",
+     "阅读Goomer 博客原文： 39×28",
+     "Meaningful Vis 594×24",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 43,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 608
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 608
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 118,
+     "width": 608
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "600x960": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 580
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "一家餐馆的布草服务费如何从每 430×21",
+     "澳洲储备银行刷卡附加费禁令生 561×21",
+     "东京高圆寺居酒屋「あんぽんた 480×21",
+     "餐厅账单附加费是好主意还是坏 565×21",
+     "德国餐饮播客谈招人难：从学徒 476×21",
+     "日本餐饮店开始做外带：营业许 503×21",
+     "餐饮业老将 Matt Wal 527×21",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "美国微型面包店主用四个问题筛 340×21",
+     "加拿大餐馆协会：八成加拿大人 459×21",
+     "日本餐饮店怎么做外卖：许可、 493×21",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "阿根廷播客请设备顾问谈面包房 561×21",
+     "美国播客：菜单上别人抄不走的 459×21",
+     "贷款顾问 Ami Kassa 440×21",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 172,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 580
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "Molly Tea 新加坡第 377×21",
+     "澳洲酸奶连锁 Yo-Chi  508×21",
+     "麦当劳否认在美国用 AI 定 454×21",
+     "Molly Tea 在新加坡 510×21",
+     "Jersey Mike’s  445×21",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "Tampopo 周一到周四学 341×21",
+     "日本博多めんちゃんこ亭靠多世 501×21",
+     "播客提出渠道测试：堂食、外带 493×21",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "日本天丼连锁「てんや」9月同 505×21",
+     "播客：餐厅满座却不赚钱，Am 506×21",
+     "Tipsy Putt 创始人 430×21",
+     "日本播客谈店主如何用「不做的 410×21",
+     "朗生集团凌飞：用标准化营建重 408×21",
+     "阿根廷播客谈面包店与餐饮门店 459×21",
+     "The Ristorator 527×21",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "餐饮连锁化进入下半场：后端交 425×21",
+     "汪小菲：麻六记2.0版本推进 538×21",
+     "翠宏辣业钟书红：从辣椒种子到 493×21",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "意大利白松露季开局产量偏少， 323×21",
+     "Italian Wine B 490×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 580
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "餐厅要留多少周转资金，才不会 408×21",
+     "日本餐饮店需要多少运转资金？ 408×21",
+     "印度咖啡馆的生意模型：饮品毛 477×21",
+     "日本町中华为什么不容易倒闭， 469×21",
+     "日本咖啡店店主复盘：靠自宅开 531×21",
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店关店要花多少钱？费 527×21",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "播客：爱你的顾客——餐饮业者 479×21",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "日本一家餐饮店主决定不与房东 544×21",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "日本一位意大利酒馆店主谈餐饮 527×21",
+     "日本意大利酒馆店主谈一人经营 391×21",
+     "日本一家意大利酒馆店主算账： 408×21",
+     "日本一家个人饮食店每月固定开 561×21",
+     "日本个人饮食店店主复盘：资金 510×21",
+     "在日本开餐车还是开固定门店？ 544×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 536
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 36,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 536
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 35,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 536
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 536
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 36,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 568
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 41,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 568
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 568
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 0,
+     "width": 600
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 568×33",
+     "02老板说1 件 568×33",
+     "03省人省钱2 件 568×33",
+     "04生意风向1 件 568×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "把积分奖励改成俱乐部：一家餐 414×24",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "一家餐馆的布草服务费如何从每 476×24",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "餐厅该不该换管理系统，以及如 508×24",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 41,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 568
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 568
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 41,
+     "text": "01采集75个信源来源是各国经营"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 568
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 41,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  },
+  "768x1024": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "一家餐馆的布草服务费如何从每 430×21",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "澳洲储备银行刷卡附加费禁令生 561×21",
+     "Meaningful Vis 577×21",
+     "东京高圆寺居酒屋「あんぽんた 480×21",
+     "餐厅账单附加费是好主意还是坏 565×21",
+     "葡萄牙餐饮业吸收原材料与能源 602×21",
+     "德国餐饮播客谈招人难：从学徒 476×21",
+     "日本餐饮店开始做外带：营业许 503×21",
+     "餐饮业老将 Matt Wal 527×21",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "美国微型面包店主用四个问题筛 340×21",
+     "加拿大餐馆协会：八成加拿大人 459×21",
+     "日本餐饮店怎么做外卖：许可、 493×21",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "阿根廷播客请设备顾问谈面包房 561×21",
+     "美国播客：菜单上别人抄不走的 459×21",
+     "贷款顾问 Ami Kassa 440×21",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 256,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "Molly Tea 新加坡第 377×21",
+     "澳洲酸奶连锁 Yo-Chi  508×21",
+     "麦当劳否认在美国用 AI 定 454×21",
+     "Molly Tea 在新加坡 510×21",
+     "Jersey Mike’s  445×21",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "Tampopo 周一到周四学 341×21",
+     "日本博多めんちゃんこ亭靠多世 501×21",
+     "播客提出渠道测试：堂食、外带 493×21",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "日本天丼连锁「てんや」9月同 505×21",
+     "播客：餐厅满座却不赚钱，Am 506×21",
+     "Tipsy Putt 创始人 430×21",
+     "日本播客谈店主如何用「不做的 410×21",
+     "朗生集团凌飞：用标准化营建重 408×21",
+     "阿根廷播客谈面包店与餐饮门店 459×21",
+     "The Ristorator 527×21",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "餐饮连锁化进入下半场：后端交 425×21",
+     "汪小菲：麻六记2.0版本推进 538×21",
+     "翠宏辣业钟书红：从辣椒种子到 493×21",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "Toast IQ 为何答不出 597×21",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "意大利POS与电子收银机强制 579×21",
+     "意大利白松露季开局产量偏少， 323×21",
+     "Italian Wine B 490×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "餐厅要留多少周转资金，才不会 408×21",
+     "日本餐饮店需要多少运转资金？ 408×21",
+     "印度咖啡馆的生意模型：饮品毛 477×21",
+     "日本町中华为什么不容易倒闭， 469×21",
+     "日本咖啡店店主复盘：靠自宅开 531×21",
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店关店要花多少钱？费 527×21",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "播客：爱你的顾客——餐饮业者 479×21",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "日本咖啡店店主比较六种个人餐 578×21",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "日本一家餐饮店主决定不与房东 544×21",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "日本一位意大利酒馆店主谈餐饮 527×21",
+     "日本意大利酒馆店主谈一人经营 391×21",
+     "日本一家意大利酒馆店主算账： 408×21",
+     "日本一家个人饮食店每月固定开 561×21",
+     "日本个人饮食店店主复盘：资金 510×21",
+     "在日本开餐车还是开固定门店？ 544×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 96,
+     "width": 576
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 38,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 96,
+     "width": 576
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 37,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 96,
+     "width": 576
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 96,
+     "width": 576
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 38,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 608
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 43,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 608
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 608
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 64,
+     "width": 640
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 608×33",
+     "02老板说1 件 608×33",
+     "03省人省钱2 件 608×33",
+     "04生意风向1 件 608×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "为什么漂亮的餐厅一到 12  595×24",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "把积分奖励改成俱乐部：一家餐 414×24",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "一家餐馆的布草服务费如何从每 476×24",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "餐厅该不该换管理系统，以及如 508×24",
+     "阅读Goomer 博客原文： 39×28",
+     "Meaningful Vis 594×24",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 43,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 608
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 608
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 80,
+     "width": 608
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "834x1194": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "一家餐馆的布草服务费如何从每 430×21",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "澳洲储备银行刷卡附加费禁令生 561×21",
+     "Meaningful Vis 577×21",
+     "东京高圆寺居酒屋「あんぽんた 480×21",
+     "餐厅账单附加费是好主意还是坏 565×21",
+     "葡萄牙餐饮业吸收原材料与能源 602×21",
+     "德国餐饮播客谈招人难：从学徒 476×21",
+     "日本餐饮店开始做外带：营业许 503×21",
+     "餐饮业老将 Matt Wal 527×21",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "美国微型面包店主用四个问题筛 340×21",
+     "加拿大餐馆协会：八成加拿大人 459×21",
+     "日本餐饮店怎么做外卖：许可、 493×21",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "阿根廷播客请设备顾问谈面包房 561×21",
+     "美国播客：菜单上别人抄不走的 459×21",
+     "贷款顾问 Ami Kassa 440×21",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 289,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "Molly Tea 新加坡第 377×21",
+     "澳洲酸奶连锁 Yo-Chi  508×21",
+     "麦当劳否认在美国用 AI 定 454×21",
+     "Molly Tea 在新加坡 510×21",
+     "Jersey Mike’s  445×21",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "PAUL 在伦敦等地 31  319×21",
+     "Tampopo 周一到周四学 341×21",
+     "日本博多めんちゃんこ亭靠多世 501×21",
+     "播客提出渠道测试：堂食、外带 493×21",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "日本天丼连锁「てんや」9月同 505×21",
+     "播客：餐厅满座却不赚钱，Am 506×21",
+     "Tipsy Putt 创始人 430×21",
+     "日本播客谈店主如何用「不做的 410×21",
+     "朗生集团凌飞：用标准化营建重 408×21",
+     "阿根廷播客谈面包店与餐饮门店 459×21",
+     "The Ristorator 527×21",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "餐饮连锁化进入下半场：后端交 425×21",
+     "汪小菲：麻六记2.0版本推进 538×21",
+     "翠宏辣业钟书红：从辣椒种子到 493×21",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "Toast IQ 为何答不出 597×21",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "意大利POS与电子收银机强制 579×21",
+     "意大利白松露季开局产量偏少， 323×21",
+     "Italian Wine B 490×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 620
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "餐厅要留多少周转资金，才不会 408×21",
+     "日本餐饮店需要多少运转资金？ 408×21",
+     "印度咖啡馆的生意模型：饮品毛 477×21",
+     "日本町中华为什么不容易倒闭， 469×21",
+     "日本咖啡店店主复盘：靠自宅开 531×21",
+     "日本餐饮店如何制定和管理营业 289×21",
+     "日本餐饮店关店要花多少钱？费 527×21",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "播客：爱你的顾客——餐饮业者 479×21",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "日本咖啡店店主比较六种个人餐 578×21",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "日本一家餐饮店主决定不与房东 544×21",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "日本一位意大利酒馆店主谈餐饮 527×21",
+     "日本意大利酒馆店主谈一人经营 391×21",
+     "日本一家意大利酒馆店主算账： 408×21",
+     "日本一家个人饮食店每月固定开 561×21",
+     "日本个人饮食店店主复盘：资金 510×21",
+     "在日本开餐车还是开固定门店？ 544×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 129,
+     "width": 576
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 38,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 129,
+     "width": 576
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 37,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 129,
+     "width": 576
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 129,
+     "width": 576
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 38,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 608
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 43,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 608
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 608
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 97,
+     "width": 640
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 608×33",
+     "02老板说1 件 608×33",
+     "03省人省钱2 件 608×33",
+     "04生意风向1 件 608×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "为什么漂亮的餐厅一到 12  595×24",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "把积分奖励改成俱乐部：一家餐 414×24",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "一家餐馆的布草服务费如何从每 476×24",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "餐厅该不该换管理系统，以及如 508×24",
+     "阅读Goomer 博客原文： 39×28",
+     "Meaningful Vis 594×24",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 43,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 608
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 608
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 113,
+     "width": 608
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "1024x768": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 788
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "全部 60×36",
+     "经验 60×36",
+     "观点 60×36",
+     "工具 60×36",
+     "趋势 60×36",
+     "品牌 60×36",
+     "规定 60×36",
+     "INPUT 240×42",
+     "10月3日 69×24",
+     "收起10月3日 24×24",
+     "收藏 26×26",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "收藏 26×26",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "10月2日 69×24",
+     "收起10月2日 24×24",
+     "收藏 26×26",
+     "澳洲储备银行刷卡附加费禁令生 561×21",
+     "10月1日 69×24",
+     "收起10月1日 24×24",
+     "收藏 26×26",
+     "Meaningful Vis 577×21",
+     "9月30日 69×24",
+     "收起9月30日 24×24",
+     "收藏 26×26",
+     "东京高圆寺居酒屋「あんぽんた 480×21",
+     "收藏 26×26",
+     "餐厅账单附加费是好主意还是坏 565×21",
+     "9月28日 69×24",
+     "收起9月28日 24×24",
+     "收藏 26×26",
+     "葡萄牙餐饮业吸收原材料与能源 602×21",
+     "收藏 26×26",
+     "德国餐饮播客谈招人难：从学徒 476×21",
+     "收藏 26×26",
+     "日本餐饮店开始做外带：营业许 503×21",
+     "收藏 26×26",
+     "餐饮业老将 Matt Wal 527×21",
+     "9月27日 69×24",
+     "收起9月27日 24×24",
+     "收藏 26×26",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "9月26日 69×24",
+     "收起9月26日 24×24",
+     "收藏 26×26",
+     "美国微型面包店主用四个问题筛 340×21",
+     "9月24日 69×24",
+     "收起9月24日 24×24",
+     "收藏 26×26",
+     "加拿大餐馆协会：八成加拿大人 459×21",
+     "收藏 26×26",
+     "日本餐饮店怎么做外卖：许可、 493×21",
+     "9月23日 69×24",
+     "收起9月23日 24×24",
+     "收藏 26×26",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "收藏 26×26",
+     "阿根廷播客请设备顾问谈面包房 561×21",
+     "9月22日 69×24",
+     "收起9月22日 24×24",
+     "收藏 26×26",
+     "美国播客：菜单上别人抄不走的 459×21",
+     "收藏 26×26",
+     "贷款顾问 Ami Kassa 440×21",
+     "收藏 26×26",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "9月21日 69×24",
+     "收起9月21日 24×24",
+     "收藏 26×26",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 56,
+     "text": "10:59Total Food "
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 474,
+     "width": 257
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "回到精选 86×36",
+     "浏览全部动态 115×36"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 788
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "全部 60×36",
+     "经验 60×36",
+     "观点 60×36",
+     "工具 60×36",
+     "趋势 60×36",
+     "品牌 60×36",
+     "规定 60×36",
+     "INPUT 240×42",
+     "收藏 26×26",
+     "每周全球速览：Chick-f 623×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#AI/自动化 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "Molly Tea 新加坡第 377×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#新品/促销 61×18",
+     "收藏 26×26",
+     "#其他 32×18",
+     "收藏 26×26",
+     "澳洲酸奶连锁 Yo-Chi  508×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#出海 32×18",
+     "收藏 26×26",
+     "麦当劳否认在美国用 AI 定 454×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#AI/自动化 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "Molly Tea 在新加坡 510×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#新品/促销 61×18",
+     "收藏 26×26",
+     "#其他 32×18",
+     "收藏 26×26",
+     "Jersey Mike’s  445×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#快餐 32×18",
+     "收藏 26×26",
+     "#其他 32×18",
+     "收藏 26×26",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#AI/自动化 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "PAUL 在伦敦等地 31  319×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#新品/促销 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "Tampopo 周一到周四学 341×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#新品/促销 61×18",
+     "#英国 32×18",
+     "收藏 26×26",
+     "日本博多めんちゃんこ亭靠多世 501×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#实战/经验 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "播客提出渠道测试：堂食、外带 493×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#外卖/平台 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#人与用工 56×18",
+     "#台湾 32×18",
+     "收藏 26×26",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "趋势 24×18",
+     "#市场/数据 61×18",
+     "#关店/倒闭 61×18",
+     "#日本 32×18",
+     "收藏 26×26",
+     "日本天丼连锁「てんや」9月同 505×21",
+     "趋势 24×18",
+     "#市场/数据 61×18",
+     "#日本 32×18",
+     "#快餐 32×18",
+     "收藏 26×26",
+     "播客：餐厅满座却不赚钱，Am 506×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#成本/利润 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "Tipsy Putt 创始人 430×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#美国 32×18",
+     "收藏 26×26",
+     "日本播客谈店主如何用「不做的 410×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#AI/自动化 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#食材/供应链 73×18",
+     "#AI/自动化 61×18",
+     "收藏 26×26",
+     "朗生集团凌飞：用标准化营建重 408×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#店面/装修 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "阿根廷播客谈面包店与餐饮门店 459×21",
+     "规定 24×18",
+     "#政策/法规 61×18",
+     "#食品安全/卫生 85×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "The Ristorator 527×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#其他 32×18",
+     "收藏 26×26",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#AI/自动化 61×18",
+     "收藏 26×26",
+     "餐饮连锁化进入下半场：后端交 425×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#AI/自动化 61×18",
+     "#厨房设备 56×18",
+     "收藏 26×26",
+     "汪小菲：麻六记2.0版本推进 538×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "翠宏辣业钟书红：从辣椒种子到 493×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#食材/供应链 73×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#美国 32×18",
+     "收藏 26×26",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#AI/自动化 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "播客专访：Mrs. Jone 643×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#咖啡 32×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#人与用工 56×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#人与用工 56×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "巴西餐饮业者：利润率与投资回 639×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "Toast IQ 为何答不出 597×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#AI/自动化 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#引流/复购 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#咖啡 32×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "意大利POS与电子收银机强制 579×21",
+     "规定 24×18",
+     "#政策/法规 61×18",
+     "#外卖/平台 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "意大利白松露季开局产量偏少， 323×21",
+     "趋势 24×18",
+     "#市场/数据 61×18",
+     "#食材/供应链 73×18",
+     "#欧洲 32×18",
+     "收藏 26×26",
+     "Italian Wine B 490×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#融资/上市 61×18",
+     "#欧洲 32×18",
+     "1 36×36",
+     "2 36×36",
+     "3 36×36",
+     "50 36×36",
+     "下一页 81×36"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 56,
+     "text": "12:38QSR Media A"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 788
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "全部 60×36",
+     "经验 60×36",
+     "观点 60×36",
+     "工具 60×36",
+     "趋势 60×36",
+     "品牌 60×36",
+     "规定 60×36",
+     "INPUT 240×42",
+     "清空 24×24",
+     "最新（标题与摘要） 137×28",
+     "全文相关 74×28",
+     "收藏 26×26",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#AI/自动化 61×18",
+     "收藏 26×26",
+     "餐厅要留多少周转资金，才不会 408×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#中国 32×18",
+     "收藏 26×26",
+     "日本餐饮店需要多少运转资金？ 408×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "印度咖啡馆的生意模型：饮品毛 477×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "日本町中华为什么不容易倒闭， 469×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主复盘：靠自宅开 531×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本餐饮店如何制定和管理营业 289×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "日本餐饮店关店要花多少钱？费 527×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#租金/选址 61×18",
+     "收藏 26×26",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "播客：爱你的顾客——餐饮业者 479×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#引流/复购 61×18",
+     "#实战/经验 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主比较六种个人餐 578×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本一家餐饮店主决定不与房东 544×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#租金/选址 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本一位意大利酒馆店主谈餐饮 527×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本意大利酒馆店主谈一人经营 391×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "日本一家意大利酒馆店主算账： 408×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "日本一家个人饮食店每月固定开 561×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本个人饮食店店主复盘：资金 510×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "在日本开餐车还是开固定门店？ 544×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 56,
+     "text": "00:56飲食店のAI活用ラジオ"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 222,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 52,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 262,
+     "width": 680
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 222,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 222,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 52,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 500
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "返回 60×32",
+     "打开原文 168×32",
+     "收藏 32×32",
+     "更多操作 32×32",
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 36,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 788
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 788
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 484
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "日报 79×36",
+     "周报 79×36",
+     "月报 79×36",
+     "01同行经验5 件 484×33",
+     "02老板说1 件 484×33",
+     "03省人省钱2 件 484×33",
+     "04生意风向1 件 484×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "把积分奖励改成俱乐部：一家餐 414×24",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "一家餐馆的布草服务费如何从每 476×24",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 35,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 484
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "日报 79×36",
+     "周报 79×36",
+     "月报 79×36"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 788
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 58,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 448
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "复制 60×28",
+     "Claude Code 100×28",
+     "Codex 62×28",
+     "JSON 配置 85×28",
+     "其他客户端 87×28",
+     "复制 60×28",
+     "复制 60×28",
+     "MCP 274×36",
+     "RSS 274×36",
+     "REST API 274×36",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 32,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  },
+  "1194x834": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 958
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "全部 60×36",
+     "经验 60×36",
+     "观点 60×36",
+     "工具 60×36",
+     "趋势 60×36",
+     "品牌 60×36",
+     "规定 60×36",
+     "INPUT 240×42",
+     "10月3日 69×24",
+     "收起10月3日 24×24",
+     "收藏 26×26",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "收藏 26×26",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "10月2日 69×24",
+     "收起10月2日 24×24",
+     "收藏 26×26",
+     "澳洲储备银行刷卡附加费禁令生 561×21",
+     "10月1日 69×24",
+     "收起10月1日 24×24",
+     "收藏 26×26",
+     "Meaningful Vis 577×21",
+     "9月30日 69×24",
+     "收起9月30日 24×24",
+     "收藏 26×26",
+     "东京高圆寺居酒屋「あんぽんた 480×21",
+     "收藏 26×26",
+     "餐厅账单附加费是好主意还是坏 565×21",
+     "9月28日 69×24",
+     "收起9月28日 24×24",
+     "收藏 26×26",
+     "葡萄牙餐饮业吸收原材料与能源 602×21",
+     "收藏 26×26",
+     "德国餐饮播客谈招人难：从学徒 476×21",
+     "收藏 26×26",
+     "日本餐饮店开始做外带：营业许 503×21",
+     "收藏 26×26",
+     "餐饮业老将 Matt Wal 527×21",
+     "9月27日 69×24",
+     "收起9月27日 24×24",
+     "收藏 26×26",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "9月26日 69×24",
+     "收起9月26日 24×24",
+     "收藏 26×26",
+     "美国微型面包店主用四个问题筛 340×21",
+     "9月24日 69×24",
+     "收起9月24日 24×24",
+     "收藏 26×26",
+     "加拿大餐馆协会：八成加拿大人 459×21",
+     "收藏 26×26",
+     "日本餐饮店怎么做外卖：许可、 493×21",
+     "9月23日 69×24",
+     "收起9月23日 24×24",
+     "收藏 26×26",
+     "雀巢报告列出2026年重塑咖 331×21",
+     "收藏 26×26",
+     "阿根廷播客请设备顾问谈面包房 561×21",
+     "9月22日 69×24",
+     "收起9月22日 24×24",
+     "收藏 26×26",
+     "美国播客：菜单上别人抄不走的 459×21",
+     "收藏 26×26",
+     "贷款顾问 Ami Kassa 440×21",
+     "收藏 26×26",
+     "阿根廷面包店接活动订单：如何 374×21",
+     "9月21日 69×24",
+     "收起9月21日 24×24",
+     "收藏 26×26",
+     "咖啡店顾问谈如何建立团队真正 391×21"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 68,
+     "text": "10:59Total Food "
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 559,
+     "width": 257
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "回到精选 86×36",
+     "浏览全部动态 115×36"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 958
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "全部 60×36",
+     "经验 60×36",
+     "观点 60×36",
+     "工具 60×36",
+     "趋势 60×36",
+     "品牌 60×36",
+     "规定 60×36",
+     "INPUT 240×42",
+     "收藏 26×26",
+     "每周全球速览：Chick-f 623×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#AI/自动化 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "Molly Tea 新加坡第 377×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#新品/促销 61×18",
+     "收藏 26×26",
+     "每周全球速览：Chick-f 776×21",
+     "#其他 32×18",
+     "收藏 26×26",
+     "澳洲酸奶连锁 Yo-Chi  508×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#出海 32×18",
+     "收藏 26×26",
+     "麦当劳否认在美国用 AI 定 454×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#AI/自动化 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "Molly Tea 在新加坡 510×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#新品/促销 61×18",
+     "收藏 26×26",
+     "每周全球综述：Chick-f 759×21",
+     "#其他 32×18",
+     "收藏 26×26",
+     "Jersey Mike’s  445×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#开店/扩张 61×18",
+     "#快餐 32×18",
+     "收藏 26×26",
+     "Chick-fil-A CE 694×21",
+     "#其他 32×18",
+     "收藏 26×26",
+     "麦当劳否认在美国用 AI 定 267×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#AI/自动化 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "PAUL 在伦敦等地 31  319×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#新品/促销 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "Tampopo 周一到周四学 341×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#新品/促销 61×18",
+     "#英国 32×18",
+     "收藏 26×26",
+     "日本博多めんちゃんこ亭靠多世 501×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#实战/经验 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "播客提出渠道测试：堂食、外带 493×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#外卖/平台 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "台湾播客《开店这件事》主持人 672×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#人与用工 56×18",
+     "#台湾 32×18",
+     "收藏 26×26",
+     "日本拉面店倒闭再次增加，20 373×21",
+     "趋势 24×18",
+     "#市场/数据 61×18",
+     "#关店/倒闭 61×18",
+     "#日本 32×18",
+     "收藏 26×26",
+     "日本天丼连锁「てんや」9月同 505×21",
+     "趋势 24×18",
+     "#市场/数据 61×18",
+     "#日本 32×18",
+     "#快餐 32×18",
+     "收藏 26×26",
+     "播客：餐厅满座却不赚钱，Am 506×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#成本/利润 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "Tipsy Putt 创始人 430×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#美国 32×18",
+     "收藏 26×26",
+     "日本播客谈店主如何用「不做的 410×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#AI/自动化 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "顺丰冷运&顺新晖副总裁徐小燕 696×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#食材/供应链 73×18",
+     "#AI/自动化 61×18",
+     "收藏 26×26",
+     "朗生集团凌飞：用标准化营建重 408×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#店面/装修 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "阿根廷播客谈面包店与餐饮门店 459×21",
+     "规定 24×18",
+     "#政策/法规 61×18",
+     "#食品安全/卫生 85×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "The Ristorator 527×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#其他 32×18",
+     "收藏 26×26",
+     "日本餐饮店老板介绍用AI盘点 359×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#AI/自动化 61×18",
+     "收藏 26×26",
+     "餐饮连锁化进入下半场：后端交 425×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#AI/自动化 61×18",
+     "#厨房设备 56×18",
+     "收藏 26×26",
+     "汪小菲：麻六记2.0版本推进 538×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "翠宏辣业钟书红：从辣椒种子到 493×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#食材/供应链 73×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "一家餐馆的布草服务费如何从每 430×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#美国 32×18",
+     "收藏 26×26",
+     "The Restaurant 780×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#AI/自动化 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "播客专访：Mrs. Jone 643×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#咖啡 32×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本餐饮播客谈经营者如何把经 374×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#人与用工 56×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "巴西餐饮集团经营者谈：员工流 578×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#人与用工 56×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "巴西餐饮业者：利润率与投资回 639×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "Toast IQ 为何答不出 597×21",
+     "工具 24×18",
+     "#设备/科技 61×18",
+     "#AI/自动化 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "美国播客建议餐厅别做积分会员 340×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#引流/复购 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "DCN每周咖啡新闻：Map  782×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#咖啡 32×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "意大利POS与电子收银机强制 579×21",
+     "规定 24×18",
+     "#政策/法规 61×18",
+     "#外卖/平台 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "意大利白松露季开局产量偏少， 323×21",
+     "趋势 24×18",
+     "#市场/数据 61×18",
+     "#食材/供应链 73×18",
+     "#欧洲 32×18",
+     "收藏 26×26",
+     "Italian Wine B 490×21",
+     "品牌 24×18",
+     "#行业动态 56×18",
+     "#融资/上市 61×18",
+     "#欧洲 32×18",
+     "1 36×36",
+     "2 36×36",
+     "3 36×36",
+     "50 36×36",
+     "下一页 81×36"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 68,
+     "text": "12:38QSR Media A"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 958
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "全部 60×36",
+     "经验 60×36",
+     "观点 60×36",
+     "工具 60×36",
+     "趋势 60×36",
+     "品牌 60×36",
+     "规定 60×36",
+     "INPUT 240×42",
+     "清空 24×24",
+     "最新（标题与摘要） 137×28",
+     "全文相关 74×28",
+     "收藏 26×26",
+     "日本餐饮店主谈为何忙却不赚钱 459×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#AI/自动化 61×18",
+     "收藏 26×26",
+     "餐厅要留多少周转资金，才不会 408×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#中国 32×18",
+     "收藏 26×26",
+     "日本餐饮店需要多少运转资金？ 408×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "印度咖啡馆的生意模型：饮品毛 477×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "日本町中华为什么不容易倒闭， 469×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主复盘：靠自宅开 531×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本餐饮店如何制定和管理营业 289×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#科技/系统 61×18",
+     "收藏 26×26",
+     "日本餐饮店关店要花多少钱？费 527×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#租金/选址 61×18",
+     "收藏 26×26",
+     "日本餐饮店削减经费的七个做法 306×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "播客：爱你的顾客——餐饮业者 479×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#引流/复购 61×18",
+     "#实战/经验 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主总结自宅餐饮店 384×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主比较六种个人餐 578×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主：自宅开店省下 391×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本一家餐饮店主决定不与房东 544×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#租金/选址 61×18",
+     "收藏 26×26",
+     "日本咖啡店店主总结自宅兼店铺 357×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本一位意大利酒馆店主算账： 391×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本一家意大利酒馆店主谈餐饮 357×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本一位意大利酒馆店主谈餐饮 527×21",
+     "观点 24×18",
+     "#观点/访谈 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18",
+     "收藏 26×26",
+     "日本意大利酒馆店主谈一人经营 391×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#人与用工 56×18",
+     "收藏 26×26",
+     "日本一家意大利酒馆店主算账： 408×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#菜单/定价 61×18",
+     "收藏 26×26",
+     "日本一家个人饮食店每月固定开 561×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "日本个人饮食店店主复盘：资金 510×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#成本/利润 61×18",
+     "#开店/扩张 61×18",
+     "收藏 26×26",
+     "在日本开餐车还是开固定门店？ 544×21",
+     "经验 24×18",
+     "#实战/经验 61×18",
+     "#开店/扩张 61×18",
+     "#成本/利润 61×18"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 68,
+     "text": "00:56飲食店のAI活用ラジオ"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 307,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 52,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 347,
+     "width": 680
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 307,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 307,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 52,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 670
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "返回 60×32",
+     "打开原文 168×32",
+     "收藏 32×32",
+     "更多操作 32×32",
+     "AI 与自动化 86×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 78×26",
+     "#AI/自动化 83×26",
+     "#开店/扩张 83×26",
+     "#美国 54×26",
+     "#麦当劳 66×26",
+     "#汉堡王 66×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 48,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 958
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "导入文件 50×19",
+     "去看精选 → 66×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 958
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 22×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 654
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "日报 79×36",
+     "周报 79×36",
+     "月报 79×36",
+     "01同行经验5 件 654×33",
+     "02老板说1 件 654×33",
+     "03省人省钱2 件 654×33",
+     "04生意风向1 件 654×33",
+     "为什么餐厅做好了标准配方表， 389×24",
+     "阅读Goomer 博客原文： 39×28",
+     "为什么漂亮的餐厅一到 12  595×24",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "把积分奖励改成俱乐部：一家餐 414×24",
+     "阅读FULL COMP原文： 39×28",
+     "腌菜推车：咸酸口味的吧台小食 376×24",
+     "阅读Ristorazione 39×28",
+     "一家餐馆的布草服务费如何从每 476×24",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×24",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "日本播客讲个人餐饮店用AI盘 378×24",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "餐厅该不该换管理系统，以及如 508×24",
+     "阅读Goomer 博客原文： 39×28",
+     "Meaningful Vis 594×24",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 47,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 654
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "日报 79×36",
+     "周报 79×36",
+     "月报 79×36"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 958
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 71,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 618
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [
+     "参考 155×40",
+     "最新 155×40",
+     "全部餐饮动态 155×40",
+     "餐饮日报 155×40",
+     "收藏 155×40",
+     "Agent 接入 155×40",
+     "关于 155×40",
+     "更新日志 155×40",
+     "反馈 155×40",
+     "深色 44×26",
+     "跟随系统 44×26",
+     "浅色 44×26",
+     "复制 60×28",
+     "Claude Code 100×28",
+     "Codex 62×28",
+     "JSON 配置 85×28",
+     "其他客户端 87×28",
+     "复制 60×28",
+     "复制 60×28",
+     "MCP 274×36",
+     "RSS 274×36",
+     "REST API 274×36",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 44,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  },
+  "1280x800": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1044
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 75,
+     "text": "10:59Total Food "
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 602,
+     "width": 257
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1044
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 75,
+     "text": "12:38QSR Media A"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1044
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 75,
+     "text": "00:56飲食店のAI活用ラジオ"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 350,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 390,
+     "width": 680
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 44,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 350,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 350,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 756
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 54,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1044
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1044
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 740
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 53,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 740
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1044
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 77,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 704
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 51,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "1440x900": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1204
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 86,
+     "text": "10:59Total Food "
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 682,
+     "width": 257
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1204
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 86,
+     "text": "12:38QSR Media A"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1204
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 86,
+     "text": "00:56飲食店のAI活用ラジオ"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 430,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 470,
+     "width": 680
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 44,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 430,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 430,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 286,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 54,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1204
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1204
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 900
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 32,
+     "text": "国家统计局数据显示，2026年8"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 500,
+     "width": 900
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1204
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 90,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 864
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 63,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "1920x1080": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1684
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 120,
+     "text": "10:59Total Food "
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 922,
+     "width": 257
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1684
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 120,
+     "text": "12:38QSR Media A"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1684
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 120,
+     "text": "00:56飲食店のAI活用ラジオ"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 670,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 710,
+     "width": 680
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 44,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 670,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 670,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 670,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 54,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1684
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1684
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 610,
+     "width": 1160
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 45,
+     "text": "国家统计局数据显示，2026年8"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 610,
+     "width": 1160
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1684
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 126,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1304
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 97,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "2560x1440": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 2324
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 169,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 1242,
+     "width": 257
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 2324
+    },
+    "font": {
+     "min": 10.5,
+     "text": "/"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 169,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 2324
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 169,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 990,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": {
+     "min": 11,
+     "max": 18
+    },
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 1030,
+     "width": 680
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 44,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 990,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 990,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 52,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 990,
+     "width": 760
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 54,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 2324
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 2324
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 930,
+     "width": 1160
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 45,
+     "text": "国家统计局数据显示，2026年8"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 930,
+     "width": 1160
+    },
+    "font": {
+     "min": 10,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 2324
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 176,
+     "text": "MyF&B 是聚合摘要和阅读索引"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 208,
+     "width": 1944
+    },
+    "font": {
+     "min": 11,
+     "text": "内容"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": false,
+    "cpl": {
+     "max": 146,
+     "text": "客户端显示调用了 myfnb_g"
+    }
+   }
+  },
+  "390x844-wechat": {
+   "home": {
+    "url": "/",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 370
+    },
+    "font": {
+     "min": 12,
+     "text": "· 10:59"
+    },
+    "figure": null,
+    "smallTargets": [
+     "美国微型面包店主用四个问题筛 340×22",
+     "雀巢报告列出2026年重塑咖 328×22"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "latest": {
+    "url": "/latest",
+    "status": 404,
+    "hScroll": 0,
+    "column": {
+     "left": 67,
+     "width": 257
+    },
+    "font": {
+     "min": 12,
+     "text": "404"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "all": {
+    "url": "/all",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 370
+    },
+    "font": {
+     "min": 12,
+     "text": "· 12:38"
+    },
+    "figure": null,
+    "smallTargets": [
+     "麦当劳否认在美国用 AI 定 265×22",
+     "PAUL 在伦敦等地 31  314×22",
+     "Tampopo 周一到周四学 335×22",
+     "日本餐饮店老板介绍用AI盘点 357×22",
+     "美国播客建议餐厅别做积分会员 340×22",
+     "意大利白松露季开局产量偏少， 323×22"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "收录理由：对开餐馆的人来说，原文"
+    }
+   },
+   "search": {
+    "url": "/all?q=%E6%88%BF%E7%A7%9F",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 370
+    },
+    "font": {
+     "min": 12,
+     "text": "找到 23 条 · 更新于 12"
+    },
+    "figure": null,
+    "smallTargets": [
+     "日本餐饮店如何制定和管理营业 289×22",
+     "日本餐饮店削减经费的七个做法 306×22",
+     "日本咖啡店店主总结自宅兼店铺 357×22",
+     "日本一家意大利酒馆店主谈餐饮 357×22"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 28,
+     "text": "收录理由：对日本开小店的人来说，"
+    }
+   },
+   "situation": {
+    "url": "/reference/busy-no-profit",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12,
+     "text": "钱从哪里漏掉"
+    },
+    "figure": {
+     "min": 10.7,
+     "max": 17.5
+    },
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "日本一位经营26年的店主每天用表"
+    }
+   },
+   "case": {
+    "url": "/reference/cases/evhtno2jyx2ep4y7297xmd9ow",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12,
+     "text": "食材用得比配方多"
+    },
+    "figure": null,
+    "smallTargets": [
+     "打开原文 ↗ 69×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "日本播客“飲食店のAI活用ラジオ"
+    }
+   },
+   "shop": {
+    "url": "/reference/shops/63ace86d4e07",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12.5,
+     "text": "日本 · 料理画家クチーナカメヤ"
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "kind": {
+    "url": "/reference/kinds/dining",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 32,
+     "width": 326
+    },
+    "font": {
+     "min": 12.5,
+     "text": "美国 · Total Food "
+    },
+    "figure": null,
+    "smallTargets": [
+     "‹ 参考 34×44"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 21,
+     "text": "美国一家餐馆的布草费在每周账单里"
+    }
+   },
+   "item": {
+    "url": "/items/nb8bzv7574j2auqkvzbtk2k7a",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 12,
+     "text": "AI 导读"
+    },
+    "figure": null,
+    "smallTargets": [
+     "AI 与自动化 84×26",
+     "开店与扩张 82×26",
+     "美国 46×26",
+     "#行业动态 77×26",
+     "#AI/自动化 81×26",
+     "#开店/扩张 82×26",
+     "#美国 53×26",
+     "#麦当劳 65×26",
+     "#汉堡王 65×26"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "Weekly Global Wr"
+    }
+   },
+   "starred": {
+    "url": "/starred",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 12.5,
+     "text": "导入文件"
+    },
+    "figure": null,
+    "smallTargets": [
+     "导入文件 50×19",
+     "去看精选 → 64×19"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "more": {
+    "url": "/more",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 12,
+     "text": "使用规则"
+    },
+    "figure": null,
+    "smallTargets": [
+     "深色 39×26",
+     "跟随系统 39×26",
+     "浅色 39×26",
+     "使用规则 48×24",
+     "隐私说明 48×24",
+     "RSS 20×24"
+    ],
+    "touch": true,
+    "cpl": null
+   },
+   "daily": {
+    "url": "/daily",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 0,
+     "width": 390
+    },
+    "font": {
+     "min": 11,
+     "text": "第 1 期"
+    },
+    "figure": null,
+    "smallTargets": [
+     "01同行经验5 件 358×33",
+     "02老板说1 件 358×33",
+     "03省人省钱2 件 358×33",
+     "04生意风向1 件 358×33",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读식품저널原文：为什么漂亮 39×28",
+     "阅读FULL COMP原文： 39×28",
+     "阅读Ristorazione 39×28",
+     "阅读Total Food S 39×28",
+     "“吃”仍是刚需，但“溢价吃” 338×26",
+     "阅读红餐网 · 资讯原文：“ 39×28",
+     "阅读飲食店のAI活用ラジオ原 39×28",
+     "阅读Goomer 博客原文： 39×28",
+     "阅读QSR Media原文： 39×28"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "2为什么漂亮的餐厅一到 12 点"
+    }
+   },
+   "archive": {
+    "url": "/daily/archive",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 10.5,
+     "text": "周日"
+    },
+    "figure": null,
+    "smallTargets": [],
+    "touch": true,
+    "cpl": null
+   },
+   "about": {
+    "url": "/about",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 11,
+     "text": "最近精选"
+    },
+    "figure": null,
+    "smallTargets": [
+     "使用规则 50×19",
+     "隐私说明 50×19"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "01采集75个信源来源是各国经营"
+    }
+   },
+   "agent": {
+    "url": "/agent",
+    "status": 200,
+    "hScroll": 0,
+    "column": {
+     "left": 16,
+     "width": 358
+    },
+    "font": {
+     "min": 11.5,
+     "text": "MCP · 4.0.0"
+    },
+    "figure": null,
+    "smallTargets": [
+     "复制 60×28",
+     "复制 60×28",
+     "复制 60×28",
+     "去反馈 57×20"
+    ],
+    "touch": true,
+    "cpl": {
+     "max": 26,
+     "text": "1复制服务地址https://n"
+    }
+   }
+  }
+ }
+}

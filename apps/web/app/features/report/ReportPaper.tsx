@@ -63,7 +63,7 @@ function Masthead({ report, index }: { report: ReportDetail; index: ReportNaviga
             </span>
             <Nameplate which={report.kind} className="block h-[44px] w-auto @[520px]:h-[58px] @[880px]:h-[74px] @[1040px]:h-[84px]" />
           </h1>
-          <p className="mt-3 text-[11.5px] tracking-[0.36em] text-ink-4 @[880px]:mt-4 @[880px]:text-[12.5px]">{REPORTS.imprint}</p>
+          <p className="mt-3 text-[12px] tracking-[0.36em] text-ink-4 @[880px]:mt-4 @[880px]:text-[12.5px]">{REPORTS.imprint}</p>
         </div>
         {/* 报眼: the box beside the nameplate, as a Chinese daily sets it: the issue and the date in the
             nameplate's dots, and on wider paper the issue calendar beside them. */}
@@ -74,8 +74,8 @@ function Masthead({ report, index }: { report: ReportDetail; index: ReportNaviga
               <Halftone seed={`${report.kind}-${report.key}-date`} className="num mt-2 whitespace-nowrap text-[44px] font-black leading-[0.95] tracking-[-0.04em] text-ink @[880px]:text-[64px]">
                 {mark.figure}
               </Halftone>
-              <span className="mt-2 text-[11.5px] text-ink-2">{mark.top}</span>
-              <span className="text-[11.5px] text-ink-4">{mark.bottom}</span>
+              <span className="mt-2 text-[12px] text-ink-2">{mark.top}</span>
+              <span className="text-[12px] text-ink-4">{mark.bottom}</span>
             </div>
             <IssueDots kind={report.kind} reportKey={report.key} issueNumber={report.issueNumber} index={index} className="hidden w-[176px] border-l border-line px-4 py-4 @[760px]:block @[880px]:w-[196px]" />
           </div>
@@ -369,7 +369,7 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
             <ol className="mt-3">
               {index.map((p, i) => (
                 <li key={p.id}>
-                  <a href={`#${p.id}`} className="group flex items-baseline gap-2 py-1.5 text-[13.5px]">
+                  <a href={`#${p.id}`} className="group flex items-baseline gap-2 py-1.5 text-[13.5px] touch:min-h-11 touch:items-center">
                     <span className="num w-7 shrink-0 text-[14px] font-bold text-ink">{pad(i + 1)}</span>
                     <span className="min-w-0 flex-1 truncate text-ink-2 transition-colors group-hover:text-accent">{p.label}</span>
                     <span className="num shrink-0 text-[12px] text-ink-4">{p.n}</span>

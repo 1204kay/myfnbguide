@@ -38,7 +38,7 @@ export default function CaseRoute() {
   const back = situation ? { to: `/reference/${situation.slug}`, label: situation.title } : { to: "/", label: "参考" };
   const from = source.kind ? `${source.kind}「${source.name}」` : source.name;
   const original = (
-    <a href={source.url} target="_blank" rel="noopener" className="-my-3 inline-flex min-h-11 items-center font-semibold text-accent hover:text-accent-ink">原文 ↗</a>
+    <a href={source.url} target="_blank" rel="noopener" className="-my-3 inline-flex min-h-11 min-w-11 items-center justify-center font-semibold text-accent hover:text-accent-ink">原文 ↗</a>
   );
   return (
     <Page>

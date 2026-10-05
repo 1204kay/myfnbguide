@@ -319,13 +319,21 @@ export const REPORTS = {
    * 出刊时间和报头旁的期号日期框；日报合订本用普通标题，按月一张卡片、一期一行。false 是默认。
    */
   compact: true,
+  /**
+   * 日报收哪些条目：`"selected"`（默认）只收入选的；`"pool"` 收这一天进站、公开、列在「全部」里的每一条（过了相关性预筛、
+   * 不是回补），一件事只算一条，按重要程度排（评分、当天讨论它的独立来源数、一手发布）：前面写全，其余是简讯。
+   * 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」。
+   */
+  dailyScope: "pool" as "selected" | "pool",
+  /** 日报的简讯最多几条（默认 10）；null 不限，当天其余的条目全部列进简讯。 */
+  dailyFlashes: null as number | null,
   /** 报头下面的出版者一行。 */
   imprint: SITE.name.toUpperCase(),
   /** 报头旁边的一个词。 */
   motto: SITE.subject as string,
   /** 每种报告页面的描述（搜索结果、分享卡片），不带句号；llms.txt 介绍周报、月报时也用它。 */
   descriptions: {
-    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，收录前一天挑选出的店家做法、经验和行业变化；当天没有够格的内容就不出`,
+    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，收录前一天收进来的餐饮消息和店家做法，按重要程度排列；当天没有新内容就不出`,
     weekly: `从上一周的${withSubject("日报")}里选出的内容，按类别分组`,
     monthly: `从上个月的${withSubject("日报")}里选出的内容，按类别分组`,
   },

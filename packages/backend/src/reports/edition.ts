@@ -8,6 +8,7 @@
 // (industry/taxonomy.ts CATEGORIES).
 import { addDays } from "@aihot/contracts/time";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
+import { REPORTS } from "@aihot/site";
 import { sql } from "../db.ts";
 import { currentSignals } from "../events/hot.ts";
 import { pickRepresentative, representativePriority, REPRESENTATIVE_COLUMNS, type RepresentativeIdentity } from "../publication/representative.ts";
@@ -21,9 +22,11 @@ export const SECTION_ORDER: readonly string[] = [...new Set(CATEGORIES.map((c) =
 const DEFAULT_SECTION = SECTION_OF.industry ?? SECTION_ORDER.at(-1)!;
 export const sectionOf = (category: string | null) => SECTION_OF[category ?? ""] ?? DEFAULT_SECTION;
 
-/** A daily's size: the entries readers get in full, and the one-line flashes after them. */
+/** A daily's size: the entries readers get in full, and the one-line flashes after them (site.ts REPORTS.dailyFlashes; null: all the rest). */
 export const MAIN_ENTRIES = 12;
-export const FLASH_ENTRIES = 10;
+export const FLASH_ENTRIES = REPORTS.dailyFlashes === undefined ? 10 : (REPORTS.dailyFlashes ?? Infinity);
+/** What a daily carries (site.ts REPORTS.dailyScope): the selected reports, or every report listed in the pool. */
+const POOL = REPORTS.dailyScope === "pool";
 /** No source fills a daily: at most this many main entries lead with the same source. */
 const PER_SOURCE = 2;
 /** A follow-up of a covered event takes a full entry when this many sources carry its new facts. */
@@ -111,7 +114,7 @@ export async function periodReports(start: Date, end: Date): Promise<ReportRow[]
       LEFT JOIN facts f ON f.id = p.fact_id AND ${ownFactEvidenceCondition()}
       LEFT JOIN stories st ON st.id = f.story_id
       -- Attribute each item by the later of arrival and release; either range can use its index.
-      WHERE p.visibility = 'public' AND p.selected AND NOT p.backfill
+      WHERE p.visibility = 'public' AND ${POOL ? sql`p.eligible` : sql`p.selected`} AND NOT p.backfill
         AND (
           (p.visible_after <= p.timeline_at AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
           OR (p.visible_after > p.timeline_at AND p.visible_after >= ${start} AND p.visible_after < ${end})
@@ -289,7 +292,8 @@ interface Fact { key: string; rows: ReportRow[]; selected: boolean; sources: str
  * selected reports and missed facts, minus what the week's issues already carried, one entry per event.
  */
 export async function dailyEdition(date: string, start: Date, end: Date): Promise<{ entries: EditionEntry[]; stats: Record<string, number> }> {
-  const [memory, selected, missed] = await Promise.all([dailyMemory(date), periodReports(start, end), missedFacts(start, end)]);
+  // A daily of the whole pool carries the missed facts' reports already.
+  const [memory, selected, missed] = await Promise.all([dailyMemory(date), periodReports(start, end), POOL ? [] : missedFacts(start, end)]);
   const raw = [
     ...[...groupBy(selected, factKeyOf)].map(([key, rows]) => ({ key, rows, selected: true })),
     ...missed.map((m) => ({ ...m, selected: false })),

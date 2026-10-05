@@ -1,6 +1,6 @@
 // JSON sources: plain JSON APIs, JSON embedded in HTML (script tags, window variables).
 import { credential } from "../config.ts";
-import { guardedFetch } from "../lib/http-fetch.ts";
+import { fetchListing } from "./listing-fetch.ts";
 import { collapseWhitespace, stripTags } from "../lib/text.ts";
 import { parseLooseDate } from "./dates.ts";
 import { FetchError, type Candidate, type SourceRow } from "./types.ts";
@@ -45,22 +45,25 @@ const ZONELESS_TIME = /^\d{4}-\d{1,2}-\d{1,2}[ T]\d{1,2}:\d{2}(?::\d{2}(?:\.\d+)
 
 function toDate(v: unknown, unit: string | undefined, utcOffset: string | undefined): Date | null {
   if (v === null || v === undefined || v === "") return null;
+  // JSON can hold a value nothing converts ({"toString": null}, or a list of one): it is no date, and the
+  // items after it are still read.
+  let text: string;
+  try {
+    text = String(v).trim();
+  } catch {
+    return null;
+  }
   if (unit === "epoch_ms" || unit === "epoch_s") {
-    try {
-      const date = new Date(Number(v) * (unit === "epoch_s" ? 1000 : 1));
-      return Number.isFinite(date.getTime()) ? date : null;
-    } catch {
-      return null;
-    }
+    const date = new Date(Number(text) * (unit === "epoch_s" ? 1000 : 1));
+    return Number.isFinite(date.getTime()) ? date : null;
   }
   // 20260922: a calendar day at UTC midnight (some list APIs give dates as yyyymmdd).
   if (unit === "yyyymmdd") {
-    const m = /^(\d{4})(\d{2})(\d{2})$/.exec(String(v).trim());
+    const m = /^(\d{4})(\d{2})(\d{2})$/.exec(text);
     const d = m ? new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00Z`) : null;
     return d && Number.isFinite(d.getTime()) && d.toISOString().startsWith(`${m![1]}-${m![2]}-${m![3]}`) ? d : null;
   }
   // A time without a zone is in the source's offset, as list pages read it; any other text as Date.parse reads it.
-  const text = String(v).trim();
   if (ZONELESS_TIME.test(text)) return parseLooseDate(text, utcOffset);
   const t = Date.parse(text);
   return Number.isFinite(t) ? new Date(t) : null;
@@ -149,7 +152,7 @@ export async function fetchJsonList(source: SourceRow): Promise<Candidate[]> {
     const token = credential("collectors", "GITHUB_TOKEN");
     if (token) headers.authorization = `Bearer ${token}`;
   }
-  const res = await guardedFetch(url, {
+  const res = await fetchListing(url, {
     redirectPolicy: "same-origin",
     method: c.method ?? "GET",
     headers: c.bodyJson ? { ...headers, "content-type": "application/json" } : headers,

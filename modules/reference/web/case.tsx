@@ -38,7 +38,7 @@ export default function CaseRoute() {
   const onShare = () => void share(story.title, `/reference/cases/${c.id}`);
   // Phones: the bar's back, up to its situation when opened directly. Desktops: one line up to the situation, its
   // full name, in place of a back line and a label over the title that both led there (layout J6).
-  const back = situation ? { to: `/reference/${situation.slug}`, label: situation.title } : { to: "/", label: "参考" };
+  const back = situation ? { to: `/reference/${situation.slug}`, label: situation.title } : { to: "/reference", label: "参考" };
   const from = source.kind ? `${source.kind}「${source.name}」` : source.name;
   const original = (
     <a href={source.url} target="_blank" rel="noopener" className="-my-3 inline-flex min-h-11 min-w-11 items-center justify-center font-semibold text-accent hover:text-accent-ink">原文 ↗</a>
@@ -85,7 +85,7 @@ export default function CaseRoute() {
             </span>
           </Link>
         ) : (
-          <Link viewTransition to="/" className="block text-[13px] text-accent hover:text-accent-ink">按遇到的事，查各地店家的做法和经验 ›</Link>
+          <Link viewTransition to="/reference" className="block text-[13px] text-accent hover:text-accent-ink">按遇到的事，查各地店家的做法和经验 ›</Link>
         )}
       </RailSection>
     </>
@@ -149,7 +149,7 @@ export default function CaseRoute() {
             这种情况：{fullCountText(situation.count)} ›
           </Link>
         ) : (
-          <Link viewTransition to="/" className="flex min-h-11 items-center text-[15px] font-[650] text-accent hover:text-accent-ink">
+          <Link viewTransition to="/reference" className="flex min-h-11 items-center text-[15px] font-[650] text-accent hover:text-accent-ink">
             按遇到的事，查各地店家的做法和经验{c.situations ? `：${c.situations} 种情况` : ""} ›
           </Link>
         )}

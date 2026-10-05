@@ -18,27 +18,13 @@ import { before, after, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { chromium, webkit, expect, type Browser } from "@playwright/test";
 import type { FeedItemSummary, SiteItemDetail, ReportDetail } from "@aihot/contracts/site";
-import { feedPath } from "@aihot/contracts/routes";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
-import { FEED as LISTS, NAV } from "@aihot/site";
-import { monthDay } from "../app/lib/format.ts";
 
-// The featured list's address and two of the industry's categories, named as this site's filter names them. A site
-// whose list starts at 全部 (FEED.start) serves no featured list: what is tried through the featured list's own
-// timeline is skipped there, and what any list does is tried on the list's way in (LIST: its first entry, its read).
-const FEED = feedPath();
-const NO_FEATURED = LISTS.start === 'all' && 'the featured list\'s address leads to 全部 on this site (FEED.start)';
-const LIST = LISTS.start === 'all' ? '/all' : FEED;
-const FIRST = LISTS.start === 'all' ? '全部第 1 页' : '性能检查文章';
-const READ = LISTS.start === 'all' ? '/api/site/pool' : '/api/site/timeline';
-const filterName = (key: string) => {
-  const c = CATEGORIES.find((x) => x.key === key)!;
-  return LISTS.filterNames === "section" ? c.section : c.label;
-};
-const [TIP, TOOLS] = [filterName("tip"), filterName("tools")];
+// Two of the industry pack's categories, as the filter names them (the example pack's 模型 and 产品).
+const [A, B] = CATEGORIES;
 
 const at = '2026-10-04T08:00:00.000Z';
-const item: FeedItemSummary = {id:'navigation-fixture',title:'性能检查文章',summary:'固定摘要',reason:'固定推荐理由',source:{name:'Fixture'},publishedAt:at,timelineAt:at,category:'tip',tags:[],score:80,selected:true,channel:'news',x:null};
+const item: FeedItemSummary = {id:'navigation-fixture',title:'性能检查文章',summary:'固定摘要',reason:'固定推荐理由',source:{name:'Fixture'},publishedAt:at,timelineAt:at,category:A!.key,tags:[],score:80,selected:true,channel:'news',x:null};
 const detail: SiteItemDetail = {...item,x:null,originalTitle:'Fixture article',links:{original:'https://example.org/article'},discoveredAt:at,story:null,readingMode:'full',author:null,body:{zh:'<p>固定正文</p>',original:null,zhKind:'translation',complete:true},outline:[],relatedStories:[],topics:[],indexable:true,markdownAvailable:true,group:null,hasTranslation:true,bodyLanguage:'zh'};
 const codeSource='import json\n\nwith open("data.json") as file:\n    data = json.load(file)\n\nfor record in data:\n    print(record["title"])\n';
 const readerBody=Array.from({length:30},(_,i)=>`<p>阅读段落 ${i}：先阅读文章，再查看后面的代码和图片。正文保持可读，图片和代码在需要时增强。</p>`).join('')
@@ -79,8 +65,7 @@ const api=createServer((req,res)=>{
   }
   if(p==='/api/site/pool'){
     const page=Number(url.searchParams.get('page')||1);
-    const category=url.searchParams.get('category');
-    return res.end(JSON.stringify({filters:{channel:'all',category,tag:null,q:null,tab:'time'},items:[{...item,title:category?'分类 '+category:'全部第 '+page+' 页'}],page,pageCount:3,total:3,todayCount:1,freshness:at}));
+    return res.end(JSON.stringify({filters:{channel:'all',category:null,tag:null,q:null,tab:'time'},items:[{...item,title:'全部第 '+page+' 页'}],page,pageCount:3,total:3,todayCount:1,freshness:at}));
   }
   if(p==='/api/site/items/navigation-fixture')return res.end(JSON.stringify(detail));
   if(p==='/api/site/items/navigation-fixture/original')return res.end(JSON.stringify({...detail,body:{zh:null,original:'<p>Original fixture</p>',zhKind:null,complete:true},bodyLanguage:'original'}));
@@ -118,27 +103,26 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     const page=await context.newPage();
     try{
       const start=hits.length;
-      await page.goto(origin+LIST);
-      await expect(page.getByRole('link',{name:FIRST,exact:true})).toBeVisible();
-      await page.getByRole('link',{name:FIRST,exact:true}).click();
+      await page.goto(origin+'/');
+      await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
+      await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
       await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
-      assert.equal(hits.slice(start).filter(x=>x.startsWith(READ)).length,1,'hydration reuses the SSR read');
+      assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/timeline')).length,1,'hydration reuses the SSR read');
       await context.setOffline(true);
       await page.goBack();
-      await expect(page.getByRole('link',{name:FIRST,exact:true})).toBeVisible({timeout:1500});
-      assert.equal(hits.slice(start).filter(x=>x.startsWith(READ)).length,1,'returning to an SSR list needs no new data request');
+      await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
+      assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/timeline')).length,1,'returning to an SSR list needs no new data request');
       await context.setOffline(false);
-      // Phones show the filter as a sheet behind a button, or as the desktop's row (site.ts FEED.phoneFilter).
-      if(width===390&&LISTS.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
-      await page.getByRole('link',{name:TIP,exact:true}).click();
-      await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
-      if(width===390&&LISTS.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
-      await page.getByRole('link',{name:TOOLS,exact:true}).click();
-      await expect(page.getByRole('link',{name:'分类 tools',exact:true})).toBeVisible();
+      if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
+      await page.getByRole('link',{name:A!.label,exact:true}).click();
+      await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible();
+      if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
+      await page.getByRole('link',{name:B!.label,exact:true}).click();
+      await expect(page.getByRole('link',{name:'分类 '+B!.key,exact:true})).toBeVisible();
       await context.setOffline(true);
       await page.goBack();
-      await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible({timeout:1500});
-      await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+LIST+'?category=tip');
+      await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible({timeout:1500});
+      await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category='+A!.key);
     }finally{await context.close();}
   });
 }
@@ -146,11 +130,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
 test('hover still fetches article data, touches that move do not, and failed prefetch does not replace the current page',async()=>{
   const context=await chrome.newContext();const page=await context.newPage();
   try{
-    await page.goto(origin+LIST);
-    const link=page.getByRole('link',{name:FIRST,exact:true});
+    await page.goto(origin+'/');
+    const link=page.getByRole('link',{name:'性能检查文章',exact:true});
     const start=hits.length;
     await link.dispatchEvent('touchstart');await link.dispatchEvent('touchmove');
-    await page.locator('main h1').first().click();
+    await page.getByRole('heading',{name:'精选',exact:true}).click();
     assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/items/')).length,0);
     const response=page.waitForResponse(r=>r.url().includes('/items/navigation-fixture.data'));
     await link.hover();await response;
@@ -159,10 +143,10 @@ test('hover still fetches article data, touches that move do not, and failed pre
     assert.equal(hits.slice(start).filter(x=>x.startsWith('/api/site/items/')).length,1,'navigation reuses its intent-prefetched response');
     const fresh=await chrome.newContext();const freshPage=await fresh.newPage();
     try{
-      await freshPage.goto(origin+LIST);failing='/api/site/items/navigation-fixture';
+      await freshPage.goto(origin+'/');failing='/api/site/items/navigation-fixture';
       const failed=freshPage.waitForResponse(r=>r.url().includes('/items/navigation-fixture.data')&&r.status()===503);
-      await freshPage.getByRole('link',{name:FIRST,exact:true}).hover();await failed;
-      await expect(freshPage.locator('main h1').first()).toBeVisible();
+      await freshPage.getByRole('link',{name:'性能检查文章',exact:true}).hover();await failed;
+      await expect(freshPage.getByRole('heading',{name:'精选',exact:true})).toBeVisible();
     }finally{await fresh.close();}
   }finally{failing='';await context.close();}
 });
@@ -176,9 +160,9 @@ test('SSR all-pages and report kinds return offline with their own content',asyn
     await context.setOffline(true);await page.goBack();
     await expect(page.getByRole('link',{name:'全部第 1 页',exact:true})).toBeVisible({timeout:1500});
     await context.setOffline(false);await page.goto(origin+'/daily');
-    await page.locator('main').getByRole('link',{name:'周报',exact:true}).click();
+    await page.getByRole('link',{name:'周报',exact:true}).click();
     await expect(page.locator('#report-start')).toContainText('周报');
-    await context.setOffline(true);await page.locator('main').getByRole('link',{name:'日报',exact:true}).click();
+    await context.setOffline(true);await page.getByRole('link',{name:'日报',exact:true}).click();
     await expect(page.locator('#report-start')).toContainText('日报',{timeout:1500});
   }finally{await context.close();}
 });
@@ -191,27 +175,27 @@ test('intent on a selected link preserves visited data and the next revisit star
   await context.route('**/*.data*',route=>route.continue());
   page.on('request',request=>{if(request.url().includes('.data'))requests.push(request.url());});
   try{
-    await page.goto(origin+LIST);
-    await page.getByRole('link',{name:TIP,exact:true}).click();
-    await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
-    await page.getByRole('link',{name:TIP,exact:true}).focus();
+    await page.goto(origin+'/');
+    await page.getByRole('link',{name:A!.label,exact:true}).click();
+    await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible();
+    await page.getByRole('link',{name:A!.label,exact:true}).focus();
     await page.waitForTimeout(150);
-    await page.getByRole('link',{name:TOOLS,exact:true}).click();
-    await expect(page.getByRole('link',{name:'分类 tools',exact:true})).toBeVisible();
-    await page.getByRole('link',{name:TOOLS,exact:true}).focus();
+    await page.getByRole('link',{name:B!.label,exact:true}).click();
+    await expect(page.getByRole('link',{name:'分类 '+B!.key,exact:true})).toBeVisible();
+    await page.getByRole('link',{name:B!.label,exact:true}).focus();
     await page.waitForTimeout(150);
     const before=requests.length;
-    await page.getByRole('link',{name:TIP,exact:true}).click();
-    await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
+    await page.getByRole('link',{name:A!.label,exact:true}).click();
+    await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible();
     assert.deepEqual(requests.slice(before),[],'neither prefetch nor navigation may evict and reload a still-valid visited page');
   }finally{await context.close();}
 });
 
-test('a revisit never renews the original deadline; an expired read shows an error and a reload asks again',{skip:NO_FEATURED},async()=>{
+test('a revisit never renews the original deadline; an expired read shows an error and a reload asks again',async()=>{
   const context=await chrome.newContext();const page=await context.newPage();
   try{
     await page.clock.install();ttl=1;
-    await page.goto(origin+FEED);
+    await page.goto(origin+'/');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
     failing='/api/site/timeline';
     await page.clock.runFor(1500);
@@ -221,10 +205,10 @@ test('a revisit never renews the original deadline; an expired read shows an err
   }finally{ttl=60;failing='';await context.close();}
 });
 
-test('SSR freshness spent in an upstream cache is not renewed by HTML hydration',{skip:NO_FEATURED},async()=>{
+test('SSR freshness spent in an upstream cache is not renewed by HTML hydration',async()=>{
   const context=await chrome.newContext();const page=await context.newPage();
   try{
-    ttl=0;await page.goto(origin+FEED);
+    ttl=0;await page.goto(origin+'/');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
     const start=hits.length;ttl=60;
     await page.goBack();await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
@@ -261,11 +245,10 @@ test('Agent tabs finish offline with matching canonical; invalid direct tabs and
   }finally{await context.close();}
 });
 
-// Suggestions are topics and what is hot; a site that keeps both out of its navigation suggests neither.
-test('phone suggestions load only on opening, use one small read, retry failures and update on reopening',{skip:NAV.hidden.includes('/hot')&&NAV.hidden.includes('/topics')&&'no suggestions on this site'},async()=>{
+test('phone suggestions load only on opening, use one small read, retry failures and update on reopening',async()=>{
   const context=await safari.newContext({viewport:{width:390,height:844}});const page=await context.newPage();
   try{
-    suggestionsVersion=1;await page.goto(origin+LIST);
+    suggestionsVersion=1;await page.goto(origin+'/');
     assert.equal(hits.filter(x=>x==='/api/site/search/suggestions').length,0);
     let start=hits.length;
     await page.getByRole('button',{name:'搜索',exact:true}).click();
@@ -330,9 +313,7 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     }finally{await context.close();}
   });
 
-  // List cards (site.ts FEED.style) lay the selected items flat: there are no dates to fold there.
-  const folds=LISTS.style!=='cards';
-  test(`deep reading returns to its anchor with bounded layout reads${folds?', including folded dates':''}: ${engine}`,{skip:NO_FEATURED},async()=>{
+  test(`deep reading returns to its anchor with bounded layout reads, including folded dates: ${engine}`,async()=>{
     const context=await (engine==='chromium'?chrome:safari).newContext({viewport:{width,height:844}});
     await context.addInitScript(()=>{
       const rect=Element.prototype.getBoundingClientRect;
@@ -344,13 +325,10 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     });
     const page=await context.newPage();
     try{
-      await page.goto(origin+FEED+'?tag=long-reading');
+      await page.goto(origin+'/?tag=long-reading');
       await expect(page.locator('[data-card-key]')).toHaveCount(180);
-      const shown=folds?120:180;
-      if(folds){
-        await page.getByRole('button',{name:'收起'+monthDay('2026-10-04'),exact:true}).click();
-        await expect(page.locator('[data-card-key]')).toHaveCount(shown);
-      }
+      await page.getByRole('button',{name:'收起10月4日',exact:true}).click();
+      await expect(page.locator('[data-card-key]')).toHaveCount(120);
       await page.getByRole('link',{name:'长列表文章 160',exact:true}).scrollIntoViewIfNeeded();
       const before=await page.evaluate(()=>{
         const first=[...document.querySelectorAll<HTMLElement>('[data-card-key]')].find(e=>e.getBoundingClientRect().bottom>72)!;
@@ -360,11 +338,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
       await page.getByRole('link',{name:'长列表文章 160',exact:true}).click();
       await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
       await page.goBack();
-      await expect(page.locator('[data-card-key]')).toHaveCount(shown);
+      await expect(page.locator('[data-card-key]')).toHaveCount(120);
       await expect.poll(()=>page.locator(`[data-card-key="${before.key}"]`).evaluate((e,top)=>Math.abs(e.getBoundingClientRect().top-top),before.top)).toBeLessThan(2);
       const reads=await page.evaluate(()=>(window as unknown as {cardReads:number}).cardReads);
       assert.ok(reads<=40,`returning deep in a list must not measure every earlier card (${reads} reads)`);
-      if(folds)await expect(page.getByRole('button',{name:'展开'+monthDay('2026-10-04'),exact:true})).toBeVisible();
+      await expect(page.getByRole('button',{name:'展开10月4日',exact:true})).toBeVisible();
     }finally{await context.close();}
   });
 }

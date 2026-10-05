@@ -2,8 +2,6 @@
 // deadline; a saved copy may bridge a restart only for the remainder of that original lifetime.
 import { mkdir, readFile, stat, utimes, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { feedPath } from "@aihot/contracts/routes";
-import { FEED, NAV } from "@aihot/site";
 import { config } from "../config.ts";
 import { sql } from "../db.ts";
 import { cached, SHARED_ONLY } from "../lib/cache.ts";
@@ -28,12 +26,8 @@ async function build(at: Date): Promise<string> {
   const [latestItem] = await sql<{ t: Date | null }[]>`SELECT max(p.timeline_at) AS t FROM publications p WHERE ${selectedCondition(at)}`;
   const [latestDaily] = await sql<{ key: string | null; t: Date | null }[]>`SELECT max(key) AS key, max(generated_at) AS t FROM reports WHERE kind = 'daily'`;
   const now = latestItem?.t ?? new Date();
-  // The home page, unless it is the featured list and that leads to 全部 (site.ts FEED.start); the featured list's own
-  // address beside a module home page (NAV.home), on the same terms.
-  const featured = FEED.start === "featured";
   entries.push(
-    ...(featured || NAV.home ? [{ loc: "/", lastmod: now, changefreq: "hourly", priority: 1 }] : []),
-    ...(featured && feedPath() !== "/" ? [{ loc: feedPath(), lastmod: now, changefreq: "hourly", priority: 0.9 }] : []),
+    { loc: "/", lastmod: now, changefreq: "hourly", priority: 1 },
     { loc: "/all", lastmod: now, changefreq: "hourly", priority: 0.9 },
     { loc: "/daily", lastmod: latestDaily?.t, changefreq: "daily", priority: 0.9 },
     { loc: "/hot", lastmod: now, changefreq: "hourly", priority: 0.9 },

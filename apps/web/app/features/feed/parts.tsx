@@ -6,12 +6,6 @@ import { SourceAvatar } from "../../components/ui/SourceAvatar";
 import { Lightbox } from "../../components/ui/Lightbox";
 import { toggleStar, useIsStarred } from "../../lib/local-state";
 
-/**
- * The list card (site.ts FEED.style "cards"): the same white card in every list of items, on phones as on desktops; its
- * edge turns teal under a pointer, it sinks while a finger presses it, and it is ringed while its link has the keyboard.
- */
-export const LIST_CARD = "card relative min-w-0 px-4 py-3.5 transition-colors hover:border-accent touch:has-[a:active]:bg-bg-sunk has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-accent sm:px-5 sm:py-4";
-
 /** The source's name, or, for X, avatar + display name + @handle. */
 export function SourceLine({ item, className = "" }: { item: Pick<FeedItemSummary, "source" | "x" | "channel">; className?: string }) {
   if (item.channel === "x" && item.x) {

@@ -27,7 +27,7 @@ export function Menu({ trigger, label, children }: { trigger: ReactNode; label: 
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className={`inline-flex size-8 items-center justify-center rounded-control transition-colors touch:size-11 ${open ? "bg-bg-sunk text-ink" : "text-ink-3 hover:bg-bg-sunk hover:text-ink"}`}
+        className={`inline-flex size-8 items-center justify-center rounded-control transition-colors ${open ? "bg-bg-sunk text-ink" : "text-ink-3 hover:bg-bg-sunk hover:text-ink"}`}
       >
         {trigger}
       </button>

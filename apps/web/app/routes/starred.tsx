@@ -1,36 +1,26 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import type { ItemAvailability } from "@aihot/contracts/site";
-import { beijingDate } from "@aihot/contracts/time";
-import { FEED, NAV, SITE, STARRED } from "@aihot/site";
+import { SITE } from "@aihot/site";
 import { Presence } from "../components/ui/Presence";
-import { SelectedBadge } from "../components/ui/Badge";
 import { edgeTtl } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
-import { exportBundle, importBundle, removeStar, useStarred, type ImportReport, type LocalStarredItem } from "../lib/local-state";
-import { fullDateTime, monthDay } from "../lib/format";
+import { exportBundle, importBundle, removeStar, useStarred, type ImportReport } from "../lib/local-state";
+import { fullDateTime } from "../lib/format";
 import { IconBookmark, IconDownload, IconClose } from "../components/icons";
 import { readSnapshot, restoreAnchor, useSaveOnLeave } from "../lib/restore";
 import { PhoneBar } from "../components/shell/PhoneBar";
-import { feedPath, navName } from "../components/shell/nav";
-import { READ_COLUMN, type Screen } from "../components/shell/screens";
-import { LIST_CARD, StarButton } from "../features/feed/parts";
+import type { Screen } from "../components/shell/screens";
 import { webModules } from "../site-modules";
 
 export const handle: Screen = { tab: "me", name: "收藏" };
-
-/**
- * The page with a 备份 section (site.ts STARRED.backup): the note on where stars are kept is one quiet line under the
- * title, and exporting and importing sit at the page's foot instead of beside the title.
- */
-const BACKUP = STARRED.backup;
 
 export function headers() {
   return edgeTtl(300);
 }
 
 export function meta() {
-  return pageMeta({ title: "收藏", description: `保存在这台设备上的 ${SITE.name} 收藏。`, path: "/starred", noindex: true });
+  return pageMeta({ title: "我的收藏", description: `保存在这台设备上的 ${SITE.name} 收藏。`, path: "/starred", noindex: true });
 }
 
 function reportText(r: ImportReport): string {
@@ -39,42 +29,6 @@ function reportText(r: ImportReport): string {
   if (r.themeApplied) parts.push("已沿用导入的深浅色设置");
   if (r.readFailed) parts.push("已读记录没能保存（浏览器存储已满或不可用）");
   return parts.join("，");
-}
-
-/** A star as a list card (site.ts FEED.style "cards"): its source, the original's date and 精选 as on the lists, the bookmark to remove it. */
-function StarCard({ s, current, children }: { s: LocalStarredItem; current: ItemAvailability | undefined; children: ReactNode }) {
-  const unavailable = current?.status === "unavailable";
-  const sourceName = current?.sourceName ?? s.sourceName;
-  return (
-    <li data-card-key={s.id} className={`${LIST_CARD} ${unavailable ? "opacity-70" : ""}`}>
-      <div className="flex min-h-6 items-center gap-1.5 text-[13px] leading-[18px] text-ink-4">
-        <span className="min-w-0 truncate">{sourceName}</span>
-        {s.publishedAt && (
-          <time dateTime={s.publishedAt} className="shrink-0 whitespace-nowrap">
-            · {monthDay(beijingDate(s.publishedAt))}
-          </time>
-        )}
-        {s.aiSelected && <span className="ml-1 inline-flex"><SelectedBadge /></span>}
-        <span className="-my-2.5 -mr-3 ml-auto inline-flex shrink-0 pl-1">
-          <StarButton
-            item={{ id: s.id, title: s.title, summary: s.summary, source: { name: sourceName }, publishedAt: s.publishedAt, score: s.score, selected: s.aiSelected }}
-            className="size-11"
-          />
-        </span>
-      </div>
-      <h2 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink lg:text-[17px]">
-        {unavailable ? (
-          s.title
-        ) : (
-          <Link viewTransition to={`/items/${s.id}`} className="after:absolute after:inset-0 after:content-['']">
-            {s.title}
-          </Link>
-        )}
-      </h2>
-      {s.summary && <p className="mt-1 line-clamp-3 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{s.summary}</p>}
-      {children}
-    </li>
-  );
 }
 
 export default function StarredPage() {
@@ -142,96 +96,57 @@ export default function StarredPage() {
     );
 
   const action = "text-[12.5px] text-ink-3 transition-colors hover:text-accent";
-  const button = "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-4 text-[14px] text-ink-2 transition-colors hover:border-accent hover:text-accent active:bg-bg-sunk lg:min-h-9 touch:min-h-11";
-  const moduleImports = webModules().flatMap((m) => m.starredImports ?? []);
-  const fileInput = <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" onChange={(e) => doImport(e.target.files?.[0])} />;
-  const noticeBox = (
-    <Presence show={!!notice} enter="anim-notice-in" exit="anim-fade-out" duration={160}>
-      <div
-        role="status"
-        className={`mt-3 flex items-start justify-between gap-3 rounded-tile px-4 py-2.5 text-[13px] ${notice?.kind === "ok" ? "bg-accent-soft text-accent-ink dark:text-accent" : "bg-hot-soft text-hot"}`}
-      >
-        {notice?.text}
-        <button type="button" aria-label="关闭" onClick={() => setNotice(null)} className="shrink-0 opacity-70 hover:opacity-100">
-          <IconClose size={14} />
-        </button>
-      </div>
-    </Presence>
-  );
-  // Nothing starred: where to find something. Beside a module home page (site.ts NAV.home), both ways in.
-  const ways = NAV.home ? ["/", feedPath()] : [];
-  const empty = (
-    <div className="mt-3 flex flex-col items-center rounded-card border border-dashed border-line-strong px-6 py-12 text-center">
-      <IconBookmark size={20} className="text-ink-4" />
-      <p className="mt-3 text-[13px] text-ink-3">{STARRED.empty}</p>
-      {ways.length > 0 ? (
-        <div className="mt-4 flex flex-wrap justify-center gap-2.5">
-          {ways.map((to, i) => (
-            <Link key={to} to={to} className={i === 0 ? "inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-[14px] font-medium text-accent-contrast transition-colors hover:bg-accent-ink lg:min-h-9 touch:min-h-11" : button}>
-              去{navName(to)}
-            </Link>
+  return (
+    <div className="pb-12">
+      <PhoneBar back={{ to: "/more", label: "我的" }} title="收藏" />
+      <header className="flex flex-col gap-2 pb-4 pt-3 sm:flex-row sm:items-start sm:justify-between lg:pt-1">
+        <div>
+          <h1 data-page-title="" className="text-[24px] font-semibold leading-[1.3] text-ink">收藏</h1>
+          <p className="mt-1.5 text-[13px] text-ink-3">{`本机收藏的 ${SITE.name} 内容，适合稍后阅读和回看。`}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:pt-1.5">
+          {webModules().flatMap((m) => m.starredImports ?? []).map((i) => (
+            <button key={i.label} type="button" onClick={() => importFrom(i.run)} className={action}>
+              {i.label}
+            </button>
           ))}
+          <button type="button" onClick={() => fileRef.current?.click()} className={action}>
+            导入文件
+          </button>
+          {mounted && starred.length > 0 && (
+            <button type="button" onClick={doExport} className={`${action} inline-flex items-center gap-1`}>
+              <IconDownload size={13} /> 导出
+            </button>
+          )}
+          <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" onChange={(e) => doImport(e.target.files?.[0])} />
+        </div>
+      </header>
+      <p className="rounded-tile border border-line bg-surface px-4 py-2.5 text-[12.5px] text-ink-3">收藏只保存在当前浏览器；清除浏览器数据或换设备后不会同步。</p>
+      <Presence show={!!notice} enter="anim-notice-in" exit="anim-fade-out" duration={160}>
+        <div
+          role="status"
+          className={`mt-3 flex items-start justify-between gap-3 rounded-tile px-4 py-2.5 text-[13px] ${notice?.kind === "ok" ? "bg-accent-soft text-accent-ink dark:text-accent" : "bg-hot-soft text-hot"}`}
+        >
+          {notice?.text}
+          <button type="button" aria-label="关闭" onClick={() => setNotice(null)} className="shrink-0 opacity-70 hover:opacity-100">
+            <IconClose size={14} />
+          </button>
+        </div>
+      </Presence>
+      {!mounted ? null : starred.length === 0 ? (
+        <div className="mt-3 flex flex-col items-center rounded-card border border-dashed border-line-strong px-6 py-12 text-center">
+          <IconBookmark size={20} className="text-ink-4" />
+          <p className="mt-3 text-[13px] text-ink-3">还没有收藏内容。点开任意一条内容，在详情页点击收藏即可添加。</p>
+          <Link to="/" className="mt-4 text-[12.5px] font-medium text-accent hover:text-accent-ink">
+            去看精选 →
+          </Link>
         </div>
       ) : (
-        <Link to={feedPath()} className="mt-4 text-[12.5px] font-medium text-accent hover:text-accent-ink">
-          去看{navName(feedPath())} →
-        </Link>
-      )}
-    </div>
-  );
-
-  return (
-    <div className={`mx-auto pb-12 ${READ_COLUMN}`}>
-      <PhoneBar back={{ to: "/more", label: "我的" }} title="收藏" />
-      {BACKUP ? (
-        <header className="pb-4 pt-3 lg:pt-1">
-          <h1 data-page-title="" className="text-[26px] font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-[30px]">收藏</h1>
-          {STARRED.lead && <p className="mt-2 text-[13px] leading-relaxed text-ink-3">{STARRED.lead}</p>}
-          <p className="mt-2 text-[13px] leading-relaxed text-ink-4">{STARRED.note}</p>
-        </header>
-      ) : (
-        <>
-          <header className="flex flex-col gap-2 pb-4 pt-3 sm:flex-row sm:items-start sm:justify-between lg:pt-1">
-            <div>
-              <h1 data-page-title="" className="text-[24px] font-semibold leading-[1.3] text-ink">收藏</h1>
-              {STARRED.lead && <p className="mt-1.5 text-[13px] text-ink-3">{STARRED.lead}</p>}
-            </div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 sm:pt-1.5">
-              {moduleImports.map((i) => (
-                <button key={i.label} type="button" onClick={() => importFrom(i.run)} className={action}>
-                  {i.label}
-                </button>
-              ))}
-              <button type="button" onClick={() => fileRef.current?.click()} className={action}>
-                导入文件
-              </button>
-              {mounted && starred.length > 0 && (
-                <button type="button" onClick={doExport} className={`${action} inline-flex items-center gap-1`}>
-                  <IconDownload size={13} /> 导出
-                </button>
-              )}
-              {fileInput}
-            </div>
-          </header>
-          <p className="rounded-tile border border-line bg-surface px-4 py-2.5 text-[12.5px] text-ink-3">{STARRED.note}</p>
-          {noticeBox}
-        </>
-      )}
-      {!mounted ? null : starred.length === 0 ? (
-        empty
-      ) : (
-        <ul className={`${FEED.style === "cards" ? "space-y-2.5" : "lg:space-y-3"} ${BACKUP ? "" : "mt-3"}`}>
+        <ul className="mt-3 lg:space-y-3">
           {starred.map((s) => {
             const current = availability[s.id];
             const status = current?.status;
             const unavailable = status === "unavailable";
-            const notes = (
-              <>
-                {unavailable && <p className="mt-2 text-[12.5px] text-hot">这条内容已不再公开，收藏会保留直到你手动移除。</p>}
-                {status === "summary-only" && <p className="mt-2 text-[12.5px] text-amber-ink">应来源方要求，这条内容现在只提供摘要。</p>}
-              </>
-            );
-            if (FEED.style === "cards") return <StarCard key={s.id} s={s} current={current}>{notes}</StarCard>;
             return (
               <li key={s.id} data-card-key={s.id} className={`relative border-b border-line-soft py-4 lg:card lg:px-[18px] lg:py-[15px] ${unavailable ? "opacity-70" : "lg:card-hover"}`}>
                 <div className="flex items-center gap-2 text-[12.5px] text-ink-4">
@@ -254,34 +169,12 @@ export default function StarredPage() {
                   )}
                 </h2>
                 {s.summary && <p className="mt-1.5 line-clamp-2 text-[14px] leading-[1.75] text-ink-3">{s.summary}</p>}
-                {notes}
+                {unavailable && <p className="mt-2 text-[12.5px] text-hot">这条内容已不再公开，收藏会保留直到你手动移除。</p>}
+                {status === "summary-only" && <p className="mt-2 text-[12.5px] text-amber-ink">应来源方要求，这条内容现在只提供摘要。</p>}
               </li>
             );
           })}
         </ul>
-      )}
-      {BACKUP && (
-        <section className="mt-10 border-t border-line pt-5">
-          <h2 className="text-[15px] font-semibold text-ink">备份</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {moduleImports.map((i) => (
-              <button key={i.label} type="button" onClick={() => importFrom(i.run)} className={button}>
-                {i.label}
-              </button>
-            ))}
-            {mounted && starred.length > 0 && (
-              <button type="button" onClick={doExport} className={button}>
-                <IconDownload size={15} /> 导出收藏
-              </button>
-            )}
-            <button type="button" onClick={() => fileRef.current?.click()} className={button}>
-              从文件导入
-            </button>
-            {fileInput}
-          </div>
-          <p className="mt-2.5 text-[13px] leading-relaxed text-ink-4">{BACKUP}</p>
-          {noticeBox}
-        </section>
       )}
     </div>
   );

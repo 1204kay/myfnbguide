@@ -1,10 +1,7 @@
 // What a page tells the phone shell about itself, as its route `handle` (a Screen): the tab it sits under, the short
 // name a back button shows when it leads there, and whether it brings its own bottom toolbar. Also the
-// names of the pages in this tab's history, so a back button can say where it goes ("‹ 精选"), and how wide
-// the reading and the list pages are on desktops.
-import type { CSSProperties } from "react";
+// names of the pages in this tab's history, so a back button can say where it goes ("‹ 精选").
 import { useMatches } from "react-router";
-import { LAYOUT } from "@aihot/site";
 import { readJson, writeRaw } from "../../lib/local-state";
 import type { TabKey } from "./nav";
 
@@ -26,28 +23,6 @@ export function useScreen(): Screen {
   for (const m of useMatches()) if (m.handle && typeof m.handle === "object") out = { ...out, ...(m.handle as Screen) };
   return out;
 }
-
-/**
- * How wide a list or directory page is on desktops (参考首页, 全部 with its searches and tags, the reports), in px: the
- * site's list width (site.ts LAYOUT.lists), else its reading column (LAYOUT.column); null leaves the page its
- * framework width. The page fills the main area up to it and is centred beyond; reading pages keep LAYOUT.column.
- */
-export const LIST_WIDTH: number | null = LAYOUT.lists ?? LAYOUT.column;
-
-/**
- * The page's outer box, as a class: from 961px it stops at the site's width and centres, READ_COLUMN at the reading
- * column (LAYOUT.column), LIST_COLUMN at the lists' (LIST_WIDTH); below, it fills the phone shell's column, or on a site
- * that spreads the shell (LAYOUT.fluid) the screen less its gutters, so the bars line up with it. "" where the site sets
- * no width: the page keeps its framework width.
- */
-export const READ_COLUMN = LAYOUT.column ? "lg:max-w-[var(--column)]" : "";
-export const LIST_COLUMN = LIST_WIDTH ? "lg:max-w-[var(--lists)]" : "";
-
-/** The widths the two classes read, set on the page's column (root.tsx). */
-export const COLUMN_WIDTHS = {
-  "--column": LAYOUT.column ? `${LAYOUT.column}px` : undefined,
-  "--lists": LIST_WIDTH ? `${LIST_WIDTH}px` : undefined,
-} as CSSProperties;
 
 /** Below the lg breakpoint (961px): the phone shell. */
 export function isPhone(): boolean {

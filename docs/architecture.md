@@ -67,16 +67,10 @@ flowchart LR
 |---|---|
 | `module.ts` | 它的地址：页面、跳转、交给 api 处理的路径（类型见 `packages/contracts/src/modules.ts`） |
 | `server.ts` | 它接进后端的插口：接口、定时任务、队列、事件回调、后台页面的数据等（`packages/backend/src/modules.ts`，每个插口注明读它的文件） |
-| `web.tsx` | 它接进网页的插口：页面、导航项、主题页、搜索结果、条目页与后台的部件等（`apps/web/app/modules.ts`）；只在某一页出现的部件给出加载函数，随那一页的代码加载 |
+| `web.tsx` | 它接进网页的插口：页面、导航项、主题页与后台的部件等（`apps/web/app/modules.ts`）；只在某一页出现的部件给出加载函数，随那一页的代码加载 |
 | `migrations/` | 它自己的表，和 `database/migrations/` 一起按文件名排序执行 |
 | `tests/` | 它的测试，`npm test` 一起跑 |
 | 其他文件 | 它自己的图片等静态文件也放在模块文件夹里：在 `server.ts` 的 `http` 插口里注册路由，用 `apps/api/src/routes/static.ts` 的 `sendFile` 发出（类型、ETag、缓存头和 404 都由它处理，文件名自己校验），地址写进 `module.ts` 的 `apiPaths` |
-
-搜索结果和条目页各留了一个位置给模块：搜索结果里引擎那一节之前的一节（`searchPart`，收到搜索的词），条目页收录理由之后的一块（`itemPart`，收到条目 id）。模块给出一个 api 地址和一个组件；页面在 loader 里读这个地址（`apps/web/app/site-modules.ts` 的 `readParts`），把读到的交给组件画。没有模块提供、读取失败或组件认为没有内容时，那里什么都不画。
-
-关于页最后一个环节的数字也可以由模块给出（`server.ts` 的 `figures`，每项一个数字和单位，例如参考库的「41 种情况」「328 条原文」），随站点统计 `/api/site/stats` 一起读出；没有模块给出时显示日报期数。
-
-模块页也可以做首页：`site/site.ts` 的 `NAV.home` 写这一页在 `module.ts` 里的 id，它就挂在 `/`，引擎的精选列表搬到 `/latest`（前后端都从 `packages/contracts/src/routes.ts` 的 `feedPath()` 读精选的地址）。模块原来的地址由它自己在 `module.ts` 的 `redirects` 里 301 到 `/`；它的导航项照旧写原来的地址，框架会改为指向 `/`。网站地图已经列出 `/`，模块的 `sitemap` 不必再列。
 
 写好以后在 `site/modules/` 的三份清单里列上它：`index.ts` 列地址，`server.ts` 列后端，`web.ts` 列网页，没有的那份不列；再在 `site/package.json` 的 `dependencies` 里写上它。用 Docker 部署的，在 `Dockerfile` 里照着其他包加一行 `COPY modules/<名字>/package.json modules/<名字>/`。框架的代码不导入任何模块，只读这三份清单，所以合并本仓库以后的更新时，不容易和你自己的功能冲突。插口不够用时，在框架里加一个通用的插口，而不是把这个功能写进框架。
 
@@ -97,7 +91,7 @@ flowchart LR
 | `/` `/all` `/hot` `/topics` `/daily` `/weekly` `/monthly` | 精选、全部动态、热门事件、主题、日报周报月报 |
 | `/feed.xml` `/feed/full.xml` `/feed/all.xml` `/feed/daily.xml` `/feed/weekly.xml` `/feed/monthly.xml` | RSS：精选、精选全文、全部、日报、周报、月报；另有按分类的 `/feed/category/<key>.xml` 和分类全文版 `/feed/full/category/<key>.xml` |
 | `/api/v1/` | 公开 API，文档在 `/openapi-v1.json`；给 Agent 读的 Markdown 从 `/api/v1/agent` 开始；说明页在 `/agent` |
-| `/api/mcp` | MCP 服务：最新、搜索、热点、事件、日报、周报、月报各一个工具（`NAV.hidden` 写 `/hot` 时不提供热点和事件两个），工具名前缀是 `site/site.ts` 的 `mcpPrefix` |
+| `/api/mcp` | MCP 服务：最新、搜索、热点、事件、日报、周报、月报各一个工具，工具名前缀是 `site/site.ts` 的 `mcpPrefix` |
 | `/llms.txt` `/sitemap.xml` `/robots.txt` | 给大模型和搜索引擎的说明（`robots.txt` 等根目录文件在 `site/public/`） |
 | `/admin` | 后台 |
 

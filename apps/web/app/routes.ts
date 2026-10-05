@@ -1,14 +1,10 @@
 import { type RouteConfig, type RouteConfigEntry, index, layout, route } from "@react-router/dev/routes";
 import type { ModulePage } from "@aihot/contracts/modules";
-import { homePage } from "@aihot/contracts/routes";
 import { MODULES } from "@aihot/site/modules";
 
 /** A module's route module, from the app directory. */
 const file = (module: string, path: string) => `../../../modules/${module}/${path}`;
-/** The module page the site shows as its home page (site.ts NAV.home) is mounted at /; the featured list then moves to /latest. */
-const home = homePage();
-const page = (module: string, p: ModulePage) =>
-  p.id && p.id === home?.page.id ? index(file(module, p.file), { id: p.id }) : route(p.path, file(module, p.file), p.id ? { id: p.id } : {});
+const page = (module: string, p: ModulePage) => route(p.path, file(module, p.file), p.id ? { id: p.id } : {});
 
 /** The site's modules' pages, after the engine's. */
 const modulePages: RouteConfigEntry[] = MODULES.flatMap((m) =>
@@ -17,7 +13,7 @@ const modulePages: RouteConfigEntry[] = MODULES.flatMap((m) =>
 const moduleAdminPages: RouteConfigEntry[] = MODULES.flatMap((m) => (m.adminPages ?? []).map((p) => page(m.name, p)));
 
 export default [
-  home ? route("latest", "routes/home.tsx") : index("routes/home.tsx"),
+  index("routes/home.tsx"),
   route("all", "routes/all.tsx"),
   route("all/search-busy", "routes/search-busy.tsx", { id: "all-search-busy" }),
   route("search-busy", "routes/search-busy.tsx", { id: "search-busy" }),

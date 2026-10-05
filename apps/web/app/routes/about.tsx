@@ -2,16 +2,15 @@ import { Fragment, useCallback, useMemo, useRef, useState, type ReactNode } from
 import { IntentLink } from "../components/ui/IntentLink";
 import { Link, useLoaderData } from "react-router";
 import type { SiteContact, SiteStats } from "@aihot/contracts/site";
-import { ABOUT, NAV, POLICY, REPORTS, SITE, subjectAfter } from "@aihot/site";
+import { ABOUT, POLICY, REPORTS, SITE, subjectAfter } from "@aihot/site";
 import { apiGet, edgeTtl, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { organizationLd, pageMeta } from "../lib/seo";
 import { Kicker } from "../components/ui/Kicker";
 import { buttonClass } from "../components/ui/Controls";
 import { IconArrowRight } from "../components/icons";
-import { SOURCE_UNIT, SignalRiver, type RiverSource } from "../features/about/SignalRiver";
+import { SignalRiver, type RiverSource } from "../features/about/SignalRiver";
 import { PhoneBar } from "../components/shell/PhoneBar";
-import { feedPath } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 
 export const handle: Screen = { tab: "me", name: "关于" };
@@ -81,74 +80,39 @@ interface Stage {
   note: ReactNode;
 }
 
-/** The four stages' names (ABOUT.page.stepTitles). */
-const STEP_TITLES = ABOUT.page.stepTitles ?? { collect: "采集", store: "收录", select: "精选", publish: "成刊" };
-
-/** What the site's modules have put together, side by side ("41 种情况  328 条原文"). */
-function Figures({ figures }: { figures: SiteStats["figures"] }) {
-  return (
-    <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-      {figures.map((f, i) => (
-        <Figure key={i} n={f.value} unit={f.unit} />
-      ))}
-    </div>
-  );
-}
-
-/**
- * The four stages under the river. Sources, picks and dailies are counted in the site's words for them
- * (REPORTS.metricUnits, as the report masthead counts them), what is kept by its measure alone (the stage's
- * name says what it is); the last stage counts what the site's modules have put together when they count it,
- * the dailies otherwise. The small notes under them (the last 24 hours, the kinds of source, the feeds) may
- * be left out (ABOUT.page.statNotes).
- */
 function stagesOf(stats: SiteStats | null): Stage[] {
   const kinds = stats ? KIND_ORDER.filter(([k]) => stats.sourceKinds[k]).map(([k, label]) => `${label} ${stats.sourceKinds[k]}`).join(" · ") : null;
-  const notes = ABOUT.page.statNotes !== false;
   return [
     {
       no: "01",
-      title: STEP_TITLES.collect,
-      figure: stats && <Figure n={stats.sources} unit={SOURCE_UNIT} />,
+      title: "采集",
+      figure: stats && <Figure n={stats.sources} unit="个信源" />,
       text: ABOUT.steps.collect,
-      note: notes && kinds,
+      note: kinds,
     },
     {
       no: "02",
-      title: STEP_TITLES.store,
-      figure: stats && <Figure n={stats.items} unit="条" />,
+      title: "收录",
+      figure: stats && <Figure n={stats.items} unit="条动态" />,
       text: ABOUT.steps.store,
-      note: notes && stats && <>过去 24 小时收进 {stats.day.collected.toLocaleString("en-US")} 条</>,
+      note: stats && <>过去 24 小时收进 {stats.day.collected.toLocaleString("en-US")} 条</>,
     },
     {
       no: "03",
-      title: STEP_TITLES.select,
+      title: "精选",
       figure: stats && <Figure n={stats.selected} unit={REPORTS.metricUnits.selectedCount} />,
       text: ABOUT.steps.select,
-      note: notes && stats && <>过去 24 小时 {stats.day.selected} 条进了精选</>,
+      note: stats && <>过去 24 小时 {stats.day.selected} 条进了精选</>,
     },
     {
       no: "04",
-      title: STEP_TITLES.publish,
-      figure: stats && (stats.figures.length ? <Figures figures={stats.figures} /> : <Figure n={stats.dailies} unit={REPORTS.metricUnits.reportsCovered} />),
+      title: "成刊",
+      figure: stats && <Figure n={stats.dailies} unit={REPORTS.metricUnits.reportsCovered} />,
       text: ABOUT.steps.publish,
-      note: notes && "也可以用 RSS、API、MCP 订阅",
+      note: "也可以用 RSS、API、MCP 订阅",
     },
   ];
 }
-
-/** The two buttons beside the headline (under the lead with a plain head), the first solid (ABOUT.page.actions). */
-const ACTIONS: Array<[string, string]> = ABOUT.page.actions ?? [["看今天的精选", feedPath()], ["读最新日报", "/daily"]];
-
-/**
- * The head as the site's other info pages have it (ABOUT.page.plainHead): the headline and the lead at their sizes
- * (26/30px, 15px), the two buttons under the lead. Without it the headline grows with the screen to 64px and the
- * buttons stand beside it.
- */
-const PLAIN_HEAD = ABOUT.page.plainHead;
-
-/** Where the river's chosen bundles go, as its description says it (ABOUT.page.riverNote). */
-const RIVER_NOTE = ABOUT.page.riverNote ?? `经过精选的闸门，只有少数几束通过，${subjectAfter("汇入每天的", "日报")}`;
 
 /** The maker's round avatar before the greeting; it steps aside if the image fails. */
 function MakerFace({ src }: { src: string }) {
@@ -248,23 +212,16 @@ export default function AboutPage() {
 
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-14 lg:pt-3">
-      <PhoneBar back={{ to: "/more", label: "我的" }} title={NAV.labels["/about"] ?? `关于 ${SITE.name}`} />
-      <header className={PLAIN_HEAD ? "pt-4 lg:pt-5" : "grid items-end gap-8 pt-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:pt-0"}>
+      <PhoneBar back={{ to: "/more", label: "我的" }} title={`关于 ${SITE.name}`} />
+      <header className="grid items-end gap-8 pt-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:pt-0">
         <div>
           <Kicker>{ABOUT.kicker}</Kicker>
-          <h1
-            data-page-title=""
-            className={
-              PLAIN_HEAD
-                ? "mt-4 text-[26px] font-bold leading-[1.3] text-ink [text-wrap:balance] lg:text-[30px]"
-                : "mt-5 text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]"
-            }
-          >
+          <h1 data-page-title="" className="mt-5 text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]">
             {ABOUT.headline[0]}
             <br />
             <span className="text-accent">{ABOUT.headline[1]}</span>
           </h1>
-          <p className={PLAIN_HEAD ? "mt-3 max-w-[40em] text-[15px] leading-[1.8] text-ink-3" : "mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-ink-3 xl:text-[17px]"}>
+          <p className="mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-ink-3 xl:text-[17px]">
             {ABOUT.lead.split("{sources}").map((part, i) => (
               <Fragment key={i}>
                 {i > 0 && (stats ? <>{" "}<span className="num font-semibold text-ink">{stats.sources}</span>{" "}</> : ABOUT.sourcesFallback)}
@@ -273,13 +230,13 @@ export default function AboutPage() {
             ))}
           </p>
         </div>
-        <div className={PLAIN_HEAD ? "mt-6 flex flex-wrap gap-3" : "flex flex-wrap gap-3 lg:pb-2"}>
-          {ACTIONS.map(([text, to], i) => (
-            <IntentLink key={to} to={to} className={buttonClass(i === 0 ? "primary" : "secondary", "lg")}>
-              {text}
-              {i === 0 && <IconArrowRight size={15} />}
-            </IntentLink>
-          ))}
+        <div className="flex flex-wrap gap-3 lg:pb-2">
+          <IntentLink to="/" className={buttonClass("primary", "lg")}>
+            看今天的精选 <IconArrowRight size={15} />
+          </IntentLink>
+          <IntentLink to="/daily" className={buttonClass("secondary", "lg")}>
+            读最新日报
+          </IntentLink>
         </div>
       </header>
 
@@ -290,7 +247,7 @@ export default function AboutPage() {
         <SignalRiver sources={sources} focus={focus} onArrive={onArrive} className="h-[230px] sm:h-[300px] lg:h-[360px] 2xl:h-[420px]">
           <Latest item={latest[at]} className="absolute left-[75%] top-[calc(42%+42px)] hidden w-[25%] px-6 lg:block" />
         </SignalRiver>
-        <p className="sr-only">{`示意图：每条线是一${SOURCE_UNIT}；线汇成一束束，代表同一件事的多篇报道；${RIVER_NOTE}。`}</p>
+        <p className="sr-only">{`示意图：每条线是一个信源；线汇成一束束，代表同一件事的多篇报道；经过精选的闸门，只有少数几束通过，${subjectAfter("汇入每天的", "日报")}。`}</p>
         <Latest item={latest[at]} className="mt-2 border-t border-line pt-4 lg:hidden" />
         <ol className="mt-4 grid grid-cols-1 border-t border-line-strong sm:grid-cols-2 lg:mt-0 lg:grid-cols-4">
           {stages.map((s, i) => (

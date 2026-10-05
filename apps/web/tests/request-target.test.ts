@@ -16,8 +16,6 @@ const api = createServer((req, res) => {
   upstreamPaths.push(req.url ?? "");
   res.setHeader("Content-Type", "application/json");
   if (req.url === "/api/site/meta") return res.end(JSON.stringify({ changelogVersion: null }));
-  // The site's home page: its reference library (site.ts NAV.home), when it has one at /.
-  if (req.url === "/api/reference") return res.end(JSON.stringify({ categories: [], ranking: [], kinds: [], totals: { situations: 0, cases: 0, countries: 0 } }));
   if (req.url?.startsWith("/api/site/timeline")) return res.end(JSON.stringify({
     cards: [], nextCursor: null, dayCounts: {}, hot: [], filters: { category: null, channel: null, tag: null },
   }));
@@ -82,5 +80,5 @@ test("origin-form slashes keep the router's homepage and unknown-route semantics
     }
   }
   assert.equal(logs, "");
-  assert.ok(upstreamPaths.every((path) => path.startsWith("/api/site/") || path === "/api/reference"));
+  assert.ok(upstreamPaths.every((path) => path.startsWith("/api/site/")));
 });

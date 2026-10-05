@@ -9,7 +9,6 @@ import { IconCheck, IconClose, IconImage } from "../components/icons";
 import { RingMark } from "@aihot/site/brand/Logo.tsx";
 import { AsideCard, ReadingLayout } from "../components/ui/Page";
 import { PhoneBar } from "../components/shell/PhoneBar";
-import { navName } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 import { webModules } from "../site-modules";
 
@@ -54,7 +53,6 @@ function writeDraft(d: Draft | null): boolean {
 
 const TIPS = ["出问题的页面或文章链接", "你看到了什么，原本想做什么", "有截图更好，记得先遮盖敏感信息"];
 
-/** What helps, and a word to sources: beside the form on desktops, before it on phones, where it is read first. */
 function FeedbackAside() {
   return (
     <>
@@ -171,8 +169,8 @@ export default function FeedbackPage() {
           <p className="mt-2 text-[14px] text-ink-3">
             反馈编号 <span className="mono font-semibold text-ink">#{state.id}</span>，需要回复时我们会引用这个编号。
           </p>
-          <Link to="/" className="mt-8 inline-flex h-10 items-center rounded-full bg-ink px-6 text-[14px] font-medium text-bg transition-opacity hover:opacity-90 touch:h-11">
-            回到{navName("/")}
+          <Link to="/" className="mt-8 inline-flex h-10 items-center rounded-full bg-ink px-6 text-[14px] font-medium text-bg transition-opacity hover:opacity-90">
+            回到精选
           </Link>
         </div>
       </ReadingLayout>
@@ -184,15 +182,12 @@ export default function FeedbackPage() {
   const canSend = draft.content.trim().length >= 2 && state.kind !== "sending";
   return (
     <>
-    <PhoneBar back={{ to: "/more", label: "我的" }} title={SITE.feedbackTitle ?? "意见反馈"} />
-    <ReadingLayout aside={<div className="hidden space-y-4 lg:block"><FeedbackAside /></div>}>
+    <PhoneBar back={{ to: "/more", label: "我的" }} title="意见反馈" />
+    <ReadingLayout aside={<FeedbackAside />}>
       <header>
-        <h1 data-page-title="" className="text-[26px] font-bold leading-[1.3] text-ink [text-wrap:balance] lg:text-[30px]">{SITE.feedbackTitle ?? "说说你的想法"}</h1>
+        <h1 data-page-title="" className="text-[24px] font-semibold leading-[1.3] text-ink">说说你的想法</h1>
         <p className="mt-2 text-[14.5px] leading-relaxed text-ink-3">{SITE.feedbackLead}</p>
       </header>
-      <div className="mt-6 space-y-4 lg:hidden">
-        <FeedbackAside />
-      </div>
 
       <form
         onSubmit={submit}
@@ -279,7 +274,7 @@ export default function FeedbackPage() {
           </Presence>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-line-soft bg-bg-sunk/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:bg-bg-muted/30">
+        <div className="flex flex-col-reverse gap-4 border-t border-line-soft bg-bg-sunk/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:bg-bg-muted/30">
           <p className="text-[12px] leading-relaxed text-ink-4 sm:max-w-[400px]">
             请勿提交密钥、身份证件或与问题无关的敏感信息。提交即表示你知悉反馈内容、选填邮箱、页面信息和截图将按
             <Link viewTransition to="/privacy" className="text-accent hover:underline">
@@ -290,7 +285,7 @@ export default function FeedbackPage() {
           <button
             type="submit"
             disabled={!canSend}
-            className="inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-6 text-[15px] font-medium text-accent-contrast transition-[background-color,opacity] hover:bg-accent-ink disabled:bg-line-strong disabled:text-ink-4 sm:h-10 sm:w-auto sm:text-[14px] touch:sm:h-11"
+            className="inline-flex h-10 shrink-0 items-center justify-center gap-2 self-start rounded-full bg-accent px-6 text-[14px] font-medium text-accent-contrast transition-[background-color,opacity] hover:bg-accent-ink disabled:bg-line-strong disabled:text-ink-4 sm:self-auto"
           >
             {state.kind === "sending" && <RingMark className="size-4" spinning />}
             发送反馈

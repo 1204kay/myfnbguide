@@ -1,13 +1,13 @@
 // One shop (layout B5): who it is in Chinese, its original name and where it is, and all its stories, newest first.
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
-import { BackRow, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
+import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { findShopKind } from "../situations.ts";
 import type { ShopPage } from "../types.ts";
-import { MEASURE, Metrics, Page, StoryCards, Title, Updated } from "./ui";
+import { MEASURE, Metrics, Page, StoryCards, Title, Updated, BackLink } from "./ui";
 
 export const handle: Screen = { home: "reference" };
 
@@ -33,8 +33,8 @@ export default function ShopRoute() {
   const original = shop.label && shop.name ? `原名「${shop.name}」` : null;
   return (
     <Page>
-      <PhoneBar back={{ to: "/", label: "参考" }} title={nameOf(data)} />
-      <BackRow to="/" label="参考" />
+      <PhoneBar back={{ to: "/reference", label: "参考" }} title={nameOf(data)} />
+      <BackLink to="/reference" label="参考" />
       <div className="mt-3 lg:mt-4"><Kicker>店家</Kicker></div>
       <Title>{nameOf(data)}</Title>
       <p className={`mt-2 text-[13px] leading-[1.5] text-ink-4 [overflow-wrap:anywhere] ${MEASURE}`}>

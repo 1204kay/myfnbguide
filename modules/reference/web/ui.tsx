@@ -7,8 +7,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Link } from "react-router";
 import { ITEM_COPY, SITE } from "@aihot/site";
-import { IconChevronRight, IconShare } from "@aihot/web/components/icons";
-import { LIST_COLUMN, READ_COLUMN } from "@aihot/web/components/shell/screens";
+import { IconChevronLeft, IconChevronRight, IconShare } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { siteUrl } from "@aihot/web/lib/seo";
@@ -16,13 +15,21 @@ import { day, fullCountText, listCount, listCountText, num, restCountText, telle
 import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
 
 /**
- * A reference page's column (site.ts LAYOUT): `wide`, the lists' width (the home page), whose extra room goes to
- * columns, filling the main area as the engine's lists do where the site sets none; else the reading width, 760px
- * where the site sets none. The situation and story pages lay themselves out in the engine's reading templates
- * instead (components/ui/Page.tsx ReadingLayout, ArticleLayout), as the engine's own pages do.
+ * A reference page's column, in the engine's widths: `wide` (the home page) fills the main area as the engine's lists
+ * do; else the engine's reading width (--page-max-reading), as its reading pages have it. The situation and story
+ * pages lay themselves out in the engine's reading templates instead (components/ui/Page.tsx ReadingLayout, ArticleLayout).
  */
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <div className={`mx-auto pb-14 ${(wide ? LIST_COLUMN : READ_COLUMN) || (wide ? "" : "lg:max-w-[760px]")}`}>{children}</div>;
+  return <div className={`mx-auto pb-14 ${wide ? "" : "max-w-[var(--page-max-reading)]"}`}>{children}</div>;
+}
+
+/** Desktops: one line up to where the page sits (phones have the bar's back). */
+export function BackLink({ to, label }: { to: string; label: string }) {
+  return (
+    <Link viewTransition to={to} className="-ml-1 hidden min-h-10 items-center gap-0.5 pr-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent touch:min-h-11 lg:inline-flex">
+      <IconChevronLeft size={16} />{label}
+    </Link>
+  );
 }
 
 /**
@@ -273,7 +280,7 @@ export function SiteLine({ situations }: { situations: number }) {
   return (
     <div className="mt-6 border-t border-line pt-4 text-[13px] leading-[1.6] text-ink-4">
       {SITE.name} 参考：按遇到的事，查各地店家的做法和经验。
-      {situations > 0 && <Link viewTransition to="/" className="ml-1 inline-flex items-center text-accent hover:text-accent-ink touch:min-h-11">看全部 {situations} 种情况 ›</Link>}
+      {situations > 0 && <Link viewTransition to="/reference" className="ml-1 inline-flex items-center text-accent hover:text-accent-ink touch:min-h-11">看全部 {situations} 种情况 ›</Link>}
     </div>
   );
 }

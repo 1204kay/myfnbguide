@@ -7,7 +7,7 @@
 // Theme-aware, paused off screen; reduced motion draws it still. The canvas only illustrates: what it
 // says is also written in the page.
 import { useEffect, useRef, type ReactNode } from "react";
-import { ABOUT, REPORTS, withSubject } from "@aihot/site";
+import { withSubject } from "@aihot/site";
 import { EDITION } from "../report/format";
 
 export interface RiverSource {
@@ -18,15 +18,6 @@ export interface RiverSource {
 
 /** Stage boundaries as fractions of the width: 采集 | 归并 | 精选 | 成刊. */
 export const STAGES = [0, 0.25, 0.5, 0.75, 1] as const;
-
-/** "个来源": what the page counts sources in, the report masthead's word (REPORTS.metricUnits). */
-export const SOURCE_UNIT = REPORTS.metricUnits.sourcesCount ?? "个来源";
-
-/**
- * The paper's label: where the chosen bundles go. A site saying so itself (ABOUT.page.riverNote) names it by
- * its last stage; otherwise it is the daily and when it comes out.
- */
-const PAPER: [string, string] = ABOUT.page.riverNote ? [ABOUT.page.stepTitles?.publish ?? withSubject("日报"), ABOUT.page.riverNote] : [withSubject("日报"), EDITION.daily];
 
 const STEP = 3;
 const KIND: Record<string, string> = { x_search: "X 账号", rss: "RSS", web_list: "网页", mp_account: "公众号", json_list: "接口" };
@@ -491,7 +482,7 @@ export function SignalRiver({
       const p = L.paper;
       if (x >= p.x - 8 && x <= p.x + p.w + 8 && y >= p.y - 8 && y <= p.y + p.h + 8) {
         hover = { s: null, bundle: null, paper: true };
-        place(x, y, ...PAPER);
+        place(x, y, withSubject("日报"), EDITION.daily);
         redraw();
         return;
       }
@@ -514,8 +505,8 @@ export function SignalRiver({
       const b = L.bundles[s.bundle]!;
       if (x < L.x2) {
         hover = { s: best, bundle: null, paper: false };
-        const kind = s.source ? (KIND[s.source.kind] ?? "") : "";
-        place(x, y, s.source ? s.source.name : `一${SOURCE_UNIT}`, s.source?.heatOnly ? [kind, "只计入热度"].filter(Boolean).join(" · ") : kind);
+        const kind = s.source ? (KIND[s.source.kind] ?? "信源") : "信源";
+        place(x, y, s.source ? s.source.name : "一个信源", s.source?.heatOnly ? `${kind} · 只计入热度` : kind);
       } else {
         hover = { s: null, bundle: s.bundle, paper: false };
         if (x < L.gate) place(x, y, "同一件事", `${b.n} 个来源的报道合成一条`);

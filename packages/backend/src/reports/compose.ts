@@ -4,7 +4,7 @@
 // dailies and a model only writes its overview and introductions, from the brief in the industry pack
 // (industry/prompts/report-period*.md).
 import { z } from "zod";
-import { EDITION_TIMES, REPORTS, SITE } from "@aihot/site";
+import { EDITION_TIMES, SITE } from "@aihot/site";
 import { PLAIN_TERMS, RELEASE } from "@aihot/industry/taxonomy";
 import { promptText, promptVersion } from "../editorial/prompts.ts";
 import { modelFor } from "../editorial/models.ts";
@@ -16,12 +16,12 @@ import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import { emit } from "../modules.ts";
-import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type DailyEntry, type EditionEntry } from "./edition.ts";
+import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
 /**
- * The masthead's figures, counted in the events its sections carry: sources over every report they cite; releases
+ * The masthead's figures, counted in events: sources over every report its entries cite; releases
  * (`modelsReleased`, its public name) are the entries of the pack's headline launch kind (RELEASE: its
  * category and its tag, so not a ranking or a test) that a maker announced itself, new that day. An
  * industry without such a kind has no release figure.
@@ -76,8 +76,7 @@ async function saveReport(kind: ReportKind, key: string, start: Date, end: Date,
 
 /**
  * Daily report for Beijing date D covers the 24 hours up to the site's edition time on D (EDITION_TIMES).
- * Its most important entry leads, in its own words, and the next three are today's highlights. Its flashes
- * stand together at the end, or each in its own section after the entries in full (site.ts REPORTS.flashPlacement).
+ * Its most important entry leads, in its own words, and the next three are today's highlights.
  */
 export async function composeDaily(date: string, reason?: string): Promise<{ key: string; entries: number }> {
   const previous = await savedReport("daily", date);
@@ -89,30 +88,22 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
   if (edition.entries.length === 0) throw new Error(`daily ${date}: no selected items in its window`);
   const issue = arrangeDaily(edition.entries);
   const [lead, ...rest] = issue.main as [EditionEntry, ...EditionEntry[]];
-  const inSections = REPORTS.flashPlacement === "sections";
-  const brief = inSections ? issue.flashes : [];
   const content = {
     date,
     lead: { title: lead.entry.title, leadParagraph: lead.entry.summary },
     leadItemId: lead.entry.itemId,
     highlights: rest.slice(0, 3).map((e) => e.entry.itemId),
     sections: SECTION_ORDER
-      .map((label) => ({
-        label,
-        items: [
-          ...issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry),
-          ...brief.filter((e) => sectionOf(e.category) === label).map((e): DailyEntry => ({ ...e.entry, brief: true })),
-        ],
-      }))
+      .map((label) => ({ label, items: issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry) }))
       .filter((s) => s.items.length > 0),
-    flashes: inSections ? [] : issue.flashes.map((e) => e.entry),
-    metrics: dailyMetrics([...issue.main, ...brief]),
+    flashes: issue.flashes.map((e) => e.entry),
+    metrics: dailyMetrics(issue.main),
     windowStart: start.toISOString(),
     windowEnd: end.toISOString(),
     generator: { version: REPORT_VERSION, ...edition.stats, ...issue.stats },
   };
   await saveReport("daily", date, start, end, content, reason, null, []);
-  return { key: date, entries: content.metrics.totalEvents };
+  return { key: date, entries: issue.main.length };
 }
 
 /** A weekly's or monthly's size: the events it carries, chosen and ordered by rule. */
@@ -294,20 +285,16 @@ const nextMonth = (label: string) => {
 export async function composeDueReports(now = new Date(), limit = 8): Promise<{ generated: string[]; failed: string[] }> {
   const generated: string[] = [];
   const failed: string[] = [];
-  const kinds: Array<{ kind: ReportKind; due: string; next: (k: string) => string; end: (k: string) => string; compose: (k: string) => Promise<unknown> }> = [
-    { kind: "daily", due: dueDaily(now), next: (k) => addDays(k, 1), end: (k) => k, compose: composeDaily },
-    { kind: "weekly", due: dueWeekly(now), next: nextWeek, end: (k) => isoWeekRange(k)!.end, compose: composeWeekly },
-    { kind: "monthly", due: dueMonthly(now), next: nextMonth, end: (k) => monthRange(k)!.end, compose: composeMonthly },
+  const kinds: Array<{ kind: ReportKind; due: string; next: (k: string) => string; compose: (k: string) => Promise<unknown> }> = [
+    { kind: "daily", due: dueDaily(now), next: (k) => addDays(k, 1), compose: composeDaily },
+    { kind: "weekly", due: dueWeekly(now), next: nextWeek, compose: composeWeekly },
+    { kind: "monthly", due: dueMonthly(now), next: nextMonth, compose: composeMonthly },
   ];
-  // Weeklies and monthlies sum up dailies: a period that ended before the site's first daily has nothing to sum
-  // up and is not due (a site started mid-month would otherwise fail that month's issue on every run).
-  const [{ first: firstDaily }] = await sql<{ first: string | null }[]>`SELECT min(key) AS first FROM reports WHERE kind = 'daily'`;
   kinds: for (const k of kinds) {
     const have = new Set((await sql<{ key: string }[]>`SELECT key FROM reports WHERE kind = ${k.kind}`).map((r) => r.key));
     const first = [...have].sort()[0] ?? k.due;
     for (let key = first; key <= k.due; key = k.next(key)) {
       if (have.has(key)) continue;
-      if (k.kind !== "daily" && (!firstDaily || k.end(key) < firstDaily)) continue;
       if (shutdownSignal.signal.aborted || generated.length >= limit) break kinds;
       try {
         await k.compose(key);

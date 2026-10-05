@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { FEED } from "@aihot/site";
 
 type Tone = "selected" | "accent" | "amber" | "hot" | "ok" | "neutral";
 
@@ -22,16 +21,8 @@ export function Badge({ tone = "neutral", dot = false, children, className = "",
   );
 }
 
-/** The "精选" mark on a report. With the cards (site.ts FEED.style) it takes the site's accent and the cards' smallest type, 12px. */
+/** The "精选" mark on a report. */
 export function SelectedBadge() {
-  if (FEED.style === "cards") {
-    return (
-      <span className={`inline-flex h-5 shrink-0 items-center gap-1 rounded-full px-2 text-[12px] font-medium leading-none ${TONES.accent}`}>
-        <span className="size-[5px] rounded-full bg-current" aria-hidden="true" />
-        精选
-      </span>
-    );
-  }
   return (
     <Badge tone="selected" dot>
       精选

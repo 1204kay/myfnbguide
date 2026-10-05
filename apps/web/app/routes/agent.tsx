@@ -3,7 +3,7 @@ import { IntentLink } from "../components/ui/IntentLink";
 import { useLoaderData, useNavigate, useSearchParams, type ClientLoaderFunctionArgs, type ShouldRevalidateFunction } from "react-router";
 import type { Route } from "./+types/agent";
 import { PUBLIC_INTERFACE_VERSION } from "@aihot/contracts/http-policy";
-import { AGENT, SITE } from "@aihot/site";
+import { SITE } from "@aihot/site";
 import { apiGet, edgeTtl, pageExpiresAt } from "../lib/api.server";
 import { listPath, pageMeta, siteUrl } from "../lib/seo";
 import { IconArrowUpRight, IconChevronRight, IconCode, IconPlug, IconRss } from "../components/icons";
@@ -184,8 +184,8 @@ export default function AgentPage() {
     <ReadingLayout aside={aside}>
       <header className="lg:pt-5">
         <Kicker>AGENT 接入</Kicker>
-        <h1 data-page-title="" className="mt-4 text-[26px] font-bold leading-[1.3] text-ink [text-wrap:balance] lg:text-[30px]">{`把 ${SITE.name} 接进你的 Agent`}</h1>
-        <p className="mt-3 max-w-[40em] text-[15px] leading-[1.8] text-ink-3">{`${TRACKS.map((t) => t.short).join("、")} ${WAYS}种方式读的是同一份数据：${AGENT.covers ?? "精选、热点、日报、周报和月报"}，按你用的工具选一种就行。全部匿名只读，不用注册，也不用 API Key。`}</p>
+        <h1 data-page-title="" className="mt-4 text-[28px] font-semibold leading-[1.3] text-ink sm:text-[32px]">{`把 ${SITE.name} 接进你的 Agent`}</h1>
+        <p className="mt-3 max-w-[40em] text-[15px] leading-[1.8] text-ink-3">{`${TRACKS.map((t) => t.short).join("、")} ${WAYS}种方式读的是同一份数据：精选、热点、日报、周报和月报，按你用的工具选一种就行。全部匿名只读，不用注册，也不用 API Key。`}</p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <span className={`${chip} ${healthy ? "text-ok" : "text-hot"}`}>
             <span className={`size-1.5 rounded-full ${healthy ? "bg-ok" : "bg-hot"}`} aria-hidden="true" />
@@ -198,7 +198,7 @@ export default function AgentPage() {
 
       {BANNERS.map((Banner, i) => <Banner key={i} base={base} tag={tag} now={now} href={anchorHref} open={open} />)}
 
-      <div role="tablist" aria-label="接入方式" className={`mt-8 grid grid-cols-2 gap-2.5 sm:gap-3 ${TRACKS.length === 3 ? "sm:grid-cols-3" : "2xl:grid-cols-4"}`}>
+      <div role="tablist" aria-label="接入方式" className="mt-8 grid grid-cols-2 gap-2.5 sm:gap-3 2xl:grid-cols-4">
         {TRACKS.map((t) => {
           const on = t.key === tab;
           return (

@@ -9,8 +9,6 @@ export default defineModule({
     { path: "reference/shops/:key", file: "web/shop.tsx", id: "reference-shop" },
     { path: "reference/:slug", file: "web/situation.tsx", id: "reference-situation" },
   ],
-  // The site shows reference-home at / (site.ts NAV.home); its own address leads there.
-  redirects: [{ match: "regex", path: "^/reference/*$", status: 301, location: "/", keepQuery: true }],
   // The api also answers the unlisted sample pages (server.ts SAMPLE_PATH).
   apiPaths: [/^\/api\/reference(?:\/|$)/, /^\/s\/xxrjcgidcy$/],
 });

@@ -1,24 +1,15 @@
 // A page of reports grouped by Beijing day with the same rail and rows as the home timeline
-// (全部动态, topics, search results); with list cards (site.ts FEED.style "cards"), cards under a plain line
-// of the day, or, in a list wider than the reading column, beside a column of days on desktops.
+// (全部动态, topics, search results).
 import { IntentLink } from "../../components/ui/IntentLink";
 import { useMemo } from "react";
 import type { FeedItemSummary } from "@aihot/contracts/site";
-import { FEED } from "@aihot/site";
 import { IconChevronRight } from "../../components/icons";
 import { beijingDate } from "@aihot/contracts/time";
-import { monthDay, weekdayShort } from "../../lib/format";
 import { markRead, useReadSet } from "../../lib/local-state";
 import { DayHeader, TimelineSlot } from "./Timeline";
 import { FeedItem } from "./FeedItem";
 
-export function DayList({ items, todayCount = null, headerAside, rail = false }: {
-  items: FeedItemSummary[];
-  todayCount?: number | null;
-  headerAside?: React.ReactNode;
-  /** List cards: desktops set each day in a column of its own, left of its cards (a list wider than the reading column, site.ts LAYOUT.lists). */
-  rail?: boolean;
-}) {
+export function DayList({ items, todayCount = null, headerAside }: { items: FeedItemSummary[]; todayCount?: number | null; headerAside?: React.ReactNode }) {
   const readSet = useReadSet();
   const today = beijingDate(Date.now());
   const days = useMemo(() => {
@@ -31,31 +22,6 @@ export function DayList({ items, todayCount = null, headerAside, rail = false }:
     }
     return out;
   }, [items]);
-  if (FEED.style === "cards") {
-    // The day as one quiet line ("10 月 3 日 周六"): not sticky, no count, no time; 精选 marks the selected cards. Beside
-    // a rail, desktops put the date over the weekday in a column left of the day's cards, held in view while they scroll.
-    return (
-      <div>
-        {days.map(({ day, items: list }, i) => (
-          <section key={day} aria-label={day} className={rail ? `lg:grid lg:grid-cols-[112px_minmax(0,1fr)] lg:gap-x-6 ${i === 0 ? "" : "lg:pt-6"}` : ""}>
-            <div className={`flex items-baseline gap-3 pb-2 ${i === 0 ? "pt-1" : "pt-5"} ${rail ? "lg:sticky lg:top-6 lg:block lg:self-start lg:pb-0 lg:pt-4" : ""}`}>
-              <time dateTime={day} className={`text-[13px] font-semibold text-ink-3 ${rail ? "lg:block lg:text-[15px] lg:leading-[1.4] lg:text-ink-2" : ""}`}>
-                {monthDay(day)} <span className={rail ? "lg:mt-0.5 lg:block lg:text-[13px] lg:font-normal lg:text-ink-4" : ""}>{weekdayShort(day)}</span>
-              </time>
-              {i === 0 && headerAside && <span className={`ml-auto text-[12px] text-ink-4 ${rail ? "lg:mt-2 lg:block" : ""}`}>{headerAside}</span>}
-            </div>
-            <ol className="space-y-2.5">
-              {list.map((it) => (
-                <li key={it.id} data-card-key={it.id}>
-                  <FeedItem item={it} read={readSet.has(it.id)} onOpen={markRead} marked />
-                </li>
-              ))}
-            </ol>
-          </section>
-        ))}
-      </div>
-    );
-  }
   return (
     <div>
       {days.map(({ day, items: list }, i) => (
@@ -81,7 +47,7 @@ export function DayList({ items, todayCount = null, headerAside, rail = false }:
 export function Pagination({ page, pageCount, href }: { page: number; pageCount: number; href: (p: number) => string }) {
   if (pageCount <= 1) return null;
   const pages = [...new Set([1, pageCount, page - 2, page - 1, page, page + 1, page + 2].filter((p) => p >= 1 && p <= pageCount))].sort((a, b) => a - b);
-  const btn = "inline-flex h-9 min-w-9 items-center justify-center rounded-full px-2.5 text-[13px] transition-colors touch:h-11 touch:min-w-11";
+  const btn = "inline-flex h-9 min-w-9 items-center justify-center rounded-full px-2.5 text-[13px] transition-colors";
   return (
     <nav aria-label="分页" className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:gap-1">
       {page > 1 && (

@@ -1,7 +1,6 @@
 // Verifies the public MCP contract with the official SDK client: server identity, the exact tool set,
 // representative read calls, domain errors and schema validation. It is safe against an empty database;
-// --full also has every tool answer once in full, which needs a populated site (reports, and a hot story where
-// the site offers the hot list's tools: contracts/mcp.ts MCP_TOOLS leaves them out while NAV.hidden has /hot).
+// --full also has every tool answer once in full, which needs a populated site (reports and a hot story).
 // node scripts/mcp-check.ts [url] [--full]
 import { Client } from "@modelcontextprotocol/client";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
@@ -64,32 +63,27 @@ try {
     throw new Error(`tool list mismatch: expected [${expectedNames.join(", ")}], got [${actualNames.join(", ")}]`);
   }
 
-  // The hot list's two tools only where the server offers them (MCP_TOOLS).
-  const hot = MCP_TOOLS.some((tool) => tool.name === T.hot);
-
   // These reads are valid on a fresh site: an empty result set is still a successful public answer.
   await call(T.latest, { limit: 2 });
   await call(T.search, { q: "OpenAI", limit: 2 });
-  if (hot) await call(T.hot, { limit: 3 });
+  await call(T.hot, { limit: 3 });
   for (const name of moduleTools) await call(name, {});
 
   // Exercise the remaining tools without depending on seeded reports/stories.
   await call(T.daily, { date: "2026-02-30" }, { error: true, code: "invalid_request" });
   await call(T.weekly, { week: "2026-W54" }, { error: true, code: "invalid_request" });
   await call(T.monthly, { month: "2026-13" }, { error: true, code: "invalid_request" });
-  if (hot) await call(T.story, { public_id: "__mcp_check_missing__", report_limit: 3 }, { error: true, code: "not_found" });
+  await call(T.story, { public_id: "__mcp_check_missing__", report_limit: 3 }, { error: true, code: "not_found" });
 
   // SDK/server schema validation must reject values outside the advertised input contract.
   await call(T.latest, { limit: 99 }, { error: true });
 
   if (full) {
     for (const name of [T.daily, T.weekly, T.monthly]) await call(name, {});
-    if (hot) {
-      const ranking = await call(T.hot, { limit: 1 });
-      const storyId = ((ranking.structuredContent as { items?: Array<{ links?: { story?: string } }> }).items?.[0]?.links?.story ?? "").split("/").pop();
-      if (!storyId) throw new Error("--full needs a populated public story");
-      await call(T.story, { public_id: storyId, report_limit: 3 });
-    }
+    const hot = await call(T.hot, { limit: 1 });
+    const storyId = ((hot.structuredContent as { items?: Array<{ links?: { story?: string } }> }).items?.[0]?.links?.story ?? "").split("/").pop();
+    if (!storyId) throw new Error("--full needs a populated public story");
+    await call(T.story, { public_id: storyId, report_limit: 3 });
   }
 
   console.log("MCP contract check passed");

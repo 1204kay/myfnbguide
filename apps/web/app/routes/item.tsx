@@ -1,21 +1,19 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Await, isRouteErrorResponse, Link, useAsyncError, useLoaderData, useNavigate, useRevalidator, type ClientLoaderFunctionArgs } from "react-router";
 import type { Route } from "./+types/item";
 import type { FeedItemSummary, SiteItemDetail } from "@aihot/contracts/site";
-import { beijingDate } from "@aihot/contracts/time";
-import { CATEGORY_TAGS } from "@aihot/industry/taxonomy";
-import { DATES, ITEM_COPY, LAYOUT, SITE } from "@aihot/site";
-import { apiGet, edgeTtl, loadOr404, pageExpiresAt } from "../lib/api.server";
+import { ITEM_COPY, SITE } from "@aihot/site";
+import { edgeTtl, loadOr404, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "../lib/seo";
-import { fullDateTime, monthDay, relativeTime } from "../lib/format";
+import { fullDateTime, relativeTime } from "../lib/format";
 import { markRead } from "../lib/local-state";
 import { SameEventBadge, SelectedBadge } from "../components/ui/Badge";
 import { ScoreLabel, shownScore } from "../components/ui/Score";
 import { PillTabs } from "../components/ui/Tabs";
 import { ArticleLayout, RailSection } from "../components/ui/Page";
 import { Menu, MenuItem } from "../components/ui/Menu";
-import { StarButton, useStar } from "../features/feed/parts";
+import { StarButton } from "../features/feed/parts";
 import { GroupButton, GroupSources } from "../features/feed/ReadingGroup";
 import { StoryFollowups } from "../features/item/StoryFollowups";
 import { MediaGallery } from "../features/item/MediaGallery";
@@ -24,101 +22,21 @@ import { ArticleBody } from "../features/item/ArticleBody";
 import { ActionsSheet, ReaderToolbar, type ActionRow } from "../features/item/ReaderTools";
 import { OutlineSheet, scrollToAnchor } from "../components/ui/OutlineSheet";
 import { takePreview } from "../features/item/preview";
-import { IconArrowLeft, IconBookmark, IconCopy, IconDownload, IconExternal, IconImage, IconMenu, IconMore, IconShare } from "../components/icons";
-import { BackRow, BarButton, PhoneBar, type BackTarget } from "../components/shell/PhoneBar";
-import { feedPath, navName, navShown } from "../components/shell/nav";
-import { isPhone, READ_COLUMN, type Screen } from "../components/shell/screens";
-import { loadParts, readParts } from "../site-modules";
+import { IconArrowLeft, IconCopy, IconDownload, IconExternal, IconImage, IconMenu, IconMore, IconShare } from "../components/icons";
+import { BarButton, PhoneBar } from "../components/shell/PhoneBar";
+import { isPhone, type Screen } from "../components/shell/screens";
 
 export const handle: Screen = { home: "featured", toolbar: true };
 export { shouldRevalidate } from "../lib/page-reuse";
 
 const PosterSheet = lazy(() => import("../features/item/PosterSheet"));
 
-/** The modules' blocks on an item (itemPart), after its reason. */
-const PARTS = await loadParts((m) => m.itemPart);
-
-/**
- * The reader's one column (site.ts LAYOUT.column): no rails beside the article on desktops; its parts in the phones'
- * order, the reason after the summary and a row of buttons under it.
- */
-const COLUMN = LAYOUT.column;
-
-/** The featured list's name (site.ts NAV.labels); 全部 goes by it too while it is reached only by that list's switch (NAV.hidden). */
-const FEED_NAME = navName(feedPath());
-const ALL_NAME = navShown("/all") && feedPath() !== "/all" ? "全部" : FEED_NAME;
-
-/** Where an item opened directly goes back to: the list it is in, by the name the navigation gives it. */
-function parentOf(item: { selected: boolean }): BackTarget {
-  return item.selected ? { to: feedPath(), label: FEED_NAME } : { to: "/all", label: ALL_NAME };
-}
-
-/** The item's tags as the page shows them: without the category tags (政策/法规 …) where the site leaves those out (ITEM_COPY.categoryTags). */
-function shownTags(tags: string[]): string[] {
-  return ITEM_COPY.categoryTags ? tags : tags.filter((t) => !(CATEGORY_TAGS as readonly string[]).includes(t));
-}
-
-/** A tag chip's text: with "#" unless the site writes its tags without it (ITEM_COPY.tagHash). */
-const tagText = (tag: string) => (ITEM_COPY.tagHash ? `#${tag}` : tag);
-
-/**
- * A running number heading an original title, with its separator: "10.833 - ", "409. ", "629: ", "#63 - ", "#25 ",
- * "Episode 187 — ", "S2E20 ". A separator is followed by a space, or is a full-width "：" or "｜" before anything but a
- * digit, so a number joined to the next word stays: "7-Eleven", "24-hour", "12:30", "60：40".
- */
-const NUMBERED = /^(#\d+|ep(?:isode)?\.?\s*\d+|s\d+\s*e\d+|\d+(?:\.\d+)*)(\s*[-–—:：|｜]\s+|\s*[：｜](?!\d)|\.\s+|\s+)(?=\S)/i;
-
-/**
- * The original title without the number a podcast or a series puts before it: the number marks the episode, not what it
- * is about, and the title above never carries it. A pattern rather than the model, since the numbers follow a few fixed
- * forms (399 original titles of a week, 10/6: 28 numbered, all in these forms). A bare number goes only with a separator
- * after it and when it is no year ("2026: …", "70 Cent mehr …" and "9.9元…" stay whole); "#" with one digit before a
- * word reads "number one" ("#1 Mistake …" stays).
- */
-function withoutNumber(title: string): string {
-  const m = NUMBERED.exec(title);
-  if (!m) return title;
-  const [whole, mark, separator] = m;
-  const spaceOnly = !separator.trim();
-  if (/^\d/.test(mark) && (spaceOnly || /^(?:19|20)\d\d$/.test(mark))) return title;
-  if (/^#\d$/.test(mark) && spaceOnly) return title;
-  return title.slice(whole.length);
-}
-
-/**
- * Without the time of day (site.ts DATES.clock off): when the original came out and when it was collected, each to the
- * day and named, "原文发布：10 月 2 日 · 收录：10 月 3 日"; only the second when the original gave no date.
- */
-function DayDates({ publishedAt, collectedAt }: { publishedAt: string | null; collectedAt: string | null }) {
-  const day = (iso: string) => monthDay(beijingDate(iso));
-  return (
-    <>
-      {publishedAt && (
-        <>
-          <span>·</span>
-          <time dateTime={publishedAt}>原文发布：{day(publishedAt)}</time>
-        </>
-      )}
-      {collectedAt && (
-        <>
-          <span>·</span>
-          <time dateTime={collectedAt}>收录：{day(collectedAt)}</time>
-        </>
-      )}
-    </>
-  );
-}
-
 export async function loader({ params, request }: Route.LoaderArgs) {
-  const [item, parts] = await Promise.all([
-    loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { signal: request.signal }),
-    readParts(PARTS, params.id, (path) => apiGet(path, { signal: request.signal })),
-  ]);
-  return { item, parts, expiresAt: pageExpiresAt(600) };
+  const item = await loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { signal: request.signal });
+  return { item, expiresAt: pageExpiresAt(600) };
 }
 
-type Loaded = { item: SiteItemDetail; parts: Record<string, unknown> };
-type Preview = { item: null; preview: FeedItemSummary; detail: Promise<Loaded> };
+type Preview = { item: null; preview: FeedItemSummary; detail: Promise<{ item: SiteItemDetail }> };
 
 /**
  * Phones: an article tapped in a list opens at once with what the card showed (title, summary, reason),
@@ -148,7 +66,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
       articleLd({ path: `/items/${item.id}`, headline: item.title, description: item.summary, publishedAt: item.publishedAt, basedOn: item.links.original }),
       breadcrumbLd([
         { name: SITE.name, path: "/" },
-        { name: item.selected ? FEED_NAME : navShown("/all") ? navName("/all") : FEED_NAME, path: item.selected ? feedPath() : "/all" },
+        { name: item.selected ? "精选" : "全部动态", path: item.selected ? "/" : "/all" },
         { name: item.title, path: `/items/${item.id}` },
       ]),
     ],
@@ -240,12 +158,12 @@ function Toast({ text }: { text: string | null }) {
 }
 
 export default function ItemPage() {
-  const data = useLoaderData<typeof clientLoader>() as Loaded | Preview;
-  if (data.item) return <ItemView key={`${data.item.id}:${data.item.bodyLanguage}`} item={data.item} parts={data.parts} />;
+  const data = useLoaderData<typeof clientLoader>() as { item: SiteItemDetail } | Preview;
+  if (data.item) return <ItemView key={`${data.item.id}:${data.item.bodyLanguage}`} item={data.item} />;
   return (
     <Suspense fallback={<ItemPreview preview={data.preview} />}>
       <Await resolve={data.detail} errorElement={<ItemGone />}>
-        {(loaded) => <ItemView key={`${loaded.item.id}:${loaded.item.bodyLanguage}`} item={loaded.item} parts={loaded.parts} />}
+        {(loaded) => <ItemView key={`${loaded.item.id}:${loaded.item.bodyLanguage}`} item={loaded.item} />}
       </Await>
     </Suspense>
   );
@@ -259,21 +177,14 @@ function ItemPreview({ preview }: { preview: FeedItemSummary }) {
   const shownAt = preview.publishedAt ?? preview.timelineAt;
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-8">
-      <PhoneBar back={parentOf(preview)} title={isX ? preview.x!.authorName : preview.title} />
+      <PhoneBar back={{ to: preview.selected ? "/" : "/all", label: preview.selected ? "精选" : "全部" }} title={isX ? preview.x!.authorName : preview.title} />
       <article className="pb-6 pt-3" aria-busy="true">
         <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3">
           <span className="font-semibold text-ink-2">{isX ? preview.x!.authorName : preview.source.name}</span>
           {isX && <span>· @{preview.x!.handle} · X</span>}
-          {DATES.clock ? (
-            <>
-              <span>·</span>
-              {!preview.publishedAt && <span>收录于</span>}
-              <time dateTime={shownAt} className="mono">{fullDateTime(shownAt)}</time>
-            </>
-          ) : (
-            // The card knows when it was collected only as its list time when the original gave no date.
-            <DayDates publishedAt={preview.publishedAt} collectedAt={preview.publishedAt ? null : preview.timelineAt} />
-          )}
+          <span>·</span>
+          {!preview.publishedAt && <span>收录于</span>}
+          <time dateTime={shownAt} className="mono">{fullDateTime(shownAt)}</time>
           {preview.selected && <span className="ml-1">{preview.sameEvent ? <SameEventBadge /> : <SelectedBadge />}</span>}
           {shownScore(preview.score) !== null && (
             <span className="ml-1">
@@ -319,7 +230,7 @@ function ItemGone() {
   const gone = isRouteErrorResponse(error) && error.status === 404;
   return (
     <div className="mx-auto max-w-sm pb-8">
-      <PhoneBar back={{ to: feedPath(), label: FEED_NAME }} />
+      <PhoneBar back={{ to: "/", label: "精选" }} />
       <div className="py-24 text-center">
         <div className="text-[20px] font-bold text-ink">{gone ? "这里没有内容" : "暂时无法加载"}</div>
         <p className="mt-2 text-[13.5px] leading-relaxed text-ink-3">{gone ? "这篇内容不存在，或已不再公开。" : "服务暂时繁忙，请稍后再试。"}</p>
@@ -333,37 +244,7 @@ function ItemGone() {
   );
 }
 
-/**
- * Desktops, in the reader's one column: the original, 收藏 and 分享 as a row of worded buttons under the reason, the
- * rest (the poster, the link, the Markdown) in the menu worded 更多 after them.
- */
-function DeskActions({ item, originalLabel, onShare, menu }: { item: SiteItemDetail; originalLabel: string; onShare: () => void; menu: ReactNode }) {
-  const star = useStar(item);
-  const button = "inline-flex min-h-9 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-4 text-[14px] font-medium transition-colors hover:border-accent hover:text-accent touch:min-h-11";
-  return (
-    <div className="mt-6 hidden flex-wrap items-center gap-2 lg:flex">
-      <a
-        href={item.links.original}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-accent px-4 text-[14px] font-medium text-accent-contrast transition-colors hover:bg-accent-ink touch:min-h-11"
-      >
-        {originalLabel} <IconExternal size={14} />
-      </a>
-      <button type="button" aria-pressed={star.on} onClick={star.toggle} className={`${button} ${star.on ? "text-accent" : "text-ink-2"}`}>
-        <IconBookmark size={15} filled={star.on} />
-        {star.on ? "已收藏" : "收藏"}
-      </button>
-      <button type="button" onClick={onShare} className={`${button} text-ink-2`}>
-        <IconShare size={15} />
-        分享
-      </button>
-      {menu}
-    </div>
-  );
-}
-
-function ItemView({ item, parts }: Loaded) {
+function ItemView({ item }: { item: SiteItemDetail }) {
   const navigate = useNavigate();
   const hasTranslation = item.hasTranslation;
   const lang = item.bodyLanguage;
@@ -412,28 +293,21 @@ function ItemView({ item, parts }: Loaded) {
   const originalLabel = isX ? "在 X 查看原推" : "打开原文";
 
   const related = item.relatedStories.filter((s) => s.publicId !== item.story?.publicId);
-  // Topics only while their pages are in the navigation (site.ts NAV.hidden); a hidden page is not a way on.
-  const topics = navShown("/topics") ? item.topics : [];
-  const tags = shownTags(item.tags);
-  // The modules' blocks with what their reads found (none when a read failed).
-  const blocks = PARTS.flatMap(({ name, part }) => (parts[name] == null ? [] : [<part.Block key={name} id={item.id} data={parts[name]} />]));
 
-  const parent = parentOf(item);
   const back = () => {
     if (window.history.state?.idx > 0) navigate(-1);
-    else navigate(parent.to);
+    else navigate(item.selected ? "/" : "/all");
   };
   const backButton = (
     <button type="button" onClick={back} className="-ml-1.5 inline-flex h-8 items-center gap-1.5 rounded-full px-1.5 text-[13px] text-ink-3 transition-colors hover:text-ink">
       <IconArrowLeft size={16} /> 返回
     </button>
   );
-  // The rest of the actions: in the one column worded 更多 after its 分享 button, in the right rail the menu icon.
   const moreMenu = (
-    <Menu label="更多操作" trigger={COLUMN ? <span className="text-[13px] font-medium">更多</span> : <IconMenu size={17} />}>
+    <Menu label="更多操作" trigger={<IconMenu size={17} />}>
       {(close) => (
         <>
-          {!COLUMN && <MenuItem icon={<IconShare size={15} />} onSelect={() => { close(); void share(); }}>分享链接</MenuItem>}
+          <MenuItem icon={<IconShare size={15} />} onSelect={() => { close(); void share(); }}>分享链接</MenuItem>
           <MenuItem icon={<IconImage size={15} />} onSelect={() => { close(); openPoster(); }}>生成分享海报</MenuItem>
           <MenuItem icon={<IconCopy size={15} />} onSelect={() => { close(); void copyLink(); }}>复制链接</MenuItem>
           {item.markdownAvailable &&
@@ -522,10 +396,10 @@ function ItemView({ item, parts }: Loaded) {
       ) : (
         verdict && <RailSection title={shownScore(item.score) !== null ? "AI 评分" : undefined}>{verdict}</RailSection>
       )}
-      {topics.length > 0 && (
+      {item.topics.length > 0 && (
         <RailSection title="主题">
           <div className="flex flex-wrap gap-1.5">
-            {topics.map((t) => (
+            {item.topics.map((t) => (
               <Link viewTransition key={t.slug} to={`/topics/${t.slug}`} className="chip">
                 {t.name}
               </Link>
@@ -533,12 +407,12 @@ function ItemView({ item, parts }: Loaded) {
           </div>
         </RailSection>
       )}
-      {tags.length > 0 && (
+      {item.tags.length > 0 && (
         <RailSection title="标签">
           <div className="flex flex-wrap gap-1.5">
-            {tags.slice(0, 8).map((t) => (
+            {item.tags.slice(0, 8).map((t) => (
               <Link key={t} to={`/all?tag=${encodeURIComponent(t)}`} className="chip">
-                {tagText(t)}
+                #{t}
               </Link>
             ))}
           </div>
@@ -546,156 +420,14 @@ function ItemView({ item, parts }: Loaded) {
       )}
     </>
   );
-  // What the rails hold on desktops shows in the text on phones only; in the reader's one column, on both.
-  const railed = COLUMN ? "" : "lg:hidden";
-
-  const article = (
-    <article className={COLUMN ? "pb-6 pt-3 lg:pt-1" : "pb-6 pt-3 lg:pt-2 2xl:pt-1"}>
-      <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3 ${COLUMN ? "" : "2xl:hidden"} ${isX ? "" : "mb-3"}`}>
-        <span className="font-semibold text-ink-2">{isX ? item.x!.authorName : item.source.name}</span>
-        {isX && <span>· @{item.x!.handle} · X</span>}
-        {/* The author, unless it is the source's own name again. */}
-        {item.author && !isX && item.author !== item.source.name && <span>· {item.author}</span>}
-        {DATES.clock ? (
-          <>
-            <span>·</span>
-            {!item.publishedAt && <span>收录于</span>}
-            <time dateTime={shownAt} className="mono">{fullDateTime(shownAt)}</time>
-            <span suppressHydrationWarning>· {relativeTime(shownAt)}</span>
-          </>
-        ) : (
-          <DayDates publishedAt={item.publishedAt} collectedAt={item.discoveredAt} />
-        )}
-        {item.selected && (
-          <span className={`ml-1 ${railed}`}>
-            {item.sameEvent ? <SameEventBadge /> : <SelectedBadge />}
-          </span>
-        )}
-        {shownScore(item.score) !== null && (
-          <span className={`ml-1 ${railed}`}>
-            <ScoreLabel score={item.score} />
-          </span>
-        )}
-      </div>
-      {!isX && <h1 data-page-title="" className={`text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink ${COLUMN ? "lg:text-[30px] lg:leading-[1.3]" : "lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]"}`}>{item.title}</h1>}
-      {/* About 44 characters a line at its size, as the body runs (a long original title ran 54 across the 760px column). */}
-      {!isX && item.originalTitle && <p className="mt-2.5 max-w-[44em] text-[14px] leading-relaxed text-ink-4">{withoutNumber(item.originalTitle)}</p>}
-
-      {item.summary && (
-        <section className={isX ? "mt-4" : "mt-7 xl:mt-8"}>
-          <div className="mb-2 text-[12px] font-semibold text-accent">{summaryOnly ? "摘要" : "AI 导读"}</div>
-          <p className="text-[18px] leading-[1.7] text-ink xl:text-[20px] xl:leading-[1.7]">{item.summary}</p>
-        </section>
-      )}
-
-      {item.reason && !summaryOnly && (
-        <section className={`mt-6 border-t border-line pt-4 ${railed}`}>
-          <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
-          <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
-        </section>
-      )}
-
-      {COLUMN && <DeskActions item={item} originalLabel={originalLabel} onShare={() => void share()} menu={moreMenu} />}
-      {blocks.length > 0 && <div className="mt-8 space-y-4">{blocks}</div>}
-
-      {item.sameEvent && (
-        <p className="mt-5 text-[13px] leading-relaxed text-ink-4">
-          同一新闻，精选展示
-          <Link viewTransition to={`/items/${item.sameEvent.id}`} className="text-ink-3 transition-colors hover:text-accent">
-            《{item.sameEvent.title}》
-          </Link>
-        </p>
-      )}
-
-      {item.group && item.group.reportCount > 1 && (
-        <div className="mt-5">
-          <div className="hidden lg:block"><GroupSources group={item.group} parentId={item.id} /></div>
-          <GroupButton group={item.group} parentId={item.id} />
-        </div>
-      )}
-
-      {summaryOnly && <p className="mt-7 rounded-control bg-bg-sunk px-4 py-3 text-[13.5px] leading-relaxed text-ink-3">应来源方要求，这里只提供摘要与原文入口。完整内容请阅读原文。</p>}
-
-      {item.body && bodyHtml && (
-        <section className="mt-9 border-t border-line pt-4 xl:mt-10">
-          <div className="mb-6 flex items-center justify-between gap-3">
-            <span className="text-[12px] text-ink-4">{bodyLabel}</span>
-            {hasTranslation && (
-              <PillTabs
-                size="xs"
-                layoutId="item-body-lang"
-                label="正文语言"
-                active={lang}
-                items={[
-                  { key: "zh", label: "中文", prefetch: "intent", replace: true, to: `/items/${item.id}` },
-                  { key: "original", label: "原文", prefetch: "intent", replace: true, to: `/items/${item.id}/original` },
-                ]}
-              />
-            )}
-          </div>
-          {hasTranslation && lang === "zh" && !item.body.complete && (
-            <p className="mb-5 rounded-control bg-bg-sunk px-3 py-2 text-[13px] text-ink-3">译文尚不完整，完整内容请切换到原文。</p>
-          )}
-          <ArticleBody html={bodyHtml} />
-        </section>
-      )}
-
-      {isX && item.x!.media.length > 0 && <MediaGallery media={item.x!.media} postUrl={item.links.original} />}
-      {isX && item.x!.quoted?.text && <QuotedPost quoted={item.x!.quoted} original={lang === "original"} />}
-
-      {/* The source again under the text, unless the reader's one column names it once at the top (its buttons and the phones' toolbar open the original). */}
-      {!COLUMN && (
-        <p className="mt-8 max-w-[44em] text-[13px] text-ink-4">
-          来源：
-          <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
-            {isX ? item.x!.authorName : item.source.name}
-          </a>
-          <span> · {hostOf(item.links.original)}</span>
-        </p>
-      )}
-
-      {/* The tags (three in the one column, a finger's height on touch screens); a tag opens every item carrying it. */}
-      {(topics.length > 0 || tags.length > 0) && (
-        <div className={`mt-4 flex flex-wrap ${COLUMN ? "gap-2" : "gap-1.5"} ${railed}`}>
-          {topics.map((t) => (
-            <Link viewTransition key={t.slug} to={`/topics/${t.slug}`} className={`chip ${COLUMN ? "touch:h-11" : ""}`}>
-              {t.name}
-            </Link>
-          ))}
-          {tags.slice(0, COLUMN ? 3 : 6).map((t) => (
-            <Link key={t} to={`/all?tag=${encodeURIComponent(t)}`} className={`chip ${COLUMN ? "touch:h-11" : ""}`}>
-              {tagText(t)}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {item.story && <StoryFollowups story={item.story} currentId={item.id} />}
-
-      {related.length > 0 && (
-        <section className="mt-8">
-          <h2 className="mb-2 text-[14px] font-semibold text-ink">相关事件</h2>
-          <ul className="divide-y divide-line-soft">
-            {related.map((s) => (
-              <li key={s.publicId}>
-                <Link viewTransition to={`/story/${s.publicId}`} className="block py-2.5 text-[14px] text-ink-2 hover:text-accent">
-                  {s.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-    </article>
-  );
 
   return (
-    <div className={`mx-auto max-w-[var(--page-max-reading)] pb-8 ${READ_COLUMN}`}>
+    <div className="mx-auto max-w-[var(--page-max-reading)] pb-8">
       {item.body && <ReadingProgress />}
 
       {/* Phones: back to where the reader came from, the title once it has scrolled away, more actions. */}
       <PhoneBar
-        back={parent}
+        back={{ to: item.selected ? "/" : "/all", label: item.selected ? "精选" : "全部" }}
         title={isX ? item.x!.authorName : item.title}
         actions={
           <BarButton label="更多操作" onClick={() => setActionsOpen(true)}>
@@ -704,34 +436,148 @@ function ItemView({ item, parts }: Loaded) {
         }
       />
 
-      {COLUMN ? (
-        <>
-          <BackRow {...parent} />
-          {article}
-        </>
-      ) : (
-        // The text on the page in one column; back and the facts in the left rail, actions and notes in the right.
-        <ArticleLayout
-          left={
-            <>
-              {backButton}
-              {facts}
-              {outline}
-            </>
-          }
-          right={
-            <>
-              {actions}
-              {notes}
-              <div className="space-y-8 2xl:hidden">{outline}</div>
-            </>
-          }
-        >
-          {/* Between lg and 2xl the left rail is hidden: 返回 stays at the top while reading, as on the original site. */}
-          <div className="sticky top-0 z-20 -mx-2 hidden bg-bg/95 px-2 py-1.5 backdrop-blur lg:block 2xl:hidden">{backButton}</div>
-          {article}
-        </ArticleLayout>
-      )}
+      {/* The text on the page in one column; back and the facts in the left rail, actions and notes in the right. */}
+      <ArticleLayout
+        left={
+          <>
+            {backButton}
+            {facts}
+            {outline}
+          </>
+        }
+        right={
+          <>
+            {actions}
+            {notes}
+            <div className="space-y-8 2xl:hidden">{outline}</div>
+          </>
+        }
+      >
+        {/* Between lg and 2xl the left rail is hidden: 返回 stays at the top while reading, as on the original site. */}
+        <div className="sticky top-0 z-20 -mx-2 hidden bg-bg/95 px-2 py-1.5 backdrop-blur lg:block 2xl:hidden">{backButton}</div>
+        <article className="pb-6 pt-3 lg:pt-2 2xl:pt-1">
+          <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3 2xl:hidden ${isX ? "" : "mb-3"}`}>
+            <span className="font-semibold text-ink-2">{isX ? item.x!.authorName : item.source.name}</span>
+            {isX && <span>· @{item.x!.handle} · X</span>}
+            {item.author && !isX && <span>· {item.author}</span>}
+            <span>·</span>
+            {!item.publishedAt && <span>收录于</span>}
+            <time dateTime={shownAt} className="mono">{fullDateTime(shownAt)}</time>
+            <span suppressHydrationWarning>· {relativeTime(shownAt)}</span>
+            {item.selected && (
+              <span className="ml-1 lg:hidden">
+                {item.sameEvent ? <SameEventBadge /> : <SelectedBadge />}
+              </span>
+            )}
+            {shownScore(item.score) !== null && (
+              <span className="ml-1 lg:hidden">
+                <ScoreLabel score={item.score} />
+              </span>
+            )}
+          </div>
+          {!isX && <h1 data-page-title="" className="text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]">{item.title}</h1>}
+          {!isX && item.originalTitle && <p className="mt-2.5 text-[14px] leading-relaxed text-ink-4">{item.originalTitle}</p>}
+
+          {item.summary && (
+            <section className={isX ? "mt-4" : "mt-7 xl:mt-8"}>
+              <div className="mb-2 text-[12px] font-semibold text-accent">{summaryOnly ? "摘要" : "AI 导读"}</div>
+              <p className="text-[18px] leading-[1.7] text-ink xl:text-[20px] xl:leading-[1.7]">{item.summary}</p>
+            </section>
+          )}
+
+          {item.reason && !summaryOnly && (
+            <section className="mt-6 border-t border-line pt-4 lg:hidden">
+              <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
+              <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
+            </section>
+          )}
+
+          {item.sameEvent && (
+            <p className="mt-5 text-[13px] leading-relaxed text-ink-4">
+              同一新闻，精选展示
+              <Link viewTransition to={`/items/${item.sameEvent.id}`} className="text-ink-3 transition-colors hover:text-accent">
+                《{item.sameEvent.title}》
+              </Link>
+            </p>
+          )}
+
+          {item.group && item.group.reportCount > 1 && (
+            <div className="mt-5">
+              <div className="hidden lg:block"><GroupSources group={item.group} parentId={item.id} /></div>
+              <GroupButton group={item.group} parentId={item.id} />
+            </div>
+          )}
+
+          {summaryOnly && <p className="mt-7 rounded-control bg-bg-sunk px-4 py-3 text-[13.5px] leading-relaxed text-ink-3">应来源方要求，这里只提供摘要与原文入口。完整内容请阅读原文。</p>}
+
+          {item.body && bodyHtml && (
+            <section className="mt-9 border-t border-line pt-4 xl:mt-10">
+              <div className="mb-6 flex items-center justify-between gap-3">
+                <span className="text-[12px] text-ink-4">{bodyLabel}</span>
+                {hasTranslation && (
+                  <PillTabs
+                    size="xs"
+                    layoutId="item-body-lang"
+                    label="正文语言"
+                    active={lang}
+                    items={[
+                      { key: "zh", label: "中文", prefetch: "intent", replace: true, to: `/items/${item.id}` },
+                      { key: "original", label: "原文", prefetch: "intent", replace: true, to: `/items/${item.id}/original` },
+                    ]}
+                  />
+                )}
+              </div>
+              {hasTranslation && lang === "zh" && !item.body.complete && (
+                <p className="mb-5 rounded-control bg-bg-sunk px-3 py-2 text-[13px] text-ink-3">译文尚不完整，完整内容请切换到原文。</p>
+              )}
+              <ArticleBody html={bodyHtml} />
+            </section>
+          )}
+
+          {isX && item.x!.media.length > 0 && <MediaGallery media={item.x!.media} postUrl={item.links.original} />}
+          {isX && item.x!.quoted?.text && <QuotedPost quoted={item.x!.quoted} original={lang === "original"} />}
+
+          <p className="mt-8 text-[13px] text-ink-4">
+            来源：
+            <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
+              {isX ? item.x!.authorName : item.source.name}
+            </a>
+            <span> · {hostOf(item.links.original)}</span>
+          </p>
+
+          {(item.topics.length > 0 || item.tags.length > 0) && (
+            <div className="mt-4 flex flex-wrap gap-1.5 lg:hidden">
+              {item.topics.map((t) => (
+                <Link viewTransition key={t.slug} to={`/topics/${t.slug}`} className="chip">
+                  {t.name}
+                </Link>
+              ))}
+              {item.tags.slice(0, 6).map((t) => (
+                <Link key={t} to={`/all?tag=${encodeURIComponent(t)}`} className="chip">
+                  #{t}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {item.story && <StoryFollowups story={item.story} currentId={item.id} />}
+
+          {related.length > 0 && (
+            <section className="mt-8">
+              <h2 className="mb-2 text-[14px] font-semibold text-ink">相关事件</h2>
+              <ul className="divide-y divide-line-soft">
+                {related.map((s) => (
+                  <li key={s.publicId}>
+                    <Link viewTransition to={`/story/${s.publicId}`} className="block py-2.5 text-[14px] text-ink-2 hover:text-accent">
+                      {s.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </article>
+      </ArticleLayout>
 
       <ReaderToolbar
         item={item}

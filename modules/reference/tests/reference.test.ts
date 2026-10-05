@@ -465,17 +465,9 @@ test("the pages show public cases only, a situation once two cases are in it, ea
   assert.deepEqual([one.shop.others, one.situations], [1, 1]);
   assert.equal((await get(`/api/reference/cases/${ids.SECOND}`)).situation.practice, page.rest.shops[0].practices[0].key, "a row's story leads to the row");
 
-  const found = await get(`/api/reference/search?q=${encodeURIComponent("固定费用")}`);
-  assert.deepEqual(found.situations.map((s: { slug: string; count: Count }) => [s.slug, s.count]), [["busy-no-profit", page.count]], "a cause's title finds its situation");
-  const shop = await get(`/api/reference/search?q=${encodeURIComponent("corner bistro")}`);
-  assert.deepEqual(shop.cases.map((c: { id: string; shop: { others: number } }) => [c.id, c.shop.others]), [[shop.cases[0].id, 1]], "a shop's stories: one card");
-  assert.deepEqual(await get(`/api/reference/search?q=${encodeURIComponent("没有这个词")}`), { situations: [], cases: [] });
-  assert.deepEqual(await get(`/api/reference/by-item/${ids.COFFEE}`), { id: ids.COFFEE, title: "电费账单每周从 865 美元涨到 1,503 美元", situation: { slug: "busy-no-profit", title: "生意很忙，钱却留不下来", count: page.count } });
-  for (const none of [ids.THIN, "no-such-item"]) assert.equal((await app.inject(`/api/reference/by-item/${none}`)).statusCode, 404);
-
   const sitemap = (await reference.sitemap!.entries!()).map((e) => e.loc);
   for (const loc of ["/reference/busy-no-profit", `/reference/cases/${ids.FIRST}`, `/reference/shops/${one.shop.key}`]) assert.ok(sitemap.includes(loc), loc);
-  assert.ok(!sitemap.includes("/") && !sitemap.some((loc) => loc.startsWith("/reference/kinds/")), "the site lists /; no shop kinds' pages");
+  assert.ok(!sitemap.some((loc) => loc.startsWith("/reference/kinds/")), "no shop kinds' pages");
 
   for (const hidden of [ids.THIN, ids.NEWS, ids.WRONG]) assert.equal((await app.inject(`/api/reference/cases/${hidden}`)).statusCode, 404);
   assert.equal((await app.inject("/api/reference/situations/no-such-situation")).statusCode, 404);

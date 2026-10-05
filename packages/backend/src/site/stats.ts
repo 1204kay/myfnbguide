@@ -1,11 +1,9 @@
-// Figures for the about page: how much the site covers, counted from the public read layer (and by the
-// site's modules, ServerModule.figures) and kept for ten minutes per process (the page itself is cached
-// for five); an older copy is served while the counts are read again, so no reader waits for the
-// full-table counts.
+// Figures for the about page: how much the site covers, counted from the public read layer and kept for
+// ten minutes per process (the page itself is cached for five); an older copy is served while the
+// counts are read again, so no reader waits for the full-table counts.
 import type { SiteStats } from "@aihot/contracts/site";
 import { sql } from "../db.ts";
 import { cached } from "../lib/cache.ts";
-import { serverModules } from "../modules.ts";
 import { publicSourceName } from "../publication/rules.ts";
 import { selectedCondition } from "../publication/scope.ts";
 
@@ -22,8 +20,8 @@ export function loadSiteStats(): Promise<SiteStats> {
 
 async function querySiteStats(now: Date): Promise<SiteStats> {
   const dayAgo = new Date(now.getTime() - 24 * 3600_000);
-  const [[row], kinds, sample, latest, figures] = await Promise.all([
-    sql<Array<Omit<SiteStats, "sourceKinds" | "day" | "sampleSources" | "latest" | "figures"> & { collected: number; selectedDay: number }>>`
+  const [[row], kinds, sample, latest] = await Promise.all([
+    sql<Array<Omit<SiteStats, "sourceKinds" | "day" | "sampleSources" | "latest"> & { collected: number; selectedDay: number }>>`
       SELECT (SELECT count(*) FROM sources WHERE enabled)::int AS sources,
              (SELECT count(*) FROM publications p WHERE p.visibility <> 'withdrawn')::int AS items,
              (SELECT count(*) FROM publications p WHERE ${selectedCondition(now)})::int AS selected,
@@ -38,7 +36,6 @@ async function querySiteStats(now: Date): Promise<SiteStats> {
     sql<{ id: string; title: string; source: string }[]>`
       SELECT p.article_id AS id, p.title, s.name AS source FROM publications p JOIN sources s ON s.id = p.source_id
       WHERE ${selectedCondition(now)} ORDER BY p.timeline_at DESC, p.article_id DESC LIMIT 8`,
-    Promise.all(serverModules().map((m) => m.figures?.() ?? [])),
   ]);
   const { collected, selectedDay, ...totals } = row!;
   const value: SiteStats = {
@@ -47,7 +44,6 @@ async function querySiteStats(now: Date): Promise<SiteStats> {
     day: { collected, selected: selectedDay },
     sampleSources: sample.map((s) => ({ name: publicSourceName(s.name), kind: s.kind, heatOnly: s.heat_only })),
     latest: latest.map((item) => ({ ...item, source: publicSourceName(item.source) })),
-    figures: figures.flat(),
   };
   return value;
 }

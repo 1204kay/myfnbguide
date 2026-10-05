@@ -1,36 +1,15 @@
-// Feed filters: the channel and category choice (a row of tabs on desktop, a sheet behind a filter button on
-// phones), the switch of 精选 and 全部, the head of the two lists, and their own search where they keep one.
+// Feed filters: the channel and category choice (a row of tabs on desktop, a sheet behind the bar's filter
+// button on phones), the phone bar of 精选 and 全部, and search.
 import { useEffect, useRef, useState } from "react";
 import { Form, Link, useNavigation, useSearchParams } from "react-router";
-import type { TimelineFilters } from "@aihot/contracts/site";
-import { CATEGORY_KEYS, CHANNEL_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
-import { CATEGORIES } from "@aihot/industry/taxonomy";
-import { FEED, ITEM_COPY, NAV, SITE } from "@aihot/site";
+import { CATEGORY_KEYS, CATEGORY_LABELS, CHANNEL_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
+import { SITE } from "@aihot/site";
 import { IconCheck, IconClose, IconFilter, IconSearch } from "../../components/icons";
 import { PillTabs } from "../../components/ui/Tabs";
 import { Sheet } from "../../components/ui/Sheet";
 import { Wordmark } from "@aihot/site/brand/Logo.tsx";
-import { BarButton, PhoneBar, SearchButton, TabPageBar } from "../../components/shell/PhoneBar";
-import { feedPath, navName } from "../../components/shell/nav";
-
-/**
- * The shell carries search (site.ts NAV.search): the lists keep no search of their own, their phone bar is the tab pages'
- * (the brand and search), and 精选 | 全部 and the filter sit under the page's name, on phones as on desktops.
- */
-export const SHELL = NAV.search === "shell";
-
-/** What the filter calls each category: the pack's label, or its section in the reports (site.ts FEED.filterNames). */
-export const CATEGORY_NAMES = Object.fromEntries(CATEGORIES.map((c) => [c.key, FEED.filterNames === "section" ? c.section : c.label])) as Record<CategoryKey, string>;
-
-/** A tag as the lists name it: "#成本/利润", or "标签：成本/利润" on a site that writes its tags without "#" (ITEM_COPY.tagHash). */
-export function tagName(tag: string): string {
-  return ITEM_COPY.tagHash ? `#${tag}` : `标签：${tag}`;
-}
-
-/** The name of the filter in use (一手 or a category), null for none. */
-export function filterName(category: CategoryKey | null, channel: ChannelKey): string | null {
-  return channel === "firstParty" ? CHANNEL_LABELS.firstParty : category ? CATEGORY_NAMES[category] : null;
-}
+import { BarButton, PhoneBar } from "../../components/shell/PhoneBar";
+import { openSearch } from "../search/SearchOverlay";
 
 /** Same page with some query parameters changed (paging state dropped). */
 function hrefWith(base: string, params: URLSearchParams, patch: Record<string, string | null>) {
@@ -53,8 +32,8 @@ function hrefWith(base: string, params: URLSearchParams, patch: Record<string, s
 function filterOptions(base: string, params: URLSearchParams, noneLabel: string) {
   return [
     { key: "all", label: noneLabel, to: hrefWith(base, params, { category: null, channel: null }) },
-    ...(NAV.firstPartyFilter ? [{ key: "firstParty", label: CHANNEL_LABELS.firstParty, to: hrefWith(base, params, { category: null, channel: "firstParty" }) }] : []),
-    ...CATEGORY_KEYS.map((k) => ({ key: k, label: CATEGORY_NAMES[k], to: hrefWith(base, params, { category: k, channel: null }) })),
+    { key: "firstParty", label: CHANNEL_LABELS.firstParty, to: hrefWith(base, params, { category: null, channel: "firstParty" }) },
+    ...CATEGORY_KEYS.map((k) => ({ key: k, label: CATEGORY_LABELS[k], to: hrefWith(base, params, { category: k, channel: null }) })),
   ];
 }
 
@@ -62,57 +41,20 @@ function filterKey(category: CategoryKey | null, channel: ChannelKey): string {
   return channel === "firstParty" ? "firstParty" : (category ?? "all");
 }
 
-/** Phones show the desktop's row of filter tabs, sliding sideways, instead of a filter button and a sheet (site.ts FEED.phoneFilter). */
-export const PHONE_ROW = FEED.phoneFilter === "row";
-
-/**
- * Phones (PHONE_ROW): the desktop's row of filter tabs, running to the screen's edges while it slides and starting in line
- * with the page; the option in use, which may sit past the edge, is brought into view.
- */
-export function PhoneFilterRow({ base, category, channel, layoutId, className = "" }: { base: string; category: CategoryKey | null; channel: ChannelKey; layoutId: string; className?: string }) {
-  const row = useRef<HTMLDivElement>(null);
-  const active = filterKey(category, channel);
-  useEffect(() => {
-    row.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }, [active]);
-  return (
-    <div ref={row} className={`-mx-4 sm:-mx-6 lg:hidden ${className}`}>
-      <CategoryTabs base={base} category={category} channel={channel} layoutId={layoutId} className="px-4 sm:px-6" />
-    </div>
-  );
-}
-
-/** Desktop: the filter as a row of tabs. Its first option is 不限 where 精选 | 全部 shares the page (SHELL), so 全部 means one thing. */
+/** Desktop: the filter as a row of tabs beside the search field. */
 export function CategoryTabs({ base, category, channel = "all", layoutId, className = "" }: { base: string; category: CategoryKey | null; channel?: ChannelKey; layoutId: string; className?: string }) {
   const [params] = useSearchParams();
-  return <PillTabs items={filterOptions(base, params, SHELL ? "不限" : "全部").map(o => ({ ...o, prefetch: 'intent' as const }))} active={filterKey(category, channel)} layoutId={layoutId} label="筛选" className={className} />;
-}
-
-/** 精选 | 全部: the two lists of the same items; a filter in use carries over. */
-function ScopeSwitch({ scope, size, layoutId }: { scope: "featured" | "all"; size?: "md" | "sm"; layoutId: string }) {
-  const [params] = useSearchParams();
-  const to = (path: string) => hrefWith(path, params, { q: null, tab: null, search: null });
-  return (
-    <PillTabs
-      size={size}
-      layoutId={layoutId}
-      label="看精选或全部"
-      active={scope}
-      items={[
-        { key: "featured", label: "精选", to: to(feedPath()), resetScroll: true, prefetch: 'intent' },
-        { key: "all", label: "全部", to: to("/all"), resetScroll: true, prefetch: 'intent' },
-      ]}
-    />
-  );
+  return <PillTabs items={filterOptions(base, params, "全部").map(o => ({ ...o, prefetch: 'intent' as const }))} active={filterKey(category, channel)} layoutId={layoutId} label="筛选" className={className} />;
 }
 
 /**
- * The phone bar of 精选 and 全部 while they keep their own search: the brand, the 精选 | 全部 switch (where the list
- * starts at 全部, site.ts FEED.start, the page's name in the bar; its heading is the desktop's), and buttons for the filter sheet (none where the page
- * shows the filter as a row, PHONE_ROW) and search.
+ * The phone bar of 精选 and 全部: the brand, the 精选 | 全部 switch (a filter in use carries over), and
+ * buttons for the filter sheet and search.
  */
-export function FeedBar({ base, category, channel }: { base: string; category: CategoryKey | null; channel: ChannelKey }) {
+export function FeedBar({ base, category, channel }: { base: "/" | "/all"; category: CategoryKey | null; channel: ChannelKey }) {
+  const [params] = useSearchParams();
   const [sheet, setSheet] = useState(false);
+  const scope = (to: string) => hrefWith(to, params, { q: null, tab: null, search: null });
   const filtered = filterKey(category, channel) !== "all";
   return (
     <>
@@ -122,77 +64,29 @@ export function FeedBar({ base, category, channel }: { base: string; category: C
             <Wordmark size={17} />
           </Link>
         }
-        {...(FEED.start === "featured" ? { center: <ScopeSwitch scope={base === "/all" ? "all" : "featured"} size="sm" layoutId="feed-scope" /> } : { title: navName(base) })}
+        center={
+          <PillTabs
+            size="sm"
+            layoutId="feed-scope"
+            label="看精选或全部"
+            active={base === "/" ? "featured" : "all"}
+            items={[
+              { key: "featured", label: "精选", to: scope("/"), resetScroll: true, prefetch: 'intent' },
+              { key: "all", label: "全部", to: scope("/all"), resetScroll: true, prefetch: 'intent' },
+            ]}
+          />
+        }
         actions={
           <>
-            {!PHONE_ROW && (
-              <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
-                <IconFilter size={21} />
-                {filtered && <span aria-hidden="true" className="absolute right-[9px] top-[9px] size-[7px] rounded-full bg-accent ring-2 ring-bg" />}
-              </BarButton>
-            )}
+            <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
+              <IconFilter size={21} />
+              {filtered && <span aria-hidden="true" className="absolute right-[9px] top-[9px] size-[7px] rounded-full bg-accent ring-2 ring-bg" />}
+            </BarButton>
             <SearchButton />
           </>
         }
       />
-      {!PHONE_ROW && <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={filterKey(category, channel)} />}
-    </>
-  );
-}
-
-/**
- * The head of 精选 and 全部 when the shell carries search (SHELL): the tab pages' bar on phones; then, the same on
- * phones and desktops, the page's name with 精选 | 全部 beside it (none where the list starts at 全部, site.ts
- * FEED.start), the list's one sentence (site.ts FEED.leads), and the filter: on phones a button and the chips in use,
- * or the desktop's row of tabs sliding sideways (site.ts FEED.phoneFilter); a row of tabs on desktops; the tag in use
- * as a chip on both.
- */
-export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; name: string; filters: TimelineFilters }) {
-  const { category, channel, tag } = filters;
-  const base = scope === "all" ? "/all" : feedPath();
-  const [sheet, setSheet] = useState(false);
-  const active = filterKey(category, channel);
-  const lead = FEED.leads?.[scope];
-  const row = PHONE_ROW;
-  return (
-    <>
-      <TabPageBar title={name} />
-      <header className="pb-4 pt-1 lg:pt-0">
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-          <h1 data-page-title="" className="text-[30px] font-bold leading-[1.25] tracking-[-0.01em] text-ink">{name}</h1>
-          {FEED.start === "featured" && <ScopeSwitch scope={scope} layoutId="feed-scope" />}
-        </div>
-        {lead && <p className="mt-2 text-[13px] leading-relaxed text-ink-4">{lead}</p>}
-        {row ? (
-          <div className="mt-3 lg:hidden">
-            <PhoneFilterRow base={base} category={category} channel={channel} layoutId={`${scope}-cat-phone`} />
-            {tag && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                <FilterChips base={base} category={null} channel="all" tag={tag} />
-              </div>
-            )}
-          </div>
-        ) : (
-        <div className="mt-3 flex flex-wrap items-center gap-2 lg:hidden">
-          <button
-            type="button"
-            aria-label={active !== "all" ? "筛选（已选）" : "筛选"}
-            onClick={() => setSheet(true)}
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-bg-sunk px-3.5 text-[14px] font-medium text-ink-2 ring-1 ring-inset ring-line-soft transition-colors active:bg-bg-muted dark:bg-bg-muted/60"
-          >
-            <IconFilter size={17} />
-            筛选
-            {active !== "all" && <span aria-hidden="true" className="size-[7px] rounded-full bg-accent" />}
-          </button>
-          <FilterChips base={base} category={category} channel={channel} tag={tag} />
-        </div>
-        )}
-        <div className="mt-4 hidden flex-wrap items-center gap-2 lg:flex">
-          <CategoryTabs base={base} category={category} channel={channel} layoutId={`${scope}-cat-desk`} className="min-w-0" />
-          <FilterChips base={base} category={null} channel="all" tag={tag} />
-        </div>
-      </header>
-      {!row && <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={active} />}
+      <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={filterKey(category, channel)} />
     </>
   );
 }
@@ -224,13 +118,14 @@ function FilterSheet({ open, onClose, base, active }: { open: boolean; onClose: 
   );
 }
 
-/** The filter and tag in use as chips; each one clears itself when tapped. */
-function FilterChips({ base, category, channel, tag }: { base: string; category: CategoryKey | null; channel: ChannelKey; tag: string | null }) {
+/** Phones: the filter and tag in use as chips under the bar; each one clears itself when tapped. */
+export function ActiveFilters({ base, category, channel, tag }: { base: string; category: CategoryKey | null; channel: ChannelKey; tag: string | null }) {
   const [params] = useSearchParams();
-  const label = filterName(category, channel);
-  const chip = "inline-flex min-h-11 max-w-full items-center gap-1 rounded-full bg-accent-soft pl-3 pr-2 text-[13px] font-medium text-accent transition-opacity active:opacity-60 lg:min-h-9 touch:min-h-11";
+  const label = channel === "firstParty" ? CHANNEL_LABELS.firstParty : category ? CATEGORY_LABELS[category] : null;
+  if (!label && !tag) return null;
+  const chip = "inline-flex min-h-11 max-w-full items-center gap-1 rounded-full bg-accent-soft pl-3 pr-2 text-[13px] font-medium text-accent transition-opacity active:opacity-60";
   return (
-    <>
+    <div className="flex flex-wrap gap-2 pb-3 pt-1 lg:hidden">
       {label && (
         <Link to={hrefWith(base, params, { category: null, channel: null })} aria-label={`取消筛选：${label}`} className={chip}>
           只看{label}
@@ -239,23 +134,20 @@ function FilterChips({ base, category, channel, tag }: { base: string; category:
       )}
       {tag && (
         <Link to={hrefWith(base, params, { tag: null })} aria-label={`取消标签：${tag}`} className={chip}>
-          <span className="truncate">{tagName(tag)}</span>
+          <span className="truncate">#{tag}</span>
           <IconClose size={14} strokeWidth={2} className="shrink-0" />
         </Link>
       )}
-    </>
+    </div>
   );
 }
 
-/** The filter and tag in use as chips under the bar: phones only, or on both while the tag page shows them (`wide`). */
-export function ActiveFilters({ base, category, channel, tag, wide = false }: { base: string; category: CategoryKey | null; channel: ChannelKey; tag: string | null; wide?: boolean }) {
-  // On phones with the filter row (PHONE_ROW) the category in use shows there, so only the tag is a chip.
-  if (PHONE_ROW && !wide) [category, channel] = [null, "all"];
-  if (!filterName(category, channel) && !tag) return null;
+/** Phones: the magnifier in a bar; the search opens over the page with the keyboard up. */
+function SearchButton() {
   return (
-    <div className={`flex flex-wrap gap-2 pb-3 pt-1 ${wide ? "" : "lg:hidden"}`}>
-      <FilterChips base={base} category={category} channel={channel} tag={tag} />
-    </div>
+    <BarButton label="搜索" onClick={(event) => openSearch("", event.currentTarget)}>
+      <IconSearch size={21} />
+    </BarButton>
   );
 }
 

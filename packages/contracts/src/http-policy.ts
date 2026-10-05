@@ -3,7 +3,6 @@
 // read this module.
 import { ABOUT, POLICY, SITE } from "@aihot/site";
 import { MODULES } from "@aihot/site/modules";
-import { feedPath } from "./routes.ts";
 
 /** CORS for /api/v1/* and /openapi-v1.json. */
 export const PUBLIC_API_CORS: Record<string, string> = {
@@ -45,7 +44,7 @@ export interface RedirectRule {
 const ENGINE_REDIRECTS: RedirectRule[] = [
   {
     match: "regex",
-    path: `^/(${feedPath() === "/" ? "" : "latest|"}all|about|agent|changelog|feedback|starred|more|privacy|terms)/+$`,
+    path: "^/(all|about|agent|changelog|feedback|starred|more|privacy|terms)/+$",
     status: 301,
     location: "/$1",
     keepQuery: true,

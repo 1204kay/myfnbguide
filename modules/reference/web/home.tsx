@@ -4,11 +4,10 @@
 // shops first. Neither countries nor shop kinds are ways in or counts (layout J0).
 import { useRef, useState } from "react";
 import { Link, useLoaderData, type LoaderFunctionArgs } from "react-router";
-import { NAV, SITE } from "@aihot/site";
 import { IconChevronDown } from "@aihot/web/components/icons";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
 import { EmptyState } from "@aihot/web/components/ui/Page";
-import { PhoneBar, TabPageBar } from "@aihot/web/components/shell/PhoneBar";
+import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
@@ -37,8 +36,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export function meta() {
-  // The site's own title at its home (site.ts NAV.home), the page's name where it has another address.
-  return NAV.home === "reference-home" ? pageMeta({ description: SITE.description, path: "/" }) : pageMeta({ title: "参考", description: LEAD, path: "/reference" });
+  return pageMeta({ title: "参考", description: LEAD, path: "/reference" });
 }
 
 /**
@@ -132,7 +130,7 @@ export default function ReferenceHomePage() {
   const data = useLoaderData<typeof loader>();
   return (
     <Page wide>
-      {NAV.search === "shell" ? <TabPageBar title="参考" large /> : <PhoneBar title="参考" large />}
+      <PhoneBar title="参考" large />
       <h1 className="hidden text-[30px] font-bold leading-[1.25] text-ink lg:block">参考</h1>
       <Dek className="lg:mt-2">{LEAD}</Dek>
       <Metrics items={[[data.totals.situations, "种情况"], [data.totals.cases, "条原文"]]} />

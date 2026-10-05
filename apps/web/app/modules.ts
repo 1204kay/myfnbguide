@@ -113,38 +113,12 @@ export interface TopicPagePart {
   news: (data: unknown) => string[];
 }
 
-/**
- * A module's section of a search's results (routes/all.tsx with ?q=), above the engine's own: the page reads
- * `path(q)` from the api with its loader and draws `Block` with what came back. A read that fails gives null.
- */
-export interface SearchPart {
-  /** The api address of its results for the words searched. */
-  path: (q: string) => string;
-  /** Draws nothing when it found nothing. */
-  Block: ComponentType<{ q: string; data: unknown }>;
-}
-
-/**
- * A module's block on an item page (routes/item.tsx), after the item's reason: the page reads `path(id)` from
- * the api with its loader and draws `Block` with what came back. A read that fails gives null.
- */
-export interface ItemPart {
-  /** The api address of what it has on this item. */
-  path: (id: string) => string;
-  /** Draws nothing when it has nothing on this item. */
-  Block: ComponentType<{ id: string; data: unknown }>;
-}
-
 export interface WebModule {
   /** Its folder under modules/. */
   name: string;
-  /**
-   * Desktop sidebar: entries in a section between the engine's 内容 and 更多; modules naming the same section
-   * share it. A site that lists its own groups (site.ts NAV.sidebar) places them by their addresses instead,
-   * and an entry to the page the site shows at / (NAV.home) leads to / (components/shell/nav.ts).
-   */
+  /** Desktop sidebar: entries in a section between the engine's 内容 and 更多; modules naming the same section share it. */
   sidebar?: { section: string; items: NavItem[] };
-  /** Phone tab bar: tabs before 我的; one to the page the site shows at / leads to /. */
+  /** Phone tab bar: tabs before 我的. */
   tabs?: Tab[];
   /** The 我的 page: rows ahead of the engine's tools. */
   tools?: Array<{ to: string; label: string; icon: ReactNode }>;
@@ -175,8 +149,6 @@ export interface WebModule {
   };
   agent?: Part<AgentPart>;
   topicPage?: Part<TopicPagePart>;
-  searchPart?: Part<SearchPart>;
-  itemPart?: Part<ItemPart>;
   /** Paths of the marks it serves that are drawn in white, for a dark tile (components/BrandMark.tsx). */
   darkMarks?: string[];
   /** The starred page (routes/starred.tsx): buttons ahead of 导入文件 that bring stars in from elsewhere, each resolving to the line it reports. */

@@ -266,16 +266,3 @@ export interface ShopPage {
   cases: CaseCard[];
   updatedAt: string | null;
 }
-
-/** /api/reference/search: what the library has for the words searched, best first. */
-export interface ReferenceSearch {
-  situations: SituationRow[];
-  cases: CaseCard[];
-}
-
-/** /api/reference/by-item/:id: the story an item is written as, for the item page. */
-export interface ItemStory {
-  id: string;
-  title: string;
-  situation: { slug: string; title: string; count: Count } | null;
-}

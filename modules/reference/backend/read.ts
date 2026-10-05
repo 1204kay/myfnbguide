@@ -13,7 +13,7 @@ import { selectedCondition } from "@aihot/backend/publication/scope";
 import { month, spaced } from "../format.ts";
 import { CATEGORIES, categoryTitle, findSituation, SITUATIONS, type Situation } from "../situations.ts";
 import type {
-  CaseCard, CasePage, CaseStory, Count, ItemStory, PracticeCard, PracticeList, ReferenceHome, ReferenceSearch, ShopPage, ShopPractices,
+  CaseCard, CasePage, CaseStory, Count, PracticeCard, PracticeList, ReferenceHome, ShopPage, ShopPractices,
   SituationPage, SituationRow, StarItem,
 } from "../types.ts";
 import { problemKind } from "./checks.ts";
@@ -394,14 +394,6 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
   };
 }
 
-/** The story an item is written as, for the item page (its itemPart); null when it is none. */
-export async function readItemStory(id: string, now = new Date()): Promise<ItemStory | null> {
-  const [r] = await shownCases(sql`c.article_id = ${id}`, now);
-  if (!r) return null;
-  const place = await placeOf(r, now);
-  return { id: r.id, title: r.story.title, situation: place && { slug: place.slug, title: place.title, count: place.count } };
-}
-
 /** One shop's stories, newest first, each its own card (layout B5); named as every page names it (shopName). */
 export async function readShop(key: string, now = new Date()): Promise<ShopPage | null> {
   const rows = await shownCases(sql`c.shop_key = ${key}`, now);
@@ -412,31 +404,6 @@ export async function readShop(key: string, now = new Date()): Promise<ShopPage 
     key, shop: { ...shop, label: label ? withoutCountry(label, shop.country) : "" },
     cases: rows.map((r) => card(r, new Map())), updatedAt: latest(rows.map((r) => r.updated_at)),
   };
-}
-
-/** At most this many of each in a search's answer; the page shows five and opens the rest in place. */
-const SEARCH_LIMIT = 50;
-
-/**
- * The library's part of a search (layout A4, B8): situations whose title, line, groups or practices hold every
- * word searched, in the library's order; stories whose title, opening or shop does, newest first and a shop once.
- * Plain text matching, no model.
- */
-export async function searchLibrary(q: string, now = new Date()): Promise<ReferenceSearch> {
-  const words = q.normalize("NFKC").toLowerCase().split(/\s+/).filter(Boolean).slice(0, 8);
-  if (!words.length) return { situations: [], cases: [] };
-  const holds = (texts: Array<string | null | undefined>) => {
-    const text = texts.filter(Boolean).join("\n").normalize("NFKC").toLowerCase();
-    return words.every((w) => text.includes(w));
-  };
-  const [rows, stored, shops] = await Promise.all([shownCases(sql`true`, now), groupings(), shopsShown(now)]);
-  const placed = bySituation(rows);
-  const situations = SITUATIONS.filter((s) => (placed.get(s.slug)?.length ?? 0) >= SHOWN_FROM)
-    .filter((s) => holds([s.title, s.dek, ...s.groups.flatMap((g) => [g.title, g.line]), ...(stored.get(s.slug)?.methods.map((m) => m.title) ?? [])]))
-    .slice(0, SEARCH_LIMIT).map((s) => situationRow(s, placed.get(s.slug)!, stored.get(s.slug)));
-  const cases = oneAShop(rows.filter((r) => holds([r.story.title, r.story.lead, r.story.shop.name, r.story.shop.label])))
-    .slice(0, SEARCH_LIMIT).map((r) => card(r, shops));
-  return { situations, cases };
 }
 
 /** The library's pages for the sitemap: situations the lists show, every story, shops with a page of several. */

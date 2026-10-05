@@ -6,7 +6,12 @@
 // stories it stands for), and a grouping with such problems goes back with them named, at most twice, and is not
 // stored if it still fails (the page keeps the last good one, or shows one card a story). The live run of 10/5
 // failed 19 of 45 situations, most of them on where stories sat or on a length named in zod's English. How many
-// shops and countries stand behind a practice the program counts, never the model.
+// shops and countries stand behind a practice the program counts, never the model. The first live groupings, under
+// one prompt, went to both ends: in 19 of 39 situations about a practice a story (25 for 26 in 老板自己累垮), in 13
+// each cause group of two shops or more one practice, under a title some of its shops did not do (熟客不再来: 25
+// stories, 3 practices).
+// The prompt now asks for the one thing every shop in a practice did, with an example each way and each line checked
+// against its title; each shop's detail goes in its line (myfnb/notes-practices-2026-10-05.md).
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
@@ -16,7 +21,7 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { spaced } from "../format.ts";
-import { findSituation } from "../situations.ts";
+import { findSituation, type Situation } from "../situations.ts";
 import type { CaseStory } from "../types.ts";
 import { sourceNumbers, unfoundNumbers, untranslated, WORDING } from "./checks.ts";
 
@@ -74,10 +79,10 @@ const OutputSchema = z.object({
  */
 const LENGTHS = {
   overview: { asked: 120, ceiling: 130, cut: "删去次要的原因和做法，只留最常见的几种" },
-  title: { asked: 20, ceiling: 24, cut: "只写怎么做，删去条件和结果" },
+  title: { asked: 20, ceiling: 24, cut: "只写怎么做，删去某一家的细节、条件和数字" },
   summary: { asked: 150, ceiling: 160, cut: "删去次要的条件和数字，只留共同的做法和最关键的差别" },
   // 31–32 characters held two situations back on 10/5; a line wraps on a phone either way.
-  line: { asked: 24, ceiling: 36, cut: "删去次要的条件，只留这家店的关键数字或结果" },
+  line: { asked: 24, ceiling: 36, cut: "删去次要的条件和数字，只留这家店怎么做和一个关键数字或结果" },
 };
 
 /** Which stories a situation holds, who tells them and how they read: a change in any of them groups it again. */
@@ -226,13 +231,33 @@ function describe(m: Member, teller: string): string {
   return [`id：${m.id}`, `原因组：${m.group ?? "null"}`, `店家：${teller}（${shop}）`, `标题：${s.title}`, `做了什么：${s.placements[0]?.card ?? ""}`, `人物：${s.who}`, body].join("\n");
 }
 
-/** Groups one situation's stories and stores the result; null when there is nothing to group. */
-export async function groupSituation(slug: string, members: Member[]): Promise<{ stored: boolean; problems: string[] } | null> {
-  const situation = findSituation(slug);
-  if (!situation || members.length < 2) return null;
+/**
+ * What the model reads of a situation: its cause groups, then its stories a group at a time in the situation's
+ * order, those of no group last, so it reads together the stories it may put together (newest first, a group's
+ * stories lay scattered among the others). `members` comes back in that order, which the shops' names (s1, s2…)
+ * follow, here and in the problems sent back.
+ */
+export function materialOf(situation: Situation, given: Member[]): { members: Member[]; text: string } {
+  const at = (group: string | null) => {
+    const i = situation.groups.findIndex((g) => g.key === group);
+    return i < 0 ? situation.groups.length : i;
+  };
+  const members = [...given].sort((a, b) => at(a.group) - at(b.group));
   const names = tellerNames(members);
   const groups = situation.groups.map((g) => `- ${g.key}：${g.title}（${g.line}）`).join("\n");
-  const material = [`情况：${situation.title}（${situation.dek}）`, `原因组：\n${groups}`, `故事：\n\n${members.map((m) => describe(m, names.get(m.teller)!)).join("\n\n")}`].join("\n\n");
+  const heads = [...situation.groups.map((g) => `原因组 ${g.key}（${g.title}）`), "没有原因组"];
+  const stories = heads.flatMap((head, i) => {
+    const own = members.filter((m) => at(m.group) === i);
+    return own.length ? [`${head}的 ${own.length} 篇故事：\n\n${own.map((m) => describe(m, names.get(m.teller)!)).join("\n\n")}`] : [];
+  });
+  return { members, text: [`情况：${situation.title}（${situation.dek}）`, `原因组：\n${groups}`, ...stories].join("\n\n") };
+}
+
+/** Groups one situation's stories and stores the result; null when there is nothing to group. */
+export async function groupSituation(slug: string, given: Member[]): Promise<{ stored: boolean; problems: string[] } | null> {
+  const situation = findSituation(slug);
+  if (!situation || given.length < 2) return null;
+  const { members, text: material } = materialOf(situation, given);
   const model = await modelFor(METHODS_STEP);
   const receiptIds: number[] = [];
   let user = `请按系统规则归并以下故事，只输出 JSON。\n\n${material}`;

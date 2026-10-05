@@ -42,6 +42,7 @@ export interface ModelStep {
   env: string;
   /** Receipt purposes it produces (for the admin statistics). */
   purposes: string[];
+  /** The step needs a model that reads images. */
   vision?: boolean;
 }
 

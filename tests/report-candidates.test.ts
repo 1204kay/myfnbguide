@@ -9,6 +9,7 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle, publishArticleTx } from "@aihot/backend/publication/publish";
 import { composeDaily } from "@aihot/backend/reports/compose";
 import { candidates } from "@aihot/backend/reports/edition";
+import { REPORTS } from "@aihot/site";
 
 const T = tag();
 const SOURCE = `test-report-boundary-${T}`;
@@ -60,9 +61,13 @@ test("reports assign delayed and boundary releases to the period readers first s
   const boundary = editionAt("daily", "2020-01-02");
   const previous = new Set((await candidates(editionAt("daily", "2020-01-01"), boundary)).map((c) => c.itemId));
 
+  // A daily of the whole pool (site.ts REPORTS.dailyScope) takes an item still waiting for its identity at its arrival:
+  // 全部 lists it from then on.
+  const pool = REPORTS.dailyScope === "pool";
   assert.equal(previous.has(onTime), true);
   assert.equal(previous.has(groupedBefore), true);
-  for (const id of [delayed, atBoundary, groupedLate]) assert.equal(previous.has(id), false);
+  for (const id of [delayed, atBoundary]) assert.equal(previous.has(id), false);
+  assert.equal(previous.has(groupedLate), pool);
 
   await composeDaily("2020-01-02");
   await publishArticle(groupedLate, { now: editionAt("daily", "2020-01-02", 10) });
@@ -84,12 +89,12 @@ test("reports assign delayed and boundary releases to the period readers first s
   assert.equal(items("2020-01-02").has(groupedBefore), true);
   assert.equal(items("2020-01-02").has(delayed), false);
   assert.equal(items("2020-01-02").has(atBoundary), false);
-  assert.equal(items("2020-01-02").has(groupedLate), false);
+  assert.equal(items("2020-01-02").has(groupedLate), pool);
   assert.equal(items("2020-01-03").has(onTime), false);
   assert.equal(items("2020-01-03").has(groupedBefore), false);
   assert.equal(items("2020-01-03").has(delayed), true);
   assert.equal(items("2020-01-03").has(atBoundary), true);
-  assert.equal(items("2020-01-03").has(groupedLate), true);
+  assert.equal(items("2020-01-03").has(groupedLate), !pool);
 });
 
 /** Observe an actual PostgreSQL lock wait before advancing the clock or releasing the transaction. */

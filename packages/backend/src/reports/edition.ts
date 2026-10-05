@@ -8,6 +8,7 @@
 // (industry/taxonomy.ts CATEGORIES).
 import { addDays } from "@aihot/contracts/time";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
+import { REPORTS } from "@aihot/site";
 import { sql } from "../db.ts";
 import { currentSignals } from "../events/hot.ts";
 import { pickRepresentative, representativePriority, REPRESENTATIVE_COLUMNS, type RepresentativeIdentity } from "../publication/representative.ts";
@@ -24,6 +25,8 @@ export const sectionOf = (category: string | null) => SECTION_OF[category ?? ""]
 /** A daily's size: the entries readers get in full, and the one-line flashes after them. */
 export const MAIN_ENTRIES = 12;
 export const FLASH_ENTRIES = 10;
+/** What a daily carries (site.ts REPORTS.dailyScope): the selected reports, or every report listed in the pool. */
+const POOL = REPORTS.dailyScope === "pool";
 /** No source fills a daily: at most this many main entries lead with the same source. */
 const PER_SOURCE = 2;
 /** A follow-up of a covered event takes a full entry when this many sources carry its new facts. */
@@ -85,12 +88,12 @@ export interface EditionEntry {
 
 type ReportRow = RepresentativeIdentity & {
   id: string; title: string; summary: string | null; url: string; category: string | null; tags: string[]; score: number | null;
-  first_party: boolean; body_mode: "full" | "summary"; timeline_at: Date;
+  first_party: boolean; body_mode: "full" | "summary"; timeline_at: Date; selected: boolean;
   source_id: string; source_name: string; source_kind: string;
   fact_id: number | null; fact_public_id: string | null; story_id: number | null; story_public_id: string | null;
 };
 
-const REPORT_FIELDS = sql`p.article_id AS id, p.title, p.summary, p.url, p.category, p.tags, p.score, (s.tier = 'T1') AS first_party, p.body_mode, p.timeline_at,
+const REPORT_FIELDS = sql`p.article_id AS id, p.title, p.summary, p.url, p.category, p.tags, p.score, (s.tier = 'T1') AS first_party, p.body_mode, p.timeline_at, p.selected,
   ${REPRESENTATIVE_COLUMNS}, s.id AS source_id, s.name AS source_name, s.kind AS source_kind,
   f.id AS fact_id, f.public_id AS fact_public_id, st.id AS story_id, st.public_id::text AS story_public_id`;
 
@@ -110,10 +113,11 @@ export async function periodReports(start: Date, end: Date): Promise<ReportRow[]
       FROM publications p JOIN sources s ON s.id = p.source_id
       LEFT JOIN facts f ON f.id = p.fact_id AND ${ownFactEvidenceCondition()}
       LEFT JOIN stories st ON st.id = f.story_id
-      -- Attribute each item by the later of arrival and release; either range can use its index.
-      WHERE p.visibility = 'public' AND p.selected AND NOT p.backfill
+      -- Attribute each item by the later of arrival and release; either range can use its index. A report listed
+      -- in the pool but not selected has no release: readers see it at its arrival.
+      WHERE p.visibility = 'public' AND ${POOL ? sql`p.eligible` : sql`p.selected`} AND NOT p.backfill
         AND (
-          (p.visible_after <= p.timeline_at AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
+          ((p.visible_after IS NULL OR p.visible_after <= p.timeline_at) AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
           OR (p.visible_after > p.timeline_at AND p.visible_after >= ${start} AND p.visible_after < ${end})
         )
         AND p.timeline_at >= ${start}::timestamptz - interval '24 hours'`;
@@ -147,12 +151,18 @@ function groupBy<T>(rows: T[], key: (row: T) => string): Map<string, T[]> {
   return out;
 }
 
+/**
+ * The reports a fact's representative is picked from: its selected ones when it has any (they carry the reason a
+ * reader reads), else all of them (a daily of the whole pool, site.ts REPORTS.dailyScope).
+ */
+const vetted = (rows: ReportRow[]) => (rows.some((r) => r.selected) ? rows.filter((r) => r.selected) : rows);
+
 /** A weekly's or monthly's candidates: each fact once, by its representative, best scored first. */
 export async function candidates(start: Date, end: Date): Promise<Candidate[]> {
   const rows = await periodReports(start, end);
   return [...groupBy(rows, factKeyOf)]
     .map(([factKey, members]): Candidate => {
-      const r = pickRepresentative(members);
+      const r = pickRepresentative(vetted(members));
       return { ...reportEntry(r), category: r.category, factKey };
     })
     .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
@@ -289,7 +299,8 @@ interface Fact { key: string; rows: ReportRow[]; selected: boolean; sources: str
  * selected reports and missed facts, minus what the week's issues already carried, one entry per event.
  */
 export async function dailyEdition(date: string, start: Date, end: Date): Promise<{ entries: EditionEntry[]; stats: Record<string, number> }> {
-  const [memory, selected, missed] = await Promise.all([dailyMemory(date), periodReports(start, end), missedFacts(start, end)]);
+  // A daily of the whole pool carries the missed facts' reports already.
+  const [memory, selected, missed] = await Promise.all([dailyMemory(date), periodReports(start, end), POOL ? [] : missedFacts(start, end)]);
   const raw = [
     ...[...groupBy(selected, factKeyOf)].map(([key, rows]) => ({ key, rows, selected: true })),
     ...missed.map((m) => ({ ...m, selected: false })),
@@ -329,7 +340,7 @@ export async function dailyEdition(date: string, start: Date, end: Date): Promis
 
   const entries = events.map((fs): EditionEntry => {
     const ordered = [...fs].sort((a, b) => b.sources.length - a.sources.length || a.at - b.at || a.key.localeCompare(b.key));
-    const reps = ordered.map((f) => pickRepresentative(f.rows));
+    const reps = ordered.map((f) => pickRepresentative(vetted(f.rows)));
     const rep = reps[0]!;
     const sourceIds = new Set(fs.flatMap((f) => f.sources));
     const storyId = rep.story_id;

@@ -200,6 +200,11 @@ export const REPORTS = {
   metricUnits: { sourcesCount: "个来源", firstPartyEvents: "件一手发布", selectedCount: "条精选", reportsCovered: "期日报" },
   /** 报告分享图上“共几条”的说法。 */
   shareUnit: "条内容",
+  /**
+   * 日报收哪些条目：`"selected"`（默认）只收入选的；`"pool"` 收这一天列在「全部」里的每一条，一件事一条，照原版的排法排。
+   * 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」。
+   */
+  dailyScope: "pool" as "selected" | "pool",
 };
 
 /** 运维告警（只发给站长）里随部署而变的几处说法。 */

@@ -17,9 +17,10 @@ const LEAD = "按遇到的事，查各地店家的做法和经验。每一条都
 
 /**
  * The two grids of entry cards, one card size at every width (the owner, 10/5: the categories' cards were smaller
- * than the kinds'): two columns on phones, four from 641px; 「团餐和宴会承办」 stays on one line in both.
+ * than the kinds'): two columns on phones, three in the 608px column, six from 961px, so the six categories fill
+ * their rows (four columns left 4 + 2, and the five kinds now 4 + 1). 「团餐和宴会承办」 may wrap in six columns.
  */
-const GRID = "grid-cols-2 sm:grid-cols-4";
+const GRID = "grid-cols-2 sm:grid-cols-3 lg:grid-cols-6";
 
 export function headers() {
   return edgeTtl(60);

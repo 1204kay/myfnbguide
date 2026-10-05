@@ -23,7 +23,7 @@ import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, writeCase } from "../backend/write.ts";
-import { groupSituation, readGrouping, situationsToGroup, type Member } from "../backend/methods.ts";
+import { groupSituation, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { membersBySituation, rankSituations, sourceKind, tellerOf } from "../backend/read.ts";
 import { countText, day, spaced } from "../format.ts";
 import type { CaseStory, Count, SituationRow } from "../types.ts";
@@ -184,7 +184,7 @@ test("where the stories sit the program mends: an id not of the situation, anoth
   ];
   const read = readGrouping({ overview: "固定费用往往在没人核对时上涨，各家逐项对比账单和合同。", methods: [
     { group: "fixed-costs-creep", title: "把账单逐行对比", summary: "几家店把第一张和最新一张账单逐行对比。",
-      shops: [{ caseIds: ["a", "x"], line: "布草账单四年涨了 74%" }, { caseIds: ["c", "d"], line: "逐行对比找出多付的钱" }, { caseIds: ["b", "a"], line: "另一张账单也对比" }] },
+      shops: [{ caseIds: ["a", "x"], line: "布草账单四年涨了 74%" }, { caseIds: ["c"], line: "逐行对比找出多付的钱" }, { caseIds: ["b", "a"], line: "另一张账单也对比" }] },
     { group: "fixed-costs-creep", title: "合同留底", summary: "合同要留底。", shops: [{ caseIds: ["a"], line: "合同留底" }] },
   ] }, members);
   assert.deepEqual(read.problems, []);
@@ -193,13 +193,45 @@ test("where the stories sit the program mends: an id not of the situation, anoth
     ["fixed-costs-creep", "把账单逐行对比", [[["a", "b"], "布草账单四年涨了 74%"], [["c"], "逐行对比找出多付的钱"]]],
     ["food-over-recipe", "配方和盘点", [[["d"], "账单从每周 865 美元涨到 1,503 美元"]]],
     [null, "一张没人看的账单", [[["e"], "账单从每周 865 美元涨到 1,503 美元"]]],
-  ], "one shop's lines merged under its first; a practice emptied dropped; a story taken out of another group's practice, or left out, stands alone in its group");
+  ], "one shop's lines merged under its first; a practice emptied dropped; a story left out stands alone in its group");
   assert.equal(methods[1]!.summary, "把盘点出来的食材钱和配方算的放在一起比。", "alone: what the shop did, as its card says");
   assert.equal(new Set(methods.map((m) => m.key)).size, 3);
-  for (const expected of [/x 不是这种情况的故事，已删去/, /故事 d 属于原因组 food-over-recipe，已从第 1 个做法移出/, /同一家店（s1）写了两行，已把第 3 家的那一行合进第 1 家的那一行/,
-    /故事 a 放进了不止一处，只留在第一处，已从第 2 个做法删去/, /故事 e（一张没人看的账单）没有放进任何做法，已单独列为一个做法/]) {
+  for (const expected of [/x 不是这种情况的故事，已删去/, /同一家店（s1）写了两行，已把第 3 家的那一行合进第 1 家的那一行/,
+    /故事 a 放进了不止一处，只留在第一处，已从第 2 个做法删去/, /故事 d（配方和盘点）没有放进任何做法，已单独列为一个做法/, /故事 e（一张没人看的账单）没有放进任何做法，已单独列为一个做法/]) {
     assert.ok(read.repairs.some((p) => expected.test(p)), `${expected} in ${read.repairs.join(" | ")}`);
   }
+});
+
+test("a practice that lost a story keeps no words about it, and one written in a wrong group is moved, not broken up", () => {
+  const members: Member[] = [
+    { id: "a", group: "fixed-costs-creep", teller: "shop:x", story: story() },
+    { id: "c", group: "fixed-costs-creep", teller: "source:y", story: story({ title: "另一家店的账单" }) },
+    { id: "d", group: "food-over-recipe", teller: "source:z", story: story({ title: "配方和盘点", placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "把盘点出来的食材钱和配方算的放在一起比。" }] }) },
+  ];
+  // Its summary names the shop of d, which the program takes out: with others left it goes back to the model.
+  const kept = readGrouping({ overview: "各家逐项对比账单和配方。", methods: [{ group: "fixed-costs-creep", title: "逐项对比", summary: "加州一家小酒馆对比账单，日本一家咖啡店对比配方。",
+    shops: [{ caseIds: ["a"], line: "对比账单" }, { caseIds: ["c"], line: "对比账单" }, { caseIds: ["d"], line: "对比配方" }] }] }, members);
+  assert.equal(kept.grouping, null);
+  assert.ok(kept.problems.some((p) => /^第 1 个做法移出了故事 d（不属于这个原因组，或已放在别处）：标题、归纳和各行只写留下的店家/.test(p)) && !kept.problems.some(textOnly),
+    "sent back with the stories, not as an edit of the words");
+  // With one story left it stands alone in that story's own words.
+  const one = readGrouping({ overview: "各家逐项对比账单和配方。", methods: [{ group: "fixed-costs-creep", title: "逐项对比", summary: "一家对比账单，一家对比配方。",
+    shops: [{ caseIds: ["a"], line: "对比账单" }, { caseIds: ["d"], line: "对比配方" }] }] }, members);
+  assert.deepEqual(one.problems, []);
+  assert.deepEqual(one.grouping!.methods.map((m) => [m.title, m.summary, m.shops.map((s) => s.caseIds)]),
+    [[story().title, story().placements[0]!.card, [["a"]]], ["配方和盘点", "把盘点出来的食材钱和配方算的放在一起比。", [["d"]]], ["另一家店的账单", story().placements[0]!.card, [["c"]]]]);
+  assert.ok(one.repairs.some((p) => /第 1 个做法移出故事以后只剩一篇，改用这篇故事自己的标题和说明/.test(p)));
+  // "null" written as a word: the practice moves to its stories' group and keeps both shops.
+  const none: Member[] = [
+    { id: "n1", group: null, teller: "shop:p", story: story({ title: "午市改成两班倒" }) },
+    { id: "n2", group: null, teller: "shop:q", story: story({ title: "晚市少排一人" }) },
+  ];
+  const moved = readGrouping({ overview: "各家按客流重新排班。", methods: [{ group: "null", title: "按客流重新排班", summary: "两家店都按客流改了排班。", shops: [{ caseIds: ["n1"], line: "午市两班倒" }, { caseIds: ["n2"], line: "晚市少排一人" }] }] }, none);
+  assert.deepEqual(moved.grouping!.methods.map((m) => [m.group, m.title, m.shops.length]), [[null, "按客流重新排班", 2]]);
+  assert.ok(moved.repairs.some((p) => /第 1 个做法写的原因组 null 和它的故事不符，已改为没有原因组/.test(p)));
+  // A line quoted in a problem may say 太长 itself: the problem is still about a number, sent back with the stories.
+  assert.equal(textOnly("第 1 个做法第 1 家的那一行「等位时间太长，改成线上取号后等 15 分钟」的数字 15 在这家店的故事里找不到：删掉，或改成故事写的数字"), false);
+  assert.equal(textOnly("第 1 个做法的归纳太长：最多 150 字，现在 172 字；删去次要的条件和数字"), true);
 });
 
 test("what the model wrote goes back named: lengths against what the prompt asks, words, digits in the overview, numbers no story has, two shops on a line", () => {
@@ -225,7 +257,7 @@ test("what the model wrote goes back named: lengths against what the prompt asks
     assert.ok(bad.problems.some((p) => expected.test(p)), `${expected} in ${bad.problems.join(" | ")}`);
   }
   assert.ok(!bad.problems.some((p) => /Too big|expected/.test(p)), "no schema message in English");
-  assert.deepEqual(readGrouping({ overview: "各家逐项对比账单和合同。".repeat(10).slice(0, 125), methods: [{ group: "fixed-costs-creep", title: "逐行对比账单", summary: "逐行对比。", shops: [{ caseIds: ["a"], line: "对比" }] }] }, members).problems,
+  assert.deepEqual(readGrouping({ overview: "各家逐项对比账单和合同。".repeat(11).slice(0, 125), methods: [{ group: "fixed-costs-creep", title: "逐行对比账单", summary: "逐行对比。", shops: [{ caseIds: ["a"], line: "对比" }] }] }, members).problems,
     [], "a little over what the prompt asks is not sent back for that alone");
 });
 
@@ -265,12 +297,16 @@ const model = await stub((_hit, req) => {
   if (body.messages.some((m) => m.role === "system" && m.content.includes("店家编号"))) {
     grouped += 1;
     groupUsers.push(user);
-    const out = user.includes("有以下问题")
-      ? { overview: "固定费用和食材钱都在没人核对时上涨，各家逐项对比账单和配方。", methods: [
+    const out = grouped === 1
+      // A story of another group taken out of a practice that keeps two: sent back with the stories.
+      ? { overview: "各家逐项对比账单。", methods: [{ group: "fixed-costs-creep", title: "逐项对比", summary: "对比账单和配方。", shops: [{ caseIds: [ids.FIRST, ids.SECOND], line: "对比" }, { caseIds: [ids.COFFEE], line: "对比" }] }] }
+      : grouped === 2
+      // Only a summary too long: an edit of the answer, without the stories.
+      ? { overview: "各家逐项对比账单。", methods: [{ group: "fixed-costs-creep", title: "逐项对比", summary: "对比账单和配方。".repeat(25), shops: [{ caseIds: [ids.FIRST], line: "对比" }, { caseIds: [ids.COFFEE], line: "对比" }] }] }
+      : { overview: "固定费用和食材钱都在没人核对时上涨，各家逐项对比账单和配方。", methods: [
         { group: "fixed-costs-creep", title: "把第一张和最新一张账单逐行对比", summary: "加州一家小酒馆的布草账单从每周 865 美元涨到 1,503 美元，逐行对比以后找出了多付的部分。",
           shops: [{ caseIds: [ids.FIRST], line: "布草账单四年涨了 74%" }, { caseIds: [ids.COFFEE], line: "电费账单每周涨到 1,503 美元" }] },
-      ] }
-      : { overview: "各家逐项对比账单。", methods: [{ group: "fixed-costs-creep", title: "逐项对比", summary: "对比账单和配方。".repeat(25), shops: [{ caseIds: [ids.FIRST, ids.SECOND], line: "对比" }, { caseIds: [ids.COFFEE], line: "对比" }] }] };
+      ] };
     return { id: `stub-group-${grouped}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
   // The last pass over a story that passed: hands it back with one spoken word made written.
@@ -362,8 +398,10 @@ test("the pages show public cases only, a situation once two cases are in it, ea
   assert.equal(new Set(members.map((m) => m.teller)).size, 2);
   assert.deepEqual((await situationsToGroup(new Map([["busy-no-profit", members]]), 10)).map(([slug]) => slug), ["busy-no-profit"]);
   assert.deepEqual(await groupSituation("busy-no-profit", members), { stored: true, problems: [] });
-  assert.equal(grouped, 2, "the long summary was sent back once; the story across groups was mended, not sent back");
-  assert.ok(groupUsers[1]!.startsWith("下面是你按系统规则写好的归并") && /归纳太长：最多 150 字，现在 200 字/.test(groupUsers[1]!) && !groupUsers[1]!.includes("店家：s1"),
+  assert.equal(grouped, 3, "three answers: the practice that lost a story, the summary too long, then right");
+  assert.ok(groupUsers[1]!.includes("店家：s1") && groupUsers[1]!.includes("程序已经按规则调整了上一次的输出") && /第 1 个做法移出了故事/.test(groupUsers[1]!),
+    "a practice that lost a story goes back with the stories and the mends named");
+  assert.ok(groupUsers[2]!.startsWith("下面是你按系统规则写好的归并") && /归纳太长：最多 150 字，现在 200 字/.test(groupUsers[2]!) && !groupUsers[2]!.includes("店家：s1"),
     "a text problem goes back as an edit of the answer, without the stories");
   assert.deepEqual(await situationsToGroup(new Map([["busy-no-profit", members]]), 10), [], "grouped again only when its stories change");
 

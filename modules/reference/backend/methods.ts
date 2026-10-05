@@ -26,9 +26,10 @@ const SYSTEM = promptFromText("reference/methods", readFileSync(new URL("../prom
 /**
  * Problems the model can mend in its own text: too long, a word, an untranslated sentence, digits in the overview.
  * Those go back as an edit of its answer, without the stories (the case writer, given its material again, wrote
- * afresh and as long as before: write.ts).
+ * afresh and as long as before: write.ts). Read from the start of the problem only: a line quoted in another
+ * problem may itself say 太长.
  */
-const textOnly = (problem: string) => /太长|用了“|没有翻译|综述里写了数字/.test(problem);
+export const textOnly = (problem: string) => /^(?:综述|第 \d+ 个做法(?:第 \d+ 家的那一行|的标题|的归纳))(?:太长：|有没有翻译的|用了“)|^综述里写了数字/.test(problem);
 const EDIT = "下面是你按系统规则写好的归并（JSON），有以下问题。只修改有问题的地方：太长就删去次要的条件和数字，用词按提示改；不加新的内容和数字，不改 caseIds 和 group。其余保持不变，输出完整的 JSON。";
 /** The prompt, the edit request and the stored shape: a grouping made under another is not read (backend/read.ts) and is made again. */
 export const PROMPT_VERSION = `reference-methods@${createHash("sha256").update(SYSTEM).update(EDIT).digest("hex").slice(0, 10)}`;
@@ -111,6 +112,9 @@ const keyOf = (caseIds: string[]) => createHash("sha256").update([...caseIds].so
  * an id not of this situation is dropped; a story in a practice of another group is taken out of it; a story
  * placed again keeps its first place; one shop's lines in a practice become its first line, with all their
  * stories; a practice left without stories is dropped; a story left without a practice stands alone (`alone`).
+ * A practice whose group is wrong as a whole is moved to its stories' group. A practice that lost a story to
+ * another place may still speak of that shop: with one story left it stands alone in that story's own words,
+ * with more it goes back to the model.
  */
 export function readGrouping(raw: unknown, members: Member[]): { grouping: Grouping | null; problems: string[]; repairs: string[] } {
   const parsed = OutputSchema.safeParse(raw);
@@ -121,16 +125,26 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
   const problems: string[] = [];
   const repairs: string[] = [];
   const placed = new Set<string>();
-  const kept = out.methods.flatMap((m, i) => {
+  const soloed: Member[] = [];
+  const kept = out.methods.flatMap((given, i) => {
     const name = `第 ${i + 1} 个做法`;
+    // A group wrong for the whole practice ("null" written as a word, a misspelt key) is its stories' own group.
+    const groups = [...new Set(given.shops.flatMap((s) => s.caseIds).flatMap((id) => (byId.has(id) ? [byId.get(id)!.group] : [])))];
+    const m = groups.length === 1 && groups[0] !== given.group ? { ...given, group: groups[0] as string | null } : given;
+    if (m !== given) repairs.push(`${name}写的原因组 ${given.group ?? "null"} 和它的故事不符，已改为${m.group ? `原因组 ${m.group}` : "没有原因组"}`);
+    const taken: string[] = [];
     const lines: Array<{ n: number; caseIds: string[]; line: string; teller: string | null }> = [];
     for (const [j, shop] of m.shops.entries()) {
       const caseIds = shop.caseIds.filter((id) => {
         const member = byId.get(id);
         if (!member) repairs.push(`${name}里的 ${id} 不是这种情况的故事，已删去`);
-        else if (member.group !== m.group) repairs.push(`故事 ${id} 属于${member.group ? `原因组 ${member.group}` : "没有原因组的故事"}，已从${name}移出`);
-        else if (placed.has(id)) repairs.push(`故事 ${id} 放进了不止一处，只留在第一处，已从${name}删去`);
-        else {
+        else if (member.group !== m.group) {
+          repairs.push(`故事 ${id} 属于${member.group ? `原因组 ${member.group}` : "没有原因组的故事"}，已从${name}移出`);
+          taken.push(id);
+        } else if (placed.has(id)) {
+          repairs.push(`故事 ${id} 放进了不止一处，只留在第一处，已从${name}删去`);
+          taken.push(id);
+        } else {
           placed.add(id);
           return true;
         }
@@ -144,7 +158,17 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
         repairs.push(`${name}里同一家店（${names.get(tellers[0]!)}）写了两行，已把第 ${j + 1} 家的那一行合进第 ${same.n + 1} 家的那一行`);
       } else if (caseIds.length) lines.push({ n: j, caseIds, line: shop.line, teller: tellers.length === 1 ? tellers[0]! : null });
     }
-    return lines.length ? [{ ...m, n: i, lines }] : [];
+    if (!lines.length) return [];
+    if (taken.length) {
+      const ids = lines.flatMap((l) => l.caseIds);
+      if (ids.length === 1) {
+        repairs.push(`${name}移出故事以后只剩一篇，改用这篇故事自己的标题和说明`);
+        soloed.push(byId.get(ids[0]!)!);
+        return [];
+      }
+      problems.push(`${name}移出了故事 ${taken.join("、")}（不属于这个原因组，或已放在别处）：标题、归纳和各行只写留下的店家，不写被移出的故事`);
+    }
+    return [{ ...m, n: i, lines }];
   });
   const left = members.filter((m) => !placed.has(m.id));
   for (const m of left) repairs.push(`故事 ${m.id}（${m.story.title}）没有放进任何做法，已单独列为一个做法`);
@@ -178,7 +202,7 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
     }
   }
   if (problems.length) return { grouping: null, problems, repairs };
-  const methods = [...kept.map((m) => ({ group: m.group, title: m.title, summary: m.summary, shops: m.lines.map((l) => ({ caseIds: l.caseIds, line: l.line })) })), ...left.map(alone)];
+  const methods = [...kept.map((m) => ({ group: m.group, title: m.title, summary: m.summary, shops: m.lines.map((l) => ({ caseIds: l.caseIds, line: l.line })) })), ...soloed.map(alone), ...left.map(alone)];
   return {
     grouping: {
       overview: spaced(out.overview),

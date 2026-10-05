@@ -36,7 +36,7 @@ export default function KindRoute() {
       <Dek>{k.dek}</Dek>
       <Metrics items={[[k.metrics.cases, "条原文"], countries.length === 1 ? countries[0]! : [countries.length, "个国家"]]} />
       {k.categories.length > 1 && (
-        <div className="mt-6"><Entries cols="grid-cols-2 sm:grid-cols-4" items={k.categories.map((c) => ({ to: `#${c.key}`, name: c.title, count: `${c.situations.length} 种情况` }))} /></div>
+        <div className="mt-6"><Entries cols="grid-cols-2 sm:grid-cols-3 lg:grid-cols-6" items={k.categories.map((c) => ({ to: `#${c.key}`, name: c.title, count: `${c.situations.length} 种情况` }))} /></div>
       )}
       {k.categories.map((c) => (
         <section key={c.key} className="mt-9">

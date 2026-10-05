@@ -297,21 +297,21 @@
     },
     {
       "slug": "hong-kong",
-      "name": "香港",
+      "name": "中国香港",
       "group": "genre",
       "tags": [
-        "香港"
+        "中国香港"
       ],
-      "definition": "香港餐饮业的经营、开关店与政策。"
+      "definition": "中国香港餐饮业的经营、开关店与政策。"
     },
     {
       "slug": "taiwan",
-      "name": "台湾",
+      "name": "中国台湾",
       "group": "genre",
       "tags": [
-        "台湾"
+        "中国台湾"
       ],
-      "definition": "台湾餐饮业的经营、品牌与市场。"
+      "definition": "中国台湾餐饮业的经营、品牌与市场。"
     },
     {
       "slug": "japan",
@@ -366,12 +366,12 @@
     },
     {
       "slug": "australia",
-      "name": "澳洲",
+      "name": "澳大利亚",
       "group": "genre",
       "tags": [
-        "澳洲"
+        "澳大利亚"
       ],
-      "definition": "澳洲与新西兰的餐饮业：成本、用工与经营。"
+      "definition": "澳大利亚的餐饮业：成本、用工与经营。"
     },
     {
       "slug": "usa",

@@ -25,7 +25,7 @@ export interface Shop {
 export interface Placement {
   situation: string;
   group: string | null;
-  /** What this shop did, in a sentence: read by the grouping of practices (backend/methods.ts). */
+  /** What this shop did, in a sentence: read by the grouping of practices, and the sum-up of a story it left alone (backend/methods.ts). */
   card: string;
 }
 

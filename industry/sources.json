@@ -1,5 +1,5 @@
 {
-  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全世界写给餐饮老板的媒体、同行播客与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过（node myfnb/vet-sources.ts）；第一批 20 个从正式服务器测过能打开（PMQ、Global Coffee Report 对服务器返回 403，已去掉），之后加的部署后看后台「信源」页，对服务器返回 403 的暂停。协会用 T1；品牌新闻稿（新品促销多，校准前门槛不放低）与平台、服务商用 T1_5；媒体用 T2。接不接、留不留只看它每天能出几条必看（myfnb/HANDOFF.md §5.4「入口的终点」）；2026-10-02 按 9/18–10/2 两周实测停用了 547 个（多为 PR TIMES 日本企业新闻稿），名单与数字在 myfnb/prune-2026-10-02.tsv；同日傍晚内容改为站在一家小店里面看，按新标准再停用 7 个（myfnb/remeasure-2026-10-02.tsv）。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
+  "$comment": "首次启动时导入的信源（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。全世界写给餐饮老板的媒体、经营者播客与协会，标签写地区；2026-10-01 按全球定位重选（myfnb/plan-2026-10-01.md、myfnb/sources-universe-2026-10-01.md），马来西亚的政府机构、综合报纸和平台新闻稿已去掉。每个都用框架自己的采集代码试抓过（node myfnb/vet-sources.ts）；第一批 20 个从正式服务器测过能打开（PMQ、Global Coffee Report 对服务器返回 403，已去掉），之后加的部署后看后台「信源」页，对服务器返回 403 的暂停。协会用 T1；品牌新闻稿（新品促销多，校准前门槛不放低）与平台、服务商用 T1_5；媒体用 T2。接不接、留不留只看它每天能出几条必看（myfnb/HANDOFF.md §5.4「入口的终点」）；2026-10-02 按 9/18–10/2 两周实测停用了 547 个（多为 PR TIMES 日本企业新闻稿），名单与数字在 myfnb/prune-2026-10-02.tsv；同日傍晚内容改为站在一家小店里面看，按新标准再停用 7 个（myfnb/remeasure-2026-10-02.tsv）。全文一律不展示，只放摘要和原文链接。接源规则：robots.txt 不许抓的、拒绝代用户读网页的 AI（ChatGPT-User、Claude-User、Perplexity-User 等）或 Content-Signal 写 ai-input=no 的、使用条款禁止自动抓取、文本与数据挖掘或 AI 使用的、只许个人使用其 RSS 或内容的，都不接；只拒绝 AI 训练的、只有通用「不得转载」条款的可以接（本站不训练模型、不转载，只写自己的简短摘要并链接原文）。每月和加新信源前跑 node myfnb/check-sources.mjs 复查。",
   "sources": [
     {
       "id": "rss-fsr",
@@ -385,7 +385,7 @@
     },
     {
       "id": "rss-marginedge",
-      "name": "MarginEdge（美国 · 餐厅财务软件商）",
+      "name": "MarginEdge（美国 · 餐厅财务软件公司的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.marginedge.com/blog/rss.xml",
@@ -428,7 +428,7 @@
     },
     {
       "id": "pod-restaurant-reset",
-      "name": "Restaurant Reset（美国 · 播客）",
+      "name": "Restaurant Reset（美国 · 收银系统公司的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10c589b40/podcast/rss",
@@ -450,7 +450,7 @@
     },
     {
       "id": "pod-a-la-carte-par-fooddy-le-podcast-qui-par",
-      "name": "A LA CARTE par Fooddy（法国 · 播客）",
+      "name": "A LA CARTE par Fooddy（法国 · 餐饮培训平台的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/n5zJxIRnq5Vk",
@@ -494,7 +494,7 @@
     },
     {
       "id": "pod-horeca-channel-italia",
-      "name": "HORECA CHANNEL ITALIA（意大利 · 播客）",
+      "name": "HORECA CHANNEL ITALIA（意大利 · 餐饮媒体的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/969bbcc0/podcast/rss",
@@ -516,7 +516,7 @@
     },
     {
       "id": "pod-horeca-audio-news-le-pillole-quotidiane",
-      "name": "HORECA AUDIO NEWS（意大利 · 播客）",
+      "name": "HORECA AUDIO NEWS（意大利 · 餐饮新闻网站的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.spreaker.com/show/5143519/episodes/feed",
@@ -538,7 +538,7 @@
     },
     {
       "id": "pod-tw-renren-canyin",
-      "name": "人人品牌 · 餐飲經營筆記（中国台湾 · 播客）",
+      "name": "人人品牌 · 餐飲經營筆記（中国台湾 · 餐饮顾问公司的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundon.fm/podcasts/04c60255-df49-4568-ba89-83a69b96ea61.xml",
@@ -560,7 +560,7 @@
     },
     {
       "id": "pod-the-restaurant-technology-guys-podcast-b",
-      "name": "The Restaurant Technology Guys Podcast（美国 · 播客）",
+      "name": "The Restaurant Technology Guys Podcast（美国 · 收银系统公司的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.riverside.fm/hosting/mMIUQRyf.rss",
@@ -582,7 +582,7 @@
     },
     {
       "id": "pod-strategic-business-growth-systems-restau",
-      "name": "Strategic Business Growth Systems（美国 · 播客）",
+      "name": "Strategic Business Growth Systems（美国 · 餐厅营销顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.podengine.io/strategic-business-growth-systems-restaurant-edition",
@@ -604,7 +604,7 @@
     },
     {
       "id": "pod-marketing-morsels-for-restaurants",
-      "name": "Marketing Morsels for Restaurants（美国 · 播客）",
+      "name": "Marketing Morsels for Restaurants（美国 · 餐厅营销顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.podengine.io/marketing-morsels-for-restaurants",
@@ -626,7 +626,7 @@
     },
     {
       "id": "pod-restaurant-strategy",
-      "name": "Restaurant Strategy（美国 · 播客）",
+      "name": "Restaurant Strategy（美国 · 餐厅顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.castos.com/p49k",
@@ -648,7 +648,7 @@
     },
     {
       "id": "pod-total-food-service",
-      "name": "Total Food Service（美国 · 播客）",
+      "name": "Total Food Service（美国 · 餐饮媒体的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://totalfood.com/feed/podcast/",
@@ -670,7 +670,7 @@
     },
     {
       "id": "pod-the-bar-business-podcast-bar-pub-owner-p",
-      "name": "The Bar Business Podcast（美国 · 播客）",
+      "name": "The Bar Business Podcast（美国 · 酒吧经营顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2128805.rss",
@@ -692,7 +692,7 @@
     },
     {
       "id": "pod-qsr-uncut",
-      "name": "QSR Uncut（美国 · 播客）",
+      "name": "QSR Uncut（美国 · 快餐媒体的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/238017.rss",
@@ -714,7 +714,7 @@
     },
     {
       "id": "pod-the-build-restuarant-201",
-      "name": "The Build: Restuarant 201（美国 · 播客）",
+      "name": "The Build: Restuarant 201（美国 · 工作服品牌的餐厅纪实节目）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.art19.com/the-build",
@@ -736,7 +736,7 @@
     },
     {
       "id": "pod-der-gastro-podcast",
-      "name": "DER GASTRO PODCAST（德国 · 播客）",
+      "name": "DER GASTRO PODCAST（德国 · 餐饮业访谈播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/10c84feec/podcast/rss",
@@ -758,7 +758,7 @@
     },
     {
       "id": "pod-fettgespraeche",
-      "name": "Fettgespräche（德国 · 播客）",
+      "name": "Fettgespräche（德国 · 餐饮业对谈播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/11481fce4/podcast/rss",
@@ -780,7 +780,7 @@
     },
     {
       "id": "pod-the-ristoratori",
-      "name": "The Ristoratori（意大利 · 播客）",
+      "name": "The Ristoratori（意大利 · 餐饮创业者访谈播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fb372db8/podcast/rss",
@@ -802,7 +802,7 @@
     },
     {
       "id": "pod-jp-omise-radio-smaregi",
-      "name": "お店ラジオ2（日本 · 播客）",
+      "name": "お店ラジオ2（日本 · 店主访谈电台节目）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.megaphone.fm/JPFMN9974221305",
@@ -824,7 +824,7 @@
     },
     {
       "id": "pod-restaurant-wealth",
-      "name": "Restaurant Wealth Podcast（美国 · 播客）",
+      "name": "Restaurant Wealth Podcast（美国 · 餐厅顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://api.riverside.com/hosting/iybPknYu.rss",
@@ -846,7 +846,7 @@
     },
     {
       "id": "pod-restaurant-finance-podcast",
-      "name": "The Restaurant Finance Podcast（美国 · 播客）",
+      "name": "The Restaurant Finance Podcast（美国 · 餐厅财务服务商的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.blubrry.com/feeds/3956510.xml",
@@ -868,7 +868,7 @@
     },
     {
       "id": "pod-restaurant-growth-accelerator",
-      "name": "Restaurant Growth Accelerator（加拿大 · 播客）",
+      "name": "Restaurant Growth Accelerator（加拿大 · 餐厅老板兼培训师的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2419583.rss",
@@ -932,7 +932,7 @@
     },
     {
       "id": "blog-eats365",
-      "name": "Eats365 博客（中国香港 · 收银系统商）",
+      "name": "Eats365 博客（中国香港 · 收银系统公司的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.eats365pos.com/rss.xml",
@@ -1017,7 +1017,7 @@
     },
     {
       "id": "pod-restaurant-prosperity-formula",
-      "name": "The Restaurant Prosperity Formula（美国 · 播客）",
+      "name": "The Restaurant Prosperity Formula（美国 · 餐厅顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.captivate.fm/restaurant-prosperity-formula/",
@@ -1039,7 +1039,7 @@
     },
     {
       "id": "rss-petpooja",
-      "name": "Petpooja 博客（印度 · 收银系统商）",
+      "name": "Petpooja 博客（印度 · 收银系统公司的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://blog.petpooja.com/feed/",
@@ -1129,7 +1129,7 @@
     },
     {
       "id": "pod-build-a-better-restaurant",
-      "name": "Build A Better Restaurant（美国 · 播客）",
+      "name": "Build A Better Restaurant（美国 · 餐厅老板兼顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:554457540/sounds.rss",
@@ -1151,7 +1151,7 @@
     },
     {
       "id": "pod-restaurant-rockstars",
-      "name": "Restaurant Rockstars Podcast（美国 · 播客）",
+      "name": "Restaurant Rockstars Podcast（美国 · 餐厅老板兼顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.soundcloud.com/users/soundcloud:users:158297519/sounds.rss",
@@ -1173,7 +1173,7 @@
     },
     {
       "id": "pod-restaurant-marketing-secrets",
-      "name": "Restaurant Marketing Secrets（美国 · 播客）",
+      "name": "Restaurant Marketing Secrets（美国 · 餐厅营销公司的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/418643/destinations/3475718.xml",
@@ -1195,7 +1195,7 @@
     },
     {
       "id": "pod-great-work-for-restaurants",
-      "name": "Great Work for Restaurants（加拿大 · 播客）",
+      "name": "Great Work for Restaurants（加拿大 · 餐厅营销服务商的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/187310/destinations/1290941.xml",
@@ -1217,7 +1217,7 @@
     },
     {
       "id": "pod-coffee-experts-club",
-      "name": "The Coffee Experts Club Podcast（美国 · 播客）",
+      "name": "The Coffee Experts Club Podcast（美国 · 咖啡业顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/477066/destinations/4050717.xml",
@@ -1261,7 +1261,7 @@
     },
     {
       "id": "pod-keys-to-the-shop",
-      "name": "Keys To The Shop（美国 · 播客）",
+      "name": "Keys To The Shop（美国 · 咖啡店顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.libsyn.com/shows/85579/destinations/412105.xml",
@@ -1283,7 +1283,7 @@
     },
     {
       "id": "pod-food-business-blueprint",
-      "name": "The Food Business Blueprint Podcast（美国 · 播客）",
+      "name": "The Food Business Blueprint Podcast（美国 · 餐饮企业主的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.transistor.fm/the-food-business-blueprint-podcast",
@@ -1327,7 +1327,7 @@
     },
     {
       "id": "pod-fr-passe-moi-le-sel",
-      "name": "Passe moi le sel（法国 · 播客）",
+      "name": "Passe moi le sel（法国 · 餐厅管理顾问的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/4A7QwTm2zARD",
@@ -1371,7 +1371,7 @@
     },
     {
       "id": "pod-entre-hosteleros",
-      "name": "ENTRE HOSTELEROS（西班牙 · 播客）",
+      "name": "ENTRE HOSTELEROS（西班牙 · 餐饮业访谈播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fd40eaf4/podcast/rss",
@@ -1393,7 +1393,7 @@
     },
     {
       "id": "pod-say86-hospitality",
-      "name": "say86 Hospitality Podcast（英国 · 播客）",
+      "name": "say86 Hospitality Podcast（英国 · 餐饮采购平台的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/2447330.rss",
@@ -1415,7 +1415,7 @@
     },
     {
       "id": "pod-elevated-hospitality",
-      "name": "The Elevated Hospitality Podcast（美国 · 播客）",
+      "name": "The Elevated Hospitality Podcast（美国 · 餐饮服务培训播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://anchor.fm/s/fb0da358/podcast/rss",
@@ -1437,7 +1437,7 @@
     },
     {
       "id": "pod-restaurant-hero",
-      "name": "Restaurant Hero（德国 · 播客）",
+      "name": "Restaurant Hero（德国 · 餐饮在线课程平台的播客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://app.kajabi.com/podcasts/2147882667/feed",
@@ -1525,7 +1525,7 @@
     },
     {
       "id": "web-gnavi-pro-tokushu",
-      "name": "ぐるなび通信 · 特集（日本 · 餐饮信息平台）",
+      "name": "ぐるなび通信 · 特集（日本 · 餐饮信息平台的专栏）",
       "kind": "web_list",
       "config": {
         "url": "https://pro.gnavi.co.jp/magazine/cont_1/",
@@ -1557,7 +1557,7 @@
     },
     {
       "id": "web-gnavi-pro-hanjo",
-      "name": "ぐるなび通信 · 今、繁盛している店（日本 · 餐饮信息平台）",
+      "name": "ぐるなび通信 · 今、繁盛している店（日本 · 餐饮信息平台的专栏）",
       "kind": "web_list",
       "config": {
         "url": "https://pro.gnavi.co.jp/magazine/cont_23/",
@@ -1589,7 +1589,7 @@
     },
     {
       "id": "rss-tenpo-biz-column",
-      "name": "店舗流通ネット（日本 · 店铺租赁服务商）",
+      "name": "店舗流通ネット（日本 · 店铺租赁服务商的专栏）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.tenpo.biz/solution/feed/",
@@ -1610,7 +1610,7 @@
     },
     {
       "id": "web-goomer-blog",
-      "name": "Goomer 博客（巴西 · 点餐系统商）",
+      "name": "Goomer 博客（巴西 · 点餐系统公司的博客）",
       "kind": "web_list",
       "config": {
         "url": "https://goomer.com.br/blog/",
@@ -1644,7 +1644,7 @@
     },
     {
       "id": "rss-caroline-bower",
-      "name": "Bluebird Bread Co. · Caroline Bower（美国 · 微型面包店老板）",
+      "name": "Bluebird Bread Co. · Caroline Bower（美国 · 微型面包店店主的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.carolinebower.com/blog-feed.xml",
@@ -1665,7 +1665,7 @@
     },
     {
       "id": "rss-miraishokudo",
-      "name": "未来食堂日記（日本 · 定食屋店主）",
+      "name": "未来食堂日記（日本 · 定食店店主的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://miraishokudo.hatenablog.com/feed",
@@ -1686,7 +1686,7 @@
     },
     {
       "id": "rss-kojinkuroji",
-      "name": "小さなお店の黒字力（日本 · 个人饮食店店主）",
+      "name": "小さなお店の黒字力（日本 · 个体餐饮店店主的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://kojinkuroji.com/feed/",
@@ -1707,7 +1707,7 @@
     },
     {
       "id": "rss-ryourigaka",
-      "name": "料理画家クチーナカメヤマ（日本 · 意大利酒馆店主）",
+      "name": "料理画家クチーナカメヤマ（日本 · 意大利小酒馆店主的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://ryourigaka.jp/feed/",
@@ -1728,7 +1728,7 @@
     },
     {
       "id": "rss-yoshitencho",
-      "name": "ヨッシー店長の家 · 飲食店開業（日本 · 咖啡店店主）",
+      "name": "ヨッシー店長の家 · 飲食店開業（日本 · 咖啡店店主的博客）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://yoshitencho.com/category/restaurant/feed",

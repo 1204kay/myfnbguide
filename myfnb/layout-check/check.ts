@@ -4,9 +4,13 @@
 //   ① 横向滚动：页面比视口宽就算（scrollWidth > clientWidth）。
 //   ② 最小字号：可见文字不小于 12px（底栏文字 10.5px 例外，A6）；图里的文字实际不小于 11px，宽度 ≥ 961 时不大于 17px（B2）。
 //   ③ 触屏点按区：触屏（hover: none）上可点的东西不小于 44×44px，段落里的行内链接除外（A9）；铺满整张卡的链接按卡片量。
-//   ④ 版心宽度：主路径各页内容的左右边界，手机不宽于屏宽减 32，641–960 不宽于 608，≥ 961 不宽于 760（A5）。
-//   ⑤ 主路径左边缘：同一尺寸下主路径各页的左边缘相同（A5；说明类页面和打不开的页不比）。
-//   ⑥ 正文每行字数：40 字以上的段落每行不超过 46 个汉字的宽度（A5：760 栏、17px 约 44 字）；里面是块的列表项（卡片）不算段落。
+//   ④ 版心宽度（J2）：手机不宽于屏宽减 32，641–960 不宽于屏宽减 48；≥ 961 时列表页（参考首页、资讯、搜索、日报）不宽于 1,200，
+//      阅读页（情况、故事、店家、条目、收藏、我的、日报合订本）不宽于 760。
+//   ⑤ 主路径左边缘（J2）：同一尺寸下同一类页面的左边缘相同；≥ 961 时列表页和阅读页各比各的（两类的宽度不同、左边缘不同是有意的），
+//      ≤ 960 时全部主路径页一起比（说明类页面和打不开的页不比）。
+//   ⑥ 正文每行字数：40 字以上的段落每行不超过 46 个汉字的宽度（760 栏、17px 约 44 字）；列表页的卡片放宽到 80 字（1,200 栏里
+//      14px 的收录理由约 79 字，和 AIHOT 相同，10/6 定为不改）；里面是块的列表项（卡片）不算段落。
+//   ⑦ 图中文字出界（J10）：图里的文字超出图框（会被裁掉）。
 // 结果和同目录的 baseline.json 比：基线里没有的问题、版心宽度或左边缘和基线差 2px 以上的，都算新问题，打印出来并以 1 退出；
 // 基线里已有的问题只列出来。版面是有意改的（例如第 2–4 包上线以后），看过截图确认无误再加 --write 重写基线。
 //   PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/layout-check/check.ts [--base https://new.myfnbguide.com] [--write] [--shots <目录>]
@@ -42,22 +46,21 @@ const PROFILES: Profile[] = [
 ];
 
 /**
- * 读者主路径（reader）和说明类页面；没有固定地址的从另一页（from）的第一个链接（link）找，through 是先走进去再找的那一层
+ * 读者主路径（reader；其中 list 是列表页，其余是阅读页，J2）和说明类页面；没有固定地址的从另一页（from）的第一个链接（link）找，through 是先走进去再找的那一层
  * 链接（店家页只从同一家店另有故事的故事页链接过去）。
  */
-interface PageSpec { name: string; reader: boolean; path?: string; from?: string; through?: string; link?: string }
+interface PageSpec { name: string; reader: boolean; list?: boolean; path?: string; from?: string; through?: string; link?: string }
 const PAGES: PageSpec[] = [
-  { name: "home", reader: true, path: "/" },
-  { name: "latest", reader: true, path: "/latest" },
-  { name: "all", reader: true, path: "/all" },
-  { name: "search", reader: true, path: "/all?q=%E6%88%BF%E7%A7%9F" },
+  { name: "home", reader: true, list: true, path: "/" },
+  { name: "all", reader: true, list: true, path: "/all" },
+  { name: "search", reader: true, list: true, path: "/all?q=%E6%88%BF%E7%A7%9F" },
   { name: "situation", reader: true, path: "/reference/busy-no-profit" },
   { name: "case", reader: true, from: "situation", link: 'a[href^="/reference/cases/"]' },
   { name: "shop", reader: true, from: "situation", through: 'a[href^="/reference/cases/"]', link: 'a[href^="/reference/shops/"]' },
   { name: "item", reader: true, from: "all", link: 'a[href^="/items/"]' },
   { name: "starred", reader: true, path: "/starred" },
   { name: "more", reader: true, path: "/more" },
-  { name: "daily", reader: true, path: "/daily" },
+  { name: "daily", reader: true, list: true, path: "/daily" },
   { name: "archive", reader: true, path: "/daily/archive" },
   { name: "about", reader: false, path: "/about" },
   { name: "agent", reader: false, path: "/agent" },
@@ -68,6 +71,7 @@ interface Metrics {
   column: { left: number; width: number } | null;
   font: { min: number; text: string } | null;
   figure: { min: number; max: number } | null;
+  figureOut: string[];
   smallTargets: string[]; touch: boolean;
   cpl: { max: number; text: string } | null;
 }
@@ -132,6 +136,20 @@ function measure() {
   }
   const figure = drawnText.length ? { min: Math.min(...drawnText), max: Math.max(...drawnText) } : null;
 
+  // ⑦ A figure's text drawn past the figure's frame is cut off (an inline svg clips to its box).
+  const figureOut: string[] = [];
+  for (const svg of main.querySelectorAll("svg")) {
+    if (!svg.viewBox?.baseVal?.width || !shown(svg)) continue;
+    const box = svg.getBoundingClientRect();
+    for (const t of svg.querySelectorAll("text")) {
+      const r = t.getBoundingClientRect();
+      if (r.width < 0.5) continue;
+      if (r.left < box.left - 1 || r.right > box.right + 1 || r.top < box.top - 1 || r.bottom > box.bottom + 1) {
+        figureOut.push(t.textContent!.trim().slice(0, 12));
+      }
+    }
+  }
+
   // ③ Touch targets under 44px; a link inside running text is exempt. A link stretched over its card (its ::after
   // laid over the nearest positioned box, as the list and story cards do) is as big as that box.
   const touch = matchMedia("(hover: none)").matches;
@@ -170,7 +188,7 @@ function measure() {
   return {
     hScroll: Math.max(0, de.scrollWidth - de.clientWidth),
     column: Number.isFinite(left) ? { left: Math.round(left), width: Math.round(right - left) } : null,
-    font, figure, smallTargets: small, touch, cpl,
+    font, figure, figureOut, smallTargets: small, touch, cpl,
   };
 }
 
@@ -209,7 +227,7 @@ async function resolvePaths(browser: Browser): Promise<Map<string, string>> {
   return found;
 }
 
-/** The rules of the plan (A5, A6, A9, B2) for one page in one profile; the left edges are compared after all pages. */
+/** The rules of the plan (A6, A9, B2, J2, J10) for one page in one profile; the left edges are compared after all pages. */
 function check(profile: Profile, spec: PageSpec, m: Metrics): Problem[] {
   const out: Problem[] = [];
   const add = (rule: string, detail: string) => out.push({ profile: profile.key, page: spec.name, rule, detail });
@@ -217,12 +235,14 @@ function check(profile: Profile, spec: PageSpec, m: Metrics): Problem[] {
   if (m.font && m.font.min < 12) add("最小字号", `${m.font.min}px（${m.font.text}）`);
   if (m.figure && m.figure.min < 11) add("图中字号", `最小 ${m.figure.min}px`);
   if (m.figure && profile.width >= 961 && m.figure.max > 17) add("图中字号", `最大 ${m.figure.max}px`);
+  if (m.figureOut.length) add("图中文字出界", `${m.figureOut.length} 处：${m.figureOut.slice(0, 4).join("、")}`);
   if (m.smallTargets.length) add("点按区", `${m.smallTargets.length} 个不足 44px：${m.smallTargets.slice(0, 6).join("、")}`);
   if (spec.reader && m.status === 200 && m.column) {
-    const limit = profile.width <= 640 ? profile.width - 32 : profile.width <= 960 ? 608 : 760;
+    const limit = profile.width <= 640 ? profile.width - 32 : profile.width <= 960 ? profile.width - 48 : spec.list ? 1200 : 760;
     if (m.column.width > limit + 2) add("版心宽度", `${m.column.width}px，超过 ${limit}px`);
   }
-  if (m.cpl && m.cpl.max > 46) add("每行字数", `约 ${m.cpl.max} 字（${m.cpl.text}）`);
+  const perLine = spec.list ? 80 : 46;
+  if (m.cpl && m.cpl.max > perLine) add("每行字数", `约 ${m.cpl.max} 字，超过 ${perLine} 字（${m.cpl.text}）`);
   return out;
 }
 
@@ -263,15 +283,19 @@ await Promise.all([1, 2, 3].map(async () => {
 await browsers.chromium.close();
 await browsers.webkit.close();
 
-// ⑤ Within one profile, every reader page that opened starts at the same left edge as most of them.
+// ⑤ Within one profile, every reader page of a class that opened starts at the same left edge as most of them: from 961px the
+// list pages and the reading pages each among themselves (J2), below that all of them together.
 for (const profile of PROFILES) {
-  const lefts = PAGES.filter((p) => p.reader).map((p) => ({ p, m: results[profile.key]?.[p.name] })).filter((x) => x.m?.status === 200 && x.m.column);
-  const counts = new Map<number, number>();
-  for (const { m } of lefts) counts.set(m!.column!.left, (counts.get(m!.column!.left) ?? 0) + 1);
-  const usual = [...counts].sort((a, b) => b[1] - a[1])[0]?.[0];
-  for (const { p, m } of lefts) {
-    if (usual !== undefined && Math.abs(m!.column!.left - usual) > 1) {
-      problems.push({ profile: profile.key, page: p.name, rule: "左边缘", detail: `${m!.column!.left}px，其他主路径页是 ${usual}px` });
+  const opened = PAGES.filter((p) => p.reader).map((p) => ({ p, m: results[profile.key]?.[p.name] })).filter((x) => x.m?.status === 200 && x.m.column);
+  const classes = profile.width >= 961 ? [opened.filter((x) => x.p.list), opened.filter((x) => !x.p.list)] : [opened];
+  for (const lefts of classes) {
+    const counts = new Map<number, number>();
+    for (const { m } of lefts) counts.set(m!.column!.left, (counts.get(m!.column!.left) ?? 0) + 1);
+    const usual = [...counts].sort((a, b) => b[1] - a[1])[0]?.[0];
+    for (const { p, m } of lefts) {
+      if (usual !== undefined && Math.abs(m!.column!.left - usual) > 1) {
+        problems.push({ profile: profile.key, page: p.name, rule: "左边缘", detail: `${m!.column!.left}px，同类的主路径页是 ${usual}px` });
+      }
     }
   }
 }

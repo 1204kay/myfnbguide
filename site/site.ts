@@ -151,7 +151,7 @@ export const NAV = {
     { title: "关于本站", rows: ["/about", "/changelog", "/feedback", "/terms", "/privacy"] },
     { title: "给开发者", rows: ["/agent"] },
   ] as Array<{ title: string | null; rows: string[] }> | null,
-  /** 侧栏、“我的”页、搜索层和精选页不显示的入口，写路径（例如 "/hot" 也去掉精选页的当前热点）；"/all" 不显示时，全部动态的页面点亮精选的入口。 */
+  /** 侧栏、“我的”页、搜索层和精选页不显示的入口，写路径（例如 "/hot" 也去掉精选页的当前热点，Agent 接入页不列热点的工具和接口）；"/all" 不显示时，全部动态的页面点亮精选的入口。 */
   hidden: ["/hot", "/topics", "/all"] as string[],
   /** 精选和全部动态的筛选里有没有“一手”（官方一手发布）。 */
   firstPartyFilter: false,
@@ -188,7 +188,7 @@ export const FEED = {
 export const DATES = {
   /** 数字与汉字之间加空格（“10 月 5 日”），星期写“周日”；false 是默认（“10月5日”）。 */
   spaced: true,
-  /** 读者页面显示时刻（列表上的 10:59、搜索结果的“更新于 06:41”、收藏时间）；false 只写到日（默认 true）。 */
+  /** 读者页面显示时刻（列表上的 10:59、搜索结果的“更新于 06:41”、收藏时间、更新日志每条的时刻）；false 只写到日（默认 true）。 */
   clock: false,
 };
 
@@ -255,9 +255,9 @@ export const ABOUT = {
     actions: [["去参考", "/"], ["看日报", "/daily"]] as Array<[string, string]> | null,
     /** 示意图下面四个环节的名字（默认“采集、收录、精选、成刊”）。 */
     stepTitles: { collect: "收集", store: "保存", select: "挑选", publish: "整理" } as null | { collect: string; store: string; select: string; publish: string },
-    /** 示意图的说明里，说经过挑选以后去了哪里的那半句（默认“经过精选的闸门，只有少数几束通过，汇入每天的日报”）。 */
+    /** 示意图的说明里，说经过挑选以后去了哪里的那半句，也是示意图里报纸的悬停说明（默认“经过精选的闸门，只有少数几束通过，汇入每天的日报”）。 */
     riverNote: "入选的整理进参考，也编进日报" as string | null,
-    /** 四个环节下面的统计小字（过去 24 小时的数字、各类来源的个数）（默认 true）。 */
+    /** 四个环节下面的小字（过去 24 小时的数字、各类来源的个数、订阅方式）（默认 true）。 */
     statNotes: false,
   },
   /** 信源河动画下面的四个环节。 */
@@ -313,7 +313,8 @@ export const AGENT = {
 export const REPORTS = {
   /**
    * 紧凑版：不显示往期栏和日历点阵；“日报｜周报｜月报”放在报头上方，手机和电脑相同；最近几期的日期在各宽度都显示，
-   * 只有一期时不显示；报纸放进读者主路径的版心（LAYOUT.column）；不印“每日要闻”这类刊头语和出刊时间。false 是默认。
+   * 只有一期时不显示，写日期不写“今天”；报纸放进读者主路径的版心（LAYOUT.column）；报头上方只留一行日期和期数，不印“每日要闻”这类刊头语、
+   * 出刊时间和报头旁的期号日期框；日报合订本用普通标题，按月一张卡片、一期一行。false 是默认。
    */
   compact: true,
   /** 报头下面的出版者一行。 */
@@ -331,7 +332,7 @@ export const REPORTS = {
    * 周报月报没有总述时的那句话，以及订阅说明里的“按栏目分好的内容”都用它。
    */
   entry: { measure: "条", noun: "内容" },
-  /** 报头上其余几个数字后面的说法；写 null 的那一项不显示。精选数和日报期数在关于页、主题页也这样写。 */
+  /** 报头上其余几个数字后面的说法；写 null 的那一项不显示。来源数、精选数和日报期数在关于页也这样写，精选数和日报期数在主题页也这样写。 */
   metricUnits: { sourcesCount: "个来源", firstPartyEvents: null as string | null, selectedCount: "条精选", reportsCovered: "期日报" },
   /** 报告分享图上“共几条”的说法。 */
   shareUnit: "条内容",

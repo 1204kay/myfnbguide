@@ -1,7 +1,7 @@
 import { useEffect, useState, type ComponentType } from "react";
 import { IntentLink } from "../components/ui/IntentLink";
 import type { ChangelogRelease, ChangelogResponse } from "@aihot/contracts/site";
-import { SITE } from "@aihot/site";
+import { DATES, SITE } from "@aihot/site";
 import { useLoaderData } from "react-router";
 import { apiGet, edgeTtl, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
@@ -69,7 +69,7 @@ function ReleaseBody({ lines }: { lines: string[] }) {
   );
 }
 
-/** One date's releases in a card; `id` is the jump target of the month index. */
+/** One date's releases in a card; `id` is the jump target of the month index. Each release's time shows unless the site keeps times off its pages (DATES.clock). */
 function Day({ date, releases, id }: { date: string; releases: Release[]; id?: string }) {
   const h = dateHeading(date);
   return (
@@ -87,8 +87,8 @@ function Day({ date, releases, id }: { date: string; releases: Release[]; id?: s
             className={`grid gap-x-8 gap-y-2 border-b border-line-soft py-5 last:border-b-0 sm:grid-cols-[88px_minmax(0,1fr)] ${r.urgent ? "-mx-5 border-l-4 border-l-hot bg-hot-soft pl-4 pr-5 lg:-mx-7 lg:pl-6 lg:pr-7" : ""}`}
           >
             <div className="flex items-center gap-3 sm:block">
-              <span className="mono block text-[12.5px] text-ink-3">{r.time}</span>
-              <span className="inline-flex items-center gap-1.5 text-[11.5px] text-ink-4 sm:mt-1.5">
+              {DATES.clock && <span className="mono block text-[12.5px] text-ink-3">{r.time}</span>}
+              <span className={`inline-flex items-center gap-1.5 text-[11.5px] text-ink-4 ${DATES.clock ? "sm:mt-1.5" : ""}`}>
                 <span className={`size-1.5 rounded-full ${r.urgent ? "bg-hot" : KIND_DOT[r.kind]}`} aria-hidden="true" />
                 {r.kind}
               </span>
@@ -188,7 +188,7 @@ export default function ChangelogPage() {
     <PhoneBar back={{ to: "/more", label: "我的" }} title="更新日志" />
     <ReadingLayout aside={aside}>
       <header className="pb-6">
-        <h1 data-page-title="" className="text-[24px] font-semibold leading-[1.3] text-ink">更新日志</h1>
+        <h1 data-page-title="" className="text-[26px] font-bold leading-[1.3] text-ink [text-wrap:balance] lg:text-[30px]">更新日志</h1>
         <p className="mt-1.5 text-[13px] text-ink-3">新功能、调整、下线，都写在这里。</p>
       </header>
       <div className="space-y-4">

@@ -1,6 +1,6 @@
 // Building blocks of the Agent page: panel heads, numbered steps, copyable asks and addresses,
 // quiet tip tiles, callouts, tables and the fold-away details under each panel.
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { CopyButton } from "./CodeBlock";
 import { IconChevronDown } from "../../components/icons";
 
@@ -131,23 +131,35 @@ export function Mono({ children }: { children: ReactNode }) {
   return <code className="mono rounded-mark bg-bg-sunk px-1.5 py-0.5 text-[0.88em] text-ink">{children}</code>;
 }
 
-/** A plain table on a card; long rows scroll sideways on phones. Group rows name a block of rows. */
+/**
+ * A plain table on a card; group rows name a block of rows. Below sm each row is a block, its cells one under
+ * another, each after the first under its column's name, so nothing scrolls sideways on a phone.
+ */
 export function Table({ head, rows, minWidth = 560 }: { head: string[]; rows: Array<{ group: string } | ReactNode[]>; minWidth?: number }) {
+  const block = "max-sm:block max-sm:first:border-t-0";
   return (
     <div className="overflow-x-auto rounded-card border border-line bg-surface">
-      <table className="w-full text-left text-[13.5px]" style={{ minWidth }}>
-        <thead className="bg-bg-sunk text-[12.5px] text-ink-3">
+      <table className="w-full text-left text-[13.5px] max-sm:block sm:min-w-[var(--table-min)]" style={{ "--table-min": `${minWidth}px` } as CSSProperties}>
+        <thead className="bg-bg-sunk text-[12.5px] text-ink-3 max-sm:sr-only">
           <tr>{head.map((h) => <th key={h} className="px-3.5 py-2 font-medium">{h}</th>)}</tr>
         </thead>
-        <tbody>
+        <tbody className="max-sm:block">
           {rows.map((r, i) =>
             "group" in r ? (
-              <tr key={`g${i}`} className="border-t border-line">
-                <td colSpan={head.length} className="bg-bg-sunk/40 px-3.5 pb-1.5 pt-3 text-[12px] font-semibold text-ink-3">{r.group}</td>
+              <tr key={`g${i}`} className={`border-t border-line ${block}`}>
+                <td colSpan={head.length} className="bg-bg-sunk/40 px-3.5 pb-1.5 pt-3 text-[12px] font-semibold text-ink-3 max-sm:block">{r.group}</td>
               </tr>
             ) : (
-              <tr key={i} className="border-t border-line-soft align-top">
-                {r.map((c, j) => <td key={j} className="px-3.5 py-2.5">{c}</td>)}
+              <tr key={i} className={`border-t border-line-soft align-top max-sm:px-3.5 max-sm:py-3 ${block}`}>
+                {r.map((c, j) => (
+                  <td
+                    key={j}
+                    data-label={j > 0 ? head[j] : undefined}
+                    className={`px-3.5 py-2.5 max-sm:block max-sm:p-0 ${j > 0 ? "max-sm:mt-2 max-sm:before:mb-0.5 max-sm:before:block max-sm:before:text-[12px] max-sm:before:text-ink-4 max-sm:before:content-[attr(data-label)]" : ""}`}
+                  >
+                    {c}
+                  </td>
+                ))}
               </tr>
             ),
           )}

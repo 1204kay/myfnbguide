@@ -4,6 +4,7 @@ import { edgeTtl } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
 import { prepareCopy } from "../lib/site-copy";
 import { CopyPage, LegalFooterLinks } from "../features/copy/CopyPage";
+import { navName } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 import { webModules } from "../site-modules";
 
@@ -28,8 +29,9 @@ export default function TermsPage() {
       footer={
         <LegalFooterLinks
           links={[
-            { to: "/privacy", label: "隐私说明" },
-            { to: "/agent", label: "Agent 接入页" },
+            { to: "/privacy", label: navName("/privacy") },
+            { to: "/feedback", label: navName("/feedback") },
+            { to: "/agent", label: navName("/agent") },
             ...webModules().flatMap((m) => m.termsLinks ?? []),
           ]}
           note={`${POLICY.terms.name} ${TERMS.doc.meta["版本"] ?? ""} · ${TERMS.doc.meta["生效日期"] ?? ""}`}

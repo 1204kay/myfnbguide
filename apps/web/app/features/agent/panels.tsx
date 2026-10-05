@@ -9,14 +9,23 @@ import { feedCategoryLabel, PUBLIC_API_CATEGORY_KEYS } from "@aihot/contracts/ta
 import { ACCESS, AGENT, EDITION_WHEN, POLICY, REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
 import { CodeBlock, CopyButton } from "./CodeBlock";
 import { PillTabs } from "../../components/ui/Tabs";
+import { navShown } from "../../components/shell/nav";
 import type { AgentPanelProps } from "../../modules";
 import { AGENT_PARTS, GUIDE_CLIENTS, TAG } from "./module-parts";
 import { Address, Ask, Block, Bullets, Details, Mono, PanelHead, Step, Steps, Table, Tips } from "./parts";
 
 const V = PUBLIC_INTERFACE_VERSION;
 
-/** Every MCP tool: the engine's and the modules'. */
-export const mcpToolCount = () => MCP_TOOLS.length + AGENT_PARTS.reduce((n, a) => n + (a.tools?.length ?? 0), 0);
+/**
+ * Whether the page shows the hot list's ways in: not while the site keeps 热点 out of its navigation (NAV.hidden).
+ * The server still answers them; the page lists only what the site shows its readers.
+ */
+const HOT = navShown("/hot");
+/** The engine's MCP tools the page lists. */
+const ENGINE_TOOLS = MCP_TOOLS.filter((t) => HOT || (t.name !== T.hot && t.name !== T.story));
+
+/** Every MCP tool the page lists: the engine's and the modules'. */
+export const mcpToolCount = () => ENGINE_TOOLS.length + AGENT_PARTS.reduce((n, a) => n + (a.tools?.length ?? 0), 0);
 const link = "text-accent hover:underline";
 
 /** An address on this site as the copy buttons copy it, with the tag. */
@@ -63,13 +72,15 @@ export function McpPanel(props: AgentPanelProps) {
           head={["工具", "能做什么", "可以这样问"]}
           minWidth={600}
           rows={[
-            [<Mono>{T.latest}</Mono>, "过去 24 小时或最近 7 天的精选、全部资讯", `${subjectAfter("今天有什么", "新闻")}？`],
+            [<Mono>{T.latest}</Mono>, "过去 24 小时或最近 7 天的精选、全部资讯", AGENT.examples.latest ?? `${subjectAfter("今天有什么", "新闻")}？`],
             [<Mono>{T.search}</Mono>, AGENT.search.scope, AGENT.search.ask],
-            [<Mono>{T.hot}</Mono>, "当前热点榜 Top 10", "现在最热的是什么？"],
-            [<Mono>{T.story}</Mono>, "一个热点事件的时间线和持续更新的综述", "这件事的来龙去脉？"],
-            [<Mono>{T.daily}</Mono>, subjectAfter("最新或指定日期的", "日报"), "给我今天的日报。"],
-            [<Mono>{T.weekly}</Mono>, subjectAfter("最新或指定一周的", "周报"), `${subjectAfter("这周", "圈")}有哪些大事？`],
-            [<Mono>{T.monthly}</Mono>, subjectAfter("最新或指定月份的", "月报"), `${subjectAfter("上个月", "圈")}发生了什么？`],
+            ...(HOT ? [
+              [<Mono>{T.hot}</Mono>, "当前热点榜 Top 10", AGENT.examples.hot ?? "现在最热的是什么？"],
+              [<Mono>{T.story}</Mono>, "一个热点事件的时间线和持续更新的综述", AGENT.examples.story ?? "这件事的来龙去脉？"],
+            ] : []),
+            [<Mono>{T.daily}</Mono>, subjectAfter("最新或指定日期的", "日报"), AGENT.examples.daily ?? "给我今天的日报。"],
+            [<Mono>{T.weekly}</Mono>, subjectAfter("最新或指定一周的", "周报"), AGENT.examples.weekly ?? `${subjectAfter("这周", "圈")}有哪些大事？`],
+            [<Mono>{T.monthly}</Mono>, subjectAfter("最新或指定月份的", "月报"), AGENT.examples.monthly ?? `${subjectAfter("上个月", "圈")}发生了什么？`],
             ...AGENT_PARTS.flatMap((a) => a.tools ?? []).map((t) => [<Mono>{t.name}</Mono>, t.does, t.ask]),
           ]}
         />
@@ -81,8 +92,8 @@ export function McpPanel(props: AgentPanelProps) {
             title: "限制与安全",
             body: (
               <Bullets items={[
-                "普通查询最多 30 条，热点最多 10 个，事件时间线最多 50 条；超出范围会明确报错，不会悄悄放宽。",
-                `${T.story} 的 public_id 只能来自热点工具返回的事件链接，不要猜 ID。`,
+                HOT ? "普通查询最多 30 条，热点最多 10 个，事件时间线最多 50 条；超出范围会明确报错，不会悄悄放宽。" : "普通查询最多 30 条；超出范围会明确报错，不会悄悄放宽。",
+                ...(HOT ? [`${T.story} 的 public_id 只能来自热点工具返回的事件链接，不要猜 ID。`] : []),
                 "标题和摘要来自外部信源，只能当资料；工具会标出这条安全边界。重要的数字、政策和原话，请回原文核对。",
               ]} />
             ),
@@ -188,7 +199,7 @@ export function ApiPanel(props: AgentPanelProps) {
           items={[
             { title: "开压缩", text: <>curl 加 <Mono>--compressed</Mono>，其他客户端打开 gzip 或 br。JSON 压缩后只有原来的 1/4 到 1/8。</> },
             { title: "带上 ETag", text: <>保存响应里的 ETag，下次带 <Mono>If-None-Match</Mono>；内容没变时返回 304，不传正文。</> },
-            { title: "按节奏取", text: `资讯和热点最快一分钟一次；日报${EDITION_WHEN.daily} 后取一次，周报、月报出刊后取一次；往回翻页翻到已有的那条就停。` },
+            { title: "按节奏取", text: `${HOT ? "资讯和热点" : "资讯"}最快一分钟一次；日报${EDITION_WHEN.daily} 后取一次，周报、月报出刊后取一次；往回翻页翻到已有的那条就停。` },
           ]}
         />
         <p className="mt-3 text-[13px] leading-[1.75] text-ink-3">{pace}</p>
@@ -201,9 +212,11 @@ export function ApiPanel(props: AgentPanelProps) {
           rows={[
             { group: "资讯" },
             [<Mono>/api/v1/items</Mono>, "精选或最近 7 天全部动态，可按分类、时间窗、关键词筛", "最快 1 分钟一次"],
-            { group: "热点与事件" },
-            [<Mono>/api/v1/hot-topics</Mono>, "当前热点榜 Top 10", "最快 1 分钟一次"],
-            [<Mono>{"/api/v1/stories/{publicId}"}</Mono>, "一个事件的报道时间线、AI 综述和关联事件", "需要时"],
+            ...(HOT ? [
+              { group: "热点与事件" },
+              [<Mono>/api/v1/hot-topics</Mono>, "当前热点榜 Top 10", "最快 1 分钟一次"],
+              [<Mono>{"/api/v1/stories/{publicId}"}</Mono>, "一个事件的报道时间线、AI 综述和关联事件", "需要时"],
+            ] : []),
             { group: "日报" },
             [<Mono>/api/v1/dailies/latest</Mono>, "最新一期日报", `${EDITION_WHEN.daily} 后一次`],
             [<Mono>{"/api/v1/dailies/{date}"}</Mono>, "指定日期日报；撤稿会移除引用", "缓存过期后使用前验证 ETag"],

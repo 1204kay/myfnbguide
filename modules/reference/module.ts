@@ -6,7 +6,6 @@ export default defineModule({
   pages: [
     { path: "reference", file: "web/home.tsx", id: "reference-home" },
     { path: "reference/cases/:id", file: "web/case.tsx", id: "reference-case" },
-    { path: "reference/kinds/:slug", file: "web/kind.tsx", id: "reference-kind" },
     { path: "reference/shops/:key", file: "web/shop.tsx", id: "reference-shop" },
     { path: "reference/:slug", file: "web/situation.tsx", id: "reference-situation" },
   ],

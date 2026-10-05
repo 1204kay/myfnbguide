@@ -306,11 +306,11 @@ export function categoryTitle(key: string): string | undefined {
 }
 
 /**
- * 按店型浏览: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in
- * standard written words ("/" written 和), in the order the page lists them. Settled 10/5 from 40 classification
- * tables (myfnb/research-2026-10-05-shop-types.md): most say what a shop mainly sells; 摊位和餐车 is the form and
- * 团餐和宴会承办 who the customer is, and those two are judged first (prompts/case.md). The writer picks one or
- * none; slugs are addresses, never renamed once public.
+ * 店型: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in standard
+ * written words ("/" written 和). Settled 10/5 from 40 classification tables (myfnb/research-2026-10-05-shop-types.md):
+ * most say what a shop mainly sells; 摊位和餐车 is the form and 团餐和宴会承办 who the customer is, and those two
+ * are judged first (prompts/case.md). The writer picks one or none. The shop page names it; no page lists or
+ * counts by it until the library is thick enough in most kinds (layout J0, J5).
  */
 export const SHOP_KINDS = [
   { slug: "stalls", title: "摊位和餐车", dek: "在摊位或餐车上做生意的，不论卖什么：路边摊、夜市摊、小贩中心和美食广场里的摊位、咖啡店里租的摊位、餐车。" },

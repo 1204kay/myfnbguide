@@ -10,25 +10,28 @@ export function num(n: number): string {
   return rounded < 0 ? `−${body}` : body;
 }
 
-/**
- * What a situation or a practice counts (layout A7-3): practices (or, before the stories are grouped, 条原文),
- * then shops and insiders, then the countries, a country by its name when it is the only one; nothing that is zero.
- */
-export function countItems(c: Count, of: "situation" | "practice" = "situation"): Array<[number, string] | string> {
-  const out: Array<[number, string] | string> = [];
-  if (of === "situation") out.push(c.practices === null ? [c.cases, "条原文"] : [c.practices, "种做法"]);
-  if (of === "practice" || c.practices !== null) {
-    if (c.shops) out.push([c.shops, "家店"]);
-    if (c.insiders) out.push([c.insiders, "位业内人士"]);
-  }
-  if (c.countries.length === 1) out.push(c.countries[0]!);
-  else if (c.countries.length > 1) out.push([c.countries.length, "个国家"]);
+/** Who stands behind a practice or a situation: its shops, then its insiders; nothing that is zero (layout J4-2). */
+export function tellers(c: Count): Array<[number, string]> {
+  const out: Array<[number, string]> = [];
+  if (c.shops) out.push([c.shops, "家店"]);
+  if (c.insiders) out.push([c.insiders, "位业内人士"]);
   return out;
 }
 
-/** "3 种做法 · 8 家店 · 1 位业内人士 · 4 个国家", "1 家店 · 日本". */
-export const countText = (c: Count, of: "situation" | "practice" = "situation") =>
-  countItems(c, of).map((i) => (typeof i === "string" ? i : `${num(i[0])} ${i[1]}`)).join(" · ");
+/** A practice card's count: "3 家店", "2 家店 · 1 位业内人士". */
+export const tellersText = (c: Count) => tellers(c).map(([n, unit]) => `${num(n)} ${unit}`).join(" · ");
+
+/**
+ * What a situation counts in a list (layout J3-5): its shops once its stories are grouped by practice, its 条原文
+ * before (or where no shop tells it). No practices, insiders or countries.
+ */
+export const listCount = (c: Count): [number, string] => (c.grouped && c.shops ? [c.shops, "家店"] : [c.cases, "条原文"]);
+
+/** "16 家店", "13 条原文". */
+export const listCountText = (c: Count) => {
+  const [n, unit] = listCount(c);
+  return `${num(n)} ${unit}`;
+};
 
 /**
  * A half-width space between a Chinese character and a digit or Latin letter, either way round ("31 席",

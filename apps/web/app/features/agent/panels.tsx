@@ -17,21 +17,32 @@ import { Address, Ask, Block, Bullets, Details, Mono, PanelHead, Step, Steps, Ta
 const V = PUBLIC_INTERFACE_VERSION;
 
 /**
- * Whether the page shows the hot list's ways in: not while the site keeps 热点 out of its navigation (NAV.hidden).
+ * Whether the API panel lists the hot list's endpoints: not while the site keeps 热点 out of its navigation (NAV.hidden).
  * The server still answers them; the page lists only what the site shows its readers.
  */
 const HOT = navShown("/hot");
-/** The engine's MCP tools the page lists. */
-const ENGINE_TOOLS = MCP_TOOLS.filter((t) => HOT || (t.name !== T.hot && t.name !== T.story));
+/** Whether the MCP server offers the hot list's tools: the page lists the tools the server registers (MCP_TOOLS). */
+const MCP_HOT = MCP_TOOLS.some((t) => t.name === T.hot);
 
-/** Every MCP tool the page lists: the engine's and the modules'. */
-export const mcpToolCount = () => ENGINE_TOOLS.length + AGENT_PARTS.reduce((n, a) => n + (a.tools?.length ?? 0), 0);
+/** Every MCP tool the server offers, so the page lists: the engine's and the modules'. */
+export const mcpToolCount = () => MCP_TOOLS.length + AGENT_PARTS.reduce((n, a) => n + (a.tools?.length ?? 0), 0);
 const link = "text-accent hover:underline";
 
 /** An address on this site as the copy buttons copy it, with the tag. */
 function addressOf({ base, tag }: AgentPanelProps, path: string): string {
   return TAG && tag ? `${base}${path}?${TAG.query}=${tag}` : `${base}${path}`;
 }
+
+/** The engine's tools in the table: what each does, and a way to ask for it. */
+const ENGINE_TOOL_ROWS: Record<string, [does: string, ask: string]> = {
+  [T.latest]: ["过去 24 小时或最近 7 天的精选、全部资讯", AGENT.examples.latest ?? `${subjectAfter("今天有什么", "新闻")}？`],
+  [T.search]: [AGENT.search.scope, AGENT.search.ask],
+  [T.hot]: ["当前热点榜 Top 10", AGENT.examples.hot ?? "现在最热的是什么？"],
+  [T.story]: ["一个热点事件的时间线和持续更新的综述", AGENT.examples.story ?? "这件事的来龙去脉？"],
+  [T.daily]: [subjectAfter("最新或指定日期的", "日报"), AGENT.examples.daily ?? "给我今天的日报。"],
+  [T.weekly]: [subjectAfter("最新或指定一周的", "周报"), AGENT.examples.weekly ?? `${subjectAfter("这周", "圈")}有哪些大事？`],
+  [T.monthly]: [subjectAfter("最新或指定月份的", "月报"), AGENT.examples.monthly ?? `${subjectAfter("上个月", "圈")}发生了什么？`],
+};
 
 const MCP_CLIENTS = [
   { key: "claude", label: "Claude Code" },
@@ -72,15 +83,7 @@ export function McpPanel(props: AgentPanelProps) {
           head={["工具", "能做什么", "可以这样问"]}
           minWidth={600}
           rows={[
-            [<Mono>{T.latest}</Mono>, "过去 24 小时或最近 7 天的精选、全部资讯", AGENT.examples.latest ?? `${subjectAfter("今天有什么", "新闻")}？`],
-            [<Mono>{T.search}</Mono>, AGENT.search.scope, AGENT.search.ask],
-            ...(HOT ? [
-              [<Mono>{T.hot}</Mono>, "当前热点榜 Top 10", AGENT.examples.hot ?? "现在最热的是什么？"],
-              [<Mono>{T.story}</Mono>, "一个热点事件的时间线和持续更新的综述", AGENT.examples.story ?? "这件事的来龙去脉？"],
-            ] : []),
-            [<Mono>{T.daily}</Mono>, subjectAfter("最新或指定日期的", "日报"), AGENT.examples.daily ?? "给我今天的日报。"],
-            [<Mono>{T.weekly}</Mono>, subjectAfter("最新或指定一周的", "周报"), AGENT.examples.weekly ?? `${subjectAfter("这周", "圈")}有哪些大事？`],
-            [<Mono>{T.monthly}</Mono>, subjectAfter("最新或指定月份的", "月报"), AGENT.examples.monthly ?? `${subjectAfter("上个月", "圈")}发生了什么？`],
+            ...MCP_TOOLS.map((t) => [<Mono>{t.name}</Mono>, ...ENGINE_TOOL_ROWS[t.name]!]),
             ...AGENT_PARTS.flatMap((a) => a.tools ?? []).map((t) => [<Mono>{t.name}</Mono>, t.does, t.ask]),
           ]}
         />
@@ -92,8 +95,8 @@ export function McpPanel(props: AgentPanelProps) {
             title: "限制与安全",
             body: (
               <Bullets items={[
-                HOT ? "普通查询最多 30 条，热点最多 10 个，事件时间线最多 50 条；超出范围会明确报错，不会悄悄放宽。" : "普通查询最多 30 条；超出范围会明确报错，不会悄悄放宽。",
-                ...(HOT ? [`${T.story} 的 public_id 只能来自热点工具返回的事件链接，不要猜 ID。`] : []),
+                MCP_HOT ? "普通查询最多 30 条，热点最多 10 个，事件时间线最多 50 条；超出范围会明确报错，不会悄悄放宽。" : "普通查询最多 30 条；超出范围会明确报错，不会悄悄放宽。",
+                ...(MCP_HOT ? [`${T.story} 的 public_id 只能来自热点工具返回的事件链接，不要猜 ID。`] : []),
                 "标题和摘要来自外部信源，只能当资料；工具会标出这条安全边界。重要的数字、政策和原话，请回原文核对。",
               ]} />
             ),

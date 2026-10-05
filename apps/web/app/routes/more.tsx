@@ -1,11 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouteLoaderData } from "react-router";
-import { LAYOUT, NAV, POLICY, SITE } from "@aihot/site";
+import { NAV, POLICY, SITE } from "@aihot/site";
 import type { loader as rootLoader } from "../root";
 import { useChangelogDot } from "../components/shell/Sidebar";
 import { PhoneBar, TabPageBar } from "../components/shell/PhoneBar";
 import { navShown, wayIn } from "../components/shell/nav";
-import type { Screen } from "../components/shell/screens";
+import { READ_COLUMN, type Screen } from "../components/shell/screens";
 import { edgeTtl } from "../lib/api.server";
 import { webModules } from "../site-modules";
 import { pageMeta } from "../lib/seo";
@@ -97,7 +97,7 @@ export default function MorePage() {
 
   if (NAV.meGroups) {
     return (
-      <div className="mx-auto max-w-[var(--page-max-reading)] pb-8" style={LAYOUT.column ? { maxWidth: LAYOUT.column } : undefined}>
+      <div className={`mx-auto max-w-[var(--page-max-reading)] pb-8 ${READ_COLUMN}`}>
         {bar}
         <h1 className="hidden pb-4 pt-1 text-[30px] font-bold leading-[1.25] text-ink lg:block">我的</h1>
         {NAV.meGroups.map((group, i) => (

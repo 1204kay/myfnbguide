@@ -91,11 +91,12 @@ function entriesOf(content: Record<string, any>, kind: "daily" | "periodic"): Ar
 /**
  * The entries an issue may lead with, in order. An issue that names its lead item (composed by rule)
  * leads with that entry, then its highlights, then the rest; an issue without a written lead with its
- * entries as cited. A written lead is matched to its citation just as its cover is, so its
- * withdrawal can replace that lead too. An unmatched written lead has no individual citation.
+ * entries as cited. A daily's flashes listed in its sections (site.ts REPORTS.flashPlacement) never
+ * lead. A written lead is matched to its citation just as its cover is, so its withdrawal can replace
+ * that lead too. An unmatched written lead has no individual citation.
  */
 function leadCandidates(content: Record<string, any>, kind: "daily" | "periodic"): Array<Record<string, any>> {
-  const entries = entriesOf(content, kind);
+  const entries = entriesOf(content, kind).filter((e) => !e.brief);
   const leadId = content.leadItemId ?? writtenLeadId(content, kind, entries);
   if (!leadId) return (kind === "daily" ? content.lead?.title : periodicHeadline(content)) ? [] : entries;
   const byId = new Map(entries.filter((e) => e.itemId).map((e) => [String(e.itemId), e]));
@@ -251,9 +252,10 @@ function citedSources(content: Record<string, any>, kind: "daily" | "periodic", 
 /**
  * A cited entry with what a daily entry composed by rule adds: how many other sources reported the
  * event, the event's other developments listed under it (titles only), and the earlier daily it follows.
+ * A flash listed in its section stays marked as one, withdrawn or not.
  */
 function entryCitation(raw: Record<string, any>, avail: Map<string, Availability>): ReportCitation {
-  const citation = citationFrom(raw, avail);
+  const citation: ReportCitation = { ...citationFrom(raw, avail), ...(raw.brief === true ? { brief: true as const } : {}) };
   if (!citation.available) return citation;
   const related: ReportCitation[] = (raw.related ?? []).map((r: Record<string, any>) => ({ ...citationFrom(r, avail), summary: null }));
   return {
@@ -345,8 +347,9 @@ export async function loadReport(kind: ReportKind, key: string): Promise<ReportD
   const highlightIds: string[] = c.highlights ?? [];
   const highlights = highlightIds.length
     ? highlightIds.map((id) => all.find((x: ReportCitation) => x.itemId === id)).filter((x): x is ReportCitation => !!x)
-    : all.slice(0, 3);
-  const text = [c.lead?.leadParagraph ?? "", c.overview ?? "", ...all.flatMap((i: ReportCitation) => [`${i.title}${i.summary ?? ""}`, ...(i.related ?? []).map((r) => r.title)])].join("");
+    : all.filter((x) => !x.brief).slice(0, 3);
+  // A flash listed in its section is read by its title only.
+  const text = [c.lead?.leadParagraph ?? "", c.overview ?? "", ...all.flatMap((i: ReportCitation) => [`${i.title}${i.brief ? "" : i.summary ?? ""}`, ...(i.related ?? []).map((r) => r.title)])].join("");
   // An issue leads with the item it names (an issue composed by rule records it), or the one standing in
   // for it once withdrawn (issueLead); an earlier daily's lead is matched by title. An earlier weekly or
   // monthly's picture comes from its first highlight, captioned with it.
@@ -447,12 +450,14 @@ export async function v1Dailies(limit: number) {
 
 /**
  * What a daily entry adds for readers of the Agent answer, keyed by the entry's link: other sources,
- * the event's other developments (title and link on this site), and the earlier daily it follows.
+ * the event's other developments (title and link on this site), the earlier daily it follows, and whether
+ * it is a flash listed in its section (site.ts REPORTS.flashPlacement), given by its title and source only.
  */
 export interface DailyNote {
   otherSources: number;
   related: Array<{ title: string; link: string }>;
   followUp: string | null;
+  brief?: true;
 }
 
 /** The v1 daily (its fields never change) and the notes the Agent answer adds to it. */
@@ -473,7 +478,9 @@ export async function dailyWithNotes(date: string | "latest") {
   for (const i of raw.filter(ok)) {
     const related = (i.related ?? []).filter((x: any) => x.itemId && ok(x)).map((x: any) => ({ title: String(x.title), link: itemUrl(x.itemId) }));
     const otherSources = Number(i.sources) > 1 ? Number(i.sources) - 1 : 0;
-    if (otherSources || related.length || i.followUp) notes.set(links(i).aihot ?? links(i).original, { otherSources, related, followUp: i.followUp ?? null });
+    if (otherSources || related.length || i.followUp || i.brief) {
+      notes.set(links(i).aihot ?? links(i).original, { otherSources, related, followUp: i.followUp ?? null, ...(i.brief === true ? { brief: true as const } : {}) });
+    }
   }
   const body = {
     schemaVersion: 1 as const,

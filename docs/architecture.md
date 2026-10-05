@@ -74,6 +74,8 @@ flowchart LR
 
 搜索结果和条目页各留了一个位置给模块：搜索结果里引擎那一节之前的一节（`searchPart`，收到搜索的词），条目页收录理由之后的一块（`itemPart`，收到条目 id）。模块给出一个 api 地址和一个组件；页面在 loader 里读这个地址（`apps/web/app/site-modules.ts` 的 `readParts`），把读到的交给组件画。没有模块提供、读取失败或组件认为没有内容时，那里什么都不画。
 
+关于页最后一个环节的数字也可以由模块给出（`server.ts` 的 `figures`，每项一个数字和单位，例如参考库的「41 种情况」「328 条原文」），随站点统计 `/api/site/stats` 一起读出；没有模块给出时显示日报期数。
+
 模块页也可以做首页：`site/site.ts` 的 `NAV.home` 写这一页在 `module.ts` 里的 id，它就挂在 `/`，引擎的精选列表搬到 `/latest`（前后端都从 `packages/contracts/src/routes.ts` 的 `feedPath()` 读精选的地址）。模块原来的地址由它自己在 `module.ts` 的 `redirects` 里 301 到 `/`；它的导航项照旧写原来的地址，框架会改为指向 `/`。网站地图已经列出 `/`，模块的 `sitemap` 不必再列。
 
 写好以后在 `site/modules/` 的三份清单里列上它：`index.ts` 列地址，`server.ts` 列后端，`web.ts` 列网页，没有的那份不列；再在 `site/package.json` 的 `dependencies` 里写上它。用 Docker 部署的，在 `Dockerfile` 里照着其他包加一行 `COPY modules/<名字>/package.json modules/<名字>/`。框架的代码不导入任何模块，只读这三份清单，所以合并本仓库以后的更新时，不容易和你自己的功能冲突。插口不够用时，在框架里加一个通用的插口，而不是把这个功能写进框架。
@@ -95,7 +97,7 @@ flowchart LR
 | `/` `/all` `/hot` `/topics` `/daily` `/weekly` `/monthly` | 精选、全部动态、热门事件、主题、日报周报月报 |
 | `/feed.xml` `/feed/full.xml` `/feed/all.xml` `/feed/daily.xml` `/feed/weekly.xml` `/feed/monthly.xml` | RSS：精选、精选全文、全部、日报、周报、月报；另有按分类的 `/feed/category/<key>.xml` 和分类全文版 `/feed/full/category/<key>.xml` |
 | `/api/v1/` | 公开 API，文档在 `/openapi-v1.json`；给 Agent 读的 Markdown 从 `/api/v1/agent` 开始；说明页在 `/agent` |
-| `/api/mcp` | MCP 服务：最新、搜索、热点、事件、日报、周报、月报各一个工具，工具名前缀是 `site/site.ts` 的 `mcpPrefix` |
+| `/api/mcp` | MCP 服务：最新、搜索、热点、事件、日报、周报、月报各一个工具（`NAV.hidden` 写 `/hot` 时不提供热点和事件两个），工具名前缀是 `site/site.ts` 的 `mcpPrefix` |
 | `/llms.txt` `/sitemap.xml` `/robots.txt` | 给大模型和搜索引擎的说明（`robots.txt` 等根目录文件在 `site/public/`） |
 | `/admin` | 后台 |
 

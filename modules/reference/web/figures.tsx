@@ -1195,6 +1195,9 @@ export function SituationDrawing({ slug }: { slug: string }) {
   return figure && situation ? <div className={WIDTH}>{figure.draw(situation.groups.map((g) => g.title))}</div> : null;
 }
 
+/** What kind of picture a situation's is, for a place that shows it without its caption (layout J3-3); null for none. */
+export const figureKind = (slug: string) => FIGURES[slug]?.kind ?? null;
+
 /**
  * One cause's part of the picture, the other causes' parts faded (the first practice card of a group, layout
  * A7-3); only the pictures drawn by cause have one. `groups` are the causes numbered on the page.

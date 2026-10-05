@@ -87,6 +87,10 @@
   --bar-h: 48px;
   --gutter-l: max(16px, env(safe-area-inset-left));
   --gutter-r: max(16px, env(safe-area-inset-right));
+  /* The phone shell's column, which the bottom bars' rows share, and those bars' side padding. */
+  --shell-max: 640px;
+  --bottom-bar-l: env(safe-area-inset-left);
+  --bottom-bar-r: env(safe-area-inset-right);
   color-scheme: light;
   --bg: #faf9f6;
   --bg-sunk: #f3f3ef;
@@ -141,6 +145,18 @@
 @media (min-width: 961px) {
   :root {
     --bar-h: 0px;
+  }
+}
+
+/* A site whose phone shell spreads with the screen (site.ts LAYOUT.fluid, root.tsx): from 641px the page, its
+   bar and the bottom bars' rows run between gutters of 24px, or the notch's safe area where that is wider. */
+@media (min-width: 641px) and (max-width: 960px) {
+  :root[data-fluid] {
+    --gutter-l: max(24px, env(safe-area-inset-left));
+    --gutter-r: max(24px, env(safe-area-inset-right));
+    --shell-max: none;
+    --bottom-bar-l: var(--gutter-l);
+    --bottom-bar-r: var(--gutter-r);
   }
 }
 

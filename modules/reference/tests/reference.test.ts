@@ -2,14 +2,18 @@
 // spoken word, a label heading, a note to itself or a title that opens with its source reaches a reader; a story
 // with problems is shown without a second try, or shown after failing it; thin material becomes a story; text is
 // stored without the space between Chinese and digits; one shop's stories miss each other's page for a bracket in
-// its name; a withdrawn item stays in the reference pages; a situation with one case is listed; a kind is listed
-// with one story or paged without any; a story points to its shop's page when that page would only repeat it; a
-// grouping of practices fails on a story left out, placed twice or across groups, or a shop on two lines, instead
-// of mending it; a grouping stores one line of two shops or a number no story has, or sends a text back as too
-// long without naming where, how long and what to cut; a practice counts articles, not shops, or counts an
-// adviser as a shop; one country is written as "1 个国家"; a page narrowed to a kind counts other kinds; a list
-// shows one shop's stories as several cards; the ranking of situations counts stories, not shops; the search or
-// the item page's block misses a story.
+// its name; a withdrawn item stays in the reference pages; a situation with one case is listed; a story points to
+// its shop's page when that page would only repeat it; a grouping of practices fails on a story left out, placed
+// twice or across groups, or a shop on two lines, instead of mending it; a grouping stores one line of two shops or
+// a number no story has, or sends a text back as too long without naming where, how long and what to cut; a
+// practice counts articles, not shops, or counts an adviser as a shop; a list counts practices or countries, or
+// shops before the stories are grouped; a list shows one shop's stories as several cards; the ranking of
+// situations counts stories, not shops, or lists more than ten; a category does not list the situation most shops
+// tell first; 代表做法 is not the practice the most shops tell, an insider counted as one; 最近收进 is not the story
+// taken in last; a practice one shop tells is a card, or its row repeats the title in the shop's line, or drops a
+// story the grouping gave another shop before the stories were written again; one shop's practices in a list each
+// name it again; a page is split by cause without two causes of two practices each; a shop is named two ways, or
+// with its country twice; the shop kinds' page still answers; the search or the item page's block misses a story.
 import { pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -23,10 +27,10 @@ import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, writeCase } from "../backend/write.ts";
-import { groupSituation, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
-import { membersBySituation, rankSituations, sourceKind, tellerOf } from "../backend/read.ts";
-import { countText, day, spaced } from "../format.ts";
-import type { CaseStory, Count, SituationRow } from "../types.ts";
+import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
+import { membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
+import { day, listCountText, spaced, tellersText } from "../format.ts";
+import type { CaseStory, Count, Shop, SituationRow } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
 
@@ -64,21 +68,47 @@ test("what readers read is spaced between Chinese and digits or Latin, and dated
   assert.equal(day("2019-02-19T04:00:00Z", now), "2019 年 2 月 19 日");
 });
 
-const count = (over: Partial<Count>): Count => ({ practices: null, shops: 0, insiders: 0, cases: 0, countries: [], ...over });
+const count = (over: Partial<Count>): Count => ({ grouped: false, shops: 0, insiders: 0, cases: 0, ...over });
 
-test("counts name a lone country, skip what is zero, and count 条原文 before the stories are grouped", () => {
-  assert.equal(countText(count({ practices: 3, shops: 8, insiders: 1, cases: 12, countries: ["日本", "美国", "中国", "法国"] })), "3 种做法 · 8 家店 · 1 位业内人士 · 4 个国家");
-  assert.equal(countText(count({ practices: 1, shops: 1, cases: 1, countries: ["日本"] })), "1 种做法 · 1 家店 · 日本");
-  assert.equal(countText(count({ cases: 13, shops: 9, countries: ["日本", "美国"] })), "13 条原文 · 2 个国家");
-  assert.equal(countText(count({ shops: 2, insiders: 1, cases: 4, countries: ["美国"] }), "practice"), "2 家店 · 1 位业内人士 · 美国");
+test("a list counts shops once the stories are grouped and 条原文 before; a practice names its insiders; nothing counts countries or practices", () => {
+  assert.equal(listCountText(count({ grouped: true, shops: 16, insiders: 1, cases: 40 })), "16 家店");
+  assert.equal(listCountText(count({ shops: 9, cases: 13 })), "13 条原文", "not grouped yet");
+  assert.equal(listCountText(count({ grouped: true, insiders: 2, cases: 2 })), "2 条原文", "no shop tells it");
+  assert.equal(listCountText(count({ grouped: true, shops: 1200, cases: 1500 })), "1,200 家店");
+  assert.equal(tellersText(count({ grouped: true, shops: 2, insiders: 1, cases: 4 })), "2 家店 · 1 位业内人士");
+  assert.equal(tellersText(count({ grouped: true, shops: 3, cases: 3 })), "3 家店");
 });
 
-test("店家谈得最多的事 ranks situations by shops, then stories, then the library's order, five at most", () => {
+test("店家谈得最多的事 ranks situations by shops, then stories, then the library's order, ten at most", () => {
   const row = (slug: string, shops: number, cases: number, insiders = 0): SituationRow =>
-    ({ slug, category: "成本与利润", title: slug, dek: "", overview: null, count: count({ shops, cases, insiders }), sources: [] });
-  const rows = [row("a", 3, 10), row("b", 5, 5), row("c", 5, 6), row("d", 1, 20, 9), row("e", 2, 2), row("f", 2, 2), row("g", 4, 4)];
-  assert.deepEqual(rankSituations(rows).map((r) => r.slug), ["c", "b", "g", "a", "e"], "stories break a tie of shops; insiders and stories alone do not lift one");
-  assert.deepEqual(rows.map((r) => r.slug), ["a", "b", "c", "d", "e", "f", "g"], "the lists keep their order");
+    ({ slug, category: "成本与利润", title: slug, dek: "", overview: null, count: count({ grouped: true, shops, cases, insiders }), practice: null });
+  const rows = [row("a", 3, 10), row("b", 5, 5), row("c", 5, 6), row("d", 1, 20, 9), row("e", 2, 2), row("f", 2, 2), row("g", 4, 4),
+    row("h", 1, 3), row("i", 1, 2), row("j", 0, 2), row("k", 0, 4), row("l", 2, 1)];
+  assert.deepEqual(rankSituations(rows).map((r) => r.slug), ["c", "b", "g", "a", "e", "f", "l", "d", "h", "i"],
+    "stories break a tie of shops, the library's order a tie of both; insiders and stories alone do not lift one");
+  assert.deepEqual(rows.map((r) => r.slug), ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"], "the lists keep their order");
+});
+
+test("a shop's label drops the country its line writes before it, only where the country says where the shop is", () => {
+  assert.equal(withoutCountry("日本一家泰式餐馆", "日本"), "一家泰式餐馆");
+  assert.equal(withoutCountry("日本京都一家意大利小酒馆", "日本"), "京都一家意大利小酒馆");
+  assert.equal(withoutCountry("美国的两位餐厅顾问", "美国"), "两位餐厅顾问");
+  assert.equal(withoutCountry("日本东京的一家拉面店", "日本"), "东京的一家拉面店");
+  assert.equal(withoutCountry("美国 3 家店的店主", "美国"), "3 家店的店主");
+  assert.equal(withoutCountry("加州一家小酒馆", "美国"), "加州一家小酒馆");
+  assert.equal(withoutCountry("美国一家小酒馆", "日本"), "美国一家小酒馆", "another country is the label's own");
+  for (const [label, country] of [["意大利面馆", "意大利"], ["日本料理店", "日本"], ["日本人开的一家拉面店", "日本"], ["韩国烤肉店的一位店主", "韩国"], ["美国家庭面包房", "美国"],
+    ["日本第一家胶囊餐厅", "日本"], ["日本最大的一家连锁拉面店", "日本"], ["日本", "日本"]]) {
+    assert.equal(withoutCountry(label!, country!), label, `${label}: a kind of shop, a people or a place in the country, not where it is`);
+  }
+});
+
+test("a practice one shop tells shows the shop's line only where half its pairs of characters or more are not in the title", () => {
+  assert.equal(repeats("把账单逐行对比", "逐行对比账单"), true);
+  assert.equal(repeats("在附近大学招兼职", "在附近大学招兼职"), true);
+  assert.equal(repeats("请老员工介绍朋友来面试", "请老员工介绍朋友"), true);
+  assert.equal(repeats("布草账单四年涨了 74%", "把第一张和最新一张账单逐行对比"), false);
+  assert.equal(repeats("介绍的朋友留得更久", "请老员工介绍朋友"), false);
 });
 
 test("a story counts as its named shop, the source of an owner who names none, the story of a publication, or an insider", () => {
@@ -250,7 +280,7 @@ test("what the model wrote goes back named: lengths against what the prompt asks
   for (const expected of [
     /^综述太长：最多 120 字，现在 1\d\d 字；删去次要的原因和做法/, /^第 1 个做法的标题太长：最多 20 字，现在 2\d 字；只写怎么做/,
     /^第 1 个做法的归纳太长：最多 150 字，现在 \d+ 字；删去次要的条件和数字，只留共同的做法和最关键的差别$/,
-    /^第 1 个做法第 1 家的那一行太长：最多 24 字，现在 4\d 字；删去次要的条件，只留这家店的关键数字或结果$/,
+    /^第 1 个做法第 1 家的那一行太长：最多 24 字，现在 4\d 字；删去次要的条件和数字，只留这家店怎么做和一个关键数字或结果$/,
     /^第 1 个做法的归纳用了“个人饮食店”/, /^第 1 个做法第 2 家的那一行用了“讲”/, /^综述里写了数字 3：/, /归纳里的数字 99,999 在这个做法的故事里找不到/,
     /^第 1 个做法第 1 家的那一行「.+」的数字 77,777 在这家店的故事里找不到/, /^第 2 个做法第 1 家的那一行放了不同店家（s3、s4）的故事/,
   ]) {
@@ -272,9 +302,10 @@ const answers: Record<string, unknown[]> = {
   ],
   // Placed twice in one situation (two groups): it counts once, under the first. Its shop's name has a gloss.
   SECOND: [{ material: "story", ...story({ title: "同一家店的另一笔账", shop: { ...bistro, name: "Corner Bistro（街角小馆）" }, placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
-  COFFEE: [{ material: "story", ...story({ title: "电费账单每周从865美元涨到1,503美元", shop: { name: null, label: "一家社区咖啡店", country: "日本", city: null, kind: "coffee", size: null, speaker: "owner" } }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
+  // Its label repeats its country, which the pages write before it once.
+  COFFEE: [{ material: "story", ...story({ title: "电费账单每周从865美元涨到1,503美元", shop: { name: null, label: "日本一家社区咖啡店", country: "日本", city: null, kind: "coffee", size: null, speaker: "owner" } }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
   // Only a spoken word: sent back as an edit of the story, without the material (its title carries the marker);
-  // in no situation and of no kind, so the pages below count as before.
+  // in no situation, so the pages below count as before.
   TEXTONLY: [
     { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "顾问讲，账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
     { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
@@ -329,17 +360,18 @@ const app = await buildApp();
 const SRC = `reference-${T}`;
 const ids: Record<string, string> = {};
 const get = async (path: string) => JSON.parse((await app.inject(path)).body);
-/** Stories written in the same moment list their countries in either order. */
-const sorted = (c: Count) => ({ ...c, countries: [...c.countries].sort() });
+
+/** A selected item of the test source, public a minute ago; its id. */
+async function selectedItem(marker: string): Promise<string> {
+  const { articleId } = await upsertMaterial({ sourceId: SRC, url: `https://example.com/${marker}-${T}`, title: `${marker}-${T}`, bodyText: `${marker}-${T} ${SOURCE}`, bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
+  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected) VALUES (${articleId}, 1, 'rule', 'pass', 'tip', ${marker}, '摘要', 60, true)`;
+  await publishArticle(articleId, { releasedAt: new Date(Date.now() - 60_000) });
+  return articleId;
+}
 
 before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, tags) VALUES (${SRC}, 'Total Food Service（美国 · 餐饮媒体）', 'rss', 'T2', 'editorial', ${["美国", "媒体"]})`;
-  for (const marker of Object.keys(answers)) {
-    const { articleId } = await upsertMaterial({ sourceId: SRC, url: `https://example.com/${marker}-${T}`, title: `${marker}-${T}`, bodyText: `${marker}-${T} ${SOURCE}`, bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
-    await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected) VALUES (${articleId}, 1, 'rule', 'pass', 'tip', ${marker}, '摘要', 60, true)`;
-    await publishArticle(articleId, { releasedAt: new Date(Date.now() - 60_000) });
-    ids[marker] = articleId;
-  }
+  for (const marker of Object.keys(answers)) ids[marker] = await selectedItem(marker);
 });
 after(async () => { installModules([]); await app.close(); await model.close(); await stopBoss(); await closeDb(); });
 
@@ -379,20 +411,20 @@ test("cases are written for selected items, once more when the checks find probl
 
 test("the pages show public cases only, a situation once two cases are in it, each shop once in a list, and the practices by shop", async () => {
   const home = await get("/api/reference");
-  assert.deepEqual(home.kinds, [{ slug: "dining", title: "正餐", cases: 2 }], "coffee has one story: not listed");
   const cost = home.categories.find((c: { key: string }) => c.key === "cost");
-  assert.deepEqual(cost.situations.map((s: { slug: string; count: Count }) => [s.slug, sorted(s.count)]),
-    [["busy-no-profit", sorted({ practices: null, shops: 2, insiders: 0, cases: 3, countries: ["美国", "日本"] })]], "not grouped yet: 条原文; the bistro's two stories one shop");
-  for (const none of ["tea", "no-such-kind"]) assert.equal((await app.inject(`/api/reference/kinds/${none}`)).statusCode, 404, `${none}: no cases, no page`);
+  assert.deepEqual(cost.situations.map((s: { slug: string; count: Count; practice: string | null }) => [s.slug, s.count, s.practice]),
+    [["busy-no-profit", { grouped: false, shops: 2, insiders: 0, cases: 3 }, null]], "not grouped yet: 条原文 on the page; the bistro's two stories one shop");
+  assert.deepEqual(home.totals, { situations: 1, cases: 4 }, "no countries");
+  for (const gone of ["/api/reference/kinds/dining", "/api/reference/kinds/coffee"]) assert.equal((await app.inject(gone)).statusCode, 404, `${gone}: no shop kinds' pages`);
 
   const before = await get("/api/reference/situations/busy-no-profit");
-  assert.equal(before.grouped, false);
-  assert.equal(before.overview, null);
-  const fixed = before.groups.find((g: { key: string }) => g.key === "fixed-costs-creep");
-  assert.deepEqual(new Set(fixed.cases.map((c: { id: string }) => c.id)), new Set([ids.FIRST, ids.COFFEE]), "one card a story before the grouping");
-  const first = fixed.cases.find((c: { id: string }) => c.id === ids.FIRST);
-  assert.match(first.src, /^美国 · 餐饮媒体 · \d{4} 年 \d{1,2} 月$/, "country, the source's kind, the month");
-  assert.deepEqual([first.reason, first.shop.others, first.item.title], [null, 1, "FIRST"], "its shop's other story, and the item 收藏 keeps");
+  assert.deepEqual([before.count, before.overview, before.groups], [{ grouped: false, shops: 2, insiders: 0, cases: 3 }, null, []]);
+  assert.deepEqual(before.causes.map((g: { key: string }) => g.key), ["food-over-recipe", "fixed-costs-creep"], "the causes with stories, in the situation's order");
+  const cards = before.rest.cases;
+  assert.equal(cards.length, 2, "one list, a card a story before the grouping, a shop's newest alone");
+  const bistro = cards.find((c: { id: string }) => c.id !== ids.COFFEE);
+  assert.match(bistro.src, /^美国 · 餐饮媒体 · \d{4} 年 \d{1,2} 月$/, "country, the source's kind, the month");
+  assert.deepEqual([[ids.FIRST, ids.SECOND].includes(bistro.id), bistro.reason, bistro.shop.others], [true, null, 1], "its shop's other story");
 
   const members = (await membersBySituation()).get("busy-no-profit")!;
   assert.equal(new Set(members.map((m) => m.teller)).size, 2);
@@ -405,36 +437,32 @@ test("the pages show public cases only, a situation once two cases are in it, ea
     "a text problem goes back as an edit of the answer, without the stories");
   assert.deepEqual(await situationsToGroup(new Map([["busy-no-profit", members]]), 10), [], "grouped again only when its stories change");
 
+  // A practice in each of two causes: one list, not split by cause.
   const page = await get("/api/reference/situations/busy-no-profit");
-  assert.deepEqual([page.grouped, sorted(page.count), page.overviewCount.shops], [true, sorted({ practices: 2, shops: 2, insiders: 0, cases: 3, countries: ["美国", "日本"] }), 2]);
-  const practice = page.groups.find((g: { key: string }) => g.key === "fixed-costs-creep").practices[0];
-  assert.deepEqual([practice.title, practice.count.shops, practice.count.countries, practice.sources], ["把第一张和最新一张账单逐行对比", 2, ["美国", "日本"], [{ name: "Total Food Service", icon: null }]]);
-  assert.deepEqual(practice.lines.map((l: { name: string; country: string; cases: number }) => [l.country, l.name, l.cases]), [["美国", "加州一家小酒馆", 1], ["日本", "一家社区咖啡店", 1]]);
-  assert.equal(page.groups.every((g: { cases: unknown[] }) => !g.cases.length), true, "no story left loose");
-
-  const coffee = await get("/api/reference/situations/busy-no-profit?kind=coffee");
-  assert.deepEqual([coffee.kind.title, coffee.count], ["咖啡", { practices: 1, shops: 1, insiders: 0, cases: 1, countries: ["日本"] }], "counted for the kind alone");
-  assert.deepEqual(coffee.groups.filter((g: { practices: unknown[] }) => g.practices.length).map((g: { key: string; practices: Array<{ lines: unknown[] }> }) => [g.key, g.practices[0]!.lines.length]),
-    [["fixed-costs-creep", 2]], "the practice a coffee shop tells, with its other shops' lines; the other cause hidden");
-
-  const dining = await get("/api/reference/kinds/dining");
-  assert.deepEqual([dining.metrics, dining.others.length], [{ cases: 2, countries: ["美国"] }, 0]);
-  assert.deepEqual(dining.categories[0].situations[0].count, { practices: 2, shops: 1, insiders: 0, cases: 2, countries: ["美国"] }, "a kind's page counts its own shops");
-  assert.equal((await get("/api/reference/kinds/coffee")).categories[0].situations[0].count.practices, 1);
+  assert.deepEqual([page.count, page.groups, page.rest.cases], [{ grouped: true, shops: 2, insiders: 0, cases: 3 }, [], []]);
+  const [practice] = page.rest.practices;
+  assert.deepEqual([practice.title, practice.count, practice.sources], ["把第一张和最新一张账单逐行对比", { grouped: true, shops: 2, insiders: 0, cases: 2 }, undefined]);
+  assert.deepEqual(practice.lines.map((l: { name: string; country: string; cases: number }) => [l.country, l.name, l.cases]), [["美国", "加州一家小酒馆", 1], ["日本", "一家社区咖啡店", 1]],
+    "the coffee shop's country once");
+  assert.deepEqual(page.rest.shops.map((s: { country: string; name: string; practices: Array<{ title: string; caseId: string; line: string | null }> }) =>
+    [s.country, s.name, s.practices.map((p) => [p.title, p.caseId, typeof p.line])]), [["美国", "加州一家小酒馆", [["同一家店的另一笔账", ids.SECOND, "string"]]]],
+    "the story the grouping left alone: a row, not a card");
 
   const listing = await get("/api/reference");
   const listed = listing.categories.find((c: { key: string }) => c.key === "cost").situations[0];
-  assert.deepEqual([listed.count.practices, listed.count.shops, listed.count.cases, listed.overview], [2, 2, 3, page.overview], "the bistro's two practices: one shop");
+  assert.deepEqual([listed.count, listed.overview, listed.practice], [page.count, page.overview, practice.title], "the bistro's two practices: one shop; 代表做法");
   assert.deepEqual(listing.ranking, [listed], "店家谈得最多的事: the same row, its shops counted once");
+  assert.deepEqual([listing.recent.id, listing.recent.who], [ids.COFFEE, "日本一家社区咖啡店"], "最近收进: the story taken in last, its country written once");
 
   const one = await get(`/api/reference/cases/${ids.FIRST}`);
   assert.deepEqual([one.source.name, one.source.kind, one.source.language, one.situation.title], ["Total Food Service", "餐饮媒体", "英文", "生意很忙，钱却留不下来"]);
   assert.equal(one.situation.practice, practice.key, "the story leads to its practice on the page");
   assert.deepEqual([one.item.summary, one.item.reason, one.item.title, one.item.selected], ["摘要", null, "FIRST", true], "the item's AI 导读 and 收录理由 come with the story");
   assert.deepEqual([one.shop.others, one.situations], [1, 1]);
+  assert.equal((await get(`/api/reference/cases/${ids.SECOND}`)).situation.practice, page.rest.shops[0].practices[0].key, "a row's story leads to the row");
 
   const found = await get(`/api/reference/search?q=${encodeURIComponent("固定费用")}`);
-  assert.deepEqual(found.situations.map((s: { slug: string }) => s.slug), ["busy-no-profit"], "a cause's title finds its situation");
+  assert.deepEqual(found.situations.map((s: { slug: string; count: Count }) => [s.slug, s.count]), [["busy-no-profit", page.count]], "a cause's title finds its situation");
   const shop = await get(`/api/reference/search?q=${encodeURIComponent("corner bistro")}`);
   assert.deepEqual(shop.cases.map((c: { id: string; shop: { others: number } }) => [c.id, c.shop.others]), [[shop.cases[0].id, 1]], "a shop's stories: one card");
   assert.deepEqual(await get(`/api/reference/search?q=${encodeURIComponent("没有这个词")}`), { situations: [], cases: [] });
@@ -442,20 +470,108 @@ test("the pages show public cases only, a situation once two cases are in it, ea
   for (const none of [ids.THIN, "no-such-item"]) assert.equal((await app.inject(`/api/reference/by-item/${none}`)).statusCode, 404);
 
   const sitemap = (await reference.sitemap!.entries!()).map((e) => e.loc);
-  for (const loc of ["/reference/busy-no-profit", "/reference/kinds/dining", `/reference/cases/${ids.FIRST}`, `/reference/shops/${one.shop.key}`]) assert.ok(sitemap.includes(loc), loc);
-  assert.ok(!sitemap.includes("/") && !sitemap.includes("/reference/kinds/coffee"), "the site lists /; a kind with one story is not listed");
+  for (const loc of ["/reference/busy-no-profit", `/reference/cases/${ids.FIRST}`, `/reference/shops/${one.shop.key}`]) assert.ok(sitemap.includes(loc), loc);
+  assert.ok(!sitemap.includes("/") && !sitemap.some((loc) => loc.startsWith("/reference/kinds/")), "the site lists /; no shop kinds' pages");
 
   for (const hidden of [ids.THIN, ids.NEWS, ids.WRONG]) assert.equal((await app.inject(`/api/reference/cases/${hidden}`)).statusCode, 404);
   assert.equal((await app.inject("/api/reference/situations/no-such-situation")).statusCode, 404);
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${ids.SECOND!}`;
   assert.equal((await app.inject(`/api/reference/cases/${ids.SECOND}`)).statusCode, 404);
   const left = await get("/api/reference/situations/busy-no-profit");
-  assert.deepEqual(left.groups.map((g: { practices: unknown[] }) => g.practices.length), [0, 1, 0], "a withdrawn story's practice leaves with it");
+  assert.deepEqual([left.rest.practices.length, left.rest.shops.length], [1, 0], "a withdrawn story's practice leaves with it");
   assert.equal((await get(`/api/reference/cases/${ids.FIRST}`)).shop, null, "a shop with one case left has no page to point to");
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${ids.COFFEE!}`;
   const after = await get("/api/reference");
-  assert.equal(after.categories.length, 0, "one case left is not a page");
-  assert.deepEqual(after.kinds, [], "nor is a kind with one story");
+  assert.deepEqual([after.categories, after.ranking, after.recent], [[], [], null], "one case left is not a page");
+});
+
+test("a page splits by cause only where two causes have two practices each; one shop's practices are rows under one line; a shop has one name", async () => {
+  // 招不到人, written and grouped by hand: Sun Diner in Japan (three stories, its newest label naming its city),
+  // Moon Cafe and Star Bar in the United States, and a noodle shop a publication names no further.
+  const at = (minute: number) => new Date(Date.UTC(2026, 9, 1, 0, minute));
+  const shop = (name: string | null, label: string, country: string, speaker: Shop["speaker"] = "owner"): Shop => ({ name, label, country, city: null, kind: null, size: null, speaker });
+  const sun = (label: string) => shop("Sun Diner", label, "日本");
+  const moon = shop("Moon Cafe", "一家咖啡店", "美国");
+  const stories: Array<[marker: string, shopKey: string | null, minute: number, group: string, owner: Shop]> = [
+    ["H1", "sun-diner", 1, "where-to-find", sun("日本一家家庭食堂")], ["H7", "sun-diner", 2, "where-to-find", sun("一家食堂")],
+    ["H3", "moon-cafe", 3, "where-to-find", moon], ["H4", "star-bar", 4, "interview", shop("Star Bar", "美国一家酒吧", "美国")],
+    ["H5", "moon-cafe", 5, "interview", moon], ["H2", "sun-diner", 6, "where-to-find", sun("日本大阪一家家庭食堂")],
+    ["H6", null, 7, "interview", shop(null, "一家面馆", "中国", "media")],
+  ];
+  const id: Record<string, string> = {};
+  for (const [marker, key, minute, group, owner] of stories) {
+    id[marker] = await selectedItem(marker);
+    const told = story({ title: `${marker} 的故事`, shop: owner, placements: [{ situation: "hiring", group, card: "店主说明了怎么招人。" }] });
+    await sql`UPDATE publications SET timeline_at = ${at(minute)} WHERE article_id = ${id[marker]!}`;
+    await sql`INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, prompt_version, created_at)
+      VALUES (${id[marker]!}, 1, 'story', ${sql.json(told as never)}, ${["hiring"]}, ${key}, 'test', ${at(minute)})`;
+  }
+  const method = (key: string, group: string, title: string, shops: Array<[string, string]>) =>
+    ({ key, group, title, summary: "各家的做法。", shops: shops.map(([marker, line]) => ({ caseIds: [id[marker]!], line })) });
+  const store = (methods: unknown[]) => sql`
+    INSERT INTO reference_situations (slug, members, tried, overview, methods, prompt_version) VALUES ('hiring', 'test', 'test', '各家从门口、熟人和学校找人。', ${sql.json(methods as never)}, ${PROMPT_VERSION})
+    ON CONFLICT (slug) DO UPDATE SET methods = EXCLUDED.methods`;
+  const door = method("p1", "where-to-find", "在店门口贴招聘启事", [["H3", "门口贴启事，一周来了三个人"], ["H1", "启事上写明时薪"]]);
+  const sunAlone = [method("p2", "where-to-find", "请老员工介绍朋友", [["H2", "介绍的朋友留得更久"]]), method("p3", "where-to-find", "在附近大学招兼职", [["H7", "在附近大学招兼职"]])];
+  await store([door, ...sunAlone, method("p4", "interview", "面试时请应聘者试做一天", [["H4", "试做一天再决定录用"]]),
+    method("p5", "interview", "面试只问三个问题", [["H5", "问以前为什么离职"]]), method("p6", "interview", "把招聘启事写成一段故事", [["H6", "启事里写店的来历"]])]);
+
+  const page = await get("/api/reference/situations/hiring");
+  assert.deepEqual(page.count, { grouped: true, shops: 4, insiders: 0, cases: 7 });
+  assert.deepEqual(page.groups.map((g: { key: string }) => g.key), ["where-to-find", "interview"], "two causes of three practices each: by cause");
+  const [find, interview] = page.groups;
+  assert.deepEqual(find.practices.map((p: { key: string; lines: Array<{ country: string; name: string }> }) => [p.key, p.lines.map((l) => `${l.country} · ${l.name}`)]),
+    [["p1", ["美国 · 一家咖啡店", "日本 · 大阪一家家庭食堂"]]], "two shops: a card; Sun Diner by its newest label, its country once");
+  assert.deepEqual(find.shops, [{ country: "日本", name: "大阪一家家庭食堂", practices: [
+    { key: "p2", title: "请老员工介绍朋友", caseId: id.H2, line: "介绍的朋友留得更久", cases: 1 },
+    { key: "p3", title: "在附近大学招兼职", caseId: id.H7, line: null, cases: 1 },
+  ] }], "one shop's two practices under one line, newest first; a line that repeats its title left out");
+  assert.deepEqual(interview.shops.map((s: { country: string; name: string; practices: Array<{ key: string }> }) => [s.country, s.name, s.practices.map((p) => p.key)]),
+    [["中国", "一家面馆", ["p6"]], ["美国", "一家咖啡店", ["p5"]], ["美国", "一家酒吧", ["p4"]]], "a row each, newest first");
+  assert.deepEqual([interview.practices, page.rest], [[], { practices: [], shops: [], cases: [] }]);
+  assert.equal((await get("/api/reference/shops/sun-diner")).shop.label, "大阪一家家庭食堂", "the shop page names it as the lists do");
+
+  // The interview's three shops in one practice: one cause of two practices or more is not enough to split.
+  await store([door, ...sunAlone, method("p456", "interview", "面试时请应聘者试做一天", [["H4", "试做一天再决定录用"], ["H5", "问以前为什么离职"], ["H6", "启事里写店的来历"]])]);
+  const flat = await get("/api/reference/situations/hiring");
+  assert.deepEqual(flat.groups, [], "one list");
+  assert.deepEqual(flat.causes.map((g: { key: string }) => g.key), ["where-to-find", "interview"], "the causes still numbered under the picture");
+  assert.deepEqual([flat.rest.practices.map((p: { key: string }) => p.key), flat.rest.shops.map((s: { name: string }) => s.name)], [["p456", "p1"], ["大阪一家家庭食堂"]],
+    "the most shops first");
+
+  const home = await get("/api/reference");
+  assert.deepEqual(home.ranking.map((s: { slug: string; practice: string; count: Count }) => [s.slug, s.practice, s.count.shops]), [["hiring", "面试时请应聘者试做一天", 4]],
+    "代表做法: the practice the most shops tell");
+  assert.deepEqual([home.recent.id, home.recent.who], [id.H6, "中国一家面馆"], "the story taken in last");
+  assert.deepEqual(home.categories.map((c: { key: string }) => c.key), ["people"]);
+
+  // A practice two shops told when it was grouped, one shop's since its stories were written again: a row that
+  // opens the newer story and counts both, not a story lost.
+  await sql`UPDATE reference_cases SET shop_key = 'moon-cafe' WHERE article_id = ${id.H4!}`;
+  await store([door, ...sunAlone, method("p45", "interview", "面试时请应聘者试做一天", [["H4", "试做一天再决定录用"], ["H5", "问以前为什么离职"]]),
+    method("p6", "interview", "把招聘启事写成一段故事", [["H6", "启事里写店的来历"]])]);
+  const [, rewritten] = (await get("/api/reference/situations/hiring")).groups;
+  assert.deepEqual(rewritten.shops.map((s: { country: string; name: string; practices: Array<{ key: string; caseId: string; line: string | null; cases: number }> }) =>
+    [s.country, s.name, s.practices.map((p) => [p.key, p.caseId, p.line, p.cases])]),
+  [["中国", "一家面馆", [["p6", id.H6, "启事里写店的来历", 1]]], ["美国", "一家咖啡店", [["p45", id.H5, "问以前为什么离职", 2]]]]);
+
+  // 代表做法 is the practice the most shops tell: two shops before one shop and an insider, though theirs is newer.
+  // 最近收进 is the story the library took in last, not the newest original; a name that keeps its country has it once.
+  await sql`UPDATE reference_cases SET story = jsonb_set(story, '{shop,speaker}', '"adviser"') WHERE article_id = ${id.H6!}`;
+  await store([door, ...sunAlone, method("p56", "interview", "面试只问三个问题", [["H6", "启事里写店的来历"], ["H5", "问以前为什么离职"]])]);
+  await sql`UPDATE reference_cases SET created_at = ${at(10)} WHERE article_id = ${id.H3!}`;
+  await sql`UPDATE reference_cases SET story = jsonb_set(story, '{shop,label}', '"美国家庭咖啡店"') WHERE article_id = ${id.H5!}`;
+  const later = await get("/api/reference");
+  assert.deepEqual([later.ranking[0].practice, later.recent.id, later.recent.who], ["在店门口贴招聘启事", id.H3, "美国家庭咖啡店"]);
+
+  // A situation the library lists later comes first in its category when more shops tell it.
+  for (const [marker, minute] of [["R1", 11], ["R2", 12], ["R3", 13]] as const) {
+    id[marker] = await selectedItem(marker);
+    const told = story({ title: `${marker} 的故事`, shop: shop(null, "一家面馆", "中国", "media"), placements: [{ situation: "retention", group: null, card: "店主说明了怎么留人。" }] });
+    await sql`INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, prompt_version, created_at)
+      VALUES (${id[marker]!}, 1, 'story', ${sql.json(told as never)}, ${["retention"]}, ${null}, 'test', ${at(minute)})`;
+  }
+  assert.deepEqual((await get("/api/reference")).categories[0].situations.map((s: { slug: string; count: Count }) => [s.slug, s.count.shops]), [["retention", 3], ["hiring", 2]]);
 });
 
 test("the sample pages are served at their unlisted address, kept from search engines", async () => {

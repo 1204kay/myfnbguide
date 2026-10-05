@@ -4,7 +4,7 @@
 // dailies and a model only writes its overview and introductions, from the brief in the industry pack
 // (industry/prompts/report-period*.md).
 import { z } from "zod";
-import { EDITION_TIMES, SITE } from "@aihot/site";
+import { EDITION_TIMES, REPORTS, SITE } from "@aihot/site";
 import { PLAIN_TERMS, RELEASE } from "@aihot/industry/taxonomy";
 import { promptText, promptVersion } from "../editorial/prompts.ts";
 import { modelFor } from "../editorial/models.ts";
@@ -16,12 +16,12 @@ import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import { emit } from "../modules.ts";
-import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
+import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type DailyEntry, type EditionEntry } from "./edition.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
 /**
- * The masthead's figures, counted in events: sources over every report its entries cite; releases
+ * The masthead's figures, counted in the events its sections carry: sources over every report they cite; releases
  * (`modelsReleased`, its public name) are the entries of the pack's headline launch kind (RELEASE: its
  * category and its tag, so not a ranking or a test) that a maker announced itself, new that day. An
  * industry without such a kind has no release figure.
@@ -76,7 +76,8 @@ async function saveReport(kind: ReportKind, key: string, start: Date, end: Date,
 
 /**
  * Daily report for Beijing date D covers the 24 hours up to the site's edition time on D (EDITION_TIMES).
- * Its most important entry leads, in its own words, and the next three are today's highlights.
+ * Its most important entry leads, in its own words, and the next three are today's highlights. Its flashes
+ * stand together at the end, or each in its own section after the entries in full (site.ts REPORTS.flashPlacement).
  */
 export async function composeDaily(date: string, reason?: string): Promise<{ key: string; entries: number }> {
   const previous = await savedReport("daily", date);
@@ -88,22 +89,30 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
   if (edition.entries.length === 0) throw new Error(`daily ${date}: no selected items in its window`);
   const issue = arrangeDaily(edition.entries);
   const [lead, ...rest] = issue.main as [EditionEntry, ...EditionEntry[]];
+  const inSections = REPORTS.flashPlacement === "sections";
+  const brief = inSections ? issue.flashes : [];
   const content = {
     date,
     lead: { title: lead.entry.title, leadParagraph: lead.entry.summary },
     leadItemId: lead.entry.itemId,
     highlights: rest.slice(0, 3).map((e) => e.entry.itemId),
     sections: SECTION_ORDER
-      .map((label) => ({ label, items: issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry) }))
+      .map((label) => ({
+        label,
+        items: [
+          ...issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry),
+          ...brief.filter((e) => sectionOf(e.category) === label).map((e): DailyEntry => ({ ...e.entry, brief: true })),
+        ],
+      }))
       .filter((s) => s.items.length > 0),
-    flashes: issue.flashes.map((e) => e.entry),
-    metrics: dailyMetrics(issue.main),
+    flashes: inSections ? [] : issue.flashes.map((e) => e.entry),
+    metrics: dailyMetrics([...issue.main, ...brief]),
     windowStart: start.toISOString(),
     windowEnd: end.toISOString(),
     generator: { version: REPORT_VERSION, ...edition.stats, ...issue.stats },
   };
   await saveReport("daily", date, start, end, content, reason, null, []);
-  return { key: date, entries: issue.main.length };
+  return { key: date, entries: content.metrics.totalEvents };
 }
 
 /** A weekly's or monthly's size: the events it carries, chosen and ordered by rule. */

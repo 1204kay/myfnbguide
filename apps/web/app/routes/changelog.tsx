@@ -7,6 +7,7 @@ import { apiGet, edgeTtl, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { pageMeta } from "../lib/seo";
 import { setChangelogSeen } from "../lib/local-state";
+import { monthDay } from "../lib/format";
 import { AsideCard, ReadingLayout } from "../components/ui/Page";
 import { IconChevronRight } from "../components/icons";
 import { Inline, dateHeading } from "../features/changelog/text";
@@ -76,7 +77,8 @@ function Day({ date, releases, id }: { date: string; releases: Release[]; id?: s
     <section id={id} className="card scroll-mt-[calc(var(--bar-h)+1.5rem)] px-5 lg:px-7">
       <h2 className="flex items-baseline gap-3 border-b border-line-soft py-4">
         <time dateTime={date} className="text-[18px] font-bold text-ink">
-          {h.label}
+          {/* A site that spaces its dates (DATES.spaced) writes this one as it writes the others: this year's without the year. */}
+          {DATES.spaced ? monthDay(date) : h.label}
         </time>
         <span className="text-[12px] text-ink-4">{h.weekday}</span>
       </h2>

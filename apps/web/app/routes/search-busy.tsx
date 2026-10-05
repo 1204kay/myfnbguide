@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
+import { FEED } from "@aihot/site";
 import { RingMark } from "@aihot/site/brand/Logo.tsx";
 import { PhoneBar } from "../components/shell/PhoneBar";
 import { feedPath, navName, navShown } from "../components/shell/nav";
@@ -17,9 +18,13 @@ export function headers() {
 
 const RETRY_AFTER_SECONDS = 5;
 const SEARCH_PARAMS = ["q", "tag", "channel", "category", "page", "tab"];
-/** The featured list's name (site.ts NAV.labels); 全部 goes by it too while it is reached only by that list's switch (NAV.hidden). */
+/**
+ * The list's name (site.ts NAV.labels); 全部 goes by it too while it is reached only by the featured list's switch
+ * (NAV.hidden), or when it is the list (FEED.start).
+ */
 const FEED_NAME = navName(feedPath());
-const ALL_NAME = navShown("/all") ? "全部" : FEED_NAME;
+const ALL_FIRST = FEED.start === "all";
+const ALL_NAME = navShown("/all") && !ALL_FIRST ? "全部" : FEED_NAME;
 
 /** The busy page after an overloaded search: the same search can be tried again after a few seconds. */
 export default function SearchBusy() {
@@ -36,6 +41,8 @@ export default function SearchBusy() {
   const retry = kept.toString() ? `${base}?${kept}` : base;
   const hasSearch = kept.has("q");
   const button = "inline-flex h-9 items-center rounded-full px-4 text-[13.5px]";
+  const primary = `${button} bg-accent font-medium text-accent-contrast hover:bg-accent-ink`;
+  const secondary = `${button} border border-line-strong bg-surface text-ink-2 hover:border-ink-4`;
   return (
     <>
     <PhoneBar back={{ to: base, label: base === "/all" ? ALL_NAME : FEED_NAME }} />
@@ -48,10 +55,11 @@ export default function SearchBusy() {
           (wait > 0 ? (
             <span aria-disabled="true" className={`${button} num cursor-default bg-bg-sunk font-medium text-ink-4`}>{wait} 秒后可重试</span>
           ) : (
-            <Link to={retry} className={`${button} bg-accent font-medium text-accent-contrast hover:bg-accent-ink`}>重试这次搜索</Link>
+            <Link to={retry} className={primary}>重试这次搜索</Link>
           ))}
-        <Link to="/all" className={`${button} ${hasSearch ? "border border-line-strong bg-surface text-ink-2 hover:border-ink-4" : "bg-accent font-medium text-accent-contrast hover:bg-accent-ink"}`}>{navShown("/all") ? "浏览全部动态" : "浏览全部条目"}</Link>
-        <Link to={feedPath()} className={`${button} border border-line-strong bg-surface text-ink-2 hover:border-ink-4`}>回到{FEED_NAME}</Link>
+        {/* Where the list is 全部 itself, one way back to it. */}
+        {!ALL_FIRST && <Link to="/all" className={hasSearch ? secondary : primary}>{navShown("/all") ? "浏览全部动态" : "浏览全部条目"}</Link>}
+        <Link to={feedPath()} className={ALL_FIRST && !hasSearch ? primary : secondary}>回到{FEED_NAME}</Link>
       </div>
     </div>
     </>

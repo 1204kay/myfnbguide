@@ -1,10 +1,11 @@
-// The shell as the site configures it (site/site.ts NAV, SEARCH, LAYOUT), rendered by the production server
+// The shell as the site configures it (site/site.ts NAV, SEARCH, LAYOUT, FEED), rendered by the production server
 // over a stub api. Failure cases: / still shows the featured list when a module page is the home page, or the
-// featured list is lost; the sidebar keeps the engine's titled sections, misses an entry, or lights the wrong
-// one (全部 beside 精选, a search, the report kinds); the error page sends readers to 全部动态 the site no
-// longer lists; 我的 ignores the site's groups or splits into columns; the shell's search cannot be opened
-// from the sidebar or "/" on desktops, or from the tab pages' bar on phones; touch screens get mouse-sized
-// targets; the changelog dot shows on a site that turned it off.
+// list is lost; a site whose list starts at 全部 still serves the featured list, or keeps 精选 | 全部; the sidebar
+// keeps the engine's titled sections, misses an entry, names one other than the site does, or lights the wrong one
+// (全部 beside 精选, a search, the report kinds); the phone tab bar lights a tab for a search; the error page sends
+// readers to 全部动态 the site no longer lists; 我的 ignores the site's groups or splits into columns; the shell's
+// search cannot be opened from the sidebar or "/" on desktops, or from the tab pages' bar on phones; touch screens
+// get mouse-sized targets; the changelog dot shows on a site that turned it off.
 import assert from "node:assert/strict";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
@@ -16,7 +17,10 @@ import * as cheerio from "cheerio";
 import { chromium, expect, type Browser } from "@playwright/test";
 import type { FeedItemSummary } from "@aihot/contracts/site";
 import { feedPath } from "@aihot/contracts/routes";
-import { NAV, SEARCH } from "@aihot/site";
+import { FEED, NAV, SEARCH } from "@aihot/site";
+
+/** Where the list's way in leads: the featured list, or 全部 where the site's list starts there (FEED.start). */
+const LIST = FEED.start === "all" ? "/all" : feedPath();
 
 const at = "2026-10-04T08:00:00.000Z";
 const item: FeedItemSummary = { id: "shell-fixture", title: "外壳检查条目", summary: "固定摘要", reason: "固定理由", source: { name: "Fixture" }, publishedAt: at, timelineAt: at, category: "tip", tags: [], score: 80, selected: true, channel: "news", x: null };
@@ -95,23 +99,35 @@ function sidebarOf($: cheerio.CheerioAPI) {
 }
 
 const lit = ($: cheerio.CheerioAPI) => sidebarOf($).flat().filter(([, on]) => on).map(([to]) => to);
+/** The phone tab bar's lit tab, by address, as the server renders it (the tab the page declares). */
+const tabLit = ($: cheerio.CheerioAPI) => $('nav[aria-label="底部导航"] a[aria-current="page"]').toArray().map((a) => $(a).attr("href"));
 
-test("the home page is the site's module page, and the featured list lives at its own address", { skip: !NAV.home && "the featured list is the home page" }, async () => {
+test("the home page is the site's module page, and the list lives at its own address", { skip: !NAV.home && "the featured list is the home page" }, async () => {
   const start = hits.length;
   const home = await page("/");
   assert.equal(home.status, 200);
   assert.ok(hits.slice(start).includes("/api/reference"), "/ renders the module page");
   assert.deepEqual(lit(home.$), ["/"]);
-  const latest = await page(feedPath());
-  assert.equal(latest.status, 200);
-  assert.ok(latest.$("body").text().includes(item.title), "the featured list renders at its address");
-  assert.deepEqual(lit(latest.$), [feedPath()]);
+  const list = await page(LIST);
+  assert.equal(list.status, 200);
+  assert.ok(list.$("body").text().includes(item.title), "the list renders at its address");
+  assert.deepEqual(lit(list.$), [LIST]);
   const old = await page("/reference");
   assert.deepEqual([old.status, old.location], [301, "/"]);
 });
 
-test("the sidebar shows the site's groups untitled, its foot links, and the appearance in words", { skip: !NAV.sidebar && "the engine's sections" }, async () => {
-  const { $ } = await page(feedPath());
+test("a site whose list starts at 全部 sends the featured list's address there with its filter, and keeps no 精选 | 全部", { skip: FEED.start !== "all" && "the list starts at 精选" }, async () => {
+  const old = await page(`${feedPath()}?category=tip`);
+  assert.deepEqual([old.status, old.location], [301, "/all?category=tip"]);
+  const { status, $ } = await page("/all");
+  assert.equal(status, 200);
+  assert.equal($('nav[aria-label="看精选或全部"]').length, 0, "no 精选 | 全部");
+  assert.equal($("main h1").text(), NAV.labels["/all"] ?? "全部动态");
+  assert.equal($(`nav[aria-label="主导航"] a[href="${feedPath()}"]`).length, 0, "the featured list is no way in");
+});
+
+test("the sidebar and the tab bar show the site's names; the sidebar its groups untitled, its foot links, and the appearance in words", { skip: !NAV.sidebar && "the engine's sections" }, async () => {
+  const { $ } = await page(LIST);
   const groups = sidebarOf($).map((g) => g.map(([to]) => to));
   assert.deepEqual(groups, NAV.sidebar!.map((g) => g.filter((to) => !NAV.hidden.includes(to))).filter((g) => g.length));
   const aside = $("aside").first();
@@ -119,16 +135,31 @@ test("the sidebar shows the site's groups untitled, its foot links, and the appe
   for (const [to, label] of Object.entries(NAV.labels)) {
     const link = $(`nav[aria-label="主导航"] a[href="${to}"]`);
     if (link.length) assert.equal(link.text().trim(), label, to);
+    const tab = $(`nav[aria-label="底部导航"] a[href="${to}"]`);
+    if (tab.length) assert.equal(tab.text().trim(), label, `tab ${to}`);
   }
+  assert.equal($(`nav[aria-label="主导航"] a[href="${LIST}"]`).length, 1, "the list is a way in");
+  assert.equal($(`nav[aria-label="底部导航"] a[href="${LIST}"]`).length, 1, "the list is a tab");
   assert.deepEqual($('nav[aria-label="站点说明"] a').toArray().map((a) => $(a).attr("href")), NAV.sidebarFoot);
   if (NAV.themeText) assert.deepEqual(aside.find('[role="radiogroup"] [role="radio"]').toArray().map((b) => $(b).text()), ["浅色", "深色", "跟随系统"]);
   if (NAV.search === "shell") assert.equal(aside.find('button[aria-keyshortcuts="/"]').text().replace("/", "").trim(), "搜索");
 });
 
-test("the sidebar lights 日报 below the reports, the featured list on 全部 it switches to, and nothing for a search", { skip: !NAV.sidebar && "the engine's sections" }, async () => {
+test("the sidebar lights 日报 below the reports, the list on 全部 and its tags, and nothing for a search; the tab bar lights no tab for a search either", { skip: !NAV.sidebar && "the engine's sections" }, async () => {
   assert.deepEqual(lit((await page("/daily/archive")).$), ["/daily"]);
   if (NAV.hidden.includes("/all")) assert.deepEqual(lit((await page("/all?tag=fixture")).$), [feedPath()]);
-  if (NAV.search === "shell") assert.deepEqual(lit((await page("/all?q=fixture")).$), []);
+  if (FEED.start === "all") {
+    for (const path of ["/all", "/all?tag=fixture"]) {
+      const { $ } = await page(path);
+      assert.deepEqual([lit($), tabLit($)], [["/all"], ["/all"]], path);
+    }
+  }
+  if (NAV.search === "shell") {
+    for (const path of ["/all?q=fixture", "/all?q=fixture&tag=fixture"]) {
+      const { $ } = await page(path);
+      assert.deepEqual([lit($), tabLit($)], [[], []], path);
+    }
+  }
   assert.deepEqual(lit((await page("/no-such-page")).$), []);
 });
 
@@ -136,7 +167,7 @@ test("a missing page leads to the home page and, beside a module home page, to t
   const { status, $ } = await page("/no-such-page");
   assert.equal(status, 404);
   const buttons = $("h1").filter((_, h) => $(h).text() === "这里没有内容").parent().find("a").toArray().map((a) => $(a).attr("href"));
-  assert.deepEqual(buttons, NAV.home ? ["/", feedPath()] : ["/", "/all"]);
+  assert.deepEqual(buttons, NAV.home ? ["/", LIST] : ["/", "/all"]);
 });
 
 test("我的 lists the site's groups in one column, with the tab pages' bar", { skip: !NAV.meGroups && "the engine's groups" }, async () => {
@@ -205,7 +236,7 @@ test("touch screens get 44px targets in the sidebar, the appearance switch and s
     const context = await chrome.newContext({ viewport: { width: 1024, height: 768 }, hasTouch: touch, isMobile: touch });
     try {
       const tab = await context.newPage();
-      await tab.goto(origin + feedPath());
+      await tab.goto(origin + LIST);
       assert.equal(await tab.evaluate(() => matchMedia("(hover: none)").matches), touch);
       // Shown at this width only: the phones' bar is in the page but not displayed.
       const heights = async (selector: string) => tab.locator(selector).evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height).filter((h) => h > 0));

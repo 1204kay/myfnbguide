@@ -6,7 +6,7 @@ import { isRelease } from "../editorial/vocabulary.ts";
 import { emit } from "../modules.ts";
 import { SECTION_ORDER, sectionOf } from "./edition.ts";
 
-interface Entry { itemId: string; followUp?: string; firstParty?: boolean; role?: string; [key: string]: unknown }
+interface Entry { itemId: string; followUp?: string; firstParty?: boolean; role?: string; brief?: boolean; [key: string]: unknown }
 interface Group { label?: string; heading?: string; summary?: unknown; items?: Entry[]; storyRefs?: Entry[]; [key: string]: unknown }
 interface Content { sections?: Group[]; themes?: Group[]; metrics?: Record<string, number>; [key: string]: unknown }
 
@@ -35,7 +35,10 @@ export async function correctReportClassification(tx: Tx, articleId: string, rea
       from[entriesKey] = from[entriesKey]!.filter(e => e.itemId !== articleId);
       let target = groups.find(g => g[labelKey] === label);
       if (!target) { target = { [labelKey]: label, [entriesKey]: [] }; groups.push(target); }
-      target[entriesKey]!.push(...moving);
+      // An entry in full goes before the section's flashes listed in it (site.ts REPORTS.flashPlacement).
+      const into = target[entriesKey]!;
+      const brief = into.findIndex(e => e.brief);
+      into.splice(moving.some(e => e.brief) || brief < 0 ? into.length : brief, 0, ...moving);
       if (!daily) { from.summary = null; target.summary = null; }
     }
     const arranged = groups.filter(g => g[entriesKey]?.length).sort((a, b) => SECTION_ORDER.indexOf(a[labelKey]!) - SECTION_ORDER.indexOf(b[labelKey]!));

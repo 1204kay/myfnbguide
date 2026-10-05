@@ -11,7 +11,7 @@ import { PillTabs } from "../../components/ui/Tabs";
 import { Sheet } from "../../components/ui/Sheet";
 import { Wordmark } from "@aihot/site/brand/Logo.tsx";
 import { BarButton, PhoneBar, SearchButton, TabPageBar } from "../../components/shell/PhoneBar";
-import { feedPath } from "../../components/shell/nav";
+import { feedPath, navName } from "../../components/shell/nav";
 
 /**
  * The shell carries search (site.ts NAV.search): the lists keep no search of their own, their phone bar is the tab pages'
@@ -87,8 +87,8 @@ function ScopeSwitch({ scope, size, layoutId }: { scope: "featured" | "all"; siz
 }
 
 /**
- * The phone bar of 精选 and 全部 while they keep their own search: the brand, the 精选 | 全部 switch, and
- * buttons for the filter sheet and search.
+ * The phone bar of 精选 and 全部 while they keep their own search: the brand, the 精选 | 全部 switch (where the list
+ * starts at 全部, site.ts FEED.start, the page's name instead), and buttons for the filter sheet and search.
  */
 export function FeedBar({ base, category, channel }: { base: string; category: CategoryKey | null; channel: ChannelKey }) {
   const [sheet, setSheet] = useState(false);
@@ -101,7 +101,7 @@ export function FeedBar({ base, category, channel }: { base: string; category: C
             <Wordmark size={17} />
           </Link>
         }
-        center={<ScopeSwitch scope={base === "/all" ? "all" : "featured"} size="sm" layoutId="feed-scope" />}
+        {...(FEED.start === "featured" ? { center: <ScopeSwitch scope={base === "/all" ? "all" : "featured"} size="sm" layoutId="feed-scope" /> } : { title: navName(base), large: true })}
         actions={
           <>
             <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
@@ -119,8 +119,9 @@ export function FeedBar({ base, category, channel }: { base: string; category: C
 
 /**
  * The head of 精选 and 全部 when the shell carries search (SHELL): the tab pages' bar on phones; then, the same on
- * phones and desktops, the page's name with 精选 | 全部 beside it, the list's one sentence (site.ts FEED.leads),
- * and the filter: a button and the chips in use on phones, a row of tabs on desktops, the tag in use as a chip on both.
+ * phones and desktops, the page's name with 精选 | 全部 beside it (none where the list starts at 全部, site.ts
+ * FEED.start), the list's one sentence (site.ts FEED.leads), and the filter: a button and the chips in use on
+ * phones, a row of tabs on desktops, the tag in use as a chip on both.
  */
 export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; name: string; filters: TimelineFilters }) {
   const { category, channel, tag } = filters;
@@ -134,7 +135,7 @@ export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; 
       <header className="pb-4 pt-1 lg:pt-0">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
           <h1 data-page-title="" className="text-[30px] font-bold leading-[1.25] tracking-[-0.01em] text-ink">{name}</h1>
-          <ScopeSwitch scope={scope} layoutId="feed-scope" />
+          {FEED.start === "featured" && <ScopeSwitch scope={scope} layoutId="feed-scope" />}
         </div>
         {lead && <p className="mt-2 text-[13px] leading-relaxed text-ink-4">{lead}</p>}
         <div className="mt-3 flex flex-wrap items-center gap-2 lg:hidden">

@@ -1,11 +1,11 @@
 import { data as withHeaders, redirect, useLoaderData } from "react-router";
 import type { Route } from "./+types/home";
 import type { TimelineResponse } from "@aihot/contracts/site";
-import { FEED, LAYOUT } from "@aihot/site";
+import { FEED } from "@aihot/site";
 import { apiDeadlineCache, loadOr404, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { filterParams, itemListLd, listPath, pageMeta, readFilters, siteLd } from "../lib/seo";
-import type { Screen } from "../components/shell/screens";
+import { READ_COLUMN, type Screen } from "../components/shell/screens";
 import { Timeline } from "../features/feed/Timeline";
 import { HotTopics } from "../features/feed/HotTopics";
 import { ActiveFilters, CategoryTabs, FeedBar, FeedHead, SearchField, SHELL } from "../features/feed/Filters";
@@ -20,6 +20,10 @@ export const clientLoader = cachedLoader<typeof loader>();
 
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
+  // A site whose list starts at 全部 (site.ts FEED.start) keeps no featured list: its address leads there, filters and all.
+  // Here rather than in the redirect table (contracts/http-policy.ts), which sees documents only: a tab opened before the
+  // switch still links this address in its navigation, and reads it as data.
+  if (FEED.start === "all") throw redirect(`/all${url.search}`, 301);
   const q = url.searchParams.get("q");
   // Search lives on /all; keep the parameters so old links still land on results.
   if (q && q.trim()) throw redirect(`/all${url.search}`);
@@ -45,7 +49,8 @@ export default function Home() {
   const { data, filters } = useLoaderData<typeof loader>();
   const title = filters.tag ? `#${filters.tag}` : NAME;
   return (
-    <div className="mx-auto pb-6" style={LAYOUT.column ? { maxWidth: LAYOUT.column } : undefined}>
+    // The reading column, also beside a wider 全部 (LAYOUT.lists): a flat list has no column of days to put the room into.
+    <div className={`mx-auto pb-6 ${READ_COLUMN}`}>
       {SHELL ? (
         <FeedHead scope="featured" name={NAME} filters={filters} />
       ) : (

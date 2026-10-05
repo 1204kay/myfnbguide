@@ -54,7 +54,6 @@ const PAGES: PageSpec[] = [
   { name: "situation", reader: true, path: "/reference/busy-no-profit" },
   { name: "case", reader: true, from: "situation", link: 'a[href^="/reference/cases/"]' },
   { name: "shop", reader: true, from: "situation", through: 'a[href^="/reference/cases/"]', link: 'a[href^="/reference/shops/"]' },
-  { name: "kind", reader: true, path: "/reference/kinds/dining" },
   { name: "item", reader: true, from: "all", link: 'a[href^="/items/"]' },
   { name: "starred", reader: true, path: "/starred" },
   { name: "more", reader: true, path: "/more" },

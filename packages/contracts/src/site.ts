@@ -282,6 +282,8 @@ export interface ReportCitation {
   related?: ReportCitation[];
   /** A daily entry whose event an earlier daily covered: that issue's date. */
   followUp?: string;
+  /** A daily's flash its issue lists in its own section, after the entries in full (site.ts REPORTS.flashPlacement). */
+  brief?: true;
 }
 
 export interface ReportDetail {
@@ -382,6 +384,8 @@ export interface SiteStats {
   sampleSources: Array<{ name: string; kind: string; heatOnly: boolean }>;
   /** The latest 精选, newest first. */
   latest: Array<{ id: string; title: string; source: string }>;
+  /** What the site's modules have put together, a figure and its unit each (ServerModule.figures); empty without them. */
+  figures: Array<{ value: number; unit: string }>;
 }
 
 export interface StoryFollowup {

@@ -1,6 +1,6 @@
 // A page of reports grouped by Beijing day with the same rail and rows as the home timeline
 // (全部动态, topics, search results); with list cards (site.ts FEED.style "cards"), cards under a plain line
-// of the day.
+// of the day, or, in a list wider than the reading column, beside a column of days on desktops.
 import { IntentLink } from "../../components/ui/IntentLink";
 import { useMemo } from "react";
 import type { FeedItemSummary } from "@aihot/contracts/site";
@@ -12,7 +12,13 @@ import { markRead, useReadSet } from "../../lib/local-state";
 import { DayHeader, TimelineSlot } from "./Timeline";
 import { FeedItem } from "./FeedItem";
 
-export function DayList({ items, todayCount = null, headerAside }: { items: FeedItemSummary[]; todayCount?: number | null; headerAside?: React.ReactNode }) {
+export function DayList({ items, todayCount = null, headerAside, rail = false }: {
+  items: FeedItemSummary[];
+  todayCount?: number | null;
+  headerAside?: React.ReactNode;
+  /** List cards: desktops set each day in a column of its own, left of its cards (a list wider than the reading column, site.ts LAYOUT.lists). */
+  rail?: boolean;
+}) {
   const readSet = useReadSet();
   const today = beijingDate(Date.now());
   const days = useMemo(() => {
@@ -26,16 +32,17 @@ export function DayList({ items, todayCount = null, headerAside }: { items: Feed
     return out;
   }, [items]);
   if (FEED.style === "cards") {
-    // The day as one quiet line ("10 月 3 日 周六"): not sticky, no count, no time; 精选 marks the selected cards.
+    // The day as one quiet line ("10 月 3 日 周六"): not sticky, no count, no time; 精选 marks the selected cards. Beside
+    // a rail, desktops put the date over the weekday in a column left of the day's cards, held in view while they scroll.
     return (
       <div>
         {days.map(({ day, items: list }, i) => (
-          <section key={day} aria-label={day}>
-            <div className={`flex items-baseline gap-3 pb-2 ${i === 0 ? "pt-1" : "pt-5"}`}>
-              <time dateTime={day} className="text-[13px] font-semibold text-ink-3">
-                {monthDay(day)} {weekdayShort(day)}
+          <section key={day} aria-label={day} className={rail ? `lg:grid lg:grid-cols-[112px_minmax(0,1fr)] lg:gap-x-6 ${i === 0 ? "" : "lg:pt-6"}` : ""}>
+            <div className={`flex items-baseline gap-3 pb-2 ${i === 0 ? "pt-1" : "pt-5"} ${rail ? "lg:sticky lg:top-6 lg:block lg:self-start lg:pb-0 lg:pt-4" : ""}`}>
+              <time dateTime={day} className={`text-[13px] font-semibold text-ink-3 ${rail ? "lg:block lg:text-[15px] lg:leading-[1.4] lg:text-ink-2" : ""}`}>
+                {monthDay(day)} <span className={rail ? "lg:mt-0.5 lg:block lg:text-[13px] lg:font-normal lg:text-ink-4" : ""}>{weekdayShort(day)}</span>
               </time>
-              {i === 0 && headerAside && <span className="ml-auto text-[12px] text-ink-4">{headerAside}</span>}
+              {i === 0 && headerAside && <span className={`ml-auto text-[12px] text-ink-4 ${rail ? "lg:mt-2 lg:block" : ""}`}>{headerAside}</span>}
             </div>
             <ol className="space-y-2.5">
               {list.map((it) => (

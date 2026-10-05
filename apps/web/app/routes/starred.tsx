@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { Link, useLocation } from "react-router";
 import type { ItemAvailability } from "@aihot/contracts/site";
 import { beijingDate } from "@aihot/contracts/time";
-import { FEED, LAYOUT, NAV, SITE, STARRED } from "@aihot/site";
+import { FEED, NAV, SITE, STARRED } from "@aihot/site";
 import { Presence } from "../components/ui/Presence";
 import { SelectedBadge } from "../components/ui/Badge";
 import { edgeTtl } from "../lib/api.server";
@@ -13,7 +13,7 @@ import { IconBookmark, IconDownload, IconClose } from "../components/icons";
 import { readSnapshot, restoreAnchor, useSaveOnLeave } from "../lib/restore";
 import { PhoneBar } from "../components/shell/PhoneBar";
 import { feedPath, navName } from "../components/shell/nav";
-import type { Screen } from "../components/shell/screens";
+import { READ_COLUMN, type Screen } from "../components/shell/screens";
 import { LIST_CARD, StarButton } from "../features/feed/parts";
 import { webModules } from "../site-modules";
 
@@ -181,7 +181,7 @@ export default function StarredPage() {
   );
 
   return (
-    <div className="mx-auto pb-12" style={LAYOUT.column ? { maxWidth: LAYOUT.column } : undefined}>
+    <div className={`mx-auto pb-12 ${READ_COLUMN}`}>
       <PhoneBar back={{ to: "/more", label: "我的" }} title="收藏" />
       {BACKUP ? (
         <header className="pb-4 pt-3 lg:pt-1">

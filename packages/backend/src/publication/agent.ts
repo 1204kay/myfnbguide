@@ -180,7 +180,8 @@ export function dailyAnswer(r: DailyReport, via: Via, notes: Map<string, DailyNo
     s.items.forEach((it, i) => {
       const link = it.links.aihot ?? it.links.original;
       const note = notes.get(link);
-      data.push(`${i + 1}. [${linkText(it.title)}](${link}) · ${publicSourceName(it.source.name)}${note?.otherSources ? ` · 另有 ${note.otherSources} 家信源报道` : ""}`, ...(it.summary ? [`   ${it.summary}`] : []), ...noteLines(note));
+      // A flash listed in its section (DailyNote.brief) gives its title and source, as on the page.
+      data.push(`${i + 1}. [${linkText(it.title)}](${link}) · ${publicSourceName(it.source.name)}${note?.otherSources ? ` · 另有 ${note.otherSources} 家信源报道` : ""}`, ...(it.summary && !note?.brief ? [`   ${it.summary}`] : []), ...noteLines(note));
     });
     data.push("");
   }

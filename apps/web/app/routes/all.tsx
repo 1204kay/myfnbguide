@@ -14,16 +14,20 @@ import { EmptyState } from "../components/ui/Page";
 import { IconSearch } from "../components/icons";
 import { BackRow, PhoneBar } from "../components/shell/PhoneBar";
 import { feedPath, navName, navShown } from "../components/shell/nav";
-import { isPhone, type Screen } from "../components/shell/screens";
+import { isPhone, LIST_COLUMN, type Screen } from "../components/shell/screens";
 import { openSearch } from "../features/search/SearchOverlay";
 import { addRecentSearch } from "../lib/local-state";
 import { loadParts, readParts } from "../site-modules";
 
-const ALL_TITLE = subjectAfter("全部", "动态");
-/** The page's name: 全部动态 while it is a way in of its own; reached by the featured list's switch (site.ts NAV.hidden), that list's (最新). */
-const ALL_NAME = navShown("/all") ? ALL_TITLE : navName(feedPath());
+/**
+ * The page's name: its own (全部动态, or what the site calls it, NAV.labels) while it is a way in of its own; the featured
+ * list's while it is reached by that list's switch (site.ts NAV.hidden). Back buttons to it say 全部 beside 精选, its name
+ * where the list starts here (FEED.start).
+ */
+const ALL_NAME = navName(navShown("/all") ? "/all" : feedPath());
+const BACK_NAME = FEED.start === "featured" && navShown("/all") ? "全部" : ALL_NAME;
 
-export const handle: Screen = { tab: "featured", name: navShown("/all") ? "全部" : ALL_NAME };
+export const handle: Screen = { tab: "featured", name: BACK_NAME };
 export { shouldRevalidate } from "../lib/page-reuse";
 export const clientLoader = cachedLoader<typeof loader>();
 
@@ -148,7 +152,7 @@ export default function AllPage() {
             </EmptyState>
           </div>
         ) : (
-          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} />
+          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} rail={!!LAYOUT.lists} />
         )}
       </div>
       <Pagination page={data.page} pageCount={data.pageCount} href={(p) => pageHref(params, p)} />
@@ -159,7 +163,7 @@ export default function AllPage() {
   if (SHELL) {
     const heading = <h1 data-page-title="" className="text-[26px] font-bold leading-[1.3] tracking-[-0.01em] text-ink [text-wrap:balance] lg:text-[30px]">{headingOf(f)}</h1>;
     return (
-      <div className="mx-auto pb-6" style={LAYOUT.column ? { maxWidth: LAYOUT.column } : undefined}>
+      <div className={`mx-auto pb-6 ${LIST_COLUMN}`}>
         {f.q ? (
           // A search: pushed onto the page it was made from; the modules' sections, then the items.
           <>
@@ -207,9 +211,9 @@ export default function AllPage() {
 
   const title = f.q ? `搜索“${f.q}”` : f.tag ? tagName(f.tag) : null;
   return (
-    <div className="mx-auto pb-6" style={LAYOUT.column ? { maxWidth: LAYOUT.column } : undefined}>
+    <div className={`mx-auto pb-6 ${LIST_COLUMN}`}>
       {/* Phones: the feed bar, or for a search the query (tap to change it) and back to 全部. */}
-      {f.q ? <PhoneBar back={{ to: "/all", label: "全部" }} center={<QueryChip q={f.q} />} /> : <FeedBar base="/all" category={f.category} channel={f.channel} />}
+      {f.q ? <PhoneBar back={{ to: "/all", label: BACK_NAME }} center={<QueryChip q={f.q} />} /> : <FeedBar base="/all" category={f.category} channel={f.channel} />}
       <ActiveFilters base="/all" category={f.category} channel={f.channel} tag={f.tag} />
 
       {/* Desktop, as on 精选: the title, then one filter row with the search field aligned on the right. */}

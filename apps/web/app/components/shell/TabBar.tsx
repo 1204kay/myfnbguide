@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from "react";
 import { Link, useLocation, useRevalidator } from "react-router";
-import { tabs, type TabKey } from "./nav";
+import { shellSearch, tabs, type TabKey } from "./nav";
 import { noteScreen, rememberedTab, useScreen } from "./screens";
 import { markBack } from "./transitions";
 import { useChangelogDot } from "./Sidebar";
@@ -12,32 +12,37 @@ const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayout
 
 /**
  * The phone tab bar (below lg). A page lights the tab it declares; pages reached from several tabs keep
- * the tab the reader came from. Tapping the tab you are on goes back to its first screen (sliding back,
- * as the bar's back button does); on that screen it scrolls to the top, and at the top it reloads the
- * page's data. Articles bring their own toolbar instead.
+ * the tab the reader came from. A search from the shell's own field lights none, as in the sidebar; the
+ * pages opened from its results keep the tab the search was made from, and lead back to "搜索". Tapping
+ * the tab you are on goes back to its first screen (sliding back, as the bar's back button does); on that
+ * screen it scrolls to the top, and at the top it reloads the page's data. Articles bring their own toolbar
+ * instead.
  */
 export function TabBar({ changelogVersion }: { changelogVersion: string | null }) {
   const screen = useScreen();
-  const { pathname, key } = useLocation();
+  const { pathname, search, key } = useLocation();
   const revalidator = useRevalidator();
   const dot = useChangelogDot(changelogVersion);
   const last = useRef<TabKey | undefined>(undefined);
   const restored = useSyncExternalStore(subscribe, () => rememberedTab(key), serverTab);
-  const active = screen.tab ?? restored ?? last.current ?? screen.home;
+  const searching = shellSearch(pathname, search);
+  const active = searching ? undefined : (screen.tab ?? restored ?? last.current ?? screen.home);
   useIsoLayoutEffect(() => {
     // Do not overwrite a saved entry with the server fallback before hydration reads this browser's tab.
     if (restored === null) return;
-    last.current = active;
-    noteScreen(screen.name, key, active);
-  }, [active, key, screen.name, restored]);
+    if (!searching) last.current = active;
+    // Back buttons that lead to the results say where they go.
+    noteScreen(searching ? "搜索" : screen.name, key, last.current);
+  }, [active, key, screen.name, restored, searching]);
   if (screen.toolbar) return null;
   const items = tabs();
   return (
     <nav
       aria-label="底部导航"
-      className="fixed inset-x-0 bottom-0 z-40 bg-surface/90 pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] shadow-[0_-1px_0_var(--line)] backdrop-blur-xl backdrop-saturate-150 lg:hidden"
+      // Its tabs share the page's column: 640px, or on a site that spreads the page (LAYOUT.fluid) its width between the gutters (app.css).
+      className="fixed inset-x-0 bottom-0 z-40 bg-surface/90 pb-[env(safe-area-inset-bottom)] pl-[var(--bottom-bar-l)] pr-[var(--bottom-bar-r)] shadow-[0_-1px_0_var(--line)] backdrop-blur-xl backdrop-saturate-150 lg:hidden"
     >
-      <div className="mx-auto grid h-[50px] max-w-[640px]" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
+      <div className="mx-auto grid h-[50px] max-w-[var(--shell-max)]" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
         {items.map((t) => {
           const on = t.key === active;
           const Icon = t.icon;

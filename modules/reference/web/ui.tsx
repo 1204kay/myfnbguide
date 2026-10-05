@@ -1,21 +1,24 @@
 // The reference pages' parts, in the site's own look (warm white, hairline cards, the accent's short bar,
 // big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html,
-// and the card kinds of the layout (myfnb/layout-2026-10-05.md A7): story cards, practice cards, situation
-// cards and entry cards, the same on phones and desktops.
-import { useEffect, useState, type ReactNode } from "react";
+// and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): story cards, practice cards and rows,
+// and situations as compact rows, the same on phones and desktops. No source avatars (layout J3-6).
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import { Link } from "react-router";
-import { ITEM_COPY, LAYOUT, SITE } from "@aihot/site";
+import { ITEM_COPY, SITE } from "@aihot/site";
 import { IconChevronRight, IconShare } from "@aihot/web/components/icons";
-import { SourceAvatar } from "@aihot/web/components/ui/SourceAvatar";
+import { LIST_COLUMN, READ_COLUMN } from "@aihot/web/components/shell/screens";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { siteUrl } from "@aihot/web/lib/seo";
-import { countText, day, num } from "../format.ts";
-import type { Block, CaseCard, CompareBlock, ExampleBlock, PartsBlock, PracticeCard, SituationRow, SourceFace } from "../types.ts";
-import { SituationDrawing } from "./figures";
+import { day, listCount, listCountText, num, tellersText } from "../format.ts";
+import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
 
-/** The reading column every reference page shares with the site's main path (site.ts LAYOUT). */
-export function Page({ children }: { children: ReactNode }) {
-  return <div className="mx-auto pb-14" style={{ maxWidth: LAYOUT.column ?? 760 }}>{children}</div>;
+/**
+ * A reference page's column (site.ts LAYOUT): the reading width every page but the home page shares with the
+ * site's main path; `wide`, the lists' width (the home page, layout J2), whose extra room goes to columns.
+ */
+export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+  return <div className={`mx-auto pb-14 ${(wide ? LIST_COLUMN : READ_COLUMN) || "lg:max-w-[760px]"}`}>{children}</div>;
 }
 
 /**
@@ -37,14 +40,9 @@ export function Dek({ children, className = "mt-2" }: { children: ReactNode; cla
   return <p className={`text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px] ${className}`}>{children}</p>;
 }
 
-/** A section's heading (20/22px), with what it counts on the right. */
-export function Heading({ children, id, aside }: { children: ReactNode; id?: string; aside?: ReactNode }) {
-  return (
-    <div id={id} className="flex scroll-mt-[calc(var(--bar-h)+8px)] items-baseline justify-between gap-3">
-      <h2 className="text-[20px] font-extrabold leading-[1.35] text-ink lg:text-[22px]">{children}</h2>
-      {aside && <span className="shrink-0 text-[13px] text-ink-4">{aside}</span>}
-    </div>
-  );
+/** A section's heading (20/22px); `id` lets a link land on it below the phone bar. */
+export function Heading({ children, id }: { children: ReactNode; id?: string }) {
+  return <h2 id={id} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[20px] font-extrabold leading-[1.35] text-ink lg:text-[22px]">{children}</h2>;
 }
 
 /** "更新于 10 月 5 日" at a page's end (HANDOFF §2.4). */
@@ -52,40 +50,31 @@ export function Updated({ at }: { at: string | null | undefined }) {
   return at ? <p className="mt-10 text-[13px] text-ink-4">更新于 {day(at)}</p> : null;
 }
 
-/** The figures strip: big numbers with their units, or a word where one country stands alone. */
-export function Metrics({ items }: { items: Array<[number, string] | string> }) {
+/** The figures strip: big numbers with their units. */
+export function Metrics({ items }: { items: Array<[number, string]> }) {
   return (
     <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-y border-line py-3 text-[13px] text-ink-4">
-      {items.map((item) => typeof item === "string"
-        ? <b key={item} className="text-[17px] font-bold text-ink">{item}</b>
-        : <span key={item[1]}><b className="num mr-1 text-[22px] font-extrabold tracking-tight text-ink">{num(item[0])}</b>{item[1]}</span>)}
+      {items.map(([n, unit]) => <span key={unit}><b className="num mr-1 text-[22px] font-extrabold tracking-tight text-ink">{num(n)}</b>{unit}</span>)}
     </div>
   );
 }
 
-/** Overlapping source avatars, at most `max` and "+N" for the rest; every name on hover (layout A7-6). */
-export function Avatars({ sources, max, size, className = "flex" }: { sources: SourceFace[]; max: number; size: number; className?: string }) {
-  if (!sources.length) return null;
+/** What a situation counts in a list, its number at `size` px: "16 家店", "13 条原文" (layout J3-5). */
+export function CountFigure({ count, size }: { count: Count; size: number }) {
+  const [n, unit] = listCount(count);
   return (
-    <span className={`shrink-0 items-center ${className}`} title={sources.map((s) => s.name).join("、")}>
-      {sources.slice(0, max).map((s, i) => (
-        <span key={s.name} className={`flex rounded-full ring-2 ring-surface ${i ? "-ml-1.5" : ""}`}>
-          <SourceAvatar name={s.name} iconUrl={s.icon} size={size} />
-        </span>
-      ))}
-      {sources.length > max && (
-        <span className="-ml-1.5 inline-flex items-center rounded-md bg-bg-sunk px-1.5 text-[12px] font-medium leading-none text-ink-3 ring-2 ring-surface" style={{ height: size }}>
-          +{sources.length - max}
-        </span>
-      )}
+    <span className="whitespace-nowrap text-[13px] text-ink-4">
+      <b className="num mr-1 font-bold leading-none tracking-tight text-ink" style={{ fontSize: size }}>{num(n)}</b>{unit}
     </span>
   );
 }
 
 /** A card's look (layout A7): hairline, the accent on hover, a sunk ground while pressed, the accent's ring for the keyboard. */
-const CARD = "card relative transition-colors hover:border-accent touch:active:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:outline-offset-2 has-[.stretch:focus-visible]:outline-accent";
-/** The link that makes a whole card clickable; the card's own buttons sit above it. */
-const STRETCH = "stretch after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none";
+export const CARD = "card relative transition-colors hover:border-accent touch:active:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:outline-offset-2 has-[.stretch:focus-visible]:outline-accent";
+/** The link that makes a whole card or row clickable; its own other links sit above it. */
+export const STRETCH = "stretch after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none";
+/** A place in 店家谈得最多的事, in front of its title. */
+export const RANK = "num shrink-0 font-extrabold text-accent";
 
 /** A story's card (layout A7-2): country, source and month, its title, the item's 收录理由, the way to its shop's page. */
 export function StoryCard({ c }: { c: CaseCard }) {
@@ -112,31 +101,38 @@ export function StoryCards({ cards }: { cards: CaseCard[] }) {
   return <div className="mt-3 grid gap-2.5">{cards.map((c) => <StoryCard key={c.id} c={c} />)}</div>;
 }
 
+/**
+ * Opens the rest of a list in place by a button that then goes: the keyboard goes on from `first`, the first link
+ * it opened, not from the page's top.
+ */
+export function openRest(open: () => void, first: () => HTMLElement | null | undefined) {
+  flushSync(open);
+  first()?.focus();
+}
+
 /** How many shops a practice card lists before 展开其余 N 家. */
 const LINES_SHOWN = 4;
 
 /**
- * A practice (layout A7-3): avatars and counts, what to do, how the shops did it, and a line a shop leading to its
- * newest story in it. The first card of a group may carry its part of the situation's picture (`figure`).
+ * A practice two shops or more tell (layout A7-3, J4-2): who tells it, what to do, how the shops did it, and a line
+ * a shop leading to its newest story in it. The first card of a cause may carry its part of the situation's picture
+ * (`figure`), beside the text from 961px; where that picture has no such part, the text keeps the card's width.
  */
 export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const list = useRef<HTMLUListElement>(null);
   const lines = open ? p.lines : p.lines.slice(0, LINES_SHOWN);
   return (
     <article id={p.key} className="card scroll-mt-[calc(var(--bar-h)+8px)] px-4 pb-1 pt-3.5 sm:px-5 lg:pt-[18px]">
-      <div className={figure ? "lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-6" : ""}>
-        {figure && <div className="mx-auto mb-3 max-w-[360px] [&_svg]:max-h-[220px] lg:order-2 lg:mb-0 lg:w-full">{figure}</div>}
-        <div>
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4">
-            <Avatars sources={p.sources} max={4} size={20} className="flex sm:hidden" />
-            <Avatars sources={p.sources} max={6} size={22} className="hidden sm:flex" />
-            <span>{countText(p.count, "practice")}</span>
-          </div>
-          <h3 className="mt-2 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
+      <div className="lg:flex lg:gap-6">
+        {figure && <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[220px] lg:order-2 lg:mb-0 lg:w-[280px] lg:shrink-0">{figure}</div>}
+        <div className="min-w-0 lg:flex-1">
+          <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
+          <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
           <Dek className="mt-1.5">{p.summary}</Dek>
         </div>
       </div>
-      <ul className="mt-3 border-t border-line">
+      <ul ref={list} className="mt-3 border-t border-line">
         {lines.map((l) => (
           <li key={l.caseId} className="border-t border-line-soft first:border-t-0">
             <Link viewTransition to={`/reference/cases/${l.caseId}`} className="-mx-1 flex min-h-[52px] items-center gap-2 rounded-tile px-1 py-2 transition-colors hover:text-accent touch:active:bg-bg-sunk lg:min-h-11">
@@ -150,7 +146,7 @@ export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode })
         ))}
       </ul>
       {!open && p.lines.length > LINES_SHOWN && (
-        <button type="button" onClick={() => setOpen(true)} className="flex h-11 w-full items-center justify-center border-t border-line-soft text-[14px] text-accent">
+        <button type="button" onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])} className="flex h-11 w-full items-center justify-center border-t border-line-soft text-[14px] text-accent">
           展开其余 {p.lines.length - LINES_SHOWN} 家
         </button>
       )}
@@ -158,76 +154,91 @@ export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode })
   );
 }
 
-/** A situation's place in 店家谈得最多的事, in front of its title. */
-const RANK = "num shrink-0 font-extrabold text-accent";
-
 /**
- * A category's situations (layout A7-4): the first as a card with its picture, its opening and its counts, the
- * rest as compact rows in the same card; without `lead`, every one a row (the home page's categories: the ranking
- * above them carries the pictures). `ranked` numbers them and counts their shops (店家谈得最多的事). `kind`
- * narrows the links to that shop kind (?kind=).
+ * One practice a shop tells alone, its whole row leading to the story: who (when the row names it), the title, the
+ * shop's line and how many of its stories tell it, as a card's line does. The keyboard's ring is inside the row: the
+ * card clips what is outside.
  */
-export function SituationCards({ rows, kind, lead = true, ranked = false }: { rows: SituationRow[]; kind?: string; lead?: boolean; ranked?: boolean }) {
-  if (!rows.length) return null;
-  const first = lead ? rows[0]! : null;
-  const href = (s: SituationRow) => `/reference/${s.slug}${kind ? `?kind=${kind}` : ""}`;
-  const of = ranked ? "practice" : "situation";
+function PracticeRow({ p, who }: { p: ShopPractices["practices"][number]; who?: string }) {
   return (
-    <div className="card mt-3 overflow-hidden">
-      {first && (
-        <Link viewTransition to={href(first)} className="block px-4 py-4 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-6">
-          <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[200px] lg:order-2 lg:mb-0 lg:w-full lg:[&_svg]:max-h-[180px]"><SituationDrawing slug={first.slug} /></div>
-          {/* From 961px the picture sets the card's height: the counts sit at its foot, as on AIHOT's first card (the owner, 10/5). */}
-          <div className="lg:flex lg:flex-col">
-            <b className="block text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">{ranked && <span className={`${RANK} mr-2`}>1</span>}{first.title}</b>
-            <p className="mt-1.5 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{first.overview ?? first.dek}</p>
-            <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4 lg:mt-auto lg:pt-4">
-              <Avatars sources={first.sources} max={4} size={20} className="flex sm:hidden" />
-              <Avatars sources={first.sources} max={6} size={22} className="hidden sm:flex" />
-              <span>{countText(first.count, of)}</span>
-            </div>
-          </div>
-        </Link>
-      )}
-      {rows.slice(first ? 1 : 0).map((s, i) => (
-        <SituationLine key={s.slug} s={s} href={href(s)} of={of} rank={ranked ? i + (first ? 2 : 1) : undefined} className={first || i ? "border-t border-line" : ""} />
-      ))}
-    </div>
-  );
-}
-
-/** A compact row: two lines on phones (title, counts), one from 641px (title, avatars, counts); its place in front when ranked. */
-export function SituationLine({ s, href, className = "", category = false, rank, of = "situation" }: {
-  s: SituationRow; href: string; className?: string; category?: boolean; rank?: number; of?: "situation" | "practice";
-}) {
-  return (
-    <Link viewTransition to={href} className={`flex min-h-14 items-center gap-3 px-4 py-2.5 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:min-h-[52px] sm:px-5 ${className}`}>
-      {rank !== undefined && <span className={`${RANK} w-4 text-[17px]`}>{rank}</span>}
+    <Link id={p.key} viewTransition to={`/reference/cases/${p.caseId}`}
+      className={`flex min-h-[52px] scroll-mt-[calc(var(--bar-h)+8px)] items-center gap-2 px-4 transition-colors hover:bg-bg-sunk/40 focus-visible:-outline-offset-2 touch:active:bg-bg-sunk sm:px-5 ${who ? "py-3" : "py-2.5"}`}>
       <span className="min-w-0 flex-1">
-        {category && <span className="block text-[13px] text-ink-4">{s.category}</span>}
-        <b className="block text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{s.title}</b>
-        <span className="block text-[13px] text-ink-4 sm:hidden">{countText(s.count, of)}</span>
+        {who && <span className="block text-[13px] leading-[1.5] text-ink-4">{who}</span>}
+        <b className="block text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</b>
+        {(p.line || p.cases > 1) && (
+          <span className="mt-0.5 block text-[14px] leading-[1.6] text-ink-3">
+            {p.line}{p.cases > 1 && <span className="text-ink-4">{p.line ? " · " : ""}共 {p.cases} 篇</span>}
+          </span>
+        )}
       </span>
-      <Avatars sources={s.sources} max={3} size={20} className="hidden sm:flex" />
-      <span className="hidden shrink-0 whitespace-nowrap text-[13px] text-ink-4 sm:block">{countText(s.count, of)}</span>
       <IconChevronRight size={16} />
     </Link>
   );
 }
 
-/** Entry cards (layout A7-5): a name over its count, wrapping rather than cut; `cols` are the grid's columns. */
-export function Entries({ items, cols }: { items: Array<{ to: string; name: string; count: string }>; cols: string }) {
+/**
+ * The practices one shop tells alone (layout J4-3, J4-4), rows in one card with a hairline between them: no summary
+ * and no count. A shop with several has them under one line naming it, "日本 · 京都一家小酒馆 · 2 种做法".
+ * `figure` is its cause's part of the picture, on top, where no practice card above carries it.
+ */
+export function ShopRows({ shops, figure, className }: { shops: ShopPractices[]; figure?: ReactNode; className: string }) {
+  if (!shops.length) return null;
   return (
-    <div className={`mt-3 grid gap-2.5 ${cols}`}>
-      {items.map((e) => {
-        const body = <><b className="block text-[15px] font-[650] leading-[1.35] text-ink">{e.name}</b><span className="mt-0.5 block text-[12.5px] text-ink-4">{e.count}</span></>;
-        // 56px with one line of name: ten kinds and the next heading fit WeChat's first screen on a 390×844 phone (layout B1).
-        // A five-character name stays on one line from 320px wide and in six columns of the 760px column.
-        const cls = "card flex min-h-14 flex-col justify-center px-3 py-1.5 lg:px-3.5 transition-colors hover:border-accent touch:active:bg-bg-sunk";
-        return e.to.startsWith("#")
-          ? <a key={e.to} href={e.to} className={cls}>{body}</a>
-          : <Link key={e.to} viewTransition to={e.to} className={cls}>{body}</Link>;
-      })}
+    <div className={`card overflow-hidden ${className}`}>
+      {figure && <div className="mx-auto max-w-[360px] px-4 pt-4 empty:hidden [&_svg]:max-h-[220px]">{figure}</div>}
+      <ul className="divide-y divide-line">
+        {shops.map((shop) => {
+          const who = `${shop.country} · ${shop.name}`;
+          return shop.practices.length === 1 ? (
+            <li key={shop.practices[0]!.key}><PracticeRow p={shop.practices[0]!} who={who} /></li>
+          ) : (
+            <li key={shop.practices[0]!.key}>
+              <p className="px-4 pt-3 text-[13px] leading-[1.5] text-ink-4 sm:px-5">{who} · {shop.practices.length} 种做法</p>
+              <ul className="divide-y divide-line-soft">{shop.practices.map((p) => <li key={p.key}><PracticeRow p={p} /></li>)}</ul>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+/** A row's columns: its place when ranked, the text, what it counts from 641px (one width, so the rows line up), ›. */
+const COLUMNS = {
+  ranked: "grid-cols-[22px_minmax(0,1fr)_16px] sm:grid-cols-[26px_minmax(0,1fr)_88px_16px]",
+  plain: "grid-cols-[minmax(0,1fr)_16px] sm:grid-cols-[minmax(0,1fr)_88px_16px]",
+};
+
+/**
+ * Situations as compact rows in one card (layout J3-3, J3-4): the place when ranked (from `from`), the title with
+ * 代表做法 under it (the situation's line before its stories are grouped), what it counts, ›; on phones the count
+ * goes under the text. `category` names each row's category over its title (a search). `children` close the card.
+ * Ranked, the list is numbered from `from`, so a screen reader reads the places shown; the keyboard's ring is inside
+ * a row, as the card clips what is outside.
+ */
+export function SituationRows({ rows, from, category = false, children }: { rows: SituationRow[]; from?: number; category?: boolean; children?: ReactNode }) {
+  const List = from === undefined ? "ul" : "ol";
+  return (
+    <div className="card mt-3 overflow-hidden">
+      <List start={from} className="divide-y divide-line">
+        {rows.map((s, i) => (
+          <li key={s.slug} className={`relative grid items-center gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk has-[.stretch:focus-visible]:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:-outline-offset-2 has-[.stretch:focus-visible]:outline-accent sm:px-5 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
+            {from !== undefined && <span className={`${RANK} self-start text-[17px] leading-[25px]`}>{from + i}</span>}
+            <div className="min-w-0">
+              {category && <span className="block text-[13px] leading-[1.5] text-ink-4">{s.category}</span>}
+              <h3 className="text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">
+                <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
+              </h3>
+              <p className="mt-0.5 line-clamp-2 text-[14px] leading-[1.6] text-ink-3">{s.practice ?? s.dek}</p>
+              <span className="mt-1 block text-[13px] text-ink-4 sm:hidden">{listCountText(s.count)}</span>
+            </div>
+            <span className="hidden text-right sm:block"><CountFigure count={s.count} size={17} /></span>
+            <IconChevronRight size={16} className="text-ink-4" />
+          </li>
+        ))}
+      </List>
+      {children}
     </div>
   );
 }
@@ -274,8 +285,8 @@ export const ROW_BUTTON = "inline-flex h-9 items-center gap-1.5 rounded-full bor
 /** Phones: a page's bottom bar with 分享 alone, in place of the tab bar (situation pages; their handle has `toolbar`). */
 export function ShareBar({ onShare }: { onShare: () => void }) {
   return (
-    <nav aria-label="页面操作" className="fixed inset-x-0 bottom-0 z-40 bg-surface/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_var(--line)] backdrop-blur-xl backdrop-saturate-150 lg:hidden">
-      <div className="mx-auto grid h-[50px] max-w-[640px]">
+    <nav aria-label="页面操作" className="fixed inset-x-0 bottom-0 z-40 bg-surface/90 pb-[env(safe-area-inset-bottom)] pl-[var(--bottom-bar-l)] pr-[var(--bottom-bar-r)] shadow-[0_-1px_0_var(--line)] backdrop-blur-xl backdrop-saturate-150 lg:hidden">
+      <div className="mx-auto grid h-[50px] max-w-[var(--shell-max)]">
         <button type="button" onClick={onShare} className="flex flex-col items-center justify-center gap-[2px] text-[10.5px] text-ink-3 active:opacity-50">
           <IconShare size={22} />分享
         </button>

@@ -5,7 +5,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { WorkOptions } from "pg-boss";
 import type { z } from "zod";
-import type { Brand } from "@aihot/contracts/site";
+import type { Brand, SiteStats } from "@aihot/contracts/site";
 import type { Db } from "./db.ts";
 import type { QueueOptions } from "./jobs/queue.ts";
 import type { Finding } from "./notify/feishu.ts";
@@ -276,6 +276,11 @@ export interface ServerModule {
   storyOrigin?: () => string | null;
   /** More keys a feedback sender is known by; a ban under any of them holds (operations/feedback.ts). */
   feedbackKeys?: (ip: string) => string[];
+  /**
+   * What it has put together, counted for the about page (site/stats.ts): a number and its unit each, "41 种情况".
+   * The page's last stage shows the modules' figures in place of the dailies count.
+   */
+  figures?: () => Promise<SiteStats["figures"]>;
 }
 
 export function defineServerModule(module: ServerModule): ServerModule {

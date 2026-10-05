@@ -27,7 +27,7 @@ import { takePreview } from "../features/item/preview";
 import { IconArrowLeft, IconBookmark, IconCopy, IconDownload, IconExternal, IconImage, IconMenu, IconMore, IconShare } from "../components/icons";
 import { BackRow, BarButton, PhoneBar, type BackTarget } from "../components/shell/PhoneBar";
 import { feedPath, navName, navShown } from "../components/shell/nav";
-import { isPhone, type Screen } from "../components/shell/screens";
+import { isPhone, READ_COLUMN, type Screen } from "../components/shell/screens";
 import { loadParts, readParts } from "../site-modules";
 
 export const handle: Screen = { home: "featured", toolbar: true };
@@ -46,7 +46,7 @@ const COLUMN = LAYOUT.column;
 
 /** The featured list's name (site.ts NAV.labels); 全部 goes by it too while it is reached only by that list's switch (NAV.hidden). */
 const FEED_NAME = navName(feedPath());
-const ALL_NAME = navShown("/all") ? "全部" : FEED_NAME;
+const ALL_NAME = navShown("/all") && feedPath() !== "/all" ? "全部" : FEED_NAME;
 
 /** Where an item opened directly goes back to: the list it is in, by the name the navigation gives it. */
 function parentOf(item: { selected: boolean }): BackTarget {
@@ -60,6 +60,30 @@ function shownTags(tags: string[]): string[] {
 
 /** A tag chip's text: with "#" unless the site writes its tags without it (ITEM_COPY.tagHash). */
 const tagText = (tag: string) => (ITEM_COPY.tagHash ? `#${tag}` : tag);
+
+/**
+ * A running number heading an original title, with its separator: "10.833 - ", "409. ", "629: ", "#63 - ", "#25 ",
+ * "Episode 187 — ", "S2E20 ". A separator is followed by a space, or is a full-width "：" or "｜" before anything but a
+ * digit, so a number joined to the next word stays: "7-Eleven", "24-hour", "12:30", "60：40".
+ */
+const NUMBERED = /^(#\d+|ep(?:isode)?\.?\s*\d+|s\d+\s*e\d+|\d+(?:\.\d+)*)(\s*[-–—:：|｜]\s+|\s*[：｜](?!\d)|\.\s+|\s+)(?=\S)/i;
+
+/**
+ * The original title without the number a podcast or a series puts before it: the number marks the episode, not what it
+ * is about, and the title above never carries it. A pattern rather than the model, since the numbers follow a few fixed
+ * forms (399 original titles of a week, 10/6: 28 numbered, all in these forms). A bare number goes only with a separator
+ * after it and when it is no year ("2026: …", "70 Cent mehr …" and "9.9元…" stay whole); "#" with one digit before a
+ * word reads "number one" ("#1 Mistake …" stays).
+ */
+function withoutNumber(title: string): string {
+  const m = NUMBERED.exec(title);
+  if (!m) return title;
+  const [whole, mark, separator] = m;
+  const spaceOnly = !separator.trim();
+  if (/^\d/.test(mark) && (spaceOnly || /^(?:19|20)\d\d$/.test(mark))) return title;
+  if (/^#\d$/.test(mark) && spaceOnly) return title;
+  return title.slice(whole.length);
+}
 
 /**
  * Without the time of day (site.ts DATES.clock off): when the original came out and when it was collected, each to the
@@ -124,7 +148,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
       articleLd({ path: `/items/${item.id}`, headline: item.title, description: item.summary, publishedAt: item.publishedAt, basedOn: item.links.original }),
       breadcrumbLd([
         { name: SITE.name, path: "/" },
-        { name: item.selected ? FEED_NAME : navShown("/all") ? "全部动态" : FEED_NAME, path: item.selected ? feedPath() : "/all" },
+        { name: item.selected ? FEED_NAME : navShown("/all") ? navName("/all") : FEED_NAME, path: item.selected ? feedPath() : "/all" },
         { name: item.title, path: `/items/${item.id}` },
       ]),
     ],
@@ -309,7 +333,10 @@ function ItemGone() {
   );
 }
 
-/** Desktops, in the reader's one column: the original, 收藏 and 分享 as a row of buttons under the reason, the rest in the menu. */
+/**
+ * Desktops, in the reader's one column: the original, 收藏 and 分享 as a row of worded buttons under the reason, the
+ * rest (the poster, the link, the Markdown) in the menu worded 更多 after them.
+ */
 function DeskActions({ item, originalLabel, onShare, menu }: { item: SiteItemDetail; originalLabel: string; onShare: () => void; menu: ReactNode }) {
   const star = useStar(item);
   const button = "inline-flex min-h-9 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-4 text-[14px] font-medium transition-colors hover:border-accent hover:text-accent touch:min-h-11";
@@ -401,11 +428,12 @@ function ItemView({ item, parts }: Loaded) {
       <IconArrowLeft size={16} /> 返回
     </button>
   );
+  // The rest of the actions: in the one column worded 更多 after its 分享 button, in the right rail the menu icon.
   const moreMenu = (
-    <Menu label="更多操作" trigger={<IconMenu size={17} />}>
+    <Menu label="更多操作" trigger={COLUMN ? <span className="text-[13px] font-medium">更多</span> : <IconMenu size={17} />}>
       {(close) => (
         <>
-          <MenuItem icon={<IconShare size={15} />} onSelect={() => { close(); void share(); }}>分享链接</MenuItem>
+          {!COLUMN && <MenuItem icon={<IconShare size={15} />} onSelect={() => { close(); void share(); }}>分享链接</MenuItem>}
           <MenuItem icon={<IconImage size={15} />} onSelect={() => { close(); openPoster(); }}>生成分享海报</MenuItem>
           <MenuItem icon={<IconCopy size={15} />} onSelect={() => { close(); void copyLink(); }}>复制链接</MenuItem>
           {item.markdownAvailable &&
@@ -551,7 +579,7 @@ function ItemView({ item, parts }: Loaded) {
       </div>
       {!isX && <h1 data-page-title="" className={`text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink ${COLUMN ? "lg:text-[30px] lg:leading-[1.3]" : "lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]"}`}>{item.title}</h1>}
       {/* About 44 characters a line at its size, as the body runs (a long original title ran 54 across the 760px column). */}
-      {!isX && item.originalTitle && <p className="mt-2.5 max-w-[44em] text-[14px] leading-relaxed text-ink-4">{item.originalTitle}</p>}
+      {!isX && item.originalTitle && <p className="mt-2.5 max-w-[44em] text-[14px] leading-relaxed text-ink-4">{withoutNumber(item.originalTitle)}</p>}
 
       {item.summary && (
         <section className={isX ? "mt-4" : "mt-7 xl:mt-8"}>
@@ -615,13 +643,16 @@ function ItemView({ item, parts }: Loaded) {
       {isX && item.x!.media.length > 0 && <MediaGallery media={item.x!.media} postUrl={item.links.original} />}
       {isX && item.x!.quoted?.text && <QuotedPost quoted={item.x!.quoted} original={lang === "original"} />}
 
-      <p className="mt-8 max-w-[44em] text-[13px] text-ink-4">
-        来源：
-        <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
-          {isX ? item.x!.authorName : item.source.name}
-        </a>
-        <span> · {hostOf(item.links.original)}</span>
-      </p>
+      {/* The source again under the text, unless the reader's one column names it once at the top (its buttons and the phones' toolbar open the original). */}
+      {!COLUMN && (
+        <p className="mt-8 max-w-[44em] text-[13px] text-ink-4">
+          来源：
+          <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
+            {isX ? item.x!.authorName : item.source.name}
+          </a>
+          <span> · {hostOf(item.links.original)}</span>
+        </p>
+      )}
 
       {/* The tags (three in the one column, a finger's height on touch screens); a tag opens every item carrying it. */}
       {(topics.length > 0 || tags.length > 0) && (
@@ -659,7 +690,7 @@ function ItemView({ item, parts }: Loaded) {
   );
 
   return (
-    <div className="mx-auto max-w-[var(--page-max-reading)] pb-8" style={COLUMN ? { maxWidth: COLUMN } : undefined}>
+    <div className={`mx-auto max-w-[var(--page-max-reading)] pb-8 ${READ_COLUMN}`}>
       {item.body && <ReadingProgress />}
 
       {/* Phones: back to where the reader came from, the title once it has scrolled away, more actions. */}

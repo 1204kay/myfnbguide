@@ -9,7 +9,7 @@ import { IntentLink } from "../../components/ui/IntentLink";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import type { ReportCitation, ReportDetail, ReportNavigationEntry } from "@aihot/contracts/site";
-import { ITEM_COPY, REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
+import { ITEM_COPY, LAYOUT, REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
 import { Badge } from "../../components/ui/Badge";
 import { IconArrowLeft, IconArrowRight, IconArrowUpRight, IconChevronRight } from "../../components/icons";
 import { Kicker } from "../../components/ui/Kicker";
@@ -24,6 +24,8 @@ import { EDITION, KIND_LABEL, MOTTO, dateLine, dateMark, headline, issueLine, me
 const pad = (n: number) => String(n).padStart(2, "0");
 const keyOf = (c: ReportCitation) => c.itemId ?? c.title;
 const anchorOf = (c: ReportCitation) => (c.itemId ? `r-${c.itemId}` : null);
+/** A flash its issue lists in its own section, after the entries in full (site.ts REPORTS.flashPlacement). */
+const isBrief = (c: ReportCitation) => c.brief === true;
 /** A story's own link (原文): `relative`, so it stands above the headline's link covering the story (COVER). */
 const LINK = "relative inline-flex min-h-7 items-center gap-0.5 font-medium transition-colors hover:text-accent";
 /**
@@ -191,6 +193,43 @@ function Story({ c, dated, className = "" }: { c: ReportCitation; dated: boolean
 }
 
 /**
+ * A flash in one line: headline and source, the whole row opening its item (a press tints it); a withdrawn
+ * one stays, struck through. Flashes stand together in 快讯, or each in its own section after the entries
+ * in full (site.ts REPORTS.flashPlacement).
+ */
+function Flash({ c }: { c: ReportCitation }) {
+  const row = "flex gap-2.5 py-3";
+  const body = (
+    <>
+      <span className="mt-[9px] size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+      <span className="min-w-0">
+        {c.available ? (
+          <span className="text-ink transition-colors group-hover:text-accent">{c.title}</span>
+        ) : (
+          <span className="text-ink-4">
+            <span className="line-through">{c.title}</span>
+            <span className="ml-2 text-[12px]">{WITHDRAWN_NOTE}</span>
+          </span>
+        )}
+        {c.available && <span className="ml-2 text-[12px] text-ink-4">{c.sourceName}</span>}
+        {c.available && c.followUp && <Badge className="ml-2 align-[1px]" title={`${monthDay(c.followUp)}的日报报道过这件事，这里是新进展`}>跟进</Badge>}
+      </span>
+    </>
+  );
+  return (
+    <li id={anchorOf(c) ?? undefined} className="break-inside-avoid scroll-mt-[calc(var(--bar-h)+1.5rem)] border-b border-line text-[14.5px] leading-[1.65]">
+      {c.available && c.itemId ? (
+        <Link viewTransition to={`/items/${c.itemId}`} className={`group ${row} transition-colors active:bg-bg-sunk`}>
+          {body}
+        </Link>
+      ) : (
+        <div className={row}>{body}</div>
+      )}
+    </li>
+  );
+}
+
+/**
  * Rows of two once the page is wide enough: both cells as tall as the taller, a hairline between them
  * and one rule under the row across the whole page, even under a single cell.
  */
@@ -281,8 +320,11 @@ function Overview({ text }: { text: string }) {
   );
 }
 
-/** The front page: the lead beside a column of today's highlights and the index of pages. */
-function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; pages: Page[]; leadStory: ReportCitation | null; count: number }) {
+/**
+ * The front page: the lead beside a column of today's highlights and the index of pages. A short issue
+ * (site.ts REPORTS.compactBelow) has neither, so each entry appears once: the lead stands alone.
+ */
+function FrontPage({ report, pages, leadStory, count, short }: { report: ReportDetail; pages: Page[]; leadStory: ReportCitation | null; count: number; short: boolean }) {
   const daily = report.kind === "daily";
   // A weekly or monthly leading with an event: the event's own summary; its overview stands above (Overview).
   const byEvent = daily || !!leadStory;
@@ -293,15 +335,15 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
   const wide = !cover?.width || !cover.height || cover.width / cover.height >= 1.25;
   const title = report.lead?.title ?? leadStory?.title ?? headline(report.kind, report.key, count);
   const dek = daily || !leadStory ? (report.lead?.leadParagraph ?? leadStory?.summary ?? report.overview) : leadStory.summary;
-  const highlights = report.highlights.filter((h) => !leadStory || keyOf(h) !== keyOf(leadStory)).slice(0, 3);
+  const highlights = short ? [] : report.highlights.filter((h) => !leadStory || keyOf(h) !== keyOf(leadStory)).slice(0, 3);
   const inPage = new Set(pages.flatMap((p) => p.items.map((c) => c.itemId)).filter(Boolean));
   const period = daily ? "今日" : report.kind === "weekly" ? "本周" : "本月";
-  const index = [...pages.map((p) => ({ id: p.id, label: p.label, n: `${p.items.length} ${measure}` })), ...(report.flashes.length > 0 ? [{ id: "s-flash", label: "快讯", n: `${report.flashes.length} 条` }] : [])];
+  const index = short ? [] : [...pages.map((p) => ({ id: p.id, label: p.label, n: `${p.items.length} ${measure}` })), ...(report.flashes.length > 0 ? [{ id: "s-flash", label: "快讯", n: `${report.flashes.length} 条` }] : [])];
 
   return (
-    <section aria-label="头版" className="grid @[880px]:grid-cols-[minmax(0,1fr)_300px] @[1040px]:grid-cols-[minmax(0,1fr)_340px]">
+    <section aria-label="头版" className={short ? undefined : "grid @[880px]:grid-cols-[minmax(0,1fr)_300px] @[1040px]:grid-cols-[minmax(0,1fr)_340px]"}>
       {/* On a phone the headline comes before a landscape picture, so the first screen carries the news. */}
-      <div id={leadStory ? (anchorOf(leadStory) ?? undefined) : undefined} className={`relative flex min-w-0 scroll-mt-[calc(var(--bar-h)+1.5rem)] flex-col py-7 transition-colors @[880px]:border-r @[880px]:border-line @[880px]:py-10 @[880px]:pr-10 ${PRESSED}`}>
+      <div id={leadStory ? (anchorOf(leadStory) ?? undefined) : undefined} className={`relative flex min-w-0 scroll-mt-[calc(var(--bar-h)+1.5rem)] flex-col py-7 transition-colors @[880px]:py-10 ${short ? "" : "@[880px]:border-r @[880px]:border-line @[880px]:pr-10"} ${PRESSED}`}>
         <Kicker>{byEvent ? "头条" : "本期导读"}</Kicker>
         {cover && wide && <LeadPicture cover={cover} onError={() => setBroken(cover.url)} priority className="order-2 mt-5 @[560px]:order-1" />}
         <h2 className="order-1 mt-4 text-[32px] font-black leading-[1.28] tracking-[-0.03em] text-ink [text-wrap:balance] @[520px]:text-[40px] @[560px]:order-2 @[1040px]:text-[48px] @[1040px]:leading-[1.22]">
@@ -315,7 +357,7 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
         </h2>
         {dek && (
           <div className={cover && !wide ? "order-3 mt-6 grid gap-6 @[640px]:grid-cols-[minmax(0,1fr)_minmax(0,38%)] @[880px]:mt-7" : "order-3"}>
-            <p className={`text-[16.5px] leading-[1.9] text-ink-2 @[880px]:text-[17.5px] ${cover && !wide ? "" : "mt-6 @[560px]:text-justify @[880px]:mt-7"}`}>{dek}</p>
+            <p className={`text-[16.5px] leading-[1.9] text-ink-2 @[880px]:text-[17.5px] ${cover && !wide ? "" : "mt-6 @[560px]:text-justify @[880px]:mt-7"} ${short ? "max-w-[46em]" : ""}`}>{dek}</p>
             {cover && !wide && <LeadPicture cover={cover} onError={() => setBroken(cover.url)} />}
           </div>
         )}
@@ -329,57 +371,59 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
         {!!leadStory?.related?.length && <Related items={leadStory.related} className="order-5 mt-5 border-t border-line pt-4" />}
       </div>
 
-      <aside className="min-w-0 border-t border-line py-7 @[880px]:border-t-0 @[880px]:py-10 @[880px]:pl-8">
-        {highlights.length > 0 && (
-          <>
-            <Kicker>{period}看点</Kicker>
-            <ol className="mt-2">
-              {highlights.map((h, i) => {
-                const anchor = anchorOf(h);
-                const to = anchor && inPage.has(h.itemId) ? `#${anchor}` : h.itemId ? `/items/${h.itemId}` : h.sourceUrl;
-                if (!h.available) {
+      {!short && (
+        <aside className="min-w-0 border-t border-line py-7 @[880px]:border-t-0 @[880px]:py-10 @[880px]:pl-8">
+          {highlights.length > 0 && (
+            <>
+              <Kicker>{period}看点</Kicker>
+              <ol className="mt-2">
+                {highlights.map((h, i) => {
+                  const anchor = anchorOf(h);
+                  const to = anchor && inPage.has(h.itemId) ? `#${anchor}` : h.itemId ? `/items/${h.itemId}` : h.sourceUrl;
+                  if (!h.available) {
+                    return (
+                      <li key={keyOf(h)} className="flex gap-3.5 border-b border-line py-4">
+                        <span className="num w-6 shrink-0 text-[26px] font-black leading-[0.95] tracking-[-0.03em] text-ink-4">{i + 1}</span>
+                        <span className="min-w-0 text-[13.5px] leading-[1.55] text-ink-4">
+                          <span className="line-through">{h.title}</span>
+                          <span className="mt-1 block text-[12px]">{WITHDRAWN_NOTE}</span>
+                        </span>
+                      </li>
+                    );
+                  }
                   return (
-                    <li key={keyOf(h)} className="flex gap-3.5 border-b border-line py-4">
-                      <span className="num w-6 shrink-0 text-[26px] font-black leading-[0.95] tracking-[-0.03em] text-ink-4">{i + 1}</span>
-                      <span className="min-w-0 text-[13.5px] leading-[1.55] text-ink-4">
-                        <span className="line-through">{h.title}</span>
-                        <span className="mt-1 block text-[12px]">{WITHDRAWN_NOTE}</span>
-                      </span>
+                    <li key={keyOf(h)}>
+                      <Link to={to} viewTransition={to.startsWith("/")} className="group flex gap-3.5 border-b border-line py-4 transition-colors active:bg-bg-sunk">
+                        <span className="num w-6 shrink-0 text-[26px] font-black leading-[0.95] tracking-[-0.03em] text-accent">{i + 1}</span>
+                        <span className="min-w-0">
+                          <span className="block text-[15px] font-bold leading-[1.55] text-ink transition-colors group-hover:text-accent">{h.title}</span>
+                          <span className="mt-1.5 block truncate text-[12px] text-ink-4">{h.sourceName}</span>
+                        </span>
+                      </Link>
                     </li>
                   );
-                }
-                return (
-                  <li key={keyOf(h)}>
-                    <Link to={to} viewTransition={to.startsWith("/")} className="group flex gap-3.5 border-b border-line py-4 transition-colors active:bg-bg-sunk">
-                      <span className="num w-6 shrink-0 text-[26px] font-black leading-[0.95] tracking-[-0.03em] text-accent">{i + 1}</span>
-                      <span className="min-w-0">
-                        <span className="block text-[15px] font-bold leading-[1.55] text-ink transition-colors group-hover:text-accent">{h.title}</span>
-                        <span className="mt-1.5 block truncate text-[12px] text-ink-4">{h.sourceName}</span>
-                      </span>
-                    </Link>
+                })}
+              </ol>
+            </>
+          )}
+          {index.length > 0 && (
+            <nav aria-label="本期版面" className={highlights.length > 0 ? "mt-8" : ""}>
+              <Kicker>本期版面</Kicker>
+              <ol className="mt-3">
+                {index.map((p, i) => (
+                  <li key={p.id}>
+                    <a href={`#${p.id}`} className="group flex items-baseline gap-2 py-1.5 text-[13.5px] touch:min-h-11 touch:items-center">
+                      <span className="num w-7 shrink-0 text-[14px] font-bold text-ink">{pad(i + 1)}</span>
+                      <span className="min-w-0 flex-1 truncate text-ink-2 transition-colors group-hover:text-accent">{p.label}</span>
+                      <span className="num shrink-0 text-[12px] text-ink-4">{p.n}</span>
+                    </a>
                   </li>
-                );
-              })}
-            </ol>
-          </>
-        )}
-        {index.length > 0 && (
-          <nav aria-label="本期版面" className={highlights.length > 0 ? "mt-8" : ""}>
-            <Kicker>本期版面</Kicker>
-            <ol className="mt-3">
-              {index.map((p, i) => (
-                <li key={p.id}>
-                  <a href={`#${p.id}`} className="group flex items-baseline gap-2 py-1.5 text-[13.5px] touch:min-h-11 touch:items-center">
-                    <span className="num w-7 shrink-0 text-[14px] font-bold text-ink">{pad(i + 1)}</span>
-                    <span className="min-w-0 flex-1 truncate text-ink-2 transition-colors group-hover:text-accent">{p.label}</span>
-                    <span className="num shrink-0 text-[12px] text-ink-4">{p.n}</span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )}
-      </aside>
+                ))}
+              </ol>
+            </nav>
+          )}
+        </aside>
+      )}
     </section>
   );
 }
@@ -399,7 +443,7 @@ export function SectionPage({ id, no, label, children }: { id: string; no?: numb
   );
 }
 
-/** Two columns with a hairline between them, once the page is wide enough (快讯). */
+/** Two columns with a hairline between them, once the page is wide enough (快讯, and the flashes of a section). */
 const COLUMNS = "@[760px]:columns-2 @[760px]:gap-x-12 @[760px]:[column-rule:1px_solid_var(--line)]";
 
 function Neighbours({ report, index }: { report: ReportDetail; index: ReportNavigationEntry[] }) {
@@ -469,18 +513,20 @@ export function ReportPaper({ report, index }: { report: ReportDetail; index: Re
   const leadStory = leadStoryOf(report);
   const pages = pagesOf(report, leadStory);
   const count = pages.reduce((sum, p) => sum + p.items.length, 0) + (leadStory ? 1 : 0);
+  const short = count + report.flashes.length <= REPORTS.compactBelow;
   // The way to earlier issues: the archive, or the list above (History), which a weekly or monthly has once it is not the only one.
   const back = daily || index.some((e) => e.key !== report.key) ? { to: daily ? "/daily/archive" : "#report-history", text: daily ? "日报合订本" : `往期${KIND_LABEL[report.kind]}` } : null;
   return (
-    // Compact, the paper keeps its narrow layout in the reading column: its two columns start at 760px.
-    <article className={REPORTS.compact ? "@container max-w-[759px]" : "@container"}>
+    // Compact, the paper keeps its narrow layout in the reading column (its two columns start at 760px), unless
+    // it stands in the lists' width (LAYOUT.lists), which it fills.
+    <article className={REPORTS.compact && !LAYOUT.lists ? "@container max-w-[759px]" : "@container"}>
       <Masthead report={report} index={index} />
       {count === 0 && report.flashes.length === 0 ? (
         <p className="py-16 text-center text-[14px] text-ink-4">本期没有入选内容。</p>
       ) : (
         <>
           {!daily && leadStory && report.overview && <Overview text={report.overview} />}
-          <FrontPage report={report} pages={pages} leadStory={leadStory} count={count} />
+          <FrontPage report={report} pages={pages} leadStory={leadStory} count={count} short={short} />
         </>
       )}
 
@@ -492,34 +538,19 @@ export function ReportPaper({ report, index }: { report: ReportDetail; index: Re
               {p.summary}
             </p>
           )}
-          <Rows items={p.items}>{(c, cell) => <Story key={`${p.id}-${keyOf(c)}`} c={c} dated={!daily} className={cell} />}</Rows>
+          <Rows items={p.items.filter((c) => !isBrief(c))}>{(c, cell) => <Story key={`${p.id}-${keyOf(c)}`} c={c} dated={!daily} className={cell} />}</Rows>
+          {p.items.some(isBrief) && (
+            <ul className={COLUMNS}>
+              {p.items.filter(isBrief).map((c) => <Flash key={`${p.id}-${keyOf(c)}`} c={c} />)}
+            </ul>
+          )}
         </SectionPage>
       ))}
 
       {report.flashes.length > 0 && (
         <SectionPage id="s-flash" no={pages.length + 1} label="快讯">
           <ul className={`${COLUMNS} @[1040px]:columns-3`}>
-            {report.flashes.map((f, i) => (
-              <li key={`${keyOf(f)}-${i}`} className="flex break-inside-avoid gap-2.5 border-b border-line py-3 text-[14.5px] leading-[1.65]">
-                <span className="mt-[9px] size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-                <span className="min-w-0">
-                  {!f.available ? (
-                    <span className="text-ink-4">
-                      <span className="line-through">{f.title}</span>
-                      <span className="ml-2 text-[12px]">{WITHDRAWN_NOTE}</span>
-                    </span>
-                  ) : f.itemId ? (
-                    <Link viewTransition to={`/items/${f.itemId}`} className="text-ink transition-colors hover:text-accent">
-                      {f.title}
-                    </Link>
-                  ) : (
-                    <span className="text-ink">{f.title}</span>
-                  )}
-                  {f.available && <span className="ml-2 text-[12px] text-ink-4">{f.sourceName}</span>}
-                  {f.available && f.followUp && <Badge className="ml-2 align-[1px]" title={`${monthDay(f.followUp)}的日报报道过这件事，这里是新进展`}>跟进</Badge>}
-                </span>
-              </li>
-            ))}
+            {report.flashes.map((f, i) => <Flash key={`${keyOf(f)}-${i}`} c={f} />)}
           </ul>
         </SectionPage>
       )}

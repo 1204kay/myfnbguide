@@ -9,6 +9,7 @@ import { beijingDate } from "@aihot/contracts/time";
 import { EmptyState } from "../components/ui/Page";
 import { IntentLink } from "../components/ui/IntentLink";
 import { IconChevronRight } from "../components/icons";
+import { feedPath, navName } from "../components/shell/nav";
 import { ReportLayout } from "../features/report/ReportLayout";
 import { ReportPaper, reportOutline } from "../features/report/ReportPaper";
 import { KIND_LABEL, KIND_PATH, feedLink, kindFromPath } from "../features/report/format";
@@ -43,22 +44,23 @@ export function headers() {
 }
 
 /**
- * Before a kind's first issue: what it is (REPORTS.descriptions) and, for a weekly or monthly, the way to the
- * daily it is chosen from. The switch above still offers all three.
+ * Before a kind's first issue: what it is (REPORTS.noIssue, else REPORTS.descriptions) and the way to what it is
+ * made from: the list for a daily, the daily for a weekly or monthly. The switch above still offers all three.
  */
 function NoIssue({ kind }: { kind: ReportKind }) {
   const label = KIND_LABEL[kind];
-  if (kind === "daily") return <EmptyState title={`还没有${label}`}>第一期编好以后会出现在这里。</EmptyState>;
+  const from = kind === "daily" ? feedPath() : KIND_PATH.daily;
+  const note = REPORTS.noIssue[kind] ?? (kind === "daily" ? "第一期编好以后会出现在这里。" : `${label}是${REPORTS.descriptions[kind]}；第一期编好以后会出现在这里。`);
   return (
     <EmptyState
       title={`还没有${label}`}
       action={
-        <IntentLink to={KIND_PATH.daily} className="inline-flex min-h-11 items-center gap-0.5 text-[13.5px] font-medium text-accent transition-colors hover:text-accent-ink">
-          看{KIND_LABEL.daily} <IconChevronRight size={14} />
+        <IntentLink to={from} className="inline-flex min-h-11 items-center gap-0.5 text-[13.5px] font-medium text-accent transition-colors hover:text-accent-ink">
+          看{kind === "daily" ? navName(from) : KIND_LABEL.daily} <IconChevronRight size={14} />
         </IntentLink>
       }
     >
-      {`${label}是${REPORTS.descriptions[kind]}；第一期编好以后会出现在这里。`}
+      {note}
     </EmptyState>
   );
 }

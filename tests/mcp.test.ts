@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import Fastify from "fastify";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
-import { MCP_TOOLS } from "@aihot/contracts/mcp";
+import { MCP_TOOL_NAMES, MCP_TOOLS } from "@aihot/contracts/mcp";
+import { NAV } from "@aihot/site";
 import { registerMcp } from "../apps/api/src/routes/mcp.ts";
 
 test("closing the API drains a live MCP subscription before closing HTTP", { timeout: 5000 }, async () => {
@@ -50,6 +51,29 @@ test("an MCP client with a list-changed handler opens no listen stream", { timeo
     assert.equal(client.getServerCapabilities()?.tools?.listChanged, false);
     assert.equal(client.autoOpenedSubscription, undefined);
     assert.ok(!methods.includes("subscriptions/listen"), methods.join(","));
+  } finally {
+    await client.close();
+    app.server.closeAllConnections();
+    await app.close();
+  }
+});
+
+// The server, llms.txt and the agent page name the tools MCP_TOOLS lists. Failure case: the server keeps offering
+// the hot list's tools (and its instructions keep pointing Agents at them) on a site that keeps 热点 out of its
+// navigation, so the agent page and the client count different tools.
+test("the MCP server offers the tools MCP_TOOLS lists, the hot list's only while the site shows it", { timeout: 5000 }, async () => {
+  const app = Fastify();
+  registerMcp(app);
+  const address = await app.listen({ host: "127.0.0.1", port: 0 });
+  const client = new Client({ name: "tools-check", version: "1.0.0" }, { versionNegotiation: { mode: { pin: "2026-07-28" } } });
+  try {
+    await client.connect(new StreamableHTTPClientTransport(new URL(`${address}/api/mcp`)));
+    assert.deepEqual((await client.listTools()).tools.map((t) => t.name), MCP_TOOLS.map((t) => t.name));
+    const shown = !NAV.hidden.includes("/hot");
+    for (const tool of [MCP_TOOL_NAMES.hot, MCP_TOOL_NAMES.story]) {
+      assert.equal(MCP_TOOLS.some((t) => t.name === tool), shown, tool);
+      assert.equal(client.getInstructions()?.includes(tool) ?? false, shown, `instructions: ${tool}`);
+    }
   } finally {
     await client.close();
     app.server.closeAllConnections();

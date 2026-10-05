@@ -10,7 +10,8 @@ export interface Shop {
   name: string | null;
   /**
    * Who it is in Chinese, without the country: "京都一家意大利小酒馆", "一位餐厅顾问". The shop page's title and a
-   * practice card's line; stories written before it was asked have none until they are written again.
+   * practice's line, the newest story's for a named shop (backend/read.ts shopName); stories written before it was
+   * asked have none until they are written again.
    */
   label: string;
   country: string;
@@ -96,18 +97,11 @@ export interface CaseStory {
  * names no shop counts once a source; a shop a publication writes about without its name counts once a story.
  */
 export interface Count {
-  /** Practices; null where the stories are not grouped yet (the line then counts 条原文). */
-  practices: number | null;
+  /** Whether the stories are grouped by practice yet; until then a list counts 条原文, not shops (layout J3-5). */
+  grouped: boolean;
   shops: number;
   insiders: number;
   cases: number;
-  countries: string[];
-}
-
-/** A source behind a practice or situation, drawn as a small round avatar. */
-export interface SourceFace {
-  name: string;
-  icon: string | null;
 }
 
 /** The item a story is written from (the same id), as 收藏 keeps it: starring a story stars its item. */
@@ -139,25 +133,56 @@ export interface PracticeLine {
   /** Its newest story in the practice, which the line opens. */
   caseId: string;
   country: string;
+  /** Who the shop is (backend/read.ts shopName). */
   name: string;
   line: string;
   /** Its stories in the practice ("· 共 2 篇" from two). */
   cases: number;
 }
 
-/** A practice on a situation page (backend/methods.ts): the stories that tell the same way of doing it, a line a shop. */
+/**
+ * A practice two shops or more tell (insiders counted with them), on a situation page (backend/methods.ts): what
+ * to do, how they did it, and a line a shop (layout J4-2).
+ */
 export interface PracticeCard {
   /** Its anchor on the situation page. */
   key: string;
   title: string;
   summary: string;
   count: Count;
-  /** In the order of its lines, each source once. */
-  sources: SourceFace[];
   lines: PracticeLine[];
 }
 
-/** A situation in a list (the home page, a shop kind's page, a search): its first card or a compact row. */
+/**
+ * The practices one shop tells alone in a list, as rows under who it is, written once (layout J4-3, J4-4): each
+ * practice's title, and the shop's line where it says more than the title; a row leads to the story.
+ */
+export interface ShopPractices {
+  country: string;
+  /** Who the shop is (backend/read.ts shopName). */
+  name: string;
+  practices: Array<{
+    /** Its anchor on the situation page. */
+    key: string;
+    title: string;
+    /** The shop's newest story in it, which the row opens. */
+    caseId: string;
+    /** The shop's line; null where it mostly says what the title says (backend/read.ts repeats). */
+    line: string | null;
+    /** Its stories in the practice ("共 2 篇" from two), as a practice card's line counts them. */
+    cases: number;
+  }>;
+}
+
+/** A list of a situation page: practices first, most shops first, then what one shop alone tells, then loose stories. */
+export interface PracticeList {
+  practices: PracticeCard[];
+  shops: ShopPractices[];
+  /** Stories in no practice: written since the grouping, or every story while there is none; a shop's newest alone. */
+  cases: CaseCard[];
+}
+
+/** A situation in a list (the home page, a search): a row with its title, a practice and how many shops tell it. */
 export interface SituationRow {
   slug: string;
   /** Its category's title. */
@@ -167,7 +192,8 @@ export interface SituationRow {
   /** 先了解这种情况, once the stories are grouped. */
   overview: string | null;
   count: Count;
-  sources: SourceFace[];
+  /** 代表做法 (layout J3-3): the title of the practice the most shops tell, the page's first; null before the stories are grouped. */
+  practice: string | null;
 }
 
 export interface CategoryRows {
@@ -177,22 +203,20 @@ export interface CategoryRows {
 }
 
 export interface ReferenceHome {
+  /** Each category's situations, most shops first. */
   categories: CategoryRows[];
-  /** 店家谈得最多的事: the situations the most shops shared a practice in, at most five (backend/read.ts rankSituations). */
+  /** 店家谈得最多的事: the ten situations the most shops shared a practice in (backend/read.ts rankSituations). */
   ranking: SituationRow[];
-  /** The shop kinds with two stories or more. */
-  kinds: Array<{ slug: string; title: string; cases: number }>;
-  totals: { situations: number; cases: number; countries: number };
+  /** 最近收进 on the first of the ranking (layout J3-3): its story the library took in last, and who tells it. */
+  recent: { id: string; at: string; who: string } | null;
+  totals: { situations: number; cases: number };
   updatedAt: string | null;
 }
 
-export interface SituationGroupPart {
+export interface SituationGroupPart extends PracticeList {
   key: string;
   title: string;
   line: string;
-  practices: PracticeCard[];
-  /** Stories in no practice: written since the grouping, or every story while there is none. */
-  cases: CaseCard[];
 }
 
 export interface SituationPage {
@@ -202,16 +226,16 @@ export interface SituationPage {
   dek: string;
   /** 先了解这种情况: a few sentences on the usual causes and practices; null until the stories are grouped. */
   overview: string | null;
-  /** Who the overview is written from: everyone in the situation, whatever the kind. */
-  overviewCount: Count;
-  /** Whether the stories are grouped by practice; without, each group lists its stories. */
-  grouped: boolean;
-  /** The shop kind the page is narrowed to (?kind=): the counts are its alone. */
-  kind: { slug: string; title: string } | null;
   count: Count;
+  /** The causes that have practices or stories, numbered under the picture. */
+  causes: Array<{ key: string; title: string; line: string }>;
+  /**
+   * The page by cause, a section each, where two causes have two practices or more each (layout J4-5); else none,
+   * and the page is one list (`rest`).
+   */
   groups: SituationGroupPart[];
-  /** Placed in the situation without a group. */
-  others: { practices: PracticeCard[]; cases: CaseCard[] };
+  /** With `groups`, what is placed in no cause (其他做法); without, every practice and story of the page. */
+  rest: PracticeList;
   /** How many situations the library shows, for the line that leads to them all. */
   situations: number;
   updatedAt: string | null;
@@ -223,24 +247,12 @@ export interface CasePage {
   /** The item the story is written from, with its AI 导读 (summary) and 收录理由. */
   item: StarItem & { reason: string | null };
   source: { name: string; kind: string | null; url: string; language: string | null; month: string; audioOnly: boolean };
-  /** Its situation, its practice there (the page opens at it) and how many practices or stories the page has. */
+  /** Its situation, its practice there (the page opens at it) and what the situation counts. */
   situation: { slug: string; title: string; practice: string | null; count: Count } | null;
   /** The shop's page, when the shop has other stories than this one. */
   shop: { key: string; others: number } | null;
   /** How many situations the library shows, for the card at the end. */
   situations: number;
-}
-
-export interface KindPage {
-  slug: string;
-  title: string;
-  dek: string;
-  metrics: { cases: number; countries: string[] };
-  /** The situations its stories are in, each counted for this kind alone. */
-  categories: CategoryRows[];
-  /** Its stories in no situation the library shows. */
-  others: CaseCard[];
-  updatedAt: string | null;
 }
 
 export interface ShopPage {

@@ -4,7 +4,9 @@
 // does not say which date is the original's and which the collection's, or names the source twice when it is also the
 // author; an archived item's year is missing; the tags
 // keep "#", the category tags, more than three, or topics whose pages the site hides; back from an item opened
-// directly leads to / (the module home page) or uses the old names.
+// directly leads to / (the module home page) or uses the old names; the original title keeps a podcast's running
+// number, or loses a number that belongs to it; the one column names the source again under the text, keeps a button
+// with no words, or loses the menu of the rest (the poster, the Markdown) on desktops.
 import assert from "node:assert/strict";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
@@ -16,10 +18,12 @@ import * as cheerio from "cheerio";
 import type { SiteItemDetail } from "@aihot/contracts/site";
 import { feedPath } from "@aihot/contracts/routes";
 import { CATEGORY_TAGS } from "@aihot/industry/taxonomy";
-import { DATES, ITEM_COPY, LAYOUT, NAV } from "@aihot/site";
+import { DATES, FEED, ITEM_COPY, LAYOUT, NAV } from "@aihot/site";
 import { monthDay } from "../app/lib/format.ts";
 
-const NAME = NAV.labels[feedPath()] ?? "精选";
+// The list a reader goes back to (site.ts FEED.start): the full list on a site that opens it.
+const LIST = FEED.start === "all" ? "/all" : feedPath();
+const NAME = NAV.labels[LIST] ?? "精选";
 const item: SiteItemDetail = {
   id: "item-fixture", title: "一家店的做法", originalTitle: "How one shop did it", summary: "固定导读", reason: "固定理由", source: { name: "Fixture" },
   links: { original: "https://example.org/a" }, publishedAt: "2026-10-02T02:00:00.000Z", discoveredAt: "2026-10-03T02:00:00.000Z", timelineAt: "2026-10-03T02:00:00.000Z",
@@ -32,6 +36,17 @@ const items: Record<string, SiteItemDetail> = {
   "item-archive": { ...item, id: "item-archive", publishedAt: "2016-03-02T02:00:00.000Z", selected: false, reason: null },
   "item-undated": { ...item, id: "item-undated", publishedAt: null },
 };
+/** Original titles and how the page shows them: a podcast's running number goes, a number that belongs to the title stays. */
+const ORIGINALS: Array<[original: string, shown: string]> = [
+  ["10.833 - Un solo viaggio, molti operatori", "Un solo viaggio, molti operatori"],
+  ["#25 On marche au bouche à oreille", "On marche au bouche à oreille"],
+  ["S2E20 創業和家庭，真能兼顧嗎？", "創業和家庭，真能兼顧嗎？"],
+  ["70 Cent mehr fürs Schnitzel", "70 Cent mehr fürs Schnitzel"],
+  ["7-Eleven opens its 100th store", "7-Eleven opens its 100th store"],
+  ["24-hour diners keep the lights on", "24-hour diners keep the lights on"],
+  ["12:30 is the new lunch rush", "12:30 is the new lunch rush"],
+];
+ORIGINALS.forEach(([originalTitle], i) => (items[`item-original-${i}`] = { ...item, id: `item-original-${i}`, originalTitle }));
 let web: ChildProcess;
 let origin: string;
 let logs = "";
@@ -104,7 +119,7 @@ test("in the reader's one column: source and dates, title, original title, AI �
   assert.ok($("main h1").hasClass("lg:text-[30px]"));
   assert.ok($("main article").text().includes("精选"), "the selected item is marked in its source line");
   // The back row's way when opened directly: the featured list, under its name.
-  assert.ok($("main a").toArray().some((a) => $(a).attr("href") === feedPath() && $(a).text() === NAME));
+  assert.ok($("main a").toArray().some((a) => $(a).attr("href") === LIST && $(a).text() === NAME));
 });
 
 test("dates to the day: the original's and the collection's, named; the year on another year's", { skip: DATES.clock && "the time of day is shown" }, async () => {
@@ -131,5 +146,21 @@ test("the tags as the site writes them, and no topics while their pages are hidd
 test("an item not selected goes back to 全部 under the name the navigation gives it", async () => {
   const $ = await page("item-archive");
   const back = $("header[data-phone-bar] button").first().text();
-  assert.equal(back, NAV.hidden.includes("/all") ? NAME : "全部");
+  assert.equal(back, NAV.hidden.includes("/all") || FEED.start === "all" ? NAME : "全部");
+});
+
+test("the original title without a podcast's running number; a number that belongs to the title stays", async () => {
+  const original = async (id: string) => (await page(id))("main h1").next("p").text();
+  for (const [i, [title, shown]] of ORIGINALS.entries()) assert.equal(await original(`item-original-${i}`), shown, title);
+  assert.equal(await original(item.id), item.originalTitle);
+});
+
+test("the one column names the source once and words every button", { skip: !LAYOUT.column && "the engine's rails" }, async () => {
+  const $ = await page(item.id);
+  const text = $("main article").text();
+  assert.equal(text.split(item.source.name).length - 1, 1, `the source once: ${text}`);
+  assert.ok(!text.includes("来源："), "no source line under the text");
+  const silent = $("main article").find("a, button").toArray().filter((el) => !$(el).text().trim()).map((el) => $(el).attr("aria-label") ?? $.html(el).slice(0, 80));
+  assert.deepEqual(silent, [], "every button and link says what it does");
+  assert.equal($("main article button[aria-haspopup=menu]").text().trim(), "更多", "the poster and the Markdown stay on desktops, under 更多");
 });

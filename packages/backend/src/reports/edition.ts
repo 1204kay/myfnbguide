@@ -68,6 +68,8 @@ export interface DailyEntry extends ReportEntry {
   followUp?: string;
   /** Carried for its official post and independent coverage, though none of its reports was selected. */
   fillIn?: true;
+  /** A flash listed in one line in its own section, after the entries in full (site.ts REPORTS.flashPlacement). */
+  brief?: true;
 }
 
 /** An entry while its issue is edited: what ranking and the editors need besides what is stored. */
@@ -171,12 +173,13 @@ export async function candidates(start: Date, end: Date): Promise<Candidate[]> {
  * A weekly's or monthly's candidates, compiled from the dailies dated startDate…endDate: each event
  * once, by its most reported entry (then the first day's, the original news, then the most
  * authoritative) in the reports' current public wording, ranked by how the dailies treated it (lead,
- * highlight, the days it was carried), its coverage and its best score. Reports withdrawn since drop out.
+ * highlight, the days it was carried), its coverage and its best score. Reports withdrawn since drop out;
+ * a daily's flashes, at its end or in its sections, are no candidates.
  */
 export async function periodEntries(startDate: string, endDate: string): Promise<{ entries: Candidate[]; issues: number }> {
   const issues = await sql<{ key: string; content: Record<string, any> }[]>`
     SELECT key, content FROM reports WHERE kind = 'daily' AND key >= ${startDate} AND key <= ${endDate} ORDER BY key`;
-  const carried = issues.flatMap((issue) => (issue.content.sections ?? []).flatMap((s: any) => (s.items ?? []).filter((it: any) => it.itemId).map((it: any) => ({
+  const carried = issues.flatMap((issue) => (issue.content.sections ?? []).flatMap((s: any) => (s.items ?? []).filter((it: any) => it.itemId && !it.brief).map((it: any) => ({
     id: String(it.itemId),
     key: issue.key,
     sources: Number(it.sources) || 1,

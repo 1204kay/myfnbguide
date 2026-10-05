@@ -3,7 +3,7 @@ import {
   type ShouldRevalidateFunction,
 } from "react-router";
 import type { SiteMeta } from "@aihot/contracts/site";
-import { NAV, SITE } from "@aihot/site";
+import { LAYOUT, NAV, SITE } from "@aihot/site";
 import { RingMark } from "@aihot/site/brand/Logo.tsx";
 import { useEffect, useState, type ReactNode } from "react";
 import type { Route } from "./+types/root";
@@ -11,6 +11,7 @@ import "./app.css";
 import { Sidebar } from "./components/shell/Sidebar";
 import { TabBar } from "./components/shell/TabBar";
 import { feedPath, navName } from "./components/shell/nav";
+import { COLUMN_WIDTHS } from "./components/shell/screens";
 import { PullToRefresh } from "./components/shell/PullToRefresh";
 import { usePageTransition } from "./components/shell/transitions";
 import { SearchOverlay } from "./features/search/SearchOverlay";
@@ -50,7 +51,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const site = useRouteLoaderData<typeof loader>("root");
   const [documentRelease] = useState(site?.release ?? null);
   return (
-    <html lang={SITE.locale} suppressHydrationWarning>
+    // data-fluid: the phone shell spreads with the screen from 641px (site.ts LAYOUT.fluid; app.css).
+    <html lang={SITE.locale} suppressHydrationWarning data-fluid={LAYOUT.fluid ? "" : undefined}>
       <head>
         <meta charSet="utf-8" />
         {documentRelease && <meta name="aihot-release" content={documentRelease} />}
@@ -92,10 +94,12 @@ function SiteShell({ changelogVersion, children }: { changelogVersion: string | 
         跳到正文
       </a>
       <Sidebar changelogVersion={changelogVersion} />
-      {/* Phone shell (≤ 960px): each page's top bar (PhoneBar), one centred column, the tab bar below.
-          Desktop: the page fills the main area up to the list width (--page-max-wide), centred beyond it. */}
+      {/* Phone shell (≤ 960px): each page's top bar (PhoneBar), one centred 640px column, the tab bar below; on a site
+          that spreads it (LAYOUT.fluid), the screen less its gutters (24px a side from 641px; app.css --shell-max).
+          Desktop: the page fills the main area up to the list width (--page-max-wide), centred beyond it; a page
+          that keeps to the site's reading or list width reads it here (screens.ts READ_COLUMN, LIST_COLUMN). */}
       <main id="main" className="min-w-0 flex-1 pb-[calc(72px+env(safe-area-inset-bottom))] lg:px-7 lg:pb-[72px] lg:pt-6">
-        <div className="mx-auto w-full max-w-[640px] pl-[var(--gutter-l)] pr-[var(--gutter-r)] lg:max-w-[var(--page-max-wide)] lg:px-0">
+        <div className="mx-auto w-full max-w-[var(--shell-max)] pl-[var(--gutter-l)] pr-[var(--gutter-r)] lg:max-w-[var(--page-max-wide)] lg:px-0" style={COLUMN_WIDTHS}>
           {webModules().map((m) => m.root?.Top && <m.root.Top key={m.name} />)}
           {children}
         </div>

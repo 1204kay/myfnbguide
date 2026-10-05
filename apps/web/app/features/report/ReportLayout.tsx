@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react";
 import type { ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
-import { LAYOUT, NAV, REPORTS } from "@aihot/site";
+import { NAV, REPORTS } from "@aihot/site";
 import { BackRow, BarButton, PhoneBar, TabPageBar, type BackTarget } from "../../components/shell/PhoneBar";
+import { LIST_COLUMN, READ_COLUMN } from "../../components/shell/screens";
 import { OutlineSheet, type OutlineEntry } from "../../components/ui/OutlineSheet";
 import { IconList } from "../../components/icons";
 import { KindSwitch, ReportArchive, ReportPhoneNav } from "./ReportNav";
@@ -14,8 +15,9 @@ import { KIND_LABEL } from "./format";
  * a faintly toned paper in the light theme, up to 1160px.
  *
  * Compact (site.ts REPORTS.compact): no archive column and no outline; the bar is the tab pages' own, and
- * the kind switch and the recent issues stand above the paper at every width, in the reading column
- * (LAYOUT.column; without one, the paper's narrow width).
+ * the kind switch and the recent issues stand above the paper at every width, in the list pages' width
+ * (LIST_WIDTH; without one, the paper's narrow width). A page below the reports (the archive) stays in the
+ * reading column (LAYOUT.column).
  */
 export function ReportLayout({ kind, index, current, today, outline = [], back, title, children }: {
   kind: ReportKind;
@@ -32,7 +34,7 @@ export function ReportLayout({ kind, index, current, today, outline = [], back, 
   const [outlineOpen, setOutlineOpen] = useState(false);
   if (REPORTS.compact) {
     return (
-      <div className="report-shell mx-auto w-full pb-6 lg:pb-10" style={{ maxWidth: LAYOUT.column ?? 760 }}>
+      <div className={`report-shell mx-auto w-full pb-6 lg:pb-10 ${(back ? READ_COLUMN : LIST_COLUMN) || "lg:max-w-[760px]"}`}>
         {back ? (
           <>
             <PhoneBar back={back} title={title} />

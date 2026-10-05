@@ -7,7 +7,7 @@ import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { SITUATIONS } from "./situations.ts";
 import {
-  membersBySituation, readCase, readHome, readItemStory, readKind, readShop, readSituation, readStatus, searchLibrary, sitemapEntries,
+  membersBySituation, readCase, readHome, readItemStory, readShop, readSituation, readStatus, searchLibrary, sitemapEntries,
 } from "./backend/read.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
@@ -46,9 +46,14 @@ export default defineServerModule({
   queues: [CASES, METHODS],
   // The site's home page (site.ts NAV.home), so llms.txt names it beside the engine's pages.
   llms: () => ({
-    pages: [`- [参考](${config.siteUrl}/): 按遇到的事，查各地店家的做法和经验，也可以按店型浏览；说同一种做法的各家店归在一起，每个故事附原文出处`],
+    pages: [`- [参考](${config.siteUrl}/): 按遇到的事，查各地店家的做法和经验；说同一种做法的各家店归在一起，每个故事附原文出处`],
   }),
   sitemap: { entries: () => sitemapEntries() },
+  // The about page's last stage (packages/backend/src/site/stats.ts): the library's size, as the home page counts it.
+  figures: async () => {
+    const { totals } = await readHome();
+    return [{ value: totals.situations, unit: "种情况" }, { value: totals.cases, unit: "条原文" }];
+  },
   schedules: [{
     name: "reference.cases",
     cron: "*/10 * * * *",
@@ -83,8 +88,7 @@ export default defineServerModule({
       return reply.header("Cache-Control", CACHE).send(await searchLibrary(q));
     });
     app.get("/api/reference/situations/:slug", async (req, reply) => {
-      const kind = (req.query as { kind?: unknown }).kind;
-      const page = await readSituation((req.params as { slug: string }).slug, typeof kind === "string" ? kind : null);
+      const page = await readSituation((req.params as { slug: string }).slug);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/cases/:id", async (req, reply) => {
@@ -95,10 +99,6 @@ export default defineServerModule({
     app.get("/api/reference/by-item/:id", async (req, reply) => {
       const story = await readItemStory((req.params as { id: string }).id);
       return story ? reply.header("Cache-Control", CACHE).send(story) : reply.code(404).send({ error: "not found" });
-    });
-    app.get("/api/reference/kinds/:slug", async (req, reply) => {
-      const page = await readKind((req.params as { slug: string }).slug);
-      return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/shops/:key", async (req, reply) => {
       const page = await readShop((req.params as { key: string }).key);

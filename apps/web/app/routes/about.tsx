@@ -84,10 +84,22 @@ interface Stage {
 /** The four stages' names (ABOUT.page.stepTitles). */
 const STEP_TITLES = ABOUT.page.stepTitles ?? { collect: "采集", store: "收录", select: "精选", publish: "成刊" };
 
+/** What the site's modules have put together, side by side ("41 种情况  328 条原文"). */
+function Figures({ figures }: { figures: SiteStats["figures"] }) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+      {figures.map((f, i) => (
+        <Figure key={i} n={f.value} unit={f.unit} />
+      ))}
+    </div>
+  );
+}
+
 /**
  * The four stages under the river. Sources, picks and dailies are counted in the site's words for them
  * (REPORTS.metricUnits, as the report masthead counts them), what is kept by its measure alone (the stage's
- * name says what it is); the small notes under them (the last 24 hours, the kinds of source, the feeds) may
+ * name says what it is); the last stage counts what the site's modules have put together when they count it,
+ * the dailies otherwise. The small notes under them (the last 24 hours, the kinds of source, the feeds) may
  * be left out (ABOUT.page.statNotes).
  */
 function stagesOf(stats: SiteStats | null): Stage[] {
@@ -118,15 +130,22 @@ function stagesOf(stats: SiteStats | null): Stage[] {
     {
       no: "04",
       title: STEP_TITLES.publish,
-      figure: stats && <Figure n={stats.dailies} unit={REPORTS.metricUnits.reportsCovered} />,
+      figure: stats && (stats.figures.length ? <Figures figures={stats.figures} /> : <Figure n={stats.dailies} unit={REPORTS.metricUnits.reportsCovered} />),
       text: ABOUT.steps.publish,
       note: notes && "也可以用 RSS、API、MCP 订阅",
     },
   ];
 }
 
-/** The two buttons beside the headline, the first solid (ABOUT.page.actions). */
+/** The two buttons beside the headline (under the lead with a plain head), the first solid (ABOUT.page.actions). */
 const ACTIONS: Array<[string, string]> = ABOUT.page.actions ?? [["看今天的精选", feedPath()], ["读最新日报", "/daily"]];
+
+/**
+ * The head as the site's other info pages have it (ABOUT.page.plainHead): the headline and the lead at their sizes
+ * (26/30px, 15px), the two buttons under the lead. Without it the headline grows with the screen to 64px and the
+ * buttons stand beside it.
+ */
+const PLAIN_HEAD = ABOUT.page.plainHead;
 
 /** Where the river's chosen bundles go, as its description says it (ABOUT.page.riverNote). */
 const RIVER_NOTE = ABOUT.page.riverNote ?? `经过精选的闸门，只有少数几束通过，${subjectAfter("汇入每天的", "日报")}`;
@@ -230,15 +249,22 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-14 lg:pt-3">
       <PhoneBar back={{ to: "/more", label: "我的" }} title={NAV.labels["/about"] ?? `关于 ${SITE.name}`} />
-      <header className="grid items-end gap-8 pt-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:pt-0">
+      <header className={PLAIN_HEAD ? "pt-4 lg:pt-5" : "grid items-end gap-8 pt-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:pt-0"}>
         <div>
           <Kicker>{ABOUT.kicker}</Kicker>
-          <h1 data-page-title="" className="mt-5 text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]">
+          <h1
+            data-page-title=""
+            className={
+              PLAIN_HEAD
+                ? "mt-4 text-[26px] font-bold leading-[1.3] text-ink [text-wrap:balance] lg:text-[30px]"
+                : "mt-5 text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]"
+            }
+          >
             {ABOUT.headline[0]}
             <br />
             <span className="text-accent">{ABOUT.headline[1]}</span>
           </h1>
-          <p className="mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-ink-3 xl:text-[17px]">
+          <p className={PLAIN_HEAD ? "mt-3 max-w-[40em] text-[15px] leading-[1.8] text-ink-3" : "mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-ink-3 xl:text-[17px]"}>
             {ABOUT.lead.split("{sources}").map((part, i) => (
               <Fragment key={i}>
                 {i > 0 && (stats ? <>{" "}<span className="num font-semibold text-ink">{stats.sources}</span>{" "}</> : ABOUT.sourcesFallback)}
@@ -247,7 +273,7 @@ export default function AboutPage() {
             ))}
           </p>
         </div>
-        <div className="flex flex-wrap gap-3 lg:pb-2">
+        <div className={PLAIN_HEAD ? "mt-6 flex flex-wrap gap-3" : "flex flex-wrap gap-3 lg:pb-2"}>
           {ACTIONS.map(([text, to], i) => (
             <IntentLink key={to} to={to} className={buttonClass(i === 0 ? "primary" : "secondary", "lg")}>
               {text}

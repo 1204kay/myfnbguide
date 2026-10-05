@@ -8,10 +8,13 @@ import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { feedPath } from "@aihot/contracts/routes";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
+import { FEED as LISTS } from "@aihot/site";
 
-// The featured list (routes/home.tsx) and its navigation data, wherever the site keeps it (site.ts NAV.home).
+// The featured list (routes/home.tsx) and its navigation data, wherever the site keeps it (site.ts NAV.home). A site
+// whose list starts at 全部 (FEED.start) serves none: its address leads to 全部, and what is read through it is not tried.
 const FEED = feedPath();
 const DATA = FEED === "/" ? "/_.data" : `${FEED}.data`;
+const NO_FEATURED = LISTS.start === "all" && "the featured list's address leads to 全部 on this site (FEED.start)";
 
 let web: ChildProcess;
 let origin: string;
@@ -83,7 +86,7 @@ after(async () => {
   await new Promise<void>((resolve) => api.close(() => resolve()));
 });
 
-test("public route subsets produce the same complete navigation data; filters still differ", async () => {
+test("public route subsets produce the same complete navigation data; filters still differ", { skip: NO_FEATURED }, async () => {
   const answers = await Promise.all(["", "?_routes=root", "?_routes=routes%2Fhome", "?_routes=unknown"].map(async (query) => {
     const res = await fetch(`${origin}${DATA}${query}`);
     assert.equal(res.status, 200);
@@ -104,7 +107,7 @@ test("public route subsets produce the same complete navigation data; filters st
 
 test("navigation streams are plain text for download managers, including errors and actions", async () => {
   for (const [pathname, method, status] of [
-    [`${DATA}?_routes=root`, "GET", 200],
+    ...(NO_FEATURED ? [] : [[`${DATA}?_routes=root`, "GET", 200] as const]),
     ["/about.data", "HEAD", 200],
     ["/items/missing.data", "GET", 404],
     ["/story/merged.data", "GET", 202],
@@ -131,11 +134,14 @@ test("navigation streams are plain text for download managers, including errors 
   assert.equal(await download.text(), "# Article");
 });
 
-test("HTML and navigation share freshness; cookies do not personalize public results", async () => {
+test("HTML and navigation share freshness", { skip: NO_FEATURED }, async () => {
   const html = await fetch(`${origin}${FEED}`);
   assert.equal(html.status, 200);
   assert.equal(html.headers.get("X-Accel-Expires"), `@${deadline}`);
   assert.match(await html.text(), /精选/);
+});
+
+test("cookies do not personalize public results", async () => {
   const plain = await fetch(`${origin}/about.data`);
   const signedIn = await fetch(`${origin}/about.data?_routes=root`, { headers: { cookie: "admin_session=private; reader=returning" } });
   assert.match(plain.headers.get("Cache-Control")!, /^public,/);
@@ -176,7 +182,7 @@ test("admin data and actions never become public cache entries", async () => {
   await action.text();
 });
 
-test("browser freshness shares the selected deadline, including slow sibling loaders", async () => {
+test("browser freshness shares the selected deadline, including slow sibling loaders", { skip: NO_FEATURED }, async () => {
   const savedDeadline = deadline;
   try {
     deadline = Math.floor(Date.now() / 1000) + 20;

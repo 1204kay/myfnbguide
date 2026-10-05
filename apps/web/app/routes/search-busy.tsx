@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { RingMark } from "@aihot/site/brand/Logo.tsx";
 import { PhoneBar } from "../components/shell/PhoneBar";
+import { feedPath, navName, navShown } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 import { titled } from "../lib/seo";
 
@@ -16,6 +17,9 @@ export function headers() {
 
 const RETRY_AFTER_SECONDS = 5;
 const SEARCH_PARAMS = ["q", "tag", "channel", "category", "page", "tab"];
+/** The featured list's name (site.ts NAV.labels); 全部 goes by it too while it is reached only by that list's switch (NAV.hidden). */
+const FEED_NAME = navName(feedPath());
+const ALL_NAME = navShown("/all") ? "全部" : FEED_NAME;
 
 /** The busy page after an overloaded search: the same search can be tried again after a few seconds. */
 export default function SearchBusy() {
@@ -28,13 +32,13 @@ export default function SearchBusy() {
   }, [wait]);
   const kept = new URLSearchParams();
   for (const [k, v] of new URLSearchParams(search)) if (SEARCH_PARAMS.includes(k)) kept.append(k, v);
-  const base = pathname.startsWith("/all") ? "/all" : "/";
+  const base = pathname.startsWith("/all") ? "/all" : feedPath();
   const retry = kept.toString() ? `${base}?${kept}` : base;
   const hasSearch = kept.has("q");
   const button = "inline-flex h-9 items-center rounded-full px-4 text-[13.5px]";
   return (
     <>
-    <PhoneBar back={{ to: base, label: base === "/all" ? "全部" : "精选" }} />
+    <PhoneBar back={{ to: base, label: base === "/all" ? ALL_NAME : FEED_NAME }} />
     <div className="mx-auto max-w-sm py-24 text-center" aria-live="polite">
       <RingMark className="mx-auto mb-5 size-10 text-accent" spinning />
       <h1 className="text-[20px] font-bold text-ink">搜索有点忙</h1>
@@ -46,8 +50,8 @@ export default function SearchBusy() {
           ) : (
             <Link to={retry} className={`${button} bg-accent font-medium text-accent-contrast hover:bg-accent-ink`}>重试这次搜索</Link>
           ))}
-        <Link to="/all" className={`${button} ${hasSearch ? "border border-line-strong bg-surface text-ink-2 hover:border-ink-4" : "bg-accent font-medium text-accent-contrast hover:bg-accent-ink"}`}>浏览全部动态</Link>
-        <Link to="/" className={`${button} border border-line-strong bg-surface text-ink-2 hover:border-ink-4`}>回到精选</Link>
+        <Link to="/all" className={`${button} ${hasSearch ? "border border-line-strong bg-surface text-ink-2 hover:border-ink-4" : "bg-accent font-medium text-accent-contrast hover:bg-accent-ink"}`}>{navShown("/all") ? "浏览全部动态" : "浏览全部条目"}</Link>
+        <Link to={feedPath()} className={`${button} border border-line-strong bg-surface text-ink-2 hover:border-ink-4`}>回到{FEED_NAME}</Link>
       </div>
     </div>
     </>

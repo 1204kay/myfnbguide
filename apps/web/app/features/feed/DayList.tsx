@@ -1,10 +1,13 @@
 // A page of reports grouped by Beijing day with the same rail and rows as the home timeline
-// (全部动态, topics, search results).
+// (全部动态, topics, search results); with list cards (site.ts FEED.style "cards"), cards under a plain line
+// of the day.
 import { IntentLink } from "../../components/ui/IntentLink";
 import { useMemo } from "react";
 import type { FeedItemSummary } from "@aihot/contracts/site";
+import { FEED } from "@aihot/site";
 import { IconChevronRight } from "../../components/icons";
 import { beijingDate } from "@aihot/contracts/time";
+import { monthDay, weekdayShort } from "../../lib/format";
 import { markRead, useReadSet } from "../../lib/local-state";
 import { DayHeader, TimelineSlot } from "./Timeline";
 import { FeedItem } from "./FeedItem";
@@ -22,6 +25,30 @@ export function DayList({ items, todayCount = null, headerAside }: { items: Feed
     }
     return out;
   }, [items]);
+  if (FEED.style === "cards") {
+    // The day as one quiet line ("10 月 3 日 周六"): not sticky, no count, no time; 精选 marks the selected cards.
+    return (
+      <div>
+        {days.map(({ day, items: list }, i) => (
+          <section key={day} aria-label={day}>
+            <div className={`flex items-baseline gap-3 pb-2 ${i === 0 ? "pt-1" : "pt-5"}`}>
+              <time dateTime={day} className="text-[13px] font-semibold text-ink-3">
+                {monthDay(day)} {weekdayShort(day)}
+              </time>
+              {i === 0 && headerAside && <span className="ml-auto text-[12px] text-ink-4">{headerAside}</span>}
+            </div>
+            <ol className="space-y-2.5">
+              {list.map((it) => (
+                <li key={it.id} data-card-key={it.id}>
+                  <FeedItem item={it} read={readSet.has(it.id)} onOpen={markRead} marked />
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+    );
+  }
   return (
     <div>
       {days.map(({ day, items: list }, i) => (

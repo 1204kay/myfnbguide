@@ -19,12 +19,17 @@ import { fileURLToPath } from "node:url";
 import { chromium, webkit, expect, type Browser } from "@playwright/test";
 import type { FeedItemSummary, SiteItemDetail, ReportDetail } from "@aihot/contracts/site";
 import { feedPath } from "@aihot/contracts/routes";
-import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
-import { NAV } from "@aihot/site";
+import { CATEGORIES } from "@aihot/industry/taxonomy";
+import { FEED as LISTS, NAV } from "@aihot/site";
+import { monthDay } from "../app/lib/format.ts";
 
-// The featured list's address and two of the industry's categories, as this site has them.
+// The featured list's address and two of the industry's categories, named as this site's filter names them.
 const FEED = feedPath();
-const [TIP, TOOLS] = [CATEGORY_LABELS.tip, CATEGORY_LABELS.tools];
+const filterName = (key: string) => {
+  const c = CATEGORIES.find((x) => x.key === key)!;
+  return LISTS.filterNames === "section" ? c.section : c.label;
+};
+const [TIP, TOOLS] = [filterName("tip"), filterName("tools")];
 
 const at = '2026-10-04T08:00:00.000Z';
 const item: FeedItemSummary = {id:'navigation-fixture',title:'性能检查文章',summary:'固定摘要',reason:'固定推荐理由',source:{name:'Fixture'},publishedAt:at,timelineAt:at,category:'tip',tags:[],score:80,selected:true,channel:'news',x:null};
@@ -317,7 +322,9 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     }finally{await context.close();}
   });
 
-  test(`deep reading returns to its anchor with bounded layout reads, including folded dates: ${engine}`,async()=>{
+  // List cards (site.ts FEED.style) lay the selected items flat: there are no dates to fold there.
+  const folds=LISTS.style!=='cards';
+  test(`deep reading returns to its anchor with bounded layout reads${folds?', including folded dates':''}: ${engine}`,async()=>{
     const context=await (engine==='chromium'?chrome:safari).newContext({viewport:{width,height:844}});
     await context.addInitScript(()=>{
       const rect=Element.prototype.getBoundingClientRect;
@@ -331,8 +338,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
     try{
       await page.goto(origin+FEED+'?tag=long-reading');
       await expect(page.locator('[data-card-key]')).toHaveCount(180);
-      await page.getByRole('button',{name:'收起10月4日',exact:true}).click();
-      await expect(page.locator('[data-card-key]')).toHaveCount(120);
+      const shown=folds?120:180;
+      if(folds){
+        await page.getByRole('button',{name:'收起'+monthDay('2026-10-04'),exact:true}).click();
+        await expect(page.locator('[data-card-key]')).toHaveCount(shown);
+      }
       await page.getByRole('link',{name:'长列表文章 160',exact:true}).scrollIntoViewIfNeeded();
       const before=await page.evaluate(()=>{
         const first=[...document.querySelectorAll<HTMLElement>('[data-card-key]')].find(e=>e.getBoundingClientRect().bottom>72)!;
@@ -342,11 +352,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
       await page.getByRole('link',{name:'长列表文章 160',exact:true}).click();
       await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
       await page.goBack();
-      await expect(page.locator('[data-card-key]')).toHaveCount(120);
+      await expect(page.locator('[data-card-key]')).toHaveCount(shown);
       await expect.poll(()=>page.locator(`[data-card-key="${before.key}"]`).evaluate((e,top)=>Math.abs(e.getBoundingClientRect().top-top),before.top)).toBeLessThan(2);
       const reads=await page.evaluate(()=>(window as unknown as {cardReads:number}).cardReads);
       assert.ok(reads<=40,`returning deep in a list must not measure every earlier card (${reads} reads)`);
-      await expect(page.getByRole('button',{name:'展开10月4日',exact:true})).toBeVisible();
+      if(folds)await expect(page.getByRole('button',{name:'展开'+monthDay('2026-10-04'),exact:true})).toBeVisible();
     }finally{await context.close();}
   });
 }

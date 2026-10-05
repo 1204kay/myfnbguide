@@ -1,20 +1,20 @@
 import { data as withHeaders, redirect, useLoaderData } from "react-router";
 import type { Route } from "./+types/home";
 import type { TimelineResponse } from "@aihot/contracts/site";
+import { FEED, LAYOUT } from "@aihot/site";
 import { apiDeadlineCache, loadOr404, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { filterParams, itemListLd, listPath, pageMeta, readFilters, siteLd } from "../lib/seo";
 import type { Screen } from "../components/shell/screens";
 import { Timeline } from "../features/feed/Timeline";
 import { HotTopics } from "../features/feed/HotTopics";
-import { ActiveFilters, CategoryTabs, FeedBar, SearchField } from "../features/feed/Filters";
-import { navShown } from "../components/shell/nav";
-import { NAV } from "@aihot/site";
+import { ActiveFilters, CategoryTabs, FeedBar, FeedHead, SearchField, SHELL } from "../features/feed/Filters";
+import { feedPath, navName, navShown } from "../components/shell/nav";
 
 /** What the navigation calls this page (site.ts NAV.labels), 精选 by default. */
-const NAME = NAV.labels["/"] ?? "精选";
+const NAME = navName(feedPath());
 
-export const handle: Screen = { tab: "featured", name: "精选" };
+export const handle: Screen = { tab: "featured", name: NAME };
 export { shouldRevalidate } from "../lib/page-reuse";
 export const clientLoader = cachedLoader<typeof loader>();
 
@@ -30,9 +30,11 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
-  const path = listPath("/", loaderData ? filterParams(loaderData.filters) : {});
+  const path = listPath(feedPath(), loaderData ? filterParams(loaderData.filters) : {});
   const titles = loaderData?.data.cards.map((c) => c.item.title) ?? [];
-  return pageMeta({ path, jsonLd: path === "/" ? [...siteLd(), itemListLd("/", NAME, titles)] : undefined });
+  // At / the site's own title and description; beside a module home page (/latest), the page's name and its lead.
+  const home = feedPath() === "/";
+  return pageMeta({ title: home ? null : NAME, description: home ? null : FEED.leads?.featured, path, jsonLd: path === "/" ? [...siteLd(), itemListLd("/", NAME, titles)] : undefined });
 }
 
 export function headers({ loaderHeaders }: Route.HeadersArgs) {
@@ -43,17 +45,23 @@ export default function Home() {
   const { data, filters } = useLoaderData<typeof loader>();
   const title = filters.tag ? `#${filters.tag}` : NAME;
   return (
-    <div className="pb-6">
-      {/* Phones: the bar (精选 | 全部, filter, search), the filter in use, today's hot topics, the feed. */}
-      <FeedBar base="/" category={filters.category} channel={filters.channel} />
-      <ActiveFilters base="/" category={filters.category} channel={filters.channel} tag={filters.tag} />
-      <div className="hidden lg:block">
-        <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">{title}</h1>
-        <div className="mb-5 mt-4 flex items-center justify-between gap-4">
-          <CategoryTabs base="/" category={filters.category} channel={filters.channel} layoutId="home-cat-desk" className="min-w-0" />
-          <SearchField keep={{ category: filters.category }} />
-        </div>
-      </div>
+    <div className="mx-auto pb-6" style={LAYOUT.column ? { maxWidth: LAYOUT.column } : undefined}>
+      {SHELL ? (
+        <FeedHead scope="featured" name={NAME} filters={filters} />
+      ) : (
+        <>
+          {/* Phones: the bar (精选 | 全部, filter, search), the filter in use, today's hot topics, the feed. */}
+          <FeedBar base={feedPath()} category={filters.category} channel={filters.channel} />
+          <ActiveFilters base={feedPath()} category={filters.category} channel={filters.channel} tag={filters.tag} />
+          <div className="hidden lg:block">
+            <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">{title}</h1>
+            <div className="mb-5 mt-4 flex items-center justify-between gap-4">
+              <CategoryTabs base={feedPath()} category={filters.category} channel={filters.channel} layoutId="home-cat-desk" className="min-w-0" />
+              <SearchField keep={{ category: filters.category }} />
+            </div>
+          </div>
+        </>
+      )}
 
       {data.hot && navShown("/hot") && <HotTopics entries={data.hot} />}
 

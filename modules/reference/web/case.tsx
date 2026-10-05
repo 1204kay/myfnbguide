@@ -11,7 +11,7 @@ import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { CasePage } from "../types.ts";
-import { BODY, KICKER_LINK, Page, ROW_BUTTON, StoryBlock, Title, useShare } from "./ui";
+import { BODY, KICKER_LINK, MEASURE, Page, ROW_BUTTON, StoryBlock, Title, useShare } from "./ui";
 
 export const handle: Screen = { home: "reference", toolbar: true };
 
@@ -46,7 +46,7 @@ export default function CaseRoute() {
       <BackRow {...back} />
       {situation && <Link viewTransition to={`/reference/${situation.slug}`} className={KICKER_LINK}><Kicker>{situation.title}</Kicker></Link>}
       <Title>{story.title}</Title>
-      <p className="mt-3 text-[13px] leading-[1.5] text-ink-4">{[story.shop.country, story.shop.city, from, source.month].filter(Boolean).join(" · ")}</p>
+      <p className={`mt-3 text-[13px] leading-[1.5] text-ink-4 ${MEASURE}`}>{[story.shop.country, story.shop.city, from, source.month].filter(Boolean).join(" · ")}</p>
       <div className="mt-4 hidden flex-wrap gap-2 lg:flex">
         <button type="button" onClick={star.toggle} aria-pressed={star.on} className={`${ROW_BUTTON} ${star.on ? "border-accent text-accent" : ""}`}>
           <IconBookmark size={16} filled={star.on} />{star.on ? "已收藏" : "收藏"}
@@ -63,7 +63,7 @@ export default function CaseRoute() {
       {item.reason && (
         <section className="mt-6 border-t border-line pt-4">
           <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
-          <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
+          <p className={`text-[15px] leading-[1.75] text-ink-2 ${MEASURE}`}>{item.reason}</p>
         </section>
       )}
       <div className="mt-8 flex items-center justify-between gap-4 border-t border-line pt-3 text-[12px] text-ink-3">
@@ -83,7 +83,7 @@ export default function CaseRoute() {
           {part.blocks.map((block, n) => <StoryBlock key={n} block={block} />)}
         </section>
       ))}
-      {story.open && <p className="mt-6 text-[14px] leading-relaxed text-ink-4">{story.open}</p>}
+      {story.open && <p className={`mt-6 text-[14px] leading-relaxed text-ink-4 ${MEASURE}`}>{story.open}</p>}
       <div className="mt-10 border-t border-line pt-4">
         <p className="text-[13px] text-ink-4">原文{source.language ? ` · ${source.language}` : ""}{source.audioOnly ? " · 节目是音频" : ""}</p>
         <a href={source.url} target="_blank" rel="noopener" className="mt-3 flex h-11 w-full items-center justify-center rounded-full border border-line-strong bg-surface text-[15px] font-semibold text-accent transition-colors hover:border-accent">

@@ -18,6 +18,12 @@ export function Page({ children }: { children: ReactNode }) {
   return <div className="mx-auto pb-14" style={{ maxWidth: LAYOUT.column ?? 760 }}>{children}</div>;
 }
 
+/**
+ * A smaller paragraph's measure: about 44 characters a line at its own size, as the 17px body runs in the 760px
+ * column (layout A5); at 13px the full column would run 58. Narrower columns are untouched.
+ */
+export const MEASURE = "max-w-[44em]";
+
 /** A small label above a title that leads somewhere: its line is 44px tall to tap. */
 export const KICKER_LINK = "mt-1 inline-flex min-h-11 items-center lg:mt-2";
 
@@ -68,7 +74,7 @@ export function Avatars({ sources, max, size, className = "flex" }: { sources: S
         </span>
       ))}
       {sources.length > max && (
-        <span className="-ml-1.5 inline-flex items-center rounded-md bg-bg-sunk px-1.5 text-[11px] font-medium text-ink-3 ring-2 ring-surface" style={{ height: size }}>
+        <span className="-ml-1.5 inline-flex items-center rounded-md bg-bg-sunk px-1.5 text-[12px] font-medium leading-none text-ink-3 ring-2 ring-surface" style={{ height: size }}>
           +{sources.length - max}
         </span>
       )}
@@ -92,7 +98,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
       <h3 className="mt-1 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">
         <Link viewTransition to={`/reference/cases/${c.id}`} className={STRETCH}>{c.title}</Link>
       </h3>
-      {c.reason && <p className="mt-1.5 line-clamp-2 text-[13px] leading-[1.5] text-note">{ITEM_COPY.reasonLabel}：{c.reason}</p>}
+      {c.reason && <p className={`mt-1.5 line-clamp-2 text-[13px] leading-[1.5] text-note ${MEASURE}`}>{ITEM_COPY.reasonLabel}：{c.reason}</p>}
       {c.shop && (
         <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="relative z-10 -mb-2 mt-0.5 flex min-h-11 items-center text-[13px] text-accent hover:text-accent-ink">
           这家店另有 {c.shop.others} 条原文 ›
@@ -281,11 +287,14 @@ export function Figure({ children, caption, kind, after }: { children: ReactNode
   );
 }
 
-/** One horizontal bar split into parts; widths are shares of the whole (0–1). */
+/**
+ * One horizontal bar split into parts; widths are shares of the whole (0–1). Its labels are page text, not a
+ * picture's (it is drawn in HTML and does not scale), so they keep the site's smallest size, 12px (layout A6).
+ */
 export function Fill({ parts }: { parts: Array<{ label: string; share: number; tone: "accent" | "loss" | number }> }) {
   const tones = ["bg-ink-3/70", "bg-ink-4/70", "bg-ink-4/45", "bg-line-strong", "bg-line"];
   return (
-    <div className="flex h-7 overflow-hidden rounded-md bg-bg-sunk text-[11.5px] font-semibold">
+    <div className="flex h-7 overflow-hidden rounded-md bg-bg-sunk text-[12px] font-semibold">
       {parts.filter((p) => p.share > 0).map((p, i) => (
         <div key={i} style={{ width: `${Math.min(p.share, 1) * 100}%` }}
           className={`flex items-center overflow-hidden whitespace-nowrap px-1.5 ${p.tone === "accent" ? "bg-accent text-accent-contrast" : p.tone === "loss" ? "bg-hot text-white" : `${tones[p.tone % tones.length]} text-ink`}`}>
@@ -314,7 +323,7 @@ function Compare({ b }: { b: CompareBlock }) {
               <div className="min-w-0" style={{ width: `${share * 100}%` }}>
                 <Fill parts={[{ label: share >= FITS ? label : "", share: 1, tone: i === b.items.length - 1 ? "accent" : 1 }]} />
               </div>
-              {share < FITS && <span className="shrink-0 whitespace-nowrap text-[11.5px] font-semibold text-ink-2">{label}</span>}
+              {share < FITS && <span className="shrink-0 whitespace-nowrap text-[12px] font-semibold text-ink-2">{label}</span>}
             </div>,
           ];
         })}

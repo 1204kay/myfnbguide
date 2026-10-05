@@ -3,10 +3,10 @@
 // WebKit（390×844）打开读者主路径各页，截第一屏，量这几项：
 //   ① 横向滚动：页面比视口宽就算（scrollWidth > clientWidth）。
 //   ② 最小字号：可见文字不小于 12px（底栏文字 10.5px 例外，A6）；图里的文字实际不小于 11px，宽度 ≥ 961 时不大于 17px（B2）。
-//   ③ 触屏点按区：触屏（hover: none）上可点的东西不小于 44×44px，段落里的行内链接除外（A9）。
+//   ③ 触屏点按区：触屏（hover: none）上可点的东西不小于 44×44px，段落里的行内链接除外（A9）；铺满整张卡的链接按卡片量。
 //   ④ 版心宽度：主路径各页内容的左右边界，手机不宽于屏宽减 32，641–960 不宽于 608，≥ 961 不宽于 760（A5）。
 //   ⑤ 主路径左边缘：同一尺寸下主路径各页的左边缘相同（A5；说明类页面和打不开的页不比）。
-//   ⑥ 正文每行字数：40 字以上的段落每行不超过 46 个汉字的宽度（A5：760 栏、17px 约 44 字）。
+//   ⑥ 正文每行字数：40 字以上的段落每行不超过 46 个汉字的宽度（A5：760 栏、17px 约 44 字）；里面是块的列表项（卡片）不算段落。
 // 结果和同目录的 baseline.json 比：基线里没有的问题、版心宽度或左边缘和基线差 2px 以上的，都算新问题，打印出来并以 1 退出；
 // 基线里已有的问题只列出来。版面是有意改的（例如第 2–4 包上线以后），看过截图确认无误再加 --write 重写基线。
 //   PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/layout-check/check.ts [--base https://new.myfnbguide.com] [--write] [--shots <目录>]
@@ -133,14 +133,21 @@ function measure() {
   }
   const figure = drawnText.length ? { min: Math.min(...drawnText), max: Math.max(...drawnText) } : null;
 
-  // ③ Touch targets under 44px; a link inside running text is exempt.
+  // ③ Touch targets under 44px; a link inside running text is exempt. A link stretched over its card (its ::after
+  // laid over the nearest positioned box, as the list and story cards do) is as big as that box.
   const touch = matchMedia("(hover: none)").matches;
   const small: string[] = [];
+  const target = (el: Element) => {
+    const after = getComputedStyle(el, "::after");
+    if (after.content === "none" || after.position !== "absolute" || after.top !== "0px" || after.left !== "0px") return el.getBoundingClientRect();
+    for (let a: Element | null = el; a; a = a.parentElement) if (getComputedStyle(a).position !== "static") return a.getBoundingClientRect();
+    return el.getBoundingClientRect();
+  };
   if (touch) {
     for (const el of document.querySelectorAll('a[href], button, [role="button"], [role="tab"], input:not([type="hidden"]), select, textarea, summary')) {
       if (!shown(el)) continue;
       if (el.tagName === "A" && getComputedStyle(el).display === "inline" && el.parentElement && ownText(el.parentElement)) continue;
-      const r = el.getBoundingClientRect();
+      const r = target(el);
       if (r.width < 43.5 || r.height < 43.5) {
         const name = (el.getAttribute("aria-label") || el.textContent || el.tagName).trim().replace(/\s+/g, " ").slice(0, 14);
         small.push(`${name} ${Math.round(r.width)}×${Math.round(r.height)}`);
@@ -149,10 +156,11 @@ function measure() {
   }
 
   // ⑥ Characters per line of reading text: the line's width over the font size (one Chinese character is one em).
+  // An item that holds blocks (a list's card, a row of a number and a title) is a container, not a paragraph.
   let cpl: { max: number; text: string } | null = null;
   for (const el of main.querySelectorAll("p, li, blockquote, dd")) {
     const text = el.textContent!.trim();
-    if (text.length < 40 || !shown(el)) continue;
+    if (text.length < 40 || !shown(el) || [...el.children].some((c) => !getComputedStyle(c).display.startsWith("inline"))) continue;
     const cs = getComputedStyle(el);
     const width = el.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const n = Math.round(width / parseFloat(cs.fontSize));

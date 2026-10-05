@@ -1,5 +1,5 @@
-// 参考, the site's home page (layout B1): the shop kinds, the six categories as a way in, then each category's
-// situations, its first with its picture and the rest as rows.
+// 参考, the site's home page (layout B1): the shop kinds and the six categories as ways in, the five situations
+// the most shops shared a practice in (the first with its picture), then each category's situations as rows.
 import { useLoaderData, type LoaderFunctionArgs } from "react-router";
 import { NAV, SITE } from "@aihot/site";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
@@ -14,6 +14,12 @@ import { Dek, Entries, Heading, Metrics, Page, SituationCards, Updated } from ".
 export const handle: Screen = { tab: "reference", name: "参考" };
 
 const LEAD = "按遇到的事，查各地店家的做法和经验。每一条都附原文出处，由你自己判断。";
+
+/**
+ * The two grids of entry cards, one card size at every width (the owner, 10/5: the categories' cards were smaller
+ * than the kinds'): two columns on phones, four from 641px; 「团餐和宴会承办」 stays on one line in both.
+ */
+const GRID = "grid-cols-2 sm:grid-cols-4";
 
 export function headers() {
   return edgeTtl(60);
@@ -41,21 +47,28 @@ export default function ReferenceHomePage() {
       {data.kinds.length > 0 && (
         <section className="mt-8">
           <Kicker>按店型浏览</Kicker>
-          <Entries cols="grid-cols-2 sm:grid-cols-5" items={data.kinds.map((k) => ({ to: `/reference/kinds/${k.slug}`, name: k.title, count: `${k.cases} 条原文` }))} />
+          <Entries cols={GRID} items={data.kinds.map((k) => ({ to: `/reference/kinds/${k.slug}`, name: k.title, count: `${k.cases} 条原文` }))} />
         </section>
       )}
       {categories.length > 0 && (
         <section className="mt-8">
           <Kicker>按遇到的事查找</Kicker>
-          <Entries cols="grid-cols-3 sm:grid-cols-6" items={categories.map((c) => ({ to: `#${c.key}`, name: c.title, count: `${c.situations.length} 种情况` }))} />
-          {categories.map((c) => (
-            <section key={c.key} className="mt-9">
-              <Heading id={c.key} aside={`${c.situations.length} 种情况`}>{c.title}</Heading>
-              <SituationCards rows={c.situations} />
-            </section>
-          ))}
+          <Entries cols={GRID} items={categories.map((c) => ({ to: `#${c.key}`, name: c.title, count: `${c.situations.length} 种情况` }))} />
         </section>
       )}
+      {data.ranking.length > 0 && (
+        <section className="mt-8">
+          <Kicker>店家谈得最多的事</Kicker>
+          <p className="mt-1.5 text-[13px] text-ink-4">按分享过做法的店家数排列</p>
+          <SituationCards rows={data.ranking} ranked />
+        </section>
+      )}
+      {categories.map((c) => (
+        <section key={c.key} className="mt-9">
+          <Heading id={c.key} aside={`${c.situations.length} 种情况`}>{c.title}</Heading>
+          <SituationCards rows={c.situations} lead={false} />
+        </section>
+      ))}
       <Updated at={data.updatedAt} />
     </Page>
   );

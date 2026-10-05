@@ -34,7 +34,7 @@ const api = createServer((req, res) => {
   if (p === "/api/site/meta") return res.end(JSON.stringify({ changelogVersion: "2026-10-01T08:00" }));
   if (p === "/api/site/track") { res.statusCode = 204; return res.end(); }
   hits.push(req.url!);
-  if (p === "/api/reference") return res.end(JSON.stringify({ categories: [], kinds: [], totals: { situations: 0, cases: 0, countries: 0 } }));
+  if (p === "/api/reference") return res.end(JSON.stringify({ categories: [], ranking: [], kinds: [], totals: { situations: 0, cases: 0, countries: 0 } }));
   if (p === "/api/site/timeline") return res.end(JSON.stringify({ filters: { channel: "all", category: null, tag: null }, cards: [{ key: item.id, anchorAt: at, item, group: null }], nextCursor: null, hot: null, dayCounts: { "2026-10-04": 1 } }));
   if (p === "/api/site/pool") return res.end(JSON.stringify({ filters: { channel: "all", category: null, tag: url.searchParams.get("tag"), q: url.searchParams.get("q"), tab: "time" }, items: [item], page: 1, pageCount: 1, total: 1, todayCount: 1, freshness: at }));
   if (p === "/api/site/search/suggestions") return res.end(JSON.stringify({ topics: [], hot: [] }));

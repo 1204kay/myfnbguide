@@ -17,7 +17,7 @@ const api = createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
   if (req.url === "/api/site/meta") return res.end(JSON.stringify({ changelogVersion: null }));
   // The site's home page: its reference library (site.ts NAV.home), when it has one at /.
-  if (req.url === "/api/reference") return res.end(JSON.stringify({ categories: [], kinds: [], totals: { situations: 0, cases: 0, countries: 0 } }));
+  if (req.url === "/api/reference") return res.end(JSON.stringify({ categories: [], ranking: [], kinds: [], totals: { situations: 0, cases: 0, countries: 0 } }));
   if (req.url?.startsWith("/api/site/timeline")) return res.end(JSON.stringify({
     cards: [], nextCursor: null, dayCounts: {}, hot: [], filters: { category: null, channel: null, tag: null },
   }));

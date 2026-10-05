@@ -8,7 +8,8 @@
 // of mending it; a grouping stores one line of two shops or a number no story has, or sends a text back as too
 // long without naming where, how long and what to cut; a practice counts articles, not shops, or counts an
 // adviser as a shop; one country is written as "1 个国家"; a page narrowed to a kind counts other kinds; a list
-// shows one shop's stories as several cards; the search or the item page's block misses a story.
+// shows one shop's stories as several cards; the ranking of situations counts stories, not shops; the search or
+// the item page's block misses a story.
 import { pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -23,9 +24,9 @@ import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, writeCase } from "../backend/write.ts";
 import { groupSituation, readGrouping, situationsToGroup, type Member } from "../backend/methods.ts";
-import { membersBySituation, sourceKind, tellerOf } from "../backend/read.ts";
+import { membersBySituation, rankSituations, sourceKind, tellerOf } from "../backend/read.ts";
 import { countText, day, spaced } from "../format.ts";
-import type { CaseStory, Count } from "../types.ts";
+import type { CaseStory, Count, SituationRow } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
 
@@ -70,6 +71,14 @@ test("counts name a lone country, skip what is zero, and count 条原文 before 
   assert.equal(countText(count({ practices: 1, shops: 1, cases: 1, countries: ["日本"] })), "1 种做法 · 1 家店 · 日本");
   assert.equal(countText(count({ cases: 13, shops: 9, countries: ["日本", "美国"] })), "13 条原文 · 2 个国家");
   assert.equal(countText(count({ shops: 2, insiders: 1, cases: 4, countries: ["美国"] }), "practice"), "2 家店 · 1 位业内人士 · 美国");
+});
+
+test("店家谈得最多的事 ranks situations by shops, then stories, then the library's order, five at most", () => {
+  const row = (slug: string, shops: number, cases: number, insiders = 0): SituationRow =>
+    ({ slug, category: "成本与利润", title: slug, dek: "", overview: null, count: count({ shops, cases, insiders }), sources: [] });
+  const rows = [row("a", 3, 10), row("b", 5, 5), row("c", 5, 6), row("d", 1, 20, 9), row("e", 2, 2), row("f", 2, 2), row("g", 4, 4)];
+  assert.deepEqual(rankSituations(rows).map((r) => r.slug), ["c", "b", "g", "a", "e"], "stories break a tie of shops; insiders and stories alone do not lift one");
+  assert.deepEqual(rows.map((r) => r.slug), ["a", "b", "c", "d", "e", "f", "g"], "the lists keep their order");
 });
 
 test("a story counts as its named shop, the source of an owner who names none, the story of a publication, or an insider", () => {
@@ -375,8 +384,10 @@ test("the pages show public cases only, a situation once two cases are in it, ea
   assert.deepEqual(dining.categories[0].situations[0].count, { practices: 2, shops: 1, insiders: 0, cases: 2, countries: ["美国"] }, "a kind's page counts its own shops");
   assert.equal((await get("/api/reference/kinds/coffee")).categories[0].situations[0].count.practices, 1);
 
-  const listed = (await get("/api/reference")).categories.find((c: { key: string }) => c.key === "cost").situations[0];
+  const listing = await get("/api/reference");
+  const listed = listing.categories.find((c: { key: string }) => c.key === "cost").situations[0];
   assert.deepEqual([listed.count.practices, listed.count.shops, listed.count.cases, listed.overview], [2, 2, 3, page.overview], "the bistro's two practices: one shop");
+  assert.deepEqual(listing.ranking, [listed], "店家谈得最多的事: the same row, its shops counted once");
 
   const one = await get(`/api/reference/cases/${ids.FIRST}`);
   assert.deepEqual([one.source.name, one.source.kind, one.source.language, one.situation.title], ["Total Food Service", "餐饮媒体", "英文", "生意很忙，钱却留不下来"]);

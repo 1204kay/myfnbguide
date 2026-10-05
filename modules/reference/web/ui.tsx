@@ -158,45 +158,57 @@ export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode })
   );
 }
 
+/** A situation's place in 店家谈得最多的事, in front of its title. */
+const RANK = "num shrink-0 font-extrabold text-accent";
+
 /**
  * A category's situations (layout A7-4): the first as a card with its picture, its opening and its counts, the
- * rest as compact rows in the same card. `kind` narrows the links to that shop kind (?kind=).
+ * rest as compact rows in the same card; without `lead`, every one a row (the home page's categories: the ranking
+ * above them carries the pictures). `ranked` numbers them and counts their shops (店家谈得最多的事). `kind`
+ * narrows the links to that shop kind (?kind=).
  */
-export function SituationCards({ rows, kind }: { rows: SituationRow[]; kind?: string }) {
-  const [first, ...rest] = rows;
-  if (!first) return null;
+export function SituationCards({ rows, kind, lead = true, ranked = false }: { rows: SituationRow[]; kind?: string; lead?: boolean; ranked?: boolean }) {
+  if (!rows.length) return null;
+  const first = lead ? rows[0]! : null;
   const href = (s: SituationRow) => `/reference/${s.slug}${kind ? `?kind=${kind}` : ""}`;
-  const drawing = <SituationDrawing slug={first.slug} />;
+  const of = ranked ? "practice" : "situation";
   return (
     <div className="card mt-3 overflow-hidden">
-      <Link viewTransition to={href(first)} className="block px-4 py-4 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-6">
-        <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[200px] lg:order-2 lg:mb-0 lg:w-full lg:[&_svg]:max-h-[180px]">{drawing}</div>
-        <div>
-          <b className="block text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">{first.title}</b>
-          <p className="mt-1.5 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{first.overview ?? first.dek}</p>
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4">
-            <Avatars sources={first.sources} max={4} size={20} className="flex sm:hidden" />
-            <Avatars sources={first.sources} max={6} size={22} className="hidden sm:flex" />
-            <span>{countText(first.count)}</span>
+      {first && (
+        <Link viewTransition to={href(first)} className="block px-4 py-4 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-6">
+          <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[200px] lg:order-2 lg:mb-0 lg:w-full lg:[&_svg]:max-h-[180px]"><SituationDrawing slug={first.slug} /></div>
+          <div>
+            <b className="block text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">{ranked && <span className={`${RANK} mr-2`}>1</span>}{first.title}</b>
+            <p className="mt-1.5 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{first.overview ?? first.dek}</p>
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4">
+              <Avatars sources={first.sources} max={4} size={20} className="flex sm:hidden" />
+              <Avatars sources={first.sources} max={6} size={22} className="hidden sm:flex" />
+              <span>{countText(first.count, of)}</span>
+            </div>
           </div>
-        </div>
-      </Link>
-      {rest.map((s) => <SituationLine key={s.slug} s={s} href={href(s)} className="border-t border-line" />)}
+        </Link>
+      )}
+      {rows.slice(first ? 1 : 0).map((s, i) => (
+        <SituationLine key={s.slug} s={s} href={href(s)} of={of} rank={ranked ? i + (first ? 2 : 1) : undefined} className={first || i ? "border-t border-line" : ""} />
+      ))}
     </div>
   );
 }
 
-/** A compact row: two lines on phones (title, counts), one from 641px (title, avatars, counts). */
-export function SituationLine({ s, href, className = "", category = false }: { s: SituationRow; href: string; className?: string; category?: boolean }) {
+/** A compact row: two lines on phones (title, counts), one from 641px (title, avatars, counts); its place in front when ranked. */
+export function SituationLine({ s, href, className = "", category = false, rank, of = "situation" }: {
+  s: SituationRow; href: string; className?: string; category?: boolean; rank?: number; of?: "situation" | "practice";
+}) {
   return (
     <Link viewTransition to={href} className={`flex min-h-14 items-center gap-3 px-4 py-2.5 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:min-h-[52px] sm:px-5 ${className}`}>
+      {rank !== undefined && <span className={`${RANK} w-4 text-[17px]`}>{rank}</span>}
       <span className="min-w-0 flex-1">
         {category && <span className="block text-[13px] text-ink-4">{s.category}</span>}
         <b className="block text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{s.title}</b>
-        <span className="block text-[13px] text-ink-4 sm:hidden">{countText(s.count)}</span>
+        <span className="block text-[13px] text-ink-4 sm:hidden">{countText(s.count, of)}</span>
       </span>
       <Avatars sources={s.sources} max={3} size={20} className="hidden sm:flex" />
-      <span className="hidden shrink-0 whitespace-nowrap text-[13px] text-ink-4 sm:block">{countText(s.count)}</span>
+      <span className="hidden shrink-0 whitespace-nowrap text-[13px] text-ink-4 sm:block">{countText(s.count, of)}</span>
       <IconChevronRight size={16} />
     </Link>
   );

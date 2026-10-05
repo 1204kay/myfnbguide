@@ -1,11 +1,14 @@
 // The reference library's backend: a schedule finds selected items without a case and queues them, the
 // queue writes each case (backend/write.ts); another groups each situation's stories by practice once they
-// change (backend/methods.ts); and the api answers the pages (backend/read.ts).
+// change (backend/methods.ts); and the api answers the pages, the search and the item page (backend/read.ts).
 import { readFileSync } from "node:fs";
 import { config } from "@aihot/backend/config";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
-import { membersBySituation, readCase, readHome, readKind, readShop, readSituation, readStatus } from "./backend/read.ts";
+import { SITUATIONS } from "./situations.ts";
+import {
+  membersBySituation, readCase, readHome, readItemStory, readKind, readShop, readSituation, readStatus, searchLibrary, sitemapEntries,
+} from "./backend/read.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
@@ -41,10 +44,11 @@ export default defineServerModule({
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
   },
   queues: [CASES, METHODS],
-  // The site's main page for readers, so llms.txt names it beside the engine's pages.
+  // The site's home page (site.ts NAV.home), so llms.txt names it beside the engine's pages.
   llms: () => ({
-    pages: [`- [参考](${config.siteUrl}/reference): 按老板遇到的事查找各地店家的做法和经验，也可以按店型浏览；每个故事附原文出处`],
+    pages: [`- [参考](${config.siteUrl}/): 按遇到的事，查各地店家的做法和经验，也可以按店型浏览；说同一种做法的各家店归在一起，每个故事附原文出处`],
   }),
+  sitemap: { entries: () => sitemapEntries() },
   schedules: [{
     name: "reference.cases",
     cron: "*/10 * * * *",
@@ -55,12 +59,14 @@ export default defineServerModule({
       return { queued: ids.length };
     },
   }, {
-    // A situation is grouped again only when its stories changed: a few calls a day once the stories settle.
+    // Once a day before the daily issue is composed (layout D1): a situation is grouped again only when its stories
+    // changed, so the stories written through the day cost one call a situation, not one each.
     name: "reference.methods",
-    cron: "5,35 * * * *",
+    cron: "0 5 * * *",
+    missed: "once",
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
-      const due = await situationsToGroup(await membersBySituation(), 10);
+      const due = await situationsToGroup(await membersBySituation(), SITUATIONS.length);
       for (const [slug] of due) await enqueueOn(METHODS, { slug }, { singletonKey: slug });
       return { queued: due.length };
     },
@@ -72,13 +78,23 @@ export default defineServerModule({
     // Written, not written (thin: too little or only news), held by the checks, and still to write.
     app.get("/api/reference/status", async (_req, reply) =>
       reply.header("Cache-Control", "no-store").send({ ...(await readStatus()), waiting: (await articlesToWrite(1000)).length }));
+    app.get("/api/reference/search", async (req, reply) => {
+      const q = String((req.query as { q?: unknown }).q ?? "").slice(0, 100);
+      return reply.header("Cache-Control", CACHE).send(await searchLibrary(q));
+    });
     app.get("/api/reference/situations/:slug", async (req, reply) => {
-      const page = await readSituation((req.params as { slug: string }).slug);
+      const kind = (req.query as { kind?: unknown }).kind;
+      const page = await readSituation((req.params as { slug: string }).slug, typeof kind === "string" ? kind : null);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/cases/:id", async (req, reply) => {
       const page = await readCase((req.params as { id: string }).id);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
+    });
+    // The item page's block (web/item-part.tsx): the story an item is written as; 404 when it is none.
+    app.get("/api/reference/by-item/:id", async (req, reply) => {
+      const story = await readItemStory((req.params as { id: string }).id);
+      return story ? reply.header("Cache-Control", CACHE).send(story) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/kinds/:slug", async (req, reply) => {
       const page = await readKind((req.params as { slug: string }).slug);

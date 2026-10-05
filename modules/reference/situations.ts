@@ -169,14 +169,14 @@ export const SITUATIONS: Situation[] = [
     g("staff-suggest", "服务员推荐", "推荐什么、怎么说"),
     g("bundles", "套餐和加购", "多点一样的理由"),
   ] },
-  { slug: "hospitality", category: "customers", title: "菜不差，客人却不一定再来", dek: "味道过得去，客人的感受却决定了他会不会再来。", groups: [
+  { slug: "hospitality", category: "customers", title: "菜不差，客人却不一定再来", dek: "菜的味道以外，客人在店里受到的对待，也决定了他会不会再来。", groups: [
     g("reasonable-hospitality", "合理的款待", "让客人觉得被照顾"),
     g("small-details", "小细节", "进门、等位、结账时的细节"),
     g("complaints", "处理抱怨", "客人当场不满意时"),
   ] },
 
   // 门店运营
-  { slug: "rush-chaos", category: "operations", title: "午市高峰一到，出餐就乱", dek: "平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。各地店家查到的原因，和他们的做法。", groups: [
+  { slug: "rush-chaos", category: "operations", title: "午市高峰一到，出餐就乱", dek: "平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。", groups: [
     g("crossing-paths", "路线撞在一起", "出餐和收碗走同一条路，员工的时间花在互相让路上"),
     g("searching-shouting", "人在找东西、在喊叫", "物料不在手边、分工不清楚，高峰时就有人离开岗位"),
     g("seats-vs-kitchen", "座位比出餐快", "一次进来的客人超过厨房出得了的量"),

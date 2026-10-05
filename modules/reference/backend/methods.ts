@@ -124,7 +124,8 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
   const names = tellerNames(members);
   const problems: string[] = [];
   const repairs: string[] = [];
-  const placed = new Set<string>();
+  // Where each story was placed first: by which practice.
+  const placed = new Map<string, number>();
   const soloed: Member[] = [];
   const kept = out.methods.flatMap((given, i) => {
     const name = `第 ${i + 1} 个做法`;
@@ -143,9 +144,10 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
           taken.push(id);
         } else if (placed.has(id)) {
           repairs.push(`故事 ${id} 放进了不止一处，只留在第一处，已从${name}删去`);
-          taken.push(id);
+          // Written twice in this practice it stays in it; placed first in another, this practice lost it.
+          if (placed.get(id) !== i) taken.push(id);
         } else {
-          placed.add(id);
+          placed.set(id, i);
           return true;
         }
         return false;

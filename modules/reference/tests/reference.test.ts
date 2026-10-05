@@ -219,7 +219,7 @@ test("a practice that lost a story keeps no words about it, and one written in a
     shops: [{ caseIds: ["a"], line: "对比账单" }, { caseIds: ["d"], line: "对比配方" }] }] }, members);
   assert.deepEqual(one.problems, []);
   assert.deepEqual(one.grouping!.methods.map((m) => [m.title, m.summary, m.shops.map((s) => s.caseIds)]),
-    [[story().title, story().placements[0]!.card, [["a"]]], ["配方和盘点", "把盘点出来的食材钱和配方算的放在一起比。", [["d"]]], ["另一家店的账单", story().placements[0]!.card, [["c"]]]]);
+    [[story().title, story().placements[0]!.card, [["a"]]], ["另一家店的账单", story().placements[0]!.card, [["c"]]], ["配方和盘点", "把盘点出来的食材钱和配方算的放在一起比。", [["d"]]]]);
   assert.ok(one.repairs.some((p) => /第 1 个做法移出故事以后只剩一篇，改用这篇故事自己的标题和说明/.test(p)));
   // "null" written as a word: the practice moves to its stories' group and keeps both shops.
   const none: Member[] = [

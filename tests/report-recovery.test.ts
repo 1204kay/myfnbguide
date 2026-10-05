@@ -1,5 +1,6 @@
 // Failure cases: automatic runs rewrite published issues; report/receipt commits split; empty gaps
-// starve later daily/weekly/monthly issues or make a failed run look successful. All use a local model stub.
+// starve later daily/weekly/monthly issues or make a failed run look successful; a site that starts mid-month
+// fails the weekly and monthly of the periods before its first daily on every run. All use a local model stub.
 import { editionAt, stub, tag } from "./setup.ts";
 import assert from "node:assert/strict";
 import { after, before, beforeEach, test } from "node:test";
@@ -85,4 +86,11 @@ test("empty older gaps cannot starve a later daily, weekly or monthly, and failu
   for (const [kind, key] of [["daily", "2024-02-02"], ["weekly", "2024-W04"], ["monthly", "2024-01"]]) {
     assert.ok(await report(kind!, key!), `${kind} ${key} was recovered past the empty gaps`);
   }
+});
+
+test("weeklies and monthlies of periods before the site's first daily are not due", async () => {
+  await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at)
+    VALUES ('daily', '2024-02-05', now(), now(), ${sql.json({ sections: [] })}, now())`;
+  // Due then: the daily of 2024-02-05 (there), the week of 2024-01-29 and January, both over before it.
+  assert.deepEqual(await composeDueReports(editionAt("daily", "2024-02-05", 3600)), { generated: [], failed: [] });
 });

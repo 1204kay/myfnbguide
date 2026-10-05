@@ -6,7 +6,8 @@
 //   3. structure: category, tags, subjects and the current news fact, beside scoring;
 //   4. writing, once the structure is in: the Chinese title, summary and reason by the content
 //      understanding for selected and near-selected items, by the cheaper title/summary prompts for the rest;
-//      copy that uses a word the site keeps from readers (industry/wording.ts) goes back once to change only those.
+//      copy that uses a word the site keeps from readers (industry/wording.ts) goes back once to change only those,
+//      and is spaced between Chinese and Latin letters or digits when the pack asks for it.
 // Material with only a title or a feed summary has its article page fetched before it is judged.
 import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
@@ -28,7 +29,7 @@ import {
 } from "./writing.ts";
 import { CATEGORY_GUIDE, CATEGORY_TAGS, ENTITIES, ENTITY_TAGS, ITEM_TYPES, normalizeTags, TOPIC_TAGS } from "./vocabulary.ts";
 import { promptText, promptVersion } from "./prompts.ts";
-import { wordingProblems } from "./wording.ts";
+import { spaceCopy, wordingProblems } from "./wording.ts";
 
 export { buildMaterial, loadAnalyzeInput, type AnalyzeInputArticle };
 
@@ -465,7 +466,9 @@ export async function runAnalysis(a: AnalyzeInputArticle, opts: StepOpts = {}): 
     const near = sum !== null && (sum >= scores!.threshold * SCORE_CALLS || sum > UNDERSTAND_FLOOR * SCORE_CALLS);
     const s = await structure;
     if ("error" in s) throw s.error;
-    const writing = await mendWording(a, (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts)), opts);
+    const written = await mendWording(a, (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts)), opts);
+    // What a model wrote is stored spaced (READER_SPACING); a post kept as its author wrote it is not.
+    const writing = written?.kind === "understand" || written?.kind === "summarize" ? spaceCopy(written) : written;
     return { prefilter, scores, writing, structure: s.value };
   } finally {
     // A score/writing error or deploy must not let the job finish while a paid structure request

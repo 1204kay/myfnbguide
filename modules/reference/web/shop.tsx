@@ -1,11 +1,13 @@
-// One shop: who it is, and its cases.
+// One shop (layout B5): who it is in Chinese, its original name and where it is, and all its stories, newest first.
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
+import { Kicker } from "@aihot/web/components/ui/Kicker";
+import { BackRow, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { findShopKind } from "../situations.ts";
 import type { ShopPage } from "../types.ts";
-import { BackLink, Cards } from "./ui";
+import { Metrics, Page, StoryCards, Title, Updated } from "./ui";
 
 export const handle: Screen = { home: "reference" };
 
@@ -17,19 +19,30 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   return loadOr404<ShopPage>(`/api/reference/shops/${encodeURIComponent(params.key!)}`, { signal: request.signal });
 }
 
+/** The page's title: who the shop is in Chinese, or its own name in stories written before that was asked. */
+const nameOf = (data: ShopPage) => data.shop.label || data.shop.name || "店家";
+
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
   if (!data) return [{ title: titled("没有这家店") }, { name: "robots", content: "noindex" }];
-  return pageMeta({ title: data.shop.name ?? "店家", description: data.cases[0]?.title ?? null, path: `/reference/shops/${data.key}` });
+  return pageMeta({ title: nameOf(data), description: data.cases[0]?.title ?? null, path: `/reference/shops/${data.key}` });
 }
 
 export default function ShopRoute() {
-  const { shop, cases } = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>();
+  const { shop, cases } = data;
+  const original = shop.label && shop.name ? `原名「${shop.name}」` : null;
   return (
-    <div className="mx-auto max-w-[760px] px-4 pb-14 lg:px-0">
-      <BackLink to="/reference">参考</BackLink>
-      <div className="mt-2 text-[13px] text-ink-4">{[shop.country, shop.city, findShopKind(shop.kind)?.title, shop.size].filter(Boolean).join(" · ")}</div>
-      <h1 className="mt-1.5 text-[30px] font-black leading-tight tracking-tight text-ink">{shop.name}</h1>
-      <Cards cards={cases} />
-    </div>
+    <Page>
+      <PhoneBar back={{ to: "/", label: "参考" }} title={nameOf(data)} />
+      <BackRow to="/" label="参考" />
+      <div className="mt-3 lg:mt-4"><Kicker>店家</Kicker></div>
+      <Title>{nameOf(data)}</Title>
+      <p className="mt-2 text-[13px] leading-[1.5] text-ink-4 [overflow-wrap:anywhere]">
+        {[original, shop.country, shop.city, findShopKind(shop.kind)?.title, shop.size].filter(Boolean).join(" · ")}
+      </p>
+      <Metrics items={[[cases.length, "条原文"]]} />
+      <StoryCards cards={cases} />
+      <Updated at={data.updatedAt} />
+    </Page>
   );
 }

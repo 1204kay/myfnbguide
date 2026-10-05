@@ -86,7 +86,23 @@ export const WORDING: ReadonlyArray<readonly [RegExp, string]> = [
   ...READER_WORDING,
   [/先看|(?<!不)再看(?!重)|首先|其次|第一步|第二步/u, "不用说明顺序的词"],
   [/原价率|原価率/u, "写成“食材成本率”"],
+  [/原文未提供|未提供更多(?:细节|信息)|该内容来自|节目还(?:谈到|提到|介绍了|讨论了)/u, "不写给自己看的话：说不出内容的细节就不提"],
 ];
+
+/** Where-from words a title must not open with: the card's source line already names the country and the source (layout D4). */
+const SOURCE_WORDS = /播客|系统商|服务商|软件商|顾问|媒体|博客|店主|老板|协会|平台|专栏/u;
+
+/** "美国播客：", "日本一家": how a title opens when it repeats the source line; null when it does not. */
+export function titleOpening(story: CaseStory): string | null {
+  const colon = /^([^，。：:]{1,12})[：:]/u.exec(story.title);
+  if (colon && SOURCE_WORDS.test(colon[1]!)) return colon[0];
+  // A city as the title may write it: 京都 for 京都市.
+  for (const place of [story.shop.country, story.shop.city?.replace(/(?<=..)[市县省]$/u, "")]) {
+    const hit = place && new RegExp(`^${place.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}.{0,4}?一家`, "u").exec(story.title);
+    if (hit) return hit[0];
+  }
+  return null;
+}
 
 /**
  * At most this many characters a reader reads, examples left out (HANDOFF §2.3: no whole rewrite). The sample's
@@ -126,7 +142,7 @@ function blockTexts(block: Block): string[] {
 /** Every text of a story a reader reads, with where it is and whether its numbers come from the original. */
 function texts(story: CaseStory): Array<[where: string, text: string, fromSource: boolean]> {
   return [
-    ["标题", story.title, true], ["开头", story.lead, true], ["人物", story.who, true], ["结尾说明", story.open ?? "", true],
+    ["标题", story.title, true], ["开头", story.lead, true], ["人物", story.who, true], ["结尾说明", story.open ?? "", true], ["店家说明", story.shop.label ?? "", true],
     ...story.placements.map((p): [string, string, boolean] => [`卡片（${p.situation}）`, p.card, true]),
     ...story.parts.flatMap((part, i) => [[`第 ${i + 1} 段的小标题`, part.heading, !part.blocks.some((b) => b.type === "example")] as [string, string, boolean],
       ...part.blocks.map((b): [string, string, boolean] => [`第 ${i + 1} 段`, blockTexts(b).join("\n"), b.type !== "example"])]),
@@ -180,6 +196,8 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   for (const [i, part] of story.parts.entries()) {
     if (LABELS.test(part.heading.trim())) problems.push(`第 ${i + 1} 段的小标题“${part.heading}”是分格标签：直接写内容，写成某人做了什么`);
   }
+  const opening = titleOpening(story);
+  if (opening) problems.push(`标题以“${opening}”开头：页面的来源行已经写了国家和来源，标题直接写这家店做了什么`);
   for (const p of story.placements) {
     const situation = SITUATIONS.find((s) => s.slug === p.situation);
     if (!situation) problems.push(`情况 ${p.situation} 不在清单里`);
@@ -197,7 +215,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

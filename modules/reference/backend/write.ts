@@ -14,6 +14,7 @@ import { renderContext } from "@aihot/backend/editorial/writing";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { selectedCondition } from "@aihot/backend/publication/scope";
+import { spaced } from "../format.ts";
 import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
 import { checkStory, MAX_CHARS } from "./checks.ts";
@@ -27,11 +28,11 @@ const KIND_LIST = SHOP_KINDS.map((k) => `  - ${k.slug}：${k.title}（${k.dek.re
 export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL("../prompts/case.md", import.meta.url), "utf8"), { situations: SITUATION_LIST, kinds: KIND_LIST });
 /**
  * Problems the writer can mend in its own text: too long, a word, retelling the original, a label for a heading,
- * an untranslated sentence. Those go back without the material, as an edit of the story: given the whole material
+ * an untranslated sentence, a title opening with where it is from. Those go back without the material, as an edit of the story: given the whole material
  * again, the writer wrote it afresh and as long as before (10/5: 53 of 65 held were too long after two more tries).
  * A country or city left unnamed (全国、本地) is not one of them: only the material says which.
  */
-const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译/.test(problem) && !/国家名|城市名/.test(problem);
+const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以/.test(problem) && !/国家名|城市名/.test(problem);
 const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
 /**
  * The last pass over a story that passed the checks: its wording made plain written Chinese, nothing else (the
@@ -68,6 +69,7 @@ const StorySchema = z.object({
   open: z.string().trim().max(90).nullable().default(null),
   shop: z.object({
     name: z.string().trim().nullable().default(null),
+    label: text.max(20),
     country: text.max(12),
     city: z.string().trim().nullable().default(null),
     // A kind outside the list is no kind: the case still shows under its situations.
@@ -108,7 +110,7 @@ function computeBlock(block: z.infer<typeof BlockSchema>): Block {
 
 const NAMES: Record<string, string> = {
   title: "标题", lead: "开头", who: "人物", open: "结尾说明", heading: "小标题", text: "文字", items: "列表", steps: "流程",
-  caption: "图的说明", card: "卡片", blocks: "内容块", parts: "段落", placements: "情况", shop: "店", example: "举例",
+  caption: "图的说明", card: "卡片", blocks: "内容块", parts: "段落", placements: "情况", shop: "店", label: "店家说明", example: "举例",
 };
 
 /** Where in the answer a problem is, as the writer reads it: ["parts", 2, "blocks", 0, "text"] → "第 3 段第 1 块的文字". */
@@ -156,6 +158,38 @@ export interface CaseResult {
   problems: string[];
 }
 
+/**
+ * A shop's name as its key reads it: one shop's stories meet on its page however the writer spaced, cased or
+ * punctuated the name, or added a reading in brackets ("クチーナカメヤマ（Cucina Kameyama）" and "クチーナカメヤマ").
+ */
+export function shopNameKey(name: string): string {
+  const normal = name.normalize("NFKC").toLowerCase();
+  const bare = normal.replace(/[(（][^()（）]*[)）]/g, "").replace(/[\s\p{P}\p{S}]/gu, "");
+  return bare || normal.replace(/\s+/g, " ").trim();
+}
+
+/** What readers read of a story, spaced (format.ts spaced) as it is stored; names, numbers and examples' inputs as written. */
+export function spaceStory(story: CaseStory): CaseStory {
+  const s = spaced;
+  const block = (b: Block): Block => {
+    switch (b.type) {
+      case "text": return { ...b, text: s(b.text) };
+      case "list": return { ...b, items: b.items.map((i) => ({ lead: i.lead && s(i.lead), text: s(i.text) })) };
+      case "flow": return { ...b, steps: b.steps.map(s) };
+      case "quote": return { ...b, text: s(b.text), who: s(b.who) };
+      case "compare": return { ...b, caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })) };
+      case "parts": return { ...b, caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })), against: b.against && { ...b.against, label: s(b.against.label) } };
+      case "example": return { ...b, caption: s(b.caption), result: s(b.result) };
+    }
+  };
+  return {
+    ...story, title: s(story.title), lead: s(story.lead), who: s(story.who), open: story.open && s(story.open),
+    shop: { ...story.shop, label: s(story.shop.label) },
+    parts: story.parts.map((p) => ({ heading: s(p.heading), blocks: p.blocks.map(block) })),
+    placements: story.placements.map((p) => ({ ...p, card: s(p.card) })),
+  };
+}
+
 /** Writes (or writes again) the case of one article and stores it. Null when the article is gone. */
 export async function writeCase(articleId: string): Promise<CaseResult | null> {
   const a = await loadAnalyzeInput(articleId);
@@ -198,8 +232,8 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
     if (read.written?.status === "story" && !checkStory(read.written.story, material).length && numbersOf(read.written.story) === numbersOf(written.story)) written = read.written;
   }
   const status: CaseResult["status"] = problems.length || !written ? "held" : written.status;
-  const story = written?.status === "story" ? written.story : null;
-  const shopKey = story?.shop.name ? createHash("sha256").update(`${story.shop.country}|${story.shop.name.toLowerCase().replace(/\s+/g, " ")}`).digest("hex").slice(0, 12) : null;
+  const story = written?.status === "story" ? spaceStory(written.story) : null;
+  const shopKey = story?.shop.name ? createHash("sha256").update(`${story.shop.country}|${shopNameKey(story.shop.name)}`).digest("hex").slice(0, 12) : null;
   const situations = status === "story" && story ? story.placements.map((p) => p.situation) : [];
   await sql.begin(async (tx) => {
     await tx`

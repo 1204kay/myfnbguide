@@ -2,7 +2,8 @@
 // spoken word or a label heading reaches a reader; a story with problems is shown without a second try, or
 // shown after failing it; thin material becomes a story; a withdrawn item stays in the reference pages; a
 // situation with one case is listed; a kind is listed or paged without cases, or a wrong kind holds a story;
-// a story points to its shop's page when that page would only repeat it.
+// a story points to its shop's page when that page would only repeat it; a grouping of practices drops a story,
+// puts one in two practices or across groups, or names a number no story has; a practice counts articles, not shops.
 import { pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -16,6 +17,8 @@ import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, writeCase } from "../backend/write.ts";
+import { groupSituation, readGrouping, situationsToGroup, type Member } from "../backend/methods.ts";
+import { membersBySituation } from "../backend/read.ts";
 import type { CaseStory } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
@@ -92,6 +95,27 @@ test("a block over its ceiling comes back named, with its length", () => {
   assert.deepEqual(problems, ["第 1 段第 1 块的文字太长：最多 240 字，现在 350 字；删去次要的内容，不要拆成更多块"]);
 });
 
+test("a grouping of practices places every story once, within its group, with the stories' own numbers", () => {
+  const members: Member[] = [
+    { id: "a", group: "fixed-costs-creep", story: story() },
+    { id: "b", group: "fixed-costs-creep", story: story({ title: "另一家店的账单" }) },
+    { id: "c", group: "food-over-recipe", story: story({ title: "配方和盘点" }) },
+  ];
+  const good = { overview: "固定费用往往在没人核对时上涨，各家逐项对比账单和合同。", methods: [
+    { group: "fixed-costs-creep", title: "把第一张和最新一张账单逐行对比", summary: "美国一家餐馆的布草账单从每周 865 美元涨到 1,503 美元，逐行对比以后找出了多付的部分。", cases: ["a", "b"] },
+    { group: "food-over-recipe", title: "盘点食材钱和配方对照", summary: "把盘点出来的食材钱和配方算的放在一起比。", cases: ["c"] },
+  ] };
+  assert.deepEqual(readGrouping(good, members).problems, []);
+  const bad = readGrouping({ overview: "有 3 种做法。", methods: [
+    { group: "fixed-costs-creep", title: "逐行对比", summary: "一年多付 99,999 美元。", cases: ["a", "c"] },
+    { group: "fixed-costs-creep", title: "再看一遍合同", summary: "顾问讲合同要留底。", cases: ["a", "x"] },
+  ] }, members);
+  assert.equal(bad.grouping, null);
+  for (const expected of [/另一个原因组的故事 c/, /x 不是这种情况的故事/, /故事 a 出现在两个做法里/, /故事 b（另一家店的账单）没有放进任何做法/, /数字 99,999/, /综述里写了数字/, /用了“讲”/, /用了“再看”/]) {
+    assert.ok(bad.problems.some((p) => expected.test(p)), `${expected} in ${bad.problems.join(" | ")}`);
+  }
+});
+
 // The model: a story with a stray number and a spoken word first, fixed when told; thin material; and one
 // that stays wrong. The first two are about the same shop.
 const T = tag();
@@ -116,9 +140,21 @@ const answers: Record<string, unknown[]> = {
 const calls: string[] = [];
 const users: Record<string, string[]> = {};
 let styled = 0;
+let grouped = 0;
 const model = await stub((_hit, req) => {
   const body = JSON.parse(req.body) as { messages: Array<{ role: string; content: string }> };
   const user = body.messages.at(-1)!.content;
+  // The grouping of practices: first both stories in one practice across their groups, then each in its own.
+  if (body.messages.some((m) => m.role === "system" && m.content.includes("说同一种做法"))) {
+    grouped += 1;
+    const out = user.includes("有以下问题")
+      ? { overview: "固定费用和食材钱都在没人核对时上涨，各家逐项对比账单和配方。", methods: [
+        { group: "fixed-costs-creep", title: "把第一张和最新一张账单逐行对比", summary: "美国一家餐馆的布草账单从每周 865 美元涨到 1,503 美元，逐行对比以后找出了多付的部分。", cases: [ids.FIRST] },
+        { group: "food-over-recipe", title: "盘点食材钱和配方对照", summary: "同一家店把盘点出来的食材钱和配方算的放在一起比。", cases: [ids.SECOND] },
+      ] }
+      : { overview: "各家逐项对比账单。", methods: [{ group: "fixed-costs-creep", title: "逐项对比", summary: "对比账单和配方。", cases: [ids.FIRST, ids.SECOND] }] };
+    return { id: `stub-group-${grouped}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+  }
   // The last pass over a story that passed: hands it back with one spoken word made written.
   if (body.messages.some((m) => m.role === "system" && m.content.includes("把口语词、方言词"))) {
     styled += 1;
@@ -133,6 +169,7 @@ const model = await stub((_hit, req) => {
 });
 pointModels(model.url, ["deepseek-flash"]);
 process.env.REFERENCE_CASE_MODEL = "deepseek-flash";
+process.env.REFERENCE_METHODS_MODEL = "deepseek-flash";
 installModules([reference]);
 const app = await buildApp();
 const SRC = `reference-${T}`;
@@ -189,8 +226,24 @@ test("the pages show public cases only, a situation once two cases are in it, an
   const page = JSON.parse((await app.inject("/api/reference/situations/busy-no-profit")).body);
   assert.deepEqual(page.groups.filter((g: { cases: unknown[] }) => g.cases.length).map((g: { key: string; cases: Array<{ src: string }> }) => [g.key, g.cases[0]!.src.split(" · ").slice(0, 2).join(" · ")]),
     [["food-over-recipe", "美国 · Total Food Service"], ["fixed-costs-creep", "美国 · Total Food Service"]]);
+  const before = JSON.parse((await app.inject("/api/reference/situations/busy-no-profit")).body);
+  assert.equal(before.overview, null, "no grouping yet: each story stands as its own practice");
+  assert.deepEqual(before.groups.flatMap((g: { methods: Array<{ summary: string | null; cases: unknown[] }> }) => g.methods.map((m) => [m.summary, m.cases.length])), [[null, 1], [null, 1]]);
+  const members = (await membersBySituation()).get("busy-no-profit")!;
+  assert.deepEqual((await situationsToGroup(new Map([["busy-no-profit", members]]), 10)).map(([slug]) => slug), ["busy-no-profit"]);
+  assert.deepEqual(await groupSituation("busy-no-profit", members), { stored: true, problems: [] });
+  assert.equal(grouped, 2, "the grouping across groups was sent back once");
+  assert.deepEqual(await situationsToGroup(new Map([["busy-no-profit", members]]), 10), [], "grouped again only when its stories change");
+  const grouping = JSON.parse((await app.inject("/api/reference/situations/busy-no-profit")).body);
+  assert.match(grouping.overview, /逐项对比/);
+  const fixed = grouping.groups.find((g: { key: string }) => g.key === "fixed-costs-creep").methods;
+  assert.deepEqual(fixed.map((m: { title: string; shops: number; countries: string[]; sources: unknown[] }) => [m.title, m.shops, m.countries, m.sources]),
+    [["把第一张和最新一张账单逐行对比", 1, ["美国"], [{ name: "Total Food Service", icon: null }]]]);
+  const listed = JSON.parse((await app.inject("/api/reference")).body).categories.find((c: { key: string }) => c.key === "cost").situations[0];
+  assert.deepEqual([listed.methods, listed.shops, listed.cases], [2, 1, 2], "two practices of one shop: counted as one shop");
   const one = JSON.parse((await app.inject(`/api/reference/cases/${ids.FIRST}`)).body);
   assert.deepEqual([one.source.name, one.source.language, one.situations[0].group], ["Total Food Service", "英文", "固定费用悄悄上涨"]);
+  assert.deepEqual(one.brief, { summary: "摘要", reason: null }, "the item's AI 导读 and 收录理由 come with the story");
   assert.equal(one.shop.cases, 2, "the shop's page holds both of its cases");
   for (const hidden of [ids.THIN, ids.NEWS, ids.WRONG]) assert.equal((await app.inject(`/api/reference/cases/${hidden}`)).statusCode, 404);
   assert.equal((await app.inject("/api/reference/situations/no-such-situation")).statusCode, 404);

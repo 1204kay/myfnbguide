@@ -92,10 +92,34 @@ export interface CaseCard {
   line: string;
   /** "美国 · Total Food Service · 2026 年 10 月". */
   src: string;
+  /** The item's 收录理由: why a small shop's owner may read it. */
+  reason: string | null;
+  /** The shop's country, for the one line a story has on a practice card. */
+  country: string;
+}
+
+/** A source behind a practice or situation, drawn as a small round avatar. */
+export interface SourceFace {
+  name: string;
+  icon: string | null;
+}
+
+/**
+ * A practice on a situation page (backend/methods.ts): the stories that tell the same way of doing it. The counts
+ * are the program's; `summary` is null where no grouping is stored yet and each story stands as its own.
+ */
+export interface MethodCard {
+  title: string;
+  summary: string | null;
+  /** Distinct shops behind it (a shop's several articles count once; a story without a shop counts its source). */
+  shops: number;
+  countries: string[];
+  sources: SourceFace[];
+  cases: CaseCard[];
 }
 
 export interface ReferenceHome {
-  categories: Array<{ key: string; title: string; situations: Array<{ slug: string; title: string; dek: string; cases: number; countries: number }> }>;
+  categories: Array<{ key: string; title: string; situations: Array<{ slug: string; title: string; dek: string; cases: number; countries: number; methods: number | null; shops: number; sources: SourceFace[] }> }>;
   /** The shop kinds that have cases. */
   kinds: Array<{ slug: string; title: string; cases: number }>;
   totals: { situations: number; cases: number; countries: number };
@@ -106,9 +130,12 @@ export interface SituationPage {
   category: { key: string; title: string };
   title: string;
   dek: string;
-  groups: Array<{ key: string; title: string; line: string; cases: CaseCard[] }>;
+  /** A few sentences on the situation's usual causes and practices; null until a grouping is stored. */
+  overview: string | null;
+  groups: Array<{ key: string; title: string; line: string; cases: CaseCard[]; methods: MethodCard[] }>;
   /** Placed in the situation without a group. */
   others: CaseCard[];
+  otherMethods: MethodCard[];
   metrics: { cases: number; countries: number; updatedAt: string | null };
 }
 
@@ -120,6 +147,8 @@ export interface CasePage {
   situations: Array<{ slug: string; title: string; group: string | null }>;
   /** The shop's page, when the shop has more cases than this one. */
   shop: { key: string; cases: number } | null;
+  /** The item's AI 导读 (its summary) and 收录理由, read before the story. */
+  brief: { summary: string | null; reason: string | null };
 }
 
 export interface KindPage {

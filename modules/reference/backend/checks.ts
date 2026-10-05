@@ -82,7 +82,7 @@ export function unfoundNumbers(text: string, source: Set<string>): string[] {
  * Words a reader must not meet: the site's list (industry/wording.ts, also read when items are written), and
  * two of a story's own (HANDOFF §3.1). Each with what to write instead, for the next try.
  */
-const WORDING: ReadonlyArray<readonly [RegExp, string]> = [
+export const WORDING: ReadonlyArray<readonly [RegExp, string]> = [
   ...READER_WORDING,
   [/先看|(?<!不)再看(?!重)|首先|其次|第一步|第二步/u, "不用说明顺序的词"],
   [/原价率|原価率/u, "写成“食材成本率”"],

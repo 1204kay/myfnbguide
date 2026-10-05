@@ -1,10 +1,12 @@
 // The reference library's backend: a schedule finds selected items without a case and queues them, the
-// queue writes each case (backend/write.ts), and the api answers the pages (backend/read.ts).
+// queue writes each case (backend/write.ts); another groups each situation's stories by practice once they
+// change (backend/methods.ts); and the api answers the pages (backend/read.ts).
 import { readFileSync } from "node:fs";
 import { config } from "@aihot/backend/config";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
-import { readCase, readHome, readKind, readShop, readSituation, readStatus } from "./backend/read.ts";
+import { membersBySituation, readCase, readHome, readKind, readShop, readSituation, readStatus } from "./backend/read.ts";
+import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
 const CASES = defineQueue<{ articleId: string }>({
@@ -12,6 +14,14 @@ const CASES = defineQueue<{ articleId: string }>({
   options: { policy: "short", retryLimit: 3, retryDelay: 120, retryBackoff: true, expireInSeconds: 900 },
   worker: { localConcurrency: 2, pollingIntervalSeconds: 5 },
   run: ({ articleId }) => writeCase(articleId),
+});
+
+const METHODS = defineQueue<{ slug: string }>({
+  name: "reference.methods",
+  options: { policy: "short", retryLimit: 2, retryDelay: 300, retryBackoff: true, expireInSeconds: 900 },
+  worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
+  // The stories as they are when the job runs, not when it was queued.
+  run: async ({ slug }) => groupSituation(slug, (await membersBySituation()).get(slug) ?? []),
 });
 
 /**
@@ -28,8 +38,9 @@ export default defineServerModule({
   name: "reference",
   models: {
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
+    [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
   },
-  queues: [CASES],
+  queues: [CASES, METHODS],
   // The site's main page for readers, so llms.txt names it beside the engine's pages.
   llms: () => ({
     pages: [`- [参考](${config.siteUrl}/reference): 按老板遇到的事查找各地店家的做法和经验，也可以按店型浏览；每个故事附原文出处`],
@@ -42,6 +53,16 @@ export default defineServerModule({
       const ids = await articlesToWrite(30);
       for (const articleId of ids) await enqueueOn(CASES, { articleId }, { singletonKey: articleId });
       return { queued: ids.length };
+    },
+  }, {
+    // A situation is grouped again only when its stories changed: a few calls a day once the stories settle.
+    name: "reference.methods",
+    cron: "5,35 * * * *",
+    run: async () => {
+      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      const due = await situationsToGroup(await membersBySituation(), 10);
+      for (const [slug] of due) await enqueueOn(METHODS, { slug }, { singletonKey: slug });
+      return { queued: due.length };
     },
   }],
   http: (app) => {

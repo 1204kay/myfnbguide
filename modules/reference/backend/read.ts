@@ -4,7 +4,9 @@
 // one card a story where none is; who stands behind a practice or situation the program counts (tellerOf).
 // The country is the shop's, from the case; the source's own country is its first source tag. Neither the country
 // nor the shop's kind groups or counts anything here (layout J0): the library is too thin in both for now.
+import { HOT_FACE_LIMIT, type HotParticipant } from "@aihot/contracts/site";
 import { sql } from "@aihot/backend/db";
+import { proxiedImage, proxiedImageSet } from "@aihot/backend/media/imgproxy";
 import type { SitemapEntry } from "@aihot/backend/modules";
 import { publicSourceName } from "@aihot/backend/publication/rules";
 import { selectedCondition } from "@aihot/backend/publication/scope";
@@ -40,6 +42,7 @@ interface Row {
   source_id: string;
   source_name: string;
   source_tags: string[];
+  source_icon: string | null;
   title: string;
   summary: string | null;
   reason: string | null;
@@ -50,7 +53,7 @@ interface Row {
 async function shownCases(where: ReturnType<typeof sql>, now: Date): Promise<Row[]> {
   return sql<Row[]>`
     SELECT c.article_id AS id, c.story, c.situations, c.shop_key, c.created_at, c.updated_at, p.url, p.published_at, p.timeline_at, p.title,
-           p.summary, p.reason, p.score, s.id AS source_id, s.name AS source_name, s.tags AS source_tags
+           p.summary, p.reason, p.score, s.id AS source_id, s.name AS source_name, s.tags AS source_tags, s.icon_url AS source_icon
     FROM reference_cases c
     JOIN publications p ON p.article_id = c.article_id
     JOIN sources s ON s.id = p.source_id
@@ -245,12 +248,36 @@ function listOf(built: Built[], loose: Row[], shops: Map<string, ShopSeen>): Pra
   return { practices: built.filter((b) => told(b) >= 2).map((b) => b.card), shops: [...alone.values()], cases: oneAShop(loose).map((r) => card(r, shops)) };
 }
 
-/** A situation in a list: its count, and 代表做法, the practice its page lists first. */
+/**
+ * Who tells a situation, as the hot list's faces (publication/hot.ts): its sources by how many of its stories each
+ * tells, the first few with their icons through the image proxy (an initial stands in where a source has none).
+ */
+function facesOf(rows: Row[]): HotParticipant[] {
+  const bySource = new Map<string, { name: string; icon: string | null; n: number }>();
+  for (const r of rows) {
+    const seen = bySource.get(r.source_id) ?? { name: publicSourceName(r.source_name), icon: r.source_icon, n: 0 };
+    seen.n += 1;
+    bySource.set(r.source_id, seen);
+  }
+  return [...bySource.values()].sort((a, b) => b.n - a.n || Number(!!b.icon) - Number(!!a.icon)).map((s, i) => {
+    const face: HotParticipant = { name: s.name, kind: "editorial" };
+    if (i < HOT_FACE_LIMIT) {
+      face.iconUrl = proxiedImage(s.icon, "avatar");
+      const srcSet = proxiedImageSet(s.icon, "avatar");
+      if (srcSet) face.iconSrcSet = srcSet;
+    }
+    return face;
+  });
+}
+
+/** A situation in a list: its count, 代表做法 (the practice its page lists first) and who tells it. */
 function situationRow(situation: Situation, rows: Row[], stored: Stored | undefined): SituationRow {
+  const faces = facesOf(rows);
   return {
     slug: situation.slug, category: categoryTitle(situation.category)!, title: situation.title, dek: situation.dek,
     overview: stored?.overview ?? null, count: countOf(rows, !!stored),
     practice: stored ? (practices(rows, stored.methods, situation, new Map()).built[0]?.card.title ?? null) : null,
+    faces, sources: faces.length,
   };
 }
 

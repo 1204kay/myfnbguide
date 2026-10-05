@@ -93,7 +93,7 @@ export function navName(to: string): string {
 
 /**
  * The sidebar. By default the engine's sections with the modules' between 内容 and 更多, a module naming a
- * section that is already there adding to it; or the groups the site lists, untitled (NAV.sidebar). The site
+ * section that is already there adding to it (first where it leads to the home page); or the groups the site lists, untitled (NAV.sidebar). The site
  * may hide some and rename others (NAV).
  */
 export function sidebar(): Array<{ title: string | null; items: NavItem[] }> {
@@ -109,7 +109,8 @@ export function sidebar(): Array<{ title: string | null; items: NavItem[] }> {
     if (!m.sidebar) continue;
     const items = moduleItems(m.sidebar.items);
     const section = sections.find((s) => s.title === m.sidebar!.section);
-    if (section) section.items.push(...items);
+    // The way in to the page the site shows at / (NAV.home) leads its section, as 精选 leads 内容 by default.
+    if (section) section.items[items.some((i) => i.to === "/") ? "unshift" : "push"](...items);
     else sections.push({ title: m.sidebar.section, items });
   }
   return [...sections, more]

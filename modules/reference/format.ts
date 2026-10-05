@@ -22,10 +22,17 @@ export function tellers(c: Count): Array<[number, string]> {
 export const tellersText = (c: Count) => tellers(c).map(([n, unit]) => `${num(n)} ${unit}`).join(" · ");
 
 /**
- * What a situation counts in a list (layout J3-5): its shops once its stories are grouped by practice, its 条原文
- * before (or where no shop tells it). No practices, insiders or countries.
+ * What a situation counts in its big number in a list: its shops, which rank it, or its 条原文 where no shop tells
+ * it. The rest of its count stands beside (restCountText): every count shows (the owner, 10/6: "要展示所有").
  */
-export const listCount = (c: Count): [number, string] => (c.grouped && c.shops ? [c.shops, "家店"] : [c.cases, "条原文"]);
+export const listCount = (c: Count): [number, string] => (c.shops ? [c.shops, "家店"] : [c.cases, "条原文"]);
+
+/** What a list shows beside its big number (listCount): "1 位业内人士 · 26 条原文". */
+export const restCountText = (c: Count) =>
+  [...(c.insiders ? [`${num(c.insiders)} 位业内人士`] : []), ...(c.shops ? [`${num(c.cases)} 条原文`] : [])].join(" · ");
+
+/** A situation's whole count on a line: "16 家店 · 1 位业内人士 · 26 条原文". */
+export const fullCountText = (c: Count) => [...tellers(c).map(([n, unit]) => `${num(n)} ${unit}`), `${num(c.cases)} 条原文`].join(" · ");
 
 /** "16 家店", "13 条原文". */
 export const listCountText = (c: Count) => {

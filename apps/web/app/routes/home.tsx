@@ -8,7 +8,7 @@ import { filterParams, itemListLd, listPath, pageMeta, readFilters, siteLd } fro
 import { READ_COLUMN, type Screen } from "../components/shell/screens";
 import { Timeline } from "../features/feed/Timeline";
 import { HotTopics } from "../features/feed/HotTopics";
-import { ActiveFilters, CategoryTabs, FeedBar, FeedHead, SearchField, SHELL } from "../features/feed/Filters";
+import { ActiveFilters, CategoryTabs, FeedBar, FeedHead, PHONE_ROW, PhoneFilterRow, SearchField, SHELL } from "../features/feed/Filters";
 import { feedPath, navName, navShown } from "../components/shell/nav";
 
 /** What the navigation calls this page (site.ts NAV.labels), 精选 by default. */
@@ -57,6 +57,7 @@ export default function Home() {
         <>
           {/* Phones: the bar (精选 | 全部, filter, search), the filter in use, today's hot topics, the feed. */}
           <FeedBar base={feedPath()} category={filters.category} channel={filters.channel} />
+          {PHONE_ROW && <PhoneFilterRow base={feedPath()} category={filters.category} channel={filters.channel} layoutId="featured-cat-phone" className="pb-3 pt-1" />}
           <ActiveFilters base={feedPath()} category={filters.category} channel={filters.channel} tag={filters.tag} />
           <div className="hidden lg:block">
             <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">{title}</h1>

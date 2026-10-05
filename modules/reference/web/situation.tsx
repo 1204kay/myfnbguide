@@ -6,14 +6,15 @@ import type { ReactNode } from "react";
 import { Link, useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
 import { BackRow, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
+import { AsideCard, ReadingLayout } from "@aihot/web/components/ui/Page";
 import { IconShare } from "@aihot/web/components/icons";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { PracticeList, SituationPage } from "../types.ts";
 import { GroupDrawing, SituationFigure } from "./figures";
-import { num, tellers } from "../format.ts";
-import { BODY, Dek, Heading, KICKER_LINK, Metrics, Page, Practice, ROW_BUTTON, ShareBar, ShopRows, SiteLine, StoryCards, Title, Updated, useShare } from "./ui";
+import { day, num, tellers } from "../format.ts";
+import { BODY, Dek, Heading, KICKER_LINK, MEASURE, Metrics, Practice, ROW_BUTTON, ShareBar, ShopRows, SiteLine, StoryCards, Title, Updated, useShare } from "./ui";
 
 export const handle: Screen = { tab: "reference", toolbar: true };
 
@@ -39,8 +40,29 @@ export default function SituationRoute() {
   const titles = s.causes.map((g) => g.title);
   const rest = s.rest.practices.length || s.rest.shops.length || s.rest.cases.length ? s.rest : null;
   const who = tellers(s.count).map(([n, unit]) => `${num(n)} ${unit}`).join("和 ");
+  // Desktops: the engine's reading template, the page and an aside of cards (as 更新日志 and 反馈 have it): what the
+  // page counts, when it was updated and the share button, and how its words were written.
+  const aside = (
+    <div className="hidden space-y-4 lg:block">
+      <AsideCard title="这种情况">
+        <div className="grid gap-1.5">
+          {[...tellers(s.count), [s.count.cases, "条原文"] as [number, string]].map(([n, unit]) => (
+            <div key={unit} className="text-[13px] text-ink-4"><b className="num mr-1 text-[22px] font-extrabold tracking-tight text-ink">{num(n)}</b>{unit}</div>
+          ))}
+        </div>
+        {s.updatedAt && <p className="mt-3 border-t border-line-soft pt-3 text-[12.5px] text-ink-4">更新于 {day(s.updatedAt)}</p>}
+        <button type="button" onClick={onShare} className={`${ROW_BUTTON} mt-3 w-full justify-center`}><IconShare size={16} />分享</button>
+      </AsideCard>
+      {s.overview && (
+        <AsideCard title="关于这一页">
+          <p className="text-[13px] leading-relaxed text-ink-3">做法和归纳由 AI 根据本页 {who}的原文整理，各家的做法以原文为准；每一条都附原文出处。</p>
+          <Link to="/feedback" className="mt-2 inline-flex min-h-9 items-center text-[13px] font-semibold text-accent hover:text-accent-ink">发现不对，去反馈 ›</Link>
+        </AsideCard>
+      )}
+    </div>
+  );
   return (
-    <Page>
+    <ReadingLayout aside={aside}>
       <PhoneBar back={{ to: "/", label: "参考" }} title={s.title} />
       <div className="hidden items-center justify-between lg:flex">
         <BackRow to="/" label="参考" />
@@ -49,11 +71,12 @@ export default function SituationRoute() {
       <Link to={`/#${s.category.key}`} className={KICKER_LINK}><Kicker>{s.category.title}</Kicker></Link>
       <Title>{s.title}</Title>
       <Dek>{s.dek}</Dek>
-      <Metrics items={[...tellers(s.count), [s.count.cases, "条原文"]]} />
+      {/* Desktops have the figures in the aside. */}
+      <div className="lg:hidden"><Metrics items={[...tellers(s.count), [s.count.cases, "条原文"]]} /></div>
       {s.overview && (
         <section className="mt-8">
           <Kicker>先了解这种情况</Kicker>
-          <p className={`mt-3 ${BODY}`}>{s.overview}</p>
+          <p className={`mt-3 ${BODY} ${MEASURE}`}>{s.overview}</p>
           <p className="mt-2 text-[13px] leading-[1.5] text-ink-4">AI 根据本页 {who}的原文归纳，各家的做法以原文为准。</p>
         </section>
       )}
@@ -101,7 +124,7 @@ export default function SituationRoute() {
       <SiteLine situations={s.situations} />
       <ShareBar onShare={onShare} />
       {toast}
-    </Page>
+    </ReadingLayout>
   );
 }
 

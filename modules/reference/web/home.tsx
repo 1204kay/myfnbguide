@@ -15,7 +15,7 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import { day } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
 import { figureKind, SituationDrawing } from "./figures";
-import { CARD, CountFigure, Dek, Heading, Metrics, openRest, Page, RANK, SituationRows, STRETCH, Updated } from "./ui";
+import { CARD, CountFigure, Dek, Heading, Metrics, openRest, Page, RANK, SituationRows, STRETCH, Updated, Who } from "./ui";
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
@@ -58,6 +58,7 @@ function Lead({ s, recent }: { s: SituationRow; recent: ReferenceHome["recent"] 
           <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
         </h3>
         <p className="mt-2 line-clamp-3 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{s.overview ?? s.dek}</p>
+        <div className="mt-3"><Who s={s} size={24} /></div>
       </div>
       <div className="mx-auto mt-4 w-full max-w-[360px] empty:hidden [&_svg]:max-h-[200px] xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:ml-6 xl:mt-0 xl:w-[260px] xl:self-center">
         <SituationDrawing slug={s.slug} />
@@ -84,7 +85,7 @@ function Runner({ s, rank }: { s: SituationRow; rank: number }) {
         <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
       </h3>
       <p className="mt-1 line-clamp-2 text-[14px] leading-[1.6] text-ink-3">{s.practice ?? s.dek}</p>
-      <div className="mt-auto pt-3 text-right"><CountFigure count={s.count} size={22} /></div>
+      <div className="mt-auto flex items-end justify-between gap-3 pt-3"><Who s={s} /><CountFigure count={s.count} size={22} /></div>
     </article>
   );
 }

@@ -62,6 +62,26 @@ function filterKey(category: CategoryKey | null, channel: ChannelKey): string {
   return channel === "firstParty" ? "firstParty" : (category ?? "all");
 }
 
+/** Phones show the desktop's row of filter tabs, sliding sideways, instead of a filter button and a sheet (site.ts FEED.phoneFilter). */
+export const PHONE_ROW = FEED.phoneFilter === "row";
+
+/**
+ * Phones (PHONE_ROW): the desktop's row of filter tabs, running to the screen's edges while it slides and starting in line
+ * with the page; the option in use, which may sit past the edge, is brought into view.
+ */
+export function PhoneFilterRow({ base, category, channel, layoutId, className = "" }: { base: string; category: CategoryKey | null; channel: ChannelKey; layoutId: string; className?: string }) {
+  const row = useRef<HTMLDivElement>(null);
+  const active = filterKey(category, channel);
+  useEffect(() => {
+    row.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [active]);
+  return (
+    <div ref={row} className={`-mx-4 sm:-mx-6 lg:hidden ${className}`}>
+      <CategoryTabs base={base} category={category} channel={channel} layoutId={layoutId} className="px-4 sm:px-6" />
+    </div>
+  );
+}
+
 /** Desktop: the filter as a row of tabs. Its first option is 不限 where 精选 | 全部 shares the page (SHELL), so 全部 means one thing. */
 export function CategoryTabs({ base, category, channel = "all", layoutId, className = "" }: { base: string; category: CategoryKey | null; channel?: ChannelKey; layoutId: string; className?: string }) {
   const [params] = useSearchParams();
@@ -88,7 +108,8 @@ function ScopeSwitch({ scope, size, layoutId }: { scope: "featured" | "all"; siz
 
 /**
  * The phone bar of 精选 and 全部 while they keep their own search: the brand, the 精选 | 全部 switch (where the list
- * starts at 全部, site.ts FEED.start, the page's name instead), and buttons for the filter sheet and search.
+ * starts at 全部, site.ts FEED.start, the page's name in the bar; its heading is the desktop's), and buttons for the filter sheet (none where the page
+ * shows the filter as a row, PHONE_ROW) and search.
  */
 export function FeedBar({ base, category, channel }: { base: string; category: CategoryKey | null; channel: ChannelKey }) {
   const [sheet, setSheet] = useState(false);
@@ -101,18 +122,20 @@ export function FeedBar({ base, category, channel }: { base: string; category: C
             <Wordmark size={17} />
           </Link>
         }
-        {...(FEED.start === "featured" ? { center: <ScopeSwitch scope={base === "/all" ? "all" : "featured"} size="sm" layoutId="feed-scope" /> } : { title: navName(base), large: true })}
+        {...(FEED.start === "featured" ? { center: <ScopeSwitch scope={base === "/all" ? "all" : "featured"} size="sm" layoutId="feed-scope" /> } : { title: navName(base) })}
         actions={
           <>
-            <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
-              <IconFilter size={21} />
-              {filtered && <span aria-hidden="true" className="absolute right-[9px] top-[9px] size-[7px] rounded-full bg-accent ring-2 ring-bg" />}
-            </BarButton>
+            {!PHONE_ROW && (
+              <BarButton label={filtered ? "筛选（已选）" : "筛选"} on={filtered} onClick={() => setSheet(true)}>
+                <IconFilter size={21} />
+                {filtered && <span aria-hidden="true" className="absolute right-[9px] top-[9px] size-[7px] rounded-full bg-accent ring-2 ring-bg" />}
+              </BarButton>
+            )}
             <SearchButton />
           </>
         }
       />
-      <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={filterKey(category, channel)} />
+      {!PHONE_ROW && <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={filterKey(category, channel)} />}
     </>
   );
 }
@@ -120,8 +143,9 @@ export function FeedBar({ base, category, channel }: { base: string; category: C
 /**
  * The head of 精选 and 全部 when the shell carries search (SHELL): the tab pages' bar on phones; then, the same on
  * phones and desktops, the page's name with 精选 | 全部 beside it (none where the list starts at 全部, site.ts
- * FEED.start), the list's one sentence (site.ts FEED.leads), and the filter: a button and the chips in use on
- * phones, a row of tabs on desktops, the tag in use as a chip on both.
+ * FEED.start), the list's one sentence (site.ts FEED.leads), and the filter: on phones a button and the chips in use,
+ * or the desktop's row of tabs sliding sideways (site.ts FEED.phoneFilter); a row of tabs on desktops; the tag in use
+ * as a chip on both.
  */
 export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; name: string; filters: TimelineFilters }) {
   const { category, channel, tag } = filters;
@@ -129,6 +153,7 @@ export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; 
   const [sheet, setSheet] = useState(false);
   const active = filterKey(category, channel);
   const lead = FEED.leads?.[scope];
+  const row = PHONE_ROW;
   return (
     <>
       <TabPageBar title={name} />
@@ -138,6 +163,16 @@ export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; 
           {FEED.start === "featured" && <ScopeSwitch scope={scope} layoutId="feed-scope" />}
         </div>
         {lead && <p className="mt-2 text-[13px] leading-relaxed text-ink-4">{lead}</p>}
+        {row ? (
+          <div className="mt-3 lg:hidden">
+            <PhoneFilterRow base={base} category={category} channel={channel} layoutId={`${scope}-cat-phone`} />
+            {tag && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                <FilterChips base={base} category={null} channel="all" tag={tag} />
+              </div>
+            )}
+          </div>
+        ) : (
         <div className="mt-3 flex flex-wrap items-center gap-2 lg:hidden">
           <button
             type="button"
@@ -151,12 +186,13 @@ export function FeedHead({ scope, name, filters }: { scope: "featured" | "all"; 
           </button>
           <FilterChips base={base} category={category} channel={channel} tag={tag} />
         </div>
+        )}
         <div className="mt-4 hidden flex-wrap items-center gap-2 lg:flex">
           <CategoryTabs base={base} category={category} channel={channel} layoutId={`${scope}-cat-desk`} className="min-w-0" />
           <FilterChips base={base} category={null} channel="all" tag={tag} />
         </div>
       </header>
-      <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={active} />
+      {!row && <FilterSheet open={sheet} onClose={() => setSheet(false)} base={base} active={active} />}
     </>
   );
 }
@@ -213,6 +249,8 @@ function FilterChips({ base, category, channel, tag }: { base: string; category:
 
 /** The filter and tag in use as chips under the bar: phones only, or on both while the tag page shows them (`wide`). */
 export function ActiveFilters({ base, category, channel, tag, wide = false }: { base: string; category: CategoryKey | null; channel: ChannelKey; tag: string | null; wide?: boolean }) {
+  // On phones with the filter row (PHONE_ROW) the category in use shows there, so only the tag is a chip.
+  if (PHONE_ROW && !wide) [category, channel] = [null, "all"];
   if (!filterName(category, channel) && !tag) return null;
   return (
     <div className={`flex flex-wrap gap-2 pb-3 pt-1 ${wide ? "" : "lg:hidden"}`}>

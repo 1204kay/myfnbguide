@@ -29,7 +29,7 @@ import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untr
 import { articlesToWrite, readOutput, shopNameKey, writeCase } from "../backend/write.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
-import { day, listCountText, spaced, tellersText } from "../format.ts";
+import { day, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
 import type { CaseStory, Count, Shop, SituationRow } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
@@ -70,18 +70,22 @@ test("what readers read is spaced between Chinese and digits or Latin, and dated
 
 const count = (over: Partial<Count>): Count => ({ grouped: false, shops: 0, insiders: 0, cases: 0, ...over });
 
-test("a list counts shops once the stories are grouped and 条原文 before; a practice names its insiders; nothing counts countries or practices", () => {
+test("a list's big number is its shops, or 条原文 where no shop tells it, with the rest of its count beside; a practice names its insiders; nothing counts countries or practices", () => {
   assert.equal(listCountText(count({ grouped: true, shops: 16, insiders: 1, cases: 40 })), "16 家店");
-  assert.equal(listCountText(count({ shops: 9, cases: 13 })), "13 条原文", "not grouped yet");
+  assert.equal(listCountText(count({ shops: 9, cases: 13 })), "9 家店", "grouped or not, the shops rank it");
   assert.equal(listCountText(count({ grouped: true, insiders: 2, cases: 2 })), "2 条原文", "no shop tells it");
   assert.equal(listCountText(count({ grouped: true, shops: 1200, cases: 1500 })), "1,200 家店");
+  assert.equal(restCountText(count({ shops: 16, insiders: 1, cases: 26 })), "1 位业内人士 · 26 条原文");
+  assert.equal(restCountText(count({ shops: 8, cases: 9 })), "9 条原文");
+  assert.equal(restCountText(count({ insiders: 2, cases: 2 })), "2 位业内人士", "its 条原文 is the big number");
+  assert.equal(fullCountText(count({ shops: 16, insiders: 1, cases: 26 })), "16 家店 · 1 位业内人士 · 26 条原文");
   assert.equal(tellersText(count({ grouped: true, shops: 2, insiders: 1, cases: 4 })), "2 家店 · 1 位业内人士");
   assert.equal(tellersText(count({ grouped: true, shops: 3, cases: 3 })), "3 家店");
 });
 
 test("店家谈得最多的事 ranks situations by shops, then stories, then the library's order, ten at most", () => {
   const row = (slug: string, shops: number, cases: number, insiders = 0): SituationRow =>
-    ({ slug, category: "成本与利润", title: slug, dek: "", overview: null, count: count({ grouped: true, shops, cases, insiders }), practice: null });
+    ({ slug, category: "成本与利润", title: slug, dek: "", overview: null, count: count({ grouped: true, shops, cases, insiders }), practice: null, faces: [], sources: 0 });
   const rows = [row("a", 3, 10), row("b", 5, 5), row("c", 5, 6), row("d", 1, 20, 9), row("e", 2, 2), row("f", 2, 2), row("g", 4, 4),
     row("h", 1, 3), row("i", 1, 2), row("j", 0, 2), row("k", 0, 4), row("l", 2, 1)];
   assert.deepEqual(rankSituations(rows).map((r) => r.slug), ["c", "b", "g", "a", "e", "f", "l", "d", "h", "i"],

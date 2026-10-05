@@ -130,27 +130,23 @@ export const NAV = {
    * 电脑侧栏的入口，一组一个数组，写路径，按这里的顺序：组和组之间一条细线，不写组名；第一组是带图标的主入口，
    * 其余各组是不带图标的次入口。null 是默认：引擎的“内容”“更多”两组，模块的入口在两组之间，带组名。
    */
-  sidebar: [["/", "/all", "/daily", "/starred"], ["/about", "/changelog", "/feedback"]] as string[][] | null,
+  sidebar: null as string[][] | null,
   /** 侧栏最下面的一行小字链接，写路径（选填）。 */
-  sidebarFoot: ["/terms", "/privacy", "/agent"] as string[],
+  sidebarFoot: [] as string[],
   /**
    * 搜索放在哪：pages 是默认，精选和全部动态两页各有自己的搜索框；shell 是由外壳统一提供：电脑侧栏 Logo 下面一个
    * 搜索框（点按或按“/”打开），手机上底栏各页的顶栏左边是 Logo、右边是放大镜，电脑上的搜索层是屏幕上方的对话框。
    */
-  search: "shell" as "pages" | "shell",
+  search: "pages" as "pages" | "shell",
   /** 外观切换写文字（浅色｜深色｜跟随系统）；false 是默认的三个图标。 */
-  themeText: true,
+  themeText: false,
   /** 更新日志有新条目时，侧栏、底栏的“我的”和“我的”页上亮红点（默认 true）。 */
-  changelogDot: false,
+  changelogDot: true,
   /**
    * “我的”页的分组：每组一个小标题（null 不写）和几行，行写路径，"theme" 是外观切换；电脑上也是一栏。
    * null 是默认：收藏与外观、工具与入口、关于三组，页底一行小字链接（含 RSS），电脑上分栏。
    */
-  meGroups: [
-    { title: null, rows: ["/starred", "theme"] },
-    { title: "关于本站", rows: ["/about", "/changelog", "/feedback", "/terms", "/privacy"] },
-    { title: "给开发者", rows: ["/agent"] },
-  ] as Array<{ title: string | null; rows: string[] }> | null,
+  meGroups: null as Array<{ title: string | null; rows: string[] }> | null,
   /** 侧栏、“我的”页、搜索层和精选页不显示的入口，写路径（例如 "/hot" 也去掉精选页的当前热点，MCP 不提供热点榜、热点事件两个工具，Agent 接入页不列热点的工具和接口）；"/all" 不显示时，全部动态的页面点亮精选的入口。 */
   hidden: ["/hot", "/topics"] as string[],
   /** 精选和全部动态的筛选里有没有“一手”（官方一手发布）。 */
@@ -164,13 +160,14 @@ export const LAYOUT = {
   /**
    * 电脑上（宽度 ≥ 961px）阅读页的正文栏宽度（px），在主区里居中，不设右栏：情况页、故事页、条目页、店家页、收藏、我的、日报合订本；
    * 没设 lists 时，列表与目录页也用它。null 是默认：各页用框架自己的宽度（列表铺满，条目页三栏）。
+   * 本站 10/6 改回 null（用户：宽屏上两边空着，「看着变扭」「看起来很小气」，关于、更新日志、反馈这几页框架原来的版式「看着就不错」）。
    */
-  column: 760 as number | null,
+  column: null as number | null,
   /**
    * 电脑上列表与目录页（参考首页、资讯及搜索和标签结果，紧凑版的日报、周报、月报）的内容最大宽度（px）：在主区里铺满，超过这个宽度居中；
    * 宽出来的空间用来加栏（前几名并排、日期栏、报纸两栏），不拉长每一行。null 是默认：这些页面也用 column。
    */
-  lists: 1200 as number | null,
+  lists: null as number | null,
   /** 641–960px（平板竖屏、折叠屏、手机横屏）的各页随屏幕铺开，两侧各留 24px（column、lists 只在电脑上限宽），顶栏和底栏的内容与正文对齐；false 是默认（640px 栏居中）。 */
   fluid: true,
 };
@@ -181,14 +178,16 @@ export const FEED = {
    * 列表的样子：timeline 是默认（电脑上是时间轴旁的卡片，手机上是无框的行，按天分组）；cards 是手机和电脑同一种带边框的卡
    * （来源行、标题、摘要、收录理由），不显示时刻、分类和标签，精选平铺、日期写在卡上，全部按天分组。
    */
-  style: "cards" as "timeline" | "cards",
+  style: "timeline" as "timeline" | "cards",
   /** 页头标题下面的一句说明，精选和全部各一句；null 是默认（不写）。 */
-  leads: {
-    featured: "入选的条目，按时间排列，每条附收录理由；日报从中挑出一部分编成一期。",
-    all: "收集到的全部条目，按时间排列；标有「精选」的条目已入选，并附收录理由。",
-  } as null | { featured: string; all: string },
+  leads: null as null | { featured: string; all: string },
   /** 分类筛选上写什么：label 是默认（行业包里分类的 label）；section 是日报里的分节名。 */
   filterNames: "section" as "label" | "section",
+  /**
+   * 手机上的分类筛选（页面自带搜索、NAV.search 为 shell 时）：sheet 是默认（一个「筛选」按钮，点开是选项面板）；row 是和电脑
+   * 一样的一排选项，直接列出，放不下时左右滑动。
+   */
+  phoneFilter: "row" as "sheet" | "row",
   /**
    * 列表入口（底栏、侧栏的那一格）打开哪一种：featured 是默认（精选，页头有「精选｜全部」切换）；all 是收集到的全部条目，
    * 没有切换，入选的条目带「精选」标记和收录理由，精选列表的地址 301 到全部。
@@ -201,7 +200,7 @@ export const DATES = {
   /** 数字与汉字之间加空格（“10 月 5 日”），星期写“周日”；更新日志的日期标题也照这样写，今年的不写年份。false 是默认（“10月5日”，更新日志写完整日期）。 */
   spaced: true,
   /** 读者页面显示时刻（列表上的 10:59、搜索结果的“更新于 06:41”、收藏时间、更新日志每条的时刻）；false 只写到日（默认 true）。 */
-  clock: false,
+  clock: true,
 };
 
 /** 搜索的几处说法。 */
@@ -237,9 +236,9 @@ export const ITEM_COPY = {
   /** 读者在网页和分享图上看不看得到 AI 评分。只管显示：公开 API 和 MCP 的数据照样带 score，后台照常显示。 */
   showScore: false,
   /** 条目页的标签前面写不写“#”（默认 true）。 */
-  tagHash: false,
+  tagHash: true,
   /** 条目页显示不显示分类标签（每条的第一个标签，例如“行业动态”）（默认 true）。 */
-  categoryTags: false,
+  categoryTags: true,
   /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。 */
   sourceWord: "来源",
 };
@@ -332,7 +331,7 @@ export const REPORTS = {
    * 只有一期时不显示，写日期不写“今天”；报纸放进列表页的宽度（LAYOUT.lists，没设时 LAYOUT.column）；报头上方只留一行日期和期数，不印“每日要闻”这类刊头语、
    * 出刊时间和报头旁的期号日期框；日报合订本用普通标题，按月一张卡片、一期一行。false 是默认。
    */
-  compact: true,
+  compact: false,
   /**
    * 日报收哪些条目：`"selected"`（默认）只收入选的；`"pool"` 收这一天进站、公开、列在「全部」里的每一条（过了相关性预筛、
    * 不是回补），一件事只算一条，按重要程度排（评分、当天讨论它的独立来源数、一手发布）：前面写全，其余是简讯。

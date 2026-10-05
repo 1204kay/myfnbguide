@@ -4,12 +4,12 @@
 //   ① 横向滚动：页面比视口宽就算（scrollWidth > clientWidth）。
 //   ② 最小字号：可见文字不小于 12px（底栏文字 10.5px 例外，A6）；图里的文字实际不小于 11px，宽度 ≥ 961 时不大于 17px（B2）。
 //   ③ 触屏点按区：触屏（hover: none）上可点的东西不小于 44×44px，段落里的行内链接除外（A9）；铺满整张卡的链接按卡片量。
-//   ④ 版心宽度（J2）：手机不宽于屏宽减 32，641–960 不宽于屏宽减 48；≥ 961 时列表页（参考首页、资讯、搜索、日报）不宽于 1,200，
-//      阅读页（情况、故事、店家、条目、收藏、我的、日报合订本）不宽于 760。
+//   ④ 版心宽度：手机不宽于屏宽减 32，641–960 不宽于屏宽减 48；≥ 961 用框架原来的宽度（10/6 用户：尽可能保持原版，site.ts
+//      LAYOUT 的 column、lists 为 null：列表页铺满主区，阅读页铺满 16:9 的屏幕，正文自己保持阅读宽度），不设上限。
 //   ⑤ 主路径左边缘（J2）：同一尺寸下同一类页面的左边缘相同；≥ 961 时列表页和阅读页各比各的（两类的宽度不同、左边缘不同是有意的），
 //      ≤ 960 时全部主路径页一起比（说明类页面和打不开的页不比）。
-//   ⑥ 正文每行字数：40 字以上的段落每行不超过 46 个汉字的宽度（760 栏、17px 约 44 字）；列表页的卡片放宽到 80 字（1,200 栏里
-//      14px 的收录理由约 79 字，和 AIHOT 相同，10/6 定为不改）；里面是块的列表项（卡片）不算段落。
+//   ⑥ 正文每行字数：阅读页 40 字以上的段落每行不超过 46 个汉字的宽度（760 栏、17px 约 44 字）；列表页的卡片随屏幕变宽，
+//      每行最多 80 字（卡片里的摘要和收录理由在 80 字处折行）；里面是块的列表项（卡片）不算段落。
 //   ⑦ 图中文字出界（J10）：图里的文字超出图框（会被裁掉）。
 // 结果和同目录的 baseline.json 比：基线里没有的问题、版心宽度或左边缘和基线差 2px 以上的，都算新问题，打印出来并以 1 退出；
 // 基线里已有的问题只列出来。版面是有意改的（例如第 2–4 包上线以后），看过截图确认无误再加 --write 重写基线。
@@ -238,7 +238,7 @@ function check(profile: Profile, spec: PageSpec, m: Metrics): Problem[] {
   if (m.figureOut.length) add("图中文字出界", `${m.figureOut.length} 处：${m.figureOut.slice(0, 4).join("、")}`);
   if (m.smallTargets.length) add("点按区", `${m.smallTargets.length} 个不足 44px：${m.smallTargets.slice(0, 6).join("、")}`);
   if (spec.reader && m.status === 200 && m.column) {
-    const limit = profile.width <= 640 ? profile.width - 32 : profile.width <= 960 ? profile.width - 48 : spec.list ? 1200 : 760;
+    const limit = profile.width <= 640 ? profile.width - 32 : profile.width <= 960 ? profile.width - 48 : Infinity;
     if (m.column.width > limit + 2) add("版心宽度", `${m.column.width}px，超过 ${limit}px`);
   }
   const perLine = spec.list ? 80 : 46;

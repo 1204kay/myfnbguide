@@ -28,6 +28,8 @@ const SHELL = NAV.search === "shell";
 const CARDS = FEED.style === "cards";
 /** The list starts at 全部 (FEED.start): there is no featured list page, and no 精选 | 全部. */
 const ALL_FIRST = FEED.start === "all";
+/** Phones show the desktop's row of filter tabs, sliding sideways, instead of a button and a sheet (site.ts FEED.phoneFilter). */
+const PHONE_ROW = FEED.phoneFilter === "row";
 /** Where the list's way in leads, and what the site calls it. */
 const LIST = ALL_FIRST ? "/all" : feedPath();
 const NAME = NAV.labels[LIST] ?? (ALL_FIRST ? subjectAfter("全部", "动态") : "精选");
@@ -142,7 +144,8 @@ test("the two lists share one head on phones and desktops: the name with 精选 
     assert.deepEqual(scopes, [["精选", feedPath()], ["全部", "/all"]], path);
     assert.equal($('main nav[aria-label="看精选或全部"]').length, 1, `${path}: one switch for phones and desktops`);
     if (FEED.leads) assert.ok($("main").text().includes(FEED.leads[scope]), `${path}: its lead`);
-    assert.deepEqual($('main nav[aria-label="筛选"] a').toArray().map((a) => $(a).text()), ["不限", ...names], path);
+    assert.equal($('main nav[aria-label="筛选"]').length, PHONE_ROW ? 2 : 1, `${path}: the row on desktops${PHONE_ROW ? " and on phones" : ""}`);
+    assert.deepEqual($('main nav[aria-label="筛选"]').first().find("a").toArray().map((a) => $(a).text()), ["不限", ...names], path);
     assert.equal($("main input[name=q]").length, 0, `${path}: no search field of its own`);
     const bar = $("header[data-phone-bar]").first();
     assert.equal(bar.find('a[href="/"]').length, 1, `${path}: the brand leads home`);
@@ -151,8 +154,8 @@ test("the two lists share one head on phones and desktops: the name with 精选 
   const filtered = await page(`${feedPath()}?category=tip`);
   assert.equal(filtered('link[rel="canonical"]').attr("href"), `${origin}${feedPath()}?category=tip`);
   if (feedPath() !== "/") assert.equal(filtered("title").text(), `${NAME} · ${SITE.name}`);
-  assert.equal(filtered('main nav[aria-label="筛选"] a[aria-current="page"]').text(), names[0]);
-  assert.ok(filtered("main").text().includes(`只看${names[0]}`), "the filter in use as a chip on phones");
+  assert.equal(filtered('main nav[aria-label="筛选"]').first().find('a[aria-current="page"]').text(), names[0]);
+  assert.equal(filtered("main").text().includes(`只看${names[0]}`), !PHONE_ROW, "the filter in use as a chip on phones, where they have no row");
 });
 
 test("全部 as the list has one head on phones and desktops: its name, its lead and the section filter from 不限, no 精选 | 全部; the shell carries search", { skip: (!SHELL && "search lives on the list pages") || (!ALL_FIRST && "the list starts at 精选") }, async () => {
@@ -162,15 +165,16 @@ test("全部 as the list has one head on phones and desktops: its name, its lead
   assert.equal($("title").text(), `${NAME} · ${SITE.name}`);
   assert.equal($('main nav[aria-label="看精选或全部"]').length, 0, "no 精选 | 全部");
   if (FEED.leads) assert.ok($("main").text().includes(FEED.leads.all), "its lead");
-  assert.deepEqual($('main nav[aria-label="筛选"] a').toArray().map((a) => $(a).text()), ["不限", ...names]);
+  assert.equal($('main nav[aria-label="筛选"]').length, PHONE_ROW ? 2 : 1, `the row on desktops${PHONE_ROW ? " and on phones" : ""}`);
+  assert.deepEqual($('main nav[aria-label="筛选"]').first().find("a").toArray().map((a) => $(a).text()), ["不限", ...names]);
   assert.equal($("main input[name=q]").length, 0, "no search field of its own");
   const bar = $("header[data-phone-bar]").first();
   assert.equal(bar.find('a[href="/"]').length, 1, "the brand leads home");
   assert.equal(bar.find('button[aria-label="搜索"]').length, 1, "search in the bar");
   const filtered = await page("/all?category=tip");
   assert.equal(filtered('link[rel="canonical"]').attr("href"), `${origin}/all?category=tip`);
-  assert.equal(filtered('main nav[aria-label="筛选"] a[aria-current="page"]').text(), names[0]);
-  assert.ok(filtered("main").text().includes(`只看${names[0]}`), "the filter in use as a chip on phones");
+  assert.equal(filtered('main nav[aria-label="筛选"]').first().find('a[aria-current="page"]').text(), names[0]);
+  assert.equal(filtered("main").text().includes(`只看${names[0]}`), !PHONE_ROW, "the filter in use as a chip on phones, where they have no row");
 });
 
 test("a search has its own heading, the items under their title with the count, the two sorts and their note", { skip: !SHELL && "search lives on the list pages" }, async () => {
@@ -205,7 +209,7 @@ test("touch screens get 44px switches, filters and bookmarks; the list pages sha
       const targets = {
         ...(ALL_FIRST ? {} : { scopes: await heights('main nav[aria-label="看精选或全部"] a') }),
         bookmarks: await heights('main article button[aria-label="收藏"]'),
-        filter: width < 961 ? await heights('main button[aria-label^="筛选"]') : await heights('main nav[aria-label="筛选"] a'),
+        filter: width < 961 && !PHONE_ROW ? await heights('main button[aria-label^="筛选"]') : await heights('main nav[aria-label="筛选"] a'),
       };
       for (const [name, list] of Object.entries(targets)) {
         assert.ok(list.length > 0, `${width}: ${name}`);
@@ -229,6 +233,28 @@ test("touch screens get 44px switches, filters and bookmarks; the list pages sha
     assert.ok(lists.every(([, left, width]) => left === lists[0]![1] && width === Math.min(LIST_WIDTH!, 1440 - 180 - 56)), JSON.stringify(lists));
     // The featured list lies flat: it has no column of days to put a wider page into.
     for (const path of ALL_FIRST ? ["/starred"] : ["/starred", LIST]) assert.equal((await box(path))[2], LAYOUT.column, path);
+  } finally {
+    await context.close();
+  }
+});
+
+test("on phones the filter is the desktop's row, sliding sideways to the screen's edges, the option in use in view", { skip: !(SHELL && PHONE_ROW) && "a filter button and a sheet" }, async () => {
+  const context = await chrome.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  try {
+    const tab = await context.newPage();
+    const last = CATEGORIES.at(-1)!.key;
+    await tab.goto(`${origin}/all?category=${last}`);
+    const row = tab.locator('main nav[aria-label="筛选"]').filter({ visible: true });
+    await expect(row).toHaveCount(1);
+    const box = await row.evaluate((nav) => {
+      const scroller = nav.parentElement!;
+      const on = nav.querySelector('[aria-current="page"]')!.getBoundingClientRect();
+      const r = scroller.getBoundingClientRect();
+      return { left: r.left, width: r.width, slides: scroller.scrollWidth > scroller.clientWidth, onLeft: on.left, onRight: on.right };
+    });
+    assert.deepEqual([box.left, box.width, box.slides], [0, 390, true], "the row runs to the screen's edges and slides");
+    assert.ok(box.onLeft >= 0 && box.onRight <= 390, `the option in use in view: ${JSON.stringify(box)}`);
+    assert.equal(await tab.locator('main button[aria-label^="筛选"]').count(), 0, "no filter button");
   } finally {
     await context.close();
   }
@@ -284,15 +310,18 @@ test("收藏: the note in one line, the cards with 精选, removal by the bookma
     assert.equal(await tab.title(), `收藏 · ${SITE.name}`);
     const cards = tab.locator("main li[data-card-key]");
     await expect(cards).toHaveCount(2);
-    await expect(cards.first().getByText("精选", { exact: true })).toBeVisible();
-    await expect(cards.first().getByText(`· ${DAY}`)).toBeVisible();
-    await expect(cards.nth(1).getByText("精选", { exact: true })).toHaveCount(0);
+    // The list cards mark 精选 and write the day (FEED.style "cards"); the engine's timeline rows show the AI score where the site does.
+    if (CARDS) {
+      await expect(cards.first().getByText("精选", { exact: true })).toBeVisible();
+      await expect(cards.first().getByText(`· ${DAY}`)).toBeVisible();
+      await expect(cards.nth(1).getByText("精选", { exact: true })).toHaveCount(0);
+    }
     const backup = tab.locator("main section").filter({ has: tab.getByRole("heading", { name: "备份" }) });
     await expect(backup.getByRole("button", { name: "导出收藏" })).toBeVisible();
     await expect(backup.getByRole("button", { name: "从文件导入" })).toBeVisible();
     await expect(backup.getByText(STARRED.backup!, { exact: true })).toBeVisible();
     const bookmark = cards.first().getByRole("button", { name: "取消收藏" });
-    assert.ok((await bookmark.evaluate((b) => b.getBoundingClientRect().height)) >= 44);
+    if (CARDS) assert.ok((await bookmark.evaluate((b) => b.getBoundingClientRect().height)) >= 44, "the cards' bookmark is 44px to tap");
     await cards.nth(1).getByRole("button", { name: "取消收藏" }).click();
     await bookmark.click();
     await expect(tab.getByText(STARRED.empty, { exact: true })).toBeVisible();

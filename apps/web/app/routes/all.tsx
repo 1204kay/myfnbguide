@@ -7,7 +7,7 @@ import { beijingTime } from "@aihot/contracts/time";
 import { apiGet, edgeTtl, loadOr404, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { filterParams, itemListLd, listPath, pageMeta, readFilters } from "../lib/seo";
-import { ActiveFilters, CategoryTabs, FeedBar, FeedHead, SearchField, SHELL, tagName } from "../features/feed/Filters";
+import { ActiveFilters, CategoryTabs, FeedBar, FeedHead, PHONE_ROW, PhoneFilterRow, SearchField, SHELL, tagName } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
 import { EmptyState } from "../components/ui/Page";
@@ -214,6 +214,7 @@ export default function AllPage() {
     <div className={`mx-auto pb-6 ${LIST_COLUMN}`}>
       {/* Phones: the feed bar, or for a search the query (tap to change it) and back to 全部. */}
       {f.q ? <PhoneBar back={{ to: "/all", label: BACK_NAME }} center={<QueryChip q={f.q} />} /> : <FeedBar base="/all" category={f.category} channel={f.channel} />}
+      {PHONE_ROW && !f.q && <PhoneFilterRow base="/all" category={f.category} channel={f.channel} layoutId="all-cat-phone" className="pb-3 pt-1" />}
       <ActiveFilters base="/all" category={f.category} channel={f.channel} tag={f.tag} />
 
       {/* Desktop, as on 精选: the title, then one filter row with the search field aligned on the right. */}

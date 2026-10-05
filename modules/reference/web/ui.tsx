@@ -1,7 +1,8 @@
 // The reference pages' parts, in the site's own look (warm white, hairline cards, the accent's short bar,
 // big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html,
 // and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): story cards, practice cards and rows,
-// and situations as compact rows, the same on phones and desktops. No source avatars (layout J3-6).
+// and situations as compact rows, the same on phones and desktops. Who tells a situation shows as the hot list shows
+// who talks about a story: its sources' faces and every count (the owner, 10/6).
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Link } from "react-router";
@@ -9,16 +10,19 @@ import { ITEM_COPY, SITE } from "@aihot/site";
 import { IconChevronRight, IconShare } from "@aihot/web/components/icons";
 import { LIST_COLUMN, READ_COLUMN } from "@aihot/web/components/shell/screens";
 import { StarButton } from "@aihot/web/features/feed/parts";
+import { Faces } from "@aihot/web/features/hot/Faces";
 import { siteUrl } from "@aihot/web/lib/seo";
-import { day, listCount, listCountText, num, tellersText } from "../format.ts";
+import { day, fullCountText, listCount, listCountText, num, restCountText, tellersText } from "../format.ts";
 import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
 
 /**
- * A reference page's column (site.ts LAYOUT): the reading width every page but the home page shares with the
- * site's main path; `wide`, the lists' width (the home page, layout J2), whose extra room goes to columns.
+ * A reference page's column (site.ts LAYOUT): `wide`, the lists' width (the home page), whose extra room goes to
+ * columns, filling the main area as the engine's lists do where the site sets none; else the reading width, 760px
+ * where the site sets none. The situation and story pages lay themselves out in the engine's reading templates
+ * instead (components/ui/Page.tsx ReadingLayout, ArticleLayout), as the engine's own pages do.
  */
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <div className={`mx-auto pb-14 ${(wide ? LIST_COLUMN : READ_COLUMN) || "lg:max-w-[760px]"}`}>{children}</div>;
+  return <div className={`mx-auto pb-14 ${(wide ? LIST_COLUMN : READ_COLUMN) || (wide ? "" : "lg:max-w-[760px]")}`}>{children}</div>;
 }
 
 /**
@@ -65,6 +69,20 @@ export function CountFigure({ count, size }: { count: Count; size: number }) {
   return (
     <span className="whitespace-nowrap text-[13px] text-ink-4">
       <b className="num mr-1 font-bold leading-none tracking-tight text-ink" style={{ fontSize: size }}>{num(n)}</b>{unit}
+    </span>
+  );
+}
+
+/**
+ * Who tells a situation and the rest of its count, as the hot list writes who talks about a story ("7 个来源 · 19 位
+ * 参与者"): its sources' faces, then "1 位业内人士 · 26 条原文" beside the big number (CountFigure).
+ */
+export function Who({ s, size = 22 }: { s: SituationRow; size?: number }) {
+  const rest = restCountText(s.count);
+  return (
+    <span className="flex min-w-0 items-center gap-2">
+      {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={size} interactive={false} />}
+      {rest && <span className="truncate text-[12.5px] text-ink-4">{rest}</span>}
     </span>
   );
 }
@@ -206,8 +224,8 @@ export function ShopRows({ shops, figure, className }: { shops: ShopPractices[];
 
 /** A row's columns: its place when ranked, the text, what it counts from 641px (one width, so the rows line up), ›. */
 const COLUMNS = {
-  ranked: "grid-cols-[22px_minmax(0,1fr)_16px] sm:grid-cols-[26px_minmax(0,1fr)_88px_16px]",
-  plain: "grid-cols-[minmax(0,1fr)_16px] sm:grid-cols-[minmax(0,1fr)_88px_16px]",
+  ranked: "grid-cols-[22px_minmax(0,1fr)_16px] sm:grid-cols-[26px_minmax(0,1fr)_auto_16px]",
+  plain: "grid-cols-[minmax(0,1fr)_16px] sm:grid-cols-[minmax(0,1fr)_auto_16px]",
 };
 
 /**
@@ -231,9 +249,16 @@ export function SituationRows({ rows, from, category = false, children }: { rows
                 <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
               </h3>
               <p className="mt-0.5 line-clamp-2 text-[14px] leading-[1.6] text-ink-3">{s.practice ?? s.dek}</p>
-              <span className="mt-1 block text-[13px] text-ink-4 sm:hidden">{listCountText(s.count)}</span>
+              <span className="mt-1 block text-[13px] text-ink-4 sm:hidden">{fullCountText(s.count)}</span>
             </div>
-            <span className="hidden text-right sm:block"><CountFigure count={s.count} size={17} /></span>
+            {/* As the hot list's rows: who tells it, then its shops in a big number with the rest of its count under it. */}
+            <span className="hidden items-center gap-5 sm:flex">
+              {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={22} interactive={false} />}
+              <span className="min-w-[96px] text-right">
+                <CountFigure count={s.count} size={19} />
+                {restCountText(s.count) && <span className="mt-0.5 block whitespace-nowrap text-[12px] text-ink-4">{restCountText(s.count)}</span>}
+              </span>
+            </span>
             <IconChevronRight size={16} className="text-ink-4" />
           </li>
         ))}

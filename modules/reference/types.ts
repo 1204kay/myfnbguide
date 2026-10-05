@@ -1,5 +1,6 @@
 // A case as the pages draw it: what the writer produced, with the example figures computed by the program
 // (backend/examples.ts). Shared by the backend that stores it and the web that renders it.
+import type { HotParticipant } from "@aihot/contracts/site";
 import type { ShopKind } from "./situations.ts";
 
 /** Who tells the story: the owner, their staff, an adviser or vendor, or a publication about the shop. */
@@ -194,6 +195,10 @@ export interface SituationRow {
   count: Count;
   /** 代表做法 (layout J3-3): the title of the practice the most shops tell, the page's first; null before the stories are grouped. */
   practice: string | null;
+  /** Who tells it, as the hot list shows who talks about a story (features/hot/Faces): its sources, most stories first, the first few with their icons. */
+  faces: HotParticipant[];
+  /** How many sources tell it. */
+  sources: number;
 }
 
 export interface CategoryRows {

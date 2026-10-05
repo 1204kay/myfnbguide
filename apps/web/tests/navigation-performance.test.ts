@@ -128,10 +128,11 @@ for(const [engine,width] of [['chromium',1280],['webkit',390]] as const){
       await expect(page.getByRole('link',{name:FIRST,exact:true})).toBeVisible({timeout:1500});
       assert.equal(hits.slice(start).filter(x=>x.startsWith(READ)).length,1,'returning to an SSR list needs no new data request');
       await context.setOffline(false);
-      if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
+      // Phones show the filter as a sheet behind a button, or as the desktop's row (site.ts FEED.phoneFilter).
+      if(width===390&&LISTS.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
       await page.getByRole('link',{name:TIP,exact:true}).click();
       await expect(page.getByRole('link',{name:'分类 tip',exact:true})).toBeVisible();
-      if(width===390)await page.getByRole('button',{name:/^筛选/}).click();
+      if(width===390&&LISTS.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
       await page.getByRole('link',{name:TOOLS,exact:true}).click();
       await expect(page.getByRole('link',{name:'分类 tools',exact:true})).toBeVisible();
       await context.setOffline(true);

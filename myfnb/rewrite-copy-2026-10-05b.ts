@@ -36,7 +36,8 @@ for (let after = ""; ;) {
     if (next.title_zh === r.title_zh && next.summary_zh === r.summary_zh && next.reason_zh === r.reason_zh) continue;
     analyses += 1;
     changed.add(r.article_id);
-    note(r.title_zh, next.title_zh);
+    const field = (["title_zh", "summary_zh", "reason_zh"] as const).find((k) => next[k] !== r[k])!;
+    note(r[field], next[field]);
     if (apply) await sql`UPDATE analyses SET title_zh = ${next.title_zh}, summary_zh = ${next.summary_zh}, reason_zh = ${next.reason_zh} WHERE id = ${r.id}`;
   }
 }

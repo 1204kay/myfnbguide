@@ -181,7 +181,7 @@ export async function readShop(key: string, now = new Date()): Promise<ShopPage 
  * How far the writing is, in numbers only (like /api/site/stats): the selected items' cases by status, and
  * how many held cases each kind of problem stopped (a case counts once for each kind it has).
  */
-export async function readStatus(now = new Date()): Promise<{ counts: Record<string, number>; held: Record<string, number> }> {
+export async function readStatus(now = new Date()): Promise<{ counts: Record<string, number>; held: Record<string, number>; grouped: Record<string, number> }> {
   const rows = await sql<{ status: string; problems: string[] }[]>`
     SELECT c.status, c.problems FROM reference_cases c
     JOIN publications p ON p.article_id = c.article_id
@@ -192,5 +192,11 @@ export async function readStatus(now = new Date()): Promise<{ counts: Record<str
     counts[r.status] = (counts[r.status] ?? 0) + 1;
     if (r.status === "held") for (const kind of new Set(r.problems.map(problemKind))) held[kind] = (held[kind] ?? 0) + 1;
   }
-  return { counts, held };
+  // Situations grouped by practice, and those whose last try failed, by the kind of problem (backend/methods.ts).
+  const grouped: Record<string, number> = {};
+  for (const g of await sql<{ methods: unknown; problems: string[] }[]>`SELECT methods, problems FROM reference_situations`) {
+    const kind = g.problems.length ? `未通过：${problemKind(g.problems[0]!)}` : g.methods ? "已归并" : "其他";
+    grouped[kind] = (grouped[kind] ?? 0) + 1;
+  }
+  return { counts, held, grouped };
 }

@@ -202,7 +202,7 @@ test("cases are written for selected items, once more when the checks find probl
   assert.ok(wrong!.problems.some((p) => /99,999|88,888/.test(p)));
   assert.deepEqual(await articlesToWrite(50), [], "every selected item has its case");
   assert.deepEqual(JSON.parse((await app.inject("/api/reference/status")).body),
-    { counts: { story: 3, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, waiting: 0 });
+    { counts: { story: 3, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0 });
   await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
   assert.deepEqual(await articlesToWrite(50), [ids.THIN], "a changed prompt writes the case again");
   await writeCase(ids.THIN!);

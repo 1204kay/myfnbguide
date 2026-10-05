@@ -177,10 +177,11 @@ export function SituationCards({ rows, kind, lead = true, ranked = false }: { ro
       {first && (
         <Link viewTransition to={href(first)} className="block px-4 py-4 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-6">
           <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[200px] lg:order-2 lg:mb-0 lg:w-full lg:[&_svg]:max-h-[180px]"><SituationDrawing slug={first.slug} /></div>
-          <div>
+          {/* From 961px the picture sets the card's height: the counts sit at its foot, as on AIHOT's first card (the owner, 10/5). */}
+          <div className="lg:flex lg:flex-col">
             <b className="block text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">{ranked && <span className={`${RANK} mr-2`}>1</span>}{first.title}</b>
             <p className="mt-1.5 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{first.overview ?? first.dek}</p>
-            <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4">
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-4 lg:mt-auto lg:pt-4">
               <Avatars sources={first.sources} max={4} size={20} className="flex sm:hidden" />
               <Avatars sources={first.sources} max={6} size={22} className="hidden sm:flex" />
               <span>{countText(first.count, of)}</span>

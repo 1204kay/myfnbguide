@@ -76,7 +76,8 @@ const LENGTHS = {
   overview: { asked: 120, ceiling: 130, cut: "删去次要的原因和做法，只留最常见的几种" },
   title: { asked: 20, ceiling: 24, cut: "只写怎么做，删去条件和结果" },
   summary: { asked: 150, ceiling: 160, cut: "删去次要的条件和数字，只留共同的做法和最关键的差别" },
-  line: { asked: 24, ceiling: 30, cut: "删去次要的条件，只留这家店的关键数字或结果" },
+  // 31–32 characters held two situations back on 10/5; a line wraps on a phone either way.
+  line: { asked: 24, ceiling: 36, cut: "删去次要的条件，只留这家店的关键数字或结果" },
 };
 
 /** Which stories a situation holds, who tells them and how they read: a change in any of them groups it again. */

@@ -45,12 +45,6 @@ export default function ReferenceHomePage() {
       <Dek className="lg:mt-2">{LEAD}</Dek>
       <Metrics items={[[data.totals.situations, "种情况"], [data.totals.cases, "条原文"], [data.totals.countries, "个国家"]]} />
       {!categories.length && !data.kinds.length && <EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会出现在这里。</EmptyState>}
-      {data.kinds.length > 0 && (
-        <section className="mt-8">
-          <Kicker>按店型浏览</Kicker>
-          <Entries cols={GRID} items={data.kinds.map((k) => ({ to: `/reference/kinds/${k.slug}`, name: k.title, count: `${k.cases} 条原文` }))} />
-        </section>
-      )}
       {categories.length > 0 && (
         <section className="mt-8">
           <Kicker>按遇到的事查找</Kicker>
@@ -62,6 +56,13 @@ export default function ReferenceHomePage() {
           <Kicker>店家谈得最多的事</Kicker>
           <p className="mt-1.5 text-[13px] text-ink-4">按分享过做法的店家数排列</p>
           <SituationCards rows={data.ranking} ranked />
+        </section>
+      )}
+      {/* The situations lead (the library's body); the shop kinds follow, fewer and sparser for now (the owner, 10/5). */}
+      {data.kinds.length > 0 && (
+        <section className="mt-8">
+          <Kicker>按店型浏览</Kicker>
+          <Entries cols={GRID} items={data.kinds.map((k) => ({ to: `/reference/kinds/${k.slug}`, name: k.title, count: `${k.cases} 条原文` }))} />
         </section>
       )}
       {categories.map((c) => (

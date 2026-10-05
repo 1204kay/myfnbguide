@@ -1,12 +1,14 @@
 // Opens the site's main pages and machine exits and checks each answers: the whole-site check after a
 // deploy, and CI's check of the built site on an empty database.
 //   node scripts/smoke.ts [--base http://localhost:3000]
+import { feedPath } from "@aihot/contracts/routes";
 import { SITE } from "@aihot/site";
 
 const at = process.argv.indexOf("--base");
 const base = (at > 0 ? process.argv[at + 1] : process.env.SITE_URL) ?? "http://localhost:3000";
 
-const PAGES = ["/", "/all", "/hot", "/daily", "/daily/archive", "/topics", "/starred", "/agent", "/about", "/changelog", "/feedback", "/terms", "/privacy", "/more", "/admin/login"];
+// The home page, then the featured list where it lives (site.ts NAV.home moves it off /).
+const PAGES = [...new Set(["/", feedPath()]), "/all", "/hot", "/daily", "/daily/archive", "/topics", "/starred", "/agent", "/about", "/changelog", "/feedback", "/terms", "/privacy", "/more", "/admin/login"];
 const MACHINE: Array<[path: string, type: RegExp]> = [
   ["/api/health", /json/],
   ["/api/v1/items", /json/],

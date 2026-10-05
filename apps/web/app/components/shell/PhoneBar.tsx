@@ -1,9 +1,13 @@
 // The phone shell's top bar (below lg). Left: where back leads, or the brand; middle: the page's title
 // once its own heading has scrolled up under the bar, or a switch that always shows; right: actions. Tab
-// pages also get a large title under the bar. Desktop pages keep their own headers.
+// pages also get a large title under the bar. Desktop pages keep their own headers; a page pushed onto
+// another can lead back from its first line there (BackRow), as the bar does on phones.
 import { forwardRef, useEffect, useLayoutEffect, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { IconChevronLeft } from "../icons";
+import { Link, useLocation, useNavigate } from "react-router";
+import { SITE } from "@aihot/site";
+import { Wordmark } from "@aihot/site/brand/Logo.tsx";
+import { openSearch } from "../../features/search/SearchOverlay";
+import { IconChevronLeft, IconSearch } from "../icons";
 import { historyIndex, previousScreen } from "./screens";
 import { markBack } from "./transitions";
 
@@ -67,8 +71,11 @@ export function PhoneBar({ back, title, large = false, sub, leading, center, act
   );
 }
 
-/** "‹ 精选": back through the reader's history, or to the page's parent when it was opened directly. */
-function BackButton({ to, label }: BackTarget) {
+/**
+ * What back says and does: the short name of the page behind in this tab's history ("返回" when that page is
+ * named by its content) and back there; or, for a page opened directly, `label` and on to `to`.
+ */
+function useBack({ to, label }: BackTarget): { text: string; go: () => void } {
   const navigate = useNavigate();
   const { key } = useLocation();
   const [text, setText] = useState(label);
@@ -77,19 +84,75 @@ function BackButton({ to, label }: BackTarget) {
     const behind = previousScreen();
     setText(behind ? behind : "返回");
   }, [key, label]);
+  const go = () => {
+    markBack();
+    if (historyIndex() > 0) navigate(-1);
+    else navigate(to, { viewTransition: true });
+  };
+  return { text, go };
+}
+
+/** "‹ 精选": back through the reader's history, or to the page's parent when it was opened directly. */
+function BackButton(target: BackTarget) {
+  const { text, go } = useBack(target);
   return (
-    <button
-      type="button"
-      onClick={() => {
-        markBack();
-        if (historyIndex() > 0) navigate(-1);
-        else navigate(to, { viewTransition: true });
-      }}
-      className="flex h-11 min-w-11 items-center pl-1 pr-2 text-[16px] text-accent transition-opacity active:opacity-50"
-    >
+    <button type="button" onClick={go} className="flex h-11 min-w-11 items-center pl-1 pr-2 text-[16px] text-accent transition-opacity active:opacity-50">
       <IconChevronLeft size={25} strokeWidth={2.1} />
       <span className="max-w-[7em] truncate">{text}</span>
     </button>
+  );
+}
+
+/**
+ * Desktop (≥ 961px): the first line of a page pushed onto another, "‹ 上一页名", with the phone bar's back
+ * rules. A link to the parent, so it also opens in a new tab.
+ */
+export function BackRow(target: BackTarget) {
+  const { text, go } = useBack(target);
+  return (
+    <div className="hidden lg:block">
+      <Link
+        to={target.to}
+        onClick={(event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          go();
+        }}
+        className="-ml-1 inline-flex min-h-10 items-center gap-0.5 pr-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent touch:min-h-11"
+      >
+        <IconChevronLeft size={16} />
+        <span className="max-w-[7em] truncate">{text}</span>
+      </Link>
+    </div>
+  );
+}
+
+/** The magnifier in a bar: the search opens over the page with the keyboard up. */
+export function SearchButton() {
+  return (
+    <BarButton label="搜索" onClick={(event) => openSearch("", event.currentTarget)}>
+      <IconSearch size={21} />
+    </BarButton>
+  );
+}
+
+/**
+ * The bar of the tab bar's own pages when the shell carries search (site.ts NAV.search): the brand (to /) on
+ * the left, search on the right, the page's name in the middle once its heading has gone up under the bar.
+ */
+export function TabPageBar({ title, large = false, sub }: { title?: ReactNode; large?: boolean; sub?: ReactNode }) {
+  return (
+    <PhoneBar
+      title={title}
+      large={large}
+      sub={sub}
+      leading={
+        <Link to="/" aria-label={`${SITE.name} 首页`} className="flex h-11 items-center pl-2.5 pr-2 text-ink">
+          <Wordmark size={17} />
+        </Link>
+      }
+      actions={<SearchButton />}
+    />
   );
 }
 

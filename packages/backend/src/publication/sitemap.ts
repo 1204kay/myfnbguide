@@ -2,6 +2,7 @@
 // deadline; a saved copy may bridge a restart only for the remainder of that original lifetime.
 import { mkdir, readFile, stat, utimes, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { feedPath } from "@aihot/contracts/routes";
 import { config } from "../config.ts";
 import { sql } from "../db.ts";
 import { cached, SHARED_ONLY } from "../lib/cache.ts";
@@ -28,6 +29,8 @@ async function build(at: Date): Promise<string> {
   const now = latestItem?.t ?? new Date();
   entries.push(
     { loc: "/", lastmod: now, changefreq: "hourly", priority: 1 },
+    // The featured list when a module page is the home page (site.ts NAV.home).
+    ...(feedPath() === "/" ? [] : [{ loc: feedPath(), lastmod: now, changefreq: "hourly", priority: 0.9 }]),
     { loc: "/all", lastmod: now, changefreq: "hourly", priority: 0.9 },
     { loc: "/daily", lastmod: latestDaily?.t, changefreq: "daily", priority: 0.9 },
     { loc: "/hot", lastmod: now, changefreq: "hourly", priority: 0.9 },

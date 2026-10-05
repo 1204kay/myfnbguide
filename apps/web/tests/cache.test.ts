@@ -6,7 +6,12 @@ import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
+import { feedPath } from "@aihot/contracts/routes";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
+
+// The featured list (routes/home.tsx) and its navigation data, wherever the site keeps it (site.ts NAV.home).
+const FEED = feedPath();
+const DATA = FEED === "/" ? "/_.data" : `${FEED}.data`;
 
 let web: ChildProcess;
 let origin: string;
@@ -80,7 +85,7 @@ after(async () => {
 
 test("public route subsets produce the same complete navigation data; filters still differ", async () => {
   const answers = await Promise.all(["", "?_routes=root", "?_routes=routes%2Fhome", "?_routes=unknown"].map(async (query) => {
-    const res = await fetch(`${origin}/_.data${query}`);
+    const res = await fetch(`${origin}${DATA}${query}`);
     assert.equal(res.status, 200);
     assert.match(res.headers.get("Cache-Control")!, /^public,/);
     assert.equal(res.headers.get("X-Accel-Expires"), `@${deadline}`);
@@ -91,7 +96,7 @@ test("public route subsets produce the same complete navigation data; filters st
   }));
   assert.ok(answers.every((body) => body === answers[0]));
   const category = CATEGORY_KEYS.at(-1)!;
-  const filtered = await fetch(`${origin}/_.data?category=${category}&_routes=root`);
+  const filtered = await fetch(`${origin}${DATA}?category=${category}&_routes=root`);
   const body = await filtered.text();
   assert.ok(body.includes(category));
   assert.notEqual(body, answers[0]);
@@ -99,7 +104,7 @@ test("public route subsets produce the same complete navigation data; filters st
 
 test("navigation streams are plain text for download managers, including errors and actions", async () => {
   for (const [pathname, method, status] of [
-    ["/_.data?_routes=root", "GET", 200],
+    [`${DATA}?_routes=root`, "GET", 200],
     ["/about.data", "HEAD", 200],
     ["/items/missing.data", "GET", 404],
     ["/story/merged.data", "GET", 202],
@@ -127,7 +132,7 @@ test("navigation streams are plain text for download managers, including errors 
 });
 
 test("HTML and navigation share freshness; cookies do not personalize public results", async () => {
-  const html = await fetch(`${origin}/`);
+  const html = await fetch(`${origin}${FEED}`);
   assert.equal(html.status, 200);
   assert.equal(html.headers.get("X-Accel-Expires"), `@${deadline}`);
   assert.match(await html.text(), /精选/);
@@ -150,7 +155,7 @@ test("missing routes cannot be hidden by a root-only request; errors and redirec
     assert.equal(res.headers.get("X-Accel-Expires"), "0");
     await res.text();
   }
-  for (const [pathname, target] of [["/story/merged.data?_routes=root", "/story/surviving-story"], ["/_.data?q=search&_routes=root", "/all?q=search"]]) {
+  for (const [pathname, target] of [["/story/merged.data?_routes=root", "/story/surviving-story"], [`${DATA}?q=search&_routes=root`, "/all?q=search"]]) {
     const res = await fetch(origin + pathname);
     assert.equal(res.status, 202);
     assert.equal(res.headers.get("Cache-Control"), "private, no-store");
@@ -175,7 +180,7 @@ test("browser freshness shares the selected deadline, including slow sibling loa
   const savedDeadline = deadline;
   try {
     deadline = Math.floor(Date.now() / 1000) + 20;
-    for (const pathname of ["/", "/_.data?_routes=routes%2Fhome"]) {
+    for (const pathname of [FEED, `${DATA}?_routes=routes%2Fhome`]) {
       const res = await fetch(origin + pathname);
       const cc = res.headers.get("Cache-Control")!;
       const browser = Number(cc.match(/(?:^|,)\s*max-age=(\d+)/)![1]);
@@ -190,7 +195,7 @@ test("browser freshness shares the selected deadline, including slow sibling loa
     // The selected loader initially grants a positive TTL, but root metadata finishes after it.
     deadline = Math.floor(Date.now() / 1000) + 2;
     metaDelayMs = 2300;
-    await Promise.all(["/", "/_.data?_routes=routes%2Fhome"].map(async (pathname) => {
+    await Promise.all([FEED, `${DATA}?_routes=routes%2Fhome`].map(async (pathname) => {
       const res = await fetch(origin + pathname);
       assert.equal(res.status, 200);
       assert.equal(res.headers.get("Cache-Control"), "no-cache");

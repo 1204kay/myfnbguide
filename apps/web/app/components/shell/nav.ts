@@ -1,11 +1,14 @@
 // Site navigation in one place: the desktop sidebar's sections and the phone tab bar's tabs, the engine's
 // and the site's modules'.
 import type { ReactNode } from "react";
-import { NAV, subjectAfter, withSubject } from "@aihot/site";
+import { feedPath, homePage } from "@aihot/contracts/routes";
+import { NAV, POLICY, subjectAfter, withSubject } from "@aihot/site";
 import { webModules } from "../../site-modules";
 import {
-  IconBolt, IconBookmark, IconDoc, IconFlame, IconGrid, IconHeart, IconHistory, IconList, IconMessage, IconPlug, IconUser,
+  IconBolt, IconBookmark, IconDoc, IconFlame, IconGrid, IconHeart, IconHistory, IconInfo, IconList, IconMessage, IconPlug, IconUser,
 } from "../icons";
+
+export { feedPath };
 
 export interface NavItem {
   to: string;
@@ -13,6 +16,8 @@ export interface NavItem {
   icon: (p: { size?: number }) => ReactNode;
   /** Match the path exactly (the home page). */
   end?: boolean;
+  /** Also lit on the pages under this address: a module's way in to the page the site shows at / keeps its own pages. */
+  within?: string;
   /** Shows the unread dot while the changelog has news. */
   changelog?: boolean;
 }
@@ -21,7 +26,7 @@ const SECTIONS: Array<{ title: string; items: NavItem[] }> = [
   {
     title: "内容",
     items: [
-      { to: "/", label: "精选", icon: IconBolt, end: true },
+      { to: feedPath(), label: "精选", icon: IconBolt, end: true },
       { to: "/all", label: subjectAfter("全部", "动态"), icon: IconList },
       { to: "/hot", label: "热点榜", icon: IconFlame },
       { to: "/daily", label: withSubject("日报"), icon: IconDoc },
@@ -40,15 +45,15 @@ const SECTIONS: Array<{ title: string; items: NavItem[] }> = [
   },
 ];
 
+/** Pages the navigation names besides its entries: the sidebar's foot and the 我的 page (NAV.sidebarFoot, NAV.meGroups). */
+const POLICIES: NavItem[] = [
+  { to: "/terms", label: POLICY.terms.name, icon: IconDoc },
+  { to: "/privacy", label: "隐私说明", icon: IconInfo },
+];
+
 /** Whether a way in appears in the navigation at all (site.ts NAV.hidden): its page still opens. */
 export function navShown(to: string): boolean {
   return !NAV.hidden.includes(to);
-}
-
-/** Where a way in goes within its sidebar section: the ones the site lists first (NAV.order), the rest as they were. */
-function rank(to: string): number {
-  const at = NAV.order.indexOf(to);
-  return at < 0 ? NAV.order.length : at;
 }
 
 /** A way in under the name the site gives it (site.ts NAV.labels). */
@@ -57,30 +62,64 @@ function named<T extends { to: string; label: string }>(item: T): T {
   return label ? { ...item, label } : item;
 }
 
+/** A module's way in to the page the site shows at / (NAV.home) leads to /, and stays lit on the pages under its address. */
+function homeward<T extends { to: string }>(item: T): T & { end?: boolean; within?: string } {
+  const page = homePage()?.page;
+  return page && item.to === `/${page.path}` ? { ...item, to: "/", end: true, within: item.to } : item;
+}
+
+/** A module's sidebar entries, as the site places them. */
+const moduleItems = (items: NavItem[]) => items.map(homeward);
+
+/** A way in by its address, under the site's name for it (NAV.sidebar, NAV.sidebarFoot, NAV.meGroups); undefined when nothing offers it. */
+export function wayIn(to: string): NavItem | undefined {
+  const item = [...SECTIONS.flatMap((s) => s.items), ...webModules().flatMap((m) => moduleItems(m.sidebar?.items ?? [])), ...POLICIES].find((i) => i.to === to);
+  return item && named(item);
+}
+
+/** What the navigation calls a page (back buttons, the error page's buttons). */
+export function navName(to: string): string {
+  return wayIn(to)?.label ?? to;
+}
+
 /**
- * The sidebar: the engine's sections with the modules' between 内容 and 更多; a module naming a section
- * that is already there adds to it. The site may hide some and rename others (NAV).
+ * The sidebar. By default the engine's sections with the modules' between 内容 and 更多, a module naming a
+ * section that is already there adding to it; or the groups the site lists, untitled (NAV.sidebar). The site
+ * may hide some and rename others (NAV).
  */
-export function sidebar(): Array<{ title: string; items: NavItem[] }> {
+export function sidebar(): Array<{ title: string | null; items: NavItem[] }> {
+  if (NAV.sidebar) {
+    return NAV.sidebar
+      .map((group) => ({ title: null, items: group.filter(navShown).flatMap((to) => wayIn(to) ?? []) }))
+      .filter((s) => s.items.length > 0);
+  }
   const [content, ...rest] = SECTIONS;
   const more = rest.pop()!;
   const sections = [content!, ...rest].map((s) => ({ ...s, items: [...s.items] }));
   for (const m of webModules()) {
     if (!m.sidebar) continue;
+    const items = moduleItems(m.sidebar.items);
     const section = sections.find((s) => s.title === m.sidebar!.section);
-    if (section) section.items.push(...m.sidebar.items);
-    else sections.push({ title: m.sidebar.section, items: [...m.sidebar.items] });
+    if (section) section.items.push(...items);
+    else sections.push({ title: m.sidebar.section, items });
   }
   return [...sections, more]
-    .map((s) => ({ ...s, items: s.items.filter((i) => navShown(i.to)).map(named).sort((a, b) => rank(a.to) - rank(b.to)) }))
+    .map((s) => ({ ...s, items: s.items.filter((i) => navShown(i.to)).map(named) }))
     .filter((s) => s.items.length > 0);
 }
 
-/** A sidebar entry is lit on its pages; 日报 also covers weekly and monthly reports. */
-export function sidebarIsActive(item: NavItem, pathname: string): boolean {
-  if (item.end) return pathname === item.to;
+/**
+ * A sidebar entry is lit on its pages; 日报 also covers weekly and monthly reports. While 全部动态 is not in
+ * the navigation (NAV.hidden), its pages light 精选, which switches to it; a search from the shell's own field
+ * (NAV.search) lights nothing.
+ */
+export function sidebarIsActive(item: NavItem, pathname: string, search = ""): boolean {
+  const under = (to: string) => pathname === to || pathname.startsWith(`${to}/`);
+  if (NAV.search === "shell" && under("/all") && new URLSearchParams(search).get("q")) return false;
   if (item.to === "/daily") return /^\/(daily|weekly|monthly)(\/|$)/.test(pathname);
-  return pathname === item.to || pathname.startsWith(`${item.to}/`);
+  if (item.to === feedPath() && !navShown("/all") && under("/all")) return true;
+  if (item.within && under(item.within)) return true;
+  return item.end ? pathname === item.to : under(item.to);
 }
 
 /**
@@ -105,7 +144,7 @@ export interface Tab {
 }
 
 const ENGINE_TABS: Tab[] = [
-  { key: "featured", to: "/", label: "精选", icon: IconBolt },
+  { key: "featured", to: feedPath(), label: "精选", icon: IconBolt },
   { key: "hot", to: "/hot", label: "热点", icon: IconFlame },
   { key: "daily", to: "/daily", label: "日报", icon: IconDoc },
   { key: "me", to: "/more", label: "我的", icon: IconUser, changelog: true },
@@ -113,6 +152,6 @@ const ENGINE_TABS: Tab[] = [
 
 /** The tab bar: the engine's, the modules' before 我的; or the ones the site lists, in its order (NAV.tabs). */
 export function tabs(): Tab[] {
-  const all = [...ENGINE_TABS.slice(0, -1), ...webModules().flatMap((m) => m.tabs ?? []), ENGINE_TABS.at(-1)!];
+  const all = [...ENGINE_TABS.slice(0, -1), ...webModules().flatMap((m) => (m.tabs ?? []).map(homeward)), ENGINE_TABS.at(-1)!];
   return (NAV.tabs ? NAV.tabs.flatMap((key) => all.filter((t) => t.key === key)) : all).map(named);
 }

@@ -13,9 +13,13 @@ import { Sparkline } from "../features/hot/Sparkline";
 import { Faces } from "../features/hot/Faces";
 import { Delta } from "../features/hot/Delta";
 import { PhoneBar } from "../components/shell/PhoneBar";
+import { feedPath, navName, navShown } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
 
-export const handle: Screen = { tab: "hot", name: "热点" };
+/** While 热点 is not in the navigation (NAV.hidden) the page is reached from elsewhere and leads back to the featured list. */
+const LISTED = navShown("/hot");
+
+export const handle: Screen = LISTED ? { tab: "hot", name: "热点" } : { home: "featured", name: "热点" };
 export { shouldRevalidate } from "../lib/page-reuse";
 export const clientLoader = cachedLoader<typeof loader>();
 
@@ -246,6 +250,7 @@ export default function HotPage() {
   return (
     <div className="pb-10">
       <PhoneBar
+        back={LISTED ? undefined : { to: feedPath(), label: navName(feedPath()) }}
         title="热点"
         large
         sub={

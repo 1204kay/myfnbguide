@@ -1,8 +1,9 @@
 // The day-grouped feed (精选 home, topics): a time rail with cards on desktop, rows under grey day bars on
-// phones. Keeps its place across back navigation and loads further pages. There is no "new items"
+// phones; with list cards (site.ts FEED.style "cards") one flat column of cards, each with its date. Keeps
+// its place across back navigation and loads further pages. There is no "new items"
 // prompt: readers refresh for the latest head (feedback #1199) — on phones also by tapping the tab again.
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigation } from "react-router";
+import { Link, useLocation, useNavigation } from "react-router";
 import { Collapse } from "../../components/ui/Presence";
 import type { TimelineCard, TimelineFilters, TimelineResponse } from "@aihot/contracts/site";
 import { FeedItem } from "./FeedItem";
@@ -15,8 +16,12 @@ import { isHydrated } from "../../lib/hydration";
 import { markRead, useReadSet } from "../../lib/local-state";
 import { filterParams, listPath } from "../../lib/seo";
 import { isReload, readSnapshot, restoreAnchor, saveSnapshot, useSaveOnLeave } from "../../lib/restore";
+import { FEED } from "@aihot/site";
+import { filterName } from "./Filters";
 
 const AUTO_BATCHES = 3;
+/** List cards (site.ts FEED.style): the selected items lie flat, newest first, each card with its date; no day bars to fold. */
+const CARDS = FEED.style === "cards";
 
 interface ListState {
   version: 2;
@@ -278,15 +283,40 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
     setState((s) => ({ ...s, collapsed: s.collapsed.includes(day) ? s.collapsed.filter((d) => d !== day) : [...s.collapsed, day] }));
 
   let order = 0;
+  const appear = (key: string) => {
+    const fresh = freshKeys.has(key);
+    return { fresh, delay: fresh ? Math.min(order++, 10) * 40 : 0 };
+  };
+  // List cards: what the filter holds in 全部, for a filter with few selected items and at the end of the list.
+  const all = CARDS ? listPath("/all", filterParams(filters)) : null;
+  const named = filterName(filters.category, filters.channel) ?? filters.tag;
   return (
     <div className="relative">
-      {days.length === 0 && (
-        <div className="lg:card">
-          <EmptyState title="这个筛选下还没有精选内容">换个类别看看，或者去全部动态里找找。</EmptyState>
-        </div>
+      {days.length === 0 &&
+        (all ? (
+          <div className="card">
+            <EmptyState title={named ? `精选里还没有「${named}」的条目。` : "精选里还没有条目。"} action={<AllLink to={all} />} />
+          </div>
+        ) : (
+          <div className="lg:card">
+            <EmptyState title="这个筛选下还没有精选内容">换个类别看看，或者去全部动态里找找。</EmptyState>
+          </div>
+        ))}
+
+      {CARDS && (
+        <ol className="space-y-2.5">
+          {state.cards.map((c) => {
+            const { fresh, delay } = appear(c.key);
+            return (
+              <li key={c.key} data-card-key={c.key} className={fresh ? "animate-fade-up" : undefined} style={fresh ? { animationDelay: `${delay}ms` } : undefined}>
+                <FeedItem item={c.item} group={c.group} filters={filters} read={readSet.has(c.item.id)} onOpen={markRead} at={c.anchorAt} />
+              </li>
+            );
+          })}
+        </ol>
       )}
 
-      {days.map(({ day, cards }) => {
+      {!CARDS && days.map(({ day, cards }) => {
         const collapsed = state.collapsed.includes(day);
         const count = state.dayCounts[day] ?? cards.length;
         return (
@@ -295,8 +325,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
             <Collapse open={!collapsed}>
                 <ol className="lg:pt-1">
                   {cards.map((c) => {
-                    const fresh = freshKeys.has(c.key);
-                    const delay = fresh ? Math.min(order++, 10) * 40 : 0;
+                    const { fresh, delay } = appear(c.key);
                     return (
                       <TimelineSlot key={c.key} dataKey={c.key} at={c.anchorAt} fresh={fresh} delay={delay}>
                         <FeedItem item={c.item} group={c.group} filters={filters} read={readSet.has(c.item.id)} onOpen={markRead} at={c.anchorAt} />
@@ -310,13 +339,22 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
       })}
 
       <div ref={sentinel} aria-hidden="true" />
-      <FeedEnd loading={loadingMore} error={loadError} hasMore={!!state.nextCursor} manual={state.batches >= AUTO_BATCHES} empty={state.cards.length === 0} onMore={loadMore} />
+      <FeedEnd loading={loadingMore} error={loadError} hasMore={!!state.nextCursor} manual={state.batches >= AUTO_BATCHES} empty={state.cards.length === 0} onMore={loadMore} all={all} />
     </div>
   );
 }
 
-/** The foot of a paged list: loading, retry, "加载更多" after a few automatic pages, or the end. */
-function FeedEnd({ loading, error, hasMore, manual, empty, onMore }: { loading: boolean; error: boolean; hasMore: boolean; manual: boolean; empty: boolean; onMore: () => void }) {
+/** "在全部里看 ›": the same filter over every item collected. */
+function AllLink({ to }: { to: string }) {
+  return (
+    <Link to={to} className="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-surface px-5 text-[14px] font-medium text-ink-2 transition-colors hover:border-accent hover:text-accent active:bg-bg-sunk lg:min-h-9 touch:min-h-11">
+      在全部里看 ›
+    </Link>
+  );
+}
+
+/** The foot of a paged list: loading, retry, "加载更多" after a few automatic pages, or the end (with list cards, the way on to 全部). */
+function FeedEnd({ loading, error, hasMore, manual, empty, onMore, all }: { loading: boolean; error: boolean; hasMore: boolean; manual: boolean; empty: boolean; onMore: () => void; all: string | null }) {
   return (
     <div className="flex justify-center py-6">
       {loading ? (
@@ -334,7 +372,7 @@ function FeedEnd({ loading, error, hasMore, manual, empty, onMore }: { loading: 
           </button>
         )
       ) : (
-        !empty && <span className="text-[12px] text-ink-4">已经到底了</span>
+        !empty && (all ? <AllLink to={all} /> : <span className="text-[12px] text-ink-4">已经到底了</span>)
       )}
     </div>
   );

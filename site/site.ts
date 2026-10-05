@@ -228,6 +228,8 @@ export const ITEM_COPY = {
   tagHash: false,
   /** 条目页显示不显示分类标签（每条的第一个标签，例如“行业动态”）（默认 true）。 */
   categoryTags: false,
+  /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。 */
+  sourceWord: "来源",
 };
 
 /** 关于页的一张二维码卡片。 */

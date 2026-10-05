@@ -9,7 +9,7 @@ import { IntentLink } from "../../components/ui/IntentLink";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import type { ReportCitation, ReportDetail, ReportNavigationEntry } from "@aihot/contracts/site";
-import { REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
+import { ITEM_COPY, REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
 import { Badge } from "../../components/ui/Badge";
 import { IconArrowLeft, IconArrowRight, IconArrowUpRight, IconChevronRight } from "../../components/icons";
 import { Kicker } from "../../components/ui/Kicker";
@@ -148,7 +148,7 @@ function Related({ items, className = "" }: { items: ReportCitation[]; className
 function Coverage({ c }: { c: ReportCitation }) {
   return (
     <>
-      {!!c.otherSources && <span className="shrink-0 text-ink-4">另有 {c.otherSources} 家信源报道</span>}
+      {!!c.otherSources && <span className="shrink-0 text-ink-4">另有 {c.otherSources} 家{ITEM_COPY.sourceWord}报道</span>}
       {c.followUp && <Badge title={`${monthDay(c.followUp)}的日报报道过这件事，这里是新进展`}>跟进</Badge>}
     </>
   );

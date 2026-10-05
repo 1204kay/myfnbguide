@@ -615,7 +615,7 @@ function ItemView({ item, parts }: Loaded) {
       {isX && item.x!.media.length > 0 && <MediaGallery media={item.x!.media} postUrl={item.links.original} />}
       {isX && item.x!.quoted?.text && <QuotedPost quoted={item.x!.quoted} original={lang === "original"} />}
 
-      <p className="mt-8 text-[13px] text-ink-4">
+      <p className="mt-8 max-w-[44em] text-[13px] text-ink-4">
         来源：
         <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
           {isX ? item.x!.authorName : item.source.name}

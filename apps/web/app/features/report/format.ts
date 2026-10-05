@@ -1,7 +1,7 @@
 // Names, dates and grouping for daily, weekly and monthly reports.
 import type { ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
 import { beijingDate, beijingWeekday, isoWeekLabel, isoWeekRange } from "@aihot/contracts/time";
-import { EDITION_WHEN, REPORTS, SITE, subjectAfter } from "@aihot/site";
+import { DATES, EDITION_WHEN, REPORTS, SITE, subjectAfter } from "@aihot/site";
 import { RELEASE } from "@aihot/industry/taxonomy";
 import { monthDay, weekdayShort } from "../../lib/format.ts";
 
@@ -47,7 +47,7 @@ export interface ArchiveGroup {
 }
 
 /**
- * The archive column: days grouped by month, weeks by the month their Monday falls in ("第2周"),
+ * The archive column: days grouped by month, weeks by the month their Monday falls in ("第2周", with DATES.spaced "第 2 周"),
  * months by year. Newest first, as the index comes.
  */
 export function archiveGroups(kind: ReportKind, index: ReportNavigationEntry[]): ArchiveGroup[] {
@@ -66,7 +66,8 @@ export function archiveGroups(kind: ReportKind, index: ReportNavigationEntry[]):
     for (const e of index) {
       const m = isoWeekRange(e.key)!.start.slice(0, 7);
       const weeks = [...byMonth.get(m)!].sort();
-      push(m, `${m.slice(0, 4)} 年 ${Number(m.slice(5))} 月`, { ...e, short: `第${weeks.indexOf(e.key) + 1}周` });
+      const n = weeks.indexOf(e.key) + 1;
+      push(m, `${m.slice(0, 4)} 年 ${Number(m.slice(5))} 月`, { ...e, short: DATES.spaced ? `第 ${n} 周` : `第${n}周` });
     }
     return groups;
   }
@@ -87,13 +88,16 @@ export function archiveMark(kind: ReportKind, key: string): { big: string; small
   return { big: key.slice(5, 7), small: null };
 }
 
-/** Short chip label for the phone switcher: "今天", "9月26日", "9月第2周", "8 月". */
+/**
+ * Short chip label for the recent issues: "今天", "9月26日", "9月第2周", "8 月". The compact reports (REPORTS.compact)
+ * write the date, not "今天", which a copy or a screenshot outlives; with DATES.spaced, "9 月第 2 周".
+ */
 export function chipLabel(kind: ReportKind, key: string, index: ReportNavigationEntry[], today: string): string {
-  if (kind === "daily") return key === today ? "今天" : monthDay(key);
+  if (kind === "daily") return key === today && !REPORTS.compact ? "今天" : monthDay(key);
   if (kind === "monthly") return `${Number(key.slice(5, 7))} 月`;
   const group = archiveGroups("weekly", index).find((g) => g.entries.some((e) => e.key === key));
   const entry = group?.entries.find((e) => e.key === key);
-  return group && entry ? `${Number(group.id.slice(5))}月${entry.short}` : key;
+  return group && entry ? `${Number(group.id.slice(5))}${DATES.spaced ? " 月" : "月"}${entry.short}` : key;
 }
 
 /**
@@ -112,6 +116,15 @@ export function dateMark(kind: ReportKind, key: string): { figure: string; top: 
     return { figure: key.slice(6), top: `${key.slice(0, 4)} 年第 ${Number(key.slice(6))} 周`, bottom: `${start.slice(5).replace("-", ".")} — ${end.slice(5).replace("-", ".")}` };
   }
   return { figure: key.slice(5, 7), top: `${key.slice(0, 4)} 年`, bottom: `${Number(key.slice(5, 7))} 月` };
+}
+
+/**
+ * The compact masthead's one line (REPORTS.compact), in place of the date line and the box beside the nameplate:
+ * "2026 年 10 月 4 日 周日 · 第 1 期", "2026 年第 40 周 · 09.28 — 10.04 · 第 3 期", "2026 年 9 月 · 第 1 期".
+ */
+export function issueLine(kind: ReportKind, key: string, issue: number): string {
+  const date = kind === "daily" ? `${dateMark(kind, key).top} ${Number(key.slice(8, 10))} 日 ${weekdayShort(key)}` : dateLine(kind, key);
+  return `${date} · 第 ${issue} 期`;
 }
 
 /** When each kind comes out, for the masthead (the times are the site's, EDITION_WHEN). */

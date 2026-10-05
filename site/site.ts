@@ -207,6 +207,15 @@ export const REPORTS = {
   dailyScope: "pool" as "selected" | "pool",
 };
 
+/** 导航（电脑侧栏、手机底栏）。 */
+export const NAV = {
+  /**
+   * 不放进导航的入口，页面照样能打开。热点榜要几家来源同时讨论同一件事才有内容，本站的来源还凑不出来，
+   * 10/6 线上是空的（myfnb/HANDOFF.md §3.0）；有了内容就删掉这一项。
+   */
+  hidden: ["/hot"] as string[],
+};
+
 /** 运维告警（只发给站长）里随部署而变的几处说法。 */
 export const ALERTS = {
   /** 多少分钟没有收录新文章就告警“网站停止收录新内容”（最多一天）；环境变量 ALERT_QUIET_MINUTES 优先。 */

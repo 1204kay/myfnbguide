@@ -201,8 +201,10 @@ export function Entries({ items, cols }: { items: Array<{ to: string; name: stri
   return (
     <div className={`mt-3 grid gap-2.5 ${cols}`}>
       {items.map((e) => {
-        const body = <><b className="block text-[15px] font-[650] leading-[1.35] text-ink">{e.name}</b><span className="mt-0.5 block text-[12.5px] text-ink-4">{e.count}</span></>;
-        const cls = "card flex min-h-14 flex-col justify-center px-3.5 py-2.5 transition-colors hover:border-accent touch:active:bg-bg-sunk";
+        const body = <><b className="block text-[15px] font-[650] leading-[1.35] text-ink sm:max-lg:text-[14px]">{e.name}</b><span className="mt-0.5 block text-[12.5px] text-ink-4">{e.count}</span></>;
+        // 56px with one line of name: ten kinds and the next heading fit WeChat's first screen on a 390×844 phone (layout B1).
+        // A five-character category name stays on one line from 360px wide, and in six columns of the 608px column at 14px.
+        const cls = "card flex min-h-14 flex-col justify-center px-3 py-1.5 sm:max-lg:px-2.5 lg:px-3.5 transition-colors hover:border-accent touch:active:bg-bg-sunk";
         return e.to.startsWith("#")
           ? <a key={e.to} href={e.to} className={cls}>{body}</a>
           : <Link key={e.to} viewTransition to={e.to} className={cls}>{body}</Link>;

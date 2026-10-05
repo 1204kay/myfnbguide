@@ -85,8 +85,10 @@ const SHOWN_FROM = 2;
 async function situationsShown(now: Date): Promise<number> {
   const [row] = await sql<{ n: number }[]>`
     SELECT count(*)::int AS n FROM (
-      SELECT slug FROM reference_cases c JOIN publications p ON p.article_id = c.article_id, unnest(c.situations) AS slug
-      WHERE c.status = 'story' AND ${selectedCondition(now)} GROUP BY slug HAVING count(*) >= ${SHOWN_FROM}) shown`;
+      SELECT u.slug FROM reference_cases c
+      JOIN publications p ON p.article_id = c.article_id
+      CROSS JOIN LATERAL unnest(c.situations) AS u(slug)
+      WHERE c.status = 'story' AND ${selectedCondition(now)} GROUP BY u.slug HAVING count(*) >= ${SHOWN_FROM}) shown`;
   return row!.n;
 }
 

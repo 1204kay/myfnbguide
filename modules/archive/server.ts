@@ -1,10 +1,10 @@
-// The archive's backend: an hourly import of the sources it opens that have not been taken in yet, a queue
-// that transcribes podcast episodes one at a time, and its status in numbers.
+// The archive's backend: an hourly import of the sources it opens that have not been taken in yet, an hourly note of
+// every podcast's new episodes, a queue that transcribes podcast episodes one at a time, and its status in numbers.
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { sql } from "@aihot/backend/db";
 import { ARCHIVE } from "./plan.ts";
-import { importSource } from "./backend/importer.ts";
+import { importSource, noteNewEpisodes } from "./backend/importer.ts";
 import { episodesToTranscribe, transcribeEpisode } from "./backend/transcribe.ts";
 
 const TRANSCRIBE = defineQueue<{ articleId: string }>({
@@ -29,6 +29,13 @@ export default defineServerModule({
         for (const plan of ARCHIVE.filter((p) => !done.has(p.id))) results.push(await importSource(plan));
         return { imported: results };
       },
+    },
+    {
+      // New episodes of every podcast, kept for transcription (backend/importer.ts noteNewEpisodes).
+      name: "archive.episodes",
+      cron: "40 * * * *",
+      when: () => process.env.COLLECT_ENABLED === "true",
+      run: () => noteNewEpisodes(),
     },
     {
       name: "archive.transcribe",

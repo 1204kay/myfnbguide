@@ -1,4 +1,5 @@
-// Failure cases: an opened archive enters today or the daily instead of history; an episode is transcribed though
+// Failure cases: an opened archive enters today or the daily instead of history; a new episode of a podcast the site
+// collects is never kept for transcription, or waits behind the archive; an archive episode is transcribed though
 // its notes scored below the floor, or while the service has no budget row; the transcript does not become the
 // article's body or is not analysed again; a rate limit marks an episode failed for good; an archive that names
 // its picks takes in others.
@@ -11,7 +12,8 @@ process.env.ALLOW_PRIVATE_NETWORK_FETCH = "true";
 process.env.GEMINI_API_KEY = "test-gemini-key";
 const { closeDb, sql } = await import("@aihot/backend/db");
 const { stopBoss } = await import("@aihot/backend/jobs/queue");
-const { audioByTitle, importSource, PACE } = await import("../backend/importer.ts");
+const { audioByTitle, importSource, noteNewEpisodes, PACE } = await import("../backend/importer.ts");
+const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
 const { episodesToTranscribe, GEMINI, SERVICE, transcribeEpisode } = await import("../backend/transcribe.ts");
 
@@ -147,4 +149,23 @@ test("an archive with picks takes in only the episodes it names", async () => {
   assert.deepEqual([result.found, result.created, result.finished], [1, 1, true], "an episode no longer listed is not looked for");
   const urls = (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id = ${`${SOURCE}-picked`}`).map((r) => r.url);
   assert.deepEqual(urls, [`${BASE}/picked/2`]);
+});
+
+test("new episodes of a podcast the site collects are kept for transcription and go first, however thin their notes", async () => {
+  const id = `${SOURCE}-new`;
+  await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config, tags) VALUES (${id}, 'Cafe talk new', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/feed.xml` })}, ${["播客"]})`;
+  // Two episodes the collection took in today; one title the feed does not have.
+  const taken = [];
+  for (const title of [`Episode 1 ${T}`, `Not in the feed ${T}`]) {
+    taken.push((await upsertMaterial({ sourceId: id, url: `${BASE}/new/${title.length}`, title, bodyText: "Short notes.", bodyStatus: "ok", via: "fetch", publishedAt: new Date() })).articleId);
+  }
+  assert.deepEqual(await noteNewEpisodes().then((r) => r.added >= 1), true);
+  const kept = await sql<{ article_id: string; audio_url: string }[]>`SELECT article_id, audio_url FROM archive_episodes WHERE source_id = ${id}`;
+  assert.deepEqual(kept.map((k) => [k.article_id, k.audio_url]), [[taken[0], `${BASE}/audio/1.mp3`]], "found by its title; one the feed lacks waits");
+  await noteNewEpisodes();
+  const [again] = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM archive_episodes WHERE source_id = ${id}`;
+  assert.equal(again!.n, 1, "kept once");
+  // Notes too thin to score at the floor, but past the prefilter: transcribed, ahead of the archive.
+  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${taken[0]!}, 1, 'rule', 'pass', 8, false)`;
+  assert.equal((await episodesToTranscribe(10))[0], taken[0]);
 });

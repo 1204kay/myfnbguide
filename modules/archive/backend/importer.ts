@@ -103,3 +103,36 @@ export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
       error = EXCLUDED.error, updated_at = now()`;
   return result;
 }
+
+/**
+ * New episodes of every podcast the site collects, kept for transcription like the archive's: each recent episode
+ * the collection took in without an entry here gets its audio file from the feed (the engine's reader keeps no
+ * enclosures). Without a transcript an episode is only its notes, too thin to say what it says (用户 10/9: 每一篇都要
+ * 有实际表达的内容).
+ */
+export async function noteNewEpisodes(): Promise<{ sources: number; added: number; errors: number }> {
+  const sources = await sql<SourceRow[]>`SELECT * FROM sources WHERE kind = 'rss' AND enabled AND '播客' = ANY (tags)`;
+  let added = 0, errors = 0;
+  for (const source of sources) {
+    const waiting = await sql<{ id: string; title: string }[]>`
+      SELECT a.id, a.title FROM articles a LEFT JOIN archive_episodes e ON e.article_id = a.id
+      WHERE a.source_id = ${source.id} AND e.article_id IS NULL AND NOT a.backfill AND a.discovered_at > now() - interval '30 days'`;
+    if (!waiting.length) continue;
+    try {
+      const feed = await guardedFetch(source.config.feedUrl as string, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 });
+      if (feed.status !== 200) { errors += 1; continue; }
+      const audio = audioByTitle(feed.text());
+      for (const a of waiting) {
+        const file = audio.get(key(a.title));
+        if (!file) continue;
+        await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
+          VALUES (${a.id}, ${source.id}, ${file.url}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+        added += 1;
+      }
+    } catch {
+      // A feed that cannot be read now is read again at the next run.
+      errors += 1;
+    }
+  }
+  return { sources: sources.length, added, errors };
+}

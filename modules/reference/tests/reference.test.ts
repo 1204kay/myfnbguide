@@ -26,7 +26,7 @@ import { buildApp } from "../../../apps/api/src/app.ts";
 import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
-import { articlesToWrite, readOutput, shopNameKey, writeCase } from "../backend/write.ts";
+import { articlesToWrite, readOutput, shopNameKey, spaceStory, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
@@ -148,6 +148,23 @@ function story(over: Partial<CaseStory> = {}): CaseStory {
   };
 }
 const SOURCE = "A restaurant's linen bill grew 74% from $865 to $1,503 per week over about four years.";
+
+test("key figures and before-and-after cards are read, spaced and checked like every block", () => {
+  const out = readOutput({ material: "story", ...story(), parts: [{ heading: "账单涨到每周 1,503 美元", blocks: [
+    { type: "numbers", items: [{ value: "1,503美元", label: "每周的布草账单" }, { value: "74%", label: "四年涨幅" }] },
+    { type: "change", before: { label: "以前", text: "账单自动付掉，没人细看" }, after: { label: "现在", text: "每周对一次账单" } },
+  ] }] });
+  assert.equal(out.problems.length, 0, out.problems.join(" / "));
+  assert.ok(out.written?.status === "story");
+  const spaced = spaceStory(out.written.story);
+  const [numbers, change] = spaced.parts[0]!.blocks;
+  assert.ok(numbers?.type === "numbers" && numbers.items[0]!.value === "1,503 美元" && numbers.caption === null, "spaced; no caption is null");
+  assert.ok(change?.type === "change" && change.after.text === "每周对一次账单");
+  assert.deepEqual(checkStory(spaced, SOURCE), []);
+  const stray = checkStory({ ...spaced, parts: [{ heading: "账单", blocks: [{ type: "numbers", items: [{ value: "9,999 美元", label: "一年多付" }], caption: null }] }] }, SOURCE);
+  assert.ok(stray.some((p) => /9,999/.test(p)), "a key figure the original never wrote goes back");
+  assert.ok(readOutput({ material: "story", ...story(), parts: [{ heading: "账单", blocks: [{ type: "change", before: { label: "很久很久以前的做法", text: "一" }, after: { label: "现在", text: "二" } }] }] }).problems.some((p) => /太长/.test(p)), "a label over 8 characters is named too long");
+});
 
 test("a story the checks pass; each problem is named for the writer", () => {
   assert.deepEqual(checkStory(story(), SOURCE), []);
@@ -620,4 +637,14 @@ test("every listed item that is no story gets a write-up under its summary, chec
   assert.equal((await app.inject(`/api/reference/items/${short}`)).statusCode, 404, "nothing to show");
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${news}`;
   assert.equal((await app.inject(`/api/reference/items/${news}`)).statusCode, 404, "a withdrawn item shows no write-up");
+});
+
+test("a story already shown stays when writing it again fails the checks", async () => {
+  // WRONG's answers always fail: shown under an earlier prompt, it is tried once more and kept.
+  await sql`UPDATE reference_cases SET status = 'story', story = ${sql.json(story({ placements: [] }) as never)}, prompt_version = 'reference-case@older' WHERE article_id = ${ids.WRONG!}`;
+  assert.ok((await articlesToWrite(50)).includes(ids.WRONG!));
+  assert.equal((await writeCase(ids.WRONG!))!.status, "held");
+  const [row] = await sql<{ status: string; story: CaseStory | null }[]>`SELECT status, story FROM reference_cases WHERE article_id = ${ids.WRONG!}`;
+  assert.deepEqual([row!.status, row!.story?.title], ["story", "布草租金四年涨了 74%"], "the shown story stays");
+  assert.ok(!(await articlesToWrite(50)).includes(ids.WRONG!), "tried under this prompt: not again until the next change");
 });

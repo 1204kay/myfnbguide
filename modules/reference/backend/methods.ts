@@ -226,7 +226,7 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
 /** What the model reads of each story: its place in the situation, who tells it and the practice it tells, kept short. */
 function describe(m: Member, teller: string): string {
   const s = m.story;
-  const body = s.parts.map((p) => `${p.heading}：${p.blocks.flatMap((b) => (b.type === "text" ? [b.text] : b.type === "list" ? b.items.map((i) => i.text) : b.type === "flow" ? [b.steps.join("→")] : [])).join(" ").slice(0, 200)}`).join("\n");
+  const body = s.parts.map((p) => `${p.heading}：${p.blocks.flatMap((b) => (b.type === "text" ? [b.text] : b.type === "list" ? b.items.map((i) => i.text) : b.type === "flow" ? [b.steps.join("→")] : b.type === "change" ? [b.after.text] : [])).join(" ").slice(0, 200)}`).join("\n");
   const shop = [s.shop.country, s.shop.label || s.shop.name].filter(Boolean).join(" · ");
   return [`id：${m.id}`, `原因组：${m.group ?? "null"}`, `店家：${teller}（${shop}）`, `标题：${s.title}`, `做了什么：${s.placements[0]?.card ?? ""}`, `人物：${s.who}`, body].join("\n");
 }

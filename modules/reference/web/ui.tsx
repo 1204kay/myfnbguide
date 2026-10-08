@@ -453,10 +453,17 @@ export function StoryBlock({ block }: { block: Block }) {
         {block.items.map((i, n) => <li key={n} className="relative pl-4 before:absolute before:left-0 before:top-[0.8em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent">{i.lead && <b className="text-ink">{i.lead}：</b>}{i.text}</li>)}
       </ul>
     );
+    // Steps one under another, numbered, joined by a line: read in order on a phone as on a desktop.
     case "flow": return (
-      <div className="card mt-3.5 flex flex-wrap items-center gap-x-1.5 gap-y-2 p-4 text-[14px] text-ink-2">
-        {block.steps.map((s, n) => <span key={n} className="flex items-center gap-1.5">{n > 0 && <span className="text-accent">→</span>}<span className="rounded-md bg-bg-sunk px-2 py-1">{s}</span></span>)}
-      </div>
+      <ol className="card mt-3.5 grid gap-0 p-4">
+        {block.steps.map((s, n) => (
+          <li key={n} className="relative flex gap-3 pb-3 last:pb-0">
+            {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute left-[11px] top-6 bottom-0 w-px bg-line-strong" />}
+            <span className="num relative flex size-6 shrink-0 items-center justify-center rounded-full bg-accent text-[12px] font-bold text-white">{n + 1}</span>
+            <span className="pt-0.5 text-[15px] leading-[1.6] text-ink-2">{s}</span>
+          </li>
+        ))}
+      </ol>
     );
     case "quote": return (
       <blockquote className="mt-4 border-l-2 border-accent pl-4 text-[17px] font-semibold leading-relaxed text-ink">
@@ -466,5 +473,34 @@ export function StoryBlock({ block }: { block: Block }) {
     case "compare": return <Compare b={block} />;
     case "parts": return <Parts b={block} />;
     case "example": return <Example b={block} />;
+    // The original's key figures, big, each with what it counts.
+    case "numbers": return (
+      <Figure kind="原文数据" caption={block.caption}>
+        <div className={`grid gap-4 ${["", "", "grid-cols-2", "grid-cols-2 sm:grid-cols-3"][block.items.length]}`}>
+          {block.items.map((i, n) => (
+            <div key={n}>
+              <div className="num text-[28px] font-extrabold leading-tight text-accent lg:text-[32px]">{i.value}</div>
+              <div className="mt-1 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
+            </div>
+          ))}
+        </div>
+      </Figure>
+    );
+    // Before and after side by side (one under the other on a phone), the after in the accent.
+    case "change": return (
+      <Figure caption={block.caption}>
+        <div className="grid items-stretch gap-2 sm:grid-cols-[1fr_auto_1fr]">
+          <div className="rounded-control bg-bg-sunk p-3">
+            <div className="text-[12px] font-semibold text-ink-4">{block.before.label}</div>
+            <p className="mt-1 text-[15px] leading-[1.6] text-ink-3">{block.before.text}</p>
+          </div>
+          <span aria-hidden="true" className="self-center justify-self-center text-[18px] text-accent max-sm:rotate-90">→</span>
+          <div className="rounded-control bg-accent-soft p-3">
+            <div className="text-[12px] font-semibold text-accent">{block.after.label}</div>
+            <p className="mt-1 text-[15px] leading-[1.6] text-ink">{block.after.text}</p>
+          </div>
+        </div>
+      </Figure>
+    );
   }
 }

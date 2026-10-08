@@ -70,6 +70,21 @@ export interface ExampleBlock {
   result: string;
 }
 
+/** The original's key figures, each as it writes it with what it counts, drawn big (数字卡). */
+export interface NumbersBlock {
+  type: "numbers";
+  items: Array<{ value: string; label: string }>;
+  caption: string | null;
+}
+
+/** How something was done before and how now, side by side (前后对比). */
+export interface ChangeBlock {
+  type: "change";
+  before: { label: string; text: string };
+  after: { label: string; text: string };
+  caption: string | null;
+}
+
 export type Block =
   | { type: "text"; text: string }
   | { type: "list"; items: Array<{ lead: string | null; text: string }> }
@@ -77,7 +92,9 @@ export type Block =
   | { type: "quote"; text: string; who: string }
   | CompareBlock
   | PartsBlock
-  | ExampleBlock;
+  | ExampleBlock
+  | NumbersBlock
+  | ChangeBlock;
 
 export interface CaseStory {
   title: string;

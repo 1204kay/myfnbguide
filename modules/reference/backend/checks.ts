@@ -136,6 +136,8 @@ function blockTexts(block: Block): string[] {
     case "compare": return [block.caption, ...block.items.map((i) => i.label)];
     case "parts": return [block.caption, ...block.items.map((i) => i.label), block.against?.label ?? ""];
     case "example": return [block.caption];
+    case "numbers": return [block.caption ?? "", ...block.items.flatMap((i) => [i.value, i.label])];
+    case "change": return [block.caption ?? "", block.before.label, block.before.text, block.after.label, block.after.text];
   }
 }
 

@@ -58,6 +58,8 @@ export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text.max(90) }),
   z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text.max(90) }),
   z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(120) }),
+  z.object({ type: z.literal("numbers"), items: z.array(z.object({ value: text.max(16), label: text.max(24) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
+  z.object({ type: z.literal("change"), before: z.object({ label: text.max(8), text: text.max(80) }), after: z.object({ label: text.max(8), text: text.max(80) }), caption: z.string().trim().max(90).nullable().default(null) }),
 ]);
 
 const StorySchema = z.object({
@@ -180,6 +182,8 @@ export function spaceStory(story: CaseStory): CaseStory {
       case "compare": return { ...b, caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })) };
       case "parts": return { ...b, caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })), against: b.against && { ...b.against, label: s(b.against.label) } };
       case "example": return { ...b, caption: s(b.caption), result: s(b.result) };
+      case "numbers": return { ...b, caption: b.caption && s(b.caption), items: b.items.map((i) => ({ value: s(i.value), label: s(i.label) })) };
+      case "change": return { ...b, caption: b.caption && s(b.caption), before: { label: s(b.before.label), text: s(b.before.text) }, after: { label: s(b.after.label), text: s(b.after.text) } };
     }
   };
   return {
@@ -236,7 +240,13 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   const shopKey = story?.shop.name ? createHash("sha256").update(`${story.shop.country}|${shopNameKey(story.shop.name)}`).digest("hex").slice(0, 12) : null;
   const situations = status === "story" && story ? story.placements.map((p) => p.situation) : [];
   await sql.begin(async (tx) => {
-    await tx`
+    // A story already shown stays when writing it again (a new prompt, a new revision) fails the checks: rewriting
+    // every case would otherwise hide a quarter of the library (27% of first writes were held, 10/9). It is marked
+    // as tried under this prompt, so it is not written again until the next change.
+    const [shown] = status === "held" ? await tx`SELECT 1 FROM reference_cases WHERE article_id = ${a.id} AND status = 'story'` : [];
+    if (shown) {
+      await tx`UPDATE reference_cases SET prompt_version = ${PROMPT_VERSION}, receipt_ids = ${receiptIds}, updated_at = now() WHERE article_id = ${a.id}`;
+    } else await tx`
       INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, problems, receipt_ids, prompt_version, updated_at)
       VALUES (${a.id}, ${a.revision}, ${status}, ${story ? sql.json(story as never) : null}, ${situations}, ${shopKey},
               ${sql.json((written?.status === "thin" ? [written.reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())

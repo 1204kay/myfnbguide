@@ -103,7 +103,10 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
   const status: BodyResult["status"] = problems.length || !written ? "held" : written.status;
   const body = written?.status === "body" ? (({ lead, parts, open }) => ({ lead, parts, open }))(spaceStory(asStory(written.body))) : null;
   await sql.begin(async (tx) => {
-    await tx`
+    // A write-up already shown stays when writing it again fails the checks (as a case does, write.ts).
+    const [shown] = status === "held" ? await tx`SELECT 1 FROM reference_bodies WHERE article_id = ${a.id} AND status = 'body'` : [];
+    if (shown) await tx`UPDATE reference_bodies SET prompt_version = ${PROMPT_VERSION}, receipt_ids = ${receiptIds}, updated_at = now() WHERE article_id = ${a.id}`;
+    else await tx`
       INSERT INTO reference_bodies (article_id, revision, status, body, problems, receipt_ids, prompt_version, updated_at)
       VALUES (${a.id}, ${a.revision}, ${status}, ${body ? sql.json(body as never) : null},
               ${sql.json((written?.status === "thin" ? [written.reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())

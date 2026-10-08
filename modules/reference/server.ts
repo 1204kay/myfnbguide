@@ -12,6 +12,7 @@ import {
   membersBySituation, readCase, readHome, readItemText, readShop, readSituation, readStatus, sitemapEntries,
 } from "./backend/read.ts";
 import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
+import { problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
@@ -102,6 +103,9 @@ export default defineServerModule({
         ...(await readStatus()), waiting: (await articlesToWrite(1000)).length,
         // The item pages' write-ups: written, thin, held, and still to write.
         bodies: Object.fromEntries((await sql<{ status: string; n: number }[]>`SELECT status, count(*)::int AS n FROM reference_bodies GROUP BY 1`).map((r) => [r.status, r.n])),
+        // How many held write-ups each kind of problem stopped, as for the cases.
+        bodiesHeld: (await sql<{ problems: string[] }[]>`SELECT problems FROM reference_bodies WHERE status = 'held'`)
+          .reduce<Record<string, number>>((out, r) => { for (const kind of new Set(r.problems.map(problemKind))) out[kind] = (out[kind] ?? 0) + 1; return out; }, {}),
         bodiesWaiting: (await articlesToBody(5000)).length,
       }));
     app.get("/api/reference/situations/:slug", async (req, reply) => {

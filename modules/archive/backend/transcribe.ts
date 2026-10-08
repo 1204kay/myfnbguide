@@ -91,9 +91,10 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
   if (!config.modelCallsEnabled) return { status: "skipped", error: "model calls are off" };
   const [budget] = await sql`SELECT 1 FROM budgets WHERE service = ${SERVICE}`;
   if (!budget) return { status: "skipped", error: `no budget row for ${SERVICE}` };
-  // The Gemini key the site's embeddings use.
-  const key = credential("models", "EMBEDDING_API_KEY");
-  if (!key) return { status: "skipped", error: "EMBEDDING_API_KEY missing" };
+  // The site's own Google AI Studio key (free tier). Grouping does not use it: transcripts used up the free quota the
+  // embeddings shared, and grouping failed on almost every item (10/2–10/8), so the engine compares texts instead.
+  const key = credential("models", "GEMINI_API_KEY");
+  if (!key) return { status: "skipped", error: "GEMINI_API_KEY missing" };
   const [row] = await sql<{ audio_url: string | null; status: string; source_id: string; url: string; identity_key: string; title: string }[]>`
     SELECT e.audio_url, e.status, a.source_id, a.url, a.identity_key, a.title FROM archive_episodes e JOIN articles a ON a.id = e.article_id
     WHERE e.article_id = ${articleId}`;

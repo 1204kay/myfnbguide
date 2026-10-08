@@ -8,7 +8,7 @@ import http from "node:http";
 import { after, before, test } from "node:test";
 
 process.env.ALLOW_PRIVATE_NETWORK_FETCH = "true";
-process.env.EMBEDDING_API_KEY = "test-gemini-key";
+process.env.GEMINI_API_KEY = "test-gemini-key";
 const { closeDb, sql } = await import("@aihot/backend/db");
 const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, PACE } = await import("../backend/importer.ts");

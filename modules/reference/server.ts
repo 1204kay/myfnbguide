@@ -106,6 +106,10 @@ export default defineServerModule({
         // How many held write-ups each kind of problem stopped, as for the cases.
         bodiesHeld: (await sql<{ problems: string[] }[]>`SELECT problems FROM reference_bodies WHERE status = 'held'`)
           .reduce<Record<string, number>>((out, r) => { for (const kind of new Set(r.problems.map(problemKind))) out[kind] = (out[kind] ?? 0) + 1; return out; }, {}),
+        // Which sources give too little to write up, the most first: where more of the original has to be read.
+        bodiesThinBySource: Object.fromEntries((await sql<{ name: string; n: number }[]>`
+          SELECT s.name, count(*)::int AS n FROM reference_bodies b JOIN articles a ON a.id = b.article_id JOIN sources s ON s.id = a.source_id
+          WHERE b.status = 'thin' GROUP BY 1 ORDER BY 2 DESC LIMIT 20`).map((r) => [r.name, r.n])),
         bodiesWaiting: (await articlesToBody(5000)).length,
       }));
     app.get("/api/reference/situations/:slug", async (req, reply) => {

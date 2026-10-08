@@ -195,7 +195,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 分支 | 工作分支 `claude/myfnb-handoff`；四项检查通过后 `git push origin claude/myfnb-handoff:main`，服务器跟 `main`。**Claude 自己推**；被自动模式拒绝时不要重试，把 `git -C C:/myfnbguide push origin claude/myfnb-handoff:main` 交给用户在终端运行。**推了不等于上线**：GitHub 检查不过，服务器不部署，所以推完要看 `/api/site/stats`。**评测、调试这类长命令在服务器上跑的时候不推 main**（部署会停掉 worker，命令随之中断） |
 | 同步上游 | 定期 `git fetch upstream`，审阅后合并，不自动跟；合并后跑四项检查。作者的新测试常按 AI 示例行业写：测我们没有的功能的（公司主题、新模型发布）按配置跳过并写明原因，测通用功能的把例子改成从行业包取，不删作者的测试 |
 | 写作模型 | DeepSeek 官方 API（`LLM_BASE_URL=https://api.deepseek.com/v1`、`LLM_MODEL=deepseek-flash`，思考关闭）。评分直接报分，不开「先思考」（评测 v4：排序更好、便宜 7–10 倍，归档 §9「10/3 傍晚」） |
-| 向量模型 | Google Gemini `gemini-embedding-001` 免费层，1536 维，走 `EMBEDDING_*` |
+| 向量模型 | **不用**（10/9 起）：归组改用框架自带的文字比对（不配 `EMBEDDING_*`、`DASHSCOPE_API_KEY` 时框架就这样做）。原来用 Google `gemini-embedding-001` 免费层，和存档模块的播客转写共用一个 key，转写把免费额度用完，10/2–10/8 归组几乎全部失败（429，或返回缺 `index`），入选的条目卡在等身份、进不了精选。Google key 改名 `GEMINI_API_KEY`，只给转写用。阿里云百炼（作者默认的向量）不收预付卡和虚拟卡。以后要恢复向量，先找能付费、返回格式完全兼容 OpenAI 的服务 |
 | 服务器 | 腾讯云**国际版** Lighthouse **新加坡**，锐驰型 2 核 4GB 60GB，Ubuntu 24.04，按月付、关自动续费，流量不限 |
 | 备份 | 腾讯云 COS 新加坡（还没建桶，§9.2 第 11 项） |
 | 域名 | 试运行 `new.myfnbguide.com`；上线切换时 `www.myfnbguide.com` 指过来（§10） |
@@ -246,7 +246,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 
 ### 5.4 信源
 
-**77 个**（快照 10/5 凌晨：10/5 接了 5 个店主本人的博客，见下面「店主博客」），全部只放摘要和原文链接。清单以 `industry/sources.json` 为准；每个看过的候选（接或不接、为什么）在 `myfnb/sources-ledger.tsv`，一行一个，下次不用重查。来源名统一成「名字（国家 · 类型）」；网站显示来源名时框架会去掉全角括号里的部分（`publication/rules.ts` 的 `publicSourceName`），所以读者看不到国家，括号里的部分只给模型看；参考库要显示国家，从来源标签取。
+**82 个**（10/9 接了 5 个中文餐饮媒体：餐饮老板内参、餐饮界、饮品报、中国食品安全网、北京商报餐饮频道，复核结论在账本「2026-10-09·中文来源复核」；红餐网快讯约 10/22 重看。此前快照 10/5 凌晨：10/5 接了 5 个店主本人的博客，见下面「店主博客」），全部只放摘要和原文链接。清单以 `industry/sources.json` 为准；每个看过的候选（接或不接、为什么）在 `myfnb/sources-ledger.tsv`，一行一个，下次不用重查。来源名统一成「名字（国家 · 类型）」；网站显示来源名时框架会去掉全角括号里的部分（`publication/rules.ts` 的 `publicSourceName`），所以读者看不到国家，括号里的部分只给模型看；参考库要显示国家，从来源标签取。
 
 - **现在的产出**（10/3 按用户标注重算）：每天约 2–3 条必看，多数来自经营者播客；媒体和系统商博客出必看的很少。**免费、合规的路基本量完**；中文小店经验在公众号、抖音、小红书，接不到。所以不再追「每天 5 条必看」这个数，下一步的量来自存档（§9.2 第 4 项）和老板自己写的博客（第 6 项）。
 - **衡量一个来源只看它出几条必看和可看**，不看个数和总条数（10/2 追「约 1000 个来源」，加了 426 家日本企业新闻稿，教训见归档 §5.4「为什么改」）。来源按「每月能补几个店主本人的故事」排：样页 10 条里店主本人只有 4 条。
@@ -342,7 +342,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | GitHub 命令行 | 本机 `gh` 已登录 `1204kay` |
 | GitHub 两步验证 | 已开（Authenticator app）。服务器自动部署 `main` 上检查通过的提交，GitHub 账号就是服务器的钥匙 |
 | DeepSeek | 服务器用的 key `myfnb-server`。10/1 余额 US$12.00 + ¥9.42，余额提醒设在 US$3；实际 30 天约 ¥8 |
-| Google AI Studio | 项目 `myfnb`、key `myfnb-embedding`，没绑卡 |
+| Google AI Studio | 项目 `myfnb`、key `myfnb-embedding`，没绑卡；10/9 起服务器上叫 `GEMINI_API_KEY`，只给存档模块转写播客用 |
 | 腾讯云国际版 | Lighthouse `myfnb`，新加坡，**公网 IP 43.160.228.180**，**2026-11-01 到期，不自动续费**。防火墙：22、80、443、Ping |
 | Porkbun | A 记录 `new` → 43.160.228.180 |
 

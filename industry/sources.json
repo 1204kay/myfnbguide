@@ -1746,6 +1746,147 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "web-watcn-art",
+      "name": "餐饮老板内参 · 最新文章（中国 · 餐饮媒体）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.watcn.com/art/new-list.html",
+        "itemSelector": "#itemslist a.lists",
+        "linkSelector": "a.lists",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtSelector": "div.author-info div.date",
+          "titleSelector": "div.detail > div.title",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-canyinj-toutiao",
+      "name": "餐饮界 · 头条（中国 · 餐饮媒体）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.canyinj.com/lists/default_blog.html",
+        "itemSelector": "div.hlgd-box dd",
+        "linkSelector": "h3 a",
+        "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d)",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-drinknewspaper",
+      "name": "饮品报（中国 · 茶饮咖啡媒体）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.drinknewspaper.com/sys-nr/?_reqArgs=%7B%22args%22%3A%7B%7D%2C%22type%22%3A15%7D",
+        "itemSelector": "div.m_news_content",
+        "linkSelector": "div.m_news_info div.news_title a",
+        "publishedAtSelector": "div.news_time span.normal_time",
+        "allowUrlPrefixes": [
+          "https://www.drinknewspaper.com/news/"
+        ],
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-cfsn-canyin",
+      "name": "中国食品安全网 · 餐饮（中国 · 媒体）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.cfsn.cn/news/219.html",
+        "itemSelector": "a[href*='/news/detail/22']",
+        "linkSelector": "a",
+        "allowUrlPrefixes": [
+          "https://www.cfsn.cn/news/detail/22"
+        ],
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d)",
+          "titleSelector": "h1.title",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-bbtnews-canyin",
+      "name": "北京商报 · 餐饮频道（中国 · 综合经济日报的餐饮栏目）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.bbtnews.com.cn/chuizhipd/shangyexinwenzhongxi/canyinpd/",
+        "itemSelector": "div.news-head, div.news-feed li",
+        "linkSelector": "p.tit a, h4 a",
+        "titleSelector": "p.tit a, h4 a",
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "<span>(20\\d\\d-\\d\\d-\\d\\d</)span>",
+          "publishedAtAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

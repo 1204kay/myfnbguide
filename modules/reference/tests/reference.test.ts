@@ -13,7 +13,7 @@
 // taken in last; a practice one shop tells is a card, or its row repeats the title in the shop's line, or drops a
 // story the grouping gave another shop before the stories were written again; one shop's practices in a list each
 // name it again; a page is split by cause without two causes of two practices each; a shop is named two ways, or
-// with its country twice; the shop kinds' page still answers; the search or the item page's block misses a story.
+// with its country twice; the shop kinds' page still answers; an item that is no story misses its write-up, or a write-up skips the checks a story has, or is called without material.
 import { pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -27,10 +27,11 @@ import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, writeCase } from "../backend/write.ts";
+import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
 import { day, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
-import type { CaseStory, Count, Shop, SituationRow } from "../types.ts";
+import type { CaseStory, Count, ItemBody, Shop, SituationRow } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
 
@@ -323,6 +324,7 @@ const users: Record<string, string[]> = {};
 let styled = 0;
 let grouped = 0;
 const groupUsers: string[] = [];
+const bodies: string[] = [];
 const model = await stub((_hit, req) => {
   const body = JSON.parse(req.body) as { messages: Array<{ role: string; content: string }> };
   const user = body.messages.at(-1)!.content;
@@ -344,6 +346,14 @@ const model = await stub((_hit, req) => {
       ] };
     return { id: `stub-group-${grouped}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
+  // An item's write-up: a number the original never wrote first, then right when told.
+  if (body.messages.some((m) => m.role === "system" && m.content.includes("正文 · AI 整理自原文"))) {
+    bodies.push(user);
+    const parts = (n: string) => [{ heading: "布草账单四年涨到每周 1,503 美元", blocks: [{ type: "text", text: `账单从每周 865 美元涨到 ${n} 美元。` }] }];
+    const out = user.includes("有以下问题") ? { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("1,503"), open: null }
+      : { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("77,777"), open: null };
+    return { id: `stub-body-${bodies.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+  }
   // The last pass over a story that passed: hands it back with one spoken word made written.
   if (body.messages.some((m) => m.role === "system" && m.content.includes("把口语词、方言词"))) {
     styled += 1;
@@ -359,6 +369,7 @@ const model = await stub((_hit, req) => {
 pointModels(model.url, ["deepseek-flash"]);
 process.env.REFERENCE_CASE_MODEL = "deepseek-flash";
 process.env.REFERENCE_METHODS_MODEL = "deepseek-flash";
+process.env.REFERENCE_BODY_MODEL = "deepseek-flash";
 installModules([reference]);
 const app = await buildApp();
 const SRC = `reference-${T}`;
@@ -396,7 +407,7 @@ test("cases are written for selected items, once more when the checks find probl
   assert.ok(wrong!.problems.some((p) => /99,999|88,888/.test(p)));
   assert.deepEqual(await articlesToWrite(50), [], "every selected item has its case");
   assert.deepEqual(await get("/api/reference/status"),
-    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0 });
+    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesWaiting: 3 });
   await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
   assert.deepEqual(await articlesToWrite(50), [ids.THIN], "a changed prompt writes the case again");
   await writeCase(ids.THIN!);
@@ -576,4 +587,37 @@ test("the sample pages are served at their unlisted address, kept from search en
   assert.match(String(res.headers["content-type"]), /text\/html/);
   assert.equal(res.headers["x-robots-tag"], "noindex");
   assert.ok(res.body.startsWith("<!doctype html>") && res.body.includes("生意很忙，钱却留不下来"));
+});
+
+test("every listed item that is no story gets a write-up under its summary, checked like a case; a story is its item's write-up", async () => {
+  // An item not selected, with an original long enough to write up, and one with only a line.
+  const listed = async (marker: string, bodyText: string) => {
+    const { articleId } = await upsertMaterial({ sourceId: SRC, url: `https://example.com/${marker}-${T}`, title: `${marker}-${T}`, bodyText, bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
+    await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected) VALUES (${articleId}, 1, 'rule', 'pass', 'market', ${marker}, '摘要', 20, false)`;
+    await publishArticle(articleId);
+    return articleId;
+  };
+  const news = await listed("BODY", `${SOURCE} ${"The owner checked every line of the bill against the contract. ".repeat(6)}`);
+  const short = await listed("SHORT", SOURCE);
+  const due = await articlesToBody(50);
+  assert.ok(due.includes(news) && due.includes(short) && due.includes(ids.WRONG!) && due.includes(ids.THIN!), "not selected, or a case thin or held");
+  assert.ok(!due.includes(ids.FIRST!), "a selected item with its story has no write-up of its own");
+
+  assert.deepEqual(await writeBody(news), { status: "body", problems: [] });
+  assert.equal(bodies.length, 2, "a number not in the original went back once");
+  assert.ok(bodies[1]!.includes("77,777") && bodies[1]!.includes(SOURCE), "named, with the material");
+  assert.deepEqual(await writeBody(short), { status: "thin", problems: [] });
+  assert.equal(bodies.length, 2, "too little material: no call");
+  const [stored] = await sql<{ body: ItemBody; receipt_ids: string[] }[]>`SELECT body, receipt_ids FROM reference_bodies WHERE article_id = ${news}`;
+  assert.equal(stored!.body.parts[0]!.heading, "布草账单四年涨到每周 1,503 美元");
+  assert.equal(stored!.receipt_ids.length, 2);
+  assert.ok(!(await articlesToBody(50)).includes(news), "written up once");
+
+  const page = await get(`/api/reference/items/${news}`);
+  assert.deepEqual([page.kind, page.body.lead], ["body", "美国一家餐饮媒体介绍一家小酒馆的布草账单。"]);
+  const story = await get(`/api/reference/items/${ids.FIRST}`);
+  assert.deepEqual([story.kind, story.id, story.situation.slug], ["case", ids.FIRST, "busy-no-profit"], "its story, and the way to its situation");
+  assert.equal((await app.inject(`/api/reference/items/${short}`)).statusCode, 404, "nothing to show");
+  await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${news}`;
+  assert.equal((await app.inject(`/api/reference/items/${news}`)).statusCode, 404, "a withdrawn item shows no write-up");
 });

@@ -266,3 +266,17 @@ export interface ShopPage {
   cases: CaseCard[];
   updatedAt: string | null;
 }
+
+/** An item's 正文 · AI 整理自原文 when it is no story of the library (backend/body.ts). */
+export interface ItemBody {
+  /** What the original is: who said or did what, where. */
+  lead: string;
+  parts: Array<{ heading: string; blocks: Block[] }>;
+  /** What the original leaves open that readers will ask, one sentence. */
+  open: string | null;
+}
+
+/** What the item page shows under its summary (web/item-part.tsx): the item's story in the library, or its write-up. */
+export type ItemText =
+  | { kind: "case"; id: string; story: CaseStory; situation: { slug: string; title: string; count: Count } | null }
+  | { kind: "body"; body: ItemBody };

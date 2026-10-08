@@ -1,14 +1,17 @@
 // The reference library's backend: a schedule finds selected items without a case and queues them, the
-// queue writes each case (backend/write.ts); another groups each situation's stories by practice once they
-// change (backend/methods.ts); and the api answers the pages, the search and the item page (backend/read.ts).
+// queue writes each case (backend/write.ts); another writes up every other listed item for its page (backend/body.ts);
+// another groups each situation's stories by practice once they change (backend/methods.ts); and the api answers
+// the pages and the item page's block (backend/read.ts).
 import { readFileSync } from "node:fs";
 import { config } from "@aihot/backend/config";
+import { sql } from "@aihot/backend/db";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { SITUATIONS } from "./situations.ts";
 import {
-  membersBySituation, readCase, readHome, readShop, readSituation, readStatus, sitemapEntries,
+  membersBySituation, readCase, readHome, readItemText, readShop, readSituation, readStatus, sitemapEntries,
 } from "./backend/read.ts";
+import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
@@ -17,6 +20,13 @@ const CASES = defineQueue<{ articleId: string }>({
   options: { policy: "short", retryLimit: 3, retryDelay: 120, retryBackoff: true, expireInSeconds: 900 },
   worker: { localConcurrency: 2, pollingIntervalSeconds: 5 },
   run: async (jobs) => { for (const { articleId } of jobs) await writeCase(articleId); },
+});
+
+const BODIES = defineQueue<{ articleId: string }>({
+  name: "reference.body",
+  options: { policy: "short", retryLimit: 3, retryDelay: 120, retryBackoff: true, expireInSeconds: 900 },
+  worker: { localConcurrency: 2, pollingIntervalSeconds: 5 },
+  run: async (jobs) => { for (const { articleId } of jobs) await writeBody(articleId); },
 });
 
 const METHODS = defineQueue<{ slug: string }>({
@@ -41,9 +51,10 @@ export default defineServerModule({
   name: "reference",
   models: {
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
+    [BODY_STEP]: { label: "条目页的正文（不是参考库故事的条目，整理自原文，写在导读下面）", env: "REFERENCE_BODY_MODEL", purposes: ["reference_body"] },
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
   },
-  queues: [CASES, METHODS],
+  queues: [CASES, BODIES, METHODS],
   // llms.txt names the library beside the engine's pages.
   llms: () => ({
     pages: [`- [参考](${config.siteUrl}/reference): 按遇到的事，查各地店家的做法和经验；说同一种做法的各家店归在一起，每个故事附原文出处`],
@@ -56,6 +67,16 @@ export default defineServerModule({
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
       const ids = await articlesToWrite(30);
       for (const articleId of ids) await enqueueOn(CASES, { articleId }, { singletonKey: articleId });
+      return { queued: ids.length };
+    },
+  }, {
+    // Every listed item that is no story gets its write-up; the first runs work through the items already listed.
+    name: "reference.bodies",
+    cron: "*/10 * * * *",
+    run: async () => {
+      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      const ids = await articlesToBody(40);
+      for (const articleId of ids) await enqueueOn(BODIES, { articleId }, { singletonKey: articleId });
       return { queued: ids.length };
     },
   }, {
@@ -77,7 +98,12 @@ export default defineServerModule({
     app.get("/api/reference", async (_req, reply) => reply.header("Cache-Control", CACHE).send(await readHome()));
     // Written, not written (thin: too little or only news), held by the checks, and still to write.
     app.get("/api/reference/status", async (_req, reply) =>
-      reply.header("Cache-Control", "no-store").send({ ...(await readStatus()), waiting: (await articlesToWrite(1000)).length }));
+      reply.header("Cache-Control", "no-store").send({
+        ...(await readStatus()), waiting: (await articlesToWrite(1000)).length,
+        // The item pages' write-ups: written, thin, held, and still to write.
+        bodies: Object.fromEntries((await sql<{ status: string; n: number }[]>`SELECT status, count(*)::int AS n FROM reference_bodies GROUP BY 1`).map((r) => [r.status, r.n])),
+        bodiesWaiting: (await articlesToBody(5000)).length,
+      }));
     app.get("/api/reference/situations/:slug", async (req, reply) => {
       const page = await readSituation((req.params as { slug: string }).slug);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
@@ -85,6 +111,11 @@ export default defineServerModule({
     app.get("/api/reference/cases/:id", async (req, reply) => {
       const page = await readCase((req.params as { id: string }).id);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
+    });
+    // The item page's block (web/item-part.tsx): the item's story, or its write-up; 404 for neither.
+    app.get("/api/reference/items/:id", async (req, reply) => {
+      const text = await readItemText((req.params as { id: string }).id);
+      return text ? reply.header("Cache-Control", CACHE).send(text) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/shops/:key", async (req, reply) => {
       const page = await readShop((req.params as { key: string }).key);

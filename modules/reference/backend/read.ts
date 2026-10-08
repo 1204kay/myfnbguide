@@ -9,11 +9,11 @@ import { sql } from "@aihot/backend/db";
 import { proxiedImage, proxiedImageSet } from "@aihot/backend/media/imgproxy";
 import type { SitemapEntry } from "@aihot/backend/modules";
 import { publicSourceName } from "@aihot/backend/publication/rules";
-import { selectedCondition } from "@aihot/backend/publication/scope";
+import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
 import { month, spaced } from "../format.ts";
 import { CATEGORIES, categoryTitle, findSituation, SITUATIONS, type Situation } from "../situations.ts";
 import type {
-  CaseCard, CasePage, CaseStory, Count, PracticeCard, PracticeList, ReferenceHome, ShopPage, ShopPractices,
+  CaseCard, CasePage, CaseStory, Count, ItemBody, ItemText, PracticeCard, PracticeList, ReferenceHome, ShopPage, ShopPractices,
   SituationPage, SituationRow, StarItem,
 } from "../types.ts";
 import { problemKind } from "./checks.ts";
@@ -392,6 +392,19 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
     },
     situation, shop: total > 1 ? { key: r.shop_key!, others: total - 1 } : null, situations,
   };
+}
+
+/**
+ * What an item's page shows under its summary (web/item-part.tsx): its story when the library shows one, else its
+ * write-up (backend/body.ts) while the item is listed; null when it has neither.
+ */
+export async function readItemText(id: string, now = new Date()): Promise<ItemText | null> {
+  const page = await readCase(id, now);
+  if (page) return { kind: "case", id: page.id, story: page.story, situation: page.situation && { slug: page.situation.slug, title: page.situation.title, count: page.situation.count } };
+  const [row] = await sql<{ body: ItemBody }[]>`
+    SELECT b.body FROM reference_bodies b JOIN publications p ON p.article_id = b.article_id
+    WHERE b.article_id = ${id} AND b.status = 'body' AND ${listedCondition(now)}`;
+  return row ? { kind: "body", body: row.body } : null;
 }
 
 /** One shop's stories, newest first, each its own card (layout B5); named as every page names it (shopName). */

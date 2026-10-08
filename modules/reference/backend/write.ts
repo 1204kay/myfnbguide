@@ -32,8 +32,8 @@ export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL
  * again, the writer wrote it afresh and as long as before (10/5: 53 of 65 held were too long after two more tries).
  * A country or city left unnamed (全国、本地) is not one of them: only the material says which.
  */
-const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以/.test(problem) && !/国家名|城市名/.test(problem);
-const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
+export const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以/.test(problem) && !/国家名|城市名/.test(problem);
+export const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
 /**
  * The last pass over a story that passed the checks: its wording made plain written Chinese, nothing else (the
  * writer kept spoken words the checks cannot list: 撑、活、盯、攒、往上走; reviews of 10/5). Kept only when the
@@ -50,7 +50,7 @@ const item = z.object({ label: text.max(30), value: number });
 
 // Every part has a ceiling a little above what the prompt asks (prompts/case.md), so a long story comes back
 // with the very block to shorten named (see `where`), not only its total.
-const BlockSchema = z.discriminatedUnion("type", [
+export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("text"), text: text.max(240) }),
   z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().max(14).nullable().default(null), text: text.max(90) })).min(1).max(6) }),
   z.object({ type: z.literal("flow"), steps: z.array(text.max(40)).min(2).max(6) }),
@@ -90,7 +90,7 @@ type Output = z.infer<typeof OutputSchema>;
 type Written = { status: "thin"; reason: string } | { status: "story"; story: CaseStory };
 
 /** The written blocks as the pages draw them: examples and totals computed here. */
-function computeBlock(block: z.infer<typeof BlockSchema>): Block {
+export function computeBlock(block: z.infer<typeof BlockSchema>): Block {
   switch (block.type) {
     case "compare": {
       const first = block.items[0]!.value;
@@ -114,7 +114,7 @@ const NAMES: Record<string, string> = {
 };
 
 /** Where in the answer a problem is, as the writer reads it: ["parts", 2, "blocks", 0, "text"] → "第 3 段第 1 块的文字". */
-function where(path: PropertyKey[]): string {
+export function where(path: PropertyKey[]): string {
   let out = "";
   for (const [i, key] of path.entries()) {
     const next = path[i + 1];

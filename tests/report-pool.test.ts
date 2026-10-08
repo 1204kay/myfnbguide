@@ -1,13 +1,14 @@
 import { editionAt, tag } from "./setup.ts";
-// A daily of the whole pool (site.ts REPORTS.dailyScope = "pool"): a report listed in the pool but not selected is a
-// candidate of its period, and a report taken out of the pool is not.
+// A daily of the whole pool (site.ts REPORTS.dailyScope = "pool"): a report listed in the pool but not selected is
+// carried by its day's daily, a report taken out of the pool is not, and the weeklies' and monthlies' count of selected
+// reports (candidates) still counts the selected ones only.
 import { after, before, test } from "node:test";
 import assert from "node:assert/strict";
 import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { candidates } from "@aihot/backend/reports/edition";
+import { candidates, dailyEdition } from "@aihot/backend/reports/edition";
 import { REPORTS } from "@aihot/site";
 
 const T = tag();
@@ -39,9 +40,11 @@ test("a daily of the whole pool carries the reports listed in the pool, selected
   const selected = await published("selected", at, true);
   const [row] = await sql<{ eligible: boolean; selected: boolean }[]>`SELECT eligible, selected FROM publications WHERE article_id = ${unselected}`;
   assert.deepEqual({ ...row }, { eligible: true, selected: false });
-  const ids = async () => new Set((await candidates(editionAt("daily", "2020-03-01"), editionAt("daily", "2020-03-02"))).map((c) => c.itemId));
-  assert.deepEqual([(await ids()).has(unselected), (await ids()).has(selected)], [true, true]);
+  const [start, end] = [editionAt("daily", "2020-03-01"), editionAt("daily", "2020-03-02")];
+  const carried = async () => new Set((await dailyEdition("2020-03-02", start, end)).entries.map((e) => e.entry.itemId));
+  assert.deepEqual([(await carried()).has(unselected), (await carried()).has(selected)], [true, true]);
+  assert.deepEqual((await candidates(start, end)).map((c) => c.itemId), [selected], "candidates count the selected only");
 
   await sql`UPDATE publications SET eligible = false WHERE article_id = ${unselected}`;
-  assert.equal((await ids()).has(unselected), false);
+  assert.equal((await carried()).has(unselected), false);
 });

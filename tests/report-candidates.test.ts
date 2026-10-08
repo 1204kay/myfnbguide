@@ -61,13 +61,9 @@ test("reports assign delayed and boundary releases to the period readers first s
   const boundary = editionAt("daily", "2020-01-02");
   const previous = new Set((await candidates(editionAt("daily", "2020-01-01"), boundary)).map((c) => c.itemId));
 
-  // A daily of the whole pool (site.ts REPORTS.dailyScope) takes an item still waiting for its identity at its arrival:
-  // 全部 lists it from then on.
-  const pool = REPORTS.dailyScope === "pool";
   assert.equal(previous.has(onTime), true);
   assert.equal(previous.has(groupedBefore), true);
-  for (const id of [delayed, atBoundary]) assert.equal(previous.has(id), false);
-  assert.equal(previous.has(groupedLate), pool);
+  for (const id of [delayed, atBoundary, groupedLate]) assert.equal(previous.has(id), false);
 
   await composeDaily("2020-01-02");
   await publishArticle(groupedLate, { now: editionAt("daily", "2020-01-02", 10) });
@@ -80,7 +76,9 @@ test("reports assign delayed and boundary releases to the period readers first s
   await composeDaily("2020-01-03");
   const reports = await sql<{ key: string; content: { sections: Array<{ items: Array<{ itemId: string }> }>; flashes: Array<{ itemId: string }> } }[]>`
     SELECT key, content FROM reports WHERE kind = 'daily' AND key IN ('2020-01-02', '2020-01-03')`;
-  // An issue carries an item as an entry or as a flash (one source fills at most two entries).
+  // An issue carries an item as an entry or as a flash (one source fills at most two entries). A daily of the whole
+  // pool (site.ts REPORTS.dailyScope) takes an item still waiting for its identity at its arrival: 全部 lists it from then on.
+  const pool = REPORTS.dailyScope === "pool";
   const items = (key: string) => {
     const content = reports.find((r) => r.key === key)!.content;
     return new Set([...content.sections.flatMap((s) => s.items), ...content.flashes].map((i) => i.itemId));

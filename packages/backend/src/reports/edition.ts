@@ -101,9 +101,10 @@ const REPORT_FIELDS = sql`p.article_id AS id, p.title, p.summary, p.url, p.categ
  * The selected reports a period [start, end) carries. Each counts once, in the period readers first saw
  * it: by arrival, or by release when that came later (a release after the cutoff belongs to the next
  * issue, never to one already out). A report that arrived more than a day before the period began and
- * was released only within it is old news there.
+ * was released only within it is old news there. A daily of the whole pool (site.ts REPORTS.dailyScope) also takes
+ * the reports listed in the pool but not selected: they have no release, and readers see them at their arrival.
  */
-export async function periodReports(start: Date, end: Date): Promise<ReportRow[]> {
+export async function periodReports(start: Date, end: Date, pool = false): Promise<ReportRow[]> {
   return sql.begin("isolation level read committed", async (tx) => {
     // Wait for in-flight releases and keep later ones outside this snapshot. The following SELECT
     // gets a fresh READ COMMITTED snapshot; model calls and report writes happen after the lock ends.
@@ -113,11 +114,10 @@ export async function periodReports(start: Date, end: Date): Promise<ReportRow[]
       FROM publications p JOIN sources s ON s.id = p.source_id
       LEFT JOIN facts f ON f.id = p.fact_id AND ${ownFactEvidenceCondition()}
       LEFT JOIN stories st ON st.id = f.story_id
-      -- Attribute each item by the later of arrival and release; either range can use its index. A report listed
-      -- in the pool but not selected has no release: readers see it at its arrival.
-      WHERE p.visibility = 'public' AND ${POOL ? sql`p.eligible` : sql`p.selected`} AND NOT p.backfill
+      -- Attribute each item by the later of arrival and release; either range can use its index.
+      WHERE p.visibility = 'public' AND ${pool ? sql`p.eligible` : sql`p.selected`} AND NOT p.backfill
         AND (
-          ((p.visible_after IS NULL OR p.visible_after <= p.timeline_at) AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
+          (${pool ? sql`(p.visible_after IS NULL OR p.visible_after <= p.timeline_at)` : sql`p.visible_after <= p.timeline_at`} AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
           OR (p.visible_after > p.timeline_at AND p.visible_after >= ${start} AND p.visible_after < ${end})
         )
         AND p.timeline_at >= ${start}::timestamptz - interval '24 hours'`;
@@ -162,7 +162,7 @@ export async function candidates(start: Date, end: Date): Promise<Candidate[]> {
   const rows = await periodReports(start, end);
   return [...groupBy(rows, factKeyOf)]
     .map(([factKey, members]): Candidate => {
-      const r = pickRepresentative(vetted(members));
+      const r = pickRepresentative(members);
       return { ...reportEntry(r), category: r.category, factKey };
     })
     .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
@@ -300,7 +300,7 @@ interface Fact { key: string; rows: ReportRow[]; selected: boolean; sources: str
  */
 export async function dailyEdition(date: string, start: Date, end: Date): Promise<{ entries: EditionEntry[]; stats: Record<string, number> }> {
   // A daily of the whole pool carries the missed facts' reports already.
-  const [memory, selected, missed] = await Promise.all([dailyMemory(date), periodReports(start, end), POOL ? [] : missedFacts(start, end)]);
+  const [memory, selected, missed] = await Promise.all([dailyMemory(date), periodReports(start, end, POOL), POOL ? [] : missedFacts(start, end)]);
   const raw = [
     ...[...groupBy(selected, factKeyOf)].map(([key, rows]) => ({ key, rows, selected: true })),
     ...missed.map((m) => ({ ...m, selected: false })),

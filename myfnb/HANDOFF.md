@@ -139,6 +139,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 手机筛选 | 一排左右滑动的选项（`FEED.phoneFilter: "row"`，框架加的选项，默认 `"sheet"` 不变） | 用户 10/6 直接提出 | 10/6 |
 | 日报 | 收当天列在「全部」里的每一条（`REPORTS.dailyScope: "pool"`，框架加的选项，默认不变）；版式和篇幅（12 条写全、10 条简讯）照原版；只改日报，周报、月报报头的「N 条精选」仍只数入选的。连带的效果：头条可能是没入选的条目，它的条目页没有收录理由 | 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」 | 10/5 |
 | 写作 | 写完标题、摘要、收录理由后查本站不用的词，让模型只改这些词一次（模型步骤 `wording`，框架加的） | §3 第 5 条；10/5 有 64/166 条用了「讲」，只靠提示词挡不住 | 10/5 |
+| 条目页 | 导读和收录理由下面加「正文 · AI 整理自原文」：已写成参考库故事的条目显示那篇故事和它所在的情况；其余公开条目（新闻、数据、规定、访谈）由参考库模块按同一格式另写一篇（`prompts/body.md`，和故事同一套检查：数字要在原文里、用词、长度），材料不够的不写。框架只加一个通用插口 `WebModule.itemPart`（`apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`），照框架文档「插口不够用时加一个通用的插口」 | 原版的导读最多 200 字、三句，是给 AI 新闻快讯用的；本站多是外语播客和长访谈，读者看不懂原文，导读说不清原文讲了什么（用户 10/9：「写了个导读什么都没说明就结束了」「全部以参考页面为标准」） | 10/9 |
 | 周报、月报 | 网站第一期日报以前的周、月不算到期（框架修正） | 原版的错：月中开站时，上个月的月报每半小时失败一次 | 10/5（错误修正，可提给作者） |
 
 **10/6 清理时改回原版的**（以后要再做，先按上面五关重新审核、找用户确认）：首页改成参考库（`NAV.home`）、资讯默认全部（`FEED.start`）、栏目改名（`NAV.labels`）、主题不进导航；日期加空格（`DATES.spaced`）、641–960px 铺开（`LAYOUT.fluid`）、程序补空格（`READER_SPACING`）；日报的分节简讯、看点门槛、简讯不限条数、报头数字不显示一手（`flashPlacement`、`compactBelow`、`dailyFlashes`、`metricUnits`）；收藏备份（`STARRED`）、关于页的参考库规模、参考库的搜索和条目页附加块（模块插口 `figures`、`searchPart`、`itemPart`）；列表类来源的关键词过滤（`allowKeywords`，没有信源在用；综合媒体要用时从 `a2f7397` 取回）。随 `apps/` 整体换回、清理时没逐项记下的（10/9 复核补记）：来源的叫法（`sourceWord`，用户 10/4 确认过，读者现在看到原版的说法）、筛选里去掉「一手」（`firstPartyFilter`）和筛选名（`filterNames`）、搜索的排序说法（`SEARCH.sorts`、`sortNote`）、关于页和 Agent 页的版式与示例（`ABOUT.page`、`AGENT.covers`、`examples`）、反馈页标题、还没有一期时的说法（`noIssue`）、隐藏热点时 MCP 不提供热点工具、手机顶栏返回文字被截断的修正（`cdf5b83`）、往年日期写出年份（`8f927ec`）、触屏 44px、侧栏名字折行、错误页标题字号。其中**往年日期写出年份**对读者有影响：存档补进来的旧条目在日期分组里只写「6月3日」，看不出是哪一年；**来源的叫法**是用户确认过的。这两项要不要加回，等用户决定。
@@ -264,6 +265,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
   5. robots.txt 连不上、超时、返回 5xx 或 429 → 不接；返回 4xx 而来源本身对我们返回 200 → 视为没有限制（RFC 9309 §2.3.1.3；Google 相同）。订阅跳到别的主机时两边都查。
   6. 部署后服务器 IP 被来源挡住（403）→ 在后台暂停。**不用代理绕过。**
 - **店主博客（10/5 凌晨，四路子代理按英文、日韩文、中文、欧洲语言各搜一遍，共看约 1,700 条结果，38 个候选记在账本「2026-10-05·店主博客」）**：接了 Bluebird Bread Co. · Caroline Bower（美国微型面包店，Wix，订阅只有最新 20 篇）、未来食堂日記（はてな；**部署后对服务器 IP 返回 403，按规则 6 暂停**，从存档计划拿掉）、小さなお店の黒字力、料理画家クチーナカメヤマ、ヨッシー店長の家（后三个自建 WordPress）；后四个已停更或更新很少，价值在存档（`modules/archive/plan.ts`）。Claude 用 `check-sources.mjs`、`vet-sources.ts`、`terms-scan.mjs` 重查过；はてな的条款把机械巡回的访问者算作访客，没有禁止抓取或 AI 的句子。**中文店主博客没有找到能接的**：店主经验几乎都在公众号、Medium（条款禁止机器人访问）、痞客邦（只许个人使用）、方格子（robots 挡订阅路径）。待定的 5 个（酒月、あらしまのスナップ、AFRO BLOG、이미커피 brunch、Wielandshöhe）理由在账本。
+- **中文播客和港澳台（10/9 第二轮，账本「2026-10-09·中文来源第二轮」）**：小宇宙的订阅主机拒绝代用户读网页的 AI（规则 2）；喜马拉雅 9/21 起的新版用户协议禁止用自动程序获取内容（规则 3），以后喜马拉雅的订阅都不接；港澳台有餐饮列表的多是转载报纸（原报拒绝 AI 阅读）或写给食客、投资者，协会没有网站。这条路基本走完。
 - **接不到的**：抖音只在创作者授权后才能读；视频号、小红书没有合规的读取方式；公众号只能经第三方付费接口（20 个号每月约 ¥700–1,000，不是微信授权的方式）；X 官方接口每读 1,000 条 5 美元。都暂不接；免费的路量完、中文小店经验仍然不够时，再带数字和用户谈。
 - 10/1 以来读条款或 robots 后不接的主要来源（Informa、William Reed 旗下、Restaurant Business、马来西亚华文报纸等）见账本和归档 §5.4。
 - **`seed.ts` 不覆盖已存在的来源**：改已上线来源的配置（过滤、分级、名称）要在后台改，或在服务器上跑 SQL。
@@ -279,6 +281,7 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | `packages/backend/src/reports/edition.ts` | `REPORTS.dailyScope = "pool"` 时日报收「全部」里的每一条；没入选的条目按进站时间算；默认设置和周报月报的计数走原版的写法 | 同上（`dailyScope: "selected"`） |
 | `packages/backend/src/reports/compose.ts` | 第一期日报以前的周、月不算到期 | 错误修正，可以单独提给作者 |
 | `packages/backend/src/editorial/analyze.ts`、`wording.ts`（新）、`models.ts`、`jobs/content.ts`；`industry/wording.ts`、`industry/prompts/mend-wording.md` | 改用词一步（`wording`，用途 `mend_wording`）：改出来的稿只有在这类词变少、数字没变时才用 | 跟行业无关，可以提给作者；提之前作者的行业包要加空词表和提示词，`.env.example` 补 `WORDING_MODEL`（选填） |
+| `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx` | 通用插口 `itemPart`：模块在条目页导读和理由之后放一块，页面随自己的数据一起读它的接口，读不到就不放 | 跟行业无关，可以提给作者 |
 | `Dockerfile`、`package-lock.json` | 装上本站的模块 | 本站自己的 |
 | `tests/` 里二十几个文件、`apps/web/tests/navigation-performance.test.ts` | 作者按 AI 示例行业写的例子改成从行业包取；新加 `report-pool`、`wording`、`apps/web/tests/phone-shell` | 本站自己的；同步上游时照同一原则处理新测试 |
 

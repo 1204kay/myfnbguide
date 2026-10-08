@@ -8381,3 +8381,32 @@ web-cfsn-canyin	中国食品安全网 · 餐饮（中国 · 媒体）	https://ww
 web-canyin88-kuaixun	红餐网 · 快讯（中国 · 餐饮媒体）	https://www.canyin88.com/kuaixun/	2026-10-09·中文来源复核（日报标准）	待定	10/2 按小店标准停用的理由已不适用，规则和配置都通过；但 9/21 至 10/8 只有 9/30 一条，栏目近乎停更；约 10/22 重看，假期后两周有 3 条以上就接入（配置在 10/9 复核记录里：itemSelector div.nf_list_item，详情页日期正则取到秒）
 web-bbtnews-canyin	北京商报 · 餐饮频道（中国 · 综合经济日报的餐饮栏目）	https://www.bbtnews.com.cn/chuizhipd/shangyexinwenzhongxi/canyinpd/	2026-10-09·中文来源复核（日报标准）	接入	改用网页列表接（10/2 只查了 RSS）。工作日每天 3–4 篇，约三分之二与餐饮经营相关；robots.txt 返回 403 而频道页返回 200，视为没有限制；版权声明只有不得转载和商业须授权（规则 4），开始赞助前重读。列表只取 div.news-head 和 div.news-feed li，避开侧栏「新闻排行」里其他频道的稿件；日期取详情页，按北京时间读
 web-jiemian-xiaofei	界面新闻 · 消费（中国 · 综合商业媒体的消费栏目）	https://www.jiemian.com/lists/31.html	2026-10-09·中文来源复核（日报标准）	不接	规则 1、2、5 通过，配置可用；但这是综合消费栏目，9/24–10/8 共 21 篇，明确与餐饮相关的只有 6 篇（另有 4 篇难判），每天不到一篇可用，框架又没有关键词过滤；注册协议禁止「创造与内容有关的派生产品」，并称使用权「是个人的」，比通用的不得转载更严
+pod-cn-xiangnei-jingying	向内经营（中国 · 餐饮老板的播客）	https://www.ximalaya.com/album/129873189.xml	2026-10-09·中文来源第二轮	不接	内容很合适（主播自述做餐饮三十年、经营 40 多家门店，9/11 开播到 10/8 共 10 集，讲用人、毛利排查、加盟失败、关店复盘），规则 1、2、5 与 TDMRep 通过；但喜马拉雅 2026-09-21 生效的新版用户服务协议第六条 3(c) 禁止以「爬虫软件等任何自动化程序、脚本、软件」获取平台的文本和音视频内容，并写明游客也受约束，按规则 3 不接；所有喜马拉雅订阅都受影响，节目若另有自己的订阅再看
+pod17-shoutan	收摊时刻（中国 · 小店开店关店复盘的播客）	https://feed.xyzfm.space/gqxnlvmhkwpk	2026-10-09·中文来源第二轮	不接	10/9 复查：小宇宙 feed.xyzfm.space 的 robots.txt 仍拒绝 OAI-SearchBot、Claude-SearchBot、PerplexityBot（规则 2），小宇宙托管的节目一律不接；本轮在 Apple 目录用约 50 个新词搜出的 55 个小宇宙新节目都不用再查
+pod17-chufang	廚房佬們（中国香港 · 厨师与餐饮老板的播客）	https://feeds.soundon.fm/podcasts/4428e45d-c682-4dbb-81ca-ae5d47cfe36d.xml	2026-10-09·中文来源第二轮	不接	按日报标准重看：规则通过；近 20 集约一半是香港小店老板和厨师谈开店、顶铺亏损、合伙、接班（品穀面包店、豪隍点心、茶记），另一半是闲聊、电影、童年话题；最近 10 集只有 3 集相关，更新成批（9/17–18 三集，8 月两集）；约 11 月再看
+pod-n256	大店長晨會（中国台湾 · 服务业经营顾问的播客）	https://feed.firstory.me/rss/user/cmie8lgmd0000revpdkx0643l	2026-10-09·中文来源第二轮	不接	按日报标准重看：每周一集，规则通过；但近 12 集只有 2 集讲餐饮（Q Burger、鄧師傅），其余是度假酒店改装、B2B 品牌协会和自家论坛
+pod17-juezhan	決戰創業食刻（中国台湾 · 食品媒体总编辑的播客）	https://feeds.soundon.fm/podcasts/14e2003b-a676-4317-803d-bd6d3a3fb0a8.xml	2026-10-09·中文来源第二轮	不接	按日报标准重看：7/28–9/30 共 16 集，台湾餐饮品牌进马来西亚、手摇饮出海等多与餐饮相关；但这是两个成批推出的赞助系列，其中 8 集是国产鲜乳合作推广，2025-10 至 2026-07 每两三个月才一集，9/30 后没有更新，不是稳定来源；约 11 月再看
+pod-n238	餐飲人生（中国台湾 · 餐厅老板的播客）	https://feed.firstory.me/rss/user/cl7ajnc1h001101un7p9wartn	2026-10-09·中文来源第二轮	不接	店主本人讲员工、客人、开店，内容合适、规则通过；但固定每月一集（近 12 个月 12 集），低于每月两集
+pod2-92	識食物者為俊傑（中国台湾 · 食品媒体的播客）	https://feeds.soundon.fm/podcasts/eedfec2c-dabc-492e-8737-a0a05b50c2c7.xml	2026-10-09·中文来源第二轮	不接	近 60 天 3 集；多讲食安、食品供应链和校园午餐，属一般食品产业，讲餐饮经营的只有个别集
+pod-tw-mamamiya	馬馬米呀（中国台湾 · 访谈播客）	https://feeds.soundon.fm/podcasts/123b770c-b20e-4560-accc-4336b0c3c539.xml	2026-10-09·中文来源第二轮	不接	按日报标准重看：每周一集，近 15 集只有 2 集是餐饮创办人（300°STEAK、真芳碳烤土司），其余是艺人和自媒体访谈
+pod-tw-ceo-oishi	CEO的歐伊西（中国台湾 · 食品品牌的播客）	https://feeds.soundon.fm/podcasts/47162f0d-396c-44d7-be7f-2ea9b137778c.xml	2026-10-09·中文来源第二轮	不接	干拌面与坚果品牌大拙匠人的 CEO 主持，7 月开播共 7 集、约每月两集，规则通过；只有 2–3 集是餐饮经营（星马快餐第二家店就建中央厨房、BonBox 让员工内部创业），其余是单车服饰、营养生技、AI 做菜
+pod-tw-toujia-laishifan	頭家來食飯（中国台湾 · 客家餐厅老板的播客）	https://feed.firstory.me/rss/user/cmp4t64ab0oe901xdeocj9f3e	2026-10-09·中文来源第二轮	不接	餐厅老板主持，但来宾多是其他行业，谈人生故事；2026-05 开播共 4 集，约一个半月一集
+pod-tw-table-talk	台味餐桌 T/ABLE TALK（中国台湾 · 饮食文化播客）	https://feeds.soundon.fm/podcasts/653981b2-448e-447a-a25b-8ea82f13609b.xml	2026-10-09·中文来源第二轮	不接	每周一集，讲台湾风味和夜市、火锅、便当的文化由来，写给食客与文化爱好者，不是经营内容
+pod-tw-dexian-yincha	得閒飲茶（中国台湾 · Rti 港台饮食文化节目）	https://www.rti.org.tw/programpodcasturl?id=2162	2026-10-09·中文来源第二轮	不接	写给食客的港台饮食文化与名厨故事
+pod-cn-daxiao-dianbo	大小电波（中国 · 咖啡店的播客）	https://s1.proxy.wavpub.com/daxiaodiantai.xml	2026-10-09·中文来源第二轮	不接	每两周一集，多为咖啡豆选购、咖啡节、城市吃喝；讲咖啡店经营的约两个月一集
+pod-tw-waisong-dashu	外送大叔的碎碎唸（中国台湾 · 外送员个人播客）	https://feeds.soundon.fm/podcasts/ad79acc3-feda-4411-b465-14126130bd61.xml	2026-10-09·中文来源第二轮	不接	外送员个人闲聊，近 12 集有 3 集谈外送专法，但站在外送员一侧，不讲店家
+web-tcfa-canyin	台灣連鎖暨加盟協會 · 餐飲情報（中国台湾 · 连锁加盟协会转载的餐饮新闻）	https://www.tcfa.org.tw/announce.asp?class=12	2026-10-09·中文来源第二轮	不接	每月约 25 条，多与台湾连锁餐饮有关，规则 1、2、5 通过（robots 404）；但每条都是全文转载工商时报、经济日报等报纸（文末注出处），本站会链接到转载页；工商时报 robots.txt 拒绝 ChatGPT-User 等代读 AI，联合报系 robots.txt 声明内容不得用于 AI，经协会转载来读等于绕开原报的拒绝
+web-mirai-restaurant	未來流通研究所 · 餐飲產業（中国台湾 · 零售与餐饮数据研究机构）	https://www.mirai.com.tw/category/info/info-restaurant/	2026-10-09·中文来源第二轮	不接	规则 1：robots.txt 禁止所有 /feed/ 路径；改用分类网页列表规则能过，但 6/29–10/1 只有 10 篇，只讲餐饮的约 5 篇（便当经济、连锁餐饮 TOP 20、餐饮家数创十年新低），每月一两条，量太少
+rss-foodnext	食力 foodNEXT（中国台湾 · 食品产业媒体）	https://www.foodnext.net/news/newsnow/	2026-10-09·中文来源第二轮	不接	按日报标准重看：订阅仍是 404；新闻列表多是食安、食用油、校园午餐、自办奖项和农业，属一般食品产业，餐饮经营类每月只有几篇，没有单独栏目
+blog-ichef-tw	iCHEF 部落格（中国台湾 · 收银系统商）	https://blog.ichefpos.com/feed/	2026-10-09·中文来源第二轮	不接	按日报标准重看：每月三四篇，但多是出单机纸卷、续约方案、补助选购等自家产品推广，店家案例很少
+web-dudoo-blog	肚肚 Dudoo 部落格（中国台湾 · 收银系统商）	https://www.dudooeat.com/blog/feed/	2026-10-09·中文来源第二轮	不接	2023-10 以后停更
+web-ettoday-canyin	ETtoday · 餐飲業标签（中国台湾 · 综合新闻网）	https://www.ettoday.net/news/tag/%E9%A4%90%E9%A3%B2%E6%A5%AD/	2026-10-09·中文来源第二轮	不接	规则通过（robots 放行代读 AI）；但标签页多是网友热议的标题党（订位放鸟、店员对话），每月三四条，经营内容很少
+web-cnyes-canyin	鉅亨網 · 餐飲标签（中国台湾 · 财经新闻网）	https://news.cnyes.com/tag/%E9%A4%90%E9%A3%B2	2026-10-09·中文来源第二轮	不接	写给投资者：上市餐饮集团月营收、法说会和股价（加新来源第 0 步排除）
+web-ctee	工商時報（中国台湾 · 财经报纸）	https://www.ctee.com.tw/	2026-10-09·中文来源第二轮	不接	规则 2：robots.txt 拒绝 ChatGPT-User、OAI-SearchBot、PerplexityBot
+web-udn-money	經濟日報（中国台湾 · 财经报纸）	https://money.udn.com/	2026-10-09·中文来源第二轮	不接	规则 3：robots.txt 声明联合报系内容不得用于大型语言模型、机器学习与 AI 用途，也不得商业使用
+web-cna	中央社（中国台湾 · 通讯社）	https://www.cna.com.tw/	2026-10-09·中文来源第二轮	不接	规则 2：robots.txt 拒绝 PerplexityBot；本身也是综合新闻，没有餐饮栏目
+web-bnext-canyin	數位時代 · 餐飲業标签（中国台湾 · 科技媒体）	https://www.bnext.com.tw/tags/%E9%A4%90%E9%A3%B2%E6%A5%AD	2026-10-09·中文来源第二轮	不接	标签页由脚本渲染，下载的网页里没有文章列表；餐饮报道以大品牌数位化为主
+web-am730-closures	am730 · 結業潮标签（中国香港 · 免费报纸）	https://www.am730.com.hk/tag/2016/%E7%B5%90%E6%A5%AD%E6%BD%AE	2026-10-09·中文来源第二轮	不接	规则通过（Content-Signal 写 ai-input=yes）；但两周 9 条，约三分之一是零售，其余多是单家香港餐厅结业的本地消息，没有经营内容；am730 没有饮食业标签，饮食栏目是优惠与探店
+web-stheadline-food	星島頭條 · 飲食（中国香港 · 报纸）	https://www.stheadline.com/food	2026-10-09·中文来源第二轮	不接	饮食栏目以自助餐优惠、放题、连锁新品为主，写给食客；/tag/飲食業 会跳回首页，没有业界列表
+web-hk01	香港01（中国香港 · 综合新闻网）	https://www.hk01.com/	2026-10-09·中文来源第二轮	不接	结业潮、加租的报道散在社会新闻和社区专题栏目，/tag/飲食業 返回 404，找不到只收饮食业的列表；robots.txt 不挡
+assoc-hkfort	香港餐飲聯業協會（中国香港 · 餐饮业协会）	没有找到网站	2026-10-09·中文来源第二轮	不接	只在报纸引述和社交平台出现，没有可读的消息页；香港饮食业联合总会、现代管理（饮食）专业协会同样搜不到网站消息

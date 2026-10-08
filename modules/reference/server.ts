@@ -106,10 +106,6 @@ export default defineServerModule({
         // How many held write-ups each kind of problem stopped, as for the cases.
         bodiesHeld: (await sql<{ problems: string[] }[]>`SELECT problems FROM reference_bodies WHERE status = 'held'`)
           .reduce<Record<string, number>>((out, r) => { for (const kind of new Set(r.problems.map(problemKind))) out[kind] = (out[kind] ?? 0) + 1; return out; }, {}),
-        // TEMPORARY (10/9): the latest format problems, where and what, to see why write-ups fail; removed once fixed.
-        bodiesFormat: (await sql<{ p: string }[]>`
-          SELECT left(x, 160) AS p FROM reference_bodies, jsonb_array_elements_text(problems) AS x
-          WHERE status = 'held' AND x LIKE '格式不对%' ORDER BY updated_at DESC LIMIT 12`).map((r) => r.p),
         bodiesWaiting: (await articlesToBody(5000)).length,
       }));
     app.get("/api/reference/situations/:slug", async (req, reply) => {

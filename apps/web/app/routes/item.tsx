@@ -3,7 +3,7 @@ import { Await, isRouteErrorResponse, Link, useAsyncError, useLoaderData, useNav
 import type { Route } from "./+types/item";
 import type { FeedItemSummary, SiteItemDetail } from "@aihot/contracts/site";
 import { ITEM_COPY, SITE } from "@aihot/site";
-import { edgeTtl, loadOr404, pageExpiresAt } from "../lib/api.server";
+import { apiGet, edgeTtl, loadOr404, pageExpiresAt } from "../lib/api.server";
 import { cachedLoader } from "../lib/page-reuse";
 import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "../lib/seo";
 import { fullDateTime, relativeTime } from "../lib/format";
@@ -25,18 +25,26 @@ import { takePreview } from "../features/item/preview";
 import { IconArrowLeft, IconCopy, IconDownload, IconExternal, IconImage, IconMenu, IconMore, IconShare } from "../components/icons";
 import { BarButton, PhoneBar } from "../components/shell/PhoneBar";
 import { isPhone, type Screen } from "../components/shell/screens";
+import { loadParts, readParts } from "../site-modules";
 
 export const handle: Screen = { home: "featured", toolbar: true };
 export { shouldRevalidate } from "../lib/page-reuse";
 
 const PosterSheet = lazy(() => import("../features/item/PosterSheet"));
 
+/** The modules' blocks on an item (itemPart), after its summary and reason. */
+const PARTS = await loadParts((m) => m.itemPart);
+
 export async function loader({ params, request }: Route.LoaderArgs) {
-  const item = await loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { signal: request.signal });
-  return { item, expiresAt: pageExpiresAt(600) };
+  const [item, parts] = await Promise.all([
+    loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { signal: request.signal }),
+    readParts(PARTS, params.id, (path) => apiGet(path, { signal: request.signal })),
+  ]);
+  return { item, parts, expiresAt: pageExpiresAt(600) };
 }
 
-type Preview = { item: null; preview: FeedItemSummary; detail: Promise<{ item: SiteItemDetail }> };
+type Loaded = { item: SiteItemDetail; parts?: Record<string, unknown> };
+type Preview = { item: null; preview: FeedItemSummary; detail: Promise<Loaded> };
 
 /**
  * Phones: an article tapped in a list opens at once with what the card showed (title, summary, reason),
@@ -158,12 +166,12 @@ function Toast({ text }: { text: string | null }) {
 }
 
 export default function ItemPage() {
-  const data = useLoaderData<typeof clientLoader>() as { item: SiteItemDetail } | Preview;
-  if (data.item) return <ItemView key={`${data.item.id}:${data.item.bodyLanguage}`} item={data.item} />;
+  const data = useLoaderData<typeof clientLoader>() as Loaded | Preview;
+  if (data.item) return <ItemView key={`${data.item.id}:${data.item.bodyLanguage}`} item={data.item} parts={data.parts} />;
   return (
     <Suspense fallback={<ItemPreview preview={data.preview} />}>
       <Await resolve={data.detail} errorElement={<ItemGone />}>
-        {(loaded) => <ItemView key={`${loaded.item.id}:${loaded.item.bodyLanguage}`} item={loaded.item} />}
+        {(loaded) => <ItemView key={`${loaded.item.id}:${loaded.item.bodyLanguage}`} item={loaded.item} parts={loaded.parts} />}
       </Await>
     </Suspense>
   );
@@ -244,7 +252,7 @@ function ItemGone() {
   );
 }
 
-function ItemView({ item }: { item: SiteItemDetail }) {
+function ItemView({ item, parts = {} }: Loaded) {
   const navigate = useNavigate();
   const hasTranslation = item.hasTranslation;
   const lang = item.bodyLanguage;
@@ -507,6 +515,8 @@ function ItemView({ item }: { item: SiteItemDetail }) {
               <GroupButton group={item.group} parentId={item.id} />
             </div>
           )}
+
+          {PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} id={item.id} data={parts[name]} />))}
 
           {summaryOnly && <p className="mt-7 rounded-control bg-bg-sunk px-4 py-3 text-[13.5px] leading-relaxed text-ink-3">应来源方要求，这里只提供摘要与原文入口。完整内容请阅读原文。</p>}
 

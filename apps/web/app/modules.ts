@@ -113,6 +113,16 @@ export interface TopicPagePart {
   news: (data: unknown) => string[];
 }
 
+/**
+ * A module's block on an item page (routes/item.tsx), after the item's summary and reason: the page reads `path(id)` from the
+ * api with its loader and draws `Block` with what came back. A read that fails gives null, and the block is left out.
+ */
+export interface ItemPart {
+  /** The api address of what it has on this item. */
+  path: (id: string) => string;
+  Block: ComponentType<{ id: string; data: unknown }>;
+}
+
 export interface WebModule {
   /** Its folder under modules/. */
   name: string;
@@ -149,6 +159,7 @@ export interface WebModule {
   };
   agent?: Part<AgentPart>;
   topicPage?: Part<TopicPagePart>;
+  itemPart?: Part<ItemPart>;
   /** Paths of the marks it serves that are drawn in white, for a dark tile (components/BrandMark.tsx). */
   darkMarks?: string[];
   /** The starred page (routes/starred.tsx): buttons ahead of 导入文件 that bring stars in from elsewhere, each resolving to the line it reports. */

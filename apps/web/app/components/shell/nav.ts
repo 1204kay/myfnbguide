@@ -40,8 +40,8 @@ const SECTIONS: Array<{ title: string; items: NavItem[] }> = [
   },
 ];
 
-/** Whether an engine's way in appears in the navigation (site.ts NAV.hidden); its page still opens. */
-const shown = (item: { to: string }) => !NAV.hidden.includes(item.to);
+/** Whether an engine's way in appears in the navigation and on 我的 (site.ts NAV.hidden); its page still opens. */
+export const shown = (item: { to: string }) => !NAV.hidden.includes(item.to);
 
 /**
  * The sidebar: the engine's sections with the modules' between 内容 and 更多; a module naming a section

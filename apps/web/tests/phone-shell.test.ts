@@ -1,5 +1,5 @@
 // The site's navigation and phone filter options (site/site.ts NAV.hidden, FEED.phoneFilter), rendered by the
-// production server over a stub api. Failure cases: a hidden way in still shows in the sidebar or the tab bar; with the
+// production server over a stub api. Failure cases: a hidden way in still shows in the sidebar, the tab bar or 我的; with the
 // row, phones keep the filter button, miss the row, call its first option 全部 beside the 精选 | 全部 switch, or show the
 // category in use twice (in the row and as a chip).
 import assert from "node:assert/strict";
@@ -60,9 +60,11 @@ async function page(path: string): Promise<string> {
   return res.text();
 }
 
-test("hidden ways in leave the sidebar and the tab bar", async () => {
-  const html = await page("/");
-  for (const to of NAV.hidden) assert.equal(html.includes(`href="${to}"`), false, `${to} is linked`);
+test("hidden ways in leave the sidebar, the tab bar and 我的", async () => {
+  for (const path of ["/", "/more"]) {
+    const html = await page(path);
+    for (const to of NAV.hidden) assert.equal(html.includes(`href="${to}"`), false, `${path}: ${to} is linked`);
+  }
 });
 
 test("phones get the filter as the desktop's row of options, or behind a button", async () => {

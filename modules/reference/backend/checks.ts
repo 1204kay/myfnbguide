@@ -52,6 +52,12 @@ export function sourceNumbers(text: string): Set<string> {
     if (n !== null) found.add(String(n));
   }
   for (const word of normal.toLowerCase().match(/[a-z]+/g) ?? []) if (word in WORDS) found.add(String(WORDS[word]));
+  // "two million", "half a million": the value written out (10/9 eval: a two million written as 200 万美元 was held).
+  const SMALL_WORDS: Record<string, number> = { a: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5, ...WORDS };
+  for (const m of normal.toLowerCase().matchAll(/\b([a-z]+)(?: a)?\s+(million|billion|thousand)\b/g)) {
+    const n = SMALL_WORDS[m[1]!];
+    if (n !== undefined) found.add(String(Math.round(n * (m[2] === "billion" ? 1e9 : m[2] === "million" ? 1e6 : 1e3))));
+  }
   // "2.5 million", "1,2 milhão", "1.2 万", "3만", "5 mil" (thousand in Portuguese and Spanish), "55k": the value written out.
   // "$2M", "$1.5bn" too (10/9 eval: a $2M written as 200 万美元 was held as not in the original).
   const SCALES: Array<[RegExp, number]> = [[/^(billions?|bn)$/i, 1_000_000_000], [/^(million|millions|m|mn|milh(?:ão|ões)|millones?|milioni?|億|억)$/i, 1_000_000], [/^(万|만)$/, 10_000], [/^(mil|k|千|천|thousand)$/i, 1000]];

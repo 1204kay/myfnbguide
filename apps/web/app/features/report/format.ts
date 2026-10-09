@@ -119,10 +119,11 @@ export const EDITION: Record<ReportKind, string> = { daily: `${EDITION_WHEN.dail
 
 /**
  * The masthead's figures, in the order a reader wants them, in the site's words (REPORTS). Releases of the
- * pack's headline launch kind (RELEASE, "个新模型" for AI) count only where the pack has one; zero is left out.
+ * pack's headline launch kind (RELEASE, "个新模型" for AI) count only where the pack has one; zero is left out. A figure
+ * whose unit the site sets to null (REPORTS.metricUnits) is not shown.
  */
 const UNITS = REPORTS.metricUnits;
-const METRICS: Array<[key: string, unit: string]> = [
+const METRICS: Array<[key: string, unit: string | null]> = [
   ["totalEvents", ENTRIES_UNIT],
   ["totalStories", ENTRIES_UNIT],
   ["sourcesCount", UNITS.sourcesCount],
@@ -132,7 +133,7 @@ const METRICS: Array<[key: string, unit: string]> = [
   ["reportsCovered", UNITS.reportsCovered],
 ];
 export function metricItems(metrics: Record<string, number>): Array<{ value: number; unit: string }> {
-  return METRICS.filter(([k]) => typeof metrics[k] === "number" && (k !== "modelsReleased" || metrics[k]! > 0)).map(([k, unit]) => ({ value: metrics[k]!, unit }));
+  return METRICS.flatMap(([k, unit]) => (unit !== null && typeof metrics[k] === "number" && (k !== "modelsReleased" || metrics[k]! > 0) ? [{ value: metrics[k]!, unit }] : []));
 }
 
 /** "前一日 · 9月25日", "上一期 · 第 37 周", "下一期 · 7 月". */

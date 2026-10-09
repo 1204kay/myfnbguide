@@ -8429,3 +8429,51 @@ web-linkshop-canyin	联商网 · 餐饮娱乐（中国 · 零售业媒体的餐�
 web-winshang-canyin	赢商网 · 餐饮（中国 · 商业地产媒体）	https://www.winshang.com/	2026-10-09·中文来源第二轮	不接	www 跳 HTTP，news 子域对本机 IP 返回 403（CDN 拦截，规则 6 情形，不绕过）；餐饮稿以品牌开店、进驻商场为主，按日报尺子多数不看，部分已经由红餐网转载
 web-cb-xiaofei	中国经营报 · 中国经营网 · 消费（中国 · 综合经济周报）	http://www.cb.com.cn/	2026-10-09·中文来源第二轮	不接	HTTPS 证书链有自签名证书，本机打不开；2025-05 存档首页显示公司栏目只分航旅、科技、消费、文娱、医药等，没有餐饮栏目，「消费」涵盖食品、酒、零售，与 10/9 不接的界面新闻·消费同类
 rss-foodrink	フードリンクニュース（日本 · 餐饮媒体）	https://www.foodrink.co.jp/rss.xml	2026-10-09·条目要有实际内容	停用	文章正文只有付费会员能看（「ここから先は「プレミアム会員」の方のみ、御覧いただけます」），订阅和页面都只有开头一小段，写不出条目正文；用户 10/9：「每一篇都要有实际表达的内容」
+web-ltn-canyinye	自由時報 · 餐飲業标签（中国台湾 · 综合日报）	https://news.ltn.com.tw/topic/%E9%A4%90%E9%A3%B2%E6%A5%AD	2026-10-09·中文来源第三轮	待定	规则 1、2、5 与 TDMRep 通过（四个子域 robots 都是 Allow，只拒训练爬虫）；著作权声明只有通用条款，没有禁止爬虫或 AI 的句子（规则 4）；全文不用登录；约每月 6 篇，多数对台湾小店有用（瓦斯检知器补助、外送平台、劳动部餐饮业指引）。量少且只讲台湾，接不接由用户决定；接之前在服务器上跑 vet-sources 和 detail-check
+rss-thedinernews	就愛開餐廳 The Diner News（中国台湾 · 收银系统公司办的餐厅经营媒体）	https://thedinernews.com/feed/	2026-10-09·中文来源第三轮	不接	规则 5、6：对采集器 UA 的 robots.txt、首页和订阅都返回 403（按 UA 拦截），不改 UA 绕过；内容是每周美日台连锁速报，质量不错，对方放行后可重看
+rss-foodnote	餐飲人筆記（中国台湾 · 匿名的餐饮经营文章站）	https://foodnote.tw/feed/	2026-10-09·中文来源第三轮	不接	匿名运营、2026-06 建站，9/29 一天发 24 篇，文末带 AI 短评，数字无出处，判断为机器批量生成
+rss-metabiz	MetaBiz 部落格（中国台湾 · 餐饮会员系统商）	https://metabiz.tw/feed/	2026-10-09·中文来源第三轮	不接	写给连锁的会员数据治理，9 月 2 篇、10 月 0 篇
+web-gokaikei	GoKaiKei 餐飲部落格（中国台湾 · 记账工具的博客）	https://gokaikei.com/blog/restaurant/	2026-10-09·中文来源第三轮	不接	内容实用但全站只有 15 篇，7/25 后没有更新；条款禁止超出一般浏览的大量自动抓取（规则 3 有疑问）
+web-pin2eat	PinMe 餐廳營運經驗分享（中国香港 · 收银系统商）	https://www.pin2eat.com/article	2026-10-09·中文来源第三轮	不接	约每月 1 篇，大半推广自家系统
+web-ocard-blog	Ocard Blog（中国台湾 · 会员集点系统商）	https://blog.ocard.co/	2026-10-09·中文来源第三轮	不接	美业、游戏行业案例和食客推荐，餐饮经营内容很少
+web-barsyn	柏森 BARSYN 品牌觀點（中国台湾 · B2B 品牌顾问）	https://barsyn.com/insights/	2026-10-09·中文来源第三轮	不接	一天生成 523 页各行业开店清单，是 SEO 页面
+web-posify	Posify 博客（中国台湾、中国香港 · 零售收银系统商）	https://www.posify.me/tw/blogs/post	2026-10-09·中文来源第三轮	不接	以零售为主，停更近一年
+web-shouqianba-index	收钱吧 · 实体商业活力指数（中国 · 支付服务商）	https://www.shouqianba.com/zh/industry-index	2026-10-09·中文来源第三轮	不接	每月一期，不分行业；其余是公司新闻和 SEO 页
+web-cqn-mclz	中国质量新闻网 · 餐饮资讯（中国 · 质量报刊社网站的餐饮频道）	https://www.cqn.com.cn/mclz/	2026-10-09·中文来源第三轮	不接	一半新品软文、一半地方监管检查通稿，可用的每天不到 0.5 条
+web-cnr-canyin	央广网 · 餐饮资讯（中国 · 官方媒体频道）	https://ent.cnr.cn/canyin/zixun/	2026-10-09·中文来源第三轮	不接	2024-11-29 后停更
+web-meadin-cy	迈点网 · 餐饮（中国 · 文旅酒店媒体）	https://www.meadin.com/cy/	2026-10-09·中文来源第三轮	不接	2025-05-19 后停更
+web-xinhua-food	新华网 · 新华食品（中国 · 官方媒体频道）	https://www.news.cn/food/	2026-10-09·中文来源第三轮	不接	多是品牌稿和监管会议稿；监管消息已由中国食品安全网覆盖
+web-cbndata	CBNData 看点（中国 · 消费数据公司）	https://www.cbndata.com/information	2026-10-09·中文来源第三轮	不接	综合消费为主，餐饮少且多转载公众号
+web-foodaily	Foodaily 每日食品（中国 · 食品创新媒体）	https://www.foodaily.com/articles	2026-10-09·中文来源第三轮	不接	以包装食品为主，大多转载公众号文章
+web-meituan-mri	美团研究院（中国 · 平台的研究机构）	https://mri.meituan.com/research/home	2026-10-09·中文来源第三轮	不接	最新报告 2025-10-28，近一年没有更新
+web-zaobao-sme	联合早报 · 中小企业（新加坡 · 报纸）	https://www.zaobao.com.sg/finance/sme	2026-10-09·中文来源第三轮	不接	没有餐饮栏目，中小企业栏最近 20 篇没有讲餐饮的
+web-8world	8视界（新加坡 · 电视台新闻网）	https://www.8world.com/	2026-10-09·中文来源第三轮	不接	没有餐饮栏目
+rss-tfda-news	食藥署 · 本署新聞（中国台湾 · 政府）	https://www.fda.gov.tw/TC/rssNews.ashx	2026-10-09·中文来源第三轮	不接	多是药品、医材和边境查验，与餐饮店相关的约五分之一
+web-hktdc-research	香港貿發局 · 經貿研究（中国香港 · 贸易发展机构）	https://research.hktdc.com/tc	2026-10-09·中文来源第三轮	不接	写给出口商，页面由脚本加载
+web-chinatimes	中時新聞網（中国台湾 · 综合日报）	https://www.chinatimes.com/	2026-10-09·中文来源第三轮	不接	规则 2：robots.txt 拒绝代读 AI
+web-managertoday	經理人月刊（中国台湾 · 管理杂志）	https://www.managertoday.com.tw/	2026-10-09·中文来源第三轮	不接	首页跳单点登录，无限重定向，采集器读不到
+web-ebrun	亿邦动力（中国 · 电商媒体）	https://www.ebrun.com/	2026-10-09·中文来源第三轮	不接	首页只返回 JS 验证
+web-sfccn	南方财经网（中国 · 财经媒体）	https://www.sfccn.com/	2026-10-09·中文来源第三轮	不接	没有消费或餐饮栏目
+web-cw-canyinye	天下雜誌 · 餐飲業标签（中国台湾 · 财经杂志）	https://www.cw.com.tw/tag/%E9%A4%90%E9%A3%B2%E6%A5%AD	2026-10-09·中文来源第三轮	不接	robots.txt 和首页对采集器返回 403（规则 5、6）
+web-thenewslens-canyinye	關鍵評論網 · 餐飲業标签（中国台湾 · 综合新闻网）	https://www.thenewslens.com/tag/28878	2026-10-09·中文来源第三轮	不接	首页对采集器返回 403
+web-hket	香港經濟日報（中国香港 · 财经报纸）	https://www.hket.com/	2026-10-09·中文来源第三轮	不接	robots.txt 和首页返回 405
+web-nownews-canyinye	NOWnews · 餐飲業标签（中国台湾 · 综合新闻网）	https://www.nownews.com/tag/%E9%A4%90%E9%A3%B2%E6%A5%AD	2026-10-09·中文来源第三轮	不接	标签页对采集器返回 403
+web-kamen	咖门（中国 · 茶饮咖啡媒体）	https://www.kamencn.com/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-latepost	晚点 LatePost（中国 · 商业媒体）	https://www.latepost.com/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-cmrnn	中国市场监管新闻网（中国 · 行业报纸）	https://www.cmrnn.com.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-foodmate	食品伙伴网（中国 · 食品行业门户）	https://www.foodmate.net/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-21jingji	21世纪经济报道（中国 · 财经报纸）	https://www.21jingji.com/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-ccn	中国消费网（中国 · 消费者报网站）	https://www.ccn.com.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-people-food	人民网 · 食品（中国 · 官方媒体频道）	http://food.people.com.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-gmw-food	光明网 · 食品（中国 · 官方媒体频道）	https://food.gmw.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-china-food	中国网 · 食品（中国 · 官方媒体频道）	https://food.china.com.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-dsb	电商报（中国 · 电商媒体）	https://www.dsb.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-100ec	网经社（中国 · 电商研究媒体）	https://www.100ec.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-tfcaijing	时代财经（中国 · 财经媒体）	https://www.tfcaijing.com/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-chinatimes-net	华夏时报（中国 · 财经报纸）	https://www.chinatimes.net.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-cnfood	中国食品报网（中国 · 行业报纸）	https://www.cnfood.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-xfrb	消费日报网（中国 · 行业报纸）	https://www.xfrb.com.cn/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+rss-cfs-hk	香港食物安全中心 · 新聞公報（中国香港 · 政府）	https://www.cfs.gov.hk/tc_chi/index.html	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-2dfire	二维火（中国 · 餐饮收银系统商）	https://www.2dfire.com/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-keruyun	客如云（中国 · 餐饮收银系统商）	https://www.keruyun.com/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查
+web-1111-franchise	1111 創業加盟網（中国台湾 · 加盟资讯站）	https://franchise.1111.com.tw/	2026-10-09·中文来源第三轮	待定	本机（开发环境）连不上或时通时断，未核对；服务器能连通时按规则重查

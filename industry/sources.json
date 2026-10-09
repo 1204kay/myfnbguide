@@ -1927,6 +1927,96 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-frymagazine",
+      "name": "Fry Magazine（英国 · 炸鱼薯条外带小店的行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://frymagazine.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-trnusa",
+      "name": "Today’s Restaurant News（美国 · 写给独立餐厅老板的经营专栏）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://trnusa.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-barradeideas",
+      "name": "Barra de Ideas（西班牙 · 写给餐馆与酒吧经营者的媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://barradeideas.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "西班牙",
+        "媒体"
+      ]
+    },
+    {
+      "id": "web-ras-news",
+      "name": "新加坡餐馆协会 RAS（新加坡 · 餐饮协会）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.ras.org.sg/news",
+        "itemSelector": "div.post-item",
+        "linkSelector": "a.post-card",
+        "titleSelector": "h3.shelf-title",
+        "detail": {
+          "maxFetches": 12
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "新加坡",
+        "协会"
+      ]
     }
   ]
 }

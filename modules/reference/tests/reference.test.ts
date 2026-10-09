@@ -191,9 +191,6 @@ test("a story the checks pass; each problem is named for the writer", () => {
   assert.deepEqual(repeatedNumbers("这是内阁府每月做的调查。", "现况判断为46.7点。"), []);
   assert.deepEqual(repeatedNumbers("2026 年国庆假期，他在第 36 届博览会上演讲，销量涨了 30%。", "2026年第36届博览会，销量涨了30%"), ["36", "30"]);
   assert.deepEqual(repeatedNumbers("他在第 36 届博览会上演讲。", "第36届博览会"), [], "one number alone is no restating");
-  const figures = [{ heading: "现况判断升至 46.7 点", blocks: [{ type: "text" as const, text: "9 月为 46.7 点，比 8 月上升 0.5 点；先行判断为 43.9 点。" }] }];
-  assert.ok(checkStory(story({ parts: figures }), `${SOURCE} 46.7 0.5 43.9`).some((p) => /没有一张图/.test(p)), "figures in paragraphs only");
-  assert.ok(!checkStory(story({ parts: [...figures, story().parts[1]!] }), `${SOURCE} 46.7 0.5 43.9`).some((p) => /没有一张图/.test(p)), "one figure is enough");
   const paragraph = "店主每周一、三、五去补面包，每次补到十根。".repeat(12);
   const split = splitLong({ material: "body", parts: [{ heading: "补货", blocks: [{ type: "text", text: paragraph }] }] }) as { parts: Array<{ blocks: Array<{ text: string }> }> };
   assert.ok(split.parts[0]!.blocks.length > 1 && split.parts[0]!.blocks.every((b) => [...b.text].length <= 200), "a long paragraph split at its sentences");

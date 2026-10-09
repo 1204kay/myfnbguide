@@ -53,8 +53,9 @@ export function sourceNumbers(text: string): Set<string> {
   }
   for (const word of normal.toLowerCase().match(/[a-z]+/g) ?? []) if (word in WORDS) found.add(String(WORDS[word]));
   // "2.5 million", "1,2 milhão", "1.2 万", "3만", "5 mil" (thousand in Portuguese and Spanish), "55k": the value written out.
-  const SCALES: Array<[RegExp, number]> = [[/^(million|millions|milh(?:ão|ões)|millones?|milioni?|億|억)$/i, 1_000_000], [/^(万|만)$/, 10_000], [/^(mil|k|千|천|thousand)$/i, 1000]];
-  for (const m of normal.matchAll(/(\d+(?:[.,]\d+)?)\s*(millions?|milh(?:ão|ões)|millones?|milioni?|thousand|mil\b|k\b|[万만億억千천])/gi)) {
+  // "$2M", "$1.5bn" too (10/9 eval: a $2M written as 200 万美元 was held as not in the original).
+  const SCALES: Array<[RegExp, number]> = [[/^(billions?|bn)$/i, 1_000_000_000], [/^(million|millions|m|mn|milh(?:ão|ões)|millones?|milioni?|億|억)$/i, 1_000_000], [/^(万|만)$/, 10_000], [/^(mil|k|千|천|thousand)$/i, 1000]];
+  for (const m of normal.matchAll(/(\d+(?:[.,]\d+)?)\s*(billions?|bn\b|millions?|mn\b|m\b|milh(?:ão|ões)|millones?|milioni?|thousand|mil\b|k\b|[万만億억千천])/gi)) {
     const n = Number(m[1]!.replace(",", "."));
     const scale = SCALES.find(([word]) => word.test(m[2]!))![1] * (/^(億|억)$/.test(m[2]!) ? 100 : 1);
     found.add(String(Math.round(n * scale)));
@@ -240,13 +241,6 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   for (const [where, value] of dataValues(story)) {
     if (value > SMALL && !forms(String(value)).some((f) => source.has(f))) problems.push(`${where}里的 ${value} 在原文里找不到：图里只放原文写的数字`);
   }
-  // Figures written out in the text with no figure to read them from (live write-ups of 10/9: survey results, sales
-  // and forecasts in paragraphs only).
-  const plain = new Set(["text", "list", "quote"]);
-  if (story.parts.every((p) => p.blocks.every((b) => plain.has(b.type)))) {
-    const written = new Set(story.parts.flatMap((p) => p.blocks.flatMap(blockTexts)).join("\n").normalize("NFKC").match(DIGITS)?.filter(figure) ?? []);
-    if (written.size >= 3) problems.push(`正文写了 ${[...written].slice(0, 6).join("、")} 这些数字，却没有一张图：把最关键的 1 到 3 个放进 numbers 块（前后对比的用 compare），文字里不再逐个重复`);
-  }
   const prose = story.parts.flatMap((p) => p.blocks.filter((b) => b.type === "text" || b.type === "list").flatMap(blockTexts)).join("\n");
   const bare = (t: string) => t.normalize("NFKC").replace(/[\s，。、；：！？“”‘’「」（）,.;:!?"'()]/g, "");
   for (const [i, part] of story.parts.entries()) for (const b of part.blocks) {
@@ -304,7 +298,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

@@ -1,6 +1,6 @@
 // The item page's 正文 · AI 整理自原文 under the summary, as a story page has it (用户 10/9: 全部以参考页面为标准):
-// the item's story when the library shows one, with the way to its situation, else the write-up of the original
-// (backend/body.ts); nothing for an item with neither.
+// the item's story when the library shows one (its parts: the summary above stands for its opening and who line),
+// with the way to its situation, else the write-up of the original (backend/body.ts); nothing for an item with neither.
 import { Link } from "react-router";
 import { SITE } from "@aihot/site";
 import type { ItemPart } from "@aihot/web/modules";
@@ -20,12 +20,14 @@ function Parts({ parts }: { parts: Array<{ heading: string; blocks: Block[] }> }
 function Block({ data }: { id: string; data: unknown }) {
   const text = data as ItemText | null;
   if (!text) return null;
-  const { lead, parts, open } = text.kind === "case" ? text.story : text.body;
+  // A story's opening scene and its who-is-this line are for the library page, where nothing stands above them; here
+  // the summary has just said who did what, so the story starts at its parts (10/9 eval: the who line restated it).
+  const { parts, open } = text.kind === "case" ? text.story : text.body;
+  const lead = text.kind === "case" ? null : text.body.lead;
   return (
     <section className="mt-8">
       <div className="border-t border-line pt-3 text-[12px] text-ink-3">正文 · AI 整理自原文</div>
       {lead && <p className={`mt-3 ${BODY}`}>{lead}</p>}
-      {text.kind === "case" && <p className={`mt-3 ${BODY}`}>{text.story.who}</p>}
       <Parts parts={parts} />
       {open && <p className={`mt-6 text-[14px] leading-relaxed text-ink-4 ${MEASURE}`}>{open}</p>}
       {text.kind === "case" && (

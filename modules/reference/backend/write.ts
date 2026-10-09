@@ -136,7 +136,9 @@ export function where(path: PropertyKey[]): string {
     else if (typeof next === "number" && key === "blocks") out += `第 ${next + 1} 块`;
     else if (typeof next === "number" && (key === "items" || key === "steps")) out += `第 ${next + 1} 项`;
     else if (typeof next === "number" && key === "placements") out += `第 ${next + 1} 个情况`;
-    else out += `${out ? "的" : ""}${key === "lead" && path.includes("items") ? "要点" : NAMES[String(key)] ?? String(key)}`;
+    // A label is the shop's line only under shop: in a figures card or a chart it says what a number is (10/9 eval:
+    // a card's label sent back as 店家说明, and the writer cut the wrong field).
+    else out += `${out ? "的" : ""}${key === "lead" && path.includes("items") ? "要点" : key === "label" && !path.includes("shop") ? "说明" : NAMES[String(key)] ?? String(key)}`;
   }
   return out || "整体";
 }

@@ -93,6 +93,9 @@ export const WORDING: ReadonlyArray<readonly [RegExp, string]> = [
 const SOURCE_WORDS = /播客|系统商|服务商|软件商|顾问|媒体|博客|店主|老板|协会|平台|专栏/u;
 
 /** "美国播客：", "日本一家": how a title opens when it repeats the source line; null when it does not. */
+/** An opening that says where the article came from rather than what it says: 这篇文章来自, 由某网转载. */
+const MEDIA_LINE = /这(?:篇|条)(?:文章|消息|报道|内容)?来自|转载/u;
+
 export function titleOpening(story: CaseStory): string | null {
   const colon = /^([^，。：:]{1,12})[：:]/u.exec(story.title);
   if (colon && SOURCE_WORDS.test(colon[1]!)) return colon[0];
@@ -198,6 +201,11 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   for (const [i, part] of story.parts.entries()) {
     if (LABELS.test(part.heading.trim())) problems.push(`第 ${i + 1} 段的小标题“${part.heading}”是分格标签：直接写内容，写成某人做了什么`);
   }
+  // Where the article came from is on the page's source line; the opening says who speaks or what the reader needs.
+  for (const [where, text] of [["开头", story.lead], ["人物", story.who]] as const) {
+    const hit = MEDIA_LINE.exec(text);
+    if (hit) problems.push(`${where}写了这篇文章从哪里来（“${hit[0]}”）：页面的来源行已经写了媒体名，直接写说话的人是谁或读后面需要知道的背景`);
+  }
   const opening = titleOpening(story);
   if (opening) problems.push(`标题以“${opening}”开头：页面的来源行已经写了国家和来源，标题直接写这家店做了什么`);
   for (const p of story.placements) {
@@ -217,7 +225,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

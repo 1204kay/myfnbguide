@@ -179,6 +179,10 @@ test("a story the checks pass; each problem is named for the writer", () => {
   for (const title of ["美国播客：布草账单四年涨了 74%", "美国加州一家餐馆的布草账单涨了 74%"]) {
     assert.ok(checkStory(story({ title }), SOURCE).some((p) => /^标题以/.test(p)), title);
   }
+  for (const lead of ["这篇文章来自红餐网专栏，面向火锅经营者。", "协会的文章由红餐网转载，讨论低价套餐。"]) {
+    assert.ok(checkStory(story({ lead }), SOURCE).some((p) => /从哪里来/.test(p)), lead);
+  }
+  assert.deepEqual(checkStory(story({ lead: "这份数据来自一家餐厅财务软件公司的统计。" }), SOURCE), [], "where the data comes from is what the reader needs");
   assert.ok(checkStory(story({ title: "京都一家酒馆的布草账单涨了 74%", shop: { ...story().shop, country: "日本", city: "京都市" } }), SOURCE).some((p) => /^标题以“京都一家”/.test(p)), "a city as titles write it");
   assert.deepEqual(checkStory(story({ title: "多开一家店以后，布草账单涨了 74%" }), SOURCE), [], "一家 that is not where the story is from");
   assert.equal(untranslated("店主说：「うちはお酒が出る杯数が多いです」"), "日文");

@@ -15,14 +15,14 @@ import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
-import { checkStory, MAX_CHARS, repeatedNumbers, summaryFigures } from "./checks.ts";
-import { BLOCKS, BlockSchema, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
+import { checkStory, repeatedNumbers, summaryFigures } from "./checks.ts";
+import { BLOCKS, BlockSchema, CHECKING, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
 const PURPOSE = "reference_body";
 export const BODY_SYSTEM = promptFromText("reference/body", readFileSync(new URL("../prompts/body.md", import.meta.url), "utf8"));
-// The prompt, the edit request and the length limit: changing any writes every write-up again.
-const PROMPT_VERSION = `reference-body@${createHash("sha256").update(BODY_SYSTEM).update(EDIT).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
+// The prompt, the edit request and the checks: the rewrite script writes again what was written under others.
+const PROMPT_VERSION = `reference-body@${createHash("sha256").update(BODY_SYSTEM).update(EDIT).update(CHECKING).update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
 /** Below this much text (body, else excerpt) there is nothing to write up beyond the summary: no call. */
 const MIN_MATERIAL = 300;
 

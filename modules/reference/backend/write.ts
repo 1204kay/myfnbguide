@@ -17,7 +17,7 @@ import { selectedCondition } from "@aihot/backend/publication/scope";
 import { spaced } from "../format.ts";
 import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
-import { checkStory, MAX_CHARS } from "./checks.ts";
+import { checkStory } from "./checks.ts";
 import { computeExample, ExampleInputSchema } from "./examples.ts";
 
 export const MODEL_STEP = "referenceCase";
@@ -40,8 +40,13 @@ export const EDIT = "下面是你按系统规则写好的故事（JSON），有�
  * checks still pass and no number changed.
  */
 const STYLE_SYSTEM = promptFromText("reference/style", readFileSync(new URL("../prompts/style.md", import.meta.url), "utf8"));
-// The prompts, the edit request and the length limit the checks apply: changing any writes every case again.
-const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(STYLE_SYSTEM).update(String(MAX_CHARS)).digest("hex").slice(0, 10)}`;
+// The prompts, the edit request and the checks: the rewrite script writes again every case written under others.
+/**
+ * The code that checks and shapes an answer (checks.ts, and this file's schema and splitting): a story held under
+ * one set of checks is written again under the next, by the rewrite script (myfnb/rewrite-reference.ts).
+ */
+export const CHECKING = ["./checks.ts", "./write.ts"].map((f) => readFileSync(new URL(f, import.meta.url), "utf8")).join("\n");
+const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(STYLE_SYSTEM).update(CHECKING).digest("hex").slice(0, 10)}`;
 const numbersOf = (story: CaseStory) => (JSON.stringify(story).match(/\d+(?:\.\d+)?/g) ?? []).sort().join(",");
 
 const text = z.string().trim().min(1);

@@ -61,7 +61,7 @@ const requeue = await sql<{ why: string; n: number }[]>`
              THEN '只有简介仍列出'
       END AS why
     FROM articles a JOIN latest l ON l.article_id = a.id LEFT JOIN publications p ON p.article_id = a.id
-    WHERE a.processing_state = 'analyzed'
+    WHERE a.processing_state IN ('analyzed', 'blocked')
   )
   SELECT why, count(*)::int AS n FROM picked WHERE why IS NOT NULL GROUP BY why ORDER BY why`;
 console.log(`③ 交回处理：${requeue.map((r) => `${r.why} ${r.n}`).join("，") || "0"}`);
@@ -102,7 +102,7 @@ if (apply) {
     u AS (
       UPDATE articles a SET processing_state = 'new', processing_attempts = 0, processing_retry_at = NULL, processing_queued_at = NULL, processing_error = NULL
       FROM latest l LEFT JOIN publications p ON p.article_id = l.article_id
-      WHERE l.article_id = a.id AND a.processing_state = 'analyzed' AND (
+      WHERE l.article_id = a.id AND a.processing_state IN ('analyzed', 'blocked') AND (
         (l.relevance = 'block' AND l.created_at < '2026-10-10 06:47+08' AND a.source_id IN (SELECT id FROM open))
         OR (l.created_at < '2026-10-03 06:18+08' AND a.source_id IN (SELECT id FROM open))
         OR (p.visibility = 'public' AND p.eligible AND l.created_at < '2026-10-09 16:30+08'

@@ -2017,6 +2017,197 @@
         "新加坡",
         "协会"
       ]
+    },
+    {
+      "id": "rss-sfa-newsroom",
+      "name": "新加坡食品局 SFA（新加坡 · 政府机构）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.sfa.gov.sg/rss/newsroom",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "新加坡",
+        "机构"
+      ]
+    },
+    {
+      "id": "rss-gastronomen",
+      "name": "gastronomen.biz（德国 · 餐饮与酒店的行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gastronomen.biz/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-restaurantandcafe-nz",
+      "name": "Restaurant & Café（新西兰 · 餐厅、咖啡馆与餐饮服务的行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://restaurantandcafe.co.nz/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "新西兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-sltn",
+      "name": "Scottish Licensed Trade News（英国 · 苏格兰酒吧与餐饮的行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sltn.co.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-kfoodtimes",
+      "name": "한국외식신문（韩国 · 餐饮业网络报纸）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.kfoodtimes.com/rss/allArticle.xml",
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "韩国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-foodnews-news",
+      "name": "식품외식경영（韩国 · 食品与餐饮网络报纸）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodnews.news/data/rss/news.xml",
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "韩国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-minimeinsights-foodservice",
+      "name": "Mini Me Insights（马来西亚 · 东南亚快消与餐饮新闻网站）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.minimeinsights.com/category/food-service/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 5
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "马来西亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "prt-royal",
+      "name": "ロイヤルホールディングス（日本 · 餐饮企业新闻稿）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://prtimes.jp/companyrdf.php?company_id=71323",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "品牌"
+      ]
+    },
+    {
+      "id": "nr-jollibee",
+      "name": "Jollibee Group（菲律宾 · 餐饮集团新闻室）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.jollibeegroup.com/news/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T1_5",
+      "first_party": true,
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "菲律宾",
+        "品牌"
+      ]
     }
   ]
 }

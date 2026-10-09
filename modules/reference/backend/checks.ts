@@ -283,6 +283,18 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   return problems;
 }
 
+/**
+ * Whether a problem keeps a story or write-up from readers: a number the original does not have, an answer that is not
+ * one, an example that cannot be worked out, a situation the library has not. Everything else (wording, length, how a
+ * sentence opens) goes back to be mended and, still there after the last try, stands as the engine's wording does
+ * (editorial/analyze.ts mendWording): a 讲 or a long paragraph is no reason to show nothing (10/9 eval: 9 of 20
+ * write-ups held, most for one word or one label over its length).
+ */
+export const blocking = (problem: string) => /在原文里找不到|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组/.test(problem);
+
+/** How bad an answer's problems are, to keep the best of the tries: any blocking one before any number of others. */
+export const badness = (written: unknown, problems: string[]) => written ? problems.filter(blocking).length * 1000 + problems.length : Infinity;
+
 /** What kind of problem a sentence of checkStory (or readOutput) names, for counting which check holds cases back. */
 export function problemKind(problem: string): string {
   const number = /^(.+?)(?:的数字|里的 [\d.]+) .*在原文里找不到/.exec(problem);

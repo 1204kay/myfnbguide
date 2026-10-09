@@ -25,7 +25,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
-import { checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
+import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
@@ -707,4 +707,11 @@ test("the last eval run reads case by case, the site's prompt beside the candida
   assert.deepEqual(last.cases.map((c: { id: string }) => c.id), [ids.FIRST]);
   assert.deepEqual(last.cases[0].results.map((r: { variant: string; status: string }) => [r.variant, r.status]), [["live", "story"], ["candidate", "thin"]]);
   assert.equal((await get("/api/reference/eval?run=2026-10-09%2005:00")).cases[0].results[0].output.title, "旧的一轮", "an earlier run by name");
+});
+
+test("only a number not in the original, a broken answer or a wrong situation keeps a write-up from readers", () => {
+  for (const p of ["第 1 段的数字 7.5 在原文里找不到：删掉", "格式不对：第 1 段 Required", "举例算不出来：价格是 0", "情况 nowhere 不在清单里", "情况 busy-no-profit 没有 no-such-group 这一组"]) assert.ok(blocking(p), p);
+  for (const p of ["第 2 段的小标题用了“讲”（“最讲时效”）：改成“说”", "全文 1337 字，太长：要在 800 字以内", "开头写成了问句（“出在哪里。”）：写成陈述句"]) assert.ok(!blocking(p), p);
+  assert.ok(badness({}, ["全文太长", "用了“讲”"]) < badness({}, ["第 1 段的数字 7.5 在原文里找不到"]), "any number not in the original is worse than wording");
+  assert.equal(badness(null, []), Infinity, "no answer is worst");
 });

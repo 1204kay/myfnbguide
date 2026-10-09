@@ -15,7 +15,7 @@ import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
-import { checkStory, repeatedNumbers, summaryFigures } from "./checks.ts";
+import { badness, blocking, checkStory, repeatedNumbers, summaryFigures } from "./checks.ts";
 import { type Article, BLOCKS, BlockSchema, CHECKING, type Prompt, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
@@ -98,6 +98,7 @@ export async function composeBody(a: Article, prompt: Prompt = BODY_PROMPT): Pro
     const [shown] = await sql<{ title: string; summary: string | null; reason: string | null }[]>`SELECT title, summary, reason FROM publications WHERE article_id = ${a.id}`;
     const page = shown ? [`本站标题：${shown.title}`, `导读：${shown.summary ?? "（无）"}`, `收录理由：${shown.reason ?? "（无）"}`].join("\n") : "";
     let user = ["请按系统规则整理以下材料，只输出 JSON。", page, material].filter(Boolean).join("\n\n");
+    let best: { written: Written | null; problems: string[] } | null = null;
     // The first answer, and up to two more with its problems named.
     for (let attempt = 0; attempt < 3; attempt++) {
       const res = await chatJson({
@@ -113,6 +114,8 @@ export async function composeBody(a: Article, prompt: Prompt = BODY_PROMPT): Pro
       // The paragraphs below do not write the summary's figures out again either: a figure carries those it needs.
       const again = written?.status === "body" && shown?.summary ? summaryFigures(written.body.parts.flatMap((p) => p.blocks.flatMap((b) => b.type === "text" ? [b.text] : b.type === "list" ? b.items.map((x) => x.text) : [])).join("\n"), shown.summary) : [];
       if (again.length >= 3) problems.push(`正文的文字重复了导读里的数字 ${again.slice(0, 6).join("、")}：读者刚读完导读，删掉文字里重复导读的句子，要用的数字放进图`);
+      // A later try can be worse than an earlier one: the best of them is the one kept.
+      if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, problems };
       if (!problems.length) break;
       const list = problems.map((p) => `- ${p}`).join("\n");
       user = problems.every(textOnly)
@@ -123,8 +126,9 @@ export async function composeBody(a: Article, prompt: Prompt = BODY_PROMPT): Pro
           `上一次的输出有以下问题，请改正后重新输出完整的 JSON，其余保持不变：\n${list}`,
         ].join("\n\n");
     }
+    ({ written, problems } = best ?? { written, problems });
   }
-  const status: BodyResult["status"] = problems.length || !written ? "held" : written.status;
+  const status: BodyResult["status"] = !written || problems.some(blocking) ? "held" : written.status;
   const body = written?.status === "body" ? (({ lead, parts, open }) => ({ lead: lead || null, parts, open }))(spaceStory(asStory(written.body))) : null;
   return { status, body, reason: written?.status === "thin" ? written.reason : null, problems, receiptIds };
 }

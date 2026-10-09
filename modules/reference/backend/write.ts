@@ -17,7 +17,7 @@ import { selectedCondition } from "@aihot/backend/publication/scope";
 import { spaced } from "../format.ts";
 import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
-import { checkStory } from "./checks.ts";
+import { badness, blocking, checkStory } from "./checks.ts";
 import { computeExample, ExampleInputSchema } from "./examples.ts";
 
 export const MODEL_STEP = "referenceCase";
@@ -55,8 +55,8 @@ const number = z.coerce.number().finite().positive();
 const TEXT_MAX = 240;
 const PARAGRAPH = 200;
 
-/** Blocks a part may hold: three as written, one more where a long paragraph was split (splitLong). */
-export const BLOCKS = 4;
+/** Blocks a part may hold: three as asked, more where long paragraphs were split (splitLong) or the writer went over. */
+export const BLOCKS = 6;
 const item = z.object({ label: text.max(30), value: number });
 
 // Every part has a ceiling a little above what the prompt asks (prompts/case.md), so a long story comes back
@@ -69,7 +69,7 @@ export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text.max(90) }),
   z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text.max(90) }),
   z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(120) }),
-  z.object({ type: z.literal("numbers"), point: z.string().trim().max(30).nullable().default(null), items: z.array(z.object({ value: text.max(16), label: text.max(12) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
+  z.object({ type: z.literal("numbers"), point: z.string().trim().max(30).nullable().default(null), items: z.array(z.object({ value: text.max(16), label: text.max(24) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
   z.object({ type: z.literal("change"), before: z.object({ label: text.max(8), text: text.max(80) }), after: z.object({ label: text.max(8), text: text.max(80) }), caption: z.string().trim().max(90).nullable().default(null) }),
 ]);
 
@@ -258,6 +258,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
   let written: Written | null = null;
   let answer: unknown = null;
   let problems: string[] = [];
+  let best: { written: Written | null; answer: unknown; problems: string[] } | null = null;
   // The first answer, and up to two more with its problems named.
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
@@ -269,6 +270,8 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     written = read.written;
     answer = res.data;
     problems = written?.status === "story" ? checkStory(written.story, material) : read.problems;
+    // A later try can be worse than an earlier one: the best of them is the one kept.
+    if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, answer, problems };
     if (!problems.length) break;
     const list = problems.map((p) => `- ${p}`).join("\n");
     user = problems.every(textOnly)
@@ -279,16 +282,21 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
         `上一次的输出有以下问题，请改正后重新输出完整的 JSON，其余保持不变：\n${list}`,
       ].join("\n\n");
   }
-  if (!problems.length && written?.status === "story") {
+  ({ written, answer, problems } = best ?? { written, answer, problems });
+  if (!problems.some(blocking) && written?.status === "story") {
     const styled = await chatJson({
       model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version,
       system: STYLE_SYSTEM, user: JSON.stringify(answer), schema: z.unknown(), temperature: 0.2, maxTokens: 6000, timeoutMs: 180_000,
     });
     receiptIds.push(styled.receiptId);
     const read = readOutput(styled.data);
-    if (read.written?.status === "story" && !checkStory(read.written.story, material).length && numbersOf(read.written.story) === numbersOf(written.story)) written = read.written;
+    const after = read.written?.status === "story" ? checkStory(read.written.story, material) : null;
+    if (read.written?.status === "story" && after && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
+      written = read.written;
+      problems = after;
+    }
   }
-  const status: CaseResult["status"] = problems.length || !written ? "held" : written.status;
+  const status: CaseResult["status"] = !written || problems.some(blocking) ? "held" : written.status;
   const story = written?.status === "story" ? spaceStory(written.story) : null;
   return { status, story, reason: written?.status === "thin" ? written.reason : null, problems, receiptIds };
 }

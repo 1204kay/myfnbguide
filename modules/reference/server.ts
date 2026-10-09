@@ -12,7 +12,7 @@ import {
   membersBySituation, readCase, readHome, readItemText, readShop, readSituation, readStatus, sitemapEntries,
 } from "./backend/read.ts";
 import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
-import { problemKind } from "./backend/checks.ts";
+import { blocking, problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
@@ -118,7 +118,7 @@ export default defineServerModule({
           UNION ALL (SELECT article_id, 'body', status, problems, updated_at FROM reference_bodies ORDER BY updated_at DESC LIMIT 20)
           ORDER BY at DESC LIMIT 20`).map((r) => ({
           id: r.id, kind: r.kind, at: r.at,
-          result: r.status === "thin" ? "thin" : r.status === "held" ? "held" : r.problems.length ? "held, earlier kept" : "written",
+          result: r.status === "thin" ? "thin" : r.status === "held" ? "held" : r.problems.some(blocking) ? "held, earlier kept" : r.problems.length ? "written, with notes" : "written",
           problems: r.status === "thin" ? [] : [...new Set(r.problems.map(problemKind))],
         })),
         // What myfnb/rewrite-reference.ts would write under the current prompts: old ones, and older items never written up.

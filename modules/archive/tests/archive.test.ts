@@ -165,7 +165,11 @@ test("new episodes of a podcast the site collects are kept for transcription and
   await noteNewEpisodes();
   const [again] = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM archive_episodes WHERE source_id = ${id}`;
   assert.equal(again!.n, 1, "kept once");
-  // Notes too thin to score at the floor, but past the prefilter: transcribed, ahead of the archive.
-  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${taken[0]!}, 1, 'rule', 'pass', 8, false)`;
+  // Notes that only say what the episode will discuss: no summary, waiting for its content (relevance unknown), and
+  // transcribed for it, ahead of the archive.
+  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${taken[0]!}, 1, 'rule', 'unknown', 8, false)`;
+  assert.equal((await episodesToTranscribe(10))[0], taken[0]);
+  // Notes too thin to score at the floor, but past the prefilter and listed: transcribed too.
+  await sql`UPDATE analyses SET relevance = 'pass' WHERE article_id = ${taken[0]!}`;
   assert.equal((await episodesToTranscribe(10))[0], taken[0]);
 });

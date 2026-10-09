@@ -64,13 +64,16 @@ export function sourceNumbers(text: string): Set<string> {
 
 /** The numbers of a story text that are not in the original. */
 /**
- * Numbers a write-up's opening repeats from the summary shown just above it (prompts/body.md lead): the reader has
- * just read them. Days and months (whole numbers up to 12) are left out; a decimal like 0.5 counts.
+ * The summary's figures a write-up's opening says again (prompts/body.md lead): the reader has just read them. Days,
+ * months (whole numbers up to 12) and years are left out, and one number alone (第 36 届) is no restating: two or
+ * more are (live write-ups of 10/9 repeated the summary's 46.7, 0.5, 43.9 and 3.8).
  */
 export function repeatedNumbers(lead: string, summary: string): string[] {
   const shown = sourceNumbers(summary);
   const tokens = lead.normalize("NFKC").match(DIGITS) ?? [];
-  return [...new Set(tokens.filter((t) => (/[.,]/.test(t) || Number(t) > SMALL) && forms(t).some((f) => shown.has(f))))];
+  const year = (t: string) => /^(?:19|20)\d\d$/.test(t);
+  const repeated = [...new Set(tokens.filter((t) => (/[.,]/.test(t) || (Number(t) > SMALL && !year(t))) && forms(t).some((f) => shown.has(f))))];
+  return repeated.length > 1 ? repeated : [];
 }
 
 export function unfoundNumbers(text: string, source: Set<string>): string[] {

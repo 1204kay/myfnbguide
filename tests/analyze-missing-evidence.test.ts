@@ -7,6 +7,7 @@ import { after, test } from "node:test";
 import { closeDb } from "@aihot/backend/db";
 import { normalizeAnalysis, runAnalysis, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
 import { isPoolEligible } from "@aihot/backend/publication/rules";
+import { CATEGORIES, ITEM_TYPES } from "@aihot/industry/taxonomy";
 
 let label = "PASS";
 const steps: string[] = [];
@@ -15,8 +16,8 @@ const provider = await stub((_hit, request) => {
   steps.push(step);
   const output = step === "prefilter" ? { label, reason: "fixture" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
-    : step === "structure" ? { scope: "unknown", category: "model", tags: [], subjects: [], fact: null }
-    : { itemType: "model_release", authorRole: "principal", titleZh: "模型发布", summaryZh: "来源确认模型发布。", bodyZh: "来源确认模型发布。", tags: [], editorialJudgment: "fixture" };
+    : step === "structure" ? { scope: "unknown", category: CATEGORIES[0]!.key, tags: [], subjects: [], fact: null }
+    : { itemType: ITEM_TYPES[0], authorRole: "principal", titleZh: "模型发布", summaryZh: "来源确认模型发布。", bodyZh: "来源确认模型发布。", tags: [], editorialJudgment: "fixture" };
   return { choices: [{ message: { content: JSON.stringify(output) } }] };
 });
 pointModels(provider.url);

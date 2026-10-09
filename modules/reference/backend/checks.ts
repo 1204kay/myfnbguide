@@ -63,6 +63,13 @@ export function sourceNumbers(text: string): Set<string> {
 }
 
 /** The numbers of a story text that are not in the original. */
+/** Whether a sentence says a heading again: most of the heading's characters (six or more of them) are in it. */
+function echoes(sentence: string, heading: string): boolean {
+  const own = new Set(sentence);
+  const chars = [...new Set(heading)];
+  return chars.length >= 6 && chars.filter((c) => own.has(c)).length / chars.length >= 0.7;
+}
+
 /** Money units, to find a figures card that mixes two. */
 const MONEY = /万美元|亿美元|美元|美分|万元|亿元|日元|万日元|欧元|英镑|韩元|港元|新台币|澳元|加元|元/u;
 /** An opening that labels its speaker instead of saying who they are: 说话的人是, 这期节目的主持人是. */
@@ -250,6 +257,9 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     // Figures in one card are read against each other: money in two units (3.02 美元 beside 437.95 美分, 10/9) cannot be.
     const money = b.type === "numbers" ? [...new Set(b.items.map((x) => MONEY.exec(x.value)?.[0]).filter(Boolean))] : [];
     if (money.length > 1) problems.push(`第 ${i + 1} 段的数字卡里有 ${money.join("和")} 两种单位：读者没法直接比，分开放，或只留同一种单位的数`);
+    // The card's sentence says what its figures show, not the heading over it again (10/9: 周一会员日 9.9 元猪脚饭 over
+    // 每周一9.9元会员日，让周一的生意变好).
+    if (b.type === "numbers" && b.point && echoes(bare(b.point), bare(part.heading))) problems.push(`第 ${i + 1} 段数字卡上的结论“${b.point}”和小标题“${part.heading}”说的是同一件事：小标题写做法，卡片写这些数字说明的结果`);
     // A quote is the words once: the text around it does not say them again.
     if (b.type === "quote" && bare(b.text).length >= 12 && bare(prose).includes(bare(b.text))) problems.push(`第 ${i + 1} 段的原话“${b.text.slice(0, 20)}”在文字里又写了一遍：删掉文字里的那一句，只留原话`);
   }
@@ -282,7 +292,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

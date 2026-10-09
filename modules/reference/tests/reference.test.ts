@@ -205,6 +205,8 @@ test("a story the checks pass; each problem is named for the writer", () => {
   assert.ok(checkStory(story({ parts: quoted }), SOURCE).some((p) => /又写了一遍/.test(p)), "a quote said again in the text");
   const units = [{ heading: "期货价", blocks: [{ type: "numbers" as const, point: "咖啡豆期货价还在高位", items: [{ value: "3.02 美元", label: "现在每磅" }, { value: "437.95 美分", label: "去年最高每磅" }], caption: null }] }, story().parts[1]!];
   assert.ok(checkStory(story({ parts: units }), `${SOURCE} 3.02 437.95`).some((p) => /两种单位/.test(p)), "dollars beside cents");
+  const echo = [{ heading: "周一会员日 9.9 元猪脚饭", blocks: [{ type: "numbers" as const, point: "每周一9.9元会员日，让周一的生意变好", items: [{ value: "29%", label: "周一订单增长" }], caption: null }] }, story().parts[1]!];
+  assert.ok(checkStory(story({ parts: echo }), `${SOURCE} 9.9 29`).some((p) => /说的是同一件事/.test(p)), "the card's sentence says the heading again");
   assert.ok(checkStory(story({ lead: "说话的人是 Brandon Robinson，一家迷你高尔夫餐吧的创始人。" }), SOURCE).some((p) => /直接从这个人写起/.test(p)), "a speaker labelled");
   assert.ok(!readOutput({ material: "story", ...story(), parts: [{ heading: "账单", blocks: [{ type: "numbers", items: [{ value: "74%", label: "四年涨幅" }] }] }] }).written, "a figures card says what it shows");
   assert.deepEqual(summaryFigures("10 月 6 日报每磅 3.02 美元，一年涨幅 118%，创 47 年新高。", "期货报每磅3.02美元，一年涨幅118%"), ["3.02", "118"]);

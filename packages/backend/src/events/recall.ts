@@ -7,7 +7,7 @@ import { sql } from "../db.ts";
 import { beijingDate } from "@aihot/contracts/time";
 import { sha256 } from "../lib/ids.ts";
 import { embeddingsAvailable, ensureEmbeddings } from "../providers/embeddings.ts";
-import { lexicalSimilarity, reportText, type CandidateView, type ReportView, type ReadingContext } from "./relate.ts";
+import { GROUP_BODY_CHARS, lexicalSimilarity, reportText, type CandidateView, type ReportView, type ReadingContext } from "./relate.ts";
 import { latestCompositeCondition, ownFactEvidenceCondition, selectedCondition } from "../publication/scope.ts";
 import { pickRepresentative, REPRESENTATIVE_COLUMNS, type RepresentativeIdentity, type RepresentativeRow } from "../publication/representative.ts";
 
@@ -140,13 +140,20 @@ async function similarReports(queryId: string, queryText: string, pool: Array<{ 
     // text hash still avoids paying again when a revision changed only non-text public fields.
     const ids = [...new Set(pool.map((r) => r.article_id))];
     const revisions = new Map(pool.map((r) => [r.article_id, r.revision]));
-    const uncached = ids.filter((id) => !vectorCache.has(id) || vectorCache.get(id)!.revision !== revisions.get(id));
+    // Keep this call's hits even if loading new vectors clears the process cache.
+    const cached = new Map<string, Float32Array>();
+    const uncached = ids.filter((id) => {
+      const hit = vectorCache.get(id);
+      if (!hit || hit.revision !== revisions.get(id)) return true;
+      cached.set(id, hit.vector);
+      return false;
+    });
     const texts = await reportTexts(uncached);
     const fresh = await vectorsFor([{ id: queryId, text: queryText }, ...uncached.map((id) => ({ id, text: texts.get(id) ?? "", revision: revisions.get(id) })).filter((x) => x.text)]);
     const mine = fresh.get(queryId);
     if (mine) {
       for (const r of pool) {
-        const v = fresh.get(r.article_id) ?? vectorCache.get(r.article_id)?.vector;
+        const v = fresh.get(r.article_id) ?? cached.get(r.article_id);
         if (!v) continue;
         const s = cosine32(mine, v);
         if (s >= minScore) scores.set(r.article_id, s);
@@ -183,7 +190,7 @@ export async function recallSelectedBackground(queryId: string, queryText: strin
   if (!picked.length) return [];
   // Read only the saved text of the few matching reports; never fetch or extract for this comparison.
   const bodies = new Map((await sql<{ id: string; text: string | null }[]>`
-    SELECT id, left(body_text, 6000) AS text FROM articles WHERE id = ANY(${picked.map(r => r.article_id)})`
+    SELECT id, left(body_text, ${GROUP_BODY_CHARS}) AS text FROM articles WHERE id = ANY(${picked.map(r => r.article_id)})`
   ).map(r => [r.id, r.text]));
   return picked.map(({ article_id, revision, ...report }) => ({ report, sourceText: bodies.get(article_id) ?? null }));
 }

@@ -17,7 +17,7 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { loadTopicPage, listTopicSummaries, topicsOfStory, TOPIC_GROUPS, TOPICS } from "@aihot/backend/publication/topics";
+import { TOPICS, TOPIC_GROUPS, loadTopicPage, listTopicSummaries, topicsOfStory } from "@aihot/backend/publication/topics";
 import { buildApp } from "../apps/api/src/app.ts";
 
 const T = tag();
@@ -159,5 +159,5 @@ test("every topic has a page; unknown topics and pages past the end have none", 
   const index = await app.inject({ method: "GET", url: "/api/site/topics" });
   const body = JSON.parse(index.body) as { groups: Array<{ key: string }>; topics: Array<{ slug: string }> };
   assert.deepEqual(body.groups.map((g) => g.key), TOPIC_GROUPS.map((g) => g.key));
-  assert.equal(body.topics.length, TOPICS.length);
+  assert.deepEqual(body.topics.map((t) => t.slug).sort(), TOPICS.map((t) => t.slug).sort(), "the index lists every topic");
 });

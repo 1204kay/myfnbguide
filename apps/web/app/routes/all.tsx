@@ -4,9 +4,9 @@ import type { Route } from "./+types/all";
 import type { PoolResponse } from "@aihot/contracts/site";
 import { SITE, subjectAfter } from "@aihot/site";
 import { beijingTime } from "@aihot/contracts/time";
-import { edgeTtl, loadOr404, pageExpiresAt } from "../lib/api.server";
-import { cachedLoader } from "../lib/page-reuse";
-import { filterParams, itemListLd, listPath, pageMeta, readFilters } from "../lib/seo";
+import { cachedPage, loadOr404 } from "../lib/api.server";
+import { pageReuse } from "../lib/page-reuse";
+import { filterParams, hasFeedFilters, itemListLd, listPath, pageMeta, readFilters } from "../lib/seo";
 import { ActiveFilters, CategoryTabs, FeedBar, PHONE_ROW, PhoneFilterRow, SearchField } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
@@ -18,8 +18,8 @@ import { openSearch } from "../features/search/SearchOverlay";
 import { addRecentSearch } from "../lib/local-state";
 
 export const handle: Screen = { tab: "featured", name: "全部" };
-export { shouldRevalidate } from "../lib/page-reuse";
-export const clientLoader = cachedLoader<typeof loader>();
+export { pageHeaders as headers } from "../lib/api.server";
+export const { clientLoader, shouldRevalidate } = pageReuse<typeof loader>();
 
 const ALL_TITLE = subjectAfter("全部", "动态");
 
@@ -36,25 +36,23 @@ export async function loader({ request }: Route.LoaderArgs) {
   );
   // Past the last page of what there is: the last page, with the same search and filters.
   if (data.total > 0 && data.page > data.pageCount) throw redirect(pageHref(url.searchParams, data.pageCount));
-  return { data, expiresAt: pageExpiresAt(60) };
+  return cachedPage(60, { data });
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
   const f = loaderData?.data.filters;
   const q = f?.q;
   const page = loaderData?.data.page ?? 1;
-  const path = listPath("/all", { ...(f && filterParams(f)), q, tab: f?.tab === "relevance" ? "relevance" : null, page: page > 1 ? page : null });
+  const path = listPath("/all", { ...(f && filterParams(f)), q, tab: q && f?.tab === "relevance" ? "relevance" : null, page: page > 1 ? page : null });
+  const title = `${q ? `搜索：${q}` : ALL_TITLE}${page > 1 ? ` · 第 ${page} 页` : ""}`;
+  const noindex = !!q || hasFeedFilters(f);
   return pageMeta({
-    title: q ? `搜索：${q}` : ALL_TITLE,
+    title,
     description: `${SITE.name} 收录的${subjectAfter("全部", "相关动态")}，可按频道、类别与标签筛选，支持中英文搜索。`,
     path,
-    noindex: !!q,
-    jsonLd: q ? undefined : itemListLd(path, ALL_TITLE, loaderData?.data.items.map((i) => i.title) ?? []),
+    noindex,
+    jsonLd: noindex ? undefined : itemListLd(path, title, loaderData?.data.items.map((i) => i.title) ?? []),
   });
-}
-
-export function headers() {
-  return edgeTtl(60);
 }
 
 function pageHref(params: URLSearchParams, page: number) {

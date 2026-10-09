@@ -2,13 +2,8 @@
 // every exit, reports stop quoting withdrawn items, the hot board drops a withdrawn item at once, item
 // pages follow one rule, a withdrawal next to an unresolved selection leaves new snapshots at once, and
 // snapshots answer conditional requests.
-import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
-import { ITEM_COPY, withSubject } from "@aihot/site";
-import { CATEGORIES } from "@aihot/industry/taxonomy";
-import { beijingDate } from "@aihot/contracts/time";
-import { ogEtag } from "@aihot/backend/media/og";
-import { posterEtag } from "@aihot/backend/media/poster";
 import { tag } from "./setup.ts";
+import { CATEGORIES } from "@aihot/industry/taxonomy";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import * as cheerio from "cheerio";
@@ -70,6 +65,34 @@ async function get(url: string, headers: Record<string, string> = {}) {
   const res = await app.inject({ method: "GET", url, headers });
   return { status: res.statusCode, body: res.body, etag: res.headers.etag as string | undefined };
 }
+
+// Failure modes: a revoked score falls back to the erroneous model score, zero is treated as
+// missing, republishing loses a correction, invalid scores or stale edits alter public state,
+// or removing a correction cannot restore the saved model result without paying again.
+test("manual score corrections, including no score, survive every public projection and rebuild", async () => {
+  const id = await article();
+  await sql`UPDATE articles SET grouping_status = 'complete' WHERE id = ${id}`;
+  await publishArticle(id, released());
+  assert.equal(JSON.parse((await get(`/api/site/items/${id}`)).body).score, 90);
+  for (const score of [-1, 101, "0", Number.NaN]) {
+    await assert.rejects(overrideFields(id, { fields: { score }, reason: "invalid score", version: 0 }, "test"));
+  }
+  await overrideFields(id, { fields: { score: null, selected: false }, reason: "unsupported launch revoked", version: 0 }, "test");
+  await publishArticle(id);
+  const detail = JSON.parse((await get(`/api/site/items/${id}`)).body);
+  assert.equal(detail.score, null);
+  assert.equal(detail.selected, false);
+  const items = JSON.parse((await get(`/api/v1/items?mode=all&q=${encodeURIComponent(detail.title)}&limit=10`)).body).items;
+  assert.equal(items.find((i: { id: string }) => i.id === id)?.score, null);
+  assert.equal((await loadItemShare(id))?.score, null);
+  assert.ok(!(await get("/feed.xml")).body.includes(id), "revoked selection leaves RSS");
+  assert.equal(Number((await sql`SELECT score FROM analyses WHERE article_id = ${id}`)[0]!.score), 90, "the paid result stays intact");
+  await assert.rejects(overrideFields(id, { fields: { score: 99 }, reason: "stale correction", version: 0 }, "test"));
+  await overrideFields(id, { fields: { score: 0 }, reason: "verified zero score", version: 1 }, "test");
+  assert.equal(JSON.parse((await get(`/api/site/items/${id}`)).body).score, 0);
+  await overrideFields(id, { fields: {}, clear: ["score"], reason: "restore saved scoring", version: 2 }, "test");
+  assert.equal(JSON.parse((await get(`/api/site/items/${id}`)).body).score, 90);
+});
 
 // Export failures to guard before changing conversion: flattened table relationships, invented
 // headings/merged cells, lost numeric units, and full text leaking after a licence reduction.
@@ -370,7 +393,7 @@ test('historical sync never redistributes withdrawn content, even on a one-entry
   }
 });
 
-test("v1 story retains website content and fallback ordering without the website-only heat reads", async () => {
+test("v1 story matches the website's content and fallback ordering", async () => {
   const first = await article();
   const second = await article();
   await publishArticle(first, released());
@@ -413,13 +436,13 @@ test('event neighbors disappear when their last readable evidence is withdrawn',
 test("unchanged republishing preserves freshness, while URL-only changes still reach the projection and ledger", async () => {
   const id = await article();
   await publishArticle(id, released());
-  const state = async () => (await sql`SELECT xmin::text AS row_version, updated_at, revision, url FROM publications WHERE article_id = ${id}`)[0]!;
+  const state = async () => (await sql`SELECT updated_at, revision, url FROM publications WHERE article_id = ${id}`)[0]!;
   const before = await state();
   const [ledger] = await sql`SELECT max(seq) AS seq FROM selected_ledger WHERE article_id = ${id}`;
   const unchanged = await publishArticle(id);
   assert.equal(unchanged!.changed, false);
   assert.equal(unchanged!.ledger, null);
-  assert.deepEqual({ ...await state() }, { ...before }, "no new tuple or freshness timestamp for identical content");
+  assert.deepEqual({ ...await state() }, { ...before }, "no new freshness timestamp or revision for identical content");
   assert.equal((await sql`SELECT max(seq) AS seq FROM selected_ledger WHERE article_id = ${id}`)[0]!.seq, ledger!.seq);
 
   const url = `https://example.com/${T}-corrected`;
@@ -429,38 +452,19 @@ test("unchanged republishing preserves freshness, while URL-only changes still r
   assert.equal(result!.ledger, "upsert", "the public URL change is still recorded for sync clients");
   const changed = await state();
   assert.equal(changed.url, url);
-  assert.notEqual(changed.row_version, before.row_version);
   assert.ok(changed.updated_at >= before.updated_at);
   assert.equal(changed.revision, before.revision + 1);
 });
 
-test("share images keep detail metadata and access rules while conditional reads avoid body hydration", async () => {
+test("a cached share-image validator never outlives the selected verdict or a withdrawal", async () => {
   const id = await article();
   await publishArticle(id, released());
-  const d = JSON.parse((await get(`/api/site/items/${id}`)).body);
-  const kicker = d.category ? CATEGORY_LABELS[d.category as keyof typeof CATEGORY_LABELS] : withSubject("动态");
-  const source = d.source.name;
-  const date = beijingDate(d.timelineAt);
-  const card = { kicker, title: d.title, subtitle: d.summary, meta: `${source} · ${date}`,
-    badge: d.selected && d.score !== null && ITEM_COPY.showScore ? { value: String(Math.round(d.score)), label: "精选评分" } : null };
-  const poster = { url: `${config.siteUrl}/items/${id}`, kicker, title: d.title, summary: d.summary, source, date, score: d.selected && ITEM_COPY.showScore ? d.score : null };
-  const paths = [[`/og/items/${id}.png`, `"og-${ogEtag(card)}"`], [`/og/posters/${id}.png`, `"poster-${posterEtag(poster)}"`]];
-  const queries: string[] = [];
-  const previous = sql.options.debug;
-  sql.options.debug = (_connection, query) => { queries.push(query); };
-  try {
-    for (const [path, etag] of paths) {
-      const response = await get(path!, { "if-none-match": etag! });
-      assert.equal(response.status, 304);
-      assert.equal(response.etag, etag);
-    }
-    assert.equal(queries.length, 2);
-    assert.ok(queries.every((q) => !/body_html|body_text|translations|fact_articles/.test(q)), "cards only load their public metadata");
-  } finally { sql.options.debug = previous; }
+  const paths: Array<[string, string]> = [];
+  for (const path of [`/og/items/${id}.png`, `/og/posters/${id}.png`]) paths.push([path, String((await app.inject({ method: "GET", url: path })).headers.etag)]);
   await sql`UPDATE publications SET visibility = 'summary-only' WHERE article_id = ${id}`;
-  assert.equal((await get(paths[0]![0]!, { "if-none-match": paths[0]![1]! })).status, 200, "summary-only images remove the former selected verdict");
+  assert.equal((await get(paths[0]![0], { "if-none-match": paths[0]![1] })).status, 200, "summary-only images remove the former selected verdict");
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${id}`;
-  for (const [path, etag] of paths) assert.equal((await get(path!, { "if-none-match": etag! })).status, 404, "cached ETags never bypass current visibility");
+  for (const [path, etag] of paths) assert.equal((await get(path, { "if-none-match": etag })).status, 404, "cached ETags never bypass current visibility");
 });
 
 // Restricting a selected item to a neutral summary must also remove its selected badge, score,

@@ -4,16 +4,19 @@
 import { toPublicApiCategory } from "@aihot/contracts/taxonomy";
 import { SITE } from "@aihot/site";
 import { one, sql, type Tx } from "../db.ts";
+import { audit } from "../audit.ts";
 import { sha256, stableJson } from "../lib/ids.ts";
 import { collapseWhitespace } from "../lib/text.ts";
+import type { XPostData } from "../content/materials.ts";
+import { originalPostCopy } from "../content/posts.ts";
 import { itemUrl } from "./links.ts";
 import { pickRepresentative, REPRESENTATIVE_COLUMNS, type RepresentativeIdentity } from "./representative.ts";
 import { enqueue, QUEUES, shutdownSignal } from "../jobs/queue.ts";
 import { emit } from "../modules.ts";
 import {
-  bodyModeOf, channelOf, displayTags, isIndexable, isPoolEligible, isSelectable, mayRedistribute, publicSourceName, type SourceFacts,
+  bodyModeOf, channelOf, displayTags, isIndexable, isPoolEligible, isSelectable, isIndependentSelectedSource, mayRedistribute, publicSourceName, type SourceFacts,
 } from "./rules.ts";
-import { latestCompositeCondition, ownFactEvidenceCondition } from "./scope.ts";
+import { foldableSelectionCondition, latestCompositeCondition, ownFactEvidenceCondition } from "./scope.ts";
 
 interface ArticleRow {
   id: string;
@@ -27,7 +30,8 @@ interface ArticleRow {
   backfill: boolean;
   body_status: string;
   body_text: string | null;
-  x_post: unknown;
+  x_post: XPostData | null;
+  x_article: { text?: string } | null;
   grouped_at: Date | null;
   grouping_status: "pending" | "complete" | "failed";
   selection_adds_value: boolean | null;
@@ -110,7 +114,7 @@ export interface PublishOptions {
 export interface PublishResult {
   articleId: string;
   changed: boolean;
-  /** First prepared content or selection refreshes its detail; corrections also invalidate lists. */
+  /** First prepared content or selection only adds to its detail; corrections also change what lists show. */
   changeKind: "detail" | "content";
   selected: boolean;
   visibility: string;
@@ -159,26 +163,27 @@ async function appendLedger(tx: Tx, articleId: string, op: "upsert" | "remove", 
 }
 
 /**
- * The selected set of v1, RSS and the sync ledger holds one seat per fact: among the fact's selected
- * public reports, the representative (first-party, full text, higher score, earliest) takes it, and a
+ * Ordinary reports share one selected seat per fact: among the fact's selected public reports,
+ * the representative (first-party, full text, higher score, earliest) takes it, and a
  * change of representative removes the old one and adds the new one.
  * The website folds the same reports into reading groups instead. An article outside any fact keeps
- * its own seat. Returns the ledger change of `self` when this settling made one.
+ * its own seat, as does each selected article from an independent source. Returns the ledger change
+ * of `self` when this settling made one. Fact membership is unaffected.
  */
 async function settleSeats(tx: Tx, factId: number | null, self: string | null, now: Date): Promise<"upsert" | "remove" | null> {
   if (factId === null) {
     if (self) await tx`UPDATE publications SET seat = true WHERE article_id = ${self} AND NOT seat`;
     return null;
   }
-  const members = await tx<Array<Pick<PublicationRow, "article_id" | "score"> & RepresentativeIdentity & { body_mode: "full" | "summary"; timeline_at: Date; seat: boolean; holds: boolean }>>`
-    SELECT p.article_id, p.body_mode, p.score, p.timeline_at, p.seat, ${REPRESENTATIVE_COLUMNS},
+  const members = await tx<Array<Pick<PublicationRow, "article_id" | "score" | "source_id"> & RepresentativeIdentity & { body_mode: "full" | "summary"; timeline_at: Date; seat: boolean; holds: boolean }>>`
+    SELECT p.article_id, p.source_id, p.body_mode, p.score, p.timeline_at, p.seat, ${REPRESENTATIVE_COLUMNS},
       (p.selected AND p.visibility = 'public' AND ${ownFactEvidenceCondition()}) AS holds
     FROM publications p JOIN sources s ON s.id = p.source_id JOIN facts f ON f.id = p.fact_id WHERE p.fact_id = ${factId}`;
-  const candidates = members.filter((m) => m.holds).map((m) => ({ ...m, score: m.score === null ? null : Number(m.score) }));
+  const candidates = members.filter((m) => m.holds && !isIndependentSelectedSource(m.source_id)).map((m) => ({ ...m, score: m.score === null ? null : Number(m.score) }));
   const rep = candidates.length ? pickRepresentative(candidates) : null;
   let own: "upsert" | "remove" | null = null;
   for (const m of members) {
-    const seat = !m.holds || m.article_id === rep?.article_id;
+    const seat = !m.holds || isIndependentSelectedSource(m.source_id) || m.article_id === rep?.article_id;
     if (seat === m.seat) continue;
     await tx`UPDATE publications SET seat = ${seat} WHERE article_id = ${m.article_id}`;
     const change = await syncLedger(tx, m.article_id, now);
@@ -215,6 +220,20 @@ async function syncLedger(tx: Tx, articleId: string, now: Date): Promise<"upsert
   return "remove";
 }
 
+/** Refresh a saved sync payload after a public-format change, without rerunning editorial decisions. */
+export async function refreshSelectedPayload(articleId: string, actor: string, reason: string): Promise<"upsert" | "remove" | null> {
+  return sql.begin(async (tx) => {
+    await tx`SELECT 1 FROM articles WHERE id = ${articleId} FOR UPDATE`;
+    const [before] = await tx`SELECT in_set, payload_hash, last_seq FROM selected_state WHERE article_id = ${articleId}`;
+    const op = await syncLedger(tx, articleId, new Date());
+    if (op) {
+      const [after] = await tx`SELECT in_set, payload_hash, last_seq FROM selected_state WHERE article_id = ${articleId}`;
+      await audit(actor, "content.refresh-selected-payload", `content:${articleId}`, reason, before, after, { db: tx });
+    }
+    return op;
+  });
+}
+
 export async function publishArticle(articleId: string, options: PublishOptions = {}): Promise<PublishResult | null> {
   return sql.begin(async (tx) => {
     await tx`SELECT 1 FROM articles WHERE id = ${articleId} FOR UPDATE`;
@@ -222,7 +241,7 @@ export async function publishArticle(articleId: string, options: PublishOptions 
     const result = await publishArticleTx(tx, articleId, options);
     // Body and translation writes announce their own changes; an unchanged projection needs no purge.
     if (previous && result?.changed) await emit("articleChanged", {
-      id: articleId, reason: "republication", kind: result.changeKind, previousStoryIds: previous.story_id === null ? [] : [previous.story_id],
+      id: articleId, reason: "republication", kind: result.changeKind, reduced: result.reduced, previousStoryIds: previous.story_id === null ? [] : [previous.story_id],
     }, tx);
     return result;
   });
@@ -231,7 +250,7 @@ export async function publishArticle(articleId: string, options: PublishOptions 
 export async function publishArticleTx(tx: Tx, articleId: string, options: PublishOptions = {}): Promise<PublishResult | null> {
   const [article] = await tx<ArticleRow[]>`
     SELECT id, source_id, url, title, language, published_at, discovered_at, timeline_at, backfill, body_status,
-           body_text, x_post, grouped_at, grouping_status, selection_adds_value
+           body_text, x_post, x_article, grouped_at, grouping_status, selection_adds_value
     FROM articles WHERE id = ${articleId} FOR UPDATE`;
   if (!article) return null;
   // Explicit imports carry an already-public editorial decision, not a new pending judgement.
@@ -266,11 +285,12 @@ export async function publishArticleTx(tx: Tx, articleId: string, options: Publi
   // An X post carries its Chinese in the summary and translation; without a Chinese title its own
   // text is the title, where an article would still be a half-finished card.
   const zhTitle = analysis?.title_zh?.trim() ? analysis.title_zh : null;
-  const title = pickString(f.title, zhTitle ?? (isChineseTitle || article.x_post ? collapseWhitespace(article.title) : null));
-  const summary = pickString(f.summary, analysis?.summary_zh ?? null);
+  const original = originalPostCopy(article.x_post, article.url, article.x_article);
+  const title = pickString(f.title, original?.title ?? zhTitle ?? (isChineseTitle || article.x_post ? collapseWhitespace(article.title) : null));
+  const summary = pickString(f.summary, original ? original.summary : analysis?.summary_zh ?? null);
   const category = pickString(f.category, analysis?.category ?? null);
   const tags = Array.isArray(f.tags) ? (f.tags as string[]) : [...new Set([...(analysis?.tags ?? []), ...(analysis?.subjects ?? []).map((s) => `entity:${s}`)])];
-  const score = typeof f.score === "number" ? f.score : analysis?.score ?? null;
+  const score = f.score === null || typeof f.score === "number" ? f.score : analysis?.score ?? null;
   const relevance = typeof f.relevance === "string" ? (f.relevance as string) : analysis?.relevance ?? null;
   const judgedSelected = typeof f.selected === "boolean" ? (f.selected as boolean) : analysis?.selected ?? null;
   // Material from an isolated source reaches no public surface at all: not even a detail page.
@@ -278,17 +298,18 @@ export async function publishArticleTx(tx: Tx, articleId: string, options: Publi
 
   // An undated archive has a readable detail page, but its discovery is not a news timestamp.
   // Explicit imports can retain an editorial decision already published elsewhere.
-  const eligible = isPoolEligible({ participationMode: source.participation_mode, relevance, title, summary })
+  const eligible = isPoolEligible({ participationMode: source.participation_mode, relevance, title, summary, originalPost: !!original })
     && (!article.backfill || article.published_at !== null || !!options.releasedAt);
   const selectionCandidate = isSelectable(eligible, judgedSelected, source.tier);
   // Scoring nominates a report; a completed identity/value decision admits it to selection.
   // A historical import already has its public decision. Preserve that confirmed state on rebuild.
   const selected = selectionCandidate && article.grouping_status === "complete"
     && (f.selected === true || article.selection_adds_value !== false);
-  const reason = selected ? pickString(f.reason, analysis?.reason_zh ?? null) : null;
+  const reason = selected ? pickString(f.reason, original ? null : analysis?.reason_zh ?? null) : null;
   const hasXPost = !!article.x_post;
   const channel = channelOf(source.kind, hasXPost);
-  const bodyMode = bodyModeOf(source, article.body_status, !!article.body_text && article.body_text.length > 0);
+  const hasBody = !!article.body_text || !!article.x_post?.text || !!article.x_post?.media?.length || !!article.x_post?.quoted?.text;
+  const bodyMode = bodyModeOf(source, article.body_status, hasBody);
   const syndicate = mayRedistribute(source, bodyMode);
   const originalTitle = isChineseTitle && title === collapseWhitespace(article.title) ? null : collapseWhitespace(article.title);
 
@@ -304,12 +325,14 @@ export async function publishArticleTx(tx: Tx, articleId: string, options: Publi
     [title, originalTitle, summary, publicSourceName(source.name), ...displayTags(tags), ...(analysis?.subjects ?? [])].filter(Boolean).join(" "),
   ).toLowerCase();
 
-  // A selected item sits at its reading group's anchor: the earliest public pool member of its fact.
+  // Ordinary selected reports share their reading group's first arrival; independent articles keep
+  // their own arrival and never date the ordinary group.
   let sortAt: Date = article.timeline_at;
-  if (selected && membership?.fact_id) {
+  if (selected && membership?.fact_id && !isIndependentSelectedSource(source.id)) {
     const [anchor] = await tx<{ t: Date | null }[]>`
-      SELECT min(timeline_at) AS t FROM publications
-      WHERE fact_id = ${membership.fact_id} AND eligible AND visibility = 'public' AND article_id <> ${articleId}`;
+      SELECT min(p.timeline_at) AS t FROM publications p
+      WHERE p.fact_id = ${membership.fact_id} AND p.eligible AND p.visibility = 'public' AND p.article_id <> ${articleId}
+        AND ${foldableSelectionCondition()}`;
     if (anchor?.t && anchor.t < sortAt) sortAt = anchor.t;
   }
 
@@ -334,8 +357,8 @@ export async function publishArticleTx(tx: Tx, articleId: string, options: Publi
     && (previous.story_id === null || previous.story_id === next.story_id)
     && (previous.fact_id === null || previous.fact_id === next.fact_id)
     && changedFields.every((key) => firstAnalysisFields.has(key));
-  // A first event link is new metadata, like the first judgement or selection. It refreshes
-  // the item and event's exact URLs; established identities and corrected text invalidate lists.
+  // A first event link is new metadata, like the first judgement or selection: a detail change.
+  // Established identities and corrected text change what lists show.
   const firstIdentity = previous && !previous.selected && previous.fact_id === null && previous.story_id === null
     && previous.visibility === "public" && visibility === "public" && eligible && next.story_id !== null
     && changedFields.every((key) => admissionFields.has(key));

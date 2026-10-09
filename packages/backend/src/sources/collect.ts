@@ -1,7 +1,7 @@
 // Collection run for one source: fetch listing → filter → store material → enqueue processing.
 // A failed fetch never advances the success cursor; the source's health reflects consecutive failures.
 import { sql, type Db } from "../db.ts";
-import { identityKeyFor, STALE_ON_DISCOVERY_MS, upsertMaterial } from "../content/materials.ts";
+import { identityKeyFor, reuseExternalMaterialIdentities, STALE_ON_DISCOVERY_MS, upsertMaterial } from "../content/materials.ts";
 import { identityKeyForUrl } from "../lib/url.ts";
 import { sha256 } from "../lib/ids.ts";
 import { enqueue, QUEUES, shutdownSignal } from "../jobs/queue.ts";
@@ -10,7 +10,7 @@ import { BudgetExceededError, completeReceipt } from "../providers/receipts.ts";
 import { fetchRss } from "./rss.ts";
 import { fetchDetail, fetchWebList, isCallToActionTitle, needsTitle, type DetailNeed } from "./web-list.ts";
 import { unsupportedConfig } from "./config-keys.ts";
-import { admitListing } from "./filters.ts";
+import { admitListing, filterPublicationWindow } from "./filters.ts";
 import { fetchJsonList } from "./json-list.ts";
 import { fetchXSearch, planXShards, readXSearch, shardHandle, shardQuery, selfThreadHandle, SHARDABLE_SQL, tweetToCandidate, type XBacklog } from "./x.ts";
 import { FetchError, type Candidate, type SourceRow } from "./types.ts";
@@ -148,6 +148,7 @@ export async function collectSource(sourceId: string, opts: { force?: boolean } 
     }
     found = candidates.length;
     candidates = admitListing(candidates, source);
+    if (source.kind === "json_list" && source.config.externalIdPath) candidates = await reuseExternalMaterialIdentities(sourceId, candidates);
     if (source.config.sortByPublishedAt) candidates.sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0));
     // Deduplicate before enrichment and limits: URL aliases must neither buy duplicate detail reads
     // nor crowd other articles out of the window. Use exactly the identity the material will store; a
@@ -188,7 +189,7 @@ export async function collectSource(sourceId: string, opts: { force?: boolean } 
     const detailBudget = Number(d?.maxFetches ?? 0);
     let detailUsed = 0;
     let detailPending = 0;
-    let detailBudgetError: string | null = null;
+    let detailBudgetSpent = false;
     const detailErrors: Array<{ url: string; error: string }> = [];
     for (const c of candidates) {
       const stored = known.get(c.identityKey!);
@@ -196,17 +197,21 @@ export async function collectSource(sourceId: string, opts: { force?: boolean } 
       if (stored !== undefined) {
         // The title came from the detail page: the listing's own rendering must not revise it back.
         if (d?.titleSelector || d?.titleRegex) c.title = stored.title;
-        if (stored.rules === detailRules) continue;
+        if (stored.rules === detailRules) {
+          c.publishedAt ??= stored.published_at;
+          continue;
+        }
+        if (d?.publishedAtAuthoritative !== true) c.publishedAt ??= stored.published_at;
       }
       if (!d) continue;
       const need: DetailNeed = {
-        date: !(stored?.published_at || c.publishedAt) || d.upgradeDatePrecision === true,
+        date: d.publishedAtAuthoritative === true || !(stored?.published_at || c.publishedAt) || d.upgradeDatePrecision === true,
         title: !!(d.titleSelector || d.titleRegex) && (d.titleAuthoritative === true || (!storedHeadline && needsTitle(c.title))),
         summary: !!d.summarySelector && !(stored?.excerpt || c.excerpt),
         body: source.participation_mode === "editorial" && stored?.body_status !== "ok" && !c.bodyText && (!c.bodyStatus || c.bodyStatus === "pending"),
       };
       if (!need.date && !need.title && !need.summary) continue;
-      if (detailBudgetError || detailUsed >= detailBudget) { detailPending += 1; continue; }
+      if (detailBudgetSpent || detailUsed >= detailBudget) { detailPending += 1; continue; }
       detailUsed += 1;
       try {
         const got = await fetchDetail(c.url, source, need);
@@ -228,17 +233,18 @@ export async function collectSource(sourceId: string, opts: { force?: boolean } 
         if (shutdownSignal.signal.aborted) throw error;
         detailPending += 1;
         // A spent provider budget defers the remaining detail work; it is not a source failure.
-        if (error instanceof BudgetExceededError) { detailBudgetError = error.message; continue; }
+        if (error instanceof BudgetExceededError) { detailBudgetSpent = true; continue; }
         detailErrors.push({ url: c.url, error: String(error instanceof Error ? error.message : error).slice(0, 300) });
       }
     }
     if (d) {
-      detail = { ...detail, detailAttempts: detailUsed, detailFailures: detailErrors.length, detailPending, detailErrors, detailBudgetError };
+      detail = { ...detail, detailAttempts: detailUsed, detailFailures: detailErrors.length, detailPending, detailErrors };
       nextCursor.detailRules = detailRules;
       // A validator covers the whole listing: accept 304 only after its detail work is complete.
       if (source.kind === "rss" && detailPending > 0) delete nextCursor.rss;
     } else delete nextCursor.detailRules;
 
+    candidates = filterPublicationWindow(candidates, source.config.publishedAfter);
     ({ created, revised } = await store(sourceId, candidates, firstImport ? "first-import" : null));
 
     if (firstImport) nextCursor.initializedAt = new Date().toISOString();

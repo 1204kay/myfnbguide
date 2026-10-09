@@ -26,7 +26,7 @@ import { buildApp } from "../../../apps/api/src/app.ts";
 import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
-import { articlesToWrite, readOutput, shopNameKey, spaceStory, writeCase } from "../backend/write.ts";
+import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
@@ -190,6 +190,10 @@ test("a story the checks pass; each problem is named for the writer", () => {
   const figures = [{ heading: "现况判断升至 46.7 点", blocks: [{ type: "text" as const, text: "9 月为 46.7 点，比 8 月上升 0.5 点；先行判断为 43.9 点。" }] }];
   assert.ok(checkStory(story({ parts: figures }), `${SOURCE} 46.7 0.5 43.9`).some((p) => /没有一张图/.test(p)), "figures in paragraphs only");
   assert.ok(!checkStory(story({ parts: [...figures, story().parts[1]!] }), `${SOURCE} 46.7 0.5 43.9`).some((p) => /没有一张图/.test(p)), "one figure is enough");
+  const paragraph = "店主每周一、三、五去补面包，每次补到十根。".repeat(12);
+  const split = splitLong({ material: "body", parts: [{ heading: "补货", blocks: [{ type: "text", text: paragraph }] }] }) as { parts: Array<{ blocks: Array<{ text: string }> }> };
+  assert.ok(split.parts[0]!.blocks.length > 1 && split.parts[0]!.blocks.every((b) => [...b.text].length <= 200), "a long paragraph split at its sentences");
+  assert.equal(split.parts[0]!.blocks.map((b) => b.text).join(""), paragraph, "nothing cut");
   const rates = { type: "compare" as const, unit: "%", per: null, items: [{ label: "周一订单量增长", value: 29 }, { label: "营收同比", value: 13.1 }], caption: "会员日以后", change: { amount: -15.9, percent: -54.8, yearly: null } };
   assert.ok(checkStory(story({ parts: [{ heading: "会员日订单增长", blocks: [rates as never] }, story().parts[1]!] }), `${SOURCE} 29 13.1`).some((p) => /本身就是变化/.test(p)), "changes drawn side by side");
   const said = "一袋一百多元的咖啡豆做不了多少杯，一杯利润只剩一两块钱。";
@@ -215,8 +219,11 @@ test("a kind outside the list is no kind, and the story still stands", () => {
   assert.equal(written?.status === "story" && written.story.shop.kind, null);
 });
 
-test("a block over its ceiling comes back named, with its length", () => {
-  const long = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。".repeat(25) }] }] };
+test("a block over its ceiling comes back named, with its length; a long paragraph is split instead", () => {
+  const paragraphs = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。".repeat(25) }] }] };
+  assert.equal(readOutput(paragraphs).written?.status, "story", "split at its sentences");
+  // One sentence over the ceiling cannot be split.
+  const long = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价，".repeat(25) }] }] };
   const { written, problems } = readOutput(long);
   assert.equal(written, null);
   assert.deepEqual(problems, ["第 1 段第 1 块的文字太长：最多 240 字，现在 350 字；删去次要的内容，不要拆成更多块"]);

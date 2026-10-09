@@ -197,7 +197,8 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
       .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, c]) => `第 ${n} 段 ${c} 字`).join("、");
     problems.push(`全文 ${total} 字，太长：要在 800 字以内。${parts}，人物 ${chars(story.who)} 字；每段删到 200 字以内，人物删到 100 字以内，次要的段落整段删掉，只留经过、做法和数字`);
   }
-  if ((all.match(/(?:原文|文章)(?:说|提到|还说|还提到|认为|强调|指出|建议|列出|举了)/g)?.length ?? 0) > 2) problems.push("反复写“原文说”“文章提到”：直接写这家店或这个人做了什么，不逐条转述原文的论点");
+  // 认为 and 建议 say whose view it is, which the writing rules ask for (rules-reader-copy 3): no retelling.
+  if ((all.match(/(?:原文|文章)(?:说|提到|还说|还提到|强调|指出|列出|举了)/g)?.length ?? 0) > 2) problems.push("反复写“原文说”“文章提到”：直接写这家店或这个人做了什么，不逐条转述原文的论点");
   for (const [where, text, fromSource] of texts(story)) {
     if (!text) continue;
     const foreign = untranslated(text);

@@ -46,12 +46,18 @@ const numbersOf = (story: CaseStory) => (JSON.stringify(story).match(/\d+(?:\.\d
 
 const text = z.string().trim().min(1);
 const number = z.coerce.number().finite().positive();
+/** The longest paragraph a text block holds; a longer one is split at its sentences into paragraphs of up to PARAGRAPH. */
+const TEXT_MAX = 240;
+const PARAGRAPH = 200;
+
+/** Blocks a part may hold: three as written, one more where a long paragraph was split (splitLong). */
+export const BLOCKS = 4;
 const item = z.object({ label: text.max(30), value: number });
 
 // Every part has a ceiling a little above what the prompt asks (prompts/case.md), so a long story comes back
 // with the very block to shorten named (see `where`), not only its total.
 export const BlockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("text"), text: text.max(240) }),
+  z.object({ type: z.literal("text"), text: text.max(TEXT_MAX) }),
   z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().max(14).nullable().default(null), text: text.max(90) })).min(1).max(6) }),
   z.object({ type: z.literal("flow"), steps: z.array(text.max(40)).min(2).max(6) }),
   z.object({ type: z.literal("quote"), text: text.max(80), who: text.max(60) }),
@@ -67,7 +73,7 @@ const StorySchema = z.object({
   title: text.max(40),
   lead: text.max(80),
   who: text.max(140),
-  parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(3) })).min(1).max(4),
+  parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(BLOCKS) })).min(1).max(4),
   open: z.string().trim().max(90).nullable().default(null),
   shop: z.object({
     name: z.string().trim().nullable().default(null),
@@ -131,7 +137,32 @@ export function where(path: PropertyKey[]): string {
 }
 
 /** The model's answer as a story, or what is wrong with it. */
-export function readOutput(raw: unknown): { written: Written | null; problems: string[] } {
+/**
+ * The answer with each over-long text block split at its sentences into two or more paragraphs, as an editor would:
+ * nothing is cut. A paragraph over the limit was the commonest reason a story or write-up was held (10/9 trial:
+ * 太长：某一块 held 59 stories and 23 write-ups, the model writing 260 characters after being asked twice for 240).
+ */
+export function splitLong(raw: unknown): unknown {
+  const answer = raw as { parts?: Array<{ blocks?: unknown[] }> } | null;
+  if (!answer || !Array.isArray(answer.parts)) return raw;
+  return { ...answer, parts: answer.parts.map((part) => !part || !Array.isArray(part.blocks) ? part : {
+    ...part,
+    blocks: part.blocks.flatMap((b) => {
+      const block = b as { type?: unknown; text?: unknown };
+      if (block?.type !== "text" || typeof block.text !== "string" || [...block.text].length <= TEXT_MAX) return [b];
+      const paragraphs: string[] = [];
+      for (const sentence of block.text.match(/[^。！？；]+[。！？；]?/gu) ?? [block.text]) {
+        const last = paragraphs.length - 1;
+        if (last >= 0 && [...paragraphs[last]! + sentence].length <= PARAGRAPH) paragraphs[last] += sentence;
+        else paragraphs.push(sentence);
+      }
+      return paragraphs.map((text) => ({ type: "text", text: text.trim() }));
+    }),
+  }) };
+}
+
+export function readOutput(answer: unknown): { written: Written | null; problems: string[] } {
+  const raw = splitLong(answer);
   const parsed = OutputSchema.safeParse(raw);
   if (!parsed.success) {
     return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) => {

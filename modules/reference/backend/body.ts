@@ -16,7 +16,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
 import { checkStory, MAX_CHARS, repeatedNumbers, summaryFigures } from "./checks.ts";
-import { BlockSchema, computeBlock, EDIT, spaceStory, textOnly, where } from "./write.ts";
+import { BLOCKS, BlockSchema, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
 const PURPOSE = "reference_body";
@@ -32,7 +32,7 @@ const OutputSchema = z.discriminatedUnion("material", [
   z.object({
     material: z.literal("body"),
     lead: text.max(160),
-    parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(3) })).min(1).max(4),
+    parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(BLOCKS) })).min(1).max(4),
     open: z.string().trim().max(90).nullable().default(null),
   }),
 ]);
@@ -46,7 +46,8 @@ const asStory = (body: ItemBody): CaseStory => ({
 });
 
 /** The model's answer as a write-up, or what is wrong with it. */
-export function readBody(raw: unknown): { written: Written | null; problems: string[] } {
+export function readBody(answer: unknown): { written: Written | null; problems: string[] } {
+  const raw = splitLong(answer);
   const parsed = OutputSchema.safeParse(raw);
   if (!parsed.success) {
     return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) =>

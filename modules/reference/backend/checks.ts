@@ -58,6 +58,17 @@ export function sourceNumbers(text: string): Set<string> {
     const n = SMALL_WORDS[m[1]!];
     if (n !== undefined) found.add(String(Math.round(n * (m[2] === "billion" ? 1e9 : m[2] === "million" ? 1e6 : 1e3))));
   }
+  // "7 and 1/2%", "seven and a half", "7½", "seven point five": a value spoken in a transcript (10/9: the Olo
+  // interview's "7 and 1/2%" written as 7.5% was held as not in the original).
+  const spoken = (w: string) => (/^\d+$/.test(w) ? Number(w) : w === "a" ? undefined : SMALL_WORDS[w]);
+  for (const m of normal.toLowerCase().matchAll(/\b(\d+|[a-z]+)(?:\s+and\s+(?:a\s+half|one[- ]half|1\s*[/⁄]\s*2)|\s*1⁄2|\s+1\/2(?![\d/]))/g)) {
+    const n = spoken(m[1]!);
+    if (n !== undefined) found.add(String(n + 0.5));
+  }
+  for (const m of normal.toLowerCase().matchAll(/\b(\d+|[a-z]+)\s+point\s+(\d|[a-z]+)\b/g)) {
+    const [n, d] = [spoken(m[1]!), spoken(m[2]!)];
+    if (n !== undefined && d !== undefined && d < 10) found.add(String(n + d / 10));
+  }
   // "2.5 million", "1,2 milhão", "1.2 万", "3만", "5 mil" (thousand in Portuguese and Spanish), "55k": the value written out.
   // "$2M", "$1.5bn" too (10/9 eval: a $2M written as 200 万美元 was held as not in the original).
   const SCALES: Array<[RegExp, number]> = [[/^(billions?|bn)$/i, 1_000_000_000], [/^(million|millions|m|mn|milh(?:ão|ões)|millones?|milioni?|億|억)$/i, 1_000_000], [/^(万|만)$/, 10_000], [/^(mil|k|千|천|thousand)$/i, 1000]];

@@ -176,13 +176,17 @@ test("a story the checks pass; each problem is named for the writer", () => {
   for (const expected of [/33,159/, /“讲”/, /“全国”/, /“你应该”/, /分格标签/, /nowhere 不在清单/, /没有 no-such-group/, /“原文未提供”/]) {
     assert.ok(bad.some((p) => expected.test(p)), `${expected}: ${bad.join(" / ")}`);
   }
-  for (const title of ["美国播客：布草账单四年涨了 74%", "美国加州一家餐馆的布草账单涨了 74%"]) {
+  for (const title of ["美国播客：布草账单四年涨了 74%", "美国加州一家餐馆的布草账单涨了 74%", "餐厅顾问 Chip Klose：布草账单四年涨了 74%"]) {
     assert.ok(checkStory(story({ title }), SOURCE).some((p) => /^标题以/.test(p)), title);
   }
   for (const lead of ["这篇文章来自红餐网专栏，面向火锅经营者。", "协会的文章由红餐网转载，讨论低价套餐。"]) {
     assert.ok(checkStory(story({ lead }), SOURCE).some((p) => /从哪里来/.test(p)), lead);
   }
   assert.deepEqual(checkStory(story({ lead: "这份数据来自一家餐厅财务软件公司的统计。" }), SOURCE), [], "where the data comes from is what the reader needs");
+  assert.ok(checkStory(story({ lead: "这篇文章说的是布草账单涨价后小店的成本压力。" }), SOURCE).some((p) => /从哪里来/.test(p)), "what the article is about says nothing");
+  for (const lead of ["一个人守着一家店，事情还是做不完，问题出在哪里。", "布草账单每周自动付，有人细看吗？"]) {
+    assert.ok(checkStory(story({ lead }), SOURCE).some((p) => /写成了问句/.test(p)), lead);
+  }
   assert.deepEqual(repeatedNumbers("9 月的现况判断为 46.7 点，比 8 月上升 0.5 点。", "现况判断为46.7点，较8月上升0.5点。"), ["46.7", "0.5"], "months and days are left out");
   assert.deepEqual(repeatedNumbers("这是内阁府每月做的调查。", "现况判断为46.7点。"), []);
   assert.deepEqual(repeatedNumbers("2026 年国庆假期，他在第 36 届博览会上演讲，销量涨了 30%。", "2026年第36届博览会，销量涨了30%"), ["36", "30"]);

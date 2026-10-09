@@ -32,7 +32,7 @@ export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL
  * again, the writer wrote it afresh and as long as before (10/5: 53 of 65 held were too long after two more tries).
  * A country or city left unnamed (全国、本地) is not one of them: only the material says which.
  */
-export const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以|从哪里来|重复了导读|又写了一遍/.test(problem) && !/国家名|城市名/.test(problem);
+export const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以|从哪里来|重复了导读|又写了一遍|写成了问句/.test(problem) && !/国家名|城市名/.test(problem);
 export const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
 /**
  * The last pass over a story that passed the checks: its wording made plain written Chinese, nothing else (the

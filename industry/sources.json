@@ -1481,28 +1481,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-restaurant-technology-podcast",
-      "name": "Restaurant Technology Podcast（美国 · Cali BBQ 老板的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://api.substack.com/feed/podcast/3892076.rss",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "web-gnavi-pro-tokushu",
       "name": "ぐるなび通信 · 特集（日本 · 餐饮信息平台的专栏）",
       "kind": "web_list",

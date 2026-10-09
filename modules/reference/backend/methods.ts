@@ -35,6 +35,13 @@ const SYSTEM = promptFromText("reference/methods", readFileSync(new URL("../prom
  * problem may itself say 太长.
  */
 export const textOnly = (problem: string) => /^(?:综述|第 \d+ 个做法(?:第 \d+ 家的那一行|的标题|的归纳))(?:太长：|有没有翻译的|用了“)|^综述里写了数字/.test(problem);
+/**
+ * Problems that do not hold a grouping back: its length, a word, an untranslated sentence. They go back to the model
+ * to mend, and a grouping still showing them is stored all the same, as a story or a write-up is (checks.ts blocking,
+ * 10/9): one practice line too long kept a situation without any practices (busy-no-profit, 10/6–10/10). A number the
+ * stories do not have, a story in the wrong place, or digits in the overview still hold it back.
+ */
+const shownAnyway = (problem: string) => textOnly(problem) && !problem.startsWith("综述里写了数字");
 const EDIT = "下面是你按系统规则写好的归并（JSON），有以下问题。只修改有问题的地方：太长就删去次要的条件和数字，用词按提示改；不加新的内容和数字，不改 caseIds 和 group。其余保持不变，输出完整的 JSON。";
 /** The prompt, the edit request and the stored shape: a grouping made under another is not read (backend/read.ts) and is made again. */
 export const PROMPT_VERSION = `reference-methods@${createHash("sha256").update(SYSTEM).update(EDIT).digest("hex").slice(0, 10)}`;
@@ -209,7 +216,7 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
       if (hit) problems.push(`${where}用了“${hit[0]}”（“${text.slice(Math.max(0, hit.index - 8), hit.index + hit[0].length + 8)}”）：${fix}`);
     }
   }
-  if (problems.length) return { grouping: null, problems, repairs };
+  if (!problems.every(shownAnyway)) return { grouping: null, problems, repairs };
   const methods = [...kept.map((m) => ({ group: m.group, title: m.title, summary: m.summary, shops: m.lines.map((l) => ({ caseIds: l.caseIds, line: l.line })) })), ...soloed.map(alone), ...left.map(alone)];
   return {
     grouping: {
@@ -262,6 +269,7 @@ export async function groupSituation(slug: string, given: Member[]): Promise<{ s
   const receiptIds: number[] = [];
   let user = `请按系统规则归并以下故事，只输出 JSON。\n\n${material}`;
   let read: ReturnType<typeof readGrouping> = { grouping: null, problems: [], repairs: [] };
+  let shown: ReturnType<typeof readGrouping> | null = null;
   // The first answer, and up to two more with its problems named.
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
@@ -270,7 +278,8 @@ export async function groupSituation(slug: string, given: Member[]): Promise<{ s
     });
     receiptIds.push(res.receiptId);
     read = readGrouping(res.data, members);
-    if (read.grouping) break;
+    if (read.grouping) shown = read;
+    if (read.grouping && !read.problems.length) break;
     const list = (lines: string[]) => lines.map((p) => `- ${p}`).join("\n");
     // With the material again, the mends are named too: a number of a story taken out of a practice reads as missing.
     user = read.problems.every(textOnly)
@@ -281,6 +290,8 @@ export async function groupSituation(slug: string, given: Member[]): Promise<{ s
         `上一次的输出有以下问题，请改正后重新输出完整的 JSON：\n${list(read.problems)}`,
       ].join("\n\n");
   }
+  // The last answer that can be shown, when the mends did not clear its text problems.
+  if (!read.grouping && shown) read = shown;
   const key = membersKey(members);
   await sql.begin(async (tx) => {
     // A grouping that still fails keeps the last good one (the page shows it, or one card a story) and marks these

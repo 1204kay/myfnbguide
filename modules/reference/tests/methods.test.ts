@@ -65,3 +65,15 @@ test("the problems sent back name the shops as the material did", () => {
   ] }, members);
   assert.ok(read.problems.includes("第 1 个做法第 1 家的那一行放了不同店家（s1、s2）的故事：一行只写一家店"), read.problems.join(" | "));
 });
+
+test("a grouping whose only problems are its length or words is kept; a number the stories do not have holds it back", () => {
+  const { members } = materialOf(situation, [member("m2", "delegate", "shop:b"), member("m5", "delegate", "shop:d")]);
+  const grouping = (title: string, line: string) => ({ overview: "各家把老板做不完的事交给别人。", methods: [
+    { group: "delegate", title, shops: [{ caseIds: ["m2"], line }, { caseIds: ["m5"], line: "交给店长" }], summary: "两家店把门店的事交给经理。" },
+  ] });
+  const long = readGrouping(grouping("把老板做不完的事交给员工".repeat(8), "交给经理"), members);
+  assert.ok(long.grouping, "kept with a title too long");
+  assert.ok(long.problems.some((p) => p.startsWith("第 1 个做法的标题太长：")), long.problems.join(" | "));
+  const number = readGrouping(grouping("把老板做不完的事交给员工", "交给经理，每周省下 30 小时"), members);
+  assert.equal(number.grouping, null, "held back by a number not in the stories");
+});

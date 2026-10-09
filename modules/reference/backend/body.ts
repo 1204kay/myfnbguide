@@ -120,11 +120,17 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
   return { status, problems };
 }
 
+/** Items listed in the last few days are written up as they come; older ones are written by the rewrite script. */
+const RECENT_DAYS = 3;
+
 /**
- * Listed items to write up: no write-up yet, or the article or the prompt changed since; newest first. A selected
- * item waits for its case (the story is its write-up) and is written up only when the case came out thin or held.
+ * Listed items to write up, newest first. A selected item waits for its case (the story is its write-up) and is
+ * written up only when the case came out thin or held. As they come: items of the last days with no write-up, or
+ * whose article changed. With all (myfnb/rewrite-reference.ts): every listed item whose write-up is missing or was
+ * written under another prompt, so a changed prompt rewrites the old ones only once it has been checked on new ones
+ * (用户 10/9：先确定写法，才全面重写).
  */
-export async function articlesToBody(limit: number, now = new Date()): Promise<string[]> {
+export async function articlesToBody(limit: number, now = new Date(), { all = false } = {}): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`
     SELECT p.article_id AS id FROM publications p
     JOIN articles a ON a.id = p.article_id
@@ -132,7 +138,9 @@ export async function articlesToBody(limit: number, now = new Date()): Promise<s
     LEFT JOIN reference_bodies b ON b.article_id = p.article_id
     WHERE ${listedCondition(now)}
       AND (NOT p.selected OR c.status IN ('thin', 'held'))
-      AND (b.article_id IS NULL OR b.revision < a.revision OR b.prompt_version <> ${PROMPT_VERSION})
+      AND ${all
+        ? sql`(b.article_id IS NULL OR b.revision < a.revision OR b.prompt_version <> ${PROMPT_VERSION})`
+        : sql`(b.revision < a.revision OR (b.article_id IS NULL AND p.sort_at > ${now}::timestamptz - make_interval(days => ${RECENT_DAYS})))`}
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }

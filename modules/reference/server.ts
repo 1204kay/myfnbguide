@@ -71,7 +71,7 @@ export default defineServerModule({
       return { queued: ids.length };
     },
   }, {
-    // Every listed item that is no story gets its write-up; the first runs work through the items already listed.
+    // Every listed item of the last days that is no story gets its write-up; older ones wait for the rewrite script.
     name: "reference.bodies",
     cron: "*/10 * * * *",
     run: async () => {
@@ -111,6 +111,8 @@ export default defineServerModule({
           SELECT s.name, count(*)::int AS n FROM reference_bodies b JOIN articles a ON a.id = b.article_id JOIN sources s ON s.id = a.source_id
           WHERE b.status = 'thin' GROUP BY 1 ORDER BY 2 DESC LIMIT 20`).map((r) => [r.name, r.n])),
         bodiesWaiting: (await articlesToBody(5000)).length,
+        // What myfnb/rewrite-reference.ts would write under the current prompts: old ones, and older items never written up.
+        toRewrite: { stories: (await articlesToWrite(5000, new Date(), { all: true })).length, bodies: (await articlesToBody(5000, new Date(), { all: true })).length },
       }));
     app.get("/api/reference/situations/:slug", async (req, reply) => {
       const page = await readSituation((req.params as { slug: string }).slug);

@@ -260,15 +260,17 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
 }
 
 /**
- * Selected items with no case yet, or whose article or the writing prompt changed since: newest first. A
- * changed prompt rewrites every case, which the library's size makes cheap for now (three calls a case at most).
+ * Selected items to write a case for, newest first: no case yet, or the article changed since. With all
+ * (myfnb/rewrite-reference.ts) also the cases written under another prompt, so a changed prompt rewrites the old
+ * ones only once it has been checked on new ones (用户 10/9：先确定写法，才全面重写).
  */
-export async function articlesToWrite(limit: number, now = new Date()): Promise<string[]> {
+export async function articlesToWrite(limit: number, now = new Date(), { all = false } = {}): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`
     SELECT p.article_id AS id FROM publications p
     JOIN articles a ON a.id = p.article_id
     LEFT JOIN reference_cases c ON c.article_id = p.article_id
-    WHERE ${selectedCondition(now)} AND (c.article_id IS NULL OR c.revision < a.revision OR c.prompt_version <> ${PROMPT_VERSION})
+    WHERE ${selectedCondition(now)}
+      AND (c.article_id IS NULL OR c.revision < a.revision ${all ? sql`OR c.prompt_version <> ${PROMPT_VERSION}` : sql``})
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }

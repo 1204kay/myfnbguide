@@ -428,9 +428,10 @@ test("cases are written for selected items, once more when the checks find probl
   assert.ok(wrong!.problems.some((p) => /99,999|88,888/.test(p)));
   assert.deepEqual(await articlesToWrite(50), [], "every selected item has its case");
   assert.deepEqual(await get("/api/reference/status"),
-    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesHeld: {}, bodiesThinBySource: {}, bodiesWaiting: 3 });
+    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesHeld: {}, bodiesThinBySource: {}, bodiesWaiting: 3, toRewrite: { stories: 0, bodies: 3 } });
   await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
-  assert.deepEqual(await articlesToWrite(50), [ids.THIN], "a changed prompt writes the case again");
+  assert.deepEqual(await articlesToWrite(50), [], "a changed prompt does not rewrite the old cases by itself");
+  assert.deepEqual(await articlesToWrite(50, new Date(), { all: true }), [ids.THIN], "the rewrite script writes them again");
   await writeCase(ids.THIN!);
   const [stored] = await sql<{ story: CaseStory; situations: string[]; receipt_ids: string[] }[]>`SELECT story, situations, receipt_ids FROM reference_cases WHERE article_id = ${ids.FIRST!}`;
   assert.deepEqual(stored!.situations, ["busy-no-profit"]);
@@ -633,6 +634,16 @@ test("every listed item that is no story gets a write-up under its summary, chec
   assert.equal(stored!.body.parts[0]!.heading, "布草账单四年涨到每周 1,503 美元");
   assert.equal(stored!.receipt_ids.length, 2);
   assert.ok(!(await articlesToBody(50)).includes(news), "written up once");
+  // A changed prompt rewrites nothing by itself; an item listed days ago waits for the rewrite script too.
+  const [{ prompt_version: current }] = await sql<{ prompt_version: string }[]>`SELECT prompt_version FROM reference_bodies WHERE article_id = ${news}`;
+  await sql`UPDATE reference_bodies SET prompt_version = 'reference-body@older' WHERE article_id = ${news}`;
+  await sql`UPDATE publications SET sort_at = now() - interval '10 days' WHERE article_id = ${short}`;
+  await sql`DELETE FROM reference_bodies WHERE article_id = ${short}`;
+  const coming = await articlesToBody(50);
+  assert.ok(!coming.includes(news) && !coming.includes(short), "only items of the last days, as they come");
+  const rewrite = await articlesToBody(50, new Date(), { all: true });
+  assert.ok(rewrite.includes(news) && rewrite.includes(short), "the rewrite script writes both");
+  await sql`UPDATE reference_bodies SET prompt_version = ${current!} WHERE article_id = ${news}`;
 
   const page = await get(`/api/reference/items/${news}`);
   assert.deepEqual([page.kind, page.body.lead], ["body", "美国一家餐饮媒体介绍一家小酒馆的布草账单。"]);
@@ -646,9 +657,9 @@ test("every listed item that is no story gets a write-up under its summary, chec
 test("a story already shown stays when writing it again fails the checks", async () => {
   // WRONG's answers always fail: shown under an earlier prompt, it is tried once more and kept.
   await sql`UPDATE reference_cases SET status = 'story', story = ${sql.json(story({ placements: [] }) as never)}, prompt_version = 'reference-case@older' WHERE article_id = ${ids.WRONG!}`;
-  assert.ok((await articlesToWrite(50)).includes(ids.WRONG!));
+  assert.ok((await articlesToWrite(50, new Date(), { all: true })).includes(ids.WRONG!));
   assert.equal((await writeCase(ids.WRONG!))!.status, "held");
   const [row] = await sql<{ status: string; story: CaseStory | null }[]>`SELECT status, story FROM reference_cases WHERE article_id = ${ids.WRONG!}`;
   assert.deepEqual([row!.status, row!.story?.title], ["story", "布草租金四年涨了 74%"], "the shown story stays");
-  assert.ok(!(await articlesToWrite(50)).includes(ids.WRONG!), "tried under this prompt: not again until the next change");
+  assert.ok(!(await articlesToWrite(50, new Date(), { all: true })).includes(ids.WRONG!), "tried under this prompt: not again until the next change");
 });

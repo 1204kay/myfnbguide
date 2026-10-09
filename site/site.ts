@@ -9,7 +9,7 @@
  */
 export const EDITION_TIMES = { daily: "08:00", weekly: "10:00", monthly: "10:30" };
 
-/** “08:00”“每周一 10:00”“每月 1 日 10:30”：写进句子里的出刊时间。日报不写“每天”：当天没有够格的内容就不出（myfnb/HANDOFF.md §3 第 1 条，不做承诺）。 */
+/** “08:00”“每周一 10:00”“每月 1 日 10:30”：写进句子里的出刊时间。日报不写“每天”（myfnb/HANDOFF.md §3 第 1 条，不做承诺）。 */
 export const EDITION_WHEN = {
   daily: EDITION_TIMES.daily,
   weekly: `每周一 ${EDITION_TIMES.weekly}`,
@@ -116,7 +116,7 @@ export const NAV = {
   /**
    * 不放进导航的引擎入口，目前只支持热点榜（"/hot"）和主题（"/topics"）。页面照样能打开；原来回到它的返回按钮和链接改回精选，
    * 写 "/hot" 时首页也不放当前热点。本站两项都不放：热点榜要几家来源同时讨论同一件事才有内容，本站的来源还凑不出来，10/6 线上是空的；
-   * 主题页各主题只列最近的精选，多数是几天到几年前的旧条目，用户 10/4–10/5 定过不放进导航、10/9 再次确认（myfnb/HANDOFF.md §3.0）。
+   * 主题页各主题只列最近的精选，多数是几天到几年前的旧条目，所以不放进导航（出处见 myfnb/HANDOFF.md §3.0）。
    */
   hidden: ["/hot", "/topics"] as Array<"/hot" | "/topics">,
 };
@@ -125,7 +125,7 @@ export const NAV = {
 export const ITEM_COPY = {
   /** 模型写的那句理由叫什么：卡片、详情页、Markdown 导出、给 Agent 的回答和群推送都用它。 */
   reasonLabel: "收录理由",
-  /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。用户 10/4 确认用「来源」，10/9 加回。 */
+  /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。本站用「来源」（myfnb/HANDOFF.md §3.0）。 */
   sourceWord: "来源",
   /** 读者在网页和分享图上看不看得到 AI 评分。只管显示：公开 API 和 MCP 的数据照样带 score，后台照常显示。 */
   showScore: false,
@@ -199,7 +199,7 @@ export const REPORTS = {
   motto: SITE.subject as string,
   /** 每种报告页面的描述（搜索结果、分享卡片），不带句号；llms.txt 介绍周报、月报时也用它。 */
   descriptions: {
-    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，收录前一天收进来的餐饮消息和店家做法，按重要程度排列；当天没有新内容就不出`,
+    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，收录前一天收进来的餐饮消息和店家做法，按重要程度排列`,
     weekly: `从上一周的${withSubject("日报")}里选出的内容，按类别分组`,
     monthly: `从上个月的${withSubject("日报")}里选出的内容，按类别分组`,
   },
@@ -266,7 +266,7 @@ export const CARDS: Record<string, { kicker: string; title: string; subtitle: st
   site: { kicker: "餐饮小店的经营参考", title: SITE.tagline, subtitle: "收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。" },
   all: { kicker: subjectAfter("全部", "动态"), title: "收进来的全部内容，按时间排列", subtitle: "可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
-  daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "前一天收录并经过挑选的内容；当天没有够格的内容就不出。" },
+  daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "前一天收录的餐饮消息和店家做法，按重要程度排列。" },
   weekly: { kicker: withSubject("周报"), title: "一周的内容汇编", subtitle: "从上一周的日报里选出，按类别分组。" },
   monthly: { kicker: withSubject("月报"), title: "一个月的内容汇编", subtitle: "从上个月的日报里选出，按类别分组。" },
   about: { kicker: "关于", title: `关于 ${SITE.name}`, subtitle: SITE.description },

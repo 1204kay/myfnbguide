@@ -38,6 +38,10 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY", reasoningTokens: 4000, jsonMode: true,
   },
+  // 同一个 DeepSeek Flash 打开思考，用服务器现有的 LLM_BASE_URL、LLM_API_KEY，计入 llm 的每日上限（10/9 夜评测：条目正文的事实错误约少一半；写故事时想得太长、到输出上限，故事不用它）。
+  "deepseek-flash-think-llm": {
+    service: "llm", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 4000, jsonMode: true,
+  },
   "qwen3.7-flash": {
     service: "dashscope", model: "qwen3.7-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: true,

@@ -63,6 +63,16 @@ export function sourceNumbers(text: string): Set<string> {
 }
 
 /** The numbers of a story text that are not in the original. */
+/**
+ * Numbers a write-up's opening repeats from the summary shown just above it (prompts/body.md lead): the reader has
+ * just read them. Days and months (whole numbers up to 12) are left out; a decimal like 0.5 counts.
+ */
+export function repeatedNumbers(lead: string, summary: string): string[] {
+  const shown = sourceNumbers(summary);
+  const tokens = lead.normalize("NFKC").match(DIGITS) ?? [];
+  return [...new Set(tokens.filter((t) => (/[.,]/.test(t) || Number(t) > SMALL) && forms(t).some((f) => shown.has(f))))];
+}
+
 export function unfoundNumbers(text: string, source: Set<string>): string[] {
   const missing: string[] = [];
   const normal = text.normalize("NFKC");
@@ -225,7 +235,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/重复了导读/, "开头重复导读"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

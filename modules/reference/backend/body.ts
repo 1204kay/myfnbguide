@@ -15,7 +15,7 @@ import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
-import { checkStory, MAX_CHARS } from "./checks.ts";
+import { checkStory, MAX_CHARS, repeatedNumbers } from "./checks.ts";
 import { BlockSchema, computeBlock, EDIT, spaceStory, textOnly, where } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
@@ -92,6 +92,8 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
       const read = readBody(res.data);
       written = read.written;
       problems = written?.status === "body" ? checkStory(asStory(written.body), material) : read.problems;
+      const repeated = written?.status === "body" && shown?.summary ? repeatedNumbers(written.body.lead, shown.summary) : [];
+      if (repeated.length) problems.push(`开头重复了导读里的数字 ${repeated.join("、")}：读者刚读完导读，开头只写导读没写的（说话的人是谁、读后面需要知道的背景），这些数字留给后面的段落和图`);
       if (!problems.length) break;
       const list = problems.map((p) => `- ${p}`).join("\n");
       user = problems.every(textOnly)

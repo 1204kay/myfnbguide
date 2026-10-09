@@ -25,7 +25,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference, { SAMPLE_PATH } from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
-import { checkStory, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
+import { checkStory, repeatedNumbers, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, spaceStory, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
@@ -183,6 +183,8 @@ test("a story the checks pass; each problem is named for the writer", () => {
     assert.ok(checkStory(story({ lead }), SOURCE).some((p) => /从哪里来/.test(p)), lead);
   }
   assert.deepEqual(checkStory(story({ lead: "这份数据来自一家餐厅财务软件公司的统计。" }), SOURCE), [], "where the data comes from is what the reader needs");
+  assert.deepEqual(repeatedNumbers("9 月的现况判断为 46.7 点，比 8 月上升 0.5 点。", "现况判断为46.7点，较8月上升0.5点。"), ["46.7", "0.5"], "months and days are left out");
+  assert.deepEqual(repeatedNumbers("这是内阁府每月做的调查。", "现况判断为46.7点。"), []);
   assert.ok(checkStory(story({ title: "京都一家酒馆的布草账单涨了 74%", shop: { ...story().shop, country: "日本", city: "京都市" } }), SOURCE).some((p) => /^标题以“京都一家”/.test(p)), "a city as titles write it");
   assert.deepEqual(checkStory(story({ title: "多开一家店以后，布草账单涨了 74%" }), SOURCE), [], "一家 that is not where the story is from");
   assert.equal(untranslated("店主说：「うちはお酒が出る杯数が多いです」"), "日文");

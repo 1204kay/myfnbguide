@@ -63,6 +63,9 @@ export function sourceNumbers(text: string): Set<string> {
 }
 
 /** The numbers of a story text that are not in the original. */
+/** A number that is a figure: a decimal, or a whole number above 12 that is no year (days, months, 第 36 届 aside). */
+const figure = (t: string) => /[.,]/.test(t) || (Number(t) > SMALL && !/^(?:19|20)\d\d$/.test(t));
+
 /**
  * The summary's figures a write-up's opening says again (prompts/body.md lead): the reader has just read them. Days,
  * months (whole numbers up to 12) and years are left out, and one number alone (第 36 届) is no restating: two or
@@ -71,8 +74,7 @@ export function sourceNumbers(text: string): Set<string> {
 export function repeatedNumbers(lead: string, summary: string): string[] {
   const shown = sourceNumbers(summary);
   const tokens = lead.normalize("NFKC").match(DIGITS) ?? [];
-  const year = (t: string) => /^(?:19|20)\d\d$/.test(t);
-  const repeated = [...new Set(tokens.filter((t) => (/[.,]/.test(t) || (Number(t) > SMALL && !year(t))) && forms(t).some((f) => shown.has(f))))];
+  const repeated = [...new Set(tokens.filter((t) => figure(t) && forms(t).some((f) => shown.has(f))))];
   return repeated.length > 1 ? repeated : [];
 }
 
@@ -211,6 +213,13 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   for (const [where, value] of dataValues(story)) {
     if (value > SMALL && !forms(String(value)).some((f) => source.has(f))) problems.push(`${where}里的 ${value} 在原文里找不到：图里只放原文写的数字`);
   }
+  // Figures written out in the text with no figure to read them from (live write-ups of 10/9: survey results, sales
+  // and forecasts in paragraphs only).
+  const plain = new Set(["text", "list", "quote"]);
+  if (story.parts.every((p) => p.blocks.every((b) => plain.has(b.type)))) {
+    const written = new Set(story.parts.flatMap((p) => p.blocks.flatMap(blockTexts)).join("\n").normalize("NFKC").match(DIGITS)?.filter(figure) ?? []);
+    if (written.size >= 3) problems.push(`正文写了 ${[...written].slice(0, 6).join("、")} 这些数字，却没有一张图：把最关键的 1 到 3 个放进 numbers 块（前后对比的用 compare），文字里不再逐个重复`);
+  }
   for (const [i, part] of story.parts.entries()) {
     if (LABELS.test(part.heading.trim())) problems.push(`第 ${i + 1} 段的小标题“${part.heading}”是分格标签：直接写内容，写成某人做了什么`);
   }
@@ -238,7 +247,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/重复了导读/, "开头重复导读"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

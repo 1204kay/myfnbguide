@@ -1812,6 +1812,35 @@
       "syndicate_fulltext": false
     },
     {
+      "id": "web-ltn-canyinye",
+      "name": "自由時報 · 餐飲業标签（中国台湾 · 综合日报）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://news.ltn.com.tw/topic/%E9%A4%90%E9%A3%B2%E6%A5%AD",
+        "itemSelector": "ul.list > li",
+        "linkSelector": "a",
+        "titleSelector": "h3.title",
+        "publishedAtSelector": "span.time",
+        "publishedAtUtcOffset": "+08:00",
+        "detail": {
+          "maxFetches": 10
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国台湾",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
       "id": "web-drinknewspaper",
       "name": "饮品报（中国 · 茶饮咖啡媒体）",
       "kind": "web_list",

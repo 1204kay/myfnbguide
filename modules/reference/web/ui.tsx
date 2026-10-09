@@ -475,9 +475,10 @@ export function StoryBlock({ block }: { block: Block }) {
     case "compare": return <Compare b={block} />;
     case "parts": return <Parts b={block} />;
     case "example": return <Example b={block} />;
-    // The original's key figures, big, each with what it counts.
+    // The original's key figures, big, each with what it counts, under the one sentence saying what they show.
     case "numbers": return (
       <Figure kind="原文数据" caption={block.caption}>
+        {block.point ? <p className="mb-3 text-[15.5px] font-bold leading-[1.6] text-ink">{block.point}</p> : null}
         <div className={`grid gap-4 ${["", "", "grid-cols-2", "grid-cols-2 sm:grid-cols-3"][block.items.length]}`}>
           {block.items.map((i, n) => (
             <div key={n}>

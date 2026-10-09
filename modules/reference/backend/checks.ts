@@ -63,6 +63,11 @@ export function sourceNumbers(text: string): Set<string> {
 }
 
 /** The numbers of a story text that are not in the original. */
+/** Money units, to find a figures card that mixes two. */
+const MONEY = /万美元|亿美元|美元|美分|万元|亿元|日元|万日元|欧元|英镑|韩元|港元|新台币|澳元|加元|元/u;
+/** An opening that labels its speaker instead of saying who they are: 说话的人是, 这期节目的主持人是. */
+const LABEL_OPENING = /^(?:说话的人|这期(?:节目|播客)的主持人|主讲人|讲述者)是/u;
+
 /** Labels of numbers that are changes already. */
 const CHANGE = /增长|增加|提升|提高|下降|下滑|减少|上涨|下跌|同比|环比|涨幅|降幅/u;
 
@@ -168,7 +173,7 @@ function blockTexts(block: Block): string[] {
     case "compare": return [block.caption, ...block.items.map((i) => i.label)];
     case "parts": return [block.caption, ...block.items.map((i) => i.label), block.against?.label ?? ""];
     case "example": return [block.caption];
-    case "numbers": return [block.caption ?? "", ...block.items.flatMap((i) => [i.value, i.label])];
+    case "numbers": return [block.point ?? "", block.caption ?? "", ...block.items.flatMap((i) => [i.value, i.label])];
     case "change": return [block.caption ?? "", block.before.label, block.before.text, block.after.label, block.after.text];
   }
 }
@@ -242,6 +247,9 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     // difference that means nothing (a live story of 10/9 drew 订单量增长 29% against 营收同比 13.1%: −54.8%).
     const change = b.type === "compare" ? b.items.find((x) => CHANGE.test(x.label)) : undefined;
     if (change) problems.push(`第 ${i + 1} 段的对比图里“${change.label}”本身就是变化的数：对比图只放同一个数的前后（去年和今年），涨幅和增长率放进 numbers`);
+    // Figures in one card are read against each other: money in two units (3.02 美元 beside 437.95 美分, 10/9) cannot be.
+    const money = b.type === "numbers" ? [...new Set(b.items.map((x) => MONEY.exec(x.value)?.[0]).filter(Boolean))] : [];
+    if (money.length > 1) problems.push(`第 ${i + 1} 段的数字卡里有 ${money.join("和")} 两种单位：读者没法直接比，分开放，或只留同一种单位的数`);
     // A quote is the words once: the text around it does not say them again.
     if (b.type === "quote" && bare(b.text).length >= 12 && bare(prose).includes(bare(b.text))) problems.push(`第 ${i + 1} 段的原话“${b.text.slice(0, 20)}”在文字里又写了一遍：删掉文字里的那一句，只留原话`);
   }
@@ -253,6 +261,7 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     const hit = MEDIA_LINE.exec(text);
     if (hit) problems.push(`${where}写了这篇文章从哪里来（“${hit[0]}”）：页面的来源行已经写了媒体名，直接写说话的人是谁或读后面需要知道的背景`);
   }
+  if (LABEL_OPENING.test(story.lead.trim())) problems.push(`开头写成了“${LABEL_OPENING.exec(story.lead.trim())![0]}……”：直接从这个人写起（“Brandon Robinson 是……的创始人”）`);
   if (QUESTION.test(story.lead.trim())) problems.push(`开头写成了问句（“${story.lead.slice(-12)}”）：写成陈述句`);
   const opening = titleOpening(story);
   if (opening) problems.push(`标题以“${opening}”开头：页面的来源行已经写了国家和来源，标题直接写这家店做了什么`);
@@ -273,7 +282,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

@@ -32,7 +32,7 @@ export const CASE_SYSTEM = promptFromText("reference/case", readFileSync(new URL
  * again, the writer wrote it afresh and as long as before (10/5: 53 of 65 held were too long after two more tries).
  * A country or city left unnamed (全国、本地) is not one of them: only the material says which.
  */
-export const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以|从哪里来|重复了导读|又写了一遍|写成了问句/.test(problem) && !/国家名|城市名/.test(problem);
+export const textOnly = (problem: string) => /太长|用了“|原文说|分格标签|没有翻译|^标题以|从哪里来|重复了导读|又写了一遍|写成了问句|直接从这个人写起/.test(problem) && !/国家名|城市名/.test(problem);
 export const EDIT = "下面是你按系统规则写好的故事（JSON），有以下问题。只修改有问题的地方：太长就删去次要的句子和细节，不拆成更多块；用词按提示改；不加新的内容和数字。其余保持不变，输出完整的 JSON。";
 /**
  * The last pass over a story that passed the checks: its wording made plain written Chinese, nothing else (the
@@ -69,7 +69,7 @@ export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text.max(90) }),
   z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text.max(90) }),
   z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(120) }),
-  z.object({ type: z.literal("numbers"), items: z.array(z.object({ value: text.max(16), label: text.max(24) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
+  z.object({ type: z.literal("numbers"), point: text.max(30), items: z.array(z.object({ value: text.max(16), label: text.max(12) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
   z.object({ type: z.literal("change"), before: z.object({ label: text.max(8), text: text.max(80) }), after: z.object({ label: text.max(8), text: text.max(80) }), caption: z.string().trim().max(90).nullable().default(null) }),
 ]);
 

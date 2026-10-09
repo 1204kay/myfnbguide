@@ -73,6 +73,8 @@ export interface ExampleBlock {
 /** The original's key figures, each as it writes it with what it counts, drawn big (数字卡). */
 export interface NumbersBlock {
   type: "numbers";
+  /** What the figures say, in one sentence over them (stories written before 10/9 have none). */
+  point?: string;
   items: Array<{ value: string; label: string }>;
   caption: string | null;
 }

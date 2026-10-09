@@ -7,8 +7,13 @@
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts --apply
 import { closeDb } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
+import { installModules } from "@aihot/backend/modules";
+import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { articlesToBody, writeBody } from "../modules/reference/backend/body.ts";
 import { articlesToWrite, writeCase } from "../modules/reference/backend/write.ts";
+
+// The modules' model steps (referenceCase, referenceBody) are known once the modules are installed, as in the worker.
+installModules(SERVER_MODULES);
 
 const apply = process.argv.includes("--apply");
 const at = process.argv.indexOf("--limit");

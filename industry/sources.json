@@ -201,27 +201,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-foodrink",
-      "name": "フードリンクニュース（日本 · 餐饮媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.foodrink.co.jp/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "日本",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "web-canyin88-zixun",
       "name": "红餐网 · 资讯（中国 · 餐饮媒体）",
       "kind": "web_list",

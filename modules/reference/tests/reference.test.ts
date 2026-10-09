@@ -179,7 +179,7 @@ test("a story the checks pass; each problem is named for the writer", () => {
   for (const title of ["美国播客：布草账单四年涨了 74%", "美国加州一家餐馆的布草账单涨了 74%", "餐厅顾问 Chip Klose：布草账单四年涨了 74%"]) {
     assert.ok(checkStory(story({ title }), SOURCE).some((p) => /^标题以/.test(p)), title);
   }
-  for (const lead of ["这篇文章来自红餐网专栏，面向火锅经营者。", "协会的文章由红餐网转载，讨论低价套餐。"]) {
+  for (const lead of ["这篇文章来自红餐网专栏，面向火锅经营者。", "协会的文章由红餐网转载，讨论低价套餐。", "郑伟滨在博览会上的演讲，由红餐网整编发布。"]) {
     assert.ok(checkStory(story({ lead }), SOURCE).some((p) => /从哪里来/.test(p)), lead);
   }
   assert.deepEqual(checkStory(story({ lead: "这份数据来自一家餐厅财务软件公司的统计。" }), SOURCE), [], "where the data comes from is what the reader needs");

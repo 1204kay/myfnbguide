@@ -118,9 +118,9 @@ const SOURCE_WORDS = /播客|系统商|服务商|软件商|顾问|媒体|博客|
 /** "美国播客：", "日本一家": how a title opens when it repeats the source line; null when it does not. */
 /**
  * An opening that says where the article came from, or what it is about, rather than what it says: 这篇文章来自,
- * 由某网转载, 这篇文章说的是.
+ * 由某网转载, 红餐网整编发布, 这篇文章说的是.
  */
-const MEDIA_LINE = /这(?:篇|条)(?:文章|消息|报道|内容)?来自|转载|^(?:这|本)(?:篇|期|条)(?:文章|报道|节目|播客|消息)?(?:说的是|讲的是|谈的是|介绍的是|讨论的是)/u;
+const MEDIA_LINE = /这(?:篇|条)(?:文章|消息|报道|内容)?来自|转载|整编|整理发布|^(?:这|本)(?:篇|期|条)(?:文章|报道|节目|播客|消息)?(?:说的是|讲的是|谈的是|介绍的是|讨论的是)/u;
 /** An opening put as a question: the writing rules ask for a statement (prompts/case.md lead). */
 const QUESTION = /[？?]|(?:哪里|为什么|怎么办|吗)[。]?$/u;
 

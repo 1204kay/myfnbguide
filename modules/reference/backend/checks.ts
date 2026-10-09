@@ -63,6 +63,9 @@ export function sourceNumbers(text: string): Set<string> {
 }
 
 /** The numbers of a story text that are not in the original. */
+/** Labels of numbers that are changes already. */
+const CHANGE = /增长|增加|提升|提高|下降|下滑|减少|上涨|下跌|同比|环比|涨幅|降幅/u;
+
 /** A number that is a figure: a decimal, or a whole number above 12 that is no year (days, months, 第 36 届 aside). */
 const figure = (t: string) => /[.,]/.test(t) || (Number(t) > SMALL && !/^(?:19|20)\d\d$/.test(t));
 
@@ -72,10 +75,15 @@ const figure = (t: string) => /[.,]/.test(t) || (Number(t) > SMALL && !/^(?:19|2
  * more are (live write-ups of 10/9 repeated the summary's 46.7, 0.5, 43.9 and 3.8).
  */
 export function repeatedNumbers(lead: string, summary: string): string[] {
-  const shown = sourceNumbers(summary);
-  const tokens = lead.normalize("NFKC").match(DIGITS) ?? [];
-  const repeated = [...new Set(tokens.filter((t) => figure(t) && forms(t).some((f) => shown.has(f))))];
+  const repeated = summaryFigures(lead, summary);
   return repeated.length > 1 ? repeated : [];
+}
+
+/** The summary's figures a text writes again. */
+export function summaryFigures(text: string, summary: string): string[] {
+  const shown = sourceNumbers(summary);
+  const tokens = text.normalize("NFKC").match(DIGITS) ?? [];
+  return [...new Set(tokens.filter((t) => figure(t) && forms(t).some((f) => shown.has(f))))];
 }
 
 export function unfoundNumbers(text: string, source: Set<string>): string[] {
@@ -220,6 +228,16 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     const written = new Set(story.parts.flatMap((p) => p.blocks.flatMap(blockTexts)).join("\n").normalize("NFKC").match(DIGITS)?.filter(figure) ?? []);
     if (written.size >= 3) problems.push(`正文写了 ${[...written].slice(0, 6).join("、")} 这些数字，却没有一张图：把最关键的 1 到 3 个放进 numbers 块（前后对比的用 compare），文字里不再逐个重复`);
   }
+  const prose = story.parts.flatMap((p) => p.blocks.filter((b) => b.type === "text" || b.type === "list").flatMap(blockTexts)).join("\n");
+  const bare = (t: string) => t.normalize("NFKC").replace(/[\s，。、；：！？“”‘’「」（）,.;:!?"'()]/g, "");
+  for (const [i, part] of story.parts.entries()) for (const b of part.blocks) {
+    // A compare draws one quantity before and after; changes already (增长 29%, 同比提升 13.1%) set side by side make a
+    // difference that means nothing (a live story of 10/9 drew 订单量增长 29% against 营收同比 13.1%: −54.8%).
+    const change = b.type === "compare" ? b.items.find((x) => CHANGE.test(x.label)) : undefined;
+    if (change) problems.push(`第 ${i + 1} 段的对比图里“${change.label}”本身就是变化的数：对比图只放同一个数的前后（去年和今年），涨幅和增长率放进 numbers`);
+    // A quote is the words once: the text around it does not say them again.
+    if (b.type === "quote" && bare(b.text).length >= 12 && bare(prose).includes(bare(b.text))) problems.push(`第 ${i + 1} 段的原话“${b.text.slice(0, 20)}”在文字里又写了一遍：删掉文字里的那一句，只留原话`);
+  }
   for (const [i, part] of story.parts.entries()) {
     if (LABELS.test(part.heading.trim())) problems.push(`第 ${i + 1} 段的小标题“${part.heading}”是分格标签：直接写内容，写成某人做了什么`);
   }
@@ -247,7 +265,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/重复了导读/, "开头重复导读"], [/没有一张图/, "有数字没有图"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

@@ -87,9 +87,10 @@ export function CountFigure({ count, size }: { count: Count; size: number }) {
 export function Who({ s, size = 22 }: { s: SituationRow; size?: number }) {
   const rest = restCountText(s.count);
   return (
-    <span className="flex min-w-0 items-center gap-2">
+    <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
       {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={size} interactive={false} />}
-      {rest && <span className="truncate text-[12.5px] text-ink-4">{rest}</span>}
+      {/* Wraps under the faces on a narrow card rather than cutting the count off (reader review 10/9). */}
+      {rest && <span className="text-[12.5px] leading-snug text-ink-4">{rest}</span>}
     </span>
   );
 }
@@ -386,7 +387,8 @@ function Compare({ b }: { b: CompareBlock }) {
       </div>
       {b.change && b.change.amount !== 0 && (
         <p className="mt-3 text-[14px] text-ink-2">
-          按原文数字计算：{b.change.amount > 0 ? "多了" : "少了"} <b className="num text-[18px] text-ink">{num(Math.abs(b.change.amount))}</b> {b.unit}（{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%）
+          {/* Between two percentages the change is in points (1.1% → 2.3%: 1.2 个百分点), not a percent of a percent. */}
+          按原文数字计算：{b.change.amount > 0 ? "多了" : "少了"} <b className="num text-[18px] text-ink">{num(Math.abs(b.change.amount))}</b> {b.unit === "%" ? "个百分点" : b.unit}{b.unit !== "%" && <>（{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%）</>}
           {b.change.yearly !== null && <>，按一年算 <b className="num text-ink">{num(Math.abs(b.change.yearly))}</b> {b.unit}</>}
         </p>
       )}

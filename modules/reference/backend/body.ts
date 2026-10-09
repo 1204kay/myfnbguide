@@ -78,7 +78,10 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
   } else {
     const material = renderContext(a, { annotateQuoted: true });
     const model = await modelFor(BODY_STEP);
-    let user = ["请按系统规则整理以下材料，只输出 JSON。", material].join("\n\n");
+    // What the reader has read before the write-up: it says what these do not (prompts/body.md lead).
+    const [shown] = await sql<{ title: string; summary: string | null; reason: string | null }[]>`SELECT title, summary, reason FROM publications WHERE article_id = ${a.id}`;
+    const page = shown ? [`本站标题：${shown.title}`, `导读：${shown.summary ?? "（无）"}`, `收录理由：${shown.reason ?? "（无）"}`].join("\n") : "";
+    let user = ["请按系统规则整理以下材料，只输出 JSON。", page, material].filter(Boolean).join("\n\n");
     // The first answer, and up to two more with its problems named.
     for (let attempt = 0; attempt < 3; attempt++) {
       const res = await chatJson({
@@ -94,7 +97,7 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
       user = problems.every(textOnly)
         ? [EDIT, `故事：\n${JSON.stringify(res.data)}`, `问题：\n${list}`].join("\n\n")
         : [
-          "请按系统规则整理以下材料，只输出 JSON。", material,
+          "请按系统规则整理以下材料，只输出 JSON。", page, material,
           `你上一次的输出：\n${JSON.stringify(res.data)}`,
           `上一次的输出有以下问题，请改正后重新输出完整的 JSON，其余保持不变：\n${list}`,
         ].join("\n\n");

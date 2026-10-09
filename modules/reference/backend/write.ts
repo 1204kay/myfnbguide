@@ -61,44 +61,54 @@ const item = z.object({ label: text.max(30), value: number });
 
 // Every part has a ceiling a little above what the prompt asks (prompts/case.md), so a long story comes back
 // with the very block to shorten named (see `where`), not only its total.
-export const BlockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("text"), text: text.max(TEXT_MAX) }),
-  z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().max(14).nullable().default(null), text: text.max(90) })).min(1).max(6) }),
-  z.object({ type: z.literal("flow"), steps: z.array(text.max(40)).min(2).max(6) }),
-  z.object({ type: z.literal("quote"), text: text.max(80), who: text.max(60) }),
-  z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text.max(90) }),
-  z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text.max(90) }),
-  z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(120) }),
-  z.object({ type: z.literal("numbers"), point: z.string().trim().max(30).nullable().default(null), items: z.array(z.object({ value: text.max(16), label: text.max(24) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
-  z.object({ type: z.literal("change"), before: z.object({ label: text.max(8), text: text.max(80) }), after: z.object({ label: text.max(8), text: text.max(80) }), caption: z.string().trim().max(90).nullable().default(null) }),
+export const blockSchema = (n: (cap: number) => number) => z.discriminatedUnion("type", [
+  z.object({ type: z.literal("text"), text: text.max(n(TEXT_MAX)) }),
+  z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().max(n(14)).nullable().default(null), text: text.max(n(90)) })).min(1).max(n(6)) }),
+  z.object({ type: z.literal("flow"), steps: z.array(text.max(n(40))).min(2).max(n(6)) }),
+  z.object({ type: z.literal("quote"), text: text.max(n(80)), who: text.max(n(60)) }),
+  z.object({ type: z.literal("compare"), unit: text.max(n(8)), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(n(5)), caption: text.max(n(90)) }),
+  z.object({ type: z.literal("parts"), unit: text.max(n(8)), items: z.array(item).min(2).max(n(7)), against: item.nullable().default(null), caption: text.max(n(90)) }),
+  z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(n(120)) }),
+  z.object({ type: z.literal("numbers"), point: z.string().trim().max(n(30)).nullable().default(null), items: z.array(z.object({ value: text.max(n(16)), label: text.max(n(24)) })).min(1).max(n(3)), caption: z.string().trim().max(n(90)).nullable().default(null) }),
+  z.object({ type: z.literal("change"), before: z.object({ label: text.max(n(8)), text: text.max(n(80)) }), after: z.object({ label: text.max(n(8)), text: text.max(n(80)) }), caption: z.string().trim().max(n(90)).nullable().default(null) }),
 ]);
 
-const StorySchema = z.object({
+const storySchema = (n: (cap: number) => number) => z.object({
   material: z.literal("story"),
-  title: text.max(40),
-  lead: text.max(80),
-  who: text.max(140),
-  parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(BLOCKS) })).min(1).max(4),
-  open: z.string().trim().max(90).nullable().default(null),
+  title: text.max(n(40)),
+  lead: text.max(n(80)),
+  who: text.max(n(140)),
+  parts: z.array(z.object({ heading: text.max(n(30)), blocks: z.array(blockSchema(n)).min(1).max(n(BLOCKS)) })).min(1).max(n(4)),
+  open: z.string().trim().max(n(90)).nullable().default(null),
   shop: z.object({
     name: z.string().trim().nullable().default(null),
-    label: text.max(20),
-    country: text.max(12),
+    label: text.max(n(20)),
+    country: text.max(n(12)),
     city: z.string().trim().nullable().default(null),
     // A kind outside the list is no kind: the case still shows under its situations.
     kind: z.enum(SHOP_KINDS.map((k) => k.slug) as [ShopKind, ...ShopKind[]]).nullable().catch(null),
     size: z.string().trim().nullable().default(null),
     speaker: z.enum(["owner", "staff", "adviser", "vendor", "media"]),
   }),
-  placements: z.array(z.object({ situation: text, group: z.string().trim().nullable().default(null), card: text.max(80) })).max(2),
+  placements: z.array(z.object({ situation: text, group: z.string().trim().nullable().default(null), card: text.max(n(80)) })).max(2),
 });
 
-const OutputSchema = z.discriminatedUnion("material", [
+const outputSchema = (n: (cap: number) => number) => z.discriminatedUnion("material", [
   z.object({ material: z.literal("thin"), reason: z.string().default("") }),
   z.object({ material: z.literal("news"), reason: z.string().default("") }),
-  StorySchema,
+  storySchema(n),
 ]);
 
+/**
+ * The ceilings as asked, and twice as roomy: an answer over some length is read with the roomy ones and its lengths go
+ * back to be mended, as wording does, instead of the whole answer being dropped (10/9 eval: a who line of 147 characters
+ * against 140, and a fifth part, threw away whole stories).
+ */
+export const exact = (cap: number) => cap;
+export const roomy = (cap: number) => cap * 2;
+export const BlockSchema = blockSchema(exact);
+const OutputSchema = outputSchema(exact);
+const RoomyOutputSchema = outputSchema(roomy);
 type Output = z.infer<typeof OutputSchema>;
 type Written = { status: "thin"; reason: string } | { status: "story"; story: CaseStory };
 
@@ -168,26 +178,35 @@ export function splitLong(raw: unknown): unknown {
   }) };
 }
 
+/**
+ * An answer read against the ceilings as asked and, when only lengths are over, against the roomy ones: the data, and
+ * what is over named for the next try (a length is mended like wording, not a reason to drop the answer).
+ */
+export function readWith<S extends z.ZodType>(exactSchema: S, roomySchema: S, raw: unknown): { data: z.output<S> | null; problems: string[] } {
+  const parsed = exactSchema.safeParse(raw);
+  if (parsed.success) return { data: parsed.data, problems: [] };
+  const problems = parsed.error.issues.slice(0, 8).map((i) => {
+    if (i.code !== "too_big") return `格式不对：${where(i.path)} ${i.message}`;
+    const value = i.path.reduce<unknown>((v, k) => (v as Record<PropertyKey, unknown> | undefined)?.[k], raw);
+    const now = typeof value === "string" ? `，现在 ${[...value].length} 字` : Array.isArray(value) ? `，现在 ${value.length} 个` : "";
+    return `${where(i.path)}太长：最多 ${String(i.maximum)} ${i.origin === "array" ? "个" : "字"}${now}；删去次要的内容，不要拆成更多块`;
+  });
+  const roomy = parsed.error.issues.every((i) => i.code === "too_big") ? roomySchema.safeParse(raw) : null;
+  return roomy?.success ? { data: roomy.data, problems } : { data: null, problems };
+}
+
 export function readOutput(answer: unknown): { written: Written | null; problems: string[] } {
   const raw = splitLong(answer);
-  const parsed = OutputSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) => {
-      if (i.code !== "too_big") return `格式不对：${where(i.path)} ${i.message}`;
-      const value = i.path.reduce<unknown>((v, k) => (v as Record<PropertyKey, unknown> | undefined)?.[k], raw);
-      const now = typeof value === "string" ? `，现在 ${[...value].length} 字` : Array.isArray(value) ? `，现在 ${value.length} 个` : "";
-      return `${where(i.path)}太长：最多 ${String(i.maximum)} ${i.origin === "array" ? "个" : "字"}${now}；删去次要的内容，不要拆成更多块`;
-    }) };
-  }
-  const out: Output = parsed.data;
+  const { data: out, problems: over } = readWith(OutputSchema, RoomyOutputSchema, raw);
+  if (!out) return { written: null, problems: over };
   // Not a story either way: too little material, or news and data with no shop's practice in it (they stay in 最新).
-  if (out.material === "thin") return { written: { status: "thin", reason: `材料不够：${out.reason}` }, problems: [] };
-  if (out.material === "news") return { written: { status: "thin", reason: `新闻或数据：${out.reason}` }, problems: [] };
+  if (out.material === "thin") return { written: { status: "thin", reason: `材料不够：${out.reason}` }, problems: over };
+  if (out.material === "news") return { written: { status: "thin", reason: `新闻或数据：${out.reason}` }, problems: over };
   try {
     const { material: _, ...story } = out;
     // One situation, the writer's first: the second was mostly a stretch (reviews of 10/5: 10 of 23 misplaced).
     const placements = story.placements.slice(0, 1);
-    return { written: { status: "story", story: { ...story, placements, parts: story.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: [] };
+    return { written: { status: "story", story: { ...story, placements, parts: story.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: over };
   } catch (error) {
     return { written: null, problems: [`举例算不出来：${(error as Error).message}`] };
   }
@@ -271,7 +290,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     const read = readOutput(res.data);
     written = read.written;
     answer = res.data;
-    problems = written?.status === "story" ? checkStory(written.story, material) : read.problems;
+    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material)] : read.problems;
     // A later try can be worse than an earlier one: the best of them is the one kept.
     if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, answer, problems };
     if (!problems.length) break;

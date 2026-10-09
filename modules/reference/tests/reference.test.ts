@@ -225,14 +225,16 @@ test("a kind outside the list is no kind, and the story still stands", () => {
   assert.equal(written?.status === "story" && written.story.shop.kind, null);
 });
 
-test("a block over its ceiling comes back named, with its length; a long paragraph is split instead", () => {
+test("a block over its ceiling is read with room to spare and named, with its length; a long paragraph is split instead", () => {
   const paragraphs = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。".repeat(25) }] }] };
   assert.equal(readOutput(paragraphs).written?.status, "story", "split at its sentences");
-  // One sentence over the ceiling cannot be split.
+  // One sentence over the ceiling cannot be split: read with room to spare, its length named to be mended.
   const long = { material: "story", ...story(), parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价，".repeat(25) }] }] };
   const { written, problems } = readOutput(long);
-  assert.equal(written, null);
+  assert.equal(written?.status, "story", "a length is mended, not a reason to drop the answer");
   assert.deepEqual(problems, ["第 1 段第 1 块的文字太长：最多 240 字，现在 350 字；删去次要的内容，不要拆成更多块"]);
+  const far = readOutput({ ...long, parts: [{ heading: "很长的一段", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价，".repeat(40) }] }] });
+  assert.equal(far.written, null, "past twice the ceiling it is no answer");
 });
 
 test("a grouping of practices places every story once, within its group, a line a shop, with the stories' own numbers", () => {

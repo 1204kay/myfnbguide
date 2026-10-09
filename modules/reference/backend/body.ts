@@ -16,7 +16,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
 import { badness, blocking, checkStory, repeatedNumbers, summaryFigures } from "./checks.ts";
-import { type Article, BLOCKS, BlockSchema, CHECKING, type Prompt, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
+import { type Article, BLOCKS, blockSchema, CHECKING, type Prompt, computeBlock, EDIT, exact, readWith, roomy, spaceStory, splitLong, textOnly } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
 const PURPOSE = "reference_body";
@@ -27,16 +27,19 @@ const PROMPT_VERSION = `reference-body@${createHash("sha256").update(BODY_SYSTEM
 const MIN_MATERIAL = 300;
 
 const text = z.string().trim().min(1);
-const OutputSchema = z.discriminatedUnion("material", [
+const outputSchema = (n: (cap: number) => number) => z.discriminatedUnion("material", [
   z.object({ material: z.literal("thin"), reason: z.string().default("") }),
   z.object({
     material: z.literal("body"),
     // No opening when the reader needs no one introduced before the parts (prompts/body.md lead).
-    lead: z.string().trim().max(160).nullable().default(null),
-    parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(BLOCKS) })).min(1).max(4),
-    open: z.string().trim().max(90).nullable().default(null),
+    lead: z.string().trim().max(n(160)).nullable().default(null),
+    parts: z.array(z.object({ heading: text.max(n(30)), blocks: z.array(blockSchema(n)).min(1).max(n(BLOCKS)) })).min(1).max(n(4)),
+    open: z.string().trim().max(n(90)).nullable().default(null),
   }),
 ]);
+// The ceilings as asked, and the roomy ones an answer over some length is read with (write.ts readWith).
+const OutputSchema = outputSchema(exact);
+const RoomyOutputSchema = outputSchema(roomy);
 
 type Written = { status: "thin"; reason: string } | { status: "body"; body: ItemBody };
 
@@ -48,16 +51,11 @@ const asStory = (body: ItemBody): CaseStory => ({
 
 /** The model's answer as a write-up, or what is wrong with it. */
 export function readBody(answer: unknown): { written: Written | null; problems: string[] } {
-  const raw = splitLong(answer);
-  const parsed = OutputSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { written: null, problems: parsed.error.issues.slice(0, 8).map((i) =>
-      i.code === "too_big" ? `${where(i.path)}太长：最多 ${String(i.maximum)} ${i.origin === "array" ? "个" : "字"}；删去次要的内容，不要拆成更多块` : `格式不对：${where(i.path)} ${i.message}`) };
-  }
-  const out = parsed.data;
-  if (out.material === "thin") return { written: { status: "thin", reason: `材料不够：${out.reason}` }, problems: [] };
+  const { data: out, problems: over } = readWith(OutputSchema, RoomyOutputSchema, splitLong(answer));
+  if (!out) return { written: null, problems: over };
+  if (out.material === "thin") return { written: { status: "thin", reason: `材料不够：${out.reason}` }, problems: over };
   try {
-    return { written: { status: "body", body: { lead: out.lead, open: out.open, parts: out.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: [] };
+    return { written: { status: "body", body: { lead: out.lead, open: out.open, parts: out.parts.map((p) => ({ heading: p.heading, blocks: p.blocks.map(computeBlock) })) } }, problems: over };
   } catch (error) {
     return { written: null, problems: [`举例算不出来：${(error as Error).message}`] };
   }
@@ -108,7 +106,7 @@ export async function composeBody(a: Article, prompt: Prompt = BODY_PROMPT): Pro
       receiptIds.push(res.receiptId);
       const read = readBody(res.data);
       written = read.written;
-      problems = written?.status === "body" ? checkStory(asStory(written.body), material) : read.problems;
+      problems = written?.status === "body" ? [...read.problems, ...checkStory(asStory(written.body), material)] : read.problems;
       const repeated = written?.status === "body" && shown?.summary ? repeatedNumbers(written.body.lead ?? "", shown.summary) : [];
       if (repeated.length) problems.push(`开头重复了导读里的数字 ${repeated.join("、")}：读者刚读完导读，开头只写导读没写的（说话的人是谁、读后面需要知道的背景），这些数字留给后面的段落和图`);
       // The paragraphs below do not write the summary's figures out again either: a figure carries those it needs.

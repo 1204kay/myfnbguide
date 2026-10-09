@@ -61,6 +61,12 @@ export function Updated({ at }: { at: string | null | undefined }) {
   return at ? <p className="mt-10 text-[13px] text-ink-4">更新于 {day(at)}</p> : null;
 }
 
+/** A figure as its number (big) and its unit (small, after it): "3.02 美元/磅" is 3.02 and 美元/磅, so a long unit does not wrap. */
+export function figureParts(value: string): [string, string] {
+  const m = /^([-+]?[\d.,]+%?)\s*(.*)$/u.exec(value.trim());
+  return m ? [m[1]!, m[2]!] : [value, ""];
+}
+
 /** The figures strip: big numbers with their units. */
 export function Metrics({ items }: { items: Array<[number, string]> }) {
   return (
@@ -482,7 +488,7 @@ export function StoryBlock({ block }: { block: Block }) {
         <div className={`grid gap-4 ${["", "", "grid-cols-2", "grid-cols-2 sm:grid-cols-3"][block.items.length]}`}>
           {block.items.map((i, n) => (
             <div key={n}>
-              <div className="num text-[28px] font-extrabold leading-tight text-accent lg:text-[32px]">{i.value}</div>
+              <div className="num text-[28px] font-extrabold leading-tight text-accent lg:text-[32px]">{figureParts(i.value)[0]}<span className="ml-1 text-[15px] font-bold">{figureParts(i.value)[1]}</span></div>
               <div className="mt-1 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
             </div>
           ))}

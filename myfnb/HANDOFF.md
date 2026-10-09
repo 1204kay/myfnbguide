@@ -137,12 +137,14 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 条目和卡片 | 读者看不到 AI 评分（`ITEM_COPY.showScore`）；理由叫「收录理由」（`reasonLabel`）。都是原版选项 | §3.1「不打分」 | 10/4 |
 | 导航 | 不放热点榜和主题（`NAV.hidden`，框架加的选项，默认不变），电脑侧栏、手机底栏和「我的」页都不放，页面照样能打开；条目页的主题标签、事件页的返回「‹ 热点」照旧指向它们，手机上打开这两页时底栏没有一格点亮 | 热点榜 10/6 线上是空的：要几家来源同时讨论同一件事，本站的来源还凑不出来；主题页各主题只列最近的精选，多数是几天到几年前的旧条目。有内容了就删掉对应的一项 | 热点榜 10/6（清理授权）；主题 10/4–10/5 定、10/6 清理时误放回、10/9 用户指出后改回 |
 | 手机筛选 | 一排左右滑动的选项（`FEED.phoneFilter: "row"`，框架加的选项，默认 `"sheet"` 不变） | 用户 10/6 直接提出 | 10/6 |
-| 日报 | 收当天列在「全部」里的每一条（`REPORTS.dailyScope: "pool"`，框架加的选项，默认不变）；版式和篇幅（12 条写全、10 条简讯）照原版；只改日报，周报、月报报头的「N 条精选」仍只数入选的。连带的效果：头条可能是没入选的条目，它的条目页没有收录理由 | 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」 | 10/5 |
+| 日报 | 收当天列在「全部」里的每一条（`REPORTS.dailyScope: "pool"`，框架加的选项，默认不变）；版式和篇幅（12 条写全、10 条简讯）照原版，写全的位置只给有入选报道的事（10/9 读者审查：弱条目占了写全的位置，入选的好条目挤进简讯）；只改日报，周报、月报报头的「N 条精选」仍只数入选的。连带的效果：头条可能是没入选的条目，它的条目页没有收录理由 | 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」 | 10/5 |
 | 写作 | 写完标题、摘要、收录理由后查本站不用的词，让模型只改这些词一次（模型步骤 `wording`，框架加的） | §3 第 5 条；10/5 有 64/166 条用了「讲」，只靠提示词挡不住 | 10/5 |
 | 条目页 | 导读和收录理由下面加「正文 · AI 整理自原文」：已写成参考库故事的条目显示那篇故事和它所在的情况；其余公开条目（新闻、数据、规定、访谈）由参考库模块按同一格式另写一篇（`prompts/body.md`，和故事同一套检查：数字要在原文里、用词、长度），材料不够的不写。框架只加一个通用插口 `WebModule.itemPart`（`apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`），照框架文档「插口不够用时加一个通用的插口」 | 原版的导读最多 200 字、三句，是给 AI 新闻快讯用的；本站多是外语播客和长访谈，读者看不懂原文，导读说不清原文讲了什么（用户 10/9：「写了个导读什么都没说明就结束了」「全部以参考页面为标准」） | 10/9 |
+| 一手 | 报头不显示「N 件一手发布」（`REPORTS.metricUnits.firstPartyEvents: null`），筛选里没有「一手」（`FEED.firstPartyFilter: false`），都是框架加的选项，默认不变 | 本站的一手发布多是行业协会，报头常是「0 件一手发布」，筛选两周只筛出 3 条；对餐饮读者是费解的词 | 10/9 |
+| 手机顶栏 | 标题还没出现时不占中间的宽度，返回文字不再被截成「‹ 老板…」（`PhoneBar.tsx`，框架错误修正，`cdf5b83` 加回） | 原版的错，本站的返回文字是较长的中文情况名，更明显 | 10/9（可提给作者） |
 | 周报、月报 | 网站第一期日报以前的周、月不算到期（框架修正） | 原版的错：月中开站时，上个月的月报每半小时失败一次 | 10/5（错误修正，可提给作者） |
 
-**10/6 清理时改回原版的**（以后要再做，先按上面五关重新审核、找用户确认）：首页改成参考库（`NAV.home`）、资讯默认全部（`FEED.start`）、栏目改名（`NAV.labels`）、主题不进导航；日期加空格（`DATES.spaced`）、641–960px 铺开（`LAYOUT.fluid`）、程序补空格（`READER_SPACING`）；日报的分节简讯、看点门槛、简讯不限条数、报头数字不显示一手（`flashPlacement`、`compactBelow`、`dailyFlashes`、`metricUnits`）；收藏备份（`STARRED`）、关于页的参考库规模、参考库的搜索和条目页附加块（模块插口 `figures`、`searchPart`、`itemPart`）；列表类来源的关键词过滤（`allowKeywords`，没有信源在用；综合媒体要用时从 `a2f7397` 取回）。随 `apps/` 整体换回、清理时没逐项记下的（10/9 复核补记）：来源的叫法（`sourceWord`，用户 10/4 确认过，读者现在看到原版的说法）、筛选里去掉「一手」（`firstPartyFilter`）和筛选名（`filterNames`）、搜索的排序说法（`SEARCH.sorts`、`sortNote`）、关于页和 Agent 页的版式与示例（`ABOUT.page`、`AGENT.covers`、`examples`）、反馈页标题、还没有一期时的说法（`noIssue`）、隐藏热点时 MCP 不提供热点工具、手机顶栏返回文字被截断的修正（`cdf5b83`）、往年日期写出年份（`8f927ec`）、触屏 44px、侧栏名字折行、错误页标题字号。其中**往年日期写出年份**对读者有影响：存档补进来的旧条目在日期分组里只写「6月3日」，看不出是哪一年；**来源的叫法**是用户确认过的。这两项要不要加回，等用户决定。
+**10/6 清理时改回原版的**（以后要再做，先按上面五关重新审核、找用户确认）：首页改成参考库（`NAV.home`）、资讯默认全部（`FEED.start`）、栏目改名（`NAV.labels`）、主题不进导航；日期加空格（`DATES.spaced`）、641–960px 铺开（`LAYOUT.fluid`）、程序补空格（`READER_SPACING`）；日报的分节简讯、看点门槛、简讯不限条数、报头数字不显示一手（`flashPlacement`、`compactBelow`、`dailyFlashes`、`metricUnits`）；收藏备份（`STARRED`）、关于页的参考库规模、参考库的搜索和条目页附加块（模块插口 `figures`、`searchPart`、`itemPart`）；列表类来源的关键词过滤（`allowKeywords`，没有信源在用；综合媒体要用时从 `a2f7397` 取回）。随 `apps/` 整体换回、清理时没逐项记下的（10/9 复核补记）：来源的叫法（`sourceWord`，用户 10/4 确认过，读者现在看到原版的说法）、筛选名（`filterNames`）、搜索的排序说法（`SEARCH.sorts`、`sortNote`）、关于页和 Agent 页的版式与示例（`ABOUT.page`、`AGENT.covers`、`examples`）、反馈页标题、还没有一期时的说法（`noIssue`）、隐藏热点时 MCP 不提供热点工具、往年日期写出年份（`8f927ec`）、触屏 44px、侧栏名字折行、错误页标题字号。其中**往年日期写出年份**对读者有影响：存档补进来的旧条目在日期分组里只写「6月3日」，看不出是哪一年；**来源的叫法**是用户确认过的。这两项要不要加回，等用户决定。
 
 **全自动、不用人维护、给错了也不会让读者真金白银受损。**
 
@@ -277,8 +279,10 @@ cd myfnbguide && git checkout claude/myfnb-handoff && git remote add upstream ht
 | 文件 | 改了什么 | 去向 |
 |---|---|---|
 | `apps/web/app/components/shell/nav.ts`、`routes/more.tsx` | `NAV.hidden` 里的入口不放进侧栏、手机底栏和「我的」页 | 跟行业无关，可以提给作者（作者的 `site.ts` 要加 `NAV = { hidden: [] }`） |
-| `apps/web/app/features/feed/Filters.tsx`、`routes/home.tsx`、`routes/all.tsx` | `FEED.phoneFilter = "row"` 时手机上放一排筛选选项，不要筛选按钮和选项单 | 同上（`FEED = { phoneFilter: "sheet" }`） |
+| `apps/web/app/features/feed/Filters.tsx`、`routes/home.tsx`、`routes/all.tsx` | `FEED.phoneFilter = "row"` 时手机上放一排筛选选项，不要筛选按钮和选项单；`FEED.firstPartyFilter = false` 时筛选里没有「一手」 | 同上（`FEED = { phoneFilter: "sheet" }`） |
 | `packages/backend/src/reports/edition.ts` | `REPORTS.dailyScope = "pool"` 时日报收「全部」里的每一条；没入选的条目按进站时间算；默认设置和周报月报的计数走原版的写法 | 同上（`dailyScope: "selected"`） |
+| `apps/web/app/features/report/format.ts` | `REPORTS.metricUnits` 里写 null 的数不在报头显示 | 同上 |
+| `apps/web/app/components/shell/PhoneBar.tsx` | 标题还没出现时不占中间的宽度（返回文字不被截断） | 错误修正，可以提给作者 |
 | `packages/backend/src/reports/compose.ts` | 第一期日报以前的周、月不算到期 | 错误修正，可以单独提给作者 |
 | `packages/backend/src/editorial/analyze.ts`、`wording.ts`（新）、`models.ts`、`jobs/content.ts`；`industry/wording.ts`、`industry/prompts/mend-wording.md` | 改用词一步（`wording`，用途 `mend_wording`）：改出来的稿只有在这类词变少、数字没变时才用 | 跟行业无关，可以提给作者；提之前作者的行业包要加空词表和提示词，`.env.example` 补 `WORDING_MODEL`（选填） |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx` | 通用插口 `itemPart`：模块在条目页导读和理由之后放一块，页面随自己的数据一起读它的接口，读不到就不放 | 跟行业无关，可以提给作者 |

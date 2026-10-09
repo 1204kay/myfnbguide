@@ -8,7 +8,7 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { candidates, dailyEdition } from "@aihot/backend/reports/edition";
+import { arrangeDaily, candidates, dailyEdition } from "@aihot/backend/reports/edition";
 import { REPORTS } from "@aihot/site";
 
 const T = tag();
@@ -23,13 +23,13 @@ after(async () => {
   await closeDb();
 });
 
-async function published(label: string, at: Date, selected: boolean): Promise<string> {
+async function published(label: string, at: Date, selected: boolean, score = 40): Promise<string> {
   const { articleId } = await upsertMaterial({
     sourceId: SOURCE, url: `https://example.com/report-pool-${T}-${label}`, title: `Report pool ${label}`,
     bodyText: `Report pool ${label} body`, bodyStatus: "ok", publishedAt: at, discoveredAt: at, via: "fetch",
   });
   await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected)
-            VALUES (${articleId}, 1, 'rule', 'pass', 'industry', ${`标题 ${label}`}, ${`摘要 ${label}`}, 40, ${selected})`;
+            VALUES (${articleId}, 1, 'rule', 'pass', 'industry', ${`标题 ${label}`}, ${`摘要 ${label}`}, ${score}, ${selected})`;
   await publishArticle(articleId, { now: at, releasedAt: at });
   return articleId;
 }
@@ -47,4 +47,15 @@ test("a daily of the whole pool carries the reports listed in the pool, selected
 
   await sql`UPDATE publications SET eligible = false WHERE article_id = ${unselected}`;
   assert.equal((await carried()).has(unselected), false);
+});
+
+test("a daily of the whole pool gives its entries in full to selected events, the rest of the pool are flashes", { skip: REPORTS.dailyScope !== "pool" }, async () => {
+  const at = editionAt("daily", "2020-04-02", -120);
+  // Scored higher, but not selected: a flash; the selected one takes the full entry.
+  const loud = await published("loud", at, false, 90);
+  const chosen = await published("chosen", at, true, 50);
+  const { entries } = await dailyEdition("2020-04-02", editionAt("daily", "2020-04-01"), editionAt("daily", "2020-04-02"));
+  const { main, flashes } = arrangeDaily(entries);
+  assert.deepEqual(main.map((e) => e.entry.itemId), [chosen]);
+  assert.deepEqual(flashes.map((e) => e.entry.itemId), [loud]);
 });

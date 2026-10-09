@@ -197,12 +197,13 @@ export const REPORTS = {
    */
   entry: { measure: "条", noun: "内容" },
   /** 报头上其余几个数字后面的说法；精选数和日报期数在关于页、主题页也这样写。 */
-  metricUnits: { sourcesCount: "个来源", firstPartyEvents: "件一手发布", selectedCount: "条精选", reportsCovered: "期日报" },
+  // firstPartyEvents 写 null 就不显示这个数：本站的一手发布多是行业协会，报头常是「0 件一手发布」，读者看不懂也像缺陷（用户 10/9）。
+  metricUnits: { sourcesCount: "个来源", firstPartyEvents: null as string | null, selectedCount: "条精选", reportsCovered: "期日报" },
   /** 报告分享图上“共几条”的说法。 */
   shareUnit: "条内容",
   /**
-   * 日报收哪些条目：`"selected"`（默认）只收入选的；`"pool"` 收这一天列在「全部」里的每一条，一件事一条，照原版的排法排。
-   * 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」。
+   * 日报收哪些条目：`"selected"`（默认）只收入选的；`"pool"` 收这一天列在「全部」里的每一条，一件事一条，照原版的排法排，
+   * 写全的位置只给入选的事，其余进简讯。用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」；10/9 定写全的只给入选的。
    */
   dailyScope: "pool" as "selected" | "pool",
 };
@@ -214,6 +215,8 @@ export const FEED = {
    * 用户 10/6：「手机的这个筛选应该要和桌面版的一样，直接展示出来，左右滑动的那种」。
    */
   phoneFilter: "row" as "sheet" | "row",
+  /** 筛选里有没有「一手」（默认 true）。本站两周只筛出 3 条行业协会的消息，对餐饮读者是费解的词（用户 10/9）。 */
+  firstPartyFilter: false,
 };
 
 /** 导航（电脑侧栏、手机底栏、「我的」页）。 */

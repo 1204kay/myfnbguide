@@ -84,6 +84,8 @@ export interface EditionEntry {
   importance: number;
   /** The earlier issue's entry for this event, when there was one. */
   previous: { key: string; title: string } | null;
+  /** One of its reports is selected: a daily of the whole pool gives its entries in full to these (site.ts REPORTS.dailyScope). */
+  selected?: boolean;
 }
 
 type ReportRow = RepresentativeIdentity & {
@@ -356,6 +358,7 @@ export async function dailyEdition(date: string, start: Date, end: Date): Promis
     const ids = new Set(fs.flatMap((f) => f.rows.map((r) => r.id)));
     return {
       entry, category: rep.category, tags: rep.tags, storyId, sourceIds, authority: representativePriority(rep), previous,
+      selected: fs.some((f) => f.rows.some((r) => r.selected)),
       mentions: new Set(storyId === null ? named.filter((n) => ids.has(n.article_id)).map((n) => n.story_id) : []),
       importance: importance({
         score,
@@ -376,8 +379,9 @@ export async function dailyEdition(date: string, start: Date, end: Date): Promis
  * The issue from the ranked entries, by rule: a roundup that mentions events of this issue is listed
  * under the most important of them; a follow-up of a covered event takes a full entry only when the
  * party itself acted (not as commentary) or four or more sources carry its new facts, else it is a flash;
- * then the most important entries in full, at most two per source, and the next ones as flashes. The
- * first entry leads the issue and the next three are its highlights.
+ * then the most important entries in full, at most two per source, and the next ones as flashes. A daily of the
+ * whole pool gives its entries in full to selected events only, the rest of the pool are flashes (a day with none
+ * selected still has entries in full). The first entry leads the issue and the next three are its highlights.
  */
 export function arrangeDaily(entries: EditionEntry[]): { main: EditionEntry[]; flashes: EditionEntry[]; stats: Record<string, number> } {
   const byStory = new Map(entries.filter((e) => e.storyId !== null).map((e) => [e.storyId!, e]));
@@ -397,8 +401,10 @@ export function arrangeDaily(entries: EditionEntry[]): { main: EditionEntry[]; f
     return { ...e, sourceIds, entry: { ...e.entry, sources: sourceIds.size, related } };
   });
   const earned = (e: EditionEntry) => !e.previous || (e.authority < 3 && !COMMENTARY.has(e.category ?? "")) || e.entry.sources >= FOLLOW_UP_SOURCES;
-  // A day of nothing but follow-ups still has entries in full.
-  const full = live.some(earned) ? earned : () => true;
+  // A day of nothing but follow-ups still has entries in full; so does a pool day with nothing selected.
+  const followUp = live.some(earned) ? earned : () => true;
+  const selectedFull = (e: EditionEntry) => followUp(e) && e.selected === true;
+  const full = POOL && live.some(selectedFull) ? selectedFull : followUp;
   const main: EditionEntry[] = [];
   const rest: EditionEntry[] = [];
   const perSource = new Map<string, number>();
@@ -410,5 +416,5 @@ export function arrangeDaily(entries: EditionEntry[]): { main: EditionEntry[]; f
     } else rest.push(e);
   }
   const flashes = rest.slice(0, FLASH_ENTRIES);
-  return { main, flashes, stats: { roundupsFolded: folded.size, followUpsAsFlashes: live.filter((e) => !full(e)).length, left: rest.length - flashes.length } };
+  return { main, flashes, stats: { roundupsFolded: folded.size, followUpsAsFlashes: live.filter((e) => !followUp(e)).length, left: rest.length - flashes.length } };
 }

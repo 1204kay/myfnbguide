@@ -1780,6 +1780,38 @@
       "syndicate_fulltext": false
     },
     {
+      "id": "web-canyin168-xw",
+      "name": "职业餐饮网 · 餐饮资讯（中国 · 餐饮媒体）",
+      "kind": "web_list",
+      "config": {
+        "url": "http://www.canyin168.com/",
+        "itemSelector": "a[href*='/Article/xw/']",
+        "linkSelector": "a",
+        "allowUrlPrefixes": [
+          "http://www.canyin168.com/Article/xw/"
+        ],
+        "detail": {
+          "maxFetches": 15,
+          "publishedAtRegex": "(20\\d\\d年\\d\\d月\\d\\d日)",
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 8
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 60,
+      "tags": [
+        "中国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
       "id": "web-drinknewspaper",
       "name": "饮品报（中国 · 茶饮咖啡媒体）",
       "kind": "web_list",

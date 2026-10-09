@@ -16,7 +16,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
 import { checkStory, repeatedNumbers, summaryFigures } from "./checks.ts";
-import { BLOCKS, BlockSchema, CHECKING, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
+import { type Article, BLOCKS, BlockSchema, CHECKING, type Prompt, computeBlock, EDIT, spaceStory, splitLong, textOnly, where } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
 const PURPOSE = "reference_body";
@@ -31,7 +31,8 @@ const OutputSchema = z.discriminatedUnion("material", [
   z.object({ material: z.literal("thin"), reason: z.string().default("") }),
   z.object({
     material: z.literal("body"),
-    lead: text.max(160),
+    // No opening when the reader needs no one introduced before the parts (prompts/body.md lead).
+    lead: z.string().trim().max(160).nullable().default(null),
     parts: z.array(z.object({ heading: text.max(30), blocks: z.array(BlockSchema).min(1).max(BLOCKS) })).min(1).max(4),
     open: z.string().trim().max(90).nullable().default(null),
   }),
@@ -41,7 +42,7 @@ type Written = { status: "thin"; reason: string } | { status: "body"; body: Item
 
 /** A write-up as the case checks and spacing read it: a story with no title, shop or placement. */
 const asStory = (body: ItemBody): CaseStory => ({
-  title: "", lead: body.lead, who: "", parts: body.parts, open: body.open, placements: [],
+  title: "", lead: body.lead ?? "", who: "", parts: body.parts, open: body.open, placements: [],
   shop: { name: null, label: "", country: "", city: null, kind: null, size: null, speaker: "media" },
 });
 
@@ -67,10 +68,24 @@ export interface BodyResult {
   problems: string[];
 }
 
-/** Writes (or writes again) one item's write-up and stores it. Null when the article is gone. */
-export async function writeBody(articleId: string): Promise<BodyResult | null> {
-  const a = await loadAnalyzeInput(articleId);
-  if (!a) return null;
+export const BODY_PROMPT: Prompt = { system: BODY_SYSTEM, version: PROMPT_VERSION };
+/** A candidate write-up prompt from its text, filled in as the site's is (myfnb/eval-reference.ts). */
+export function bodyPrompt(text: string): Prompt {
+  const system = promptFromText("reference/body-candidate", text);
+  return { system, version: `reference-body-candidate@${createHash("sha256").update(system).update(EDIT).update(CHECKING).digest("hex").slice(0, 10)}` };
+}
+
+/** A write-up as written from an article, before it is stored (writeBody stores it; the eval script only reads it). */
+export interface ComposedBody {
+  status: BodyResult["status"];
+  body: ItemBody | null;
+  reason: string | null;
+  problems: string[];
+  receiptIds: number[];
+}
+
+/** Writes one item's write-up with a prompt: up to three answers, checked. Stores nothing. */
+export async function composeBody(a: Article, prompt: Prompt = BODY_PROMPT): Promise<ComposedBody> {
   const receiptIds: number[] = [];
   let written: Written | null = null;
   let problems: string[] = [];
@@ -86,14 +101,14 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
     // The first answer, and up to two more with its problems named.
     for (let attempt = 0; attempt < 3; attempt++) {
       const res = await chatJson({
-        model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
-        system: BODY_SYSTEM, user, schema: z.unknown(), temperature: 0.3, maxTokens: 5000, timeoutMs: 180_000,
+        model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version,
+        system: prompt.system, user, schema: z.unknown(), temperature: 0.3, maxTokens: 5000, timeoutMs: 180_000,
       });
       receiptIds.push(res.receiptId);
       const read = readBody(res.data);
       written = read.written;
       problems = written?.status === "body" ? checkStory(asStory(written.body), material) : read.problems;
-      const repeated = written?.status === "body" && shown?.summary ? repeatedNumbers(written.body.lead, shown.summary) : [];
+      const repeated = written?.status === "body" && shown?.summary ? repeatedNumbers(written.body.lead ?? "", shown.summary) : [];
       if (repeated.length) problems.push(`开头重复了导读里的数字 ${repeated.join("、")}：读者刚读完导读，开头只写导读没写的（说话的人是谁、读后面需要知道的背景），这些数字留给后面的段落和图`);
       // The paragraphs below do not write the summary's figures out again either: a figure carries those it needs.
       const again = written?.status === "body" && shown?.summary ? summaryFigures(written.body.parts.flatMap((p) => p.blocks.flatMap((b) => b.type === "text" ? [b.text] : b.type === "list" ? b.items.map((x) => x.text) : [])).join("\n"), shown.summary) : [];
@@ -110,7 +125,15 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
     }
   }
   const status: BodyResult["status"] = problems.length || !written ? "held" : written.status;
-  const body = written?.status === "body" ? (({ lead, parts, open }) => ({ lead, parts, open }))(spaceStory(asStory(written.body))) : null;
+  const body = written?.status === "body" ? (({ lead, parts, open }) => ({ lead: lead || null, parts, open }))(spaceStory(asStory(written.body))) : null;
+  return { status, body, reason: written?.status === "thin" ? written.reason : null, problems, receiptIds };
+}
+
+/** Writes (or writes again) one item's write-up and stores it. Null when the article is gone. */
+export async function writeBody(articleId: string): Promise<BodyResult | null> {
+  const a = await loadAnalyzeInput(articleId);
+  if (!a) return null;
+  const { status, body, reason, problems, receiptIds } = await composeBody(a);
   await sql.begin(async (tx) => {
     // A write-up already shown stays when writing it again fails the checks (as a case does, write.ts).
     const [shown] = status === "held" ? await tx`SELECT 1 FROM reference_bodies WHERE article_id = ${a.id} AND status = 'body'` : [];
@@ -118,7 +141,7 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
     else await tx`
       INSERT INTO reference_bodies (article_id, revision, status, body, problems, receipt_ids, prompt_version, updated_at)
       VALUES (${a.id}, ${a.revision}, ${status}, ${body ? sql.json(body as never) : null},
-              ${sql.json((written?.status === "thin" ? [written.reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())
+              ${sql.json((reason ? [reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())
       ON CONFLICT (article_id) DO UPDATE SET revision = EXCLUDED.revision, status = EXCLUDED.status, body = EXCLUDED.body,
         problems = EXCLUDED.problems, receipt_ids = EXCLUDED.receipt_ids, prompt_version = EXCLUDED.prompt_version, updated_at = now()`;
     for (const id of receiptIds) await completeReceipt(tx, id);

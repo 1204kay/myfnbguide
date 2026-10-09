@@ -69,7 +69,7 @@ export const BlockSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("compare"), unit: text.max(8), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(5), caption: text.max(90) }),
   z.object({ type: z.literal("parts"), unit: text.max(8), items: z.array(item).min(2).max(7), against: item.nullable().default(null), caption: text.max(90) }),
   z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(120) }),
-  z.object({ type: z.literal("numbers"), point: text.max(30), items: z.array(z.object({ value: text.max(16), label: text.max(12) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
+  z.object({ type: z.literal("numbers"), point: z.string().trim().max(30).nullable().default(null), items: z.array(z.object({ value: text.max(16), label: text.max(12) })).min(1).max(3), caption: z.string().trim().max(90).nullable().default(null) }),
   z.object({ type: z.literal("change"), before: z.object({ label: text.max(8), text: text.max(80) }), after: z.object({ label: text.max(8), text: text.max(80) }), caption: z.string().trim().max(90).nullable().default(null) }),
 ]);
 
@@ -230,10 +230,27 @@ export function spaceStory(story: CaseStory): CaseStory {
   };
 }
 
-/** Writes (or writes again) the case of one article and stores it. Null when the article is gone. */
-export async function writeCase(articleId: string): Promise<CaseResult | null> {
-  const a = await loadAnalyzeInput(articleId);
-  if (!a) return null;
+export type Article = NonNullable<Awaited<ReturnType<typeof loadAnalyzeInput>>>;
+/** The system prompt a case is written with, and its version (receipts key on it). */
+export interface Prompt { system: string; version: string }
+export const CASE_PROMPT: Prompt = { system: CASE_SYSTEM, version: PROMPT_VERSION };
+/** A candidate case prompt from its text, filled in as the site's is (myfnb/eval-reference.ts). */
+export function casePrompt(text: string): Prompt {
+  const system = promptFromText("reference/case-candidate", text, { situations: SITUATION_LIST, kinds: KIND_LIST });
+  return { system, version: `reference-case-candidate@${createHash("sha256").update(system).update(EDIT).update(STYLE_SYSTEM).update(CHECKING).digest("hex").slice(0, 10)}` };
+}
+
+/** A case as written from an article, before it is stored (writeCase stores it; the eval script only reads it). */
+export interface ComposedCase {
+  status: CaseResult["status"];
+  story: CaseStory | null;
+  reason: string | null;
+  problems: string[];
+  receiptIds: number[];
+}
+
+/** Writes one article's case with a prompt: up to three answers, checked, and the wording pass. Stores nothing. */
+export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Promise<ComposedCase> {
   const material = renderContext(a, { annotateQuoted: true });
   const model = await modelFor(MODEL_STEP);
   const receiptIds: number[] = [];
@@ -244,8 +261,8 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   // The first answer, and up to two more with its problems named.
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
-      model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
-      system: CASE_SYSTEM, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,
+      model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version,
+      system: prompt.system, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,
     });
     receiptIds.push(res.receiptId);
     const read = readOutput(res.data);
@@ -264,7 +281,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   }
   if (!problems.length && written?.status === "story") {
     const styled = await chatJson({
-      model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: PROMPT_VERSION,
+      model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version,
       system: STYLE_SYSTEM, user: JSON.stringify(answer), schema: z.unknown(), temperature: 0.2, maxTokens: 6000, timeoutMs: 180_000,
     });
     receiptIds.push(styled.receiptId);
@@ -273,6 +290,14 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   }
   const status: CaseResult["status"] = problems.length || !written ? "held" : written.status;
   const story = written?.status === "story" ? spaceStory(written.story) : null;
+  return { status, story, reason: written?.status === "thin" ? written.reason : null, problems, receiptIds };
+}
+
+/** Writes (or writes again) the case of one article and stores it. Null when the article is gone. */
+export async function writeCase(articleId: string): Promise<CaseResult | null> {
+  const a = await loadAnalyzeInput(articleId);
+  if (!a) return null;
+  const { status, story, reason, problems, receiptIds } = await composeCase(a);
   const shopKey = story?.shop.name ? createHash("sha256").update(`${story.shop.country}|${shopNameKey(story.shop.name)}`).digest("hex").slice(0, 12) : null;
   const situations = status === "story" && story ? story.placements.map((p) => p.situation) : [];
   await sql.begin(async (tx) => {
@@ -286,7 +311,7 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
     } else await tx`
       INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, problems, receipt_ids, prompt_version, updated_at)
       VALUES (${a.id}, ${a.revision}, ${status}, ${story ? sql.json(story as never) : null}, ${situations}, ${shopKey},
-              ${sql.json((written?.status === "thin" ? [written.reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())
+              ${sql.json((reason ? [reason] : problems) as never)}, ${receiptIds}, ${PROMPT_VERSION}, now())
       ON CONFLICT (article_id) DO UPDATE SET revision = EXCLUDED.revision, status = EXCLUDED.status, story = EXCLUDED.story,
         situations = EXCLUDED.situations, shop_key = EXCLUDED.shop_key, problems = EXCLUDED.problems, receipt_ids = EXCLUDED.receipt_ids,
         prompt_version = EXCLUDED.prompt_version, updated_at = now()`;

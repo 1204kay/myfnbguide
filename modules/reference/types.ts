@@ -74,7 +74,7 @@ export interface ExampleBlock {
 export interface NumbersBlock {
   type: "numbers";
   /** What the figures say, in one sentence over them (stories written before 10/9 have none). */
-  point?: string;
+  point?: string | null;
   items: Array<{ value: string; label: string }>;
   caption: string | null;
 }
@@ -288,8 +288,8 @@ export interface ShopPage {
 
 /** An item's 正文 · AI 整理自原文 when it is no story of the library (backend/body.ts). */
 export interface ItemBody {
-  /** What the original is: who said or did what, where. */
-  lead: string;
+  /** Who is speaking or what the reader needs before the parts, when anything (null: nothing to add to the summary). */
+  lead: string | null;
   parts: Array<{ heading: string; blocks: Block[] }>;
   /** What the original leaves open that readers will ask, one sentence. */
   open: string | null;

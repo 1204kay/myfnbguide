@@ -208,7 +208,6 @@ test("a story the checks pass; each problem is named for the writer", () => {
   const echo = [{ heading: "周一会员日 9.9 元猪脚饭", blocks: [{ type: "numbers" as const, point: "每周一9.9元会员日，让周一的生意变好", items: [{ value: "29%", label: "周一订单增长" }], caption: null }] }, story().parts[1]!];
   assert.ok(checkStory(story({ parts: echo }), `${SOURCE} 9.9 29`).some((p) => /说的是同一件事/.test(p)), "the card's sentence says the heading again");
   assert.ok(checkStory(story({ lead: "说话的人是 Brandon Robinson，一家迷你高尔夫餐吧的创始人。" }), SOURCE).some((p) => /直接从这个人写起/.test(p)), "a speaker labelled");
-  assert.ok(!readOutput({ material: "story", ...story(), parts: [{ heading: "账单", blocks: [{ type: "numbers", items: [{ value: "74%", label: "四年涨幅" }] }] }] }).written, "a figures card says what it shows");
   assert.deepEqual(summaryFigures("10 月 6 日报每磅 3.02 美元，一年涨幅 118%，创 47 年新高。", "期货报每磅3.02美元，一年涨幅118%"), ["3.02", "118"]);
   assert.deepEqual(repeatedNumbers("2026 年国庆假期的数据。", "2026年国庆假期"), [], "a year is no figure");
   assert.ok(checkStory(story({ title: "京都一家酒馆的布草账单涨了 74%", shop: { ...story().shop, country: "日本", city: "京都市" } }), SOURCE).some((p) => /^标题以“京都一家”/.test(p)), "a city as titles write it");
@@ -696,4 +695,16 @@ test("a story already shown stays when writing it again fails the checks", async
   const [row] = await sql<{ status: string; story: CaseStory | null }[]>`SELECT status, story FROM reference_cases WHERE article_id = ${ids.WRONG!}`;
   assert.deepEqual([row!.status, row!.story?.title], ["story", "布草租金四年涨了 74%"], "the shown story stays");
   assert.ok(!(await articlesToWrite(50, new Date(), { all: true })).includes(ids.WRONG!), "tried under this prompt: not again until the next change");
+});
+
+test("the last eval run reads case by case, the site's prompt beside the candidate", async () => {
+  await sql`INSERT INTO reference_evals (run, article_id, variant, kind, status, output) VALUES
+    ('2026-10-09 05:00', ${ids.FIRST!}, 'live', 'story', 'story', ${sql.json({ title: "旧的一轮" } as never)}),
+    ('2026-10-09 06:00', ${ids.FIRST!}, 'candidate', 'story', 'thin', null),
+    ('2026-10-09 06:00', ${ids.FIRST!}, 'live', 'story', 'story', ${sql.json({ title: "布草租金四年涨了 74%" } as never)})`;
+  const last = await get("/api/reference/eval");
+  assert.equal(last.run, "2026-10-09 06:00");
+  assert.deepEqual(last.cases.map((c: { id: string }) => c.id), [ids.FIRST]);
+  assert.deepEqual(last.cases[0].results.map((r: { variant: string; status: string }) => [r.variant, r.status]), [["live", "story"], ["candidate", "thin"]]);
+  assert.equal((await get("/api/reference/eval?run=2026-10-09%2005:00")).cases[0].results[0].output.title, "旧的一轮", "an earlier run by name");
 });

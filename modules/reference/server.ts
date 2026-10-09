@@ -124,6 +124,24 @@ export default defineServerModule({
         // What myfnb/rewrite-reference.ts would write under the current prompts: old ones, and older items never written up.
         toRewrite: { stories: (await articlesToWrite(5000, new Date(), { all: true })).length, bodies: (await articlesToBody(5000, new Date(), { all: true })).length },
       }));
+    // The last run of myfnb/eval-reference.ts (or ?run=), case by case: the site's prompt and the candidate side by side.
+    app.get("/api/reference/eval", async (req, reply) => {
+      const asked = (req.query as { run?: string }).run;
+      const [last] = await sql<{ run: string | null }[]>`SELECT max(run) AS run FROM reference_evals`;
+      const run = asked ?? last?.run;
+      if (!run) return reply.header("Cache-Control", "no-store").send({ run: null, cases: [] });
+      const rows = await sql<{ id: string; title: string; summary: string | null; variant: string; kind: string; status: string; problems: string[]; output: unknown }[]>`
+        SELECT e.article_id AS id, p.title, p.summary, e.variant, e.kind, e.status, e.problems, e.output
+        FROM reference_evals e JOIN publications p ON p.article_id = e.article_id
+        WHERE e.run = ${run} ORDER BY e.article_id, e.kind DESC, e.variant DESC`;
+      const cases = new Map<string, { id: string; title: string; summary: string | null; results: unknown[] }>();
+      for (const r of rows) {
+        const c = cases.get(r.id) ?? { id: r.id, title: r.title, summary: r.summary, results: [] };
+        c.results.push({ variant: r.variant, kind: r.kind, status: r.status, problems: r.problems, output: r.output });
+        cases.set(r.id, c);
+      }
+      return reply.header("Cache-Control", "no-store").send({ run, cases: [...cases.values()] });
+    });
     app.get("/api/reference/situations/:slug", async (req, reply) => {
       const page = await readSituation((req.params as { slug: string }).slug);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });

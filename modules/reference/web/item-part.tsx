@@ -24,7 +24,7 @@ function Block({ data }: { id: string; data: unknown }) {
   return (
     <section className="mt-8">
       <div className="border-t border-line pt-3 text-[12px] text-ink-3">正文 · AI 整理自原文</div>
-      <p className={`mt-3 ${BODY}`}>{lead}</p>
+      {lead && <p className={`mt-3 ${BODY}`}>{lead}</p>}
       {text.kind === "case" && <p className={`mt-3 ${BODY}`}>{text.story.who}</p>}
       <Parts parts={parts} />
       {open && <p className={`mt-6 text-[14px] leading-relaxed text-ink-4 ${MEASURE}`}>{open}</p>}

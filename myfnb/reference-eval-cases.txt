@@ -1,0 +1,22 @@
+# 参考库评测的固定案例（myfnb/eval-reference.ts）：一行一个条目 id，# 后面是说明。改写作要求前后都在这一批上并排比较。
+# 入选的条目写故事（故事写不成时再写正文），其余公开条目写正文。2026-10-09 选：新闻、数据、规定、访谈、播客、中文专栏和店家做法各几篇。
+qqitgcoraeq0h9c39gkcsgf7c  # 新闻：阿拉比卡咖啡期货突破每磅 3 美元（美元和美分并排）
+k5ubfqkax9gljz5z3jblz58lv  # 新闻：国庆餐饮销售、成都天价回锅肉
+md540fhzbq3g0ucdzb8ftewnf  # 数据：日本街角景气调查
+sz665p0tuselult9l30tfqocp  # 数据：意大利咖啡调查
+l2rxqw5nhwuk316whclkp0nq0  # 数据：美国华盛顿都会区餐厅销售
+p1rpl37rx593bo6o09jzfd18e  # 规定：奥地利营业法修订草案
+noj7ks1skw3fk2sst7ks7wcpr  # 规定：GloriaFood 停服
+scf1gel1f77f7dqwsic3mo78s  # 访谈：爱尔兰酒店餐饮总监（外国酒店名）
+rdnoi4of171k10p8nu2avgahz  # 访谈：Tipsy Putt 创始人
+go1jxp4ypaohe64dnwnz1q3fh  # 访谈：Olo 创始人
+cplnfzpd9pg4r0q6xuvaf9r9o  # 播客：日本个体店借鉴其他行业、用 AI
+a4jm5pqjckabc0t5dctyu24bp  # 播客：咖啡店顺其自然地经营
+qxrku482cs77ixwclqix8kdld  # 中文专栏：四川火锅协会谈社区店
+zz8bbjk08ntqfpxwwjkx96jh8  # 中文专栏：火锅低价套餐
+ouh94g8t9876h2txjdvem63rf  # 中文专栏：茉莉奶白品牌（背景数字的卡）
+ougohg3gk3zrimkilgsfrlbai  # 店家做法：猪脚饭店做小（数字卡重复小标题）
+ye3qhqzkn4siwzyhmzkz296v4  # 店家做法：顾问谈营销先回答客人为什么选你
+llibhb2ake48lur03r8juy3qb  # 店家做法：单店老板一周 80 小时
+bwzgol0eqxzcaam08gx76a4ie  # 店家做法：咖啡店 10 点开门
+w53mljj5tayxr0eqkx0o13rwb  # 店家做法：收银系统删错菜单

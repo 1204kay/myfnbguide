@@ -281,7 +281,8 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
     // as tried under this prompt, so it is not written again until the next change.
     const [shown] = status === "held" ? await tx`SELECT 1 FROM reference_cases WHERE article_id = ${a.id} AND status = 'story'` : [];
     if (shown) {
-      await tx`UPDATE reference_cases SET prompt_version = ${PROMPT_VERSION}, receipt_ids = ${receiptIds}, updated_at = now() WHERE article_id = ${a.id}`;
+      // What held the new one, for the status page: the shown story stays, its problems are the rewrite's.
+      await tx`UPDATE reference_cases SET prompt_version = ${PROMPT_VERSION}, receipt_ids = ${receiptIds}, problems = ${sql.json(problems as never)}, updated_at = now() WHERE article_id = ${a.id}`;
     } else await tx`
       INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, problems, receipt_ids, prompt_version, updated_at)
       VALUES (${a.id}, ${a.revision}, ${status}, ${story ? sql.json(story as never) : null}, ${situations}, ${shopKey},

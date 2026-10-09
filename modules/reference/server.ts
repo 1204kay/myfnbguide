@@ -111,6 +111,16 @@ export default defineServerModule({
           SELECT s.name, count(*)::int AS n FROM reference_bodies b JOIN articles a ON a.id = b.article_id JOIN sources s ON s.id = a.source_id
           WHERE b.status = 'thin' GROUP BY 1 ORDER BY 2 DESC LIMIT 20`).map((r) => [r.name, r.n])),
         bodiesWaiting: (await articlesToBody(5000)).length,
+        // The last stories and write-ups written, newest first, to read what a change of the writing did: written, thin,
+        // held, or held with the earlier one kept (written with problems).
+        recent: (await sql<{ id: string; kind: string; status: string; problems: string[]; at: Date }[]>`
+          (SELECT article_id AS id, 'story' AS kind, status, problems, updated_at AS at FROM reference_cases ORDER BY updated_at DESC LIMIT 20)
+          UNION ALL (SELECT article_id, 'body', status, problems, updated_at FROM reference_bodies ORDER BY updated_at DESC LIMIT 20)
+          ORDER BY at DESC LIMIT 20`).map((r) => ({
+          id: r.id, kind: r.kind, at: r.at,
+          result: r.status === "thin" ? "thin" : r.status === "held" ? "held" : r.problems.length ? "held, earlier kept" : "written",
+          problems: r.status === "thin" ? [] : [...new Set(r.problems.map(problemKind))],
+        })),
         // What myfnb/rewrite-reference.ts would write under the current prompts: old ones, and older items never written up.
         toRewrite: { stories: (await articlesToWrite(5000, new Date(), { all: true })).length, bodies: (await articlesToBody(5000, new Date(), { all: true })).length },
       }));

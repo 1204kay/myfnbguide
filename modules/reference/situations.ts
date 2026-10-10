@@ -341,6 +341,7 @@ export const OWNERS: Record<string, string> = {
   "rss-ryourigaka": "京都一家意大利小酒馆",
   "rss-yoshitencho": "柏市一家泰式咖啡馆",
   "rss-kojinkuroji": "一位个体餐饮店店主",
+  "rss-zieigyou": "日本小镇一家夫妻经营的中餐小馆",
   "pod-your-life-and-restaurant": "一位家庭餐馆老板",
   "pod-cat-and-cloud": "圣克鲁斯一家咖啡店",
   "pod-bread-winner": "一位微型面包店店主",

@@ -655,6 +655,27 @@
       "syndicate_fulltext": false
     },
     {
+      "id": "rss-zieigyou",
+      "name": "飲食店自営業開業ブログ（日本 · 夫妻经营的中餐小馆店主的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://zieigyou.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
       "id": "rss-ryourigaka",
       "name": "料理画家クチーナカメヤマ（日本 · 意大利小酒馆店主的博客）",
       "kind": "rss",

@@ -11,7 +11,12 @@ import { groupSituation, situationsToGroup } from "./backend/methods.ts";
 
 installModules([reference]);
 for (const [slug, members] of await situationsToGroup(await membersBySituation(), SITUATIONS.length)) {
-  const result = await groupSituation(slug, members);
-  console.log(`${slug}: ${members.length} 篇，${result?.stored ? "已归并" : `未通过：${result?.problems.slice(0, 3).join("；")}`}`);
+  // One situation failing (a model error) does not stop the others; it is tried again at the next 05:00.
+  try {
+    const result = await groupSituation(slug, members);
+    console.log(`${slug}: ${members.length} 篇，${result?.stored ? "已归并" : `未通过：${result?.problems.slice(0, 3).join("；")}`}`);
+  } catch (error) {
+    console.log(`${slug}: ${members.length} 篇，出错：${String(error).slice(0, 160)}`);
+  }
 }
 await closeDb();

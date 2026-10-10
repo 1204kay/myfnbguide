@@ -274,7 +274,8 @@ export async function groupSituation(slug: string, given: Member[]): Promise<{ s
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await chatJson({
       model, purpose: PURPOSE, subject: `situation:${slug}@${membersKey(members)}`, promptVersion: PROMPT_VERSION,
-      system: SYSTEM, user, schema: z.unknown(), temperature: 0.2, maxTokens: 5000, timeoutMs: 180_000,
+      // 8,000: a situation of forty stories answers in more than 5,000 tokens (owner-overload, 10/10: cut off mid-JSON).
+      system: SYSTEM, user, schema: z.unknown(), temperature: 0.2, maxTokens: 8000, timeoutMs: 240_000,
     });
     receiptIds.push(res.receiptId);
     read = readGrouping(res.data, members);

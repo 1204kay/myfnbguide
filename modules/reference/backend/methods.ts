@@ -21,7 +21,7 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { spaced } from "../format.ts";
-import { findSituation, type Situation } from "../situations.ts";
+import { findSituation, OWNERS, type Situation } from "../situations.ts";
 import type { CaseStory } from "../types.ts";
 import { sourceNumbers, unfoundNumbers, untranslated, WORDING } from "./checks.ts";
 
@@ -234,8 +234,11 @@ export function readGrouping(raw: unknown, members: Member[]): { grouping: Group
 function describe(m: Member, teller: string): string {
   const s = m.story;
   const body = s.parts.map((p) => `${p.heading}：${p.blocks.flatMap((b) => (b.type === "text" ? [b.text] : b.type === "list" ? b.items.map((i) => i.text) : b.type === "flow" ? [b.steps.join("→")] : b.type === "change" ? [b.after.text] : [])).join(" ").slice(0, 200)}`).join("\n");
-  const shop = [s.shop.country, s.shop.label || s.shop.name].filter(Boolean).join(" · ");
-  return [`id：${m.id}`, `原因组：${m.group ?? "null"}`, `店家：${teller}（${shop}）`, `标题：${s.title}`, `做了什么：${s.placements[0]?.card ?? ""}`, `人物：${s.who}`, body].join("\n");
+  const owner = m.teller.startsWith("source:") ? OWNERS[m.teller.slice("source:".length)] : undefined;
+  const shop = [s.shop.country, owner ?? (s.shop.label || s.shop.name)].filter(Boolean).join(" · ");
+  // Who speaks, as the pages count it: the model wrote 「五家店都……」 of four shops and a magazine.
+  const kind = m.teller.startsWith("insider:") ? "业内人士，不是店" : "店";
+  return [`id：${m.id}`, `原因组：${m.group ?? "null"}`, `店家：${teller}（${shop}；${kind}）`, `标题：${s.title}`, `做了什么：${s.placements[0]?.card ?? ""}`, `人物：${s.who}`, body].join("\n");
 }
 
 /**

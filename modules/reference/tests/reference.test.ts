@@ -116,12 +116,12 @@ test("a practice one shop tells shows the shop's line only where half its pairs 
   assert.equal(repeats("介绍的朋友留得更久", "请老员工介绍朋友"), false);
 });
 
-test("a story counts as its named shop, the source of an owner who names none, the story of a publication, or an insider", () => {
+test("a story counts as the one shop of an owner's own source, its named shop, the source of an owner who names none, or an insider", () => {
   const of = (shop_key: string | null, speaker: CaseStory["shop"]["speaker"], id = "a", source_id = "src") => tellerOf({ id, shop_key, source_id, story: story({ shop: { ...story().shop, speaker } }) });
   assert.deepEqual(of("k1", "media"), { key: "shop:k1", insider: false }, "a named shop, whoever tells it");
+  assert.deepEqual([of("k1", "owner", "a", "rss-ryourigaka"), of(null, "media", "b", "rss-ryourigaka")], [{ key: "source:rss-ryourigaka", insider: false }, { key: "source:rss-ryourigaka", insider: false }], "an owner's own blog: one shop, whatever a story names it");
   assert.equal(of(null, "owner", "a").key, of(null, "staff", "b").key, "an owner and staff who name no shop: once a source");
-  assert.notEqual(of(null, "media", "a").key, of(null, "media", "b").key, "a publication's unnamed shops: once a story");
-  assert.deepEqual(of(null, "vendor", "a"), of(null, "adviser", "b"), "advisers and vendors of one source: one insider");
+  assert.deepEqual([of(null, "media", "a"), of(null, "media", "b")], [of(null, "vendor", "c"), of(null, "adviser", "d")], "a publication, like the advisers and vendors of one source: one insider, never a shop a story");
   assert.equal(of(null, "adviser").insider, true);
   assert.equal(sourceKind("料理画家クチーナカメヤマ（日本 · 意大利酒馆店主）"), "意大利酒馆店主");
   assert.equal(sourceKind("QSR Media（澳大利亚、英国 · 快餐与连锁媒体）"), "快餐与连锁媒体");
@@ -564,7 +564,8 @@ test("a page splits by cause only where two causes have two practices each; one 
     ["H1", "sun-diner", 1, "where-to-find", sun("日本一家家庭食堂")], ["H7", "sun-diner", 2, "where-to-find", sun("一家食堂")],
     ["H3", "moon-cafe", 3, "where-to-find", moon], ["H4", "star-bar", 4, "interview", shop("Star Bar", "美国一家酒吧", "美国")],
     ["H5", "moon-cafe", 5, "interview", moon], ["H2", "sun-diner", 6, "where-to-find", sun("日本大阪一家家庭食堂")],
-    ["H6", null, 7, "interview", shop(null, "一家面馆", "中国", "media")],
+    // A shop a publication names counts as that shop; one it leaves unnamed would count as the publication (tellerOf).
+    ["H6", "noodle-house", 7, "interview", shop("Noodle House", "一家面馆", "中国", "media")],
   ];
   const id: Record<string, string> = {};
   for (const [marker, key, minute, group, owner] of stories) {
@@ -625,7 +626,7 @@ test("a page splits by cause only where two causes have two practices each; one 
 
   // 代表做法 is the practice the most shops tell: two shops before one shop and an insider, though theirs is newer.
   // 最近收进 is the story the library took in last, not the newest original; a name that keeps its country has it once.
-  await sql`UPDATE reference_cases SET story = jsonb_set(story, '{shop,speaker}', '"adviser"') WHERE article_id = ${id.H6!}`;
+  await sql`UPDATE reference_cases SET shop_key = NULL, story = jsonb_set(story, '{shop,speaker}', '"adviser"') WHERE article_id = ${id.H6!}`;
   await store([door, ...sunAlone, method("p56", "interview", "面试只问三个问题", [["H6", "启事里写店的来历"], ["H5", "问以前为什么离职"]])]);
   await sql`UPDATE reference_cases SET created_at = ${at(10)} WHERE article_id = ${id.H3!}`;
   await sql`UPDATE reference_cases SET story = jsonb_set(story, '{shop,label}', '"美国家庭咖啡店"') WHERE article_id = ${id.H5!}`;
@@ -635,9 +636,9 @@ test("a page splits by cause only where two causes have two practices each; one 
   // A situation the library lists later comes first in its category when more shops tell it.
   for (const [marker, minute] of [["R1", 11], ["R2", 12], ["R3", 13]] as const) {
     id[marker] = await selectedItem(marker);
-    const told = story({ title: `${marker} 的故事`, shop: shop(null, "一家面馆", "中国", "media"), placements: [{ situation: "retention", group: null, card: "店主说明了怎么留人。" }] });
+    const told = story({ title: `${marker} 的故事`, shop: shop(`Noodle ${marker}`, "一家面馆", "中国", "media"), placements: [{ situation: "retention", group: null, card: "店主说明了怎么留人。" }] });
     await sql`INSERT INTO reference_cases (article_id, revision, status, story, situations, shop_key, prompt_version, created_at)
-      VALUES (${id[marker]!}, 1, 'story', ${sql.json(told as never)}, ${["retention"]}, ${null}, 'test', ${at(minute)})`;
+      VALUES (${id[marker]!}, 1, 'story', ${sql.json(told as never)}, ${["retention"]}, ${`noodle-${marker.toLowerCase()}`}, 'test', ${at(minute)})`;
   }
   assert.deepEqual((await get("/api/reference")).categories[0].situations.map((s: { slug: string; count: Count }) => [s.slug, s.count.shops]), [["retention", 3], ["hiring", 2]]);
 });

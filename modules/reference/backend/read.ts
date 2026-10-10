@@ -11,7 +11,7 @@ import type { SitemapEntry } from "@aihot/backend/modules";
 import { publicSourceName } from "@aihot/backend/publication/rules";
 import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
 import { month, spaced } from "../format.ts";
-import { CATEGORIES, categoryTitle, findSituation, SITUATIONS, type Situation } from "../situations.ts";
+import { CATEGORIES, categoryTitle, findSituation, OWNERS, SITUATIONS, type Situation } from "../situations.ts";
 import type {
   CaseCard, CasePage, CaseStory, Count, ItemBody, ItemText, PracticeCard, PracticeList, ReferenceHome, ShopPage, ShopPractices,
   SituationPage, SituationRow, StarItem,
@@ -94,7 +94,7 @@ async function shopsShown(now: Date): Promise<Map<string, ShopSeen>> {
 
 /**
  * A situation is in the lists (home, sitemap, 看全部 N 种情况) once this many shops tell it, counted as every count is
- * (tellerOf; an adviser or vendor is no shop): a thinner one reads as a page of one or two shops (HANDOFF §9.2,
+ * (tellerOf; an adviser, a vendor or a publication is no shop): a thinner one reads as a page of one or two shops (HANDOFF §9.2,
  * 只展示够厚的情况). Its page opens before that, from its stories.
  */
 export const LISTED = { fromShops: 5 };
@@ -110,9 +110,9 @@ async function situationsShown(now: Date): Promise<number> {
       CROSS JOIN LATERAL unnest(c.situations) AS u(slug)
       WHERE c.status = 'story' AND ${selectedCondition(now)} GROUP BY u.slug
       HAVING count(DISTINCT CASE
+        WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
         WHEN c.shop_key IS NOT NULL THEN 'shop:' || c.shop_key
-        WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor') THEN NULL
-        WHEN c.story #>> '{shop,speaker}' = 'media' THEN 'case:' || c.article_id
+        WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor', 'media') THEN NULL
         ELSE 'source:' || p.source_id END) >= ${LISTED.fromShops}) shown`;
   return row!.n;
 }
@@ -126,14 +126,16 @@ export function sourceKind(name: string): string | null {
 }
 
 /**
- * Who a story counts as (layout A7-3): a named shop by its key; else, by who tells it, an adviser or vendor once a
- * source (an insider, not a shop), an owner or staff member once a source, a publication's unnamed shop once a story.
+ * Who a story counts as (layout A7-3): an owner's own source is that one shop, whatever the story calls it; else a
+ * named shop by its key; else, by who tells it, an owner or staff member once a source, and an adviser, a vendor or
+ * a publication once a source as an insider, not a shop (a publication's piece without a named shop is its own
+ * advice as often as an unnamed shop's story, and one magazine read as twenty shops while each counted as one).
  */
 export function tellerOf(r: { id: string; shop_key: string | null; source_id: string; story: CaseStory }): { key: string; insider: boolean } {
+  if (OWNERS[r.source_id]) return { key: `source:${r.source_id}`, insider: false };
   if (r.shop_key) return { key: `shop:${r.shop_key}`, insider: false };
   const speaker = r.story.shop.speaker;
-  if (speaker === "adviser" || speaker === "vendor") return { key: `insider:${r.source_id}`, insider: true };
-  if (speaker === "media") return { key: `case:${r.id}`, insider: false };
+  if (speaker === "adviser" || speaker === "vendor" || speaker === "media") return { key: `insider:${r.source_id}`, insider: true };
   return { key: `source:${r.source_id}`, insider: false };
 }
 
@@ -161,12 +163,12 @@ export function withoutCountry(label: string, country: string): string {
 }
 
 /**
- * Who a shop is on every page (layout J12): a named shop by the label of its newest story that has one, so it has
+ * Who a shop is on every page (layout J12): an owner's own source by its one name (OWNERS); a named shop by the label of its newest story that has one, so it has
  * one name across the site; else the story's own label, or its original name in stories written before labels
  * were asked. Never repeating the country the line writes before it.
  */
 function shopName(r: Row, shops: Map<string, ShopSeen>): string {
-  const label = (r.shop_key && shops.get(r.shop_key)?.label) || r.story.shop.label || r.story.shop.name || publicSourceName(r.source_name);
+  const label = OWNERS[r.source_id] ?? ((r.shop_key && shops.get(r.shop_key)?.label) || r.story.shop.label || r.story.shop.name || publicSourceName(r.source_name));
   return withoutCountry(label, r.story.shop.country);
 }
 

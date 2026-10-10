@@ -330,3 +330,18 @@ export type ShopKind = (typeof SHOP_KINDS)[number]["slug"];
 export function findShopKind(slug: string | null | undefined) {
   return SHOP_KINDS.find((k) => k.slug === slug);
 }
+
+/**
+ * The sources that are one owner's own blog or podcast, and how every page names that owner's shop (without the
+ * country, which the line writes before it). The writer names the shop afresh in each story: 10/10 one owner's blog
+ * read as four shops under ten names, and 「12 家店」 stood on six. So the source says who speaks. Entered with the
+ * source, from its profile (HANDOFF §5.4); a show whose host interviews other owners is not one of these.
+ */
+export const OWNERS: Record<string, string> = {
+  "rss-ryourigaka": "京都一家意大利小酒馆",
+  "rss-yoshitencho": "柏市一家泰式咖啡馆",
+  "rss-kojinkuroji": "一位个体餐饮店店主",
+  "pod-your-life-and-restaurant": "一位家庭餐馆老板",
+  "pod-cat-and-cloud": "圣克鲁斯一家咖啡店",
+  "pod-bread-winner": "一位微型面包店店主",
+};

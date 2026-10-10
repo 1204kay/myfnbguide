@@ -9,18 +9,18 @@ import http from "node:http";
 import { after, before, test } from "node:test";
 
 process.env.ALLOW_PRIVATE_NETWORK_FETCH = "true";
-process.env.GEMINI_API_KEY = "test-gemini-key";
+process.env.GROQ_API_KEY = "test-speech-key";
 const { closeDb, sql } = await import("@aihot/backend/db");
 const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, noteNewEpisodes, PACE } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
-const { episodesToTranscribe, GEMINI, SERVICE, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
+const { episodesToTranscribe, PART_BYTES, SERVICE, SPEECH, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
 
 const T = tag();
 const SOURCE = `archive-${T}`;
 const TRANSCRIPT = "Host: Today we talk about how a small cafe kept its staff for five years. ".repeat(6);
-let geminiCalls: string[] = [];
+let speechCalls: string[] = [];
 let limited = false;
 
 const server = http.createServer((req, res) => {
@@ -52,22 +52,19 @@ const server = http.createServer((req, res) => {
         <pubDate>Mon, 0${n} Jan 2024 10:00:00 GMT</pubDate><description>How a restaurant counts its stock every week, step by step, with the numbers it keeps.</description></item>`).join("")}</channel></rss>`);
       return;
     }
-    geminiCalls.push(`${req.method} ${url.split("?")[0]}`);
-    if (url === "/upload/v1beta/files") { res.writeHead(200, { "x-goog-upload-url": `${base}/upload-session` }); res.end("{}"); return; }
-    if (url === "/upload-session") { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify({ file: { name: "files/f1", uri: `${base}/files/f1`, state: "ACTIVE" } })); return; }
-    if (url.includes(":generateContent")) {
+    speechCalls.push(`${req.method} ${url.split("?")[0]}`);
+    if (url === "/speech/audio/transcriptions") {
       if (limited) { res.writeHead(429); res.end("{}"); return; }
       res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify({ candidates: [{ content: { parts: [{ text: TRANSCRIPT }] }, finishReason: "STOP" }], usageMetadata: { promptTokenCount: 10 } }));
+      res.end(JSON.stringify({ text: TRANSCRIPT, duration: 600 }));
       return;
     }
-    if (req.method === "DELETE") { res.writeHead(200); res.end("{}"); return; }
     res.writeHead(404); res.end();
   });
 });
 await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
 const BASE = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
-GEMINI.base = BASE;
+SPEECH.base = `${BASE}/speech`;
 
 before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${SOURCE}, 'Cafe talk', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/feed.xml`, summaryIsBody: true })})`;
@@ -107,7 +104,7 @@ test("an opened archive comes in as history, and only episodes whose notes score
 
   await sql`DELETE FROM budgets WHERE service = ${SERVICE}`;
   assert.equal((await transcribeEpisode(high!.id)).status, "skipped", "no budget row, no call");
-  assert.deepEqual(geminiCalls, []);
+  assert.deepEqual(speechCalls, []);
   await sql`INSERT INTO budgets (service, per_minute, per_hour, per_day, note) VALUES (${SERVICE}, 5, 50, 200, 'test')`;
 
   limited = true;
@@ -115,25 +112,29 @@ test("an opened archive comes in as history, and only episodes whose notes score
   assert.equal(rateLimited.status, "skipped", `a rate limit leaves the episode to try again (${rateLimited.error})`);
   assert.equal((await sql`SELECT status FROM archive_episodes WHERE article_id = ${high!.id}`)[0]!.status, "imported");
   limited = false;
-  geminiCalls = [];
+  speechCalls = [];
 
+  // An MP3 over one request's size goes in parts: here the four bytes of audio, three a request.
+  PART_BYTES.max = 3;
+  const spoken = `${TRANSCRIPT.trim()}
+${TRANSCRIPT.trim()}`;
   const done = await transcribeEpisode(high!.id);
   assert.equal(done.status, "transcribed");
-  assert.deepEqual(geminiCalls, ["POST /upload/v1beta/files", "POST /upload-session", `POST /v1beta/models/${GEMINI.model}:generateContent`, "DELETE /v1beta/files/f1"]);
+  assert.deepEqual(speechCalls, ["POST /speech/audio/transcriptions", "POST /speech/audio/transcriptions"], "two parts, two requests");
   const [article] = await sql<{ revision: number; body_text: string; backfill: boolean; processing_state: string }[]>`
     SELECT revision, body_text, backfill, processing_state FROM articles WHERE id = ${high!.id}`;
-  assert.deepEqual([article!.revision, article!.body_text, article!.backfill], [2, TRANSCRIPT.trim(), true], "the transcript is the new revision, still history");
+  assert.deepEqual([article!.revision, article!.body_text, article!.backfill], [2, spoken, true], "the parts' texts, in order, are the new revision, still history");
   const [episode] = await sql<{ status: string; transcript_chars: number; receipt_id: string }[]>`SELECT status, transcript_chars, receipt_id FROM archive_episodes WHERE article_id = ${high!.id}`;
   assert.equal(episode!.status, "transcribed");
-  assert.equal(episode!.transcript_chars, TRANSCRIPT.trim().length);
+  assert.equal(episode!.transcript_chars, spoken.length);
   assert.equal((await sql`SELECT status FROM receipts WHERE id = ${episode!.receipt_id}`)[0]!.status, "completed");
   assert.deepEqual(await episodesToTranscribe(10).then((ids) => ids.filter((id) => rows.some((r) => r.id === id))), [], "done once");
 
   // A failure is tried again under another model, not under the same one (scores are read for the current revision).
   await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${high!.id}, 2, 'rule', 'pass', 55, false)`;
-  await sql`UPDATE archive_episodes SET status = 'failed', error = 'gemini-older-model: gemini HTTP 404' WHERE article_id = ${high!.id}`;
+  await sql`UPDATE archive_episodes SET status = 'failed', error = 'older-model: transcribe HTTP 404' WHERE article_id = ${high!.id}`;
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
-  await sql`UPDATE archive_episodes SET error = ${`${GEMINI.model}: gemini HTTP 400`} WHERE article_id = ${high!.id}`;
+  await sql`UPDATE archive_episodes SET error = ${`${SPEECH.model}: transcribe HTTP 400`} WHERE article_id = ${high!.id}`;
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), []);
 });
 

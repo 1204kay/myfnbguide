@@ -1,5 +1,6 @@
-// Transcribing a podcast episode for the writers: the audio goes to Gemini's Files API and comes back as the
-// spoken text, which becomes the article's body (a new revision, analysed again). The transcript is read by the
+// An episode's transcript for the writers: the one its host published is read where the feed names one; else the
+// audio goes to a speech model (Whisper, at Groq) and comes back as the spoken text. Either way it becomes the
+// article's body (a new revision, analysed again). The transcript is read by the
 // models only; readers see the site's own summary and story, never the full text (site_fulltext is off).
 // The call goes through the engine's receipts and budget, and it is not made while the service has no
 // budget row (receipts.ts treats a service without one as unlimited).
@@ -13,19 +14,19 @@ import { assertAccepted, BudgetExceededError, completeReceipt, paidRequest, Prov
 
 export const SERVICE = "transcribe";
 /**
- * Gemini's address and model; tests point the address at a stub. Free tier (no card): no charge, Google may use the
- * audio. 2.5 models are only open to projects that used them before (ai.google.dev/gemini-api/docs/models, 2026-10-04).
+ * The speech model and where it is called; tests point the address at a stub. Whisper writes what is said and no
+ * more. Measured 10/10 on episodes whose hosts published transcripts: Gemini 3.5 Flash-Lite, used until then, kept
+ * half the words or fewer in six of thirteen and repeated itself up to its output ceiling in two; Gemini 3.8 Flash
+ * repeated itself in one of four; Whisper kept 96–98% of the words in all of them, in seconds. Groq's terms keep
+ * inputs and outputs from training, on its free tier too (console.groq.com/docs, read 2026-10-10).
  */
-export const GEMINI = { base: "https://generativelanguage.googleapis.com", model: "gemini-3.5-flash-lite" };
+export const SPEECH = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3-turbo" };
 const MAX_AUDIO_BYTES = 300 * 1024 * 1024;
-
-const PROMPT = [
-  "请把这段播客音频转写成文字。",
-  "保持原来的语言，不翻译；逐句照录说话的内容，不总结、不改写、不评论。",
-  "按说话的人分段，能分辨时在段首写说话人的名字或身份（例如“主持人：”）。",
-  "片头片尾的音乐和与节目内容无关的广告不必转写。",
-  "只输出转写的文字。",
-].join("\n");
+/**
+ * What one request carries: Groq takes 25MB a file on its free tier (100MB paid), and it cannot fetch a host's
+ * address itself (Buzzsprout answered it 403), so the audio is downloaded here and longer audio goes in parts.
+ */
+export const PART_BYTES = { max: 24 * 1024 * 1024 };
 
 /**
  * Episodes to transcribe next, of sources still collected (one stopped for its terms is not read again): with an audio file and not done; from the archive those whose notes scored at least the
@@ -40,47 +41,41 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
     JOIN sources s ON s.id = a.source_id AND s.enabled
     JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
     WHERE (e.audio_url IS NOT NULL OR e.transcript_url IS NOT NULL) AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')))
-      AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${GEMINI.model}:%`}))
+      AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${SPEECH.model}:%`}))
     ORDER BY a.backfill, n.score DESC, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }
 
-async function gemini(path: string, init: RequestInit & { headers?: Record<string, string> }, key: string): Promise<Response> {
-  const res = await fetch(`${GEMINI.base}${path}`, { ...init, headers: { "x-goog-api-key": key, ...init.headers }, signal: AbortSignal.timeout(600_000) });
-  // An answer outside 2xx: Gemini did not take the request (a rate limit or server error may pass, receipts.ts).
+/** The file name a part goes under: the service reads the format from it. */
+const fileName = (mime: string) => `episode.${/mp4|m4a|aac/.test(mime) ? "m4a" : /ogg|opus/.test(mime) ? "ogg" : /wav/.test(mime) ? "wav" : /webm/.test(mime) ? "webm" : /flac/.test(mime) ? "flac" : "mp3"}`;
+
+/** One request: a whole file, or a part of an MP3. */
+async function transcribePart(part: Uint8Array, mime: string, key: string): Promise<{ text: string; seconds: number }> {
+  const form = new FormData();
+  form.set("model", SPEECH.model);
+  form.set("file", new Blob([new Uint8Array(part)], { type: mime }), fileName(mime));
+  form.set("response_format", "verbose_json");
+  const res = await fetch(`${SPEECH.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(600_000) });
+  // An answer outside 2xx: the service did not take the request (a rate limit or server error may pass, receipts.ts).
   if (!res.ok) assertAccepted(SERVICE, res.status, await res.text());
-  return res;
+  const out = (await res.json()) as { text?: string; duration?: number };
+  return { text: (out.text ?? "").trim(), seconds: out.duration ?? 0 };
 }
 
-/** The audio as text: upload, wait until the file is ready, transcribe, delete the file. */
-async function transcribeAudio(audio: Buffer, mimeType: string, name: string, key: string): Promise<{ text: string; usage: Record<string, unknown> | null; finish: string | null }> {
-  const start = await gemini("/upload/v1beta/files", {
-    method: "POST",
-    headers: { "X-Goog-Upload-Protocol": "resumable", "X-Goog-Upload-Command": "start", "X-Goog-Upload-Header-Content-Length": String(audio.length), "X-Goog-Upload-Header-Content-Type": mimeType, "Content-Type": "application/json" },
-    body: JSON.stringify({ file: { display_name: name } }),
-  }, key);
-  const uploadUrl = start.headers.get("x-goog-upload-url");
-  if (!uploadUrl) throw new Error("gemini: no upload url");
-  // fetch sets Content-Length from the body itself (undici refuses one given by hand).
-  const done = await fetch(uploadUrl, { method: "POST", headers: { "X-Goog-Upload-Offset": "0", "X-Goog-Upload-Command": "upload, finalize" }, body: new Uint8Array(audio), signal: AbortSignal.timeout(600_000) });
-  if (!done.ok) assertAccepted(SERVICE, done.status, await done.text());
-  let file = ((await done.json()) as { file: { name: string; uri: string; state?: string } }).file;
-  try {
-    for (let i = 0; file.state && file.state !== "ACTIVE"; i++) {
-      if (file.state === "FAILED" || i > 60) throw new Error(`gemini file ${file.state}`);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      file = (await (await gemini(`/v1beta/${file.name}`, {}, key)).json()) as typeof file;
-    }
-    const res = await gemini(`/v1beta/models/${GEMINI.model}:generateContent`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: PROMPT }, { file_data: { mime_type: mimeType, file_uri: file.uri } }] }], generationConfig: { temperature: 0, maxOutputTokens: 65536 } }),
-    }, key);
-    const out = (await res.json()) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; finishReason?: string }>; usageMetadata?: Record<string, unknown> };
-    const text = (out.candidates?.[0]?.content?.parts ?? []).map((p) => p.text ?? "").join("").trim();
-    return { text, usage: out.usageMetadata ?? null, finish: out.candidates?.[0]?.finishReason ?? null };
-  } finally {
-    await gemini(`/v1beta/${file.name}`, { method: "DELETE" }, key).catch(() => undefined);
+/**
+ * The audio as text. An MP3 over one request's size goes in parts: its frames stand alone, so a cut costs a word at
+ * most. Another format has to fit one request.
+ */
+async function transcribeAudio(audio: Buffer, mime: string, key: string): Promise<{ text: string; usage: Record<string, unknown> }> {
+  if (audio.length > PART_BYTES.max && mime !== "audio/mpeg") throw new ProviderRejectedError(`audio: ${mime} of ${audio.length} bytes is over one request's size`, null, false);
+  const texts: string[] = [];
+  let seconds = 0;
+  for (let at = 0; at < audio.length; at += PART_BYTES.max) {
+    const part = await transcribePart(audio.subarray(at, at + PART_BYTES.max), mime, key);
+    texts.push(part.text);
+    seconds += part.seconds;
   }
+  return { text: texts.filter(Boolean).join("\n"), usage: { audio_seconds: Math.round(seconds), parts: texts.length } };
 }
 
 /**
@@ -146,25 +141,23 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
   if (!row.audio_url) return { status: "skipped" };
   const [budget] = await sql`SELECT 1 FROM budgets WHERE service = ${SERVICE}`;
   if (!budget) return { status: "skipped", error: `no budget row for ${SERVICE}` };
-  // The site's own Google AI Studio key (free tier). Grouping does not use it: transcripts used up the free quota the
-  // embeddings shared, and grouping failed on almost every item (10/2–10/8), so the engine compares texts instead.
-  const key = credential("models", "GEMINI_API_KEY");
-  if (!key) return { status: "skipped", error: "GEMINI_API_KEY missing" };
+  const key = credential("models", "GROQ_API_KEY");
+  if (!key) return { status: "skipped", error: "GROQ_API_KEY missing" };
   try {
     const receipt = await paidRequest(
-      { service: SERVICE, model: GEMINI.model, purpose: "transcribe_episode", subject: `article:${articleId}`, identity: { model: GEMINI.model, audio: row.audio_url, prompt: PROMPT }, requestSummary: { audio: row.audio_url } },
+      { service: SERVICE, model: SPEECH.model, purpose: "transcribe_episode", subject: `article:${articleId}`, identity: { model: SPEECH.model, audio: row.audio_url }, requestSummary: { audio: row.audio_url } },
       async () => {
-        // Nothing reached Gemini yet: a failed download is a refusal, never an unknown paid outcome.
+        // Nothing reached the service yet: a failed download is a refusal, never an unknown paid outcome.
         const file = await guardedFetch(row.audio_url!, { timeoutMs: 600_000, maxBytes: MAX_AUDIO_BYTES, maxRedirects: 8 })
           .catch((error) => { throw new ProviderRejectedError(`audio: ${String(error)}`, null, true); });
         if (file.status !== 200) throw new ProviderRejectedError(`audio: HTTP ${file.status}`, file.status, file.status === 429 || file.status >= 500);
         const mime = (file.headers.get("content-type") ?? "").split(";")[0]!.trim();
-        const out = await transcribeAudio(file.body, /^audio\//.test(mime) ? mime : "audio/mpeg", articleId, key);
+        const out = await transcribeAudio(file.body, /^audio\//.test(mime) && !/mpeg|mp3/.test(mime) ? mime : "audio/mpeg", key);
         return { response: { ...out, bytes: file.body.length }, usage: out.usage };
       },
     );
-    const { text, finish } = receipt.response as { text: string; finish: string | null };
-    if (text.length < 200) throw new Error(`transcript too short (${text.length} chars, finish ${finish})`);
+    const { text } = receipt.response as { text: string };
+    if (text.length < 200) throw new Error(`transcript too short (${text.length} chars)`);
     await sql.begin(async (tx) => {
       // Same identity, same source: a new revision of the article, analysed again from the transcript.
       await upsertMaterial({ sourceId: row.source_id, url: row.url, identityKey: row.identity_key, title: row.title, bodyText: text, bodyStatus: "ok", via: "archive" }, tx);
@@ -176,7 +169,7 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
   } catch (error) {
     const cause = (error as Error).cause;
     // The model first: a failure is tried again only under another model (episodesToTranscribe).
-    const message = `${GEMINI.model}: ${String((error as Error).message ?? error)}${cause ? ` (${String((cause as Error).message ?? cause)})` : ""}`.slice(0, 1000);
+    const message = `${SPEECH.model}: ${String((error as Error).message ?? error)}${cause ? ` (${String((cause as Error).message ?? cause)})` : ""}`.slice(0, 1000);
     // A full budget, a rate limit or a server error is no fault of the episode: it stays imported and is tried again later.
     if (error instanceof BudgetExceededError || (error instanceof ProviderRejectedError && error.retryable)) return { status: "skipped", error: message };
     await sql`UPDATE archive_episodes SET status = 'failed', error = ${message}, updated_at = now() WHERE article_id = ${articleId}`;

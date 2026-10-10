@@ -54,6 +54,7 @@ const PAGES: PageSpec[] = [
   { name: "home", reader: true, list: true, path: "/" },
   { name: "all", reader: true, list: true, path: "/all" },
   { name: "search", reader: true, list: true, path: "/all?q=%E6%88%BF%E7%A7%9F" },
+  { name: "reference", reader: true, list: true, path: "/reference" },
   { name: "situation", reader: true, path: "/reference/busy-no-profit" },
   { name: "case", reader: true, from: "situation", link: 'a[href^="/reference/cases/"]' },
   { name: "shop", reader: true, from: "situation", through: 'a[href^="/reference/cases/"]', link: 'a[href^="/reference/shops/"]' },
@@ -64,6 +65,8 @@ const PAGES: PageSpec[] = [
   { name: "archive", reader: true, path: "/daily/archive" },
   { name: "about", reader: false, path: "/about" },
   { name: "agent", reader: false, path: "/agent" },
+  { name: "terms", reader: false, path: "/terms" },
+  { name: "privacy", reader: false, path: "/privacy" },
 ];
 
 interface Metrics {

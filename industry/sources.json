@@ -928,27 +928,6 @@
       ]
     },
     {
-      "id": "rss-gastronomen",
-      "name": "gastronomen.biz（德国 · 餐饮与酒店的行业媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.gastronomen.biz/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 5
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "德国",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-restaurantandcafe-nz",
       "name": "Restaurant & Café（新西兰 · 餐厅、咖啡馆与餐饮服务的行业媒体）",
       "kind": "rss",

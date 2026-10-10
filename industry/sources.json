@@ -337,72 +337,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-a-la-carte-par-fooddy-le-podcast-qui-par",
-      "name": "A LA CARTE par Fooddy（法国 · 餐饮培训平台的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://feed.ausha.co/n5zJxIRnq5Vk",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "法国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-strategic-business-growth-systems-restau",
-      "name": "Strategic Business Growth Systems（美国 · 餐厅营销顾问的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.podengine.io/strategic-business-growth-systems-restaurant-edition",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-marketing-morsels-for-restaurants",
-      "name": "Marketing Morsels for Restaurants（美国 · 餐厅营销顾问的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.podengine.io/marketing-morsels-for-restaurants",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-total-food-service",
       "name": "Total Food Service（美国 · 餐饮媒体的播客）",
       "kind": "rss",
@@ -452,28 +386,6 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://rss.buzzsprout.com/238017.rss",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-the-build-restuarant-201",
-      "name": "The Build: Restuarant 201（美国 · 工作服品牌的餐厅纪实节目）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.art19.com/the-build",
         "summaryIsBody": true,
         "_aihot": {
           "initialBackfillLimit": 2
@@ -600,116 +512,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-restaurant-marketing-secrets",
-      "name": "Restaurant Marketing Secrets（美国 · 餐厅营销公司的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.libsyn.com/shows/418643/destinations/3475718.xml",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-great-work-for-restaurants",
-      "name": "Great Work for Restaurants（加拿大 · 餐厅营销服务商的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.libsyn.com/shows/187310/destinations/1290941.xml",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "加拿大",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-coffee-experts-club",
-      "name": "The Coffee Experts Club Podcast（美国 · 咖啡业顾问的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.libsyn.com/shows/477066/destinations/4050717.xml",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-pulling-shots",
-      "name": "Pulling Shots（美国 · 咖啡店老板的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://feeds.libsyn.com/537872/rss",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-keys-to-the-shop",
-      "name": "Keys To The Shop（美国 · 咖啡店顾问的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.libsyn.com/shows/85579/destinations/412105.xml",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "美国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-your-life-and-restaurant",
       "name": "Your Life and Restaurant（美国 · 家庭餐馆老板的播客）",
       "kind": "rss",
@@ -748,28 +550,6 @@
       "interval_minutes": 240,
       "tags": [
         "法国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-say86-hospitality",
-      "name": "say86 Hospitality Podcast（英国 · 餐饮采购平台的播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.buzzsprout.com/2447330.rss",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "英国",
         "播客"
       ],
       "site_fulltext": false,
@@ -875,48 +655,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-caroline-bower",
-      "name": "Bluebird Bread Co. · Caroline Bower（美国 · 微型面包店店主的博客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.carolinebower.com/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "tags": [
-        "美国",
-        "博客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-miraishokudo",
-      "name": "未来食堂日記（日本 · 定食店店主的博客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://miraishokudo.hatenablog.com/feed",
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "tags": [
-        "日本",
-        "博客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-kojinkuroji",
       "name": "小さなお店の黒字力（日本 · 个体餐饮店店主的博客）",
       "kind": "rss",
@@ -993,30 +731,6 @@
           "titleSelector": "div.detail > div.title",
           "titleAuthoritative": true
         },
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "中国",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "web-canyinj-toutiao",
-      "name": "餐饮界 · 头条（中国 · 餐饮媒体）",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.canyinj.com/lists/default_blog.html",
-        "itemSelector": "div.hlgd-box dd",
-        "linkSelector": "h3 a",
-        "publishedAtRegex": "(20\\d\\d-\\d\\d-\\d\\d)",
         "_aihot": {
           "initialBackfillLimit": 8
         }
@@ -1273,27 +987,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "英国",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-foodnews-news",
-      "name": "식품외식경영（韩国 · 食品与餐饮网络报纸）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.foodnews.news/data/rss/news.xml",
-        "_aihot": {
-          "initialBackfillLimit": 5
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "韩国",
         "媒体"
       ]
     },

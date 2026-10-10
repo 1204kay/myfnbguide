@@ -30,7 +30,7 @@ function member(id: string, group: string | null, teller: string): Member {
 test("the stories are read a cause group at a time, in the situation's order, those of no group last", () => {
   // Newest first, as the cases are shown: the groups interleaved.
   const given = [
-    member("m1", "owner-time", "shop:a"), member("m2", "delegate", "shop:b"), member("m3", null, "case:m3"),
+    member("m1", "owner-time", "shop:a"), member("m2", "delegate", "shop:b"), member("m3", null, "insider:src"),
     member("m4", "runs-without-you", "shop:b"), member("m5", "delegate", "shop:d"),
   ];
   const { members, text } = materialOf(situation, given);
@@ -47,7 +47,7 @@ test("the stories are read a cause group at a time, in the situation's order, th
   assert.deepEqual(order, [...order].sort((a, b) => a - b));
   // The shops are named in the order read: shop b first (m4, m2), then d, a and the unnamed one.
   for (const [id, name] of [["m4", "s1"], ["m2", "s1"], ["m5", "s2"], ["m1", "s3"], ["m3", "s4"]]) {
-    assert.match(text, new RegExp(`id：${id}\\n原因组：[^\\n]+\\n店家：${name}（日本 · 一家个体餐饮店）`));
+    assert.match(text, new RegExp(`id：${id}\\n原因组：[^\\n]+\\n店家：${name}（日本 · 一家个体餐饮店；店）`));
   }
 
   const one = materialOf(situation, [member("d1", "delegate", "shop:x"), member("d2", "delegate", "shop:y")]).text;

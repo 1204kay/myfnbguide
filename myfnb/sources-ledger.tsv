@@ -10276,7 +10276,8 @@ v1011-bizmaxsoftware	Bizmax Software（印度 · 餐饮管理软件公司）	htt
 v1011-bookmyt	Book My T（印度 · 餐饮管理软件公司）	https://www.bookmyt.com	2026-10-11·网站类·服务商经营指南	不接	连不上（ECONNRESET）
 v1011-quiniwine	QUINI DATA（加拿大 · 餐饮管理软件公司）	https://quiniwine.com	2026-10-11·网站类·服务商经营指南	不接	没有订阅（首页和常见路径都试过），首页也没有找到博客或新闻栏目
 v1011-fimble	Fimble（美国 · 餐饮管理软件公司）	https://www.fimble.io	2026-10-11·网站类·服务商经营指南	待定	待定：没有订阅，有列表页 https://www.fimble.io/blog；这一轮不做网页列表，内容没有判
-rss-sischef	Sischef（巴西 · 餐饮管理软件公司）	https://www.parseint.com.br/	2026-10-11·网站类·服务商经营指南	接入	10/11 修好 check-sources.mjs 的 robots 分组错误后重跑通过，接入。没有订阅（首页和常见路径都试过），首页也没有找到博客或新闻栏目
+v1011-parseint	Sischef（巴西 · 餐饮管理软件公司）	https://www.parseint.com.br/	2026-10-11·网站类·服务商经营指南	不接	没有订阅（首页和常见路径都试过），首页也没有找到博客或新闻栏目
+
 v1011-bohasolutions	BOHA!（2319 Whitney Ave, Suite 3B Hamden, CT 06518 · 餐饮管理软件公司）	https://www.bohasolutions.com	2026-10-11·网站类·服务商经营指南	待定	待定：没有订阅，有列表页 https://www.transact-tech.com/software/boha-saas-platform；这一轮不做网页列表，内容没有判
 v1011-doshii	Doshii（澳大利亚 · 餐饮管理软件公司）	https://doshii.io	2026-10-11·网站类·服务商经营指南	待定	待定：没有订阅，有列表页 https://doshii.com/en-au/the-dish；这一轮不做网页列表，内容没有判
 v1011-sparkepos	Spark ePOS（英国 · 餐饮管理软件公司）	https://www.sparkepos.com/spark-epos-2020/	2026-10-11·网站类·服务商经营指南	不接	找不到订阅：给的地址返回 404，常见订阅路径也没有

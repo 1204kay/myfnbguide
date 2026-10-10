@@ -19,13 +19,21 @@ const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@", h
 const key = (title: unknown) => String(title ?? "").replace(/\s+/g, " ").trim();
 const list = <T>(v: T | T[] | undefined): T[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
 
-/** Each episode's audio file, by its title: the engine keeps no enclosure for an episode that has a page. */
-export function audioByTitle(feed: string): Map<string, { url: string; type: string }> {
+/** A transcript's forms as a feed lists them (podcast:transcript), the plainest to read first. */
+const TRANSCRIPT_TYPES = ["text/vtt", "application/x-subrip", "application/srt", "text/plain", "application/json", "text/html"];
+
+/**
+ * Each episode's audio file, by its title (the engine keeps no enclosure for an episode that has a page), and the
+ * transcript its host already made where the feed names one: a third of the episodes had one (10/10, 732 of 2,162).
+ */
+export function audioByTitle(feed: string): Map<string, { url: string; type: string; transcript: string | null }> {
   const doc = xml.parse(feed) as { rss?: { channel?: { item?: unknown } } };
-  const out = new Map<string, { url: string; type: string }>();
+  const out = new Map<string, { url: string; type: string; transcript: string | null }>();
   for (const item of list(doc.rss?.channel?.item as Array<Record<string, any>> | undefined)) {
     const audio = list(item.enclosure as Array<Record<string, string>> | undefined).find((e) => /^audio\//.test(e?.["@type"] ?? ""));
-    if (audio?.["@url"]) out.set(key(item.title), { url: audio["@url"], type: audio["@type"]! });
+    const scripts = list(item["podcast:transcript"] as Array<Record<string, string>> | undefined).filter((t) => t?.["@url"]);
+    const transcript = TRANSCRIPT_TYPES.flatMap((type) => scripts.filter((t) => t["@type"] === type))[0]?.["@url"] ?? null;
+    if (audio?.["@url"]) out.set(key(item.title), { url: audio["@url"], type: audio["@type"]!, transcript });
   }
   return out;
 }
@@ -90,8 +98,8 @@ export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
         if (res.created) result.created += 1;
         const file = audio.get(key(c.title));
         if (file) result.withAudio += 1;
-        await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
-          VALUES (${res.articleId}, ${sourceId}, ${file?.url ?? null}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+        await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, transcript_url, status)
+          VALUES (${res.articleId}, ${sourceId}, ${file?.url ?? null}, ${file?.transcript ?? null}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
       }
     }
     result.finished = true;
@@ -126,8 +134,8 @@ export async function noteNewEpisodes(): Promise<{ sources: number; added: numbe
       for (const a of waiting) {
         const file = audio.get(key(a.title));
         if (!file) continue;
-        await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status)
-          VALUES (${a.id}, ${source.id}, ${file.url}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
+        await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, transcript_url, status)
+          VALUES (${a.id}, ${source.id}, ${file.url}, ${file.transcript}, 'imported') ON CONFLICT (article_id) DO NOTHING`;
         added += 1;
       }
     } catch {

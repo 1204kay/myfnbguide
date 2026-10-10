@@ -39,7 +39,7 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
     JOIN articles a ON a.id = e.article_id
     JOIN sources s ON s.id = a.source_id AND s.enabled
     JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
-    WHERE e.audio_url IS NOT NULL AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')))
+    WHERE (e.audio_url IS NOT NULL OR e.transcript_url IS NOT NULL) AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')))
       AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${GEMINI.model}:%`}))
     ORDER BY a.backfill, n.score DESC, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
@@ -83,25 +83,73 @@ async function transcribeAudio(audio: Buffer, mimeType: string, name: string, ke
   }
 }
 
+/**
+ * The spoken text of a transcript file as hosts publish them: WebVTT and SubRip without their cue numbers, times and
+ * tags (a voice tag becomes the speaker's name), the JSON form's segments, a page without its markup.
+ */
+export function transcriptText(raw: string): string {
+  const text = raw.replace(/^﻿/, "").trim();
+  if (text.startsWith("{")) {
+    try {
+      const segments = (JSON.parse(text) as { segments?: Array<{ speaker?: string; body?: string; text?: string }> }).segments ?? [];
+      let last = "";
+      return segments.map((s) => {
+        const said = (s.body ?? s.text ?? "").trim();
+        const who = s.speaker && s.speaker !== last ? `\n${(last = s.speaker)}：` : "";
+        return said ? `${who}${said}` : "";
+      }).filter(Boolean).join(" ").trim();
+    } catch {
+      return "";
+    }
+  }
+  const page = /<\/(?:p|div|html)>/i.test(text);
+  const lines = (page ? text.replace(/<(?:script|style)[\s\S]*?<\/(?:script|style)>/gi, " ").replace(/<\/(?:p|div|li|h\d)>|<br\s*\/?>/gi, "\n") : text).split(/\r?\n/);
+  const out: string[] = [];
+  for (const line of lines) {
+    const said = line.replace(/<v\s+([^>]+)>/g, "$1：").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#39;|&apos;/g, "'").replace(/&quot;/g, '"').trim();
+    // A cue's number, its times, the file's header and notes say nothing.
+    if (!said || /^\d+$/.test(said) || said.includes("-->") || /^(?:WEBVTT|NOTE|STYLE|Kind:|Language:)/.test(said)) continue;
+    if (out.at(-1) !== said) out.push(said);
+  }
+  return out.join("\n").trim();
+}
+
 export interface TranscribeResult {
   status: "transcribed" | "failed" | "skipped";
   chars?: number;
   error?: string;
 }
 
-/** Transcribes one episode and makes the transcript its body; the engine analyses the new revision. */
+/**
+ * Makes an episode's transcript its body; the engine analyses the new revision. The transcript its host already made
+ * is read where the feed names one (nothing is paid and no audio leaves for a model); else the audio is transcribed.
+ */
 export async function transcribeEpisode(articleId: string): Promise<TranscribeResult> {
   if (!config.modelCallsEnabled) return { status: "skipped", error: "model calls are off" };
+  const [row] = await sql<{ audio_url: string | null; transcript_url: string | null; status: string; source_id: string; url: string; identity_key: string; title: string }[]>`
+    SELECT e.audio_url, e.transcript_url, e.status, a.source_id, a.url, a.identity_key, a.title FROM archive_episodes e JOIN articles a ON a.id = e.article_id
+    WHERE e.article_id = ${articleId}`;
+  if (!row || row.status === "transcribed") return { status: "skipped" };
+  if (row.transcript_url) {
+    // A transcript that cannot be read or says too little is no failure of the episode: its audio is transcribed.
+    const file = await guardedFetch(row.transcript_url, { timeoutMs: 60_000, maxBytes: 10 * 1024 * 1024, maxRedirects: 5 }).catch(() => null);
+    const text = file?.status === 200 ? transcriptText(file.text()) : "";
+    if (text.length >= 200) {
+      await sql.begin(async (tx) => {
+        await upsertMaterial({ sourceId: row.source_id, url: row.url, identityKey: row.identity_key, title: row.title, bodyText: text, bodyStatus: "ok", via: "archive" }, tx);
+        await tx`UPDATE archive_episodes SET status = 'transcribed', transcript_chars = ${text.length}, error = NULL, updated_at = now() WHERE article_id = ${articleId}`;
+      });
+      await queueProcessing(articleId);
+      return { status: "transcribed", chars: text.length };
+    }
+  }
+  if (!row.audio_url) return { status: "skipped" };
   const [budget] = await sql`SELECT 1 FROM budgets WHERE service = ${SERVICE}`;
   if (!budget) return { status: "skipped", error: `no budget row for ${SERVICE}` };
   // The site's own Google AI Studio key (free tier). Grouping does not use it: transcripts used up the free quota the
   // embeddings shared, and grouping failed on almost every item (10/2–10/8), so the engine compares texts instead.
   const key = credential("models", "GEMINI_API_KEY");
   if (!key) return { status: "skipped", error: "GEMINI_API_KEY missing" };
-  const [row] = await sql<{ audio_url: string | null; status: string; source_id: string; url: string; identity_key: string; title: string }[]>`
-    SELECT e.audio_url, e.status, a.source_id, a.url, a.identity_key, a.title FROM archive_episodes e JOIN articles a ON a.id = e.article_id
-    WHERE e.article_id = ${articleId}`;
-  if (!row?.audio_url || row.status === "transcribed") return { status: "skipped" };
   try {
     const receipt = await paidRequest(
       { service: SERVICE, model: GEMINI.model, purpose: "transcribe_episode", subject: `article:${articleId}`, identity: { model: GEMINI.model, audio: row.audio_url, prompt: PROMPT }, requestSummary: { audio: row.audio_url } },

@@ -15,7 +15,7 @@ const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, noteNewEpisodes, PACE } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
-const { episodesToTranscribe, GEMINI, SERVICE, transcribeEpisode } = await import("../backend/transcribe.ts");
+const { episodesToTranscribe, GEMINI, SERVICE, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
 
 const T = tag();
 const SOURCE = `archive-${T}`;
@@ -78,8 +78,12 @@ before(async () => {
 after(async () => { server.close(); await stopBoss(); await closeDb(); });
 
 test("each episode's audio is found by its title", () => {
-  const audio = audioByTitle(`<rss><channel><item><title> A  title </title><enclosure url="https://x/a.mp3" type="audio/mpeg"/></item><item><title>No audio</title></item><item><title>It&#39;s here</title><enclosure url="https://x/b.mp3" type="audio/mpeg"/></item></channel></rss>`);
-  assert.deepEqual([...audio], [["A title", { url: "https://x/a.mp3", type: "audio/mpeg" }], ["It's here", { url: "https://x/b.mp3", type: "audio/mpeg" }]]);
+  const audio = audioByTitle(`<rss><channel><item><title> A  title </title><enclosure url="https://x/a.mp3" type="audio/mpeg"/></item><item><title>No audio</title></item><item><title>It&#39;s here</title><enclosure url="https://x/b.mp3" type="audio/mpeg"/><podcast:transcript url="https://x/b.html" type="text/html"/><podcast:transcript url="https://x/b.vtt" type="text/vtt"/></item></channel></rss>`);
+  assert.deepEqual([...audio], [["A title", { url: "https://x/a.mp3", type: "audio/mpeg", transcript: null }], ["It's here", { url: "https://x/b.mp3", type: "audio/mpeg", transcript: "https://x/b.vtt" }]],
+    "the transcript its host made, the plainest form");
+  assert.equal(transcriptText("WEBVTT\n\n1\n00:00:01.000 --> 00:00:04.000\n<v Ana>We open at six.\n\n2\n00:00:04.000 --> 00:00:06.000\nThen the rush.\nThen the rush."), "Ana：We open at six.\nThen the rush.");
+  assert.equal(transcriptText(JSON.stringify({ segments: [{ speaker: "Ana", body: "We open at six." }, { speaker: "Ana", body: "Then the rush." }, { speaker: "Ben", body: "How many staff?" }] })), "Ana：We open at six. Then the rush. \nBen：How many staff?");
+  assert.equal(transcriptText("<html><body><p>We open at six.</p><p>Then the rush &amp; the line.</p></body></html>"), "We open at six.\nThen the rush & the line.");
 });
 
 test("an opened archive comes in as history, and only episodes whose notes score at the floor are transcribed", async () => {

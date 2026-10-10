@@ -20,7 +20,7 @@ export const SERVICE = "transcribe";
  * repeated itself in one of four; Whisper kept 96–98% of the words in all of them, in seconds. Groq's terms keep
  * inputs and outputs from training, on its free tier too (console.groq.com/docs, read 2026-10-10).
  */
-export const SPEECH = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3-turbo" };
+export const SPEECH = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3-turbo", spare: "whisper-large-v3" };
 const MAX_AUDIO_BYTES = 300 * 1024 * 1024;
 /**
  * What one request carries: Groq takes 25MB a file on its free tier (100MB paid), and it cannot fetch a host's
@@ -51,17 +51,25 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
 /** The file name a part goes under: the service reads the format from it. */
 const fileName = (mime: string) => `episode.${/mp4|m4a|aac/.test(mime) ? "m4a" : /ogg|opus/.test(mime) ? "ogg" : /wav/.test(mime) ? "wav" : /webm/.test(mime) ? "webm" : /flac/.test(mime) ? "flac" : "mp3"}`;
 
-/** One request: a whole file, or a part of an MP3. */
+/**
+ * One request: a whole file, or a part of an MP3. Each model has its own share of audio an hour and a day (the
+ * account's limits page, 10/10: 7,200 and 28,800 seconds each on the free tier), so when the model's share is used
+ * up (429) the spare one takes the part; it kept as many of the words in the same comparison.
+ */
 async function transcribePart(part: Uint8Array, mime: string, key: string): Promise<{ text: string; seconds: number }> {
-  const form = new FormData();
-  form.set("model", SPEECH.model);
-  form.set("file", new Blob([new Uint8Array(part)], { type: mime }), fileName(mime));
-  form.set("response_format", "verbose_json");
-  const res = await fetch(`${SPEECH.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(600_000) });
-  // An answer outside 2xx: the service did not take the request (a rate limit or server error may pass, receipts.ts).
-  if (!res.ok) assertAccepted(SERVICE, res.status, await res.text());
-  const out = (await res.json()) as { text?: string; duration?: number };
-  return { text: (out.text ?? "").trim(), seconds: out.duration ?? 0 };
+  for (const model of [SPEECH.model, SPEECH.spare]) {
+    const form = new FormData();
+    form.set("model", model);
+    form.set("file", new Blob([new Uint8Array(part)], { type: mime }), fileName(mime));
+    form.set("response_format", "verbose_json");
+    const res = await fetch(`${SPEECH.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(600_000) });
+    if (res.status === 429 && model !== SPEECH.spare) continue;
+    // An answer outside 2xx: the service did not take the request (a rate limit or server error may pass, receipts.ts).
+    if (!res.ok) assertAccepted(SERVICE, res.status, await res.text());
+    const out = (await res.json()) as { text?: string; duration?: number };
+    return { text: (out.text ?? "").trim(), seconds: out.duration ?? 0 };
+  }
+  throw new Error("no speech model");
 }
 
 /**

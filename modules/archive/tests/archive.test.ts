@@ -22,11 +22,13 @@ const SOURCE = `archive-${T}`;
 const TRANSCRIPT = "Host: Today we talk about how a small cafe kept its staff for five years. ".repeat(6);
 let speechCalls: string[] = [];
 let limited = false;
+let firstModelLimited = false;
 
 const server = http.createServer((req, res) => {
   const url = req.url ?? "/";
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
-  req.resume();
+  let sent = "";
+  req.on("data", (chunk: Buffer) => { sent += chunk.toString("latin1"); });
   req.on("end", () => {
     // The podcast's feed, and another podcast's whose archive takes in only the episodes it picked.
     if (url === "/feed.xml" || url === "/picked.xml") {
@@ -54,7 +56,7 @@ const server = http.createServer((req, res) => {
     }
     speechCalls.push(`${req.method} ${url.split("?")[0]}`);
     if (url === "/speech/audio/transcriptions") {
-      if (limited) { res.writeHead(429); res.end("{}"); return; }
+      if (limited || (firstModelLimited && sent.includes(`name="model"\r\n\r\n${SPEECH.model}\r\n`))) { res.writeHead(429); res.end("{}"); return; }
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ text: TRANSCRIPT, duration: 600 }));
       return;
@@ -114,13 +116,16 @@ test("an opened archive comes in as history, and only episodes whose notes score
   limited = false;
   speechCalls = [];
 
-  // An MP3 over one request's size goes in parts: here the four bytes of audio, three a request.
+  // An MP3 over one request's size goes in parts: here the four bytes of audio, three a request. The first model's
+  // share of audio is used up: each part is asked of it, then of the spare one.
   PART_BYTES.max = 3;
+  firstModelLimited = true;
   const spoken = `${TRANSCRIPT.trim()}
 ${TRANSCRIPT.trim()}`;
   const done = await transcribeEpisode(high!.id);
   assert.equal(done.status, "transcribed");
-  assert.deepEqual(speechCalls, ["POST /speech/audio/transcriptions", "POST /speech/audio/transcriptions"], "two parts, two requests");
+  assert.equal(speechCalls.length, 4, "two parts, each refused by the first model and taken by the spare");
+  firstModelLimited = false;
   const [article] = await sql<{ revision: number; body_text: string; backfill: boolean; processing_state: string }[]>`
     SELECT revision, body_text, backfill, processing_state FROM articles WHERE id = ${high!.id}`;
   assert.deepEqual([article!.revision, article!.body_text, article!.backfill], [2, spoken, true], "the parts' texts, in order, are the new revision, still history");

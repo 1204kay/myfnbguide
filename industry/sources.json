@@ -2279,27 +2279,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-agora-pos",
-      "name": "Ágora 博客（西班牙 · 收银系统公司的博客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.agorapos.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 720,
-      "tags": [
-        "西班牙",
-        "服务商"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-barguard",
       "name": "BarGuard 博客（美国 · 酒吧库存软件公司的博客）",
       "kind": "rss",

@@ -10832,3 +10832,4 @@ v1011-neurolien-fr	neurolien（国家未记 · 餐饮管理软件公司）	https
 v1011-mandouvirou	mandouvirou（国家未记 · 餐饮管理软件公司）	https://mandouvirou.com.br/	2026-10-11·网站类·服务商经营指南	不接	没有订阅（首页和常见路径都试过），首页也没有找到博客或新闻栏目
 v1011-panelgea	panelgea（国家未记 · 餐饮管理软件公司）	https://panelgea.com/feed/	2026-10-11·网站类·服务商经营指南	不接	订阅最新 10 个标题里和餐饮经营有关的 1 个，不到三成（程序按多语言关键词筛，结果抽看过）
 a1010-isme	ISME（爱尔兰 · 小企业协会）	https://isme.ie/feed/	2026-10-11·robots 重查	待定	10/10 记的「robots 对所有爬虫禁止 /feed/」是 check-sources.mjs 的误判（robots.txt 先写 User-agent: * 和空的 Disallow，再写点名的爬虫，脚本把两组并成了一组）；10/11 修好后重跑通过。内容约 9/10，但是跨行业的小企业协会；自己的条款还没有读，读完再定。同一天用修好的脚本把账本里因 robots 被拒的 133 个来源全部重查：受这个错误影响的只有 ISME、Sischef（已接入）两个，ABF 的内容本来就不过，未來流通研究所的 robots 确实禁 /feed/。
+rss-agora-pos	Ágora 博客（西班牙 · 收银系统公司的博客）	https://www.agorapos.com/feed/	2026-10-11·部署后核对	停用	规则 6：档案和内容都通过，本机能读，但从服务器读订阅时对方直接断开连接（程序里是 other side closed，curl 是 HTTP/2 PROTOCOL_ERROR，两次都一样），是对方按服务器的网络地址挡的。不用代理，停用并从来源清单拿掉。

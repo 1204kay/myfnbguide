@@ -32,6 +32,8 @@ export const PART_BYTES = { max: 24 * 1024 * 1024 };
  * Episodes to transcribe next, of sources still collected (one stopped for its terms is not read again): with an audio file and not done; from the archive those whose notes scored at least the
  * understand floor, and every new episode that passed the prefilter, listed or still waiting for its content (notes
  * that only say what the episode will discuss get no summary and wait, prompts/content-understanding.md), first.
+ * Those whose host published a transcript come before all: reading one is not paid and not rate-limited, and while
+ * the speech service turned the first few away (10/10, a day's ceiling) the same few were asked again every run.
  * A failure is tried again once the model is another than the one it failed with (its error starts with that model).
  */
 export async function episodesToTranscribe(limit: number): Promise<string[]> {
@@ -42,7 +44,7 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
     JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
     WHERE (e.audio_url IS NOT NULL OR e.transcript_url IS NOT NULL) AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')))
       AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${SPEECH.model}:%`}))
-    ORDER BY a.backfill, n.score DESC, a.published_at DESC LIMIT ${limit}`;
+    ORDER BY e.transcript_url IS NULL, a.backfill, n.score DESC, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }
 

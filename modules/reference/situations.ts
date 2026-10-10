@@ -350,4 +350,6 @@ export const OWNERS: Record<string, string> = {
   "pod-bar-pod": "桑达斯基的两家酒吧",
   "pod-coffee-and-cows": "得克萨斯州一家咖啡店",
   "pod-de-brandherd-esskultur": "汉堡一家餐厅",
+  "pod-pizza-king": "佛罗里达州一家披萨店",
+  "pod-baker-and-farmer": "一家农场面包店",
 };

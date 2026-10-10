@@ -1,5 +1,6 @@
 // An episode's transcript for the writers: the one its host published is read where the feed names one; else the
-// audio goes to a speech model (Whisper, at Groq) and comes back as the spoken text. Either way it becomes the
+// audio goes to a speech model (Whisper, at Groq; a backlog may be run with the same model elsewhere and stored with
+// import-transcripts.ts) and comes back as the spoken text. Either way it becomes the
 // article's body (a new revision, analysed again). The transcript is read by the
 // models only; readers see the site's own summary and story, never the full text (site_fulltext is off).
 // The call goes through the engine's receipts and budget, and it is not made while the service has no
@@ -125,6 +126,22 @@ export interface TranscribeResult {
   error?: string;
 }
 
+type EpisodeRow = { source_id: string; url: string; identity_key: string; title: string };
+
+/**
+ * An episode's transcript becomes its article's body: same identity, same source, a new revision analysed again.
+ * Shared by the host's transcript, the speech model's, and transcripts made elsewhere with the same model
+ * (import-transcripts.ts), so each enters the same way.
+ */
+export async function storeTranscript(articleId: string, row: EpisodeRow, text: string, receiptId: number | null = null): Promise<void> {
+  await sql.begin(async (tx) => {
+    await upsertMaterial({ sourceId: row.source_id, url: row.url, identityKey: row.identity_key, title: row.title, bodyText: text, bodyStatus: "ok", via: "archive" }, tx);
+    await tx`UPDATE archive_episodes SET status = 'transcribed', transcript_chars = ${text.length}, receipt_id = ${receiptId}, error = NULL, updated_at = now() WHERE article_id = ${articleId}`;
+    if (receiptId !== null) await completeReceipt(tx, receiptId);
+  });
+  await queueProcessing(articleId);
+}
+
 /**
  * Makes an episode's transcript its body; the engine analyses the new revision. The transcript its host already made
  * is read where the feed names one (nothing is paid and no audio leaves for a model); else the audio is transcribed.
@@ -140,11 +157,7 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
     const file = await guardedFetch(row.transcript_url, { timeoutMs: 60_000, maxBytes: 10 * 1024 * 1024, maxRedirects: 5 }).catch(() => null);
     const text = file?.status === 200 ? transcriptText(file.text()) : "";
     if (text.length >= 200) {
-      await sql.begin(async (tx) => {
-        await upsertMaterial({ sourceId: row.source_id, url: row.url, identityKey: row.identity_key, title: row.title, bodyText: text, bodyStatus: "ok", via: "archive" }, tx);
-        await tx`UPDATE archive_episodes SET status = 'transcribed', transcript_chars = ${text.length}, error = NULL, updated_at = now() WHERE article_id = ${articleId}`;
-      });
-      await queueProcessing(articleId);
+      await storeTranscript(articleId, row, text);
       return { status: "transcribed", chars: text.length };
     }
   }
@@ -168,13 +181,7 @@ export async function transcribeEpisode(articleId: string): Promise<TranscribeRe
     );
     const { text } = receipt.response as { text: string };
     if (text.length < 200) throw new Error(`transcript too short (${text.length} chars)`);
-    await sql.begin(async (tx) => {
-      // Same identity, same source: a new revision of the article, analysed again from the transcript.
-      await upsertMaterial({ sourceId: row.source_id, url: row.url, identityKey: row.identity_key, title: row.title, bodyText: text, bodyStatus: "ok", via: "archive" }, tx);
-      await tx`UPDATE archive_episodes SET status = 'transcribed', transcript_chars = ${text.length}, receipt_id = ${receipt.receiptId}, error = NULL, updated_at = now() WHERE article_id = ${articleId}`;
-      await completeReceipt(tx, receipt.receiptId);
-    });
-    await queueProcessing(articleId);
+    await storeTranscript(articleId, row, text, receipt.receiptId);
     return { status: "transcribed", chars: text.length };
   } catch (error) {
     const cause = (error as Error).cause;

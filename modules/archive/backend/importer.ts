@@ -52,7 +52,7 @@ export interface ImportResult {
  * One listing of the source: its entries, through the source's own URL and noise filters as the collection applies
  * them, and for a podcast the audio of each episode (the feed read once more: the engine's reader keeps no enclosures).
  */
-async function readListing(source: SourceRow, feedUrl: string, podcast: boolean): Promise<{ listed: number; candidates: Candidate[]; audio: Map<string, { url: string; type: string }> }> {
+async function readListing(source: SourceRow, feedUrl: string, podcast: boolean): Promise<{ listed: number; candidates: Candidate[]; audio: ReturnType<typeof audioByTitle> }> {
   const page = { ...source, config: { ...source.config, feedUrl } };
   const read = await fetchRss(page, { force: true });
   const feed = podcast ? await guardedFetch(feedUrl, { timeoutMs: 60_000, maxBytes: 20 * 1024 * 1024, maxRedirects: 5 }) : null;

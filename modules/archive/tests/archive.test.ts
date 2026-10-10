@@ -1,6 +1,6 @@
 // Failure cases: an opened archive enters today or the daily instead of history; a new episode of a podcast the site
 // collects is never kept for transcription, or waits behind the archive; an archive episode is transcribed though
-// its notes scored below the floor, or while the service has no budget row; the transcript does not become the
+// its notes scored below the floor and nobody picked it, or while the service has no budget row; the transcript does not become the
 // article's body or is not analysed again; a rate limit marks an episode failed for good; an archive that names
 // its picks takes in others.
 import { tag } from "../../../tests/setup.ts";
@@ -15,7 +15,7 @@ const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, noteNewEpisodes, PACE } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
-const { episodesToTranscribe, PART_BYTES, SERVICE, SPEECH, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
+const { episodesToTranscribe, PART_BYTES, PICKED, SERVICE, SPEECH, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
 
 const T = tag();
 const SOURCE = `archive-${T}`;
@@ -88,8 +88,8 @@ test("each episode's audio is found by its title", () => {
 test("an opened archive comes in as history, and only episodes whose notes score at the floor are transcribed", async () => {
   const result = await importSource({ id: SOURCE });
   assert.deepEqual([result.found, result.created, result.withAudio, result.finished], [3, 3, 3, true]);
-  const rows = await sql<{ id: string; title: string; backfill: boolean; backfill_reason: string; audio_url: string }[]>`
-    SELECT a.id, a.title, a.backfill, a.backfill_reason, e.audio_url FROM articles a JOIN archive_episodes e ON e.article_id = a.id WHERE a.source_id = ${SOURCE} ORDER BY a.title`;
+  const rows = await sql<{ id: string; url: string; title: string; backfill: boolean; backfill_reason: string; audio_url: string }[]>`
+    SELECT a.id, a.url, a.title, a.backfill, a.backfill_reason, e.audio_url FROM articles a JOIN archive_episodes e ON e.article_id = a.id WHERE a.source_id = ${SOURCE} ORDER BY a.title`;
   assert.ok(rows.every((r) => r.backfill && r.backfill_reason === "archive"), "history: not today, not in the daily");
   assert.deepEqual(rows.map((r) => r.audio_url), [1, 2, 3].map((n) => `${BASE}/audio/${n}.mp3`));
   assert.deepEqual((await importSource({ id: SOURCE })).created, 0, "a second import adds nothing");
@@ -100,6 +100,12 @@ test("an opened archive comes in as history, and only episodes whose notes score
     await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${row.id}, 1, 'rule', 'pass', ${score}, false)`;
   }
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
+  // One picked by hand is transcribed though its notes scored below the floor, unless the prefilter blocked it.
+  PICKED.add(low!.url);
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id, low!.id]);
+  await sql`UPDATE analyses SET relevance = 'block' WHERE article_id = ${low!.id}`;
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
+  PICKED.delete(low!.url);
   await sql`UPDATE sources SET enabled = false WHERE id = ${SOURCE}`;
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [], "a stopped source is not transcribed");
   await sql`UPDATE sources SET enabled = true WHERE id = ${SOURCE}`;

@@ -2277,6 +2277,279 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-agora-pos",
+      "name": "Ágora 博客（西班牙 · 收银系统公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.agorapos.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "西班牙",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-barguard",
+      "name": "BarGuard 博客（美国 · 酒吧库存软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://barguard.app/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-exactpour",
+      "name": "ExactPour 博客（美国 · 酒吧库存软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://exactpour.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-foodship",
+      "name": "Foodship 博客（澳大利亚 · 线上点餐和收银软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://foodship.com.au/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "澳大利亚",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-genius-food-purchasing",
+      "name": "Genius Food Purchasing 博客（美国 · 餐厅采购比价软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://geniusfoodpurchasing.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-glimpse",
+      "name": "Glimpse 博客（美国 · 酒吧和餐厅损耗监控公司的旧博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.glimpsecorp.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-gopos",
+      "name": "GoPOS 博客（波兰 · 收银系统公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://gopos.pl/blog/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "波兰",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-koust",
+      "name": "Koust 博客（法国 · 餐饮库存和成本软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://koust.net/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "法国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-teamsystem-horeca",
+      "name": "TeamSystem Horeca 杂志（意大利 · 收银和管理软件公司的栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.teamsystem.com/magazine/horeca/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "意大利",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-tiller",
+      "name": "Tiller 博客（法国 · 收银系统公司的旧博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.tillersystems.com/fr/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "法国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-typemenu",
+      "name": "TypeMenu 博客（英国 · 外卖店线上点餐软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://typemenu.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-yumapos",
+      "name": "YUMA POS 博客（英国 · 收银系统公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://yumapos.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-sischef",
+      "name": "Sischef 博客（巴西 · 收银系统公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sischef.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "巴西",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

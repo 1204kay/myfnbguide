@@ -27,7 +27,11 @@ const UA = "Mozilla/5.0 (compatible; MyFnBBot/1.0; +https://new.myfnbguide.com/a
 const ai = new Set(Object.keys(await (await fetch(AGENTS_URL, { signal: AbortSignal.timeout(20000) })).json()).map((n) => n.toLowerCase()).filter((n) => !GENERAL.has(n)));
 const { sources } = JSON.parse(readFileSync(process.argv[2] ?? new URL("../industry/sources.json", import.meta.url), "utf8"));
 
-/** robots.txt groups: the agents a group names and its allow/disallow rules. */
+/**
+ * robots.txt groups: the agents a group names and its allow/disallow rules. A group ends at its first rule line,
+ * an empty one too: "User-agent: *", "Disallow:" (everything allowed) and then a group of named crawlers were read
+ * as one group until 10/11, and the named crawlers' rules counted against every crawler.
+ */
 function groups(text) {
   const out = [];
   let cur = null;
@@ -35,8 +39,8 @@ function groups(text) {
     const m = raw.replace(/#.*/, "").trim().match(/^([A-Za-z-]+)\s*:\s*(.*)$/);
     if (!m) continue;
     const k = m[1].toLowerCase(), v = m[2].trim();
-    if (k === "user-agent") { if (!cur || cur.rules.length) out.push((cur = { agents: [], rules: [] })); cur.agents.push(v.toLowerCase()); }
-    else if (cur && (k === "allow" || k === "disallow") && v) cur.rules.push([k, v]);
+    if (k === "user-agent") { if (!cur || cur.ruled) out.push((cur = { agents: [], rules: [], ruled: false })); cur.agents.push(v.toLowerCase()); }
+    else if (cur && (k === "allow" || k === "disallow")) { cur.ruled = true; if (v) cur.rules.push([k, v]); }
   }
   return out;
 }

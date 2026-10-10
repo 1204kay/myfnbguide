@@ -28,6 +28,6 @@ export const ARCHIVE: ArchivePlan[] = [
   { id: "rss-yoshitencho", pages: { url: "https://yoshitencho.com/category/restaurant/feed?paged={n}", to: 14 } },
   // Owners' podcasts: old episodes picked one by one from titles and notes before any model was paid (owners' own
   // stories and methods; not news, vendors, chains' growth, chat or the craft of coffee and bread): 278 of 1,223 on
-  // 10/5, 220 of 1,014 of fourteen more shows on 10/10.
+  // 10/5, 220 of 1,014 of fourteen more shows and 227 of 977 of twenty-six from the whole index on 10/10.
   ...Object.entries(PICKS).map(([id, picks]) => ({ id, only: picks.map((p) => p.url) })),
 ];

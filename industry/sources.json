@@ -1545,28 +1545,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-the-story-behind-riyadh",
-      "name": "The Story Behind حكاية مطعم（沙特阿拉伯 · 利雅得餐厅和咖啡店创办人访谈）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.buzzsprout.com/1438210.rss",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "tags": [
-        "沙特阿拉伯",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-vegan-east",
       "name": "Vegan East Podcast（美国 · 纯素烘焙店老板的播客）",
       "kind": "rss",
@@ -1891,28 +1869,6 @@
       "interval_minutes": 240,
       "tags": [
         "埃及",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-fr-ton-coeur-a-ma-table",
-      "name": "Ton coeur à ma table（法国 · 餐饮店老板访谈播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://feed.ausha.co/pJjrQU8LVaPk",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "tags": [
-        "法国",
         "播客"
       ],
       "site_fulltext": false,

@@ -33,7 +33,8 @@ export const PART_BYTES = { max: 24 * 1024 * 1024 };
 /**
  * Archive episodes picked one by one from their titles and notes (picks.json): judged worth hearing before any model
  * was paid, so the notes' score does not hold them back. On 10/11, 323 picked episodes sat below the floor, most from
- * shows whose notes are a title and a line (79 of Your Life and Restaurant's), which the scorer reads as thin material.
+ * shows whose notes are a title and a line (79 of Your Life and Restaurant's), which the scorer reads as thin material;
+ * 51 more had no score at all (notes too thin for a summary, which the analysis then refuses three times).
  */
 export const PICKED = new Set(ARCHIVE.flatMap((p) => p.only ?? []));
 
@@ -50,11 +51,11 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
     SELECT e.article_id AS id FROM archive_episodes e
     JOIN articles a ON a.id = e.article_id
     JOIN sources s ON s.id = a.source_id AND s.enabled
-    JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
+    LEFT JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
     WHERE (e.audio_url IS NOT NULL OR e.transcript_url IS NOT NULL)
-      AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')) OR (a.url = ANY(${[...PICKED]}::text[]) AND n.relevance <> 'block'))
+      AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')) OR (a.url = ANY(${[...PICKED]}::text[]) AND n.relevance IS DISTINCT FROM 'block'))
       AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${SPEECH.model}:%`}))
-    ORDER BY e.transcript_url IS NULL, a.backfill, n.score DESC, a.published_at DESC LIMIT ${limit}`;
+    ORDER BY e.transcript_url IS NULL, a.backfill, n.score DESC NULLS LAST, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }
 

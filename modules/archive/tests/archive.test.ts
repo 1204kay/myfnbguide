@@ -100,12 +100,13 @@ test("an opened archive comes in as history, and only episodes whose notes score
     await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${row.id}, 1, 'rule', 'pass', ${score}, false)`;
   }
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
-  // One picked by hand is transcribed though its notes scored below the floor, unless the prefilter blocked it.
-  PICKED.add(low!.url);
-  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id, low!.id]);
+  // Picked by hand: transcribed though its notes scored below the floor or have no score, unless the prefilter blocked it.
+  const unscored = rows[2]!;
+  PICKED.add(low!.url).add(unscored.url);
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id, low!.id, unscored.id]);
   await sql`UPDATE analyses SET relevance = 'block' WHERE article_id = ${low!.id}`;
-  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
-  PICKED.delete(low!.url);
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id, unscored.id]);
+  PICKED.clear();
   await sql`UPDATE sources SET enabled = false WHERE id = ${SOURCE}`;
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [], "a stopped source is not transcribed");
   await sql`UPDATE sources SET enabled = true WHERE id = ${SOURCE}`;

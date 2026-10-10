@@ -2005,6 +2005,216 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ehrl",
+      "name": "Eesti Hotellide ja Restoranide Liit（爱沙尼亚 · 酒店餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ehrl.ee/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "爱沙尼亚",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-horesca-lu",
+      "name": "HORESCA（卢森堡 · 酒店餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.horesca.lu/actualites/news?format=feed&type=rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "卢森堡",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-abl-usa",
+      "name": "American Beverage Licensees（美国 · 酒吧协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ablusa.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-cosboa",
+      "name": "COSBOA（澳大利亚 · 小企业协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cosboa.org.au/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "澳大利亚",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-lva-ireland",
+      "name": "Licensed Vintners Association（爱尔兰 · 酒吧协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.lva.ie/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "爱尔兰",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-anr-brasil",
+      "name": "ANR Associação Nacional de Restaurantes（巴西 · 餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://anrbrasil.org.br/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "巴西",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-fbha",
+      "name": "FBHA（巴西 · 酒店餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://fbha.portaldocomercio.org.br/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "巴西",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-aberc",
+      "name": "ABERC（巴西 · 团餐协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://aberc.com.br/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "巴西",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-uk-fsa-news",
+      "name": "Food Standards Agency（英国 · 食品安全主管机构）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gov.uk/search/news-and-communications.atom?organisations[]=food-standards-agency",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "英国",
+        "政府"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-uk-low-pay-commission",
+      "name": "Low Pay Commission（英国 · 最低工资机构）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gov.uk/government/organisations/low-pay-commission.atom",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "英国",
+        "政府"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

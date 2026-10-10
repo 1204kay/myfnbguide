@@ -9013,3 +9013,368 @@ u1010-cooked-with-eric-reed	Cooked with Eric Reed（美国 · 厨房设备厂商
 u1010-the-ontrade-show	The OnTrade Show（英国 · 英国夜间经济行业的人物访谈）	https://rss.buzzsprout.com/2606589.rss	2026-10-10·播客全集·顾问与媒体	不接	数量多的类别只接内容强的。评级：弱。夜店、品牌和艺人的访谈，另有酒商赞助的环节，没有经营做法。11 集（2026-04-16 至 2026-09-11），估计能出必看或可看的：约 1 集；主持人：Justin Wingate（订阅的作者栏）；英语；11 集带现成文字稿。没有建档案。
 pod-mad-food-critic	The Mad Food Critic（美国 · 在餐饮业四十多年的从业者对餐厅老板谈进货、培训和经营）	https://rss.buzzsprout.com/2616769.rss	2026-10-10·播客全集·顾问与媒体	接入	- **作者**：Will Bryce，自称在餐饮业四十多年，种过菜、开过餐厅、做过设计、经纪人和培训。依据只有订阅的节目简介：「I have been on all sides of the industry, grower, restaurant owner, designer, broker, trainer, written training programs for front of house as well as back of house」。没有自己的网站，写明他身份的其他页面没有读到。节目页 https://www.buzzsprout.com/2616769 。 - **订阅**：https://rss.buzzsprout.com/2616769.rss - **数量**：19 集，2026-05-10 至 2026-09-27，每周一集，仍在更新；每集 11–27 分钟（中位 19 分钟），合计约 6 小时。简介只有两三句（中位约 250 字符）；19 集都带 podcast:transcript（www.buzzsprout.com，实测能取到），可以不转写；条目没有 <link>。 - **内容判断**：强。逐个看 19 个标题并读了一集文字稿（「Your Distributor Is Not Your Bank」：库存就是现金，只需要 12,000 美元的货却压了 20,000 美元，冷库停电的损失，14 页的菜单）：约 13 集各对餐厅老板谈一件事（不要拿分销商当银行、定安全库存免得货车晚到、培训不是告诉新人叉子放哪里、全体员工都要尝过菜、不要盯着竞争对手、广告怎样做才不亏、开一家还是开几家、店的定位），开头 4 集是分销商和销售代表这一行的内情，另有 1 集写给食客（鲶鱼的产地）。估计必看 4–6 集、可看 8–9 集，合计 12–14 集（约 65%–70%）。 - **代表标题**：1. YOUR DISTRIBUTOR IS NOT YOUR BANK 2. DUDE!! WHERE'S MY TRUCK? 3. TRAINING IS NOT SHOWING THEM WHERE THE FORKS GO 4. YOUR WHOLE STAFF MUST TASTE YOUR FOOD 5. ONE LOCATION OR MULTIPLE? - ① 主机：订阅 rss.buzzsprout.com；音频 www.buzzsprout.com，跳转一次到 audio.buzzsprout.com（用 MyFnBBot 的标识实测最新和最早各一集，都是 206），没有统计前缀；文字稿在 www.buzzsprout.com；没有节目自己的网站。 - ② robots：rss.buzzsprout.com 是 404，www.buzzsprout.com 只禁 /101612.rss，audio.buzzsprout.com 是 403（存储桶不提供这个文件）；都没有点名 AI，没有 Content-Signal，tdmrep 是 404 或 403，响应头没有 tdm-reservation。 - ③ 自己的条款：没有网站，也没有条款页。订阅的 link 是 Buzzsprout 的节目页 https://www.buzzsprout.com/2616769 ，简介里只留了电话和邮箱 themadfoodcritic@gmail.com ；订阅的版权栏「© 2026 The Mad Food Critic」。商业使用：无；只许个人使用：无；自动抓取：无；AI 使用：无；在别处展示摘要或改写：无；要求事先许可：无；违约金：无。 - ④ 托管平台 Buzzsprout：引用账本「2026-10-10·完整档案」的结论（https://www.buzzsprout.com/tos ，条文都是开户播客主的义务，没有针对听众或第三方的商业使用、抓取、AI、转述方面的禁止；可用），本轮没有重读。 - ⑤ 音频主机：同①②。 - **结论：可用。** `check-sources.mjs` 和 `vet-sources.ts` 通过（试抓 19 条）。要留意：是个人的看法和经历，数字是举例，不是统计；主持人的身份只有他自己的说法；节目刚开播五个月，量小。
 u1010-hit-man-don-ward	HIT-MAN Podcast with Don Ward（美国 · 谈酒店布草的物联网和 AI）	https://feeds.blubrry.com/feeds/3958196.xml	2026-10-10·播客全集·顾问与媒体	不接	数量多的类别只接内容强的。评级：弱。每集约 2 分钟，谈酒店布草的物联网追踪和 AI，不是餐饮经营。21 集（2026-06-07 至 2026-07-09），估计能出必看或可看的：0 集；主持人：Don Ward（订阅的作者栏）；英语；8 集带现成文字稿。没有建档案。
+w1010-at-wko-hotellerie	WKO Fachverband Hotellerie（奥地利 · 酒店协会）	https://www.wko.at/branchen/tourismus-freizeitwirtschaft/hotellerie/start.html	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.wko.at/branchen/tourismus-freizeitwirtschaft/hotellerie/start.html
+w1010-at-wko-gastronomie	WKO Fachverband Gastronomie（奥地利 · 餐饮协会）	https://www.wko.at/branchen/tourismus-freizeitwirtschaft/gastronomie/start.html	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.wko.at/branchen/tourismus-freizeitwirtschaft/gastronomie/start.html
+w1010-am-aha	Armenian Hotel Association（亚美尼亚 · 酒店协会）	https://hotelassociation.am/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2023-11-01（要求近 90 天有更新、不少于 5 条）。
+w1010-az-aha	Azerbaijan Hotel Association（阿塞拜疆 · 酒店协会）	https://www.hotelassociation.az/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://hotelassociation.az/media
+w1010-be-horeca-bruxelles	Fédération Horeca Bruxelles（比利时 · 酒店餐饮协会）	https://www.horecabruxelles.be/	2026-10-10·网站类·政府与协会	待定	连不上（CERT_HAS_EXPIRED），没有读到。
+w1010-be-horeca-wallonie	Fédération HoReCa Wallonie（比利时 · 酒店餐饮协会）	https://www.horecawallonie.be/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.horecawallonie.be/presse
+w1010-hr-upuhh	UPUHH（克罗地亚 · 酒店餐饮协会）	https://upuhh.hr/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：酒店业培训和活动通知，约 1/10。
+w1010-cy-cha	Cyprus Hotel Association（塞浦路斯 · 酒店协会）	https://www.cyprushotelassociation.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.cyprushotelassociation.org/news
+w1010-fr-gnc	GNC Groupement National des Chaînes Hôtelières（法国 · 酒店协会）	https://www.gnc-hotels.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.gnc-hotels.com/（网站有 WordPress 接口，可以做成 json_list）
+w1010-fr-ghr	GHR Groupement des Hôtelleries et Restaurations de France（法国 · 酒店餐饮协会）	https://www.gni-hcr.fr/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ghr.fr/presse/
+rss-ehrl	Eesti Hotellide ja Restoranide Liit（爱沙尼亚 · 酒店餐饮协会）	https://ehrl.ee/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 ehrl.ee。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：没有使用条款页，只有隐私和 Cookie 说明 https://ehrl.ee/privaatsuspoliitika-ja-kupsised/ （全文没有关于内容使用的句子），/kasutustingimused/、/tingimused/ 是 404；首页没有版权行。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自建 WordPress，不适用。⑤ 不适用。内容：最近 10 条里 5–6 条是餐饮业的消息（餐饮增值税下调的议会讨论、餐馆关店、行业状况的新闻稿），其余是酒店入住和旅游奖学金。等级：一般。每 30 天约 2 条。
+w1010-de-iha	Hotelverband Deutschland (IHA)（德国 · 酒店协会）	https://www.hotellerie.de/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.hotellerie.de/news
+w1010-gr-hch	Hellenic Chamber of Hotels（希腊 · 酒店协会）	https://www.grhotels.gr/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：酒店商会的预算执行和招标公告，约 1/10。
+w1010-it-federalberghi	Federalberghi（意大利 · 酒店协会）	https://www.federalberghi.it/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.federalberghi.it/menu/ufficio-stampa.aspx
+w1010-hu-hah	Hungarian Hotel & Restaurant Association（匈牙利 · 酒店餐饮协会）	https://www.hah.hu/en	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.hah.hu/en
+w1010-ie-ihf	Irish Hotels Federation（爱尔兰 · 酒店协会）	https://www.ihf.ie/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2025-01-17（要求近 90 天有更新、不少于 5 条）。
+w1010-lv-ahrl	Association of Latvian Hotels and Restaurants（拉脱维亚 · 酒店餐饮协会）	http://www.hotels-restaurants.lv/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-lt-lvra	LVRA（立陶宛 · 酒店餐饮协会）	https://lvra.lt/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-05-05（要求近 90 天有更新、不少于 5 条）。
+rss-horesca-lu	HORESCA（卢森堡 · 酒店餐饮协会）	https://www.horesca.lu/actualites/news?format=feed&type=rss	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 www.horesca.lu。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：没有使用条款页；页脚只有托管在 iubenda 的隐私政策和 Cookie 政策（https://www.iubenda.com/privacy-policy/26925870 ，只讲个人数据），/mentions-legales、/conditions-generales 是 404；页脚有「©」。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自建 Joomla，不适用。⑤ 不适用。内容：订阅只有 6–8 条，其中 4 条是给店家的通知（气候补贴、投资补助、开立对公账户、银行收款），其余是活动。等级：一般。每 30 天约 6 条。
+w1010-mt-mhra	Malta Hotels and Restaurants Association（马耳他 · 酒店餐饮协会）	https://mhra.org.mt/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2021-03-06（要求近 90 天有更新、不少于 5 条）。
+w1010-nl-khn	Koninklijke Horeca Nederland（荷兰 · 酒店餐饮协会）	https://www.khn.nl/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-pl-ighp	IGHP（波兰 · 酒店协会）	https://www.ighp.pl/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ighp.pl/aktualnosci
+w1010-pt-aphort	APHORT（葡萄牙 · 酒店餐饮协会）	http://www.aphort.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://aphort.com/noticias/（网站有 WordPress 接口，可以做成 json_list）
+w1010-ro-fihr	FIHR（罗马尼亚 · 酒店协会）	https://fihr.ro/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：活动和课程通知，0/10。
+w1010-sk-ahrs	AHRS（斯洛伐克 · 酒店餐饮协会）	https://www.ahrs.sk/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://ahrs.sk/kategoria/novinky/（网站有 WordPress 接口，可以做成 json_list）
+w1010-si-tgzs	TGZS（斯洛文尼亚 · 酒店餐饮协会）	https://tgzs.si/sl/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：旅游业，约 1/10；近 90 天 2 条。
+w1010-es-cehat	CEHAT（西班牙 · 酒店协会）	https://cehat.com/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：酒店业，餐饮 0/10；近 90 天 1 条。
+w1010-es-cehe	Hostelería de España（西班牙 · 餐饮协会）	https://www.cehe.es/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.cehe.es/
+w1010-is-saf	SAF（冰岛 · 旅游业协会）	https://saf.is/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：旅游业的政策表态，餐饮 0/10。
+w1010-li-lhgv	LHGV（列支敦士登 · 酒店餐饮协会）	https://www.lhgv.li/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.lhgv.li/news
+w1010-ge-horeka	HOREKA Georgia（格鲁吉亚 · 酒店餐饮协会）	https://www.horeka.ge/ka/news-ge?format=feed&type=rss	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：6 条，最新一条 2024-11-07（要求近 90 天有更新、不少于 5 条）。
+w1010-ch-hotelleriesuisse	HotellerieSuisse（瑞士 · 酒店协会）	https://www.hotelleriesuisse.ch/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.hotelleriesuisse.ch/de/impressum
+w1010-tr-turob	TÜROB（土耳其 · 酒店协会）	https://www.turob.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.turob.com/tr/haberler/
+w1010-tr-tugev	TUGEV（土耳其 · 旅游基金会）	https://www.icvb.org.tr/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2021-06-10（要求近 90 天有更新、不少于 5 条）。
+w1010-ua-uhra	Ukrainian Hotel and Resort Association（乌克兰 · 酒店协会）	https://uhra.com.ua/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：酒店业的考察团和讲座，0/10。
+w1010-ar-aamf	AAMF（阿根廷 · 加盟协会）	http://www.aamf.com.ar	2026-10-10·网站类·政府与协会	待定	首页返回 202（防机器人的检查页），没有读到。
+w1010-apfc	Asia Pacific Franchise Confederation（亚太地区 · 加盟协会）	http://www.franchise-apfc.org	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.franchise-apfc.org
+w1010-tw-acfpt	台灣連鎖加盟促進協會（中国台湾 · 加盟协会）	http://franchise.org.tw/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://franchise.org.tw/
+w1010-be-fbf	Fédération Belge de la Franchise（比利时 · 加盟协会）	https://www.fbf-bff.be/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-02-26（要求近 90 天有更新、不少于 5 条）。
+w1010-br-abf	ABF Associação Brasileira de Franchising（巴西 · 加盟协会）	https://abf.com.br/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟行业的会议和活动，餐饮经营 0/10；robots 另外禁止 /feed/。
+w1010-ve-profranquicias	Profranquicias（委内瑞拉 · 加盟协会）	https://www.profranquicias.org	2026-10-10·网站类·政府与协会	待定	连不上（ERR_TLS_CERT_ALTNAME_INVALID），没有读到。
+w1010-ca-cfa	Canadian Franchise Association（加拿大 · 加盟协会）	https://cfa.ca/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：转载别家媒体的报道超过一成：最近 10 条里至少 7 条文末注明「Source: The Canadian Wire / The Globe & Mail / CBC News」。
+w1010-co-colfranquicias	Colfranquicias（哥伦比亚 · 加盟协会）	https://www.colfranquicias.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2025-06-19（要求近 90 天有更新、不少于 5 条）。
+w1010-hr-fip	Croatian Franchise Association（克罗地亚 · 加盟协会）	https://fip.com.hr/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟企业动态，约 1/10；近 90 天 1 条。
+w1010-cz-caf	Česká asociace franchisingu（捷克 · 加盟协会）	http://www.czech-franchise.cz/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.czech-franchise.cz/
+w1010-eg-efda	Egyptian Franchise Development Association（埃及 · 加盟协会）	https://efda.org.eg/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：7 条，最新一条 2025-09-08（要求近 90 天有更新、不少于 5 条）。
+w1010-ae-efa	Emirates Franchise Association（阿联酋 · 加盟协会）	https://emiratesfranchise.ae/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://emiratesfranchise.ae/news
+w1010-eu-eff	European Franchise Federation（欧洲 · 加盟协会）	https://eff-franchise.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2022-12-23（要求近 90 天有更新、不少于 5 条）。
+w1010-fiaf	Federación Iberoamericana de Franquicias（伊比利亚美洲 · 加盟协会）	http://www.portalfiaf.org	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.portalfiaf.org
+w1010-fr-fff	Fédération Française de la Franchise（法国 · 加盟协会）	https://www.franchise-fff.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-06-11（要求近 90 天有更新、不少于 5 条）。
+w1010-fi-franchising	Suomen Franchising-Yhdistys（芬兰 · 加盟协会）	https://franchising.fi/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟业评奖和纪念日，0/10；近 90 天 1 条。
+w1010-nz-fanz	Franchise Association of New Zealand（新西兰 · 加盟协会）	https://www.franchiseassociation.org.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.franchiseassociation.org.nz/fanz-news
+w1010-za-fasa	Franchise Association of South Africa（南非 · 加盟协会）	https://fasa.co.za/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟业的人物和会议，约 1/14。
+w1010-sg-fla	Franchising and Licensing Association (Singapore)（新加坡 · 加盟协会）	http://www.flasingapore.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.flasingapore.org/
+w1010-gr-franchise	Franchise Association of Greece（希腊 · 加盟协会）	http://www.franchise.org.gr/en/home/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.franchise.org.gr/en/press-releases/（网站有 WordPress 接口，可以做成 json_list）
+w1010-gt-franquicias	Asociación Guatemalteca de Franquicias（危地马拉 · 加盟协会）	https://guatefranquicias.org/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：12 条，最新一条 2026-06-22（要求近 90 天有更新、不少于 5 条）。
+w1010-hu-franchise	Magyar Franchise Szövetség（匈牙利 · 加盟协会）	https://franchise.hu/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟协会的活动通知，0/10。
+w1010-id-afi	Asosiasi Franchise Indonesia（印度尼西亚 · 加盟协会）	http://www.franchiseindonesia.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.franchiseindonesia.org/
+w1010-it-assofranchising	Assofranchising（意大利 · 加盟协会）	https://www.assofranchising.it/news/blog-principale.feed?type=rss	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：9 条，最新一条 2026-05-06（要求近 90 天有更新、不少于 5 条）。
+w1010-jp-jfa	日本フランチャイズチェーン協会（日本 · 加盟协会）	https://www.jfa-fc.or.jp	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.jfa-fc.or.jp
+w1010-kr-ikfa	한국프랜차이즈산업협회（韩国 · 加盟协会）	https://www.ikfa.or.kr	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.ikfa.or.kr
+w1010-my-mfa	Malaysian Franchise Association（马来西亚 · 加盟协会）	https://www.mfa.org.my/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟课程通知，约 1/10；近 30 天 0 条。
+w1010-mx-amf	Asociación Mexicana de Franquicias（墨西哥 · 加盟协会）	https://www.franquiciasdemexico.org.mx/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-03-27（要求近 90 天有更新、不少于 5 条）。
+w1010-cr-franquicias	Centro Nacional de Franquicias Costa Rica（哥斯达黎加 · 加盟协会）	https://www.franquiciascostarricenses.cr/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-nl-nfv	Nederlandse Franchise Vereniging（荷兰 · 加盟协会）	https://www.nfv.nl/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.nfv.nl/news/nieuw-geassocieerd-lid-franchise-connect/（网站有 WordPress 接口，可以做成 json_list）
+w1010-pe-cpf	Cámara Peruana de Franquicias（秘鲁 · 加盟协会）	https://cpfranquicias.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：4 条，最新一条 1990-09-26（要求近 90 天有更新、不少于 5 条）。
+w1010-ph-pfa	Philippine Franchise Association（菲律宾 · 加盟协会）	https://www.pfa.org.ph/blog-feed.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：加盟展会和路演，0/20。
+w1010-pt-apf	Associação Portuguesa de Franchising（葡萄牙 · 加盟协会）	https://associacaofranchising.pt/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：讲加盟的文章，约 2/10；近 90 天 1 条。
+w1010-si-franchise	Franchise Association of Slovenia（斯洛文尼亚 · 加盟协会）	http://www.franchise-slovenia.net/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-se-franchise	Svensk Franchise（瑞典 · 加盟协会）	https://svenskfranchise.se/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：2 条，最新一条 2022-11-25（要求近 90 天有更新、不少于 5 条）。
+w1010-tr-ufrad	UFRAD（土耳其 · 加盟协会）	https://ufrad.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：协会理事会的会议记录，0/10。
+w1010-sv-asfran	ASFRAN（萨尔瓦多 · 加盟协会）	http://www.asfran.com	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-us-st-alabama	Alabama Restaurant & Hospitality Alliance（美国 · 州餐饮协会）	https://arhaonline.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：3 条，最新一条 2025-01-30（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-alaska	Alaska Cabaret, Hotel, Restaurant and Retailers Association（美国 · 州餐饮协会）	http://www.alaskacharr.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.alaskacharr.com/news/job-postings
+w1010-us-st-arkansas	Arkansas Restaurant Association（美国 · 州餐饮协会）	http://www.arhospitality.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.arhospitality.org/
+w1010-us-st-delaware	Delaware Restaurant Association（美国 · 州餐饮协会）	https://www.delawarerestaurant.org/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：3 条，最新一条 2024-09-15（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-district-of-columbia	Restaurant Association of Metropolitan Washington（美国 · 州餐饮协会）	https://www.ramw.org/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2024-11-11（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-idaho	Idaho Lodging Restaurant Association（美国 · 州餐饮协会）	https://ilra.org/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：1 条，最新一条 2024-01-30（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-indiana	Indiana Restaurant & Lodging Association（美国 · 州餐饮协会）	http://www.inrla.org/	2026-10-10·网站类·政府与协会	待定	首页返回 202（防机器人的检查页），没有读到。
+w1010-us-st-kansas	Kansas Restaurant & Hospitality Association（美国 · 州餐饮协会）	http://www.krha.org/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-st-maine	Hospitality Maine（美国 · 州餐饮协会）	http://www.hospitalitymaine.com/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-st-minnesota	Hospitality Minnesota（美国 · 州餐饮协会）	http://www.hospitalityminnesota.com	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.hospitalityminnesota.com/news/（网站有 WordPress 接口，可以做成 json_list）
+w1010-us-st-mississippi	Mississippi Hospitality & Restaurant Association（美国 · 州餐饮协会）	http://www.msra.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.msra.org/
+w1010-us-st-montana	Montana Restaurant Association（美国 · 州餐饮协会）	http://www.mtrestaurant.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.mtrestaurant.com/
+w1010-us-st-nebraska	Nebraska Hospitality Association（美国 · 州餐饮协会）	https://www.nebraskahospitality.org/blog-feed.xml	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：6 条，最新一条 2022-08-08（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-new-hampshire	New Hampshire Lodging & Restaurant Association（美国 · 州餐饮协会）	https://www.nhlra.com/blog-feed.xml	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：3 条，最新一条 2023-03-31（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-north-dakota	North Dakota Hospitality Association（美国 · 州餐饮协会）	https://ndhospitality.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：8 条，最新一条 2020-03-30（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-oregon	Oregon Restaurant & Lodging Association（美国 · 州餐饮协会）	https://www.oregonrla.org/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：3 条，最新一条 2024-09-15（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-puerto-rico	Puerto Rico Restaurant Association (ASORE)（美国 · 州餐饮协会）	https://asorepr.com/feed/	2026-10-10·网站类·政府与协会	不接	规则 4（只许个人使用）：条款页 https://asorepr.com/terms/ 写「You may access this from asorepr.com for your own personal use subjected to restrictions set in these terms and conditions」，并禁止「Reproduce, duplicate or copy material」「Redistribute content」。内容约 7/10（食品安全做法、政府补助、停水和应急安排），robots 通过。
+w1010-us-st-south-dakota	South Dakota Retailers Association Restaurant Division（美国 · 州餐饮协会）	http://www.sdra.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.sdra.org/
+w1010-us-st-tennessee	Hospitality Tennessee（美国 · 州餐饮协会）	https://www.hospitalitytn.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.tnhta.org/news/webinar-recordings
+w1010-us-st-utah	Utah Restaurant Association（美国 · 州餐饮协会）	https://utahrestaurantassociation.org/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：8 条，最新一条 2025-12-29（要求近 90 天有更新、不少于 5 条）。
+w1010-us-st-vermont	Vermont Chamber of Commerce Hospitality Division（美国 · 州餐饮协会）	https://www.vtchamber.com/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：佛蒙特州商会的综合政策讨论，餐饮 0/10，营商成本约 4/10。
+w1010-us-st-west-virginia	West Virginia Hospitality & Travel Association（美国 · 州餐饮协会）	http://www.wvhta.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 http://www.wvhta.com/
+w1010-us-st-wyoming	Wyoming Hospitality & Travel Coalition（美国 · 州餐饮协会）	https://www.wyohtc.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.wyohtc.org/
+w1010-it-angem	ANGEM（意大利 · 团餐协会）	https://www.angem.it/feed/	2026-10-10·网站类·政府与协会	待定	可用但暂不接：更新太少。近 90 天只有 1 条，上一条是 11 个月以前。内容对路（团餐业的招标、调价、劳资协议，约 7/10），robots 通过，网站没有条款页（只有隐私和 Cookie 政策，页脚「Copyright © 2021 Angem … Tutti i diritti riservati」）。
+w1010-at-gv-austria	GV Austria（奥地利 · 团餐协会）	https://gv-austria.at/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2021-05-31（要求近 90 天有更新、不少于 5 条）。
+w1010-es-foodservice-espana	Food Service España（西班牙 · 团餐协会）	http://www.foodserviceespana.com/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-no-nho-sh	NHO Service og Handel（挪威 · 团餐协会）	https://www.nhosh.no/rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：服务业和零售业的综合协会（保安、清洁、派遣），餐饮约 2/20。
+w1010-fr-snrc	SNRC（法国 · 团餐协会）	https://www.snrc.fr/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：2 条，最新一条 2023-04-03（要求近 90 天有更新、不少于 5 条）。
+w1010-hu-vimosz	VIMOSZ（匈牙利 · 团餐协会）	http://www.vimosz.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.vimosz.org/news/
+w1010-be-comeos	Comeos · Unie Belgische Catering（比利时 · 团餐协会）	https://www.comeos.be/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.comeos.be/
+w1010-lu-fedil-catering	FEDIL Catering（卢森堡 · 团餐协会）	http://www.fedil.lu/fr/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://fedil.lu/fr/nos-medias/（网站有 WordPress 接口，可以做成 json_list）
+w1010-int-foodserviceeurope	FoodServiceEurope（国际 · 团餐协会）	https://foodserviceeurope.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://foodserviceeurope.org/news/（网站有 WordPress 接口，可以做成 json_list）
+w1010-int-servingeurope	Serving Europe（国际 · 连锁餐饮协会）	https://servingeurope.com/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：1 条，最新一条 2026-02-19（要求近 90 天有更新、不少于 5 条）。
+w1010-int-wfc	World Franchise Council（国际 · 加盟协会）	https://worldfranchisecouncil.net/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://worldfranchisecouncil.net/（网站有 WordPress 接口，可以做成 json_list）
+w1010-us-irc	Independent Restaurant Coalition（美国 · 餐饮协会）	https://www.independentrestaurantcoalition.com/	2026-10-10·网站类·政府与协会	待定	连不上（The operation was aborted due to timeout），没有读到。
+w1010-us-restaurant-law-center	Restaurant Law Center（美国 · 餐饮协会）	https://restaurantlawcenter.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://restaurantlawcenter.org/news/（网站有 WordPress 接口，可以做成 json_list）
+w1010-us-mfha	Multicultural Foodservice & Hospitality Alliance（美国 · 餐饮协会）	https://mfha.net/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2021-06-14（要求近 90 天有更新、不少于 5 条）。
+w1010-us-aba-bakers	American Bakers Association（美国 · 烘焙协会）	https://americanbakers.org/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：烘焙工厂协会的会议、人事和表彰，约 1/10。
+w1010-us-rba	Retail Bakers of America（美国 · 烘焙协会）	https://www.retailbakersofamerica.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.retailbakersofamerica.org/blogs
+w1010-us-nca-coffee	National Coffee Association（美国 · 咖啡协会）	https://www.ncausa.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ncausa.org/Newsroom
+w1010-us-nfta	National Food Truck Association（美国 · 餐车协会）	https://www.nationalfoodtrucks.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://nationalfoodtrucks.org/news
+rss-abl-usa	American Beverage Licensees（美国 · 酒吧协会）	https://ablusa.org/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 ablusa.org。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：没有条款页和隐私页（首页没有法律类链接，/terms-of-use/、/privacy-policy/ 是 404）；页脚「Copyright © 2026 | American Beverage Licensees」。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自建 WordPress，不适用。⑤ 不适用。内容：最近 12 条里 6 条是影响酒吧和酒类零售店的立法表态（取消一美分硬币后的找零规则、美加酒类关税、饮料监管对等法案、零售盗窃法案），其余是年会和评奖。等级：一般。每 30 天约 2 条。
+w1010-us-usbg	United States Bartenders' Guild（美国 · 酒吧协会）	https://www.usbg.org/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：调酒比赛和人事，0/10；近 30 天 0 条。
+w1010-us-ica	International Caterers Association（美国 · 外烩协会）	https://www.internationalcaterers.org/index.php?option=com_dailyplanetblog&task=feed&type=rss&format=feed	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 3/10，其余是评奖；近 90 天 2 条。
+w1010-us-nace	National Association for Catering and Events（美国 · 外烩协会）	https://www.nace.net/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：评奖和人事，约 1/14；近 90 天 2 条。
+w1010-us-nac	National Association of Concessionaires（美国 · 小吃摊协会）	https://naconline.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：人事、评奖和展会，0/10。
+w1010-us-brewers	Brewers Association（美国 · 酒吧协会）	https://www.brewersassociation.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：酿酒技术和酿酒厂经营，和餐饮有关 2/5。
+w1010-us-nicra	National Ice Cream Retailers Association（美国 · 冷饮店协会）	https://www.nicra.org/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-nfib	NFIB（美国 · 小企业协会）	https://www.nfib.com/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-ca-restaurants-canada	Restaurants Canada（加拿大 · 餐饮协会）	https://www.restaurantscanada.org/feed/	2026-10-10·网站类·政府与协会	不接	规则 3、4（只许个人使用）：条款页 https://www.restaurantscanada.org/terms-and-conditions/ 写「No portion of this publication may be reproduced in any form, electronic or otherwise, for any purpose other than personal use without prior written permission of the Restaurants Canada」。内容是这一轮最对路的（最近 10 条里 8 条是餐饮业调查、成本、税费和关税；强；每 30 天约 2 条），robots 通过；可以列入征求同意的名单。
+w1010-ca-mrfa	Manitoba Restaurant & Foodservices Association（加拿大 · 省餐饮协会）	https://www.mrfa.mb.ca/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.mrfa.mb.ca/Newsletters
+w1010-ca-rans	Restaurant Association of Nova Scotia（加拿大 · 省餐饮协会）	https://rans.ca/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 3/10（立法更新、酒吧安全、移民政策），其余是会员介绍、赞助商和高尔夫活动。
+w1010-ca-aha	Alberta Hospitality Association（加拿大 · 省餐饮协会）	https://albertahospitality.ca/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-ca-ablebc	ABLE BC（加拿大 · 酒吧协会）	https://ablebc.ca/industry-updates?format=rss	2026-10-10·网站类·政府与协会	待定	建在 Squarespace 上，平台条款需要主会话定一次（结论适用于全部 Squarespace 网站）：Acceptable Use Policy https://www.squarespace.com/acceptable-use-policy 1.6 写「Don’t access, search or create accounts for the Services by any means other than our publicly supported interfaces (for example, scraping, spidering or crawling)」；Terms of Service 把 Services 定义为 Squarespace 提供的「sites, templates, products, applications, tools, services and features」，没有写明是否包括客户网站对访问者开放的页面和订阅，这一点没有推断。网站自己没有条款页，页脚「© 2025 ABLE BC」；robots 通过。内容：每两周一期给卑诗省酒类持牌店的监管通讯，14/14 对路；一般；每 30 天约 2 条。
+w1010-ca-hospitality-sk	Hospitality Saskatchewan（加拿大 · 省餐饮协会）	https://www.hospitalitysk.ca/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.hospitalitysk.ca/news/employment
+w1010-ca-hnl	Hospitality Newfoundland and Labrador（加拿大 · 省餐饮协会）	https://hnl.ca/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 1 条；10 条里 4 条是招聘，餐饮经营 1/10。
+w1010-ca-baking	Baking Association of Canada（加拿大 · 烘焙协会）	https://www.baking.ca/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：转载别家媒体的报道超过一成：多数条目文末注明来自 Food in Canada、Foodbevy、Bakers Journal 等；robots 另外禁止 /feed/。
+w1010-ca-coffee	Coffee Association of Canada（加拿大 · 咖啡协会）	https://coffeeassoc.com/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 2 条；行业数据约 4/10，其余是理事会人事和年会。
+w1010-au-rca	Restaurant & Catering Australia（澳大利亚 · 餐饮协会）	https://www.restaurantcater.asn.au/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-au-arca	Australian Restaurant & Cafe Association（澳大利亚 · 餐饮协会）	https://arca.asn.au/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-au-aha	Australian Hotels Association（澳大利亚 · 酒吧协会）	https://aha.org.au/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-04-01（要求近 90 天有更新、不少于 5 条）。
+w1010-au-clubs	Clubs Australia（澳大利亚 · 俱乐部协会）	https://clubsaustralia.com.au/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-03-16（要求近 90 天有更新、不少于 5 条）。
+w1010-au-afab	Australian Foodservice Advocacy Body（澳大利亚 · 餐饮协会）	https://www.afab.org.au/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-au-baa	Baking Association of Australia（澳大利亚 · 烘焙协会）	https://www.baa.asn.au/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.baa.asn.au/
+w1010-au-asca	Australian Specialty Coffee Association（澳大利亚 · 咖啡协会）	https://australianspecialtycoffee.com.au/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-au-ntia	Night Time Industries Association（澳大利亚 · 酒吧协会）	https://www.ntia.org.au/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://ntia.org.au/news-media/
+rss-cosboa	COSBOA（澳大利亚 · 小企业协会）	https://cosboa.org.au/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 cosboa.org.au。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：条款页 https://cosboa.org.au/terms-and-conditions/ 只有标题，没有正文（页面源码和 WordPress 接口都读过，正文为空，2026-05-07 修改；互联网档案馆 2026-10-04 的存档里也没有正文）；Privacy Policy 只讲个人信息；首页没有版权行。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自建 WordPress，不适用。⑤ 不适用。内容：最近 10 条全是影响小企业的规定和税费（刷卡附加费禁令、税务局停收信用卡、竞业限制法案、移民配额、罚款），是协会的表态稿，不专指餐饮。等级：一般。每 30 天约 9 条。
+w1010-nz-bianz	Baking Industry Association of New Zealand（新西兰 · 烘焙协会）	https://www.bianz.co.nz/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-nz-sca	New Zealand Specialty Coffee Association（新西兰 · 咖啡协会）	https://nzsca.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：咖啡比赛的结果和赞助商，0/10。
+w1010-uk-bii	British Institute of Innkeeping（英国 · 酒吧协会）	https://www.bii.org/	2026-10-10·网站类·政府与协会	待定	首页返回 202（防机器人的检查页），没有读到。
+w1010-uk-ncass	Nationwide Caterers Association（英国 · 街头小吃协会）	https://www.ncass.org.uk/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 3/10（主办方合同、自雇报税、法律咨询），其余 7 条是会员介绍和员工介绍。
+w1010-uk-ntia	Night Time Industries Association（英国 · 酒吧协会）	https://ntia.co.uk/feed/	2026-10-10·网站类·政府与协会	不接	规则 4（禁止商业利用）：General Terms and Conditions（https://ntia.co.uk/wp-content/uploads/sites/13/2025/06/NTIA-General-Terms-and-Conditions_2025.docx.pdf ）写「You may use our materials for personal, educational, or organisational purposes provided NTIA is credited appropriately and no commercial exploitation occurs」，并禁止未经书面许可「Reproduce, distribute, or commercially exploit content」。内容约 5/10（夜间经济的预算案影响、安保指引、数字身份），robots 通过。
+w1010-uk-slta	Scottish Licensed Trade Association（英国 · 酒吧协会）	https://www.theslta.co.uk/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：1 条，最新一条 2026-04-08（要求近 90 天有更新、不少于 5 条）。
+w1010-uk-hospitality-ulster	Hospitality Ulster（英国 · 酒店餐饮协会）	https://hospitalityulster.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://hospitalityulster.org/news
+w1010-uk-sra	Sustainable Restaurant Association（英国 · 餐饮协会）	https://thesra.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://thesra.org/news-insights/
+w1010-uk-ioh	Institute of Hospitality（英国 · 酒店餐饮协会）	https://www.instituteofhospitality.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 3/12，其余是书评、评奖、播客和会员福利。
+w1010-uk-sandwich	British Sandwich & Food to Go Association（英国 · 外带餐饮协会）	https://www.sandwich.org.uk/	2026-10-10·网站类·政府与协会	待定	连不上（服务器错误），没有读到。
+w1010-uk-btc	British Takeaway Campaign（英国 · 外带餐饮协会）	https://www.britishtakeawaycampaign.co.uk/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.britishtakeawaycampaign.co.uk/
+w1010-uk-cba	Craft Bakers Association（英国 · 烘焙协会）	https://www.craftbakersassociation.co.uk/news?format=rss	2026-10-10·网站类·政府与协会	待定	建在 Squarespace 上，平台条款需要主会话定一次（原文句子见 w1010-ca-ablebc 一行）。网站自己的条款只有会员条款 https://www.craftbakersassociation.co.uk/membership-terms-conditions ，9.1 写网站内容「may not be reproduced in any way without CBA’s prior written consent」（通用的不得转载，约束会员）；robots 通过。内容：最近 14 条里 7 条是给手工面包店的用工和合规指引（每月 HOT TOPIC、押金返还制度问答、25 公斤原料袋的搬运、工会进入工作场所），其余是会员获奖和赞助商；一般；每 30 天约 4 条。
+w1010-uk-fob	Federation of Bakers（英国 · 烘焙协会）	https://www.fob.uk.com/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 1 条，订阅里多数是 2021–2023 年的旧文。
+w1010-uk-bca-coffee	British Coffee Association（英国 · 咖啡协会）	https://britishcoffeeassociation.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 1 条，其余是已经办完的活动，约 1/10。
+w1010-uk-fsb	Federation of Small Businesses（英国 · 小企业协会）	https://www.fsb.org.uk/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.fsb.org.uk/
+w1010-uk-papa	Pizza, Pasta & Italian Food Association（英国 · 餐饮协会）	https://www.papa.org.uk/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.papa.org.uk/
+w1010-uk-bca-caterers	Bangladesh Caterers Association UK（英国 · 餐饮协会）	https://bca1960.com/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 3 条都是协会换届的贺词，其余是 2021 年的旧文。
+w1010-uk-ica	Ice Cream Alliance（英国 · 冷饮店协会）	https://www.ice-cream.org/	2026-10-10·网站类·政府与协会	待定	首页返回 202（防机器人的检查页），没有读到。
+w1010-ie-vfi	Vintners' Federation of Ireland（爱尔兰 · 酒吧协会）	https://vfipubs.ie/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+rss-lva-ireland	Licensed Vintners Association（爱尔兰 · 酒吧协会）	https://www.lva.ie/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 www.lva.ie。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：没有使用条款页。首页的法律类链接只有 Privacy Policy（https://www.lva.ie/privacy-policy/ ，全文只讲个人数据）和 Cookie Policy，/terms-and-conditions/ 等常见路径是 404；页脚「© 2026 Licensed Vintners Association」。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自建 WordPress，不适用。⑤ 不适用。内容：最近 10 条里 8 条是酒吧经营的消息（预算案、消费税、增值税、闭店数字、营业时间、成本）。等级：强。每 30 天约 2 条。协会代表的是都柏林的酒吧。
+w1010-ie-isme	ISME（爱尔兰 · 小企业协会）	https://isme.ie/feed/	2026-10-10·网站类·政府与协会	不接	规则 1：robots.txt 对所有爬虫禁止 /feed/。内容约 9/10（预算案回应、用工法规问答、燃油税），是跨行业的小企业协会。
+w1010-ie-sfa	Small Firms Association（爱尔兰 · 小企业协会）	https://www.sfa.ie/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.sfa.ie/
+w1010-ie-ihi	Irish Hospitality Institute（爱尔兰 · 酒店餐饮协会）	https://www.ihi.ie/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-03-10（要求近 90 天有更新、不少于 5 条）。
+w1010-in-fhrai	FHRAI（印度 · 酒店餐饮协会）	https://www.fhrai.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.fhrai.com/news.aspx
+w1010-in-hrawi	HRAWI（印度 · 酒店餐饮协会）	https://www.hrawi.com/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.hrawi.com/Blog.aspx
+w1010-in-hrani	HRANI（印度 · 酒店餐饮协会）	https://hrani.net.in/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://hrani.net.in/AGM_News.aspx
+w1010-in-sihra	SIHRA（印度 · 酒店餐饮协会）	https://www.sihra.in/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：协会年报和登记表格，0/10。
+w1010-in-hraei	HRAEI（印度 · 酒店餐饮协会）	https://www.hraei.co.in/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2024-11-28（要求近 90 天有更新、不少于 5 条）。
+w1010-in-ahar	AHAR Indian Hotel and Restaurant Association（印度 · 酒店餐饮协会）	https://www.ahar.in/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-01-21（要求近 90 天有更新、不少于 5 条）。
+w1010-in-nasvi	National Association of Street Vendors of India（印度 · 街头小吃协会）	https://nasvinet.org/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：街头摊贩的权益和活动，餐饮经营约 3/10；近 30 天 0 条。
+w1010-sg-snba	Singapore Nightlife Business Association（新加坡 · 酒吧协会）	https://snba.org.sg/feed/	2026-10-10·网站类·政府与协会	待定	可用但暂不接：更新太少。近 90 天 3 条（其中 2 条是活动），近 30 天 0 条。10 条里 5 条对路（外劳准证政策、禁烟标识、驳船码头振兴措施），robots 通过，网站没有条款页（/terms-of-use/、/privacy-policy/ 是 404，页脚「Copyright © 2023 Singapore Nightlife Business Association (SNBA) | All Rights Reserved」）。
+w1010-sg-fmas	Federation of Merchants' Associations Singapore（新加坡 · 小贩和商户协会）	https://www.fmas.org.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.fmas.org.sg/（网站有 WordPress 接口，可以做成 json_list）
+w1010-sg-sbcta	Singapore Bakery & Confectionery Trade Association（新加坡 · 烘焙协会）	https://sbcta.org.sg/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：1 条，最新一条 2025-04-18（要求近 90 天有更新、不少于 5 条）。
+w1010-sg-sca	Singapore Coffee Association（新加坡 · 咖啡协会）	https://www.singaporecoffee.org/	2026-10-10·网站类·政府与协会	待定	连不上（ERR_TLS_CERT_ALTNAME_INVALID），没有读到。
+w1010-sg-asme	Association of Small & Medium Enterprises（新加坡 · 小企业协会）	https://www.asme.org.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.asme.org.sg/newsroom
+w1010-sg-sbf	Singapore Business Federation（新加坡 · 商会）	https://www.sbf.org.sg/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-my-presma	PRESMA 马来西亚印裔穆斯林餐馆业者协会（马来西亚 · 餐饮协会）	https://www.presma.com.my/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-my-primas	PRIMAS 马来西亚印裔餐馆业者协会（马来西亚 · 餐饮协会）	https://www.primas.org.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.primas.org.my/news
+w1010-my-mscspga	马新咖啡店业主总会（马来西亚 · 餐饮协会）	https://www.mscspga.org.my/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-my-mrca	Malaysia Retail Chain Association（马来西亚 · 连锁零售协会）	https://www.mrca.org.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.mrca.org.my/newsarchive
+w1010-my-sme	SME Association of Malaysia（马来西亚 · 小企业协会）	https://smemalaysia.org/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-01-08（要求近 90 天有更新、不少于 5 条）。
+w1010-my-mfbea	Malaysian Food & Beverage Executives Association（马来西亚 · 餐饮协会）	https://www.mfbea.org/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-ph-restoph	Resto PH（菲律宾 · 餐饮协会）	https://restoph.org/	2026-10-10·网站类·政府与协会	待定	连不上（ECONNRESET），没有读到。
+w1010-ph-hrap	Hotel and Restaurant Association of the Philippines（菲律宾 · 酒店餐饮协会）	https://hrap.org.ph/news-update?format=rss	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：20 条，最新一条 2026-05-21（要求近 90 天有更新、不少于 5 条）。
+w1010-ph-affi	Association of Filipino Franchisers（菲律宾 · 加盟协会）	https://affi.com.ph/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://affi.com.ph/
+w1010-id-phri	PHRI（印度尼西亚 · 酒店餐饮协会）	https://www.phrionline.com/	2026-10-10·网站类·政府与协会	待定	连不上（ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR），没有读到。
+w1010-id-apji	APJI 餐饮外烩业协会（印度尼西亚 · 外烩协会）	https://apji.or.id/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：10 条，最新一条 2026-06-02（要求近 90 天有更新、不少于 5 条）。
+w1010-th-tra	Thai Restaurant Association（泰国 · 餐饮协会）	https://www.thairestaurantassociation.org/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-th-tha	Thai Hotels Association（泰国 · 酒店协会）	https://www.thaihotels.org/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.thaihotels.org/
+w1010-th-fla	Franchise and License Association Thailand（泰国 · 加盟协会）	https://www.franchisefla.com/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-vn-vcca	Vietnam Culinary Culture Association（越南 · 餐饮协会）	https://vcca.org.vn/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://vcca.org.vn/
+w1010-vn-vita	Vietnam Tourism Association（越南 · 旅游业协会）	https://vita.vn/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://vita.vn/vi/news.html
+w1010-jp-zeninren	全国飲食業生活衛生同業組合連合会（日本 · 餐饮协会）	https://www.zeninren.or.jp/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-jp-shokudanren	日本飲食団体連合会（日本 · 餐饮协会）	https://shokudanren.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://shokudanren.jp/media
+w1010-jp-souzai	日本惣菜協会（日本 · 熟食协会）	https://www.nsouzai-kyoukai.or.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.nsouzai-kyoukai.or.jp/news/261001/
+w1010-jp-kyushoku	日本給食サービス協会（日本 · 团餐协会）	https://www.jcfs.or.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.jcfs.or.jp/news/index.html
+w1010-jp-bento	日本弁当サービス協会（日本 · 团餐协会）	https://www.bentou-shinkou.or.jp/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-jp-shokuei	日本食品衛生協会（日本 · 食品卫生协会）	https://www.n-shokuei.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.n-shokuei.jp/news/list_info.html
+w1010-jp-seiei	全国生活衛生営業指導センター（日本 · 生活卫生营业指导机构）	https://www.seiei.or.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.seiei.or.jp/
+w1010-jp-scaj	日本スペシャルティコーヒー協会（日本 · 咖啡协会）	https://scaj.org/feed	2026-10-10·网站类·政府与协会	不接	内容尺子不过：杯测讲座的开班通知，0/10。
+w1010-jp-ajca	全日本コーヒー協会（日本 · 咖啡协会）	https://coffee.ajca.or.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://coffee.ajca.or.jp/news/（网站有 WordPress 接口，可以做成 json_list）
+w1010-jp-pan	全日本パン協同組合連合会（日本 · 烘焙协会）	https://www.zenpanren.or.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.zenpanren.or.jp/
+w1010-jp-gateaux	日本洋菓子協会連合会（日本 · 烘焙协会）	https://gateaux.or.jp/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：比赛的书面评审结果，0/10；近 90 天 1 条。
+w1010-kr-foodservice	한국외식업중앙회（韩国 · 餐饮协会）	https://www.foodservice.or.kr/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：1 条，最新一条 2025-04-03（要求近 90 天有更新、不少于 5 条）。
+w1010-kr-kfoodservice	한국외식산업협회（韩国 · 餐饮协会）	https://www.kfoodservice.or.kr/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-kr-kfra	한국휴게음식업중앙회（韩国 · 餐饮协会）	https://www.kfra.or.kr/	2026-10-10·网站类·政府与协会	待定	连不上（SELF_SIGNED_CERT_IN_CHAIN），没有读到。
+w1010-kr-bakery	대한제과협회（韩国 · 烘焙协会）	https://www.bakery.or.kr/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.bakery.or.kr/
+w1010-kr-kfme	소상공인연합회（韩国 · 小企业协会）	https://www.kfme.or.kr/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.kfme.or.kr/
+w1010-za-rasa	Restaurant Association of South Africa（南非 · 餐饮协会）	https://restaurant.org.za/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：4 条，最新一条 2024-10-18（要求近 90 天有更新、不少于 5 条）。
+w1010-za-fedhasa	FEDHASA（南非 · 酒店餐饮协会）	https://fedhasa.co.za/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：10 条里 8 条是「Celebrating Women」人物系列，约 2/10。
+w1010-ae-urg	UAE Restaurants Group（阿联酋 · 餐饮协会）	https://www.uaerestaurantsgroup.com/	2026-10-10·网站类·政府与协会	待定	网址是按机构名写的，域名解析不到，官网地址没有核实。
+w1010-mx-amr	Asociación Mexicana de Restaurantes（墨西哥 · 餐饮协会）	https://www.amr.org.mx/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.amr.org.mx/noticias.phtml
+w1010-mx-canainpa	CANAINPA（墨西哥 · 烘焙协会）	https://www.canainpa.com.mx/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：4 条，最新一条 2023-05-11（要求近 90 天有更新、不少于 5 条）。
+rss-anr-brasil	ANR Associação Nacional de Restaurantes（巴西 · 餐饮协会）	https://anrbrasil.org.br/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 anrbrasil.org.br。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：没有条款页和隐私页（首页没有法律类链接，/termos-de-uso/、/politica-de-privacidade/ 是 404）；页脚「© Copyright 2026, Todos os direitos reservados | ANR | Associação Nacional de Restaurantes」。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自建 WordPress，不适用。⑤ 不适用。内容：最近 10 条里 6 条是餐饮经营的消息（员工餐补计划 PAT 的规则、外卖平台代下单、成本和现金流、圣保罗卫生新规、选举日禁酒规定、库存和需求预测），4 条是招募会员和网络研讨会的宣传。等级：一般。每 30 天约 35 条（10 条覆盖 8 天）。
+rss-fbha	FBHA（巴西 · 酒店餐饮协会）	https://fbha.portaldocomercio.org.br/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 fbha.portaldocomercio.org.br。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：只有一页 https://fbha.portaldocomercio.org.br/politica-de-privacidade/ （链接名「Termos de uso e política de privacidade」），正文只讲隐私和个人数据，没有关于内容使用的句子；/termos-de-uso/ 是 404。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：这个子域在巴西全国商业联合会（CNC）的门户 portaldocomercio.org.br 上，FBHA 是 CNC 的成员；门户主站同样只有隐私政策（https://portaldocomercio.org.br/politica-de-privacidade/ ），/termos-de-uso/ 是 404，页脚「© 2026 Confederação Nacional do Comércio de Bens, Serviços e Turismo (CNC)」，没有约束访问者使用内容的句子。⑤ 不适用。订阅响应头有 X-Robots-Tag: noindex, follow（WordPress 对订阅的默认写法，不是拒绝 AI 的规则）。内容：最近 10 条里 5 条是酒店餐饮业的税费和用工（社保和所得税口径、税制改革、工时、Simples Nacional 期限），其余是旅游活动和下属工会的消息；正好一半。等级：一般。每 30 天约 27 条（10 条覆盖 11 天）。
+w1010-br-abip	ABIP（巴西 · 烘焙协会）	https://www.abip.org.br/site/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 2/10，其余是公益活动、评奖、换届和剪报。
+rss-aberc	ABERC（巴西 · 团餐协会）	https://aberc.com.br/feed/	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 aberc.com.br。② robots：check-sources.mjs 通过（不禁订阅和文章路径，没有点名代用户读内容的 AI，没有 Content-Signal、TDMRep，订阅响应头没有 tdm-reservation）。③ 自己的条款：网站没有条款页，也没有隐私页（首页没有法律类链接，/termos-de-uso/、/politica-de-privacidade/、/aviso-legal/ 都是 404）；页脚「ABERC© - 2026 - Todos os direitos reservados」。 商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可这六项都没有写到，只有通用的版权声明。④ 建站平台：自己的域名，不是 Wix 或 Squarespace，不适用。⑤ 不适用。内容：最近 10 条里 6 条是团餐经营的消息（卫生新规延期、临时用工、取消 6×1 排班的影响、应聘者爽约），其余是展会和播客预告。等级：一般。每 30 天约 1–4 条（近 90 天 4 条，集中在最近 30 天）。
+w1010-ar-ahrcc	AHRCC（阿根廷 · 酒店餐饮协会）	https://ahrcc.org.ar/feed/	2026-10-10·网站类·政府与协会	不接	订阅停更或太少：1 条，最新一条 2025-05-28（要求近 90 天有更新、不少于 5 条）。
+w1010-co-acodres	ACODRES（哥伦比亚 · 餐饮协会）	https://acodres.com.co/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-pe-ahora	AHORA Perú（秘鲁 · 酒店餐饮协会）	https://ahora-peru.com/?feed=rss2	2026-10-10·网站类·政府与协会	不接	内容尺子不过：旅游和酒店的会议、评奖，约 2/10。
+w1010-us-fda	Food and Drug Administration（美国 · 食品安全主管机构）	https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/food-safety-recalls/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：有新闻稿、召回、食品召回三个订阅。新闻稿 14 条里餐饮 0 条（药品和医疗器械）；食品召回 14 条全是零售包装食品，涉及餐饮进货的约 2 条。官网写内容不受版权保护，只因内容不接。
+w1010-us-fsis	USDA Food Safety and Inspection Service（美国 · 食品安全主管机构）	https://www.fsis.usda.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-cdc	Centers for Disease Control and Prevention（美国 · 公共卫生机构）	https://tools.cdc.gov/api/v2/resources/media/285676.rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：疫情通报订阅只有 6 条，食源性疫情 3 条（生乳奶酪、芽菜），其余是麻疹、新冠和宠物龟；新闻订阅是全机构的。
+w1010-us-dol	Department of Labor（美国 · 劳工主管机构）	https://www.dol.gov/rss/releases.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：新闻稿订阅 10 条里餐饮 0 条（建筑安全处罚、失业金周报、工会案件）。
+w1010-us-whd	Wage and Hour Division（美国 · 工资工时主管机构）	https://www.federalregister.gov/api/v1/documents.rss?conditions[agencies][]=wage-and-hour-division	2026-10-10·网站类·政府与协会	不接	工资工时司的新闻稿页 https://www.dol.gov/newsroom/releases/whd 对 MyFnBBot 返回 403，没有单独的订阅；Federal Register 上它的文件订阅只有 3 条，不足 5 条。
+w1010-us-osha	Occupational Safety and Health Administration（美国 · 职业安全主管机构）	https://www.osha.gov/news/newsreleases.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：5 条全是建筑、铁路和洗车业的安全处罚，餐饮 0/5。
+w1010-us-sba	Small Business Administration（美国 · 小企业主管机构）	https://www.sba.gov/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天只有 1 条；10 条里多是表彰和政治表态，给小店的指引 0 条；博客没有订阅。
+w1010-us-irs	Internal Revenue Service（美国 · 税务机构）	https://www.irs.gov/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.irs.gov/newsroom
+w1010-us-census	Census Bureau（美国 · 统计机构）	https://www.census.gov/economic-indicators/indicator.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：经济指标订阅 14 条里只有 1 条（零售和餐饮服务月销售额）和餐饮有关。
+w1010-us-bls	Bureau of Labor Statistics（美国 · 统计机构）	https://www.bls.gov/feed/cpi.rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：CPI 订阅每月 1 条，是全部物价的一句话摘要；就业订阅同样；没有餐饮业的栏目订阅。
+w1010-us-bea	Bureau of Economic Analysis（美国 · 统计机构）	https://apps.bea.gov/rss/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：GDP、国际收支、个人收入的发布，餐饮 0/14。
+w1010-us-ttb	Alcohol and Tobacco Tax and Trade Bureau（美国 · 酒类税务和执照机构）	https://www.ttb.gov/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 1 条；内容是酒类生产商的标签和商业贿赂案，和酒吧餐馆有关 0/5。
+w1010-us-eeoc	Equal Employment Opportunity Commission（美国 · 用工平等主管机构）	https://www.eeoc.gov/rss/newsroom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：就业歧视案件的和解公告，涉及餐饮的 1/14。
+w1010-us-nlrb	National Labor Relations Board（美国 · 劳资关系机构）	https://www.nlrb.gov/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-us-ftc	Federal Trade Commission（美国 · 市场监管机构）	https://www.ftc.gov/feeds/press-release.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：新闻稿 10 条里和小生意有关 2 条；商业博客的订阅 2025-03 以后没有更新。
+w1010-us-ers	USDA Economic Research Service（美国 · 统计和研究机构）	https://www.ers.usda.gov/	2026-10-10·网站类·政府与协会	待定	没有订阅（/rss 是 404），有列表页 https://www.ers.usda.gov/
+w1010-us-ams	USDA Agricultural Marketing Service（美国 · 农产品市场机构）	https://www.ams.usda.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-usda	Department of Agriculture（美国 · 农业和食品主管机构）	https://www.usda.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-uscis	U.S. Citizenship and Immigration Services（美国 · 移民和用工资格机构）	https://www.uscis.gov/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅只有 2 条，最新是 2015 年。
+w1010-us-mbda	Minority Business Development Agency（美国 · 小企业主管机构）	https://www.mbda.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-treasury	Department of the Treasury（美国 · 财政主管机构）	https://home.treasury.gov/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 1 条；内容是州小企业信贷计划的问答和项目摘要，0/10。
+w1010-us-commerce	Department of Commerce（美国 · 商务主管机构）	https://www.commerce.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-hhs	Department of Health and Human Services（美国 · 卫生主管机构）	https://www.hhs.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-us-fns	USDA Food and Nutrition Service（美国 · 食品援助机构）	https://www.fns.usda.gov/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+rss-uk-fsa-news	Food Standards Agency（英国 · 食品安全主管机构）	https://www.gov.uk/search/news-and-communications.atom?organisations[]=food-standards-agency	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 www.gov.uk（附件在 assets.publishing.service.gov.uk，本站不读）。② robots：www.gov.uk 对 * 只禁 /*/print$ 和 /search/all*，没有点名代用户读内容的 AI，没有 Content-Signal 和 TDMRep（check-sources.mjs 通过）。③ 许可：GOV.UK 条款页 https://www.gov.uk/help/terms-conditions 写「Most content on GOV.UK is subject to Crown copyright protection and is published under the Open Government Licence (OGL)」「We make most of the content on GOV.UK available through feeds for other websites and applications to use」，每页页脚写「All content is available under the Open Government Licence v3.0, except where otherwise stated」，覆盖新闻和文章，不只是数据集。OGL v3 原文 https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/ ：商业使用允许（「exploit the Information commercially and non-commercially」），改编和展示允许，条件是注明来源并尽量链接许可（本站显示来源名和原文链接；建议在条款页加一句来源声明）；没有只许个人使用、禁止自动抓取、禁止 AI、要求事先许可的句子；不含个人数据、徽标和第三方权利。④ 建站平台：不适用（政府自己的网站）。⑤ 不适用。订阅用的是 GOV.UK 的新闻检索订阅（/search/news-and-communications.atom，不在 robots 禁止的 /search/all* 之内），只含 FSA 的新闻，不含理事会文件和透明度数据。内容：最近 20 条里 10 条和食品经营有关（要求企业撤回的召回、给食品企业的指引、食品犯罪执法、小微食品企业调查、食品价格调查），其余是理事会会议和机构事务；正好在线上，主会话可以再判一次。等级：一般。每 30 天约 5 条。账本 10/5 的 d1005-food-gov-uk 当时没有取到订阅；FSA 2026 年 6 月迁到 GOV.UK 以后才有这个订阅。
+w1010-uk-fss	Food Standards Scotland（英国 · 食品安全主管机构）	https://www.foodstandards.gov.scot/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅只有 2 条，不足 5 条。
+w1010-uk-hmrc	HM Revenue & Customs（英国 · 税务机构）	https://www.gov.uk/search/news-and-communications.atom?organisations[]=hm-revenue-customs	2026-10-10·网站类·政府与协会	不接	内容尺子不过：机构订阅 20 条全是各税种的手册和服务状态；新闻订阅 20 条里和小生意有关约 6 条（自雇人士报税、Making Tax Digital、新税种开征）。许可是 OGL，只因内容不接。
+w1010-uk-dbt	Department for Business and Trade（英国 · 商务主管机构）	https://www.gov.uk/government/organisations/department-for-business-and-trade.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：机构订阅约 3/20（小费分配指引、用工身份指引、企业数量统计）；新闻订阅是贸易和投资，约 1/20。
+w1010-uk-hse	Health and Safety Executive（英国 · 职业安全主管机构）	https://press.hse.gov.uk/feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：10 条全是建筑和制造业事故的处罚，餐饮 0/10。
+rss-uk-low-pay-commission	Low Pay Commission（英国 · 最低工资机构）	https://www.gov.uk/government/organisations/low-pay-commission.atom	2026-10-10·网站类·政府与协会	接入	① 主机：订阅和文章都在 www.gov.uk（附件在 assets.publishing.service.gov.uk，本站不读）。② robots：www.gov.uk 对 * 只禁 /*/print$ 和 /search/all*，没有点名代用户读内容的 AI，没有 Content-Signal 和 TDMRep（check-sources.mjs 通过）。③ 许可：GOV.UK 条款页 https://www.gov.uk/help/terms-conditions 写「Most content on GOV.UK is subject to Crown copyright protection and is published under the Open Government Licence (OGL)」「We make most of the content on GOV.UK available through feeds for other websites and applications to use」，每页页脚写「All content is available under the Open Government Licence v3.0, except where otherwise stated」，覆盖新闻和文章，不只是数据集。OGL v3 原文 https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/ ：商业使用允许（「exploit the Information commercially and non-commercially」），改编和展示允许，条件是注明来源并尽量链接许可（本站显示来源名和原文链接；建议在条款页加一句来源声明）；没有只许个人使用、禁止自动抓取、禁止 AI、要求事先许可的句子；不含个人数据、徽标和第三方权利。④ 建站平台：不适用（政府自己的网站）。⑤ 不适用。内容：最近 20 条里约 12 条是最低工资的调整、咨询和研究，其余是经费、工作计划等机构事务。等级：一般。每 30 天约 2 条（近 90 天 5 条）。
+w1010-uk-ons	Office for National Statistics（英国 · 统计机构）	https://www.ons.gov.uk/releasecalendar?rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：发布日历 10 条里和商业有关 1 条。
+w1010-uk-defra	Department for Environment, Food & Rural Affairs（英国 · 食品和环境主管机构）	https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：动物疫病、空气质量、农业统计，餐饮 0/20。
+w1010-uk-cma	Competition and Markets Authority（英国 · 市场监管机构）	https://www.gov.uk/government/organisations/competition-and-markets-authority.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：并购调查和补贴转介，约 1/20。
+w1010-uk-sbc	Small Business Commissioner（英国 · 小企业主管机构）	https://www.gov.uk/government/organisations/small-business-commissioner.atom	2026-10-10·网站类·政府与协会	不接	订阅最新一条是 2026-03-09，近 90 天没有更新。
+w1010-uk-opss	Office for Product Safety and Standards（英国 · 市场监管机构）	https://www.gov.uk/government/organisations/office-for-product-safety-and-standards.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 2/20（度量衡指引、一次性烧烤炉规定），其余是玩具、电动车等产品安全。
+w1010-uk-insolvency	The Insolvency Service（英国 · 破产事务机构）	https://www.gov.uk/government/organisations/insolvency-service.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 2/20，其余是破产统计、董事处罚和机构开支。
+w1010-uk-companies-house	Companies House（英国 · 公司登记机构）	https://www.gov.uk/government/organisations/companies-house.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：公司登记的表格和申报指引，对开公司的小店有用的约 4/20。
+w1010-uk-acas	Acas（英国 · 劳资关系机构）	https://www.gov.uk/government/organisations/acas.atom	2026-10-10·网站类·政府与协会	不接	GOV.UK 上的订阅近 90 天没有更新（最新 2026-07-03，多是年报）；自己的网站 acas.org.uk 没有找到订阅。
+w1010-uk-home-office	Home Office（英国 · 酒牌和移民主管机构）	https://www.gov.uk/government/organisations/home-office.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：移民规则和警务统计，约 1/20。
+w1010-uk-ukhsa	UK Health Security Agency（英国 · 公共卫生机构）	https://www.gov.uk/government/organisations/uk-health-security-agency.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：传染病监测周报，餐饮 0/20。
+w1010-uk-pca	Pubs Code Adjudicator（英国 · 酒吧租约监管机构）	https://www.gov.uk/government/organisations/pubs-code-adjudicator.atom	2026-10-10·网站类·政府与协会	不接	订阅最新一条是 2026-05-29，近 90 天没有更新。
+w1010-uk-gca	Groceries Code Adjudicator（英国 · 市场监管机构）	https://www.gov.uk/government/organisations/groceries-code-adjudicator.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：对象是超市的供货商，餐饮 0/20。
+w1010-uk-bbb	British Business Bank（英国 · 小企业融资机构）	https://www.british-business-bank.co.uk/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：投资公告和人员介绍，0/10。
+w1010-uk-dhsc	Department of Health and Social Care（英国 · 卫生主管机构）	https://www.gov.uk/government/organisations/department-of-health-and-social-care.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：医疗和社会照护，餐饮 0/20。
+w1010-uk-hmt	HM Treasury（英国 · 财政主管机构）	https://www.gov.uk/government/organisations/hm-treasury.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：金融市场和关税文件，约 2/20（能源账单减税、油价公示）。
+w1010-uk-dwp	Department for Work and Pensions（英国 · 就业主管机构）	https://www.gov.uk/government/organisations/department-for-work-pensions.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：福利和学徒制的办事指引，约 2/20（招学徒）。
+w1010-uk-ukvi	UK Visas and Immigration（英国 · 移民和用工资格机构）	https://www.gov.uk/government/organisations/uk-visas-and-immigration.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：签证办案指引，约 2/20（担保雇主指引）。
+w1010-uk-fwa	Fair Work Agency（英国 · 劳工执法机构）	https://www.gov.uk/government/organisations/fair-work-agency.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 8/20（点名欠付最低工资的雇主、执法政策、举报办法），其余是劳务中介执照；不到一半。许可是 OGL，执法消息增多以后可以重看。
+w1010-uk-tpr	The Pensions Regulator（英国 · 养老金监管机构）	https://www.thepensionsregulator.gov.uk/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.thepensionsregulator.gov.uk/en/media-hub/press-releases
+w1010-uk-ico	Information Commissioner's Office（英国 · 数据保护机构）	https://ico.org.uk/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://ico.org.uk/about-the-ico/media-centre/
+w1010-uk-mhclg	Ministry of Housing, Communities and Local Government（英国 · 地方事务和营业税主管机构）	https://www.gov.uk/government/organisations/ministry-of-housing-communities-local-government.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：住房和规划，餐饮 0/20。
+w1010-uk-ea	Environment Agency（英国 · 环境主管机构）	https://www.gov.uk/government/organisations/environment-agency.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：河道、干旱和环境许可，约 1/20（包装回收义务）。
+w1010-uk-ipo	Intellectual Property Office（英国 · 知识产权机构）	https://www.gov.uk/government/organisations/intellectual-property-office.atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：专利和商标的办事手册，0/20。
+w1010-eu-sante	European Commission DG SANTE (Food Safety)（欧盟 · 食品安全主管机构）	https://food.ec.europa.eu/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://food.ec.europa.eu/
+w1010-eu-grow	European Commission DG GROW（欧盟 · 小企业主管机构）	https://single-market-economy.ec.europa.eu/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://single-market-economy.ec.europa.eu/
+w1010-eu-empl	European Commission DG EMPL（欧盟 · 劳工主管机构）	https://employment-social-affairs.ec.europa.eu/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://employment-social-affairs.ec.europa.eu/
+w1010-eu-eurostat	Eurostat（欧盟 · 统计机构）	https://ec.europa.eu/eurostat/api/dissemination/catalogue/rss/en/statistics-update.rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：订阅一次给 2,385 条数据集更新，不是文章。
+w1010-eu-agri	European Commission DG AGRI（欧盟 · 农业和食品主管机构）	https://agriculture.ec.europa.eu/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://agriculture.ec.europa.eu/
+w1010-eu-taxud	European Commission DG TAXUD（欧盟 · 税务机构）	https://taxation-customs.ec.europa.eu/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://taxation-customs.ec.europa.eu/
+w1010-eu-comp	European Commission DG COMP（欧盟 · 市场监管机构）	https://competition-policy.ec.europa.eu/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://competition-policy.ec.europa.eu/
+w1010-eu-presscorner	European Commission Press Corner（欧盟 · 政府新闻）	https://ec.europa.eu/commission/presscorner/api/rss?language=en	2026-10-10·网站类·政府与协会	不接	内容尺子不过：外交、贸易和原材料，餐饮 0/10。
+w1010-eu-efsa	European Food Safety Authority（欧盟 · 食品安全评估机构）	https://www.efsa.europa.eu/en/press/rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：全部产出的订阅 16 条都是农药、饲料添加剂的科学意见；新闻订阅 10 条里和餐饮有关 1 条（产志贺毒素大肠杆菌的预防建议）。
+w1010-eu-osha	EU-OSHA（欧盟 · 职业安全机构）	https://osha.europa.eu/en/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 1 条，0/8。
+w1010-au-fsanz	Food Standards Australia New Zealand（澳大利亚 · 食品安全主管机构）	https://www.foodstandards.gov.au/news-rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：新闻订阅 10 条是标准修订通告和理事会公告，和餐饮经营有关 0 条；召回订阅（/food-recalls-rss.xml）10 条全是零售包装食品。
+w1010-au-fwo	Fair Work Ombudsman（澳大利亚 · 劳工执法机构）	https://www.fairwork.gov.au/	2026-10-10·网站类·政府与协会	待定	连不上（The operation was aborted due to timeout），没有读到。
+w1010-au-fwc	Fair Work Commission（澳大利亚 · 工资和劳资裁决机构）	https://www.fwc.gov.au/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-au-ato	Australian Taxation Office（澳大利亚 · 税务机构）	https://www.ato.gov.au/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-au-abs	Australian Bureau of Statistics（澳大利亚 · 统计机构）	https://www.abs.gov.au/	2026-10-10·网站类·政府与协会	待定	没有订阅（/rss.xml 是 404），有列表页 https://www.abs.gov.au/media-centre
+w1010-au-business	business.gov.au（澳大利亚 · 小企业主管机构）	https://business.gov.au/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://business.gov.au/news
+w1010-au-asbfeo	Australian Small Business and Family Enterprise Ombudsman（澳大利亚 · 小企业主管机构）	https://www.asbfeo.gov.au/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天只有 1 条；9 条里对小店有用的约 3 条，其余是纪念日和人事。
+w1010-au-accc	Australian Competition and Consumer Commission（澳大利亚 · 市场监管机构）	https://www.accc.gov.au/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-au-swa	Safe Work Australia（澳大利亚 · 职业安全主管机构）	https://www.safeworkaustralia.gov.au/	2026-10-10·网站类·政府与协会	待定	连不上（The operation was aborted due to timeout），没有读到。
+w1010-au-daff	Department of Agriculture, Fisheries and Forestry（澳大利亚 · 农业和食品主管机构）	https://www.agriculture.gov.au/	2026-10-10·网站类·政府与协会	待定	连不上（The operation was aborted due to timeout），没有读到。
+w1010-au-dewr	Department of Employment and Workplace Relations（澳大利亚 · 劳工主管机构）	https://www.dewr.gov.au/	2026-10-10·网站类·政府与协会	待定	连不上（The operation was aborted due to timeout），没有读到。
+w1010-au-treasury	The Treasury（澳大利亚 · 财政主管机构）	https://treasury.gov.au/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://treasury.gov.au/media
+w1010-au-homeaffairs	Department of Home Affairs（澳大利亚 · 移民和用工资格机构）	https://www.homeaffairs.gov.au/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-ca-cfia	Canadian Food Inspection Agency（加拿大 · 食品安全主管机构）	https://recalls-rappels.canada.ca/en/feed/cfia-alerts-recalls	2026-10-10·网站类·政府与协会	不接	召回订阅只给 3 条（不足 5 条），都是零售包装食品；新闻订阅是空的。
+w1010-ca-hc	Health Canada（加拿大 · 卫生主管机构）	https://api.io.canada.ca/io-server/gc/news/en/v2?dept=departmentofhealth&sort=publishedDate&orderBy=desc&pick=50&format=atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：医疗体系的拨款和公告，餐饮 0/14。
+w1010-ca-esdc	Employment and Social Development Canada（加拿大 · 劳工主管机构）	https://api.io.canada.ca/io-server/gc/news/en/v2?dept=departmentofemploymentandsocialdevelopment&sort=publishedDate&orderBy=desc&pick=50&format=atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 1/14（企业投资抵扣），其余是托育、技能和社区项目。
+w1010-ca-cra	Canada Revenue Agency（加拿大 · 税务机构）	https://api.io.canada.ca/io-server/gc/news/en/v2?dept=revenueagency&sort=publishedDate&orderBy=desc&pick=50&format=atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 2 条，0/16（个人福利和税务局服务改进）。
+w1010-ca-statcan	Statistics Canada（加拿大 · 统计机构）	https://www.statcan.gc.ca/en/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：订阅是调查方法文件，0/10；The Daily 的订阅地址是 404。
+w1010-ca-ised	Innovation, Science and Economic Development Canada（加拿大 · 小企业主管机构）	https://ised-isde.canada.ca/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://ised-isde.canada.ca/
+w1010-ca-bdc	Business Development Bank of Canada（加拿大 · 小企业融资机构）	https://www.bdc.ca/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.bdc.ca/
+w1010-ca-competition	Competition Bureau Canada（加拿大 · 市场监管机构）	https://competition-bureau.canada.ca/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://competition-bureau.canada.ca/contact-competition-bureau-canada/media-relations
+w1010-ca-ccohs	Canadian Centre for Occupational Health and Safety（加拿大 · 职业安全机构）	https://www.ccohs.ca/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ccohs.ca/newsroom/
+w1010-ca-aafc	Agriculture and Agri-Food Canada（加拿大 · 农业和食品主管机构）	https://agriculture.canada.ca/en/rss.xml	2026-10-10·网站类·政府与协会	不接	订阅 4 条，最新是 2022 年。
+w1010-ca-fin	Department of Finance Canada（加拿大 · 财政主管机构）	https://api.io.canada.ca/io-server/gc/news/en/v2?dept=departmentfinance&sort=publishedDate&orderBy=desc&pick=3&format=atom	2026-10-10·网站类·政府与协会	不接	订阅只给 3 条，绿色债券和金融监管，0/3。
+w1010-ca-ircc	Immigration, Refugees and Citizenship Canada（加拿大 · 移民和用工资格机构）	https://api.io.canada.ca/io-server/gc/news/en/v2?dept=departmentofcitizenshipandimmigration&type=newsreleases&sort=publishedDate&orderBy=desc&pick=100&format=atom	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 7 条，法语移民和护照，0/10。
+w1010-jp-mhlw	厚生労働省（日本 · 食品卫生和劳工主管机构）	https://www.mhlw.go.jp/stf/news.rdf	2026-10-10·网站类·政府与协会	不接	内容尺子不过：每 30 天 131 条，是全省的会议和通知，最近 16 条里餐饮 0 条；没有食品卫生或劳动的栏目订阅。
+w1010-jp-maff	農林水産省（日本 · 农业和餐饮产业主管机构）	https://www.maff.go.jp/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：最近 16 条里餐饮 0 条（猪瘟、渔港、木材、农药）；外食产业的页面 https://www.maff.go.jp/j/shokusan/gaisyoku/index.html 没有订阅。
+w1010-jp-caa	消費者庁（日本 · 食品标示主管机构）	https://www.caa.go.jp/news.rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 1/16（食品规格部会），其余是产品事故和消费者教育。
+w1010-jp-chusho	中小企業庁（日本 · 小企业主管机构）	https://www.chusho.meti.go.jp/rss/index.xml	2026-10-10·网站类·政府与协会	不接	订阅 5 条，最新 2026-07-10，近 90 天没有更新。
+w1010-jp-nta	国税庁（日本 · 税务机构）	https://www.nta.go.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.nta.go.jp/information/release/index.htm
+w1010-jp-stat	総務省統計局（日本 · 统计机构）	https://www.stat.go.jp/whatsnew/news.rdf	2026-10-10·网站类·政府与协会	不接	内容尺子不过：15 条里和餐饮有关约 3 条（消费者物价、零售物价、服务业动态统计）。
+w1010-jp-meti	経済産業省（日本 · 商务主管机构）	https://www.meti.go.jp/ml_index_release_atom.xml	2026-10-10·网站类·政府与协会	不接	订阅最新一条是 2026-06-19，近 90 天没有更新。
+w1010-jp-fsc	食品安全委員会（日本 · 食品安全评估机构）	https://www.fsc.go.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.fsc.go.jp/news.html
+w1010-jp-jftc	公正取引委員会（日本 · 市场监管机构）	https://www.jftc.go.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.jftc.go.jp/update.html
+w1010-jp-kankocho	観光庁（日本 · 旅游主管机构）	https://www.mlit.go.jp/kankocho/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.mlit.go.jp/kankocho/news.html
+w1010-jp-moj-isa	出入国在留管理庁（日本 · 移民和用工资格机构）	https://www.moj.go.jp/isa/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.moj.go.jp/isa/
+w1010-jp-cao	内閣府（日本 · 综合经济机构）	https://www.cao.go.jp/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.cao.go.jp/press/new_wave/
+w1010-nz-mpi	Ministry for Primary Industries (New Zealand Food Safety)（新西兰 · 食品安全主管机构）	https://www.mpi.govt.nz/	2026-10-10·网站类·政府与协会	待定	新闻页和召回页对程序只返回一个 868 字节的检查页，读不到；没有找到订阅。列表页 https://www.mpi.govt.nz/news/
+w1010-nz-mbie	Ministry of Business, Innovation and Employment（新西兰 · 商务和劳工主管机构）	https://www.mbie.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.mbie.govt.nz/
+w1010-nz-employment	Employment New Zealand（新西兰 · 劳工主管机构）	https://www.employment.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.employment.govt.nz/news-and-updates
+w1010-nz-business	business.govt.nz（新西兰 · 小企业主管机构）	https://www.business.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.business.govt.nz/news
+w1010-nz-ird	Inland Revenue（新西兰 · 税务机构）	https://www.ird.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ird.govt.nz/index/news
+w1010-nz-stats	Stats NZ（新西兰 · 统计机构）	https://www.stats.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.stats.govt.nz/
+w1010-nz-worksafe	WorkSafe New Zealand（新西兰 · 职业安全主管机构）	https://www.worksafe.govt.nz/about-us/news-and-media/rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 1/16（食品制造业检查），其余是建筑、农场和林业。
+w1010-nz-comcom	Commerce Commission（新西兰 · 市场监管机构）	https://comcom.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.comcom.govt.nz/news-and-media/
+w1010-nz-immigration	Immigration New Zealand（新西兰 · 移民和用工资格机构）	https://www.immigration.govt.nz/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.immigration.govt.nz/about-us/news-centre/
+w1010-ie-fsai	Food Safety Authority of Ireland（爱尔兰 · 食品安全主管机构）	https://www.fsai.ie/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.fsai.ie/news
+w1010-ie-wrc	Workplace Relations Commission（爱尔兰 · 劳工执法机构）	https://www.workplacerelations.ie/en/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.workplacerelations.ie/en/
+w1010-ie-revenue	Revenue（爱尔兰 · 税务机构）	https://www.revenue.ie/en/Home.aspx	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.revenue.ie/en/Home.aspx
+w1010-ie-cso	Central Statistics Office（爱尔兰 · 统计机构）	https://www.cso.ie/en/index.html	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.cso.ie/en/csolatestnews/
+w1010-ie-dete	Department of Enterprise, Tourism and Employment（爱尔兰 · 商务和劳工主管机构）	https://enterprise.gov.ie/en/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://enterprise.gov.ie/en/news-and-events/
+w1010-ie-hsa	Health and Safety Authority（爱尔兰 · 职业安全主管机构）	https://www.hsa.ie/eng/rss-page-feed/	2026-10-10·网站类·政府与协会	不接	内容尺子不过：农场、采石场和建筑的安全，餐饮 0/10。
+w1010-ie-ccpc	Competition and Consumer Protection Commission（爱尔兰 · 市场监管机构）	https://www.ccpc.ie/business/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ccpc.ie/news-and-media
+w1010-ie-leo	Local Enterprise Office（爱尔兰 · 小企业主管机构）	https://www.localenterprise.ie/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.localenterprise.ie/News-and-Events/
+w1010-ie-failte	Fáilte Ireland（爱尔兰 · 旅游主管机构）	https://www.failteireland.ie/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.failteireland.ie/en/press-releases
+w1010-sg-mom	Ministry of Manpower（新加坡 · 劳工主管机构）	https://www.mom.gov.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.mom.gov.sg/newsroom
+w1010-sg-iras	Inland Revenue Authority of Singapore（新加坡 · 税务机构）	https://www.iras.gov.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.iras.gov.sg/news-events
+w1010-sg-enterprisesg	Enterprise Singapore（新加坡 · 小企业主管机构）	https://www.enterprisesg.gov.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.enterprisesg.gov.sg/resources/media-centre
+w1010-sg-singstat	Singapore Department of Statistics（新加坡 · 统计机构）	https://www.singstat.gov.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.singstat.gov.sg/news
+w1010-sg-mti	Ministry of Trade and Industry（新加坡 · 商务主管机构）	https://www.meti.gov.sg/newsroom/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：每 30 天 43 条，部长讲话和国会答复，0/10。
+w1010-sg-cccs	Competition and Consumer Commission of Singapore（新加坡 · 市场监管机构）	https://www.cccs.gov.sg/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.ccs.gov.sg/media-and-events/
+w1010-my-moh-fsq	卫生部食品安全与质量计划 BKKM（马来西亚 · 食品安全主管机构）	https://hq.moh.gov.my/fsq/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://hq.moh.gov.my/fsq/kenyataan-media
+w1010-my-kpdn	国内贸易及生活成本部 KPDN（马来西亚 · 物价和商业主管机构）	https://www.kpdn.gov.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.kpdn.gov.my/ms/media-kpdn
+w1010-my-mohr	人力资源部 KESUMA（马来西亚 · 劳工主管机构）	https://www.mohr.gov.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.mohr.gov.my/
+w1010-my-lhdn	内陆税收局 LHDN（马来西亚 · 税务机构）	https://www.hasil.gov.my/feed/	2026-10-10·网站类·政府与协会	不接	订阅 5 条，其中 3 条是测试页，最新 2026-05-25。
+w1010-my-dosm	统计局 DOSM（马来西亚 · 统计机构）	https://www.dosm.gov.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.dosm.gov.my/
+w1010-my-smecorp	SME Corp Malaysia（马来西亚 · 小企业主管机构）	https://www.smecorp.gov.my/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-my-kuskop	企业发展及合作社部 KUSKOP（马来西亚 · 小企业主管机构）	https://www.kuskop.gov.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.kuskop.gov.my/
+w1010-my-ssm	公司委员会 SSM（马来西亚 · 公司登记机构）	https://www.ssm.com.my/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.ssm.com.my/
+w1010-my-jakim	伊斯兰发展局 JAKIM（清真认证）（马来西亚 · 清真认证主管机构）	https://www.islam.gov.my/ms/kenyataan-media?format=feed&type=rss	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 2 条，是宗教事务的声明，清真认证 0/10。
+w1010-in-fssai	Food Safety and Standards Authority of India（印度 · 食品安全主管机构）	https://www.fssai.gov.in/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-in-labour	Ministry of Labour and Employment（印度 · 劳工主管机构）	https://labour.gov.in/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-in-msme	Ministry of MSME（印度 · 小企业主管机构）	https://msme.gov.in/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-in-mospi	Ministry of Statistics and Programme Implementation（印度 · 统计机构）	https://www.mospi.gov.in/	2026-10-10·网站类·政府与协会	待定	没有订阅，列表页没有认出来，网站 https://www.mospi.gov.in/
+w1010-in-cbic	Central Board of Indirect Taxes and Customs（印度 · 税务机构）	https://www.cbic.gov.in/	2026-10-10·网站类·政府与协会	待定	连不上（UNABLE_TO_VERIFY_LEAF_SIGNATURE），没有读到。
+w1010-in-gst-council	GST Council（印度 · 税务机构）	https://gstcouncil.gov.in/rss.xml	2026-10-10·网站类·政府与协会	不接	内容尺子不过：订阅是人员名单页，不是新闻。
+w1010-in-mofpi	Ministry of Food Processing Industries（印度 · 食品产业主管机构）	https://www.mofpi.gov.in/	2026-10-10·网站类·政府与协会	待定	没有订阅，有列表页 https://www.mofpi.gov.in/press-release
+w1010-in-pib	Press Information Bureau（印度 · 政府新闻）	https://www.pib.gov.in/	2026-10-10·网站类·政府与协会	不接	首页对 MyFnBBot 返回 403，没有读到；没有换标识，没有用代理。
+w1010-in-consumer	Department of Consumer Affairs（印度 · 物价和消费者主管机构）	https://consumeraffairs.nic.in/	2026-10-10·网站类·政府与协会	待定	连不上（UND_ERR_CONNECT_TIMEOUT），没有读到。
+w1010-uk-govuk-running-business	GOV.UK · Running a business 栏目（英国 · 政府门户栏目）	https://www.gov.uk/search/news-and-communications.atom?level_one_taxon=495afdb6-47be-4df1-8b38-91c8adb1eefc&level_two_taxon=8aa41155-58ff-4d7d-a11a-7e3ef42863dd	2026-10-10·网站类·政府与协会	不接	内容尺子不过：新闻订阅 20 条里约 8 条和小店有关（公司登记的变更、迟付款立法、酒类销售的电子年龄证明、食品指引）；近 30 天 4 条。不到一半。
+w1010-uk-govuk-payroll	GOV.UK · Payroll 栏目（英国 · 政府门户栏目）	https://www.gov.uk/search/all.atom?level_one_taxon=d0f1e5a3-c8f4-4780-8678-994f19104b21&level_two_taxon=374b4837-cf2a-4529-a7f1-559d92b3d90d&order=updated-newest	2026-10-10·网站类·政府与协会	不接	内容尺子不过：约 3/10；地址在 robots 禁止的 /search/all* 之内。
+w1010-uk-govuk-business-tax	GOV.UK · Business tax 栏目（英国 · 政府门户栏目）	https://www.gov.uk/search/news-and-communications.atom?level_one_taxon=6acc9db4-780e-4a46-92b4-1812e3c2c48a&level_two_taxon=28262ae3-599c-4259-ae30-3c83a5ec02a1	2026-10-10·网站类·政府与协会	不接	内容尺子不过：近 90 天 3 条，近 30 天 0 条；约 6/20。
+w1010-uk-govuk-business-regulation	GOV.UK · Business regulation 栏目（英国 · 政府门户栏目）	https://www.gov.uk/search/news-and-communications.atom?level_one_taxon=495afdb6-47be-4df1-8b38-91c8adb1eefc&level_two_taxon=33bc0eed-62c7-4b0b-9a93-626c9e10c025	2026-10-10·网站类·政府与协会	不接	内容尺子不过：并购、产品安全、交通执法，约 2/20。

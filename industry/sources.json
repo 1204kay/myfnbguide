@@ -2193,6 +2193,90 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "web-fsai-news",
+      "name": "Food Safety Authority of Ireland（爱尔兰 · 食品安全主管机构）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.fsai.ie/news-and-alerts/latest-news",
+        "itemSelector": "a.feature-card",
+        "linkSelector": "a.feature-card",
+        "titleSelector": "h2.title",
+        "allowUrlPrefixes": [
+          "https://www.fsai.ie/news-and-alerts/latest-news/"
+        ],
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtSelector": "p.date",
+          "publishedAtUtcOffset": "+00:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "爱尔兰",
+        "政府"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-business-gov-au",
+      "name": "business.gov.au（澳大利亚 · 政府的小企业信息网站）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://business.gov.au/news",
+        "itemSelector": "main div.card.card-clickable",
+        "linkSelector": "a.card-clickable-link",
+        "allowUrlPrefixes": [
+          "https://business.gov.au/news/"
+        ],
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtSelector": ".page-header-update-info",
+          "publishedAtUtcOffset": "+10:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "澳大利亚",
+        "政府"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ghr-france",
+      "name": "GHR Groupement des Hôtelleries et Restaurations de France（法国 · 酒店餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ghr.fr/spip.php?page=backend",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T1",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "法国",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

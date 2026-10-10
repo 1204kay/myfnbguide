@@ -97,6 +97,9 @@ test("an opened archive comes in as history, and only episodes whose notes score
     await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${row.id}, 1, 'rule', 'pass', ${score}, false)`;
   }
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
+  await sql`UPDATE sources SET enabled = false WHERE id = ${SOURCE}`;
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [], "a stopped source is not transcribed");
+  await sql`UPDATE sources SET enabled = true WHERE id = ${SOURCE}`;
 
   await sql`DELETE FROM budgets WHERE service = ${SERVICE}`;
   assert.equal((await transcribeEpisode(high!.id)).status, "skipped", "no budget row, no call");

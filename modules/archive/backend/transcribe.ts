@@ -28,7 +28,7 @@ const PROMPT = [
 ].join("\n");
 
 /**
- * Episodes to transcribe next: with an audio file and not done; from the archive those whose notes scored at least the
+ * Episodes to transcribe next, of sources still collected (one stopped for its terms is not read again): with an audio file and not done; from the archive those whose notes scored at least the
  * understand floor, and every new episode that passed the prefilter, listed or still waiting for its content (notes
  * that only say what the episode will discuss get no summary and wait, prompts/content-understanding.md), first.
  * A failure is tried again once the model is another than the one it failed with (its error starts with that model).
@@ -37,6 +37,7 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
   const rows = await sql<{ id: string }[]>`
     SELECT e.article_id AS id FROM archive_episodes e
     JOIN articles a ON a.id = e.article_id
+    JOIN sources s ON s.id = a.source_id AND s.enabled
     JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
     WHERE e.audio_url IS NOT NULL AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')))
       AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${GEMINI.model}:%`}))

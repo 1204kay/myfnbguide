@@ -990,6 +990,317 @@
         "菲律宾",
         "品牌"
       ]
+    },
+    {
+      "id": "pod-cat-and-cloud",
+      "name": "Cat & Cloud Podcast（美国 · 咖啡店老板的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2617735.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-my-first-restaurant",
+      "name": "My First Restaurant（美国 · 餐厅老板访谈其他创办人的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2103740.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-food-truck-scholar",
+      "name": "The Food Truck Scholar（美国 · 餐车老板访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/250311.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-the-bottom-line-restaurants",
+      "name": "The Bottom Line（美国 · 餐厅创办人访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2455607.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-baker-and-farmer",
+      "name": "The Baker & The Farmer（美国 · 面包店老板和农场主的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2243709.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-rookie-restaurateur",
+      "name": "Rookie Restaurateur（美国 · 本地餐饮店老板访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2190331.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-bread-winner",
+      "name": "The Bread Winner Podcast（美国 · 微型面包店店主的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/thebreadwinner/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        },
+        "denyUrlPrefixes": [
+          "https://www.carolinebower.com/podcast"
+        ]
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-fr-toques-de-restauration",
+      "name": "Toqués de restauration（法国 · 餐馆创办人访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/6dm3aiG8VeN0",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "法国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-be-cafepraat",
+      "name": "Cafépraat（比利时 · 咖啡馆老板主持的餐饮播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1671799.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "比利时",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-de-gastrounternehmer",
+      "name": "Gastrounternehmer Podcast（德国 · 餐饮创办人访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://gastrounternehmer.podigee.io/feed/mp3",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-at-das-erfolgsrezept",
+      "name": "Das Erfolgsrezept（奥地利 · 餐饮顾问的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://daserfolgsrezept.podigee.io/feed/mp3",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "奥地利",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-fr-au-coeur-de-la-boulange",
+      "name": "Au cœur de la boulange（法国 · 面包店行业媒体的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/OqGV1HaP3AWM",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "法国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-fr-le-mot-de-la-faim",
+      "name": "Le mot de la FAIM（法国 · 餐饮食品创业访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/0m7NxSkn83NY",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "法国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-de-kirsch-royal",
+      "name": "Kirsch Royal（德国 · 餐饮培训师的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kirsch-royal.podigee.io/feed/mp3",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

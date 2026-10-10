@@ -26,7 +26,8 @@ export const ARCHIVE: ArchivePlan[] = [
   { id: "rss-kojinkuroji", pages: { url: "https://kojinkuroji.com/feed/?paged={n}", to: 10 } },
   { id: "rss-ryourigaka", pages: { url: "https://ryourigaka.jp/feed/?paged={n}", to: 21 } },
   { id: "rss-yoshitencho", pages: { url: "https://yoshitencho.com/category/restaurant/feed?paged={n}", to: 14 } },
-  // Owners' podcasts (10/5): 278 of their 1,223 old episodes, picked from titles and notes before any model was
-  // paid (owners' own stories and methods; not news, vendors, chains' growth, chat or the craft of coffee and bread).
+  // Owners' podcasts: old episodes picked one by one from titles and notes before any model was paid (owners' own
+  // stories and methods; not news, vendors, chains' growth, chat or the craft of coffee and bread): 278 of 1,223 on
+  // 10/5, 220 of 1,014 of fourteen more shows on 10/10.
   ...Object.entries(PICKS).map(([id, picks]) => ({ id, only: picks.map((p) => p.url) })),
 ];

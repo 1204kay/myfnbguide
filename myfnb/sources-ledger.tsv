@@ -10965,3 +10965,804 @@ v1011-fincent	Fincent（美国 · 餐饮会计公司）	https://fincent.com/fina
 v1011-socialschedules	SocialSchedules（美国 · 排班软件公司）	https://socialschedules.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容强（10/13：小费池和小费分成、小费抵扣和最低工资、加班规定、临时发薪、离职成本、代打卡），共 13 篇，列表带日期。条款 https://resources.opensimsim.com/locales/en-US/terms.html 的 Platform 包含网站，6.7 写明不得用 bots、spiders、scrapers 等自动手段访问或收集 Platform 上的信息。可以写信；没有再跑 robots
 v1011-orquest	ORQUEST（西班牙 · 排班软件公司）	https://orquest.com/blog/	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/8）：工时规定和排班 3 篇，其余是连锁客户案例和获奖消息
 v1011-flipdish	Flipdish（爱尔兰 · 线上点餐软件公司）	https://www.flipdish.com/api/blog?lang=global	2026-10-11·待定复查	不接	主会话 10/11 复查接口这条路：robots.txt 没有禁止 /api/blog，Content-Signal 写 ai-train=no、ai-input=yes；但接口的响应头是 X-Robots-Tag: none（不收录、不跟进其中的链接），按最低风险不从接口取文章链接。列表页的条目只在 noscript 里，框架原版的网页列表读不到，站点地图框架也不读；不为它改框架。内容强（多数来自具名店主），列入征求同意名单，对方同意或给出订阅以后再接
+m1011-worldteanews	World Tea News（国家未记 · 行业媒体名录里的条目）	https://www.worldteanews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Wikidata
+m1011-nrn	Nation’s Restaurant News（美国 · 餐饮行业媒体）	https://www.nrn.com/rss.xml	2026-10-11·网站类·行业媒体	不接	规则 3：Informa 旗下（Nation’s Restaurant News），账本对同一出版方已有结论（rss-restaurant-hospitality：条款不许）。内容一般：连锁新品和扩张为主。名录：Wikidata；Feedspot（补充）
+m1011-syokuryo-jokai	食料醸界新聞（日本 · 行业媒体名录里的条目）	https://www.syokuryo-jokai.jp/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Wikidata
+m1011-hotelmanagement	Hotel Management（国家未记 · 行业媒体名录里的条目）	https://www.hotelmanagement.net/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Wikidata；Feedspot（补充）
+m1011-catersource	Cater + Event（原 Catersource）（美国 · 餐饮行业媒体）	https://www.cater-event.com/rss.xml	2026-10-11·网站类·行业媒体	不接	规则 3：Informa 旗下（Cater + Event，原 Catersource），账本对同一出版方已有结论。内容弱：活动预告和获奖。名录：Wikidata；Feedspot（补充）
+m1011-thecaterer	The Caterer（英国 · 餐饮行业媒体）	https://www.thecaterer.com/Syndication/DF.cfm?f=5&ft=10&redirected=1	2026-10-11·网站类·行业媒体	待定	待定：内容一般（订阅里最新一条是 2025-11，像已不再更新；30 条里经营消息约 8 条（用工成本、小费、食品安全），其余是获奖、活动和房产）；robots 和订阅通过，条款没有读。名录：Wikidata；Feedspot（补充）；展会·Sigep（意大利）；展会·HRC（英国）
+m1011-standartmag	Standart（国家未记 · 行业媒体名录里的条目）	https://standartmag.com	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Wikidata
+m1011-entreemagazine	Entree Magazine（荷兰 · 餐饮行业媒体）	https://www.entreemagazine.nl/blog-entree/rss.xml	2026-10-11·网站类·行业媒体	待定	待定：内容一般（题目是经营做法（留人、收银系统、保险、支付终端），但各对应一类厂商，像合作稿；近 30 天 2 篇）；robots 和订阅通过，条款没有读。名录：Wikidata；展会·Gastvrij Rotterdam（荷兰）
+m1011-supermarketnews	Supermarket News（美国 · 行业媒体名录里的条目）	https://www.supermarketnews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Wikidata；展会·NRA Show（美国）
+m1011-specialevents	Special Events（国家未记 · 行业媒体名录里的条目）	https://www.specialevents.com	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Wikidata
+m1011-blgastro	first class（德国 · 行业媒体名录里的条目）	https://blgastro.de/firstclass/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：fachzeitungen.de（德国）；展会·Sigep（意大利）
+m1011-meininger	FIZZZ（德国 · 行业媒体名录里的条目）	http://www.meininger.de/de/fizzz	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：fachzeitungen.de（德国）
+m1011-tophotel	Tophotel（德国 · 行业媒体名录里的条目）	http://www.tophotel.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：fachzeitungen.de（德国）；展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-catering	CATERING MANAGEMENT（德国 · 餐饮行业媒体）	https://catering.de/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（团餐为主；清单和技术稿约 5/10，像厂商合作稿）；robots 和订阅通过，条款没有读。名录：fachzeitungen.de（德国）；展会·Internorga（德国）
+m1011-kocaonline	KOCA - DAS MAGAZIN FÜR KONDITOREI & CAFÉ（德国 · 餐饮行业媒体）	https://koca.abzonline.de/news/feed/	2026-10-11·网站类·行业媒体	不接	规则 2：robots.txt 拒绝代用户读网页的 AI（google-cloudvertexbot）。名录：fachzeitungen.de（德国）
+m1011-tw-media	tw tagungswirtschaft（德语，国家未记 · 行业媒体名录里的条目）	http://www.tw-media.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-hotelstyle	hotel & gastro style（奥地利 · 餐饮行业媒体）	https://www.hotelstyle.at/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 2 篇，最新 2026-04-21，订阅里 10 条。名录：fachzeitungen.de（德国）
+m1011-klocke-verlag	A LA CARTE（德国 · 行业媒体名录里的条目）	http://www.klocke-verlag.de/a-la-carte/2003/heft5-2003/index.htm	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-deutschegetraenkewirtschaft	deutsche getränke wirtschaft（德国 · 行业媒体名录里的条目）	http://www.deutschegetraenkewirtschaft.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-bildart-verlag	GARCON - Das Genussnetzwerk（德国 · 行业媒体名录里的条目）	http://www.bildart-verlag.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-hottelling	hottelling（德国 · 行业媒体名录里的条目）	http://www.hottelling.de/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：fachzeitungen.de（德国）
+m1011-ma-mo	ma.mo Magazin für Inklusion und Mobilität（德国 · 行业媒体名录里的条目）	https://www.ma-mo.de/	2026-10-11·网站类·行业媒体	不接	连不上（ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR）。题材没有判。名录：fachzeitungen.de（德国）
+m1011-hessengastro	Hessische Gastronomie（德国 · 行业媒体名录里的条目）	http://www.hessengastro.de/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：fachzeitungen.de（德国）
+m1011-baeko-magazin	BÄKO-magazin（德国 · 餐饮行业媒体）	https://baeko-magazin.de/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（面包店行业消息约 2/10（防火、起征点诉求），其余是比赛和人事）；robots 和订阅通过，条款没有读。名录：fachzeitungen.de（德国）
+m1011-foodmultimedia	brot+backwaren（德国 · 行业媒体名录里的条目）	https://www.foodmultimedia.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-convenienceshop	CONVENIENCE SHOP（德国 · 行业媒体名录里的条目）	http://www.convenienceshop.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-fruchthandel	Fruchthandel Magazin（德国 · 行业媒体名录里的条目）	http://www.fruchthandel.de/magazin/aktuelle-ausgabe/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）；展会·TuttoFood（意大利）
+m1011-fleischnet	fleischnet.de（德国 · 行业媒体名录里的条目）	http://www.fleischnet.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-getraenkefachgrosshandel	GETRÄNKEFACHGROSSHANDEL（德国 · 行业媒体名录里的条目）	http://www.getraenkefachgrosshandel.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-moproweb	KÄSE-THEKE（德国 · 行业媒体名录里的条目）	http://www.moproweb.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-magazin-kueche	KÜCHE - Das Fachmagazin für Profiköche（德国 · 餐饮行业媒体）	https://www.magazin-kueche.de/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：奖项、展会和厂商稿，经营内容约 1/12。名录：fachzeitungen.de（德国）；展会·Internorga（德国）
+m1011-cash	CASH (Österreich)（奥地利 · 行业媒体名录里的条目）	http://www.cash.at/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-ccinside	Cooking + Catering Inside（德国 · 餐饮行业媒体）	http://www.ccinside.de/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：fachzeitungen.de（德国）
+m1011-flexotiefdruck	Flexo+Tief-Druck（德国 · 行业媒体名录里的条目）	https://www.flexotiefdruck.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-fng-magazin	fng Magazin Food, Nonfood, Getränke & Tobacco（德国 · 行业媒体名录里的条目）	http://www.fng-magazin.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-fruchtportal	fruchtportal.de（德国 · 行业媒体名录里的条目）	https://www.fruchtportal.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-mbi-infosource	Genussmittel & Getränke（德国 · 行业媒体名录里的条目）	http://www.mbi-infosource.de/produkte/agrar-ernaehrung/genussmittel-getraenke/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-brauwelt	BRAUWELT（德国 · 行业媒体名录里的条目）	http://www.brauwelt.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-brauweltinternational	BRAUWELT International（国家未记 · 行业媒体名录里的条目）	http://www.brauweltinternational.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-th-mann	DMW-Die Milchwirtschaft（德国 · 行业媒体名录里的条目）	http://www.th-mann.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-fischmagazin	FischMagazin（德国 · 行业媒体名录里的条目）	https://fischmagazin.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-tk-report	TK-Report（德国 · 行业媒体名录里的条目）	https://tk-report.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）；展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-bayernzeitung	Bayernzeitung（德国 · 行业媒体名录里的条目）	https://www.bayernzeitung.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-yumpu	yumpu.com（国家未记 · 行业媒体名录里的条目）	https://www.yumpu.com/de/document/read/69393257/chefheads-club-magazin07-24	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：fachzeitungen.de（德国）
+m1011-vegfuermich	VEG für mich（德国 · 行业媒体名录里的条目）	https://vegfuermich.de/	2026-10-11·网站类·行业媒体	不接	连不上（ERR_TLS_CERT_ALTNAME_INVALID）。题材没有判。名录：fachzeitungen.de（德国）
+m1011-page	VEGAN für mich（国家未记 · 行业媒体名录里的条目）	https://veganfuermich.page.link/yB2b	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-brauerei-forum	Brauerei Forum（德国 · 行业媒体名录里的条目）	http://www.brauerei-forum.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-fluessiges-obst	FLÜSSIGES OBST（德国 · 行业媒体名录里的条目）	https://www.fluessiges-obst.de/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：fachzeitungen.de（德国）
+m1011-fruit-processing	FRUIT PROCESSING（国家未记 · 行业媒体名录里的条目）	https://www.fruit-processing.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：fachzeitungen.de（德国）
+m1011-merum	merum.info（国家未记 · 行业媒体名录里的条目）	https://merum.info/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：fachzeitungen.de（德国）
+m1011-wfs-mag	Wellness Foods & Supplements（国家未记 · 行业媒体名录里的条目）	https://wfs-mag.com/	2026-10-11·网站类·行业媒体	不接	连不上（ERR_TLS_CERT_ALTNAME_INVALID）。题材没有判。名录：fachzeitungen.de（德国）
+m1011-inside-getraenke	INSIDE（德国 · 行业媒体名录里的条目）	http://www.inside-getraenke.de/flash.htm	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：fachzeitungen.de（德国）
+m1011-mintel	mintel.com（国家未记 · 行业媒体名录里的条目）	https://www.mintel.com/insights/food-and-drink/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-wasserstrom	wasserstrom.com（国家未记 · 行业媒体名录里的条目）	https://www.wasserstrom.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-cambro	cambro.com（国家未记 · 行业媒体名录里的条目）	https://blog.cambro.com/category/foodservice-news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-flanagan	flanagan.ca（加拿大 · 行业媒体名录里的条目）	https://www.flanagan.ca/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-countryrange	countryrange.co.uk（英国 · 行业媒体名录里的条目）	https://countryrange.co.uk/news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-mealsuite	mealsuite.com（国家未记 · 行业媒体名录里的条目）	https://www.mealsuite.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hoodfilters	hoodfilters.com（国家未记 · 行业媒体名录里的条目）	https://blog.hoodfilters.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-sgcfoodservice	sgcfoodservice.com（国家未记 · 行业媒体名录里的条目）	https://www.sgcfoodservice.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-infoodmarketing	infoodmarketing.com（国家未记 · 行业媒体名录里的条目）	https://infoodmarketing.com/news-insights/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-mews	mews.com（国家未记 · 行业媒体名录里的条目）	https://www.mews.com/en/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-horizonhospitality	horizonhospitality.com（国家未记 · 行业媒体名录里的条目）	https://www.horizonhospitality.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-lodgingmagazine	lodgingmagazine.com（美国 · 行业媒体名录里的条目）	https://lodgingmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）；展会·NRA Show（美国）
+m1011-hotelbusiness	hotelbusiness.com（国家未记 · 行业媒体名录里的条目）	https://hotelbusiness.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-ehotelier	ehotelier.com（国家未记 · 行业媒体名录里的条目）	https://insights.ehotelier.com/category/global-news/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（bloggers-hospitality_blogs,rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-hospitalityupgrade	hospitalityupgrade.com（国家未记 · 行业媒体名录里的条目）	https://www.hospitalityupgrade.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelowner	hotelowner.co.uk（英国 · 行业媒体名录里的条目）	https://www.hotelowner.co.uk/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-boutiquehotelnews	boutiquehotelnews.com（国家未记 · 行业媒体名录里的条目）	https://boutiquehotelnews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-boutiquehotelier	boutiquehotelier.com（国家未记 · 行业媒体名录里的条目）	https://www.boutiquehotelier.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-htrends	Hospitality Trends :: Hospitality Trends（国家未记 · 行业媒体名录里的条目）	https://www.htrends.com/trends-index.html	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hoteltechreport	hoteltechreport.com（国家未记 · 行业媒体名录里的条目）	https://hoteltechreport.com/resources?type=news	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-hospitality	Must-reads for today's hotelier（国家未记 · 行业媒体名录里的条目）	https://www.hospitality.today/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelspeak	The Latest Hotel Industry News & Developments（国家未记 · 行业媒体名录里的条目）	https://www.hotelspeak.com/category/hotel-industry-news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-revinate	revinate.com（国家未记 · 行业媒体名录里的条目）	https://www.revinate.com/category/blog/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-cloudbeds	cloudbeds.com（国家未记 · 行业媒体名录里的条目）	https://www.cloudbeds.com/articles/hospitality-marketing/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-xotels	xotels.com（国家未记 · 行业媒体名录里的条目）	https://www.xotels.com/en/blog	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（bloggers-hospitality_blogs,rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-socialtables	socialtables.com（国家未记 · 行业媒体名录里的条目）	https://www.socialtables.com/blog/category/hospitality/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-staah	staah.com（国家未记 · 行业媒体名录里的条目）	https://blog.staah.com/category/news	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（bloggers-hospitality_blogs,rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-actabl	actabl.com（国家未记 · 行业媒体名录里的条目）	https://actabl.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelogix	Hotelogix Blog: Tips & Trends in Hospitality（国家未记 · 行业媒体名录里的条目）	https://blog.hotelogix.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-sirvoy	The Sirvoy hospitality blog（国家未记 · 行业媒体名录里的条目）	https://sirvoy.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-asksuite	Asksuite（国家未记 · 行业媒体名录里的条目）	https://asksuite.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-rmscloud	rmscloud.com（国家未记 · 行业媒体名录里的条目）	https://www.rmscloud.com/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-mozaik	mozaik.com（国家未记 · 行业媒体名录里的条目）	https://www.mozaik.com/blog/category/hospitality-travel-trends/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hoteloperations	hoteloperations.com（国家未记 · 行业媒体名录里的条目）	https://hoteloperations.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hoteliermaldives	hoteliermaldives.com（国家未记 · 行业媒体名录里的条目）	https://hoteliermaldives.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（bloggers-hospitality_blogs,rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-asianhospitality	Asian Hospitality（国家未记 · 行业媒体名录里的条目）	https://www.asianhospitality.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hospitalitynewsny	hospitalitynewsny.com（国家未记 · 餐饮行业媒体）	https://hospitalitynewsny.com/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2025-02-04，订阅里 10 条。名录：Feedspot（补充）
+m1011-lhmagazine	lhmagazine.co.uk（英国 · 餐饮行业媒体）	https://lhmagazine.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：餐厅开业和酒店的公关稿。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-stiritupmagazine	stiritupmagazine.co.uk（英国 · 餐饮行业媒体）	https://stiritupmagazine.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：批发商自办的杂志，产品推介。名录：Feedspot（补充）
+m1011-geckohospitality	geckohospitality.com（国家未记 · 行业媒体名录里的条目）	https://www.geckohospitality.com/employers-resources/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-lureagency	lureagency.com（国家未记 · 行业媒体名录里的条目）	https://lureagency.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-saltblockhospitality	saltblockhospitality.com（国家未记 · 行业媒体名录里的条目）	https://saltblockhospitality.com/saltblock-hospitality-blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-giftofhospitality	Vintage Recipes for Modern Cooks（国家未记 · 行业媒体名录里的条目）	https://www.giftofhospitality.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-warwickhotels	warwickhotels.com（国家未记 · 行业媒体名录里的条目）	https://www.warwickhotels.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-rezcontrol	rezcontrol.com（国家未记 · 行业媒体名录里的条目）	https://rezcontrol.com/resources/blog/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-tigertms	TigerTMS（国家未记 · 行业媒体名录里的条目）	https://www.tigertms.com/news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-omlandhospitality	omlandhospitality.com（国家未记 · 行业媒体名录里的条目）	https://www.omlandhospitality.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-bigfoothospitality	bigfoothospitality.com（国家未记 · 行业媒体名录里的条目）	https://www.bigfoothospitality.com/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hospitalitycourses	hospitalitycourses.co.za（南非 · 行业媒体名录里的条目）	https://www.hospitalitycourses.co.za/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-theiwh	theiwh.com（国家未记 · 行业媒体名录里的条目）	https://www.theiwh.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-revenue-hub	Revenue Hub（国家未记 · 行业媒体名录里的条目）	https://revenue-hub.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（bloggers-hospitality_blogs），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-kajhospitality	kajhospitality.com（国家未记 · 行业媒体名录里的条目）	https://www.kajhospitality.com/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-flik-usa	flik-usa.com（国家未记 · 行业媒体名录里的条目）	https://www.flik-usa.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelsmag	hotelsmag.com（美国 · 行业媒体名录里的条目）	https://hotelsmag.com/news-categories/hospitality/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）；展会·EquipHotel（法国）；展会·NRA Show（美国）；展会·Internorga（德国）
+m1011-servicethatsells	servicethatsells.com（美国 · 餐饮行业媒体）	https://www.servicethatsells.com/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2025-05-06，订阅里 10 条。名录：Feedspot（补充）
+m1011-restaurantengine	restaurantengine.com（国家未记 · 餐饮行业媒体）	https://restaurantengine.com/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2025-11-26，订阅里 10 条。名录：Feedspot（补充）
+m1011-mbbmanagement	Hospitality & Restaurant Consulting Blog（国家未记 · 餐饮行业媒体）	https://www.mbbmanagement.com/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 1 篇，最新 2026-04-21，订阅里 10 条。名录：Feedspot（补充）
+m1011-restaurantden	restaurantden.com（美国 · 餐饮行业媒体）	https://restaurantden.com/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（建站公司写的餐厅营销做法，近 30 天 1 篇）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）
+m1011-menutiger	menutiger.com（国家未记 · 行业媒体名录里的条目）	https://www.menutiger.com/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-foodbeverageasia	foodbeverageasia.com（国家未记 · 行业媒体名录里的条目）	https://foodbeverageasia.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-ameft	AMEFT（国家未记 · 行业媒体名录里的条目）	https://ameft.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）；展会·Alimentaria（西班牙）；展会·TuttoFood（意大利）
+m1011-apfoodonline	apfoodonline.com（国家未记 · 行业媒体名录里的条目）	https://www.apfoodonline.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）；展会·Alimentaria（西班牙）
+m1011-japanupmagazine	japanupmagazine.com（国家未记 · 行业媒体名录里的条目）	https://japanupmagazine.com/archives/category/food	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-asian_food,mag-japanese_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-whetstonemagazine	Squarespace（国家未记 · 行业媒体名录里的条目）	https://www.whetstonemagazine.com/south-asia-journal	2026-10-11·网站类·行业媒体	不接	首页返回 404，从网站根目录再试也读不到。题材没有判。名录：Feedspot（补充）
+m1011-gourmettraveller	Gourmet Traveller（澳大利亚 · 行业媒体名录里的条目）	https://www.gourmettraveller.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-magshop	Gourmet Traveller（澳大利亚 · 行业媒体名录里的条目）	https://www.magshop.com.au/p/B23GTLUXE?utm_source=GTwebsite&utm_medium=referral&utm_campaign=GTLUXE&utm_content=GMT	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-foodprocessing	Food Processing（澳大利亚 · 行业媒体名录里的条目）	https://www.foodprocessing.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-delicious	delicious.com.au（澳大利亚 · 行业媒体名录里的条目）	https://www.delicious.com.au/food-files	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-foodmag	foodmag.com.au（澳大利亚 · 行业媒体名录里的条目）	https://www.foodmag.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）；展会·Fine Food Australia
+m1011-frankie	frankie.com.au（澳大利亚 · 行业媒体名录里的条目）	https://www.frankie.com.au/food	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-mindfood	MiNDFOOD（澳大利亚 · 行业媒体名录里的条目）	https://www.mindfood.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-eatwellmag	EatWell（澳大利亚 · 行业媒体名录里的条目）	https://eatwellmag.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-agfl	Australian Gluten-Free Life Magazine（澳大利亚 · 行业媒体名录里的条目）	https://agfl.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-cazbahmedia	AGFL Magazine（澳大利亚 · 行业媒体名录里的条目）	https://www.cazbahmedia.com.au/product-category/agfl-magazine/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：Feedspot（补充）
+m1011-nourishmagazine	Recipes（澳大利亚 · 行业媒体名录里的条目）	https://nourishmagazine.com.au/recipes/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-womensweeklyfood	Women's Weekly Food（澳大利亚 · 行业媒体名录里的条目）	https://www.womensweeklyfood.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-australian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-bakefromscratch	Cakes（国家未记 · 行业媒体名录里的条目）	https://bakefromscratch.com/category/recipes/cake/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-snackandbakery	snackandbakery.com（国家未记 · 行业媒体名录里的条目）	https://www.snackandbakery.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-worldbakers	WorldBakers（国家未记 · 行业媒体名录里的条目）	https://www.worldbakers.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-mediatrade	Trade Media Solutions（罗马尼亚 · 行业媒体名录里的条目）	https://www.mediatrade.ro/index.php?route=product/category&path=65	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-bakedmagazine	baked magazine（国家未记 · 行业媒体名录里的条目）	https://bakedmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-bakeryproduction	Kennedy’s Bakery Production（英国 · 行业媒体名录里的条目）	https://bakeryproduction.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-formstack	Kennedy's Bakery Production Magazine（国家未记 · 行业媒体名录里的条目）	https://curwoodcmsltd.formstack.com/forms/kennedysbakeryproduction	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-pastryartsmag	Pastry Arts（美国 · 餐饮行业媒体）	https://pastryartsmag.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：甜点配方和人物。名录：Feedspot（补充）
+m1011-bakingbiscuit	bakingbiscuit.com（国家未记 · 行业媒体名录里的条目）	https://bakingbiscuit.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-commercialbaking	commercialbaking.com（国家未记 · 行业媒体名录里的条目）	https://commercialbaking.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-bakerybusiness	bakerybusiness.com（国家未记 · 行业媒体名录里的条目）	https://www.bakerybusiness.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-newfoodmagazine	Processing & manufacturing（英国 · 行业媒体名录里的条目）	https://www.newfoodmagazine.com/industry_sector/baking/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking,mag-beverage,mag-chocolate,mag-european_food,mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「设计、装修和建材类」。名录：Feedspot（补充）
+m1011-foodandwine	foodandwine.com（印度 · 行业媒体名录里的条目）	https://www.foodandwine.com/cooking-techniques/baking	2026-10-11·网站类·行业媒体	不接	首页返回 402。题材没有判。名录：Feedspot（补充）
+m1011-thesourdoughclub	Newsletter（国家未记 · 行业媒体名录里的条目）	https://thesourdoughclub.com/category/magazine/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-sainsburysmagazine	Baking recipes（英国 · 行业媒体名录里的条目）	https://www.sainsburysmagazine.co.uk/recipes/category/baking	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking,mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-foodnetwork	Easy Baking Tips and Recipes: Cookies, Breads & Pastries（国家未记 · 行业媒体名录里的条目）	https://www.foodnetwork.com/recipes/packages/baking-guide	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-baking），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-bartender	Elevate Your Mixology Mastery with BARTENDER® Magazine（美国 · 餐饮行业媒体）	https://bartender.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：酒类新品。名录：Feedspot（补充）
+m1011-chilledmagazine	The Latest in Spirits, Cocktails, and Industry News（美国 · 餐饮行业媒体）	https://chilledmagazine.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：酒类新品和鸡尾酒配方。名录：Feedspot（补充）
+m1011-tequilaandspirits	Tequila & Spirits Magazine（国家未记 · 行业媒体名录里的条目）	https://tequilaandspirits.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-bartender），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-thirstymag	404（国家未记 · 行业媒体名录里的条目）	https://www.thirstymag.com/	2026-10-11·网站类·行业媒体	不接	首页返回 404，从网站根目录再试也读不到。题材没有判。名录：Feedspot（补充）
+m1011-bevindustry	bevindustry.com（国家未记 · 行业媒体名录里的条目）	https://www.bevindustry.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-bevnet	bevnet.com（国家未记 · 行业媒体名录里的条目）	https://www.bevnet.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-imbibemagazine	imbibemagazine.com（国家未记 · 行业媒体名录里的条目）	https://imbibemagazine.com/category/article/cocktails-spirits-article/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-beverage,mag-cocktail），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-darwin	Imbibe Magazine（国家未记 · 行业媒体名录里的条目）	https://imb.secure.darwin.cx/I1Y0W04M	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-beverage,mag-cocktail），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-beveragebusiness	Massachusetts Beverage Business（国家未记 · 行业媒体名录里的条目）	https://beveragebusiness.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-fb101	fb101.com（国家未记 · 餐饮行业媒体）	https://www.fb101.com/category/beverage/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：企业新闻稿汇总（新品、扩产、获奖）。名录：Feedspot（补充）
+m1011-beverage-master	Archived Articles（国家未记 · 行业媒体名录里的条目）	https://beverage-master.com/archived-articles/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-beverage），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-thedrinksbusiness	Attention Required!（国家未记 · 行业媒体名录里的条目）	https://www.thedrinksbusiness.com/tag/sake/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-just-drinks	Just Drinks（国家未记 · 行业媒体名录里的条目）	https://www.just-drinks.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-drinksint	drinksint.com（国家未记 · 行业媒体名录里的条目）	https://drinksint.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-thebeveragejournal	404 Not Found（国家未记 · 行业媒体名录里的条目）	https://www.thebeveragejournal.com/	2026-10-11·网站类·行业媒体	不接	首页返回 404，从网站根目录再试也读不到。题材没有判。名录：Feedspot（补充）
+m1011-canadianliving	Canadian Living’s best recipes, tested till perfect.（加拿大 · 行业媒体名录里的条目）	https://www.canadianliving.com/section/food	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-menumag	MENU Magazine（加拿大 · 餐饮行业媒体）	https://menumag.ca/feed/	2026-10-11·网站类·行业媒体	不接	规则 3、4（只许个人使用）：出版方 Restaurants Canada 的条款写「for any purpose other than personal use without prior written permission」（账本 w1010-ca-restaurants-canada，https://www.restaurantscanada.org/terms-and-conditions/），menumag.ca 页脚只链到同一出版方的隐私政策。内容强：近 10 条里熟客、GLP-1 对客流的影响、制服的隐性成本、各业态增长最快的口味和蛋白等约 6 条。名录：Feedspot（补充）
+m1011-culinairemagazine	Culinaire Magazine（加拿大 · 行业媒体名录里的条目）	https://www.culinairemagazine.ca/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-scoutmagazine	Scout Magazine（加拿大 · 行业媒体名录里的条目）	https://scoutmagazine.ca/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-nowtoronto	Security Verification（加拿大 · 行业媒体名录里的条目）	https://nowtoronto.com/category/food-and-drink/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-foodism	Foodism CA（加拿大 · 行业媒体名录里的条目）	https://foodism.to/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-ellegourmet	Elle Gourmet（加拿大 · 行业媒体名录里的条目）	https://ellegourmet.ca/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-divine	divine.ca（加拿大 · 行业媒体名录里的条目）	https://divine.ca/en/category/food/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-wandereater	Global Cuisine Recipes, Cooking Tips, Inspiration（加拿大 · 行业媒体名录里的条目）	https://wandereater.com/category/food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-grocerybusiness	grocerybusiness.ca（加拿大 · 行业媒体名录里的条目）	https://www.grocerybusiness.ca/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）；展会·Alimentaria（西班牙）
+m1011-edmontonjournal	Recipes, Food & Drink News and Restaurant Reviews（加拿大 · 行业媒体名录里的条目）	https://edmontonjournal.com/category/life/food/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-canadiangrocer	Canadian Grocer: grocery industry news, ideas & research（加拿大 · 行业媒体名录里的条目）	https://canadiangrocer.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-impactmagazine	Food & Nutrition（加拿大 · 行业媒体名录里的条目）	https://impactmagazine.ca/category/food-and-nutrition/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-westerngrocer	westerngrocer.com（加拿大 · 行业媒体名录里的条目）	https://westerngrocer.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-savourcalgary	Savour Calgary（加拿大 · 行业媒体名录里的条目）	https://savourcalgary.ca/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-torontolife	Attention Required!（加拿大 · 行业媒体名录里的条目）	https://torontolife.com/category/food/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-foodsafety	Food Safety Blog（加拿大 · 行业媒体名录里的条目）	https://blog.foodsafety.ca/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-nextmag	Food & Drink &raquo; NEXT Magazine（加拿大 · 行业媒体名录里的条目）	https://nextmag.ca/category/food-drink/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-readersdigest	readersdigest.ca（加拿大 · 行业媒体名录里的条目）	https://www.readersdigest.ca/food/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-besthealthmag	besthealthmag.ca（加拿大 · 行业媒体名录里的条目）	https://www.besthealthmag.ca/food/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-baronmag	Food, Microbrewery, Restaurant, Ecology（加拿大 · 行业媒体名录里的条目）	https://baronmag.ca/category/food/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-chatelaine	Attention Required!（加拿大 · 行业媒体名录里的条目）	https://chatelaine.com/category/food/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-edibletoronto	Welcome to Edible Toronto（加拿大 · 行业媒体名录里的条目）	https://edibletoronto.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-canadian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-cfe-news	CFE News（美国 · 餐饮行业媒体）	https://cfe-news.com/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（外烩和团餐；经营内容约 3/15，其余是菜谱、获奖和活动）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）
+m1011-contractcateringmagazine	contractcateringmagazine.co.uk（英国 · 行业媒体名录里的条目）	https://contractcateringmagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-publicsectorcatering	publicsectorcatering.co.uk（英国 · 餐饮行业媒体）	https://www.publicsectorcatering.co.uk/rss/costsectorcatering/rss.xml	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：团餐的获奖和任命。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-facilitatemagazine	facilitatemagazine.com（国家未记 · 行业媒体名录里的条目）	https://www.facilitatemagazine.com/sections/topics/workplace-services/catering	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-carehomecatering	carehomecatering.co.uk（英国 · 行业媒体名录里的条目）	https://www.carehomecatering.co.uk/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-gardencentrecatering	gardencentrecatering.co.uk（英国 · 行业媒体名录里的条目）	https://www.gardencentrecatering.co.uk/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-cateringscotland	cateringscotland.com（国家未记 · 行业媒体名录里的条目）	https://www.cateringscotland.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-stadia-magazine	Stadia magazine（国家未记 · 行业媒体名录里的条目）	https://www.stadia-magazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-magupdate	Mark Allen（英国 · 行业媒体名录里的条目）	https://www.magupdate.co.uk/reader-enquiry/psta/203	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelandcateringreview	hotelandcateringreview.ie（爱尔兰 · 餐饮行业媒体）	https://hotelandcateringreview.ie/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：订阅里只有各期杂志的目录。名录：Feedspot（补充）
+m1011-weddingstylemagazine	Wedding Catering（国家未记 · 行业媒体名录里的条目）	https://www.weddingstylemagazine.com/wedding-ideas/catering	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-mspmag	Catering Mpls.St.Paul Magazine（国家未记 · 行业媒体名录里的条目）	https://mspmag.com/topics/catering/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-caterermiddleeast	caterermiddleeast.com（国家未记 · 行业媒体名录里的条目）	https://www.caterermiddleeast.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-ktchnrebel	KTCHNrebel（德国 · 餐饮行业媒体）	https://www.ktchnrebel.com/topic/business-growth/	2026-10-11·网站类·行业媒体	接入	订阅被 robots.txt 禁（Disallow: /feed/，规则 1），改用栏目页做网页列表，robots 不禁栏目页和文章页，没有拒绝 AI 的规则，没有 TDMRep。内容强：2026 年的 9 篇里 7 篇是成本压力、缺人、厨房流程、HACCP、开放式厨房的做法和调查数据，每月约 1 篇。条款：出版方 RATIONAL AG 的「Content Usage for Journalists」https://www.ktchnrebel.com/content-usage-for-journalists/ 写「Our articles may serve as a basis for summaries, commentaries or further discussion, provided that the content is editorially reworked and not published unchanged … must be named as the original source and included via a clickable link」；Disclaimer 和 Imprint 没有限制使用的句子；网站自建（WordPress）。配置 web-ktchnrebel 试抓 27 条，12 篇的日期和正文核对过。部署后是否被挡（规则 6）没有查。名录：Feedspot（补充）
+m1011-chefpublishing	403（国家未记 · 行业媒体名录里的条目）	https://chefpublishing.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-worldchefs	All Latest Magazines（国家未记 · 行业媒体名录里的条目）	https://worldchefs.org/magazines/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-entrepreneurialchef	Entrepreneurial Chef（国家未记 · 餐饮行业媒体）	https://entrepreneurialchef.com/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2021-10-29，订阅里 10 条。名录：Feedspot（补充）
+m1011-worldwidechocolate	worldwidechocolate.com（国家未记 · 行业媒体名录里的条目）	https://worldwidechocolate.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-chocolate），首页标题和简介里没有行业用词；按关键词归为「零售和快消渠道类」。名录：Feedspot（补充）
+m1011-handletheheat	handletheheat.com（国家未记 · 行业媒体名录里的条目）	https://handletheheat.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-confectioneryproduction	confectioneryproduction.com（国家未记 · 行业媒体名录里的条目）	https://www.confectioneryproduction.com/core_topic/cocoa-chocolate/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）；展会·Sigep（意大利）；展会·iba（德国）
+m1011-chocolatetradingco	Buy luxury chocolates online & send chocolate gifts delivered by post（国家未记 · 行业媒体名录里的条目）	https://www.chocolatetradingco.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-chocolate），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-rtdmagazine	Ready-To-Drink Cocktails（国家未记 · 行业媒体名录里的条目）	https://rtdmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-thealchemistmagazine	thealchemistmagazine.ca（加拿大 · 行业媒体名录里的条目）	https://www.thealchemistmagazine.ca/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-cocktail），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-myshopify	The Alchemist Magazine（国家未记 · 行业媒体名录里的条目）	https://the-growler.myshopify.com/collections/the-alchemist	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-cocktail），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-barmagazine	barmagazine.com（国家未记 · 餐饮行业媒体）	https://barmagazine.com/category/cocktails	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：写各家酒吧的新酒单，不是经营内容。名录：Feedspot（补充）
+m1011-europeancoffeetrip	europeancoffeetrip.com（国家未记 · 行业媒体名录里的条目）	https://europeancoffeetrip.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-worldcoffeeportal	World Coffee Portal（英国 · 餐饮行业媒体）	https://www.worldcoffeeportal.com/latest/rss/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（咖啡连锁的扩张、并购和任命为主，经营消息约 3/15）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）
+m1011-magazine	Coffee Magazine（国家未记 · 行业媒体名录里的条目）	https://magazine.coffee/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-dallacorte	Insights from the Professional Coffee World: News and Events（国家未记 · 行业媒体名录里的条目）	https://www.dallacorte.com/magazine.html	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-coffeemagazine	coffeemagazine.com（国家未记 · 行业媒体名录里的条目）	https://coffeemagazine.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-foodchain-magazine	foodchain-magazine.com（国家未记 · 行业媒体名录里的条目）	https://www.foodchain-magazine.com/category/coffee/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-coffee），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-hospitalitynewsmag	hospitalitynewsmag.com（黎巴嫩 · 餐饮行业媒体）	https://www.hospitalitynewsmag.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：中东酒店和餐饮的公关稿、市场研究公司的通稿。名录：Feedspot（补充）；展会·Sigep（意大利）
+m1011-bestqualitycoffee	bestqualitycoffee.com（国家未记 · 行业媒体名录里的条目）	https://www.bestqualitycoffee.com/coffee-magazine	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-extractedmagazine	403（国家未记 · 行业媒体名录里的条目）	https://www.extractedmagazine.com/blog/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-gcrmag	gcrmag.com（澳大利亚 · 餐饮行业媒体）	https://www.gcrmag.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：咖啡产业上游和设备商的消息。名录：Feedspot（补充）；展会·Sigep（意大利）
+m1011-solomagazine	SOLO Magazine（国家未记 · 行业媒体名录里的条目）	https://solomagazine.coffee/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-coffee），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-fdbusiness	Food & Drink Business Europe（国家未记 · 行业媒体名录里的条目）	https://www.fdbusiness.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-esmmagazine	European Supermarket Magazine（国家未记 · 行业媒体名录里的条目）	https://www.esmmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Feedspot（补充）；展会·Alimentaria（西班牙）
+m1011-saveur	Attention Required!（国家未记 · 行业媒体名录里的条目）	https://www.saveur.com/category/european/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-frozenfoodeurope	News from the frozen food industry in Europe（国家未记 · 行业媒体名录里的条目）	https://www.frozenfoodeurope.com/news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）；展会·TuttoFood（意大利）
+m1011-seedworld	Europe（国家未记 · 行业媒体名录里的条目）	https://www.seedworld.com/europe/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-european_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-esasnacks	News & Press（欧洲 · 行业媒体名录里的条目）	https://www.esasnacks.eu/news.php	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-tasteofhome	European Recipes（印度 · 行业媒体名录里的条目）	https://www.tasteofhome.com/recipes/cuisines/european/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-european_food,mag-indian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-allrecipes	allrecipes.com（印度 · 行业媒体名录里的条目）	https://www.allrecipes.com/recipes/231/world-cuisine/european/	2026-10-11·网站类·行业媒体	不接	首页返回 402。题材没有判。名录：Feedspot（补充）
+m1011-togethermag	Food and drink（欧洲 · 行业媒体名录里的条目）	https://togethermag.eu/category/leisure/food-and-drink/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-european_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-innovatorsmag	innovatorsmag.com（国家未记 · 行业媒体名录里的条目）	https://www.innovatorsmag.com/category/sectors/food-water/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-european_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-thetaste	Europe（爱尔兰 · 行业媒体名录里的条目）	https://www.thetaste.ie/category/taste-travel/europe-travel	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-european_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-eatingwell	eatingwell.com（国家未记 · 行业媒体名录里的条目）	https://www.eatingwell.com/recipes/18313/cuisines-regions/european/	2026-10-11·网站类·行业媒体	不接	首页返回 402。题材没有判。名录：Feedspot（补充）
+m1011-foodprocessing-com	foodprocessing.com（国家未记 · 行业媒体名录里的条目）	https://www.foodprocessing.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-foodmanufacturing	foodmanufacturing.com（国家未记 · 行业媒体名录里的条目）	https://www.foodmanufacturing.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-fponthenet	Food Processing（国家未记 · 行业媒体名录里的条目）	https://www.fponthenet.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-fooddive	Food Dive: Food Industry News and Analysis（国家未记 · 行业媒体名录里的条目）	https://www.fooddive.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-pfionline	Processed Food Industry-B2B Magazine |（印度 · 行业媒体名录里的条目）	https://pfionline.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-foodmanagement	Food Management Today（英国 · 行业媒体名录里的条目）	https://foodmanagement.today/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing,mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「零售和快消渠道类」。名录：Feedspot（补充）
+m1011-provisioneronline	provisioneronline.com（国家未记 · 行业媒体名录里的条目）	https://www.provisioneronline.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-foodinfotech	Quality Magazine for the Food Processing Industry in India.（国家未记 · 行业媒体名录里的条目）	https://www.foodinfotech.com/category/processing/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-westernfoodprocessor	News Releases（加拿大 · 行业媒体名录里的条目）	http://www.westernfoodprocessor.ca/news-releases	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-fei-online	fei-online.com（国家未记 · 行业媒体名录里的条目）	https://fei-online.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-petfoodindustry	petfoodindustry.com（国家未记 · 行业媒体名录里的条目）	https://www.petfoodindustry.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-petfoodprocessing	petfoodprocessing.net（国家未记 · 行业媒体名录里的条目）	https://www.petfoodprocessing.net/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-agronfoodprocessing	agronfoodprocessing.com（国家未记 · 行业媒体名录里的条目）	https://agronfoodprocessing.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-africanfarming	African Farming（国家未记 · 行业媒体名录里的条目）	https://africanfarming.net/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-foodnbeveragesprocessing	Food Beverages Processing（国家未记 · 行业媒体名录里的条目）	https://foodnbeveragesprocessing.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-fmtmagazine	Processing（印度 · 行业媒体名录里的条目）	https://fmtmagazine.in/processing/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-foodhq	foodHQ（国家未记 · 行业媒体名录里的条目）	http://foodhq.world/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-supplysidefbj	Attention Required!（国家未记 · 行业媒体名录里的条目）	https://www.supplysidefbj.com/documents	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-dairyfoods	dairyfoods.com（国家未记 · 行业媒体名录里的条目）	https://www.dairyfoods.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-qualityassurancemag	qualityassurancemag.com（国家未记 · 行业媒体名录里的条目）	https://www.qualityassurancemag.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-meatpoultry	meatpoultry.com（国家未记 · 行业媒体名录里的条目）	https://www.meatpoultry.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-fdiforum	Food and Drink International（国家未记 · 行业媒体名录里的条目）	https://www.fdiforum.net/mag/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-food-safety	food-safety.com（国家未记 · 行业媒体名录里的条目）	https://www.food-safety.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-italianfoodtech	italianfoodtech.com（国家未记 · 行业媒体名录里的条目）	https://www.italianfoodtech.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing,mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-indifoodbev	indifoodbev.com（国家未记 · 行业媒体名录里的条目）	https://indifoodbev.com/category/food-processing/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-foodonline	Food Manufacturing News and Information（国家未记 · 行业媒体名录里的条目）	https://www.foodonline.com/resource/news	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-food_processing），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-foodbev	FoodBev Media（国家未记 · 行业媒体名录里的条目）	https://www.foodbev.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-franchisetimes	franchisetimes.com（国家未记 · 行业媒体名录里的条目）	https://www.franchisetimes.com/	2026-10-11·网站类·行业媒体	不接	首页返回 429。题材没有判。名录：Feedspot（补充）
+m1011-franchiseworld	Franchise World Magazine（英国 · 行业媒体名录里的条目）	https://www.franchiseworld.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-franchisejournal	Franchise Journal Magazine（国家未记 · 行业媒体名录里的条目）	https://www.franchisejournal.com/news	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-elitefranchisemagazine	elitefranchisemagazine.co.uk（英国 · 行业媒体名录里的条目）	https://elitefranchisemagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-businessfranchise	Read the latest Business Franchise news（国家未记 · 行业媒体名录里的条目）	https://www.businessfranchise.com/news	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-arabfranchisemagazine	arabfranchisemagazine.com（国家未记 · 行业媒体名录里的条目）	https://arabfranchisemagazine.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-franchisewire	FranchiseWire, Industry News for Franchisors and Franchisees（国家未记 · 行业媒体名录里的条目）	https://www.franchisewire.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-businessfranchiseaustralia	Latest Franchise News Australia & New Zealand（澳大利亚 · 行业媒体名录里的条目）	https://www.businessfranchiseaustralia.com.au/latests-news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-thefranchisewoman	The Franchise Woman（国家未记 · 行业媒体名录里的条目）	https://www.thefranchisewoman.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-franchisedictionarymagazine	The Latest Franchise News, Every Day（国家未记 · 行业媒体名录里的条目）	https://franchisedictionarymagazine.com/news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-what-franchise	Franchise Opportunities UK（国家未记 · 行业媒体名录里的条目）	https://www.what-franchise.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-inc	inc.com（国家未记 · 行业媒体名录里的条目）	https://www.inc.com/franchises	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-tastefrance	Taste France Magazine（国家未记 · 行业媒体名录里的条目）	https://www.tastefrance.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-tasteoffrancemag	Taste of France®（国家未记 · 行业媒体名录里的条目）	https://tasteoffrancemag.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-french_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-francemedia	Taste Of France Magazine（国家未记 · 行业媒体名录里的条目）	https://francemedia.shop/collections/frontpage	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-francetoday	Food & Drink in France（国家未记 · 行业媒体名录里的条目）	https://francetoday.com/food-and-drink-france/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-myfrenchcountryhomemagazine	myfrenchcountryhomemagazine.com（国家未记 · 行业媒体名录里的条目）	https://myfrenchcountryhomemagazine.com/category/french-living/recipes/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-french_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-chicagofoodmagazine	Cuisine: French（国家未记 · 行业媒体名录里的条目）	https://www.chicagofoodmagazine.com/cuisine/french	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-deliciousmagazine	Attention Required!（英国 · 行业媒体名录里的条目）	https://www.deliciousmagazine.co.uk/cuisine/french-recipes/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-eyetoeyemedia	Delicious. Magazine（英国 · 行业媒体名录里的条目）	https://checkout.eyetoeyemedia.co.uk/singleitem?item=DLC&prom=IDLC0824	2026-10-11·网站类·行业媒体	不接	连不上（ERR_TLS_CERT_ALTNAME_INVALID）。题材没有判。名录：Feedspot（补充）
+m1011-hospitalitydesign	hospitalitydesign.com（国家未记 · 行业媒体名录里的条目）	https://hospitalitydesign.com/projects/hotels-resorts/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-sleepermagazine	sleepermagazine.com（国家未记 · 行业媒体名录里的条目）	https://www.sleepermagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：Feedspot（补充）；展会·EquipHotel（法国）
+m1011-hospitality-interiors	Hospitality Interiors（国家未记 · 行业媒体名录里的条目）	https://www.hospitality-interiors.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-onboardhospitality	403（国家未记 · 行业媒体名录里的条目）	https://www.onboardhospitality.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-theworldofhospitality	The World of Hospitality Magazine（国家未记 · 餐饮行业媒体）	https://theworldofhospitality.com/feed	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：设计和产品稿。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-thehotelmagazine	thehotelmagazine.co.uk（英国 · 行业媒体名录里的条目）	https://thehotelmagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-hotelierandhospitality	hotelierandhospitality.com（英国 · 行业媒体名录里的条目）	https://hotelierandhospitality.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-todayshotelier	todayshotelier.com（国家未记 · 行业媒体名录里的条目）	https://todayshotelier.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-resorttrades	Resort Trades Timeshare Magazine（国家未记 · 行业媒体名录里的条目）	https://resorttrades.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-southernhospitalitymagazine	southernhospitalitymagazine.com（国家未记 · 行业媒体名录里的条目）	https://www.southernhospitalitymagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-discoveringhospitality	Hospitality Magazine（国家未记 · 行业媒体名录里的条目）	https://www.discoveringhospitality.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-eat-drink-sleep	eat-drink-sleep.com（国家未记 · 餐饮行业媒体）	https://eat-drink-sleep.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：任命、获奖和厂商稿，经营内容约 2/13。名录：Feedspot（补充）
+m1011-hotelscotland-online	hotelscotland-online.co.uk（英国 · 行业媒体名录里的条目）	https://hotelscotland-online.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelexecutive	HOTEL EXECUTIVE（国家未记 · 行业媒体名录里的条目）	https://www.hotelexecutive.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-clubandresortbusiness	clubandresortbusiness.com（国家未记 · 行业媒体名录里的条目）	https://clubandresortbusiness.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-clubmanagement	clubmanagement.com.au（澳大利亚 · 行业媒体名录里的条目）	https://clubmanagement.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hospitalitybusinessreview	Hospitality Business Review（国家未记 · 行业媒体名录里的条目）	https://www.hospitalitybusinessreview.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelmanagement-com-au	hotelmanagement.com.au（澳大利亚 · 行业媒体名录里的条目）	https://www.hotelmanagement.com.au/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-hotel,rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-hotelmagazine	Hotel Magazine（新西兰 · 行业媒体名录里的条目）	https://hotelmagazine.co.nz/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelresortdesign	Hotel & Resort Design（国家未记 · 行业媒体名录里的条目）	https://hotelresortdesign.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-bruitemagazine	bruitemagazine.com（印度 · 行业媒体名录里的条目）	https://www.bruitemagazine.com/category/food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-indian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-cntraveller	cntraveller.in（印度 · 行业媒体名录里的条目）	https://www.cntraveller.in/food-and-drink/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-indiacurrents	indiacurrents.com（印度 · 行业媒体名录里的条目）	https://indiacurrents.com/category/lifestyle/food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-indian_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-eataly	Eataly Magazine（国家未记 · 行业媒体名录里的条目）	https://www.eataly.com/us_en/magazine	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-italianfood	Italianfood.net（国家未记 · 行业媒体名录里的条目）	https://news.italianfood.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）；展会·Alimentaria（西班牙）
+m1011-puntoitaly	puntoitaly.org（国家未记 · 行业媒体名录里的条目）	https://puntoitaly.org/blog/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-liveinitalymag	liveinitalymag.com（国家未记 · 行业媒体名录里的条目）	https://liveinitalymag.com/category/italian-food-and-wine/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-appetitomagazine	appetitomagazine.com（国家未记 · 行业媒体名录里的条目）	https://appetitomagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-italymagazine	Food & Drink（国家未记 · 行业媒体名录里的条目）	https://www.italymagazine.com/cook-italian	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-segmento	Cuisine & Food（澳大利亚 · 行业媒体名录里的条目）	https://www.segmento.com.au/categories-s/cuisine-trends	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-salepepe	Ricette, vini, protagonisti della gastronomia italiana（意大利 · 行业媒体名录里的条目）	https://www.salepepe.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-foodandwineitalia	foodandwineitalia.com（国家未记 · 行业媒体名录里的条目）	https://www.foodandwineitalia.com/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：Feedspot（补充）
+m1011-lacucinaitaliana	La Cucina Italiana（国家未记 · 行业媒体名录里的条目）	https://www.lacucinaitaliana.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-italian_food），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-tokyoweekender	tokyoweekender.com（国家未记 · 行业媒体名录里的条目）	https://www.tokyoweekender.com/food-and-drink/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-japan	Cuisine（国家未记 · 行业媒体名录里的条目）	https://www.japan.travel/en/japan-magazine/cuisine/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-oishii	OISHII（新加坡 · 行业媒体名录里的条目）	https://www.oishii.sg/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-japanese_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-elrestaurante	el Restaurante Magazine（美国 · 餐饮行业媒体）	https://elrestaurante.com/api/rss/content.rss	2026-10-11·网站类·行业媒体	不接	规则 2：robots.txt 拒绝代用户读网页的 AI（meta-externalfetcher）。名录：Feedspot（补充）
+m1011-richmondmagazine	Mexican food richmondmagazine.com（国家未记 · 行业媒体名录里的条目）	https://richmondmagazine.com/topics/mexican-food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-mexican_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-newmexicomagazine	Articles about Food & Cuisine（国家未记 · 行业媒体名录里的条目）	https://www.newmexicomagazine.org/eat-and-drink/new-mexican-food/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-dish	Dish: Good Enough to Eat &raquo; Dish Magazine（新西兰 · 行业媒体名录里的条目）	https://dish.co.nz/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-scgmedia	Dish Magazine（新西兰 · 行业媒体名录里的条目）	https://scgmedia.co.nz/product/dish/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-cuisine	All Recipes（新西兰 · 行业媒体名录里的条目）	https://www.cuisine.co.nz/recipes/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-vervemagazine	vervemagazine.co.nz（新西兰 · 行业媒体名录里的条目）	https://www.vervemagazine.co.nz/category/food-wine/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-focusmagazine	focusmagazine.co.nz（新西兰 · 行业媒体名录里的条目）	https://focusmagazine.co.nz/category/recipes/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-foodtechnology	foodtechnology.co.nz（新西兰 · 行业媒体名录里的条目）	https://www.foodtechnology.co.nz/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：Feedspot（补充）
+m1011-metromag	Metro Food（新西兰 · 行业媒体名录里的条目）	https://www.metromag.co.nz/food	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-nzwomansweeklyfood	NZ Woman's Weekly Food（新西兰 · 行业媒体名录里的条目）	https://www.nzwomansweeklyfood.co.nz/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-magshop-co-nz	MagShop（新西兰 · 行业媒体名录里的条目）	https://www.magshop.co.nz/c/BW24NZF?utm_source=nzwwfwebsite&utm_medium=referral&utm_campaign=generic&utm_content=generic	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-ourwayoflife	ourwayoflife.co.nz（新西兰 · 行业媒体名录里的条目）	https://ourwayoflife.co.nz/our-food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-new_zealand_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-pmq	PMQ Pizza（美国 · 餐饮行业媒体）	https://www.pmq.com/feed/	2026-10-11·网站类·行业媒体	不接	规则 6：主会话 10/11 03:40 从正式服务器再测，订阅返回 403（Cloudflare 的检查页），和 10/1 一样；不绕过。内容强、条款通过（出版方 Arrowfly，即原 WTWH Media，和已接的 FSR 同一份条款；robots 只有 Crawl-delay 10），这台机器试抓成功。但 sources.json 的 $comment 记着 10/1 从正式服务器测试时 PMQ 返回 403，同一出版方的 QSR Magazine 10/2 也被服务器挡（规则 6）。要从服务器再测一次才能定。PMQ：近 10 条里 6 条是比萨店主的做法和经过（名厨接手老店、家族店长大的经历、把外卖盒和菜单做成营销工具、重做饮品单）；文章 16,423 篇（1997 年起），订阅带全文。名录：Feedspot（补充） 列入征求同意名单（请出版方放行 MyFnBBot）。
+m1011-pizzamarketplace	pizzamarketplace.com（美国 · 餐饮行业媒体）	https://www.pizzamarketplace.com/rss/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（连锁新品、开店和并购为主，约 2/10）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）
+m1011-pizzapastamagazine	Pizza, Pasta & Italian Food Magazine（英国 · 餐饮行业媒体）	https://www.pizzapastamagazine.co.uk/?format=feed&type=rss	2026-10-11·网站类·行业媒体	待定	待定：内容一般（标题多是栏目式短语，看不出内容）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-dineoutmagazine	dineoutmagazine.co.uk（英国 · 行业媒体名录里的条目）	https://dineoutmagazine.co.uk/restaurant.php	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-restaurantindustry	Restaurant Industry Magazine（英国 · 餐饮行业媒体）	https://restaurantindustry.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：开业公关稿。名录：Feedspot（补充）；展会·HRC（英国）
+m1011-restaurantdive	Restaurant Dive（美国 · 餐饮行业媒体）	https://www.restaurantdive.com/feeds/news/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（连锁快讯为主，分析约 3/10（AI 工具的风险、得来速满意度、破产保护））；robots 和订阅通过，条款没有读。名录：Feedspot（补充）
+m1011-epicureasia	Lifestyle（新加坡 · 行业媒体名录里的条目）	https://www.epicureasia.com/lifestyle/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-grubstreet	grubstreet.com（国家未记 · 行业媒体名录里的条目）	https://www.grubstreet.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-feastmagazine	Feast Magazine（国家未记 · 行业媒体名录里的条目）	https://www.feastmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-restaurantbusinessonline	Restaurant Business（美国 · 餐饮行业媒体）	https://www.restaurantbusinessonline.com/feed/	2026-10-11·网站类·行业媒体	不接	规则 3：Informa 旗下（页脚的隐私和条款都指向 informa.com），账本对同一出版方已有结论。内容强：近 10 条里个性化定价的限制、休闲正餐回暖、Chili’s 改善 Wi-Fi 等分析约 6 条。名录：Feedspot（补充）；展会·NRA Show（美国）
+m1011-womensweekly	womensweekly.com.sg（新加坡 · 行业媒体名录里的条目）	https://www.womensweekly.com.sg/food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-singapore_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-portfoliomagsg	Food & Wine（新加坡 · 行业媒体名录里的条目）	https://www.portfoliomagsg.com/food-wine	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-singapore_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-augustman	augustman.com（新加坡 · 行业媒体名录里的条目）	https://www.augustman.com/sg/dining/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-magzter	August Man（新加坡 · 行业媒体名录里的条目）	https://www.magzter.com/MY/Hubert-Burda-Media-Malaysia-Sdn-Bhd/Augustman-Malaysia/Lifestyle/?redirect=true	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-sgmagazine	Dining（新加坡 · 行业媒体名录里的条目）	https://sgmagazine.com/category/dining/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-singapore_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-vogue	vogue.sg（新加坡 · 行业媒体名录里的条目）	https://vogue.sg/lifestyle/food/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-singapore_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-teatimemagazine	TeaTime Magazine（国家未记 · 行业媒体名录里的条目）	https://teatimemagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-tea），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-teajourney	teajourney.pub（国家未记 · 行业媒体名录里的条目）	https://teajourney.pub/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-tea），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-paperandtea	P&T Magazine（国家未记 · 行业媒体名录里的条目）	https://www.paperandtea.com/blogs/journal	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-tea），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-readeighty	Eighty（国家未记 · 行业媒体名录里的条目）	https://readeighty.com/stories	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-tea），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-olivemagazine	olive Magazine Recipes and Travel and Restaurant Tips（英国 · 行业媒体名录里的条目）	https://www.olivemagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-veganfoodandliving	Vegan Food & Living（英国 · 行业媒体名录里的条目）	https://www.veganfoodandliving.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-greatbritishfoodawards	Great British Food（英国 · 行业媒体名录里的条目）	https://www.greatbritishfoodawards.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-chippychat	chippychat.co.uk（英国 · 餐饮行业媒体）	https://www.chippychat.co.uk/	2026-10-11·网站类·行业媒体	不接	规则 3（建站平台）：网站建在 Wix 上，Wix 的条款禁止抓取用户网站（账本已有结论）。名录：Feedspot（补充）
+m1011-delish	Recipes, Party Food, Cooking Guides, Dinner Ideas（英国 · 行业媒体名录里的条目）	https://www.delish.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-bbcgoodfood	Good Food（英国 · 行业媒体名录里的条目）	https://www.bbcgoodfood.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-eastendtastemagazine	East End Taste（英国 · 行业媒体名录里的条目）	https://eastendtastemagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-lardermag	Scottish Food and Drink News（英国 · 行业媒体名录里的条目）	https://lardermag.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-foodanddrinkmanufacturinguk	FDM UK（英国 · 行业媒体名录里的条目）	https://foodanddrinkmanufacturinguk.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「食品饮料制造和供应链类」。名录：Feedspot（补充）
+m1011-appetitemag	Bot Verification（英国 · 行业媒体名录里的条目）	https://www.appetitemag.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-foodanddrinknetwork	Food and Drink Network（英国 · 行业媒体名录里的条目）	https://foodanddrinknetwork.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-healthfoodbusiness	Health Food Business magazine（英国 · 行业媒体名录里的条目）	https://www.healthfoodbusiness.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-targetpublishing	Target APublishing（英国 · 行业媒体名录里的条目）	https://www.targetpublishing.com/cart/?add-to-cart=7171	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-tablemagazine	Table Magazine（英国 · 行业媒体名录里的条目）	https://www.tablemagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-specialityfoodmagazine	Speciality Food Magazine（英国 · 行业媒体名录里的条目）	https://www.specialityfoodmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）；展会·Alimentaria（西班牙）；展会·TuttoFood（意大利）
+m1011-goodtastemagazines	Non GamStop Casinos UK 2026（英国 · 行业媒体名录里的条目）	https://goodtastemagazines.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-noblerot	Noble Rot（英国 · 行业媒体名录里的条目）	https://noblerot.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-cibare	cibare.co.uk（英国 · 行业媒体名录里的条目）	https://www.cibare.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-infusemagazine	Infuse Magazine（英国 · 餐饮行业媒体）	https://www.infusemagazine.co.uk/feed/rss2	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：菜谱。名录：Feedspot（补充）
+m1011-foodies	Foodies Magazine（英国 · 行业媒体名录里的条目）	https://foodies.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-familyfoodmagazine	Family Food Magazine（英国 · 行业媒体名录里的条目）	https://familyfoodmagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-tastebudsmagazine	Taste Buds. The food and drink magazine for Devon（英国 · 行业媒体名录里的条目）	https://tastebudsmagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-foodcomm	The Food Commission: Home（英国 · 行业媒体名录里的条目）	http://www.foodcomm.org.uk/home/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-foodism-co-uk	Foodism（英国 · 行业媒体名录里的条目）	https://foodism.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-pitmagazine	Pit（英国 · 行业媒体名录里的条目）	https://pitmagazine.uk/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（mag-uk_food），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-hospitalityandeventsnorth	Hospitality and Events North（英国 · 餐饮行业媒体）	https://www.hospitalityandeventsnorth.com/feed	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：活动和任命。名录：Feedspot（补充）
+m1011-luxurybnbmag	Luxury BnB Magazine（英国 · 行业媒体名录里的条目）	https://www.luxurybnbmag.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-feast-magazine	Food & Hospitality（英国 · 餐饮行业媒体）	https://www.feast-magazine.co.uk/feed	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：订阅里是无关的软文（蹦床袜、眼部填充、交易）。名录：Feedspot（补充）
+m1011-thebusinessmagazine	Attention Required!（英国 · 行业媒体名录里的条目）	https://thebusinessmagazine.co.uk/topic/hospitality/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-vendinginternational-online	vendinginternational-online.com（国家未记 · 行业媒体名录里的条目）	https://vendinginternational-online.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-vendingtimes	Vending Industry News & Resources（国家未记 · 行业媒体名录里的条目）	https://www.vendingtimes.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-vendingmarketwatch	vendingmarketwatch.com（国家未记 · 行业媒体名录里的条目）	https://www.vendingmarketwatch.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-letschatsnacks	letschatsnacks.com（国家未记 · 行业媒体名录里的条目）	https://www.letschatsnacks.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-skift	skift.com（国家未记 · 行业媒体名录里的条目）	https://skift.com/feed	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-hoteldive	hoteldive.com（国家未记 · 行业媒体名录里的条目）	https://www.hoteldive.com/feeds/news/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-tophotel-news	tophotel.news（国家未记 · 行业媒体名录里的条目）	https://tophotel.news/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-lodgingeconometrics	lodgingeconometrics.com（国家未记 · 行业媒体名录里的条目）	https://lodgingeconometrics.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-hotstats	hotstats.com（国家未记 · 行业媒体名录里的条目）	https://www.hotstats.com/blog/rss.xml	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-hvs	hvs.com（国家未记 · 行业媒体名录里的条目）	https://www.hvs.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-hotelanalyst	hotelanalyst.co.uk（英国 · 行业媒体名录里的条目）	https://hotelanalyst.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hospitalityinvestor	hospitalityinvestor.com（国家未记 · 行业媒体名录里的条目）	https://www.hospitalityinvestor.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-hoteltechnologynews	hoteltechnologynews.com（国家未记 · 行业媒体名录里的条目）	https://hoteltechnologynews.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-webintravel	webintravel.com（国家未记 · 行业媒体名录里的条目）	https://www.webintravel.com/category/news/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-easyhotelmanagement	easyhotelmanagement.com（国家未记 · 行业媒体名录里的条目）	https://www.easyhotelmanagement.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-ehl	hospitalityinsights.ehl.edu（国家未记 · 行业媒体名录里的条目）	https://hospitalityinsights.ehl.edu/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-senecahospitality	senecahospitality.com（国家未记 · 行业媒体名录里的条目）	https://senecahospitality.com/blog	2026-10-11·网站类·行业媒体	不接	连不上（EAI_AGAIN）。题材没有判。名录：Feedspot（补充）
+m1011-duettocloud	duettocloud.com（国家未记 · 行业媒体名录里的条目）	https://www.duettocloud.com/en-us/library/rss.xml	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-trivago	trivago.com（国家未记 · 行业媒体名录里的条目）	https://businessblog.trivago.com/category/hospitality-guest-experience/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-aremorch	aremorch.com（国家未记 · 行业媒体名录里的条目）	https://aremorch.com/category/hospitality-business/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-mykonianrevenue	mykonianrevenue.com（国家未记 · 行业媒体名录里的条目）	https://mykonianrevenue.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-lastcallcopy	lastcallcopy.com（国家未记 · 行业媒体名录里的条目）	https://lastcallcopy.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-siteminder	siteminder.com（国家未记 · 行业媒体名录里的条目）	https://www.siteminder.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-ezeeabsolute	ezeeabsolute.com（国家未记 · 行业媒体名录里的条目）	https://www.ezeeabsolute.com/blog/feed/	2026-10-11·网站类·行业媒体	不接	首页返回 404，从网站根目录再试也读不到。题材没有判。名录：Feedspot（补充）
+m1011-canarytechnologies	canarytechnologies.com（国家未记 · 行业媒体名录里的条目）	https://www.canarytechnologies.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-hoteldesigns	hoteldesigns.net（国家未记 · 行业媒体名录里的条目）	https://hoteldesigns.net/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-greenlodgingnews	greenlodgingnews.com（国家未记 · 行业媒体名录里的条目）	https://www.greenlodgingnews.com/news-blog/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-hotelmanagement-network	hotelmanagement-network.com（国家未记 · 行业媒体名录里的条目）	https://www.hotelmanagement-network.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-everything-hospitality	everything-hospitality.com（国家未记 · 行业媒体名录里的条目）	https://everything-hospitality.com/feed/	2026-10-11·网站类·行业媒体	不接	连不上（ERR_TLS_CERT_ALTNAME_INVALID）。题材没有判。名录：Feedspot（补充）
+m1011-leadwithhospitality	leadwithhospitality.com（国家未记 · 行业媒体名录里的条目）	https://leadwithhospitality.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotellabs	hotellabs.com（国家未记 · 行业媒体名录里的条目）	https://hotellabs.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-archamenityevents	archamenityevents.com（国家未记 · 行业媒体名录里的条目）	https://archamenityevents.com/blog/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-blueorbiting	blueorbiting.com（国家未记 · 行业媒体名录里的条目）	https://www.blueorbiting.com/blog/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-horecastore	horecastore.ae（阿联酋 · 行业媒体名录里的条目）	https://horecastore.ae/blogs/news	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hospitalityparadigm	hospitalityparadigm.com（国家未记 · 行业媒体名录里的条目）	https://www.hospitalityparadigm.com/blog/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-soegjobs	soegjobs.com（国家未记 · 行业媒体名录里的条目）	https://www.soegjobs.com/category/hospitality-career/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-africahotelreport	africahotelreport.com（国家未记 · 行业媒体名录里的条目）	https://africahotelreport.com/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-hospitality_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-restaurantnews	restaurantnews.com（国家未记 · 行业媒体名录里的条目）	https://www.restaurantnews.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-qsrweb	qsrweb.com（美国 · 餐饮行业媒体）	https://www.qsrweb.com/rss/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（连锁新品、开店和任命为主，约 1/10）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）
+m1011-fastcasual	fastcasual.com（美国 · 餐饮行业媒体）	https://www.fastcasual.com/rss/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（连锁开店和任命为主，约 2/10）；robots 和订阅通过，条款没有读。名录：Feedspot（补充）；展会·NRA Show（美国）
+m1011-restaurantnewsrelease	restaurantnewsrelease.com（国家未记 · 行业媒体名录里的条目）	https://www.restaurantnewsrelease.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-quieteating	quieteating.com（国家未记 · 行业媒体名录里的条目）	https://quieteating.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-hotkhana	hotkhana.com（国家未记 · 行业媒体名录里的条目）	https://www.hotkhana.com/blog/?format=feed&type=rss	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-etundra	etundra.com（国家未记 · 行业媒体名录里的条目）	https://blog.etundra.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-greatkosherrestaurants	greatkosherrestaurants.com（国家未记 · 行业媒体名录里的条目）	https://www.greatkosherrestaurants.com/category/blog/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-stpetersburgfoodies	stpetersburgfoodies.com（国家未记 · 行业媒体名录里的条目）	https://stpetersburgfoodies.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-bottleneckmgmt	bottleneckmgmt.com（国家未记 · 行业媒体名录里的条目）	http://www.bottleneckmgmt.com/blog/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-jonathansristorante	jonathansristorante.com（国家未记 · 行业媒体名录里的条目）	https://jonathansristorante.com/category/blog/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-erikaeatseverything	erikaeatseverything.com（国家未记 · 行业媒体名录里的条目）	https://www.erikaeatseverything.com/blog-feed.xml	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-qsrautomations	qsrautomations.com（国家未记 · 行业媒体名录里的条目）	https://qsrautomations.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-parisbymouth	parisbymouth.com（国家未记 · 行业媒体名录里的条目）	https://parisbymouth.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-amsterdamfoodie	amsterdamfoodie.nl（荷兰 · 行业媒体名录里的条目）	http://www.amsterdamfoodie.nl/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-pierreblake	pierreblake.com（国家未记 · 行业媒体名录里的条目）	https://pierreblake.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-luxuryrestaurantguide	luxuryrestaurantguide.com（国家未记 · 行业媒体名录里的条目）	https://blog.luxuryrestaurantguide.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-restaurantgirl	restaurantgirl.com（国家未记 · 行业媒体名录里的条目）	http://www.restaurantgirl.com/feed/atom/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-foodieeshe	foodieeshe.com（国家未记 · 行业媒体名录里的条目）	https://foodieeshe.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-hanovertavern	hanovertavern.org（国家未记 · 行业媒体名录里的条目）	https://hanovertavern.org/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-pickyglutton	pickyglutton.com（国家未记 · 行业媒体名录里的条目）	https://pickyglutton.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-foodforthoughtmiami	foodforthoughtmiami.com（国家未记 · 行业媒体名录里的条目）	https://www.foodforthoughtmiami.com/feeds/posts/default?alt=rss	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-herfavfood	herfavfood.com（国家未记 · 行业媒体名录里的条目）	http://www.herfavfood.com/blog?format=RSS	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给酒店和旅游业的」。名录：Feedspot（补充）
+m1011-jaxrestaurantreviews	jaxrestaurantreviews.com（国家未记 · 行业媒体名录里的条目）	https://www.jaxrestaurantreviews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-trianglefoodblog	trianglefoodblog.com（国家未记 · 行业媒体名录里的条目）	https://trianglefoodblog.com/?feed=rss2	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-visitaruba	visitaruba.com（国家未记 · 行业媒体名录里的条目）	https://www.visitaruba.com/news/category/restaurants/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-newcastleeats	newcastleeats.co.uk（英国 · 行业媒体名录里的条目）	https://newcastleeats.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-fliptable	fliptable.io（国家未记 · 行业媒体名录里的条目）	https://fliptable.io/feed/	2026-10-11·网站类·行业媒体	不接	首页返回 404，从网站根目录再试也读不到。题材没有判。名录：Feedspot（补充）
+m1011-whattoeatinbirmingham	whattoeatinbirmingham.com（国家未记 · 行业媒体名录里的条目）	http://whattoeatinbirmingham.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「写给食客的美食和生活方式内容」。名录：Feedspot（补充）
+m1011-fivestarplugins	fivestarplugins.com（国家未记 · 行业媒体名录里的条目）	https://www.fivestarplugins.com/category/blog/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-welcome-table	welcome-table.co.uk（英国 · 行业媒体名录里的条目）	http://www.welcome-table.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-bonjifoods	bonjifoods.com（国家未记 · 行业媒体名录里的条目）	https://www.bonjifoods.com/blog-feed.xml	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「和餐饮经营无关，或不是媒体」。名录：Feedspot（补充）
+m1011-foodbloggersofcanada	foodbloggersofcanada.com（国家未记 · 行业媒体名录里的条目）	https://www.foodbloggersofcanada.com/category/food-drink/restaurant-roundup-2/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-vsag	vsag.com（国家未记 · 行业媒体名录里的条目）	https://www.vsag.com/category/restaurant-industry-news/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-uncorkd	uncorkd.biz（国家未记 · 行业媒体名录里的条目）	https://www.uncorkd.biz/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-therestaurantexpert	therestaurantexpert.com（国家未记 · 餐饮行业媒体）	https://therestaurantexpert.com/feed/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：顾问公司的网站，没有文章列表；同一位作者的 Restaurant Systems Pro 上一轮因条款不接。名录：Feedspot（补充）
+m1011-michaelhartzell	michaelhartzell.com（国家未记 · 行业媒体名录里的条目）	https://www.michaelhartzell.com/restaurant-blog/rss.xml	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-retaildesignblog	retaildesignblog.net（国家未记 · 行业媒体名录里的条目）	https://retaildesignblog.net/category/hotels-and-restaurants/restaurant/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-aaronallen	aaronallen.com（国家未记 · 行业媒体名录里的条目）	https://aaronallen.com/blog/feed	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-ijustwanttoeat	ijustwanttoeat.com（国家未记 · 行业媒体名录里的条目）	https://www.ijustwanttoeat.com/post?format=RSS	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-gastronomicslc	gastronomicslc.com（国家未记 · 行业媒体名录里的条目）	https://gastronomicslc.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-gastronomyblog	gastronomyblog.com（国家未记 · 行业媒体名录里的条目）	https://gastronomyblog.com/category/restaurant-review/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-braindocsfoodblog	braindocsfoodblog.com（国家未记 · 行业媒体名录里的条目）	https://braindocsfoodblog.com/feed/	2026-10-11·网站类·行业媒体	不接	题材不符（程序判）：只出现在 Feedspot 面向消费者或邻近行业的榜单（rss-restaurant_rss_feeds），首页标题和简介里没有行业用词；按关键词归为「公司、顾问或招聘网站的博客，不是行业媒体」。名录：Feedspot（补充）
+m1011-nmgastronome	nmgastronome.com（国家未记 · 行业媒体名录里的条目）	https://www.nmgastronome.com/?feed=rss2	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-restaurantmanifesto	restaurantmanifesto.com（国家未记 · 行业媒体名录里的条目）	https://www.restaurantmanifesto.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-theinfatuation	theinfatuation.com（国家未记 · 行业媒体名录里的条目）	https://www.theinfatuation.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-nextrestaurants	nextrestaurants.com（国家未记 · 行业媒体名录里的条目）	https://nextrestaurants.com/BLOG/	2026-10-11·网站类·行业媒体	不接	首页返回 500。题材没有判。名录：Feedspot（补充）
+m1011-roamilicious	roamilicious.com（国家未记 · 行业媒体名录里的条目）	https://roamilicious.com/category/restaurant-reviews/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-andyhayler	andyhayler.com（国家未记 · 行业媒体名录里的条目）	https://www.andyhayler.com/blog	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-blackboxintelligence	blackboxintelligence.com（国家未记 · 行业媒体名录里的条目）	https://blackboxintelligence.com/resources/restaurant-insights-research/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-bdo	bdo.com（国家未记 · 行业媒体名录里的条目）	https://www.bdo.com/industries/restaurants	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-marketing4restaurants	marketing4restaurants.com（国家未记 · 餐饮行业媒体）	https://marketing4restaurants.com/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2023-07-28，订阅里 10 条。名录：Feedspot（补充）
+m1011-hospitalitytitans	hospitalitytitans.co.uk（英国 · 行业媒体名录里的条目）	https://hospitalitytitans.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-bihospitality	bihospitality.co.uk（英国 · 行业媒体名录里的条目）	https://bihospitality.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-outofeden	outofeden.co.uk（英国 · 行业媒体名录里的条目）	https://www.outofeden.co.uk/blogs/news.atom	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hospitalityhealth	hospitalityhealth.org.uk（英国 · 行业媒体名录里的条目）	https://hospitalityhealth.org.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-platinum-hospitality	platinum-hospitality.co.uk（英国 · 行业媒体名录里的条目）	https://platinum-hospitality.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-hotelcontractbeds	hotelcontractbeds.co.uk（英国 · 行业媒体名录里的条目）	https://www.hotelcontractbeds.co.uk/blog/rss/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-thehospitalitycompany	thehospitalitycompany.co.uk（英国 · 行业媒体名录里的条目）	https://thehospitalitycompany.co.uk/feed/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：Feedspot（补充）
+m1011-allianceonline	allianceonline.co.uk（英国 · 行业媒体名录里的条目）	https://www.allianceonline.co.uk/blog/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：Feedspot（补充）
+m1011-newroadhotel	newroadhotel.co.uk（英国 · 行业媒体名录里的条目）	https://www.newroadhotel.co.uk/blog/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-lhg	lhg.co.uk（英国 · 行业媒体名录里的条目）	https://lhg.co.uk/blog-posts/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-hrinhospitality	hrinhospitality.co.uk（英国 · 行业媒体名录里的条目）	https://hrinhospitality.co.uk/category/hrh-blog/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：Feedspot（补充）
+m1011-alimentariapremium	Alimentaria Premium（西班牙语，国家未记 · 行业媒体名录里的条目）	http://www.alimentariapremium.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-alfa-editores	alfa-editores.com.mx（墨西哥 · 行业媒体名录里的条目）	http://www.alfa-editores.com.mx/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-asiafoodbeverages	asiafoodbeverages.com（国家未记 · 行业媒体名录里的条目）	https://asiafoodbeverages.com/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：展会·Alimentaria（西班牙）；展会·FHA（新加坡）；展会·Food Taipei（中国台湾）
+m1011-distribuicaohoje	Distribuição Hoje（葡萄牙语，国家未记 · 行业媒体名录里的条目）	https://www.distribuicaohoje.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-falstaff	Attention Required!（国家未记 · 行业媒体名录里的条目）	https://www.falstaff.com/en	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Alimentaria（西班牙）；展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-foodbusinessnews	foodbusinessnews.net（国家未记 · 行业媒体名录里的条目）	https://www.foodbusinessnews.net/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Alimentaria（西班牙）
+m1011-gamaconsumer	Your Innovation Partner（国家未记 · 行业媒体名录里的条目）	http://www.gamaconsumer.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-grandeconsumo	Grande Consumo（葡萄牙语，国家未记 · 行业媒体名录里的条目）	https://grandeconsumo.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-grupomaisfood	grupomaisfood.com.br（巴西 · 行业媒体名录里的条目）	http://grupomaisfood.com.br/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-handelextra	handelextra.pl（波兰 · 行业媒体名录里的条目）	https://www.handelextra.pl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-hipersuper	403 Forbidden（葡萄牙 · 行业媒体名录里的条目）	https://www.hipersuper.pt/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Alimentaria（西班牙）
+m1011-hurtidetal	HURT & DETAL（波兰 · 行业媒体名录里的条目）	https://hurtidetal.pl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-largoconsumo	Largo Consumo: il retail, i mercati e i consumi（意大利语，国家未记 · 行业媒体名录里的条目）	http://www.largoconsumo.info/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）；展会·TuttoFood（意大利）
+m1011-lebensmittelpraxis	Fachzeitschrift für die Lebensmittelbranche（德国 · 行业媒体名录里的条目）	https://lebensmittelpraxis.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-lebensmittelzeitung	Lebensmittel Zeitung（德语，国家未记 · 行业媒体名录里的条目）	https://www.lebensmittelzeitung.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）；展会·TuttoFood（意大利）
+m1011-voedingnu	voedingnu.nl（荷兰 · 行业媒体名录里的条目）	https://www.voedingnu.nl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-industriaalimentaria	Revista Alimentaria（西班牙语，国家未记 · 行业媒体名录里的条目）	https://industriaalimentaria.org/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-indualimentos	indualimentos.cl（智利 · 行业媒体名录里的条目）	https://www.indualimentos.cl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）
+m1011-insidefoodanddrink	insidefoodanddrink.com（国家未记 · 行业媒体名录里的条目）	https://www.insidefoodanddrink.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Alimentaria（西班牙）；展会·Sigep（意大利）
+m1011-redalimentaria	403 Forbidden（国家未记 · 行业媒体名录里的条目）	http://redalimentaria.net/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Alimentaria（西班牙）
+m1011-shogyokai	shogyokai.jp（日本 · 行业媒体名录里的条目）	http://shogyokai.jp/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：展会·Alimentaria（西班牙）
+m1011-hospitalityinsiders	Hospitality Insiders（法语，国家未记 · 行业媒体名录里的条目）	https://hospitalityinsiders.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-10minutes	10 Minutes Hotels（国家未记 · 行业媒体名录里的条目）	https://www.10minutes.news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-yonder	YONDER（法国 · 行业媒体名录里的条目）	https://www.yonder.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-muuuz	muuuz.com（国家未记 · 行业媒体名录里的条目）	https://www.muuuz.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-luxe-infinity	Luxe Infinity Magazines（法语，国家未记 · 行业媒体名录里的条目）	https://www.luxe-infinity.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-lefigaro	Le Figaro（法国 · 行业媒体名录里的条目）	https://www.lefigaro.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-lejournaldelamaison	Le Journal de la Maison（法国 · 行业媒体名录里的条目）	https://www.lejournaldelamaison.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-ideat	IDEAT（法国 · 行业媒体名录里的条目）	https://ideat.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-escapade-mag	Escapade-Mag（法国 · 行业媒体名录里的条目）	https://escapade-mag.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-lopinion	Actualité économique, politique et internationale（法国 · 行业媒体名录里的条目）	https://www.lopinion.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-editionsdebionnay	editionsdebionnay.com（国家未记 · 行业媒体名录里的条目）	https://www.editionsdebionnay.com/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-avivremagazine	À Vivre（法国 · 行业媒体名录里的条目）	https://www.avivremagazine.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-desirs-de-voyages	Désirs de Voyages（法国 · 行业媒体名录里的条目）	https://www.desirs-de-voyages.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-archistorm	archistorm.com（法语，国家未记 · 行业媒体名录里的条目）	https://www.archistorm.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-boulangerie-bakery	Honoré le Mag（法国 · 餐饮行业媒体）	https://honorelemag.fr/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（面包业供应商并购和政策消息，约 3/10（糖税、减糖））；robots 和订阅通过，条款没有读。名录：展会·EquipHotel（法国）；展会·Europain（法国）
+m1011-courrierdumeuble	Le Courrier du Meuble（法国 · 行业媒体名录里的条目）	https://courrierdumeuble.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-batiment-entretien	Information professionnelle Hygiène, Propreté, Multiservice et Déchets（法国 · 行业媒体名录里的条目）	https://www.batiment-entretien.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-l-agenceur	L'agenceur Magazine（法语，国家未记 · 行业媒体名录里的条目）	https://l-agenceur.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-lecuisinier	lecuisinier.fr（法国 · 餐饮行业媒体）	https://www.lechef.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：名厨动态、获奖和新书。名录：展会·EquipHotel（法国）
+m1011-darchitectures	darchitectures.com（国家未记 · 行业媒体名录里的条目）	https://www.darchitectures.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-cuisines-bains-magazine	Cuisines et Bains Magazine（国家未记 · 行业媒体名录里的条目）	https://cuisines-bains-magazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-delporte-hospitality	DELPORTE HOSPITALITY Magazine（法语，国家未记 · 行业媒体名录里的条目）	https://delporte-hospitality.com/blog-magazine-hospitality/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-filiere-3e	Electricien +（法国 · 行业媒体名录里的条目）	https://www.filiere-3e.fr/electricien-plus/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-entretien-textile	Information pro（法国 · 行业媒体名录里的条目）	https://www.entretien-textile.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-lacuisinepro	LA CUISINE PRO（法国 · 餐饮行业媒体）	http://www.lacuisinepro.fr/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：开餐厅的利润空间、在外用餐客流变少等约 3/12，其余是设备商。名录：展会·EquipHotel（法国）
+m1011-grandes-cuisines	grandes-cuisines.com（法国 · 餐饮行业媒体）	https://www.grandes-cuisines.com/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（餐饮经营消息约 2/10，其余是设备商和展会；和 Industrie Hôtelière、Restauration Collective 同一出版方，文章互相重复）；robots 和订阅通过，条款没有读。名录：展会·EquipHotel（法国）；FNPS（法国专业期刊联合会）
+m1011-guide-chr	Guide CHR（法国 · 行业媒体名录里的条目）	https://guide-chr.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-homefashionnews	homefashionnews.fr（法国 · 行业媒体名录里的条目）	https://www.homefashionnews.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-francepizza	francepizza.fr（法国 · 餐饮行业媒体）	https://www.francepizza.fr/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：比萨店主和冠军的人物访谈为主。名录：展会·EquipHotel（法国）；展会·Sigep（意大利）；展会·Europain（法国）
+m1011-hospitality-on	hospitality-on.com（国家未记 · 行业媒体名录里的条目）	https://hospitality-on.com/fr	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-hoteletlodge	Hôtel & Lodge Magazine（法国 · 行业媒体名录里的条目）	https://hoteletlodge.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-hotelseconews	hotelseconews.com（法语，国家未记 · 行业媒体名录里的条目）	http://hotelseconews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-in-interiors	in-interiors.fr（法国 · 行业媒体名录里的条目）	https://www.in-interiors.fr/	2026-10-11·网站类·行业媒体	不接	连不上（ECONNREFUSED）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-industrie-hoteliere	industrie-hoteliere.com（法国 · 餐饮行业媒体）	https://www.industrie-hoteliere.com/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（酒店为主，餐饮经营消息约 2/10；和 Grandes Cuisines 文章重复）；robots 和订阅通过，条款没有读。名录：展会·EquipHotel（法国）；FNPS（法国专业期刊联合会）
+m1011-intramuros	Intramuros Magazine（法国 · 行业媒体名录里的条目）	https://intramuros.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-journaldespalaces	journaldespalaces.com（法语，国家未记 · 行业媒体名录里的条目）	https://www.journaldespalaces.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-lux-revue-eclairage	lux-revue-eclairage.fr（法国 · 行业媒体名录里的条目）	https://lux-revue-eclairage.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-info-entreprise	Informations Entreprise（法语，国家未记 · 行业媒体名录里的条目）	https://www.info-entreprise.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-edp-nutrition	Expert Français N°1 sur les compléments alimentaires（法国 · 行业媒体名录里的条目）	https://www.edp-nutrition.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-proachat	PROACHAT（法语，国家未记 · 行业媒体名录里的条目）	https://proachat.net/fr	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-resto-magazine	RESTO Magazine（法国 · 行业媒体名录里的条目）	https://www.resto-magazine.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-restauration-collective	restauration-collective.com（法国 · 餐饮行业媒体）	https://www.restauration-collective.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：团餐菜单和比赛。名录：展会·EquipHotel（法国）；FNPS（法国专业期刊联合会）
+m1011-senseofwellness-mag	Le Magazine Premium qui inspire l'Hôtellerie et le Spa（法语，国家未记 · 行业媒体名录里的条目）	https://www.senseofwellness-mag.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-smartintegrationsmag	Smart intégrations Magazine（法语，国家未记 · 行业媒体名录里的条目）	https://smartintegrationsmag.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-restauration21	Restauration21（法国 · 餐饮行业媒体）	https://www.restauration21.fr/feed	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 3/10（Egalim 法规、可重复使用餐具、连锁），其余是比赛和展会）；robots 和订阅通过，条款没有读。名录：展会·EquipHotel（法国）
+m1011-tendancehotellerie	TendanceHotellerie , 1er webzine 100% actus（法国 · 行业媒体名录里的条目）	https://www.tendancehotellerie.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-unoeilensalle	Un oeil en salle（法国 · 餐饮行业媒体）	https://unoeilensalle.fr/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：职业比赛和获奖。名录：展会·EquipHotel（法国）
+m1011-solsmursplafonds	solsmursplafonds.fr（法国 · 行业媒体名录里的条目）	http://solsmursplafonds.fr/	2026-10-11·网站类·行业媒体	不接	连不上（EAI_AGAIN）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-valeurenergie	Valeur énergie（法语，国家未记 · 行业媒体名录里的条目）	https://www.valeurenergie.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-arqdeco	arqdeco.org（西班牙语，国家未记 · 行业媒体名录里的条目）	https://arqdeco.org/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-casaviva	Muebles y decoración（西班牙 · 行业媒体名录里的条目）	https://casaviva.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-diariodesign	Diariodesign（西班牙语，国家未记 · 行业媒体名录里的条目）	https://diariodesign.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-designdiffusion	Design Diffusion（意大利语，国家未记 · 行业媒体名录里的条目）	https://designdiffusion.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-revistadisenointerior	Revista Diseño Interior, Interiorismo, Arquitectura y Diseño（西班牙 · 行业媒体名录里的条目）	https://www.revistadisenointerior.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-distritohotel	distritohotel.es（西班牙 · 行业媒体名录里的条目）	https://distritohotel.es/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-distritooficina	distritooficina.com（国家未记 · 行业媒体名录里的条目）	https://distritooficina.com/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-webandmagazine	Visitor anti-robot validation（国家未记 · 行业媒体名录里的条目）	https://www.webandmagazine.media/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-dolceworld	dolceworld.com（法语，国家未记 · 行业媒体名录里的条目）	https://dolceworld.com/fr	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）；展会·Gastvrij Rotterdam（荷兰）
+m1011-pasteleria	Pastelería（西班牙 · 餐饮行业媒体）	https://www.pasteleria.com/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：糕点配方和比赛。名录：展会·EquipHotel（法国）；展会·Hostelco（西班牙）
+m1011-equipamientohostelero	equipamientohostelero.com（西班牙语，国家未记 · 行业媒体名录里的条目）	https://equipamientohostelero.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）；展会·Hostelco（西班牙）
+m1011-fandbnetworker	fandbnetworker.com（国家未记 · 行业媒体名录里的条目）	https://www.fandbnetworker.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-revistahosteleria	Revista HOSTELERÍA（西班牙 · 餐饮行业媒体）	https://www.revistahosteleria.com/feed/all	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：开店和并购快讯。名录：展会·EquipHotel（法国）；展会·TuttoFood（意大利）
+m1011-evolution	evolution.be（比利时 · 行业媒体名录里的条目）	https://www.evolution.be/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-hmi-online	hmi-online.com（国家未记 · 行业媒体名录里的条目）	https://www.hmi-online.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-revistahotelnews	revistahotelnews.com.br（巴西 · 行业媒体名录里的条目）	https://www.revistahotelnews.com.br/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）；展会·Hotelga（阿根廷）；展会·Fispal Food Service（巴西）
+m1011-revistahr	Marsbahis: Güncel Giriş Adresi ve Hızlı Erişimi（西班牙 · 行业媒体名录里的条目）	https://revistahr.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-ifdm	Design News（国家未记 · 行业媒体名录里的条目）	https://ifdm.design/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-internimagazine	Interni Magazine: dal 1954 raccontiamo il design italiano nel mondo（国家未记 · 行业媒体名录里的条目）	https://www.internimagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-mabhostelero	mabhostelero.com（国家未记 · 行业媒体名录里的条目）	https://mabhostelero.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-matrix4design	Matrix4Design（意大利语，国家未记 · 行业媒体名录里的条目）	https://www.matrix4design.com/it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-ondiseno	ondiseno.com（国家未记 · 行业媒体名录里的条目）	http://ondiseno.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-profesionalhoreca	Profesional Horeca（西班牙 · 餐饮行业媒体）	https://www.profesionalhoreca.com/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：厂商新品和访谈，经营内容约 1/12。名录：展会·EquipHotel（法国）；展会·Hostelco（西班牙）
+m1011-proyectocontract	proyectocontract.es（西班牙 · 行业媒体名录里的条目）	https://www.proyectocontract.es/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·EquipHotel（法国）
+m1011-roomdiseno	roomdiseno.com（国家未记 · 行业媒体名录里的条目）	https://roomdiseno.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·EquipHotel（法国）
+m1011-saberysabor	Revista Saber y Sabor（西班牙 · 餐饮行业媒体）	https://www.saberysabor.com/revista-gastronomia	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：首页只有各期杂志的目录，文章不公开。名录：展会·EquipHotel（法国）；展会·Sigep（意大利）；展会·Hostelco（西班牙）
+m1011-spaincontract	Spain Contract（西班牙 · 行业媒体名录里的条目）	http://spaincontract.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-spainhabitat	Spainhabitat（西班牙 · 行业媒体名录里的条目）	https://www.spainhabitat.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-suppermag	Hotel Food & Drink（国家未记 · 行业媒体名录里的条目）	https://www.suppermag.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）；展会·HRC（英国）
+m1011-tureforma	TuReforma（国家未记 · 行业媒体名录里的条目）	https://www.tureforma.org/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，设计、装修和建材类（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-tophotelprojects	Hotel Construction Projects（国家未记 · 行业媒体名录里的条目）	https://www.tophotelprojects.com/en/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-ehonline	eh! ONLINE（欧洲 · 行业媒体名录里的条目）	https://www.ehonline.eu/en/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·EquipHotel（法国）
+m1011-asiabiztoday	Top Asia Business News, Trends, Insights & Analysis- AsiaBizToday（国家未记 · 行业媒体名录里的条目）	https://www.asiabiztoday.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-asiafood	asiafood.com.tw（中国台湾 · 行业媒体名录里的条目）	https://www.asiafood.com.tw/en/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·FHA（新加坡）；展会·Sigep（意大利）
+m1011-asiawidefranchise	asiawidefranchise.com.sg（新加坡 · 行业媒体名录里的条目）	https://asiawidefranchise.com.sg/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-carbonwire	CarbonWire（国家未记 · 行业媒体名录里的条目）	https://carbonwire.org/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-coffeelegante	coffeelegante（国家未记 · 行业媒体名录里的条目）	https://coffeelegante.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-dairynews	DairyNews: dairy market news every day（国家未记 · 行业媒体名录里的条目）	https://dairynews.today/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-exhibitionglobe	Worldwide Exhibition Globe, Business Events, Trade Show News（国家未记 · 行业媒体名录里的条目）	https://exhibitionglobe.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-foodandbeverage	foodandbeverage.business（国家未记 · 行业媒体名录里的条目）	https://www.foodandbeverage.business/	2026-10-11·网站类·行业媒体	不接	连不上（CERT_HAS_EXPIRED）。题材没有判。名录：展会·FHA（新加坡）
+m1011-foodfocusthailand	Food Focus Thailand（国家未记 · 行业媒体名录里的条目）	https://www.foodfocusthailand.com/home/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·FHA（新加坡）；展会·Food Taipei（中国台湾）
+m1011-foodtechbiz	FoodTechBiz（国家未记 · 行业媒体名录里的条目）	https://www.foodtechbiz.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-foodtechgulf	foodtechgulf.ae（阿联酋 · 行业媒体名录里的条目）	https://foodtechgulf.ae/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-hotelsandculinaryasia	hotels and culinary asia magazine（国家未记 · 餐饮行业媒体）	https://hotelsandculinaryasia.com/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：酒店公关稿。名录：展会·FHA（新加坡）
+m1011-hozpitality	Hospitality Jobs, Networking & Industry Platform（国家未记 · 行业媒体名录里的条目）	https://www.hozpitality.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-ipacbiz	ipacbiz.com（国家未记 · 行业媒体名录里的条目）	https://ipacbiz.com/news/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-pasticceriainternazionale	Pasticceria Internazionale（意大利 · 行业媒体名录里的条目）	http://www.pasticceriainternazionale.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·FHA（新加坡）；展会·Sigep（意大利）；ANES（意大利行业期刊协会）
+m1011-plattermagazine	PLATTER Magazine（国家未记 · 行业媒体名录里的条目）	https://www.plattermagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-agri-biz	agri-biz.com（国家未记 · 行业媒体名录里的条目）	https://www.agri-biz.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·FHA（新加坡）
+m1011-ttgasia	TTG Asia（国家未记 · 行业媒体名录里的条目）	https://www.ttgasia.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·FHA（新加坡）
+m1011-ahgz	Allgemeine Hotel- und Gastronomie-Zeitung（奥地利 · 餐饮行业媒体）	https://www.ahgz.at/news/feed/	2026-10-11·网站类·行业媒体	不接	规则 2：robots.txt 拒绝代用户读网页的 AI（google-cloudvertexbot）。名录：展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-alacarte	alacarte.at（奥地利 · 行业媒体名录里的条目）	https://alacarte.at/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Alles für den Gast（奥地利）
+m1011-a-tavola	Willkommen bei Atavola（国家未记 · 餐饮行业媒体）	http://www.a-tavola.info/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-chefsbest	Chefs best（德国 · 餐饮行业媒体）	http://www.chefsbest.de/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：展会·Alles für den Gast（奥地利）
+m1011-culinarius	Beratungs, Event und Medienagentur für Gastronomie I Culinarius（奥地利 · 行业媒体名录里的条目）	https://culinarius.at/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·Alles für den Gast（奥地利）
+m1011-forum-csr	Bot Detection（国家未记 · 行业媒体名录里的条目）	https://www.forum-csr.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Alles für den Gast（奥地利）
+m1011-genusspunkt	Genusspunkt（奥地利 · 行业媒体名录里的条目）	http://www.genusspunkt.at/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Alles für den Gast（奥地利）
+m1011-hofundmarkt	Hof&Markt（奥地利 · 行业媒体名录里的条目）	https://hofundmarkt.at/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Alles für den Gast（奥地利）
+m1011-produkt	Fachmagazin für LEH, DFH und die Gastronomie &bull; produkt.at（奥地利 · 行业媒体名录里的条目）	http://www.produkt.at/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-prost-magazin	PROST Magazin（奥地利 · 餐饮行业媒体）	https://prost-magazin.at/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：厂商新品和奖项。名录：展会·Alles für den Gast（奥地利）；展会·Internorga（德国）
+m1011-kankokeizai	(株)観光経済新聞社（国家未记 · 行业媒体名录里的条目）	https://www.kankokeizai.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-veggy	キラジェンヌ株式会社（日本 · 行业媒体名录里的条目）	https://veggy.jp/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-pannews	(株)パンニュース社（日本 · 餐饮行业媒体）	http://www.pannews.co.jp/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：订阅里只有各期目录，没有文章。名录：展会·HCJ（日本）
+m1011-j-times	グラスウェアータイムス（日本 · 行业媒体名录里的条目）	http://www.j-times.co.jp/glass/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-food-oem	SAKU出版（日本 · 行业媒体名录里的条目）	https://www.food-oem.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-drink-oem	SAKU出版（日本 · 行业媒体名录里的条目）	https://www.drink-oem.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-byoinshinbun	(株)病院新聞社（国家未记 · 行业媒体名录里的条目）	https://byoinshinbun.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·HCJ（日本）
+m1011-sangyo-times	(株)産業タイムズ社（日本 · 行业媒体名录里的条目）	https://www.sangyo-times.jp/rtn/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-ac-times	(株)空調タイムス社（日本 · 行业媒体名录里的条目）	https://ac-times.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-kenzai-navi	建材ナビジャーナル（国家未记 · 行业媒体名录里的条目）	https://www.kenzai-navi.com/sumairing/journals	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-homeliving	株式会社アイク（日本 · 行业媒体名录里的条目）	http://www.homeliving.co.jp/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-ninkitenpo-d	人気店舗デザイン.JP（日本 · 行业媒体名录里的条目）	https://ninkitenpo-d.jp/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·HCJ（日本）
+m1011-mensajero	Mensajero Turístico（阿根廷 · 行业媒体名录里的条目）	https://mensajero.com.ar/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Hotelga（阿根廷）
+m1011-reportnews	Report News（拉丁美洲 · 行业媒体名录里的条目）	https://reportnews.la/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Hotelga（阿根廷）
+m1011-foodindustrynews	Food Industry News（美国 · 餐饮行业媒体）	https://www.foodindustrynews.com/newsletter/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：展会·NRA Show（美国）
+m1011-fermag	Foodservice Equipment Reports（美国 · 餐饮行业媒体）	https://www.fermag.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：设备商的人事任命和连锁快讯。名录：展会·NRA Show（美国）
+m1011-supermarketperimeter	Supermarket Perimeter（美国 · 行业媒体名录里的条目）	https://www.supermarketperimeter.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·NRA Show（美国）
+m1011-theashtonreport	The Ashton Report（美国 · 餐饮行业媒体）	https://www.theashtonreport.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：设备商的人事任命。名录：展会·NRA Show（美国）
+m1011-thehospitalityhangout	Hospitality Hangout（美国 · 行业媒体名录里的条目）	https://www.thehospitalityhangout.com/episodes/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·NRA Show（美国）
+m1011-calibbq	Restaurant Influencers（美国 · 行业媒体名录里的条目）	https://content.calibbq.media/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·NRA Show（美国）
+m1011-supermarketguru	The Lempert Report（美国 · 行业媒体名录里的条目）	https://www.supermarketguru.com/the-lempert-report/	2026-10-11·网站类·行业媒体	不接	首页返回 511。题材没有判。名录：展会·NRA Show（美国）
+m1011-cspdailynews	Convenience Store News & Petroleum（美国 · 行业媒体名录里的条目）	https://www.cspdailynews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·NRA Show（美国）
+m1011-convenienceretailing	Convenience Retailing University（美国 · 行业媒体名录里的条目）	https://www.convenienceretailing.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·NRA Show（美国）
+m1011-guiagphr	Guia do Profissional de Hotelaria, Turismo, Restaurante e Enologia（巴西 · 餐饮行业媒体）	https://guiagphr.com.br/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：酒店和餐厅的公关稿。名录：展会·Fispal Food Service（巴西）
+m1011-chefandhotel	Chef & Hotel（智利 · 餐饮行业媒体）	https://chefandhotel.cl/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：活动、获奖和开业。名录：展会·Fispal Food Service（巴西）
+m1011-redefoodservice	Rede Food Service（巴西 · 餐饮行业媒体）	https://redefoodservice.com.br/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：菜谱和招聘启事。名录：展会·Fispal Food Service（巴西）
+m1011-almatv	Error（国家未记 · 行业媒体名录里的条目）	https://www.almatv.tv/	2026-10-11·网站类·行业媒体	不接	首页返回 503。题材没有判。名录：展会·Sigep（意大利）
+m1011-avenuemedia	Organizzazione Congressi e Eventi. Formazione e Consulenza.（欧洲 · 行业媒体名录里的条目）	http://www.avenuemedia.eu/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-beverfood	Beverfood.com（意大利语，国家未记 · 行业媒体名录里的条目）	https://www.beverfood.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-emil	EMIL（意大利 · 行业媒体名录里的条目）	https://www.emil.it/?option=com_customproperties&task=tag&tagName=scegli%20la%20rivista%3ABomboniera%20Italiana&Itemid=777	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-comunicaffe	Comunicaffè notizie sul caffè sempre aggiornate ogni giorno（意大利 · 餐饮行业媒体）	https://www.comunicaffe.it/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（咖啡业消息，约 2/10（消费调查、未来的咖啡馆））；robots 和订阅通过，条款没有读。名录：展会·Sigep（意大利）
+m1011-distribuzionemoderna	Il primo quotidiano online sulla GDO（意大利语，国家未记 · 行业媒体名录里的条目）	https://distribuzionemoderna.info/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-dolcesalato	Dolcesalato（意大利 · 餐饮行业媒体）	https://www.dolcesalato.com/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：咖啡和糕点业的公司消息，约 2/12。名录：展会·Sigep（意大利）
+m1011-foodandcoffeeworld	Food, Coffee, Wine, Gelato, Sweets & Confectionery Magazine（国家未记 · 行业媒体名录里的条目）	http://www.foodandcoffeeworld.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-editricezeus	FOOD PROCESSING IT（意大利语，国家未记 · 行业媒体名录里的条目）	https://editricezeus.com/it/food-processing/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·iba（德国）
+m1011-gelaterianews	gelaterianews.com（意大利 · 餐饮行业媒体）	http://www.gelaterianews.com/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：展会·Sigep（意大利）
+m1011-ilgelatoartigianale	Il Gelato artigianale di tradizione italiana（国家未记 · 行业媒体名录里的条目）	https://www.ilgelatoartigianale.info/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-ibatech	Tekken 8 Konsol İçeriklerini Kullanma Kılavuzu（土耳其 · 行业媒体名录里的条目）	http://www.ibatech.com.tr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-ilfuoricasa	ilfuoricasa.it（意大利 · 餐饮行业媒体）	https://ilfuoricasa.it/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：网站现在是空的 WordPress 默认页。名录：展会·Sigep（意大利）
+m1011-itfoodonline	itfoodonline.com（国家未记 · 行业媒体名录里的条目）	https://www.itfoodonline.com/it	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：展会·Sigep（意大利）
+m1011-italianfoodtoday	italianfoodtoday.it（意大利 · 行业媒体名录里的条目）	https://www.italianfoodtoday.it/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：展会·Sigep（意大利）
+m1011-italyexport	Alimentari（意大利语，国家未记 · 行业媒体名录里的条目）	https://www.italyexport.net/alimentari/?lang=italian	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-myfruit	Il web magazine dell'ortofrutta（意大利 · 行业媒体名录里的条目）	https://www.myfruit.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-romagnaatavola	romagnaatavola.it（意大利 · 行业媒体名录里的条目）	https://www.romagnaatavola.it/it/	2026-10-11·网站类·行业媒体	不接	连不上（ERR_TLS_CERT_ALTNAME_INVALID）。题材没有判。名录：展会·Sigep（意大利）
+m1011-shopfittingnetwork	shopfittingnetwork.com（国家未记 · 行业媒体名录里的条目）	https://shopfittingnetwork.com/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：展会·Sigep（意大利）
+m1011-spaziohoreca	spaziohoreca.it（意大利 · 行业媒体名录里的条目）	https://www.spaziohoreca.it/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：展会·Sigep（意大利）
+m1011-tecnalimentaria	tecnalimentaria.it（意大利 · 行业媒体名录里的条目）	https://www.tecnalimentaria.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·iba（德国）；展会·Europain（法国）；展会·TuttoFood（意大利）
+m1011-interprogettied	TECNOLOGIE ALIMENTARI（意大利语，国家未记 · 行业媒体名录里的条目）	https://interprogettied.com/tecnologiealimentari/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-tuttogelato	tuttogelato.it（意大利 · 餐饮行业媒体）	https://tuttogelato.it/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：冰淇淋比赛和期刊预告。名录：展会·Sigep（意大利）
+m1011-vendingnews	Vendingnews.it（意大利 · 行业媒体名录里的条目）	https://www.vendingnews.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-horecachannelitalia	Horeca Channel Italia（意大利 · 餐饮行业媒体）	https://horecachannelitalia.it/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 4/10（2027 年开酒吧的成本、饮料销售数据、有机食品消费））；robots 和订阅通过，条款没有读。名录：展会·Sigep（意大利）
+m1011-ristonews	Ristonews（意大利 · 餐饮行业媒体）	https://www.ristonews.com/rss/news.xml	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：比赛、展会和新品。名录：展会·Sigep（意大利）
+m1011-surgelatimagazine	surgelatimagazine.com（意大利语，国家未记 · 行业媒体名录里的条目）	https://www.surgelatimagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-italianfoodnews	Italian Food News（意大利语，国家未记 · 行业媒体名录里的条目）	https://www.italianfoodnews.com/it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-forniturealberghiereonline	Forniture Alberghiere Online, Idee e News per Hotel（意大利 · 行业媒体名录里的条目）	https://www.forniturealberghiereonline.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-ristorazionemoderna	Il quotidiano online del food retail（意大利 · 餐饮行业媒体）	https://ristorazionemoderna.it/news.feed?type=atom	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 4/12（酒吧经营状况、消费调查），调查多来自厂商）；robots 和订阅通过，条款没有读。名录：展会·Sigep（意大利）
+m1011-hellochefs	Heladería（西班牙 · 餐饮行业媒体）	https://www.hellochefs.es/heladeria	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：冰淇淋店的配方和比赛，新店建议 1 篇。名录：展会·Sigep（意大利）
+m1011-freshbakery	freshbakery.gr（希腊 · 餐饮行业媒体）	https://bakery-pastry.gr/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：供应商新品。名录：展会·Sigep（意大利）
+m1011-baeckerzeitung	Österreichische Bäckerzeitung（奥地利 · 餐饮行业媒体）	https://baeckerzeitung.at/feed/	2026-10-11·网站类·行业媒体	不接	按最低风险判不接：Impressum https://baeckerzeitung.at/impressum-offenlegung/ 写「Jede Nutzung außerhalb der Grenzen des Urheberrechts bedarf der schriftlichen Zustimmung … insbesondere für Vervielfältigung, Bearbeitung, Übersetzung, Speicherung, Verarbeitung oder Wiedergabe von Inhalten in Datenbanken oder anderen elektronischen Medien und Systemen」（点到了存入和在数据库里处理）；AGB 只管订户和广告客户。如果主会话把它读成通用的保留权利（规则 4），可以改判，robots 和订阅都通过。内容强（5/10，在分界上）：近 10 条里食品价格、谷物收成、面包店卫生、鸡蛋供应、切片带动销量 5 条。名录：展会·Sigep（意大利）
+m1011-sogoodmagazine	Pastry Magazine. Best Chef Pastry Info at So Good（国家未记 · 行业媒体名录里的条目）	http://www.sogoodmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·Europain（法国）
+m1011-hammer	Hammer Publishers（印度 · 餐饮行业媒体）	https://hammer.co.in/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2022-06-11，订阅里 10 条。名录：展会·Sigep（意大利）
+m1011-barecamagazine	barecamagazine.com（国家未记 · 行业媒体名录里的条目）	http://www.barecamagazine.com/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：展会·Sigep（意大利）
+m1011-brutarul	brutarul.ro（罗马尼亚 · 餐饮行业媒体）	https://brutarul.ro/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（罗马尼亚语；约 3/10（集体劳资纠纷、税务检查前要做的 5 件事））；robots 和订阅通过，条款没有读。名录：展会·Sigep（意大利）
+m1011-egyptchefs	egyptchefs.com（国家未记 · 行业媒体名录里的条目）	https://egyptchefs.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Sigep（意大利）
+m1011-foodinchina	foodinchina.hk（中国香港 · 行业媒体名录里的条目）	http://www.foodinchina.hk/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：展会·Sigep（意大利）
+m1011-jimdo	jimdo.com（国家未记 · 行业媒体名录里的条目）	https://chocolat2.jimdo.com/	2026-10-11·网站类·行业媒体	不接	连不上（ERR_SSL_SSL/TLS_ALERT_HANDSHAKE_FAILURE）。题材没有判。名录：展会·Sigep（意大利）
+m1011-coffeeteaimagazine	coffeeteaimagazine.com（国家未记 · 行业媒体名录里的条目）	http://www.coffeeteaimagazine.com/home-en/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·Sigep（意大利）
+m1011-cukiernicyipiekarze	Elamed Media Group（波兰 · 行业媒体名录里的条目）	https://cukiernicyipiekarze.pl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-baeckerwelt	Bäckerwelt（德国 · 餐饮行业媒体）	https://baeckerwelt.de/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：活动和奖项，文章列表在首页读不全。名录：展会·Sigep（意大利）；展会·Internorga（德国）
+m1011-dessertprofessional	dessertprofessional.com（国家未记 · 行业媒体名录里的条目）	http://www.dessertprofessional.com/	2026-10-11·网站类·行业媒体	不接	连不上（EAI_AGAIN）。题材没有判。名录：展会·Sigep（意大利）
+m1011-dolcemag	Dolce Magazine（国家未记 · 行业媒体名录里的条目）	https://dolcemag.com/about_luxury_magazine	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-todaybaking	香港烘焙專業協會（中国香港 · 行业媒体名录里的条目）	http://www.todaybaking.hk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-horeca-online	horeca-online.com（意大利 · 餐饮行业媒体）	https://horeca-online.com/it/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：展会预告和厂商稿。名录：展会·Sigep（意大利）；展会·Europain（法国）
+m1011-icecreampress	アイスクリームプレス（日本 · 行业媒体名录里的条目）	https://icecreampress.co.jp/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-verlag-almer	verlag-almer.at（奥地利 · 行业媒体名录里的条目）	http://www.verlag-almer.at/DerKonditor/page3.html	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-matthaes	dfv Mediengruppe（德国 · 行业媒体名录里的条目）	http://www.matthaes.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-landra	Landra Hírportál（匈牙利 · 行业媒体名录里的条目）	http://www.landra.hu/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-mlinpekmarketing	Mlinpek Marketing（国家未记 · 行业媒体名录里的条目）	http://www.mlinpekmarketing.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，公司、顾问或招聘网站的博客，不是行业媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-pandecalidad	Pan de Calidad（西班牙 · 餐饮行业媒体）	https://pandecalidad.com/feed	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：比赛和展会。名录：展会·Sigep（意大利）
+m1011-esagesac	ESAGESAC（秘鲁 · 餐饮行业媒体）	http://www.esagesac.com/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：展会·Sigep（意大利）
+m1011-pekariposlasticar	Pekar&Poslastičar（塞尔维亚 · 餐饮行业媒体）	http://pekariposlasticar.rs/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（塞尔维亚语；面包店和糕点店的店家故事约 4/10，近 30 天 1 篇）；robots 和订阅通过，条款没有读。名录：展会·Sigep（意大利）
+m1011-ppic	ppic.pl（波兰 · 餐饮行业媒体）	https://www.ppic.pl/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：展会和行业数据，餐饮经营内容没有。名录：展会·Sigep（意大利）
+m1011-publitec	publitec.com（国家未记 · 行业媒体名录里的条目）	https://publitec.com/	2026-10-11·网站类·行业媒体	不接	连不上（UND_ERR_CONNECT_TIMEOUT）。题材没有判。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-bcmagazine	Специализированный журнал "Пекарь&Кондитер"（白俄罗斯 · 行业媒体名录里的条目）	https://www.bcmagazine.by/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-vakbladijs	Magazine voor ijsbereiders（荷兰 · 餐饮行业媒体）	https://vakbladijs.nl/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：人事、比赛和配方。名录：展会·Sigep（意大利）
+m1011-wpiekarni	Attention Required!（波兰 · 行业媒体名录里的条目）	https://www.wpiekarni.pl/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Sigep（意大利）
+m1011-techpress	Revista de Tecnología en la Industria Alimentaria（西班牙 · 行业媒体名录里的条目）	https://techpress.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Sigep（意大利）
+m1011-pax-intl	Security Check（国家未记 · 行业媒体名录里的条目）	https://www.pax-intl.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Sigep（意大利）
+m1011-foodbusinessgulf	foodbusinessgulf.com（国家未记 · 行业媒体名录里的条目）	https://foodbusinessgulf.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Sigep（意大利）；展会·TuttoFood（意大利）
+m1011-lejournaldespatissiers	lejournaldespatissiers.com（法国 · 餐饮行业媒体）	https://www.lejournaldespatissiers.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：订阅里只有协会主席的社论。名录：展会·Sigep（意大利）；展会·Europain（法国）
+m1011-cateringinside	cateringinside.de（德国 · 餐饮行业媒体）	https://cateringinside.de/?format=feed&type=rss	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：订阅只有 4 条，菜谱和厂商消息。名录：展会·Internorga（德国）
+m1011-chefs-magazin	chefs-magazin.de（德国 · 餐饮行业媒体）	https://chefs-magazin.de/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：菜式、人物和产地，经营内容约 1/10。名录：展会·Internorga（德国）
+m1011-intergast	Ihr Großhandel für Gastronomie（德国 · 行业媒体名录里的条目）	https://www.intergast.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·Internorga（德国）
+m1011-lebensmittelbrief	AKTUELLES（德国 · 行业媒体名录里的条目）	https://lebensmittelbrief.de/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Internorga（德国）
+m1011-disco-magazin	disco-magazin（德国 · 餐饮行业媒体）	https://disco-magazin.de/feed	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：夜店设备和活动。名录：展会·Internorga（德国）
+m1011-gastro	GASTRO.at（奥地利 · 餐饮行业媒体）	https://gastroportal.at/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：开业和酒类活动，经营内容约 1/10。名录：展会·Internorga（德国）
+m1011-snackconnection-marktplatz	snackconnection das Online Gastroportal für den Snackmarkt（德国 · 餐饮行业媒体）	https://snackconnection-marktplatz.de/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：供应商的产品推介。名录：展会·Internorga（德国）
+m1011-trendwelten	Trendwelten（欧洲 · 行业媒体名录里的条目）	https://trendwelten.eu/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Internorga（德国）
+m1011-agf	Hét branchemedium voor de AGF-sector（荷兰 · 行业媒体名录里的条目）	https://www.agf.nl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-bcbgmagazine	BCBG Magazine（荷兰 · 行业媒体名录里的条目）	https://www.bcbgmagazine.nl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-decafekrant	decafekrant.nl（荷兰 · 餐饮行业媒体）	https://www.decafekrant.nl/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：和 De RestaurantKrant 同一出版方；法规和经营栏目约 3/12，部分文章要订阅。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-foodinspiration	Food Inspiration（荷兰 · 餐饮行业媒体）	https://www.foodinspiration.com/nl/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：餐厅怎样兼顾品质和利润等约 2/12，其余是获奖和趋势。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-horecamagazine	Horeca Magazine（比利时 · 餐饮行业媒体）	https://horecamagazine.be/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：名厨和菜式。名录：展会·Gastvrij Rotterdam（荷兰）；展会·Europain（法国）
+m1011-horecamagazinenoord	Horeca Magazine Noord（荷兰 · 餐饮行业媒体）	https://www.horecamagazinenoord.nl/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-hospitality-management	Het vakblad voor de hotellerie in Nederland（荷兰 · 行业媒体名录里的条目）	http://www.hospitality-management.nl/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-kokswereld	Kokswereld（荷兰 · 餐饮行业媒体）	https://www.kokswereld.nl/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（厨师的经营故事约 3/10（从米其林到乡村小店、平价单点），其余是菜式）；robots 和订阅通过，条款没有读。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-missethoreca	missethoreca.nl（荷兰 · 餐饮行业媒体）	https://www.missethoreca.nl/rss.xml	2026-10-11·网站类·行业媒体	不接	规则 2：robots.txt 拒绝代用户读网页的 AI（chatgpt-user）。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-derestaurantkrant	derestaurantkrant.nl（荷兰 · 餐饮行业媒体）	http://www.derestaurantkrant.nl/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：和 De CaféKrant 同一出版方；法规和经营约 2/12，其余是开业和获奖。名录：展会·Gastvrij Rotterdam（荷兰）
+m1011-thuriesmagazine	Thuries Magazine（法国 · 行业媒体名录里的条目）	https://www.thuriesmagazine.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·Europain（法国）；FNPS（法国专业期刊联合会）
+m1011-tribunedesboulangerspatissie	tribunedesboulangerspatissiers.fr（法国 · 餐饮行业媒体）	https://tribunedesboulangerspatissiers.fr/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：原料商新品和比赛。名录：展会·Europain（法国）
+m1011-pasticceriainternazionale-com	pasticceriainternazionale.com（国家未记 · 行业媒体名录里的条目）	https://pasticceriainternazionale.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Europain（法国）
+m1011-luxuryfb	Luxury Food & Beverage WebMagazine home（意大利语，国家未记 · 行业媒体名录里的条目）	https://luxuryfb.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Europain（法国）
+m1011-lesnouvellesdelaboulangerie	Les Nouvelles de la Boulangerie-Pâtisserie（法国 · 餐饮行业媒体）	https://lesnouvellesdelaboulangerie.fr/feed/	2026-10-11·网站类·行业媒体	不接	规则 3、4（禁止商业使用）：法律声明 https://lesnouvellesdelaboulangerie.fr/mentions-legales/ 写「Toute utilisation dans un cadre professionnel ou commercial … est interdite, sauf accord exprès」，订阅和电子报同样适用；可写信征求同意（声明里给的地址 sotal@boulangerie.org）。内容强：近 10 条里行业利润率、面包店各类产品的增值税率、电子发票、店主失业人数创纪录等 6 条。名录：展会·Europain（法国）；FNPS（法国专业期刊联合会）
+m1011-lecafetier	Journal Le Cafetier（瑞士 · 餐饮行业媒体）	https://www.lecafetier.net/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页标题读到了，内容一般：瑞士法语区咖啡馆店主的报纸；经营内容约 2/10。名录：展会·Europain（法国）
+m1011-swissbaker	Panissimo（swissbaker.ch）（瑞士 · 餐饮行业媒体）	https://swissbaker.ch/fr/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（瑞士面包糕点业协会的会刊 Panissimo；近 20 篇里孕产保护、集体劳动合同、议会会期、受益人登记制度等约 6–7 篇，其余是技能比赛和学徒；Impressum 只有联系方式，没有限制性条款）；robots 和订阅通过，条款没有读。名录：展会·Europain（法国）
+m1011-painetpatisserie	painetpatisserie.be（比利时 · 餐饮行业媒体）	https://www.painetpatisserie.be/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 2/10（包装法规 PPWR 生效、老面包店重开））；robots 和订阅通过，条款没有读。名录：展会·Europain（法国）
+m1011-alimarket	alimarket.es（西班牙 · 行业媒体名录里的条目）	https://www.alimarket.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）；展会·Hostelco（西班牙）
+m1011-alimentifunzionali	alimentifunzionali.it（意大利 · 行业媒体名录里的条目）	https://alimentifunzionali.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-allfoodonline	allfoodonline.com（意大利语，国家未记 · 行业媒体名录里的条目）	https://allfoodonline.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-revistaaral	Revista ARAL（西班牙语，国家未记 · 行业媒体名录里的条目）	https://www.revistaaral.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-artumagazine	Artù Magazine（意大利 · 餐饮行业媒体）	https://www.artumagazine.it/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 2/10（欧洲餐饮市场数据），其余是开业和酒类）；robots 和订阅通过，条款没有读。名录：展会·TuttoFood（意大利）
+m1011-bioecoactual	Bio Eco Actual（国家未记 · 行业媒体名录里的条目）	https://www.bioecoactual.com/en/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-biolineaires	biolineaires.com（法语，国家未记 · 行业媒体名录里的条目）	https://www.biolineaires.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-pubblicitaitalia	Visitor anti-robot validation（国家未记 · 行业媒体名录里的条目）	https://pubblicitaitalia.com/it	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·TuttoFood（意大利）
+m1011-fruitbookmagazine	Fruitbook Magazine（意大利 · 行业媒体名录里的条目）	https://www.fruitbookmagazine.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-foodweb	foodweb.it（意大利 · 行业媒体名录里的条目）	https://www.foodweb.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-foodmeatmagazine	FOODMEATMAGAZINE（国家未记 · 行业媒体名录里的条目）	http://www.foodmeatmagazine.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-freshplaza	FreshPlaza: Notiziario Internazionale Ortofrutta e Banane（意大利 · 行业媒体名录里的条目）	https://www.freshplaza.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-freshpointmagazine	Fresh Point Magazine（意大利 · 行业媒体名录里的条目）	https://www.freshpointmagazine.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-funnyveg	Funny Veg（国家未记 · 行业媒体名录里的条目）	https://www.funnyveg.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-gdoweek	gdoweek.it（意大利 · 行业媒体名录里的条目）	http://www.gdoweek.it/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·TuttoFood（意大利）
+m1011-gidaturk	Gıda Türk（土耳其 · 行业媒体名录里的条目）	http://www.gidaturk.com.tr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-globalretailmag	globalretailmag.com（国家未记 · 行业媒体名录里的条目）	https://globalretailmag.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-gourmetbusiness	Gourmet Business（国家未记 · 行业媒体名录里的条目）	https://www.gourmetbusiness.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-integratormedia	The Integrator（国家未记 · 行业媒体名录里的条目）	https://integratormedia.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-igrandivini	I Grandi Vini（国家未记 · 行业媒体名录里的条目）	https://www.igrandivini.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-chiriottieditori	Ingredienti Alimentari（意大利 · 行业媒体名录里的条目）	https://shop.chiriottieditori.it/?product=italia-ingredienti-alimentari	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-italianfoodexcellence	italianfoodexcellence.com（国家未记 · 行业媒体名录里的条目）	https://www.italianfoodexcellence.com/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：展会·TuttoFood（意大利）
+m1011-lacucinaitaliana-it	La Cucina Italiana: ricette, news, chef, storie in cucina（意大利 · 行业媒体名录里的条目）	https://www.lacucinaitaliana.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-lineaires	Lineaires（法语，国家未记 · 行业媒体名录里的条目）	https://www.lineaires.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）；FNPS（法国专业期刊联合会）
+m1011-italiangourmet	Italian Gourmet（意大利 · 餐饮行业媒体）	https://www.italiangourmet.it/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 2/12（餐厅定价），其余是开业、比赛和酒）；robots 和订阅通过，条款没有读。名录：展会·TuttoFood（意大利）；ANES（意大利行业期刊协会）
+m1011-mark-up	mark-up.it（意大利 · 行业媒体名录里的条目）	http://www.mark-up.it/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·TuttoFood（意大利）
+m1011-origenonline	ORIGEN（西班牙 · 行业媒体名录里的条目）	https://www.origenonline.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-pambianconews	pambianconews.com（意大利语，国家未记 · 行业媒体名录里的条目）	https://magazine.pambianconews.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-thegrocer	Supermarket news（英国 · 行业媒体名录里的条目）	https://www.thegrocer.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-progressivegrocer	progressivegrocer.com（国家未记 · 行业媒体名录里的条目）	https://progressivegrocer.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·TuttoFood（意大利）
+m1011-retailfood	retail&food（意大利 · 行业媒体名录里的条目）	https://www.retailfood.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）；ANES（意大利行业期刊协会）
+m1011-alimentando	Periodico online del settore alimentare per operatori HOME（意大利语，国家未记 · 行业媒体名录里的条目）	http://www.alimentando.info/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-vendingpress	vendingpress.it（意大利 · 行业媒体名录里的条目）	https://www.vendingpress.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·TuttoFood（意大利）
+m1011-barmagazine-co-uk	barmagazine.co.uk（英国 · 行业媒体名录里的条目）	https://barmagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：展会·HRC（英国）
+m1011-fastfoodpro	fastfoodpro.com（国家未记 · 餐饮行业媒体）	https://www.fastfoodpro.com/	2026-10-11·网站类·行业媒体	不接	规则 3（建站平台）：网站建在 Wix 上，Wix 的条款禁止抓取用户网站（账本已有结论）。名录：展会·HRC（英国）
+m1011-thechefsforum	The Chefs' Forum（英国 · 行业媒体名录里的条目）	https://thechefsforum.co.uk/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·HRC（英国）
+m1011-quickservemagazine	quickservemagazine.co.uk（英国 · 行业媒体名录里的条目）	https://quickservemagazine.co.uk/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·HRC（英国）
+m1011-sustainablebusinessmagazine	sustainablebusinessmagazine.net（国家未记 · 行业媒体名录里的条目）	https://sustainablebusinessmagazine.net/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给食客的美食和生活方式内容（类别由程序按关键词归）。名录：展会·HRC（英国）
+m1011-convenienceworldmagazine	convenienceworldmagazine.com.au（澳大利亚 · 行业媒体名录里的条目）	https://convenienceworldmagazine.com.au/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：展会·Fine Food Australia
+m1011-retailworldmagazine	403（澳大利亚 · 行业媒体名录里的条目）	https://retailworldmagazine.com.au/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：展会·Fine Food Australia
+m1011-theshout	Australian Hotelier（The Shout）（澳大利亚 · 餐饮行业媒体）	https://theshout.com.au/australian-hotelier/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（澳大利亚酒馆业；政策和经营约 3/10（夜间经济策略、移民政策对小企业的负担），其余是并购和开业；出版方 Intermedia 和已接的 Hospitality 相同）；robots 和订阅通过，条款没有读。名录：展会·Fine Food Australia
+m1011-barsandcocktails	barsandcocktails.com.au（澳大利亚 · 餐饮行业媒体）	https://www.barsandcocktails.com.au/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：酒类新品和酒吧开业。名录：展会·Fine Food Australia
+m1011-bakerkonditor	Baker og Konditor Baker- og Konditorbransjens landsforening（挪威 · 餐饮行业媒体）	https://www.bakerkonditor.no/rss	2026-10-11·网站类·行业媒体	不接	订阅读不到或不足 3 条（200，2 条）。名录：展会·Smak（挪威）
+m1011-bartender-no	NBF（挪威 · 行业媒体名录里的条目）	https://www.bartender.no/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Smak（挪威）
+m1011-horecanytt	Forside（挪威 · 餐饮行业媒体）	https://www.horecanytt.no/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：人事任命和获奖。名录：展会·Smak（挪威）
+m1011-aseanfnb	ASEAN FOOD&BEVERAGE EXHIBITION 2027（国家未记 · 行业媒体名录里的条目）	https://www.aseanfnb.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Food Taipei（中国台湾）
+m1011-agriharvest	Vercel Security Checkpoint（中国台湾 · 行业媒体名录里的条目）	https://www.agriharvest.tw/	2026-10-11·网站类·行业媒体	不接	首页返回 429。题材没有判。名录：展会·Food Taipei（中国台湾）
+m1011-foodstyle	FOOD STYLE JAPAN｜日本最大級の食品商談会（日本 · 行业媒体名录里的条目）	https://foodstyle.jp/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Food Taipei（中国台湾）
+m1011-arthome	Arthome（西班牙 · 行业媒体名录里的条目）	http://www.arthome.es/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，和餐饮经营无关，或不是媒体（类别由程序按关键词归）。名录：展会·Hostelco（西班牙）
+m1011-revistagranhotel	revistagranhotel.com（西班牙语，国家未记 · 行业媒体名录里的条目）	https://www.revistagranhotel.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·Hostelco（西班牙）
+m1011-revistahostelpro	revistahostelpro.com（西班牙 · 餐饮行业媒体）	https://revistahostelpro.com/feed	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：酒店设计和家具新品。名录：展会·Hostelco（西班牙）
+m1011-inforestauracion	inforestauracion.com（西班牙语，国家未记 · 行业媒体名录里的条目）	https://www.inforestauracion.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：展会·Hostelco（西班牙）
+m1011-revistamundovending	Actualidad del sector vending, café y OCS（西班牙语，国家未记 · 行业媒体名录里的条目）	https://revistamundovending.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：展会·Hostelco（西班牙）
+m1011-officieldelafranchise	L'Officiel de la Franchise（法国 · 行业媒体名录里的条目）	https://www.officieldelafranchise.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，各行业加盟的（类别由程序按关键词归）。名录：FNPS（法国专业期刊联合会）
+m1011-latribunedesboulangerspatiss	latribunedesboulangerspatissiers.fr（法国 · 餐饮行业媒体）	https://tribunedesboulangerspatissiers.fr/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：原料商新品和比赛（和 tribunedesboulangerspatissiers.fr 是同一份订阅）。名录：FNPS（法国专业期刊联合会）
+m1011-rayon-boissons	Rayon Boissons（法语，国家未记 · 行业媒体名录里的条目）	https://www.rayon-boissons.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：FNPS（法国专业期刊联合会）
+m1011-pointsdevente	Points de Vente, le magazine de la distribution et du commerce（法国 · 行业媒体名录里的条目）	https://www.pointsdevente.fr/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：FNPS（法国专业期刊联合会）
+m1011-hoteldomani	Hotel Domani（意大利 · 行业媒体名录里的条目）	https://www.hoteldomani.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，写给酒店和旅游业的（类别由程序按关键词归）。名录：ANES（意大利行业期刊协会）
+m1011-ambientecucinaweb	Ambiente Cucina（意大利 · 行业媒体名录里的条目）	https://www.ambientecucinaweb.it/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，零售和快消渠道类（类别由程序按关键词归）。名录：ANES（意大利行业期刊协会）
+m1011-foodweekly	Foodweekly（意大利 · 行业媒体名录里的条目）	http://www.foodweekly.it/	2026-10-11·网站类·行业媒体	不接	首页返回检查页（202），程序读不到；没有绕过。题材没有判。名录：ANES（意大利行业期刊协会）
+m1011-ristorantiweb	Ristoranti（意大利 · 餐饮行业媒体）	https://www.ristorantiweb.com/feed/	2026-10-11·网站类·行业媒体	不接	规则 3、4（只许个人使用）：出版方 Tecniche Nuove 的声明 https://www.gruppotecnichenuove.it/disclaimer/ 写「Fatti salvi gli utilizzi strettamente personali, non è consentito copiare, alterare, distribuire, pubblicare o utilizzare i contenuti」。内容一般：30 条里食材成本、工资、投资回报等约 11 条，其余是酒评和产品。名录：ANES（意大利行业期刊协会）
+m1011-f-biz	Food Biz（フードビズ）（国家未记 · 餐饮行业媒体）	https://www.f-biz.com/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：首页只有会员内容的更新通知，文章要付费。名录：Fujisan（日本）
+m1011-fnbnews	FnB News（印度 · 餐饮行业媒体）	https://www.fnbnews.com/xml/Top-NewsRSS.XML	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 没有日期，订阅里 6 条。名录：点名（无名录出处）
+m1011-foodhospitality	Food & Hospitality World（印度 · 行业媒体名录里的条目）	https://www.foodhospitality.in/	2026-10-11·网站类·行业媒体	不接	连不上（ECONNRESET）。题材没有判。名录：点名（无名录出处）
+m1011-bakerybiz	BakeryBiz（印度 · 餐饮行业媒体）	https://bakerybiz.com/feed/	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：订阅多是 2022 年的旧文。名录：点名（无名录出处）
+m1011-hotelandrestaurant	Hotel & Restaurant (South Africa)（南非 · 餐饮行业媒体）	https://www.hotelandrestaurant.co.za/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：点名（无名录出处）
+m1011-spotongmag	Spotong（南非 · 餐饮行业媒体）	https://www.spotongmag.co.za/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：点名（无名录出处）
+m1011-licensingworld	Licensing World（爱尔兰 · 餐饮行业媒体）	https://licensingworld.ie/feed/	2026-10-11·网站类·行业媒体	不接	停更或更新太少：近 180 天 0 篇，最新 2025-11-24，订阅里 10 条。名录：点名（无名录出处）
+m1011-publituris	Publituris Hotelaria（葡萄牙 · 行业媒体名录里的条目）	https://www.publituris.pt/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：点名（无名录出处）
+m1011-inter-magazine	INTER Magazine（葡萄牙 · 行业媒体名录里的条目）	https://www.inter-magazine.pt/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：点名（无名录出处）
+m1011-revistalabarra	La Barra（哥伦比亚 · 餐饮行业媒体）	https://www.revistalabarra.com/rss	2026-10-11·网站类·行业媒体	不接	内容尺子不过（弱）：酱料和咖啡品牌的软文占多数。名录：点名（无名录出处）
+m1011-canalhoreca	Canal Horeca（智利 · 餐饮行业媒体）	https://canalhoreca.cl/feed/	2026-10-11·网站类·行业媒体	待定	待定：内容一般（约 2/10（Horeca 消费者的新选择方式），其余是酒店和产品）；robots 和订阅通过，条款没有读。名录：点名（无名录出处）
+m1011-gironews	Giro News（巴西 · 行业媒体名录里的条目）	https://www.gironews.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：点名（无名录出处）
+m1011-panificacaobrasileira	Panificação Brasileira（巴西 · 餐饮行业媒体）	https://www.panificacaobrasileira.com.br/	2026-10-11·网站类·行业媒体	不接	规则 3（建站平台）：网站建在 Wix 上，Wix 的条款禁止抓取用户网站（账本已有结论）。名录：点名（无名录出处）
+m1011-fsnews	대한급식신문（韩国 · 餐饮行业媒体）	https://www.fsnews.co.kr/	2026-10-11·网站类·行业媒体	待定	待定：没有订阅；首页由脚本生成或没有文章列表，程序读不到标题。名录：点名（无名录出处）
+m1011-asiafoodjournal	Asia Food Journal（亚洲 · 行业媒体名录里的条目）	https://www.asiafoodjournal.com/	2026-10-11·网站类·行业媒体	不接	首页对 MyFnBBot 返回 403；没有换标识，没有用代理。题材没有判。名录：点名（无名录出处）
+m1011-fnbreport	F&B Report（菲律宾 · 餐饮行业媒体）	https://fnbreport.ph/	2026-10-11·网站类·行业媒体	不接	没有订阅；内容不过：域名现在是停放页（只剩广告关键词）。名录：点名（无名录出处）
+m1011-foodservicetoday	Foodservice Today（印度尼西亚 · 行业媒体名录里的条目）	https://www.foodservicetoday.co.id/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：点名（无名录出处）
+m1011-hospitalityasia	Hospitality Asia（马来西亚 · 行业媒体名录里的条目）	https://www.hospitalityasia.com.my/	2026-10-11·网站类·行业媒体	不接	连不上（ENOTFOUND）。题材没有判。名录：点名（无名录出处）
+m1011-foodbusinessafrica	Food Business Africa（非洲 · 行业媒体名录里的条目）	https://www.foodbusinessafrica.com/	2026-10-11·网站类·行业媒体	不接	题材不符：读首页标题和简介判的，食品饮料制造和供应链类（类别由程序按关键词归）。名录：点名（无名录出处）

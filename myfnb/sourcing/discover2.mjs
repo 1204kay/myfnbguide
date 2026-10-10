@@ -3,15 +3,9 @@
 // Also notes a WordPress REST API (json_list possible). Input lines: id|name|url  Output JSON per row.
 //   node myfnb/sourcing/discover2.mjs in.txt out.json
 import { readFileSync, writeFileSync } from "node:fs";
-const UA = "Mozilla/5.0 (compatible; MyFnBBot/1.0; +https://new.myfnbguide.com/about)";
+import { get } from "./polite.mjs";
 const [inp, outp] = process.argv.slice(2);
 const rows = readFileSync(inp, "utf8").split(/\r?\n/).filter((l) => l.trim() && !l.startsWith("#")).map((l) => { const [id, name, url] = l.split("|").map((x) => x.trim()); return { id, name, url }; });
-async function get(url) {
-  try {
-    const r = await fetch(url, { headers: { "user-agent": UA, accept: "text/html,application/xhtml+xml,application/rss+xml,application/xml;q=0.9,*/*;q=0.8" }, redirect: "follow", signal: AbortSignal.timeout(20000) });
-    return { status: r.status, url: r.url, text: r.status === 200 ? await r.text() : "", type: r.headers.get("content-type") ?? "" };
-  } catch (e) { return { status: 0, url, text: "" }; }
-}
 const isFeed = (t) => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000)) && /<(item|entry)[\s>]/i.test(t);
 const count = (t) => (t.match(/<(item|entry)[\s>]/gi) || []).length;
 const newest = (t) => {

@@ -2,19 +2,12 @@
 // Input lines: id|name|url|tags(comma)|tier   Output: candidates JSON in sources.json shape.
 //   node myfnb/sourcing/discover.mjs in.txt out.json   (no feed found: out.miss.txt, then try discover2.mjs)
 import { readFileSync, writeFileSync } from "node:fs";
-const UA = "Mozilla/5.0 (compatible; MyFnBBot/1.0; +https://new.myfnbguide.com/about)";
+import { get } from "./polite.mjs";
 const [inp, outp] = process.argv.slice(2);
 const rows = readFileSync(inp, "utf8").split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).map((l) => {
   const [id, name, url, tags, tier] = l.split("|").map((x) => x.trim());
   return { id, name, url, tags: (tags || "").split(",").map((t) => t.trim()).filter(Boolean), tier: tier || "T2" };
 });
-async function get(url) {
-  try {
-    const r = await fetch(url, { headers: { "user-agent": UA, accept: "text/html,application/xhtml+xml,application/rss+xml,application/xml;q=0.9,*/*;q=0.8" }, redirect: "follow", signal: AbortSignal.timeout(20000) });
-    const text = r.status === 200 ? await r.text() : "";
-    return { status: r.status, url: r.url, text };
-  } catch (e) { return { status: 0, url, text: "", err: String(e.cause?.code || e.message).slice(0, 60) }; }
-}
 const isFeed = (t) => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000)) && /<(item|entry)[\s>]/i.test(t);
 const count = (t) => (t.match(/<(item|entry)[\s>]/gi) || []).length;
 async function discover(row) {

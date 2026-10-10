@@ -2658,6 +2658,34 @@
         "巴西",
         "服务商"
       ]
+    },
+    {
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "id": "web-ktchnrebel",
+      "name": "KTCHNrebel（德国 · 厨房设备商 RATIONAL 办的餐饮经营网络杂志，英文版）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.ktchnrebel.com/topic/business-growth/",
+        "itemSelector": "div.kr-post-wrapper",
+        "linkSelector": "div.kr-post-content > a.kr-post-link",
+        "titleSelector": "div.kr-post-content > a.kr-post-link h2, div.kr-post-content > a.kr-post-link h3",
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtUtcOffset": "+01:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tags": [
+        "德国",
+        "媒体"
+      ]
     }
   ]
 }

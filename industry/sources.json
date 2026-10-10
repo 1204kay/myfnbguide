@@ -1963,28 +1963,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-ru-kak-prigotovit-restoran",
-      "name": "Как приготовить ресторан（俄罗斯 · 设计过四百多家餐厅和酒吧的建筑事务所负责人和业内人士谈怎样开店）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://usgm.ru/kpr-rss.xml",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "tags": [
-        "俄罗斯",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-de-brandherd-esskultur",
       "name": "Brandherd Esskultur Podcast（德国 · 汉堡一家餐厅的两位老板谈自己的店）",
       "kind": "rss",

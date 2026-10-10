@@ -295,27 +295,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-hospitality-ireland",
-      "name": "Hospitality Ireland（爱尔兰 · 餐饮媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.hospitalityireland.com/feed",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "爱尔兰",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-marginedge",
       "name": "MarginEdge（美国 · 餐厅财务软件公司的博客）",
       "kind": "rss",

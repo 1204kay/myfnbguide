@@ -63,7 +63,7 @@ export const SITE = {
   /** 对外联系邮箱（选填）：llms.txt 和给 Agent 的使用说明里会写。 */
   contactEmail: "myfb.guide.my@gmail.com" as string | null,
   /** 关于页底部的一行小字（选填）。 */
-  footerNote: "由 AIHOT 开源框架驱动",
+  footerNote: "由 AIHOT 开源框架驱动 · MyF&B 与 MakanBook（马来西亚小餐饮店用的记账和点单工具）由同一团队制作",
   /** 中国大陆网站的 ICP 备案号（选填），填了就显示在侧栏底部和“我的”页底部，并链接到工信部备案系统。 */
   icp: null as string | null,
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
@@ -152,9 +152,9 @@ export const ABOUT = {
   sourcesFallback: "数十",
   /** 信源河动画下面的四个环节。 */
   steps: {
-    collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体：中国、日本、韩国、东南亚、印度、澳大利亚、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
+    collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体，分布在亚洲、大洋洲、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
     store: "收进来的内容都保存下来，同一件事的多篇报道归为一组。",
-    select: `模型先判断内容是否与开店和经营有关，再写中文标题、摘要和${ITEM_COPY.reasonLabel}；大公司财报、人事任命、颁奖、美食推荐、营销稿和重复转发不收录。`,
+    select: `模型先判断内容是否与餐饮经营有关，再写中文标题、摘要和${ITEM_COPY.reasonLabel}，按固定的评分标准选出精选；只面向食客的美食推荐、食评和食谱，以及与餐饮经营无关的内容不收录。`,
     publish: `入选的内容写成故事，按经营者遇到的情况整理进参考；早上 ${EDITION_WHEN.daily} 编日报，${EDITION_WHEN.weekly} 编周报，${EDITION_WHEN.monthly} 编月报。`,
   },
   /**

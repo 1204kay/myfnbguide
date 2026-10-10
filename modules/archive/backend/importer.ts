@@ -14,7 +14,8 @@ import type { ArchivePlan } from "../plan.ts";
 /** The pause between two pages of one archive: a blog answered 429 to pages read back to back (Petpooja, 10/4). Tests set 0. */
 export const PACE = { pageMs: 10_000 };
 
-const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@" });
+// Entities decoded as the engine's reader does (sources/rss.ts): a title with It&#39;s must match the one it stored.
+const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@", htmlEntities: true });
 const key = (title: unknown) => String(title ?? "").replace(/\s+/g, " ").trim();
 const list = <T>(v: T | T[] | undefined): T[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
 

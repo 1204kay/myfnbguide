@@ -92,17 +92,28 @@ async function shopsShown(now: Date): Promise<Map<string, ShopSeen>> {
   return new Map(rows.map((r) => [r.shop_key, { stories: r.stories, label: r.label }]));
 }
 
-/** A situation shows once two stories are in it (HANDOFF §9.2): one alone is not a page in the lists yet. */
-const SHOWN_FROM = 2;
+/**
+ * A situation is in the lists (home, sitemap, 看全部 N 种情况) once this many shops tell it, counted as every count is
+ * (tellerOf; an adviser or vendor is no shop): a thinner one reads as a page of one or two shops (HANDOFF §9.2,
+ * 只展示够厚的情况). Its page opens before that, from its stories.
+ */
+export const LISTED = { fromShops: 5 };
 
-/** How many situations the lists show. */
+const isListed = (rows: Row[] | undefined) => countOf(rows ?? [], false).shops >= LISTED.fromShops;
+
+/** How many situations the lists show: tellerOf's shops, counted in SQL (a page of one story does not read every story). */
 async function situationsShown(now: Date): Promise<number> {
   const [row] = await sql<{ n: number }[]>`
     SELECT count(*)::int AS n FROM (
       SELECT u.slug FROM reference_cases c
       JOIN publications p ON p.article_id = c.article_id
       CROSS JOIN LATERAL unnest(c.situations) AS u(slug)
-      WHERE c.status = 'story' AND ${selectedCondition(now)} GROUP BY u.slug HAVING count(*) >= ${SHOWN_FROM}) shown`;
+      WHERE c.status = 'story' AND ${selectedCondition(now)} GROUP BY u.slug
+      HAVING count(DISTINCT CASE
+        WHEN c.shop_key IS NOT NULL THEN 'shop:' || c.shop_key
+        WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor') THEN NULL
+        WHEN c.story #>> '{shop,speaker}' = 'media' THEN 'case:' || c.article_id
+        ELSE 'source:' || p.source_id END) >= ${LISTED.fromShops}) shown`;
   return row!.n;
 }
 
@@ -315,7 +326,7 @@ export const rankSituations = (rows: SituationRow[]): SituationRow[] => [...rows
 export async function readHome(now = new Date()): Promise<ReferenceHome> {
   const [rows, stored, shops] = await Promise.all([shownCases(sql`true`, now), groupings(), shopsShown(now)]);
   const placed = bySituation(rows);
-  const shown = SITUATIONS.filter((s) => (placed.get(s.slug)?.length ?? 0) >= SHOWN_FROM);
+  const shown = SITUATIONS.filter((s) => isListed(placed.get(s.slug)));
   const listed = new Map(shown.map((s) => [s.slug, situationRow(s, placed.get(s.slug)!, stored.get(s.slug))]));
   const ranking = rankSituations([...listed.values()]);
   // The story the library took in last, of the first: a returning reader sees the library grow (layout J14). Its
@@ -429,7 +440,7 @@ export async function sitemapEntries(now = new Date()): Promise<SitemapEntry[]> 
   return [
     ...SITUATIONS.flatMap((s) => {
       const list = placed.get(s.slug) ?? [];
-      return list.length >= SHOWN_FROM ? [{ loc: `/reference/${s.slug}`, lastmod: newest(list), changefreq: "daily", priority: 0.8 }] : [];
+      return isListed(list) ? [{ loc: `/reference/${s.slug}`, lastmod: newest(list), changefreq: "daily", priority: 0.8 }] : [];
     }),
     ...[...shops].flatMap(([key, list]) => (list.length > 1 ? [{ loc: `/reference/shops/${key}`, lastmod: newest(list), changefreq: "weekly", priority: 0.5 }] : [])),
     ...rows.map((r) => ({ loc: `/reference/cases/${r.id}`, lastmod: r.updated_at, changefreq: "monthly", priority: 0.6 })),

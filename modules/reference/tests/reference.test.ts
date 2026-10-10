@@ -2,7 +2,7 @@
 // spoken word, a label heading, a note to itself or a title that opens with its source reaches a reader; a story
 // with problems is shown without a second try, or shown after failing it; thin material becomes a story; text is
 // stored without the space between Chinese and digits; one shop's stories miss each other's page for a bracket in
-// its name; a withdrawn item stays in the reference pages; a situation with one case is listed; a story points to
+// its name; a withdrawn item stays in the reference pages; a situation too few shops tell is listed; a story points to
 // its shop's page when that page would only repeat it; a grouping of practices fails on a story left out, placed
 // twice or across groups, or a shop on two lines, instead of mending it; a grouping stores one line of two shops or
 // a number no story has, or sends a text back as too long without naming where, how long and what to cut; a
@@ -29,7 +29,7 @@ import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNu
 import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
-import { membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
+import { LISTED, membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
 import { day, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
 import type { CaseStory, Count, ItemBody, Shop, SituationRow } from "../types.ts";
 
@@ -480,7 +480,12 @@ test("cases are written for selected items, once more when the checks find probl
   assert.ok(compare.type === "compare" && compare.change?.amount === 638 && compare.change.yearly === 638 * 52, "the change is computed");
 });
 
-test("the pages show public cases only, a situation once two cases are in it, each shop once in a list, and the practices by shop", async () => {
+test("the pages show public cases only, a situation once enough shops tell it, each shop once in a list, and the practices by shop", async () => {
+  const thin = await get("/api/reference");
+  assert.deepEqual([thin.categories, thin.totals.situations], [[], 0], "two shops are no page in the lists where they ask for five");
+  assert.equal((await get("/api/reference/situations/busy-no-profit")).situations, 0, "the count on a page is the lists' count");
+  // The stories here are of two or three shops: the rest reads the lists as they are from two.
+  LISTED.fromShops = 2;
   const home = await get("/api/reference");
   const cost = home.categories.find((c: { key: string }) => c.key === "cost");
   assert.deepEqual(cost.situations.map((s: { slug: string; count: Count; practice: string | null }) => [s.slug, s.count, s.practice]),

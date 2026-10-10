@@ -78,8 +78,8 @@ before(async () => {
 after(async () => { server.close(); await stopBoss(); await closeDb(); });
 
 test("each episode's audio is found by its title", () => {
-  const audio = audioByTitle(`<rss><channel><item><title> A  title </title><enclosure url="https://x/a.mp3" type="audio/mpeg"/></item><item><title>No audio</title></item></channel></rss>`);
-  assert.deepEqual([...audio], [["A title", { url: "https://x/a.mp3", type: "audio/mpeg" }]]);
+  const audio = audioByTitle(`<rss><channel><item><title> A  title </title><enclosure url="https://x/a.mp3" type="audio/mpeg"/></item><item><title>No audio</title></item><item><title>It&#39;s here</title><enclosure url="https://x/b.mp3" type="audio/mpeg"/></item></channel></rss>`);
+  assert.deepEqual([...audio], [["A title", { url: "https://x/a.mp3", type: "audio/mpeg" }], ["It's here", { url: "https://x/b.mp3", type: "audio/mpeg" }]]);
 });
 
 test("an opened archive comes in as history, and only episodes whose notes score at the floor are transcribed", async () => {

@@ -45,9 +45,9 @@ test("the stories are read a cause group at a time, in the situation's order, th
     `原因组 owner-time（${title("owner-time")}）的 1 篇故事`, "id：m1", "没有原因组的 1 篇故事", "id：m3",
   ].map(at);
   assert.deepEqual(order, [...order].sort((a, b) => a - b));
-  // The shops are named in the order read: shop b first (m4, m2), then d, a and the unnamed one.
-  for (const [id, name] of [["m4", "s1"], ["m2", "s1"], ["m5", "s2"], ["m1", "s3"], ["m3", "s4"]]) {
-    assert.match(text, new RegExp(`id：${id}\\n原因组：[^\\n]+\\n店家：${name}（日本 · 一家个体餐饮店；店）`));
+  // The tellers are named in the order read: shop b first (m4, m2), then d, a and the insider, each said to be a shop or not.
+  for (const [id, name, kind] of [["m4", "s1", "店"], ["m2", "s1", "店"], ["m5", "s2", "店"], ["m1", "s3", "店"], ["m3", "s4", "业内人士，不是店"]]) {
+    assert.match(text, new RegExp(`id：${id}\\n原因组：[^\\n]+\\n店家：${name}（日本 · 一家个体餐饮店；${kind}）`));
   }
 
   const one = materialOf(situation, [member("d1", "delegate", "shop:x"), member("d2", "delegate", "shop:y")]).text;

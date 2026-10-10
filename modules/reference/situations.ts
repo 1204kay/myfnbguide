@@ -348,4 +348,5 @@ export const OWNERS: Record<string, string> = {
   "pod-vegan-east": "明尼阿波利斯一家纯素烘焙店",
   "pod-bar-pod": "桑达斯基的两家酒吧",
   "pod-coffee-and-cows": "得克萨斯州一家咖啡店",
+  "pod-de-brandherd-esskultur": "汉堡一家餐厅",
 };

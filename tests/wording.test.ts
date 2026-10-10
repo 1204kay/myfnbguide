@@ -16,6 +16,8 @@ test("place names, spoken words, Japanese terms and notes to itself are sent bac
   assert.equal(flagged("原文未提供更多细节。节目还谈到外卖。").length, 2);
   assert.equal(flagged("原文没有说布草费有没有追回。").length, 0, "a story may say what the source leaves open");
   assert.equal(flagged("推出可穿戴对讲机，在大讲堂办特讲；中国全国出游人次增加，日本国内外学者参加，中国内地以外有 120 家店，给餐厅配备品鉴卡").length, 0, "written words and a country already named");
+  assert.equal(flagged("熊本地震后重建，改为三种不同行业经营，从干货库走到冷藏").length, 0, "a place name, 行业 and a dry store");
+  assert.equal(flagged("本地客人多，同行都在看，全是干货").length, 3);
   assert.equal(flagged("全国门店增加，国内市场放缓，店里的备品要自己买，他讲了三件事").length, 4);
 });
 

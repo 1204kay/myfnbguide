@@ -15,8 +15,6 @@ export interface ArchivePlan {
 const PICKS = JSON.parse(readFileSync(new URL("./picks.json", import.meta.url), "utf8")) as Record<string, Array<{ url: string }>>;
 
 export const ARCHIVE: ArchivePlan[] = [
-  // The trial podcast: how many episodes pass, how fast transcription goes, what a story costs.
-  { id: "pod-your-life-and-restaurant" },
   // Practice blogs whose old articles are whole text already: stories without transcription.
   { id: "rss-petpooja", pages: { url: "https://blog.petpooja.com/feed/?paged={n}", to: 30 } },
   { id: "rss-tenpo-biz-column", pages: { url: "https://www.tenpo.biz/solution/feed/?paged={n}", to: 20 } },
@@ -31,5 +29,7 @@ export const ARCHIVE: ArchivePlan[] = [
   // Owners' podcasts: old episodes picked one by one from titles and notes before any model was paid (owners' own
   // stories and methods; not news, vendors, chains' growth, chat or the craft of coffee and bread): 278 of 1,223 on
   // 10/5, 220 of 1,014 of fourteen more shows and 365 of 1,393 of thirty-two from the whole index on 10/10.
+  // Your Life and Restaurant, the 10/4 trial, came in whole; its notes are a title, so on 10/11 its 38 business
+  // episodes were picked by title (not the ones on sleep, books, holidays or the host's own life).
   ...Object.entries(PICKS).map(([id, picks]) => ({ id, only: picks.map((p) => p.url) })),
 ];

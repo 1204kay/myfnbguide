@@ -2529,6 +2529,135 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "id": "web-push-operations",
+      "name": "Push Operations 博客（加拿大 · 餐饮排班和工资软件公司的博客）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.pushoperations.com/blog",
+        "itemSelector": "a.thumbnail_title",
+        "linkSelector": "a.thumbnail_title",
+        "allowUrlPrefixes": [
+          "https://www.pushoperations.com/blog/"
+        ],
+        "detail": {
+          "maxFetches": 12,
+          "publishedAtSelector": "div.hero_content_layout div.global_content_text div.text",
+          "publishedAtAuthoritative": true,
+          "publishedAtUtcOffset": "-08:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tags": [
+        "加拿大",
+        "服务商"
+      ]
+    },
+    {
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "id": "web-parrot",
+      "name": "Parrot Software 博客（墨西哥 · 餐厅收银系统公司的博客）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://parrotsoftware.com.mx/blog",
+        "itemSelector": "a.blog-post-item",
+        "linkSelector": "a.blog-post-item",
+        "titleSelector": "h3.blog-post-item_heading",
+        "publishedAtSelector": "div.blog-post-item_details-text",
+        "publishedAtUtcOffset": "-06:00",
+        "allowUrlPrefixes": [
+          "https://parrotsoftware.com.mx/blog/"
+        ],
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtUtcOffset": "-06:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tags": [
+        "墨西哥",
+        "服务商"
+      ]
+    },
+    {
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "id": "web-shiftbase",
+      "name": "Shiftbase 博客（荷兰 · 排班软件公司的英文博客）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.shiftbase.com/blog",
+        "itemSelector": "a[href^=\"/blog/\"]:has(h3)",
+        "titleSelector": "h3",
+        "allowUrlPrefixes": [
+          "https://www.shiftbase.com/blog/"
+        ],
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtUtcOffset": "+01:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tags": [
+        "荷兰",
+        "服务商"
+      ]
+    },
+    {
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "id": "web-abrahao",
+      "name": "Abrahão 博客（巴西 · 餐厅扫码点餐系统公司的博客）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.abrahao.com.br/blog",
+        "itemSelector": "article.post",
+        "linkSelector": "h2.post-title a",
+        "titleSelector": "h2.post-title",
+        "allowUrlPrefixes": [
+          "https://www.abrahao.com.br/blog/"
+        ],
+        "denyUrlPrefixes": [
+          "https://www.abrahao.com.br/blog/categoria/"
+        ],
+        "detail": {
+          "maxFetches": 10,
+          "publishedAtUtcOffset": "-03:00"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tags": [
+        "巴西",
+        "服务商"
+      ]
     }
   ]
 }

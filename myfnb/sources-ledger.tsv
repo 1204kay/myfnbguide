@@ -10833,3 +10833,134 @@ v1011-mandouvirou	mandouvirou（国家未记 · 餐饮管理软件公司）	http
 v1011-panelgea	panelgea（国家未记 · 餐饮管理软件公司）	https://panelgea.com/feed/	2026-10-11·网站类·服务商经营指南	不接	订阅最新 10 个标题里和餐饮经营有关的 1 个，不到三成（程序按多语言关键词筛，结果抽看过）
 a1010-isme	ISME（爱尔兰 · 小企业协会）	https://isme.ie/feed/	2026-10-11·robots 重查	待定	10/10 记的「robots 对所有爬虫禁止 /feed/」是 check-sources.mjs 的误判（robots.txt 先写 User-agent: * 和空的 Disallow，再写点名的爬虫，脚本把两组并成了一组）；10/11 修好后重跑通过。内容约 9/10，但是跨行业的小企业协会；自己的条款还没有读，读完再定。同一天用修好的脚本把账本里因 robots 被拒的 133 个来源全部重查：受这个错误影响的只有 ISME、Sischef（已接入）两个，ABF 的内容本来就不过，未來流通研究所的 robots 确实禁 /feed/。
 rss-agora-pos	Ágora 博客（西班牙 · 收银系统公司的博客）	https://www.agorapos.com/feed/	2026-10-11·部署后核对	停用	规则 6：档案和内容都通过，本机能读，但从服务器读订阅时对方直接断开连接（程序里是 other side closed，curl 是 HTTP/2 PROTOCOL_ERROR，两次都一样），是对方按服务器的网络地址挡的。不用代理，停用并从来源清单拿掉。
+v1011-lavu	Lavu（美国 · 收银系统公司）	https://lavu.com/blog/	2026-10-11·网站类·服务商网页列表	不接	列表页对 MyFnBBot 返回检查页（Bot Verification，要过 reCAPTCHA）
+v1011-ncrvoyix	NCR Voyix（Aloha）（美国 · 收银系统公司）	https://www.ncrvoyix.com/resources/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：零售和企业技术的产品宣传，具体做法约 2/17
+v1011-chownow	ChowNow（美国 · 线上点餐软件公司）	https://get.chownow.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：软件比较和自家集成介绍占多数，具体做法约 2/17
+v1011-getbento	BentoBox（美国 · 餐厅网站和线上点餐软件公司）	https://www.getbento.com/blog/	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到（地址跳到 blog.clover.com，HTML 里没有条目）
+v1011-tryotter	Otter（美国 · 外卖聚合软件公司）	https://www.tryotter.com/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（4/13）：名词解释、产品更新和客户案例占多数；没有往下查 robots 和条款
+v1011-chowly	Chowly（美国 · 外卖聚合软件公司）	https://chowly.com/resources/blogs/	2026-10-11·网站类·服务商网页列表	不接	内容不过：软件榜单和两两比较（7 条里 6 条）
+v1011-cuboh	Cuboh（加拿大 · 外卖聚合软件公司）	https://www.cuboh.com/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（约 8/22）：岗位说明模板和名词解释多；列表最新是 2025-01，近 180 天 0 篇，总数约 90 篇；Webflow
+v1011-lunchbox	Lunchbox（美国 · 线上点餐软件公司）	https://lunchbox.io/resources	2026-10-11·网站类·服务商网页列表	不接	内容不过：资源入口页，客户案例、电子书和活动
+v1011-binwise	BinWise（美国 · 酒水库存软件公司）	https://home.binwise.com/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（7/20）：酒水成本和库存的做法 7 篇，其余围绕自家软件；近 180 天 6 篇；Webflow
+v1011-getbackbar	Backbar（美国 · 酒水库存软件公司）	https://www.getbackbar.com/insights	2026-10-11·网站类·服务商网页列表	不接	内容不过：和别家软件的比较（20 条里 14 条）；HubSpot
+v1011-wisk	WISK（加拿大 · 库存和成本软件公司）	https://www.wisk.ai/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/9）：问答体、每周多篇，多数落到自家软件；Webflow
+v1011-getmeez	meez（美国 · 配方和成本软件公司）	https://www.getmeez.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容强（7/13：菜品成本、配方标准化、厨房培训，多数有经营者的数字），robots 通过。条款 https://www.getmeez.com/terms-of-use 把 Services 定义为网站加软件，内容只供 personal, non-commercial use，商业使用要 express prior written permission，并禁止 spider、robot、scraper。值得写信
+v1011-bluecart	BlueCart（美国 · 订货平台）	https://www.bluecart.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：20 条里 17 条是同一天成批发布的自家平台介绍和软件榜单
+v1011-choco	Choco（德国 · 订货平台）	https://choco.com/us/stories	2026-10-11·网站类·服务商网页列表	不接	内容不过：写给食材分销商，客户案例和产品消息
+v1011-joinhomebase	Homebase（美国 · 排班和工资软件公司）	https://www.joinhomebase.com/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（8/22）：面向全部小商户的排班和工资文章，软件榜单和各行业岗位说明占一半；列表没有日期
+web-push-operations	Push Operations 博客（加拿大 · 餐饮排班和工资软件公司的博客）	https://www.pushoperations.com/blog	2026-10-11·网站类·服务商网页列表	接入	完整档案：①主机：列表和文章都在 www.pushoperations.com（Webflow 托管，自己的域名）。②robots.txt 不限制，不拒绝代用户读网页的 AI，没有 Content-Signal、TDMRep（check-sources.mjs 通过）；用 MyFnBBot 标识请求列表页和 12 篇文章都是 200。③自己的条款：https://www.pushoperations.com/terms-of-use 是和付费客户签的服务协议，Services 指经网站提供的软件服务；商业使用、只许个人使用、自动抓取、AI 使用、展示摘要或改写、事先许可六项都没有针对网站文章的句子（「copy or reproduce the Services」管的是软件服务）；另读了 /privacy-policy，没有相关句子；文章只有页脚版权行。④托管平台 Webflow：服务条款（https://webflow.com/legal/terms ，2023-11-15 生效）把访问客户网站的人定为客户的 End Users，写明 Webflow 和他们没有直接关系；可接受使用政策（https://webflow.com/legal/aup ，2026-10-06 生效）禁止用自动手段取「Platform 或 Webflow IP」里没有有意公开的材料，约束的是使用平台的客户，客户已经发布的网页不在其内。⑤没有音频。内容：最近 12 篇里 10 篇是具体做法（招聘放缓后 90 天怎样安排、离职潮、不裁人降用工成本、露台季排班、新人头五个班、每天看的五个数、各地最低工资和未成年人用工规定），强；打开两篇核对过，有数字和步骤。站点地图 /blog/ 下 233 个地址；近 130 天 12 篇，每 30 天约 3 篇。配置：itemSelector 和 linkSelector 都是 a.thumbnail_title；日期从文章页取，detail.publishedAtSelector 是「div.hero_content_layout div.global_content_text div.text」并设 publishedAtAuthoritative（文章页 JSON-LD 的 datePublished 是批量发布的日期，和页面上写的不一致，不能用）；publishedAtUtcOffset 是 -08:00。
+v1011-poachedjobs	Poached（美国 · 餐饮招聘平台）	https://poachedjobs.com/blog/	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到（页面只有一个空的应用容器）
+v1011-culinaryagents	Culinary Agents（美国 · 餐饮招聘平台）	https://culinaryagents.com/resources	2026-10-11·网站类·服务商网页列表	不接	内容不过：榜单和评奖转述、岗位说明库
+v1011-ottimate	Ottimate（原 Plate IQ）（美国 · 应付账款软件公司）	https://ottimate.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：应付账款自动化，多行业，没有餐饮店的做法
+v1011-spothopperapp	SpotHopper（美国 · 餐厅营销软件公司）	https://www.spothopperapp.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：只有 6 篇，全是营销（短信、邮件、搜索排名）
+v1011-resy	Resy（餐厅端）（美国 · 订位软件公司）	https://resy.com/resyos/blog/	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-webstaurantstore	WebstaurantStore（美国 · 设备供应商）	https://www.webstaurantstore.com/blog/	2026-10-11·网站类·服务商网页列表	不接	博客首页是菜谱和食材知识（不过）；「Management & Operation」栏目 https://www.webstaurantstore.com/blog/management-operation/54/ 88 篇，内容强（约 20/30：加价销售、处理投诉、小费和自动服务费、逃单、季节用工），robots 通过。条款 https://www.webstaurantstore.com/policies.html 的 Services 包含全部网站，只许为 personal, non-commercial use 打印或下载，并禁止「any robot, spider, or other automatic device」访问。可以写信，大型零售商，估计难
+v1011-sysco	Sysco（Foodie）（美国 · 食材分销商）	https://foodie.sysco.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：抽奖规则、菜谱和公益新闻
+v1011-performancefoodservice	Performance Foodservice（美国 · 食材分销商）	https://www.performancefoodservice.com/get-inspired/newsletter-signup/	2026-10-11·网站类·服务商网页列表	不接	没有文章列表：地址是订阅通讯的页面
+v1011-generalmillsfoodservice	General Mills Foodservice（美国 · 食材供应商）	https://www.generalmillsfoodservice.com/latest-news	2026-10-11·网站类·服务商网页列表	不接	没有文章列表：页面是外链和下载文件
+v1011-vollrathfoodservice	Vollrath（美国 · 设备制造商）	https://www.vollrathfoodservice.com/culinary-experience-inspiration/vollrath-food-service-blog	2026-10-11·网站类·服务商网页列表	不接	更新不够：列表只读到 1 篇
+v1011-tevalis	Tevalis（英国 · 收银系统公司）	https://www.tevalis.com/blog	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，首页由脚本跳转，没有找到博客栏目
+v1011-planday	Planday（丹麦 · 排班软件公司）	https://www.planday.com/resources/articles	2026-10-11·网站类·服务商网页列表	待定	内容一般（7/14）：英国餐饮业排班和工时规定的指南 7 篇，其余是产品和护理行业；列表没有日期
+v1011-rotacloud	RotaCloud（英国 · 排班软件公司）	https://rotacloud.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容强（8/13：假期工资计算、用工成本比例、请假规则、英国用工法变化，面向全部小企业），robots 通过，没有订阅（/blog/rss/ 是 404）。网站使用条款 https://rotacloud.com/terms-of-website-use/ 写明只可为个人使用打印和下载，「You must not use any part of the content on our site for commercial purposes without obtaining a licence」。值得写信（条款页给的地址 info@rotacloud.com）
+v1011-trailapp	Trail（英国 · 门店运营检查表软件公司）	https://trailapp.com/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（6/16）：检查表和食品安全流程 6 篇，其余是可持续、酒店和产品；列表没有日期；Webflow
+v1011-flipdish	Flipdish（爱尔兰 · 线上点餐软件公司）	https://www.flipdish.com/resources/blog	2026-10-11·网站类·服务商网页列表	待定	内容强（14/24：外卖店损耗、订单结构、现金流、选址试营业、需求预测，多数来自具名店主），robots 通过（Content-Signal 写 ai-input=yes），条款 https://www.flipdish.com/docs-inner/tac-2 只管签约商家的软件服务，网站自建。待定的原因：列表页的条目只在 noscript 里，卡片由脚本从 https://www.flipdish.com/api/blog?lang=global 读，框架的 HTML 选择器读不到；这个接口用 json_list 能读（标题、链接、日期都对，配置在 trial.json 的 json-flipdish，文章页不用登录），是否接由主会话定。博客站点地图 381 篇，接口前 12 篇跨 65 天，每 30 天约 5 篇
+v1011-jjfoodservice	JJ Foodservice（英国 · 食材分销商）	https://www.jjfoodservice.com/blog	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到（HTML 里只有栏目链接）
+v1011-sumup	SumUp（英国 · 支付公司）	https://www.sumup.com/en-gb/business-guide/	2026-10-11·网站类·服务商网页列表	不接	内容不过：支付产品和各行业商户故事
+v1011-meandu	me&u（澳大利亚 · 扫码点餐软件公司）	https://www.meandu.com/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（5/22），2024 年以后基本停更，近 180 天 1 篇；Webflow
+v1011-tanda	Tanda（澳大利亚 · 排班软件公司）	https://www.tanda.com.au/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：各行业的工资标准表和产品更新，餐饮不到三成；列表条目没有标题文字
+v1011-nowbookit	Now Book It（澳大利亚 · 订位软件公司）	https://www.nowbookit.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：客户案例和产品（10 条里 8 条）
+v1011-loadedhub	Loaded（新西兰 · 库存和成本软件公司）	https://www.loadedhub.com/resources	2026-10-11·网站类·服务商网页列表	待定	内容强（8/12：盘点、单品菜单试验、营收增长点、班次检查表、店长和主厨的岗位说明、从亏损到 20% 净利的经过），robots 通过，条款 https://www.loadedhub.com/loaded-terms-of-use 只管登录后使用的软件，Webflow 托管。待定的原因：列表和文章页都没有发布日期（JSON-LD、meta 和正文都没有，站点地图的 lastmod 是批量时间），试抓拿不到日期，更新频率无法核实；标题和链接能抓到（配置在 trial.json 的 web-loaded）。站点地图 /resources/ 下 108 个地址
+v1011-cookingthebooks	Cooking the Books（澳大利亚 · 配方和成本软件公司）	https://www.cookingthebooks.com.au/blog	2026-10-11·网站类·服务商网页列表	不接	地址是软件登录页，没有博客
+v1011-restoke	Restoke（澳大利亚 · 库存和成本软件公司）	https://www.restoke.ai/blog	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，首页没有博客链接
+v1011-foodbomb	Foodbomb（澳大利亚 · 订货平台）	https://www.ordermentum.com/ai-roadshow-insights	2026-10-11·网站类·服务商网页列表	不接	已并入 Ordermentum（地址跳到 ordermentum.com），上一轮 Ordermentum 按条款不接
+v1011-myzeller	Zeller（澳大利亚 · 支付公司）	https://www.myzeller.com/au/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：支付产品和小企业调查报告
+v1011-posboss	posBoss（新西兰 · 收银系统公司）	https://www.posboss.com/blog	2026-10-11·网站类·服务商网页列表	不接	博客地址跳到停放页（/lander）
+v1011-slickpos	SlickPOS（印度 · 收银系统公司）	https://slickpos.com/blog/	2026-10-11·网站类·服务商网页列表	不接	网站被挂上博彩内容（页面标题是印尼语博彩广告）
+v1011-tmbill	TMBill（印度 · 收银系统公司）	https://tmbill.com/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，首页没有博客链接
+v1011-colibri	Colibri（巴西 · 收银系统公司）	https://www.colibri.com.br/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，首页没有博客链接
+v1011-degust	Linx Degust（巴西 · 收银系统公司）	https://www.degust.com.br/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404
+v1011-menew	Menew（巴西 · 收银系统公司）	https://www.menew.com.br/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：自家产品（12 条里 9 条）
+web-abrahao	Abrahão 博客（巴西 · 餐厅扫码点餐系统公司的博客）	https://www.abrahao.com.br/blog	2026-10-11·网站类·服务商网页列表	接入	完整档案：①主机：列表和文章都在 www.abrahao.com.br（自建，图片在 cdn.abrahao.com.br）。②robots.txt 不限制，不拒绝代用户读网页的 AI，没有 Content-Signal、TDMRep（check-sources.mjs 通过）；MyFnBBot 标识请求列表页和 10 篇文章都是 200。③自己的条款：https://www.abrahao.com.br/termos-de-uso 是软件的最终用户许可（EULA），管的是 SOFTWARE 的被许可人；六项都没有针对网站文章的句子；另读了 /politica-de-privacidade，没有相关句子。④没有建站平台。⑤没有音频。内容：最近 10 篇里 6 篇是具体做法（翻台率怎样算、怎样带新员工、食品保存、四步风险分析、点菜还是自助、倒闭餐厅的五条教训），强；打开一篇核对过，有算法和高峰时段的做法。站点地图 /blog/ 下 809 个地址；近 180 天 5 篇，2026-02 以来每 30 天约 1 篇。页面有 Goomer 的广告位，和已接的 Goomer 博客是不同的文章，两家的关系没有核实。配置：itemSelector 是 article.post，linkSelector 是 h2.post-title a，titleSelector 是 h2.post-title，denyUrlPrefixes 去掉 /blog/categoria/；列表没有日期，从文章页取（meta，核对十篇，2026-02-05 到 2026-09-24，顺序和列表一致）；publishedAtUtcOffset 是 -03:00。
+v1011-getinapp	GetIn（巴西 · 订位软件公司）	https://www.getin.app/blog	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，首页没有博客链接
+v1011-tagme	Tagme（巴西 · 订位软件公司）	https://tagme.com.br/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，页面上没有文章
+v1011-gastronovi	gastronovi（德国 · 收银系统公司）	https://www.gastronovi.com/unternehmen/presse/	2026-10-11·网站类·服务商网页列表	不接	连接超时（两次）
+v1011-ready2order	ready2order（奥地利 · 收银系统公司）	https://ready2order.com/de/blog/	2026-10-11·网站类·服务商网页列表	待定	内容一般（8/17）：成本核算、开店、小票和小费规定 8 篇，其余是零售和支付；列表没有日期
+v1011-gastromatic	gastromatic（德国 · 排班软件公司）	https://www.gastromatic.com/de/blog/	2026-10-11·网站类·服务商网页列表	不接	内容强（6/7：税务稽查、新员工登记、过敏原标示、净工资协议；列表页只有 7 篇），robots 通过。Impressum https://www.gastromatic.com/de/impressum/ 是德国范本句：「Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet」。值得写信
+v1011-dish	DISH（Metro）（德国 · 餐饮数字工具软件公司）	https://www.dish.co/DE/de/blog/	2026-10-11·网站类·服务商网页列表	不接	内容强（8/12：卫生规则、增值税 7% 还是 19%、开店成本和清单、营业许可、收银机申报、包装条例），robots 通过，列表带日期。通用使用条款（https://www.dish.co/DE/de/nutzungsbedingungen/ 链接的 PDF，2025-09-01 版）把经 www.dish.co 提供的内容（3.1 写明包括博客）算作 DISH-Plattform，8.5 写明不许自动查询，禁止用 Scraping 复制内容。值得写信（METRO 旗下，contact@dish.digital）
+v1011-chefsculinar-de	Chefs Culinar（德国 · 食材分销商）	https://www.chefsculinar.de/index.htm	2026-10-11·网站类·服务商网页列表	不接	地址是首页，没有文章列表（产品、菜谱和少量说明文混排）
+v1011-gastro-hero-de	Gastro-Hero（德国 · 设备供应商）	https://www.gastro-hero.de/cheers/ueber-cheers/	2026-10-11·网站类·服务商网页列表	待定	内容一般（4/14），2024-11 以后没有新文章
+v1011-wolt	Wolt（商家）（芬兰 · 外卖平台商家学院）	https://merchant.wolt.com/en/fin/blog	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-zelty-fr	Zelty（法国 · 收银系统公司）	https://blog.zelty.fr/	2026-10-11·网站类·服务商网页列表	待定	内容一般（2/5，列表页只读到 5 篇，约每周一篇）；HubSpot
+v1011-innovorder	Innovorder（法国 · 收银系统公司）	https://www.innovorder.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：点餐设备和数字化（2/10）
+v1011-popina	Popina（法国 · 收银系统公司）	https://www.popina.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：自家产品（26 条里约 20 条）
+v1011-zenchef	Zenchef（法国 · 订位软件公司）	https://blog.zenchef.com/fr	2026-10-11·网站类·服务商网页列表	待定	内容一般（9/24）：菜品利润、经营比率、爽约和取消 9 篇，其余是订位产品和营销；列表没有日期；Webflow
+v1011-skello	Skello（法国 · 排班软件公司）	https://www.skello.io/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：零售、物流等各行业的用工规定和岗位介绍，餐饮 2/18
+v1011-combohr	Combo（法国 · 排班软件公司）	https://combohr.com/fr/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（7/16）：法国用工规定（合同变更、每周休息、劳动医学）7 篇，不分行业，其余是产品消息；Webflow
+v1011-snapshift	Snapshift（法国 · 排班软件公司）	https://www.snapshift.co/blog	2026-10-11·网站类·服务商网页列表	不接	已并入 Combo（地址跳到 combohr.com）
+v1011-inpulse	Inpulse（法国 · 库存和成本软件公司）	https://www.inpulse.ai/blog	2026-10-11·网站类·服务商网页列表	不接	内容强（17/23：毛利五项措施、理论和实际用量差、收货检查、采购、成本卡、库存六个错误、营运资金、能源账单），robots 通过。法律声明 https://www.inpulse.ai/mentions-legales 写明「Toute utilisation, reproduction, modification ou adaptation de tout ou partie des éléments du Site non autorisée est formellement interdite et doit être soumise à l'autorisation préalable de Inpulse」，按风险低的读法不接。值得写信（hello@inpulse.ai）
+v1011-melba	Melba（法国 · 配方和成本软件公司）	https://melba.io/fr/blog	2026-10-11·网站类·服务商网页列表	不接	内容对路（约 12/19：开店、成本卡、盘点、经营比率）但 2023 年以后没有新文章，总数约 20 篇，更新不够
+v1011-yokitup	Yokitup（法国 · 库存和成本软件公司）	https://www.yokitup.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容对路（8/10：成本、库存差异、盘点）但最新是 2024-11，总数约 10 篇，更新不够
+v1011-easilys	Easilys（法国 · 库存和成本软件公司）	https://mapal-os.com/fr/solutions/easilys-fb/	2026-10-11·网站类·服务商网页列表	不接	已并入 Mapal，法语栏目内容不过（2/6，白皮书、产品和客户故事）
+v1011-malou	Malou（法国 · 餐厅营销软件公司）	https://www.malou.io/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（7/17）：加盟成本和收入、回复评价的范本等 7 篇，其余是 AI 和营销工具，写给连锁；Webflow
+v1011-traqfood	Traqfood（法国 · 食品安全软件公司）	https://www.traqfood.com/es/blog/	2026-10-11·网站类·服务商网页列表	不接	内容对路（约 16/25：食品安全流程）但最新是 2024-09，列表约 28 篇，没有分页，更新不够
+v1011-cashpad-fr	Cashpad（法国 · 收银系统公司）	https://www.cashpad.io/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：围绕自家收银软件（10 条里 7 条），2024-05 到 2026-01 之间没有文章
+v1011-transgourmet-fr	Transgourmet France（法国 · 食材分销商）	https://www.transgourmet.fr/le-groupe/actualites-et-evenements	2026-10-11·网站类·服务商网页列表	不接	只有集团新闻稿的入口，没有文章列表
+v1011-deliveroo	Deliveroo（法国餐厅端）（法国 · 外卖平台商家学院）	https://merchants.deliveroo.com/fr-FR	2026-10-11·网站类·服务商网页列表	不接	商家入口页，没有文章列表
+v1011-revo-works	Revo（西班牙 · 收银系统公司）	https://revo.works/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404；已并入 Cegid，资源页是通用企业软件的内容
+v1011-last	Last.app（西班牙 · 收银系统公司）	https://thelastbitemedia.com/ultimos-articulos/	2026-10-11·网站类·服务商网页列表	不接	内容不过：The Last Bite 是给食客看的新店、榜单和趋势（12 条里 9 条）
+v1011-haddock	Haddock（西班牙 · 成本管理软件公司）	https://haddock.app/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/13）：成本卡和库存 3 篇，另 8 篇是西班牙各省餐饮业集体协议；最新 2025-10，近 180 天 0 篇；Framer（平台条款待定）
+v1011-g-stock-es	Gstock（西班牙 · 库存和成本软件公司）	https://g-stock.es/blog-gstock/	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/11）：峰会、展会和客户消息占多数
+v1011-covermanager	CoverManager（西班牙 · 订位软件公司）	https://www.covermanager.com/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，首页由脚本跳转
+v1011-glovoapp	Glovo（商家）（西班牙 · 外卖平台商家学院）	https://laaspartners.glovoapp.com/orders	2026-10-11·网站类·服务商网页列表	不接	地址是商家后台，脚本页面，没有文章
+v1011-tilby	Tilby（意大利 · 收银系统公司）	https://blog.tilby.com/	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/10）：会员计划、选刷卡机等 3 篇，其余是版本更新和趋势；HubSpot
+v1011-plateform	Plateform（意大利 · 订位软件公司）	https://plateform.app/blog	2026-10-11·网站类·服务商网页列表	待定	内容强（18/26：团体订位、营业中接电话、休息日怎么选、秋季菜单、季节工、爽约的成本、提高客单价），robots 通过，自己只有销售条款（https://plateform.app/condizioni-generali-vendita ，管付费软件）和隐私政策。待定的原因：一、网站建在 Framer 上，Framer 的可接受使用政策（https://www.framer.com/legal/acceptable-use-policy/ ，2026-04-09）禁止用 robot、spider 等自动手段访问或复制「any content hosted by Framer」，政策写「applies to every user of our platform」，没有写明是否包括客户网站的访问者（服务条款 2.3 又写 Framer 和客户的 End Users 没有直接关系），和 Higher Logic 是同一类问题；二、文章页没有发布日期，试抓拿不到日期。标题和链接能抓到（trial.json 的 web-plateform，列表 250 篇）。可以直接请 Plateform 书面同意
+v1011-ristomanager-it	Ristomanager（意大利 · 收银系统公司）	https://www.ristomanager.it/blog	2026-10-11·网站类·服务商网页列表	不接	像成批生成：每天一篇、共 70 页，题目都是收银功能（过敏原标记、套餐、座位号）
+v1011-tebi	Tebi（荷兰 · 收银系统公司）	https://www.tebi.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：产品更新和客户案例（26 条里约 20 条）；Framer
+web-shiftbase	Shiftbase 博客（荷兰 · 排班软件公司的英文博客）	https://www.shiftbase.com/blog	2026-10-11·网站类·服务商网页列表	接入	完整档案：①主机：列表和文章都在 www.shiftbase.com（自建，Vercel 上的 Next.js，内容存在 Storyblok，图片在 a.storyblok.com）。②robots.txt 不限制，不拒绝代用户读网页的 AI，没有 Content-Signal、TDMRep（check-sources.mjs 通过）；MyFnBBot 标识请求列表页和 14 篇文章都是 200。③自己的条款：https://www.shiftbase.com/terms 列出的文件里，General Terms and Conditions（/terms/general-terms-and-conditions）管订阅 System 的客户，知识产权一条只写 System；/terms/disclaimer-and-cookies 实际是隐私和 cookie 说明；六项都没有针对网站文章的句子。④没有建站平台的访问者条款（Vercel 和 Storyblok 是基础设施）。⑤没有音频。内容：最近 20 篇（去掉 2 篇公司消息）里 12 篇是具体做法（用工合规检查表、季节工入职、病假制度、缩短招聘时间、新员工文件清单、轮班合同范本、加班的假期工资、夏季排班、英国餐厅降 5–10% 用工成本），5 篇是软件比较，强；写给英国的雇主，餐饮和零售都有。站点地图 /blog/ 下 370 个地址；列表前 14 篇都在近 180 天内（含 2 篇公司消息），但 2026-06-26 以后只有 1 篇公司消息。配置：itemSelector 是 a[href^="/blog/"]:has(h3)，titleSelector 是 h3；列表没有日期，从文章页取（meta 和 JSON-LD，核对三篇：2026-06-26、2026-05-07、2025-11-24）；publishedAtUtcOffset 是 +01:00。列表页一次给 89 篇。
+v1011-sligro-nl	Sligro（荷兰 · 食材批发商）	https://www.sligro.nl/inspiratie.html	2026-10-11·网站类·服务商网页列表	不接	灵感栏目的入口页，没有文章列表
+v1011-joinposter	Poster POS（乌克兰 · 收银系统公司）	https://joinposter.com/blog/all	2026-10-11·网站类·服务商网页列表	不接	内容强（8/12，俄语，面向乌克兰：酒牌怎样办、收银机登记、酒单怎样编、怎样激励员工、露台布置），robots 通过，列表没有日期。条款 https://joinposter.com/terms 3.4 禁止用任何自动手段（robot、spider、page-scraper）访问、复制或监测 Программа 或 Веб-сайт 的任何部分。可以写信
+v1011-upmenu	UpMenu（波兰 · 线上点餐软件公司）	https://www.upmenu.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：别家收银软件的价格和比较（12 条里 10 条），最新 2026-02
+v1011-trivecgroup	Trivec（瑞典 · 收银系统公司）	https://trivecgroup.com/my-trivec/trivec-insights/	2026-10-11·网站类·服务商网页列表	不接	没有文章列表
+web-parrot	Parrot Software 博客（墨西哥 · 餐厅收银系统公司的博客）	https://parrotsoftware.com.mx/blog	2026-10-11·网站类·服务商网页列表	接入	完整档案：①主机：列表和文章都在 parrotsoftware.com.mx（Webflow 托管，自己的域名）。②robots.txt 不限制，不拒绝代用户读网页的 AI，没有 Content-Signal、TDMRep（check-sources.mjs 通过）；MyFnBBot 标识请求列表页和 3 篇文章都是 200。③自己的条款：网站页脚没有条款链接，站点地图里有 https://parrotsoftware.com.mx/terminos-y-condiciones-de-uso-de-software-y-presentacion-de-servicios ，签约方是软件客户，Plataforma 定义为 admin.parrot.rest 和 app.parrot.rest（软件），第 7 节禁止未经书面许可复制 Plataforma 的内容，管的是软件里的内容；六项都没有针对博客的句子；另读了 /aviso-privacidad，没有相关句子。④托管平台 Webflow：服务条款（https://webflow.com/legal/terms ，2023-11-15 生效）把访问客户网站的人定为客户的 End Users，写明 Webflow 和他们没有直接关系；可接受使用政策（https://webflow.com/legal/aup ，2026-10-06 生效）禁止用自动手段取「Platform 或 Webflow IP」里没有有意公开的材料，约束的是使用平台的客户，客户已经发布的网页不在其内。⑤没有音频。内容：最近 18 篇里 10 篇是具体做法（在墨西哥开咖啡店要多少钱、酒牌、税前扣除、新员工培训清单、人员流动的成本、怎样开外卖厨房、排班、七个盈利指标），另 3 篇是经营者本人的经过，5 篇是自家产品和软件比较，强；打开一篇核对过，有分档的金额。站点地图 /blog/ 下 110 个地址；2026-06 发了 12 篇，之后每 30 天 1–2 篇。配置：itemSelector 和 linkSelector 都是 a.blog-post-item，titleSelector 是 h3.blog-post-item_heading，日期在列表上（publishedAtSelector 是 div.blog-post-item_details-text，写法「Sep 9, 2026」），publishedAtUtcOffset 是 -06:00；列表页每页 6 篇，旧文章在 ?b6dd0898_page=N。文章页 meta 的日期比列表上晚 1–7 天，以列表为准。
+v1011-getjusto	Justo（智利 · 线上点餐软件公司）	https://www.getjusto.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：落到自家系统的短文，最新 2025-06
+v1011-restaurant-pe	Restaurant.pe（秘鲁 · 收银系统公司）	https://restaurant.pe/blog/	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-loggro	Loggro Restobar（哥伦比亚 · 收银系统公司）	https://loggro.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：哥伦比亚的工资和会计规定，面向全部中小企业，没有餐饮店的做法
+v1011-meitre	Meitre（阿根廷 · 订位软件公司）	https://meitre.com/blog/	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-grubtech	Grubtech（阿联酋 · 外卖聚合软件公司）	https://grubtech.com/en/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（4/15）：外卖运营的短文，多数落到自家系统
+v1011-yoco	Yoco（南非 · 支付公司）	https://www.yoco.com/za/blog/	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到（HTML 里只有 1 篇）；Framer
+v1011-postas	POS+（ポスタス）（日本 · 收银系统公司）	https://www.postas.co.jp/knowledge/	2026-10-11·网站类·服务商网页列表	不接	内容不过：各行业的收银机和支付终端比较
+v1011-stores-fun	STORES（日本 · 收银和支付公司）	https://stores.fun/magazine	2026-10-11·网站类·服务商网页列表	不接	内容不过：网店和各行业的开业知识，自家服务的费用说明
+v1011-usen	USEN（canaeru 開業支援）（日本 · 开店服务）	https://canaeru.usen.com/article/	2026-10-11·网站类·服务商网页列表	待定	内容强（15/20：小阪裕司的每周专栏、人气店开业经过、蓝色申报和记账、菜单的著作权、风营法、加盟开店；列表带日期，按列表上的日期每 30 天约 8 篇（估计）），robots 通过。待定的原因：利用规约 https://canaeru.usen.com/kiyaku/ 适用于全部浏览者，第 6 条禁止「営利目的で利用する行為」，第 8 条禁止「自らの個人利用目的以外に利用」和再提供；而编辑方针 https://canaeru.usen.com/article/editpolicy/ 第 4 节写「引用・転載いただく際は…記事であることを明記してください…リンクを掲載してください」，允许注明出处并加链接的引用和转载。两处不一致，按风险低的读法先不接。最值得写信（canaeru 編集部）
+v1011-tablecheck	TableCheck（日本 · 订位软件公司）	https://www.tablecheck.com/ja/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：2023-12 以后只有合作新闻稿
+v1011-tabelog	食べログ（店舗会員）（日本 · 订位和点评平台）	https://owner.tabelog.com/owner_account/login/	2026-10-11·网站类·服务商网页列表	不接	地址是店铺会员的登录页
+v1011-ajinomoto	味の素（業務用）（日本 · 食材供应商）	https://foodservice.ajinomoto.co.jp/	2026-10-11·网站类·服务商网页列表	不接	内容不过：菜谱、促销日历和产品
+v1011-kewpie	キユーピー（業務用）（日本 · 食材供应商）	https://www.kewpie.co.jp/prouse/	2026-10-11·网站类·服务商网页列表	不接	产品目录和菜谱的入口页，没有文章列表
+v1011-ucc	UCC（業務用）（日本 · 食材供应商）	https://www.ucc.co.jp/press/coupon_info_20260601.html	2026-10-11·网站类·服务商网页列表	不接	地址是一篇新闻稿，没有面向餐饮店的文章列表
+v1011-asahibeer	アサヒビール（飲食店応援）（日本 · 酒水供应商）	https://www.asahibeer.co.jp/news/	2026-10-11·网站类·服务商网页列表	不接	内容不过：新品和活动的新闻稿
+v1011-freee	freee（開業）（日本 · 会计软件公司）	https://www.freee.co.jp/kb/kb-kaigyou/	2026-10-11·网站类·服务商网页列表	不接	内容不过：开业申报的通用知识，不分行业，是知识库不是按时间更新的列表
+v1011-yayoi-kk	弥生（起業・開業ナビ）（日本 · 会计软件公司）	https://www.yayoi-kk.co.jp/kigyo/oyakudachi/	2026-10-11·网站类·服务商网页列表	不接	内容不过：各行业怎样设立公司的通用知识，没有餐饮
+v1011-foodpanda	foodpanda（台湾商家）（中国台湾 · 外卖平台商家学院）	https://partner.foodpanda.com.tw/zh_TW	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-omniwe	OmniWe（中国香港 · 收银系统公司）	https://omniwe.com/resources	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-tcsl	天财商龙（中国 · 收银系统公司）	https://www.tcsl.com.cn/news/	2026-10-11·网站类·服务商网页列表	不接	内容不过：客户案例广告（10 条里 9 条）
+v1011-weimob	微盟（智慧餐饮）（中国 · 点餐小程序软件公司）	https://www.weimob.com/articles	2026-10-11·网站类·服务商网页列表	不接	页面上没有文章条目
+v1011-youzan	有赞（餐饮）（中国 · 点餐小程序软件公司）	https://www.youzan.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：零售私域的客户案例
+v1011-acewill-cn	奥琦玮（中国 · 餐饮管理软件公司）	https://www.acewill.cn/news_company.html	2026-10-11·网站类·服务商网页列表	不接	内容不过：产品发布稿（10 条里 8 条）
+v1011-qashier	Qashier（新加坡 · 收银系统公司）	https://qashier.com/sg/resources-center	2026-10-11·网站类·服务商网页列表	待定	内容一般（6/12）：刷卡费率和收银的文章，面向全部小商户；标题体例相同、每两三天一篇，像成批生成，没有打开正文
+v1011-oddle-me	Oddle（新加坡 · 线上点餐软件公司）	https://www.oddle.me/blog	2026-10-11·网站类·服务商网页列表	不接	列表页对 MyFnBBot 返回 403（安全检查页）
+v1011-olsera	Olsera（印度尼西亚 · 收银系统公司）	https://www.olsera.com/id/blog	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到（HTML 里只有 3 篇）
+v1011-ocha-in-th	Ocha（泰国 · 收银系统公司）	https://www.ocha.in.th/blog	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-utak-ph	UTAK（菲律宾 · 收银系统公司）	https://utak.io/blog	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+v1011-payhere-in	페이히어（韩国 · 收银系统公司）	https://payhere.in/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：9 条全是自家桌边点餐产品
+v1011-dodopoint	도도포인트（韩国 · 会员和营销软件公司）	https://dodopoint.com/blog/	2026-10-11·网站类·服务商网页列表	不接	博客地址 404，博客在 Naver 上
+v1011-menulog	Menulog（餐厅端）（澳大利亚 · 外卖平台商家学院）	https://restaurants.menulog.com.au/blog	2026-10-11·网站类·服务商网页列表	不接	博客地址 404
+v1011-mrd	Mr D（餐厅端）（南非 · 外卖平台商家学院）	https://www.mrd.com/restaurants	2026-10-11·网站类·服务商网页列表	不接	地址 404，首页没有商家文章
+v1011-recipecostcalculator	Recipe Cost Calculator（加拿大 · 配方和成本软件公司）	https://recipecostcalculator.net/blog	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/9）：每工时接待人数、砍错了开支等 3 篇，其余是自家软件的用法；最新 2026-03
+v1011-clickbacon	clickBACON（美国 · 配方和成本软件公司）	https://clickbacon.com/blog	2026-10-11·网站类·服务商网页列表	待定	待定：列表由脚本生成，程序读不到
+web-mise	Mise 博客（加拿大 · 餐厅菜品成本软件公司的博客）	https://www.miseservices.com/blog	2026-10-11·网站类·服务商网页列表	待定	档案通过，但每周两篇、体例整齐，像成批生成，网站也没有条款页；按「只挑质量高的」先不接。完整档案：①主机：列表和文章都在 www.miseservices.com（自建静态网站，Vercel）。②robots.txt 对 * 是 Allow: /，并写明欢迎搜索和 AI 助手（GPTBot、OAI-SearchBot 等都是 Allow），没有 Content-Signal、TDMRep（check-sources.mjs 通过）；MyFnBBot 标识请求列表页和 5 篇文章都是 200。③自己的条款：网站没有使用条款页，也没有隐私政策页：页面上的站内链接只有 /about、/blog、/contact、/food-cost-calculator、/how-it-works、/pricing，/terms、/privacy、/legal、/terms-of-service、/privacy-policy、/terms-of-use 都是 404；文章只有页脚版权行。④没有建站平台。⑤没有音频。内容：最近 16 篇里 14 篇是具体做法（配餐怎样定价、外卖厨房每月的成本、主成本、供应商涨价怎样谈并附邮件范本、菜品成本逐步算法、不得罪熟客的涨价），强。共 27 篇，2026-06-14 开始每周两篇，2026-09-21 以后三周没有新文章；体例整齐、定时发布，像成批生成，打开两篇核对过，有金额、比例和可以照抄的范本，主会话接之前再看一眼读者看到的质量。国家按上一轮目录记的加拿大，网站上没有写公司地址。配置：itemSelector 和 linkSelector 都是 a.post-card，titleSelector 是 h2.post-card-title，日期在列表上（publishedAtSelector 是 div.post-card-date，写法「September 21, 2026」），publishedAtUtcOffset 是 -05:00。
+v1011-inecta	iNECTA Food（美国 · 配方和成本软件公司）	https://www.inecta.com/blog	2026-10-11·网站类·服务商网页列表	不接	内容不过：写给食品加工企业的 ERP 文章，不是餐饮店
+v1011-freshbooks	FreshBooks（加拿大 · 餐饮会计公司）	https://www.freshbooks.com/hub	2026-10-11·网站类·服务商网页列表	不接	内容不过：自由职业者和各行业小企业的记账、工资文章，没有餐饮
+v1011-waveapps	Wave Accounting（加拿大 · 餐饮会计公司）	https://www.waveapps.com/accounting	2026-10-11·网站类·服务商网页列表	不接	地址是产品页，没有文章列表
+v1011-zipbooks	ZipBooks（美国 · 餐饮会计公司）	https://zipbooks.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容不过：会计师和自由职业者的通用文章，已停更
+v1011-fincent	Fincent（美国 · 餐饮会计公司）	https://fincent.com/finance-accounting/reporting-insights	2026-10-11·网站类·服务商网页列表	不接	地址是产品页，没有文章列表
+v1011-socialschedules	SocialSchedules（美国 · 排班软件公司）	https://socialschedules.com/blog/	2026-10-11·网站类·服务商网页列表	不接	内容强（10/13：小费池和小费分成、小费抵扣和最低工资、加班规定、临时发薪、离职成本、代打卡），共 13 篇，列表带日期。条款 https://resources.opensimsim.com/locales/en-US/terms.html 的 Platform 包含网站，6.7 写明不得用 bots、spiders、scrapers 等自动手段访问或收集 Platform 上的信息。可以写信；没有再跑 robots
+v1011-orquest	ORQUEST（西班牙 · 排班软件公司）	https://orquest.com/blog/	2026-10-11·网站类·服务商网页列表	待定	内容一般（3/8）：工时规定和排班 3 篇，其余是连锁客户案例和获奖消息

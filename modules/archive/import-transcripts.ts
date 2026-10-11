@@ -5,6 +5,7 @@
 //   sudo docker compose exec -T worker node modules/archive/import-transcripts.ts < transcripts.jsonl
 import { createInterface } from "node:readline";
 import { closeDb, sql } from "@aihot/backend/db";
+import { stopBoss } from "@aihot/backend/jobs/queue";
 import { storeTranscript } from "./backend/transcribe.ts";
 
 const counts = { stored: 0, done: 0, short: 0, missing: 0 };
@@ -23,4 +24,6 @@ for await (const line of createInterface({ input: process.stdin })) {
   }
 }
 console.log(`已存入 ${counts.stored}，已转写过 ${counts.done}，太短 ${counts.short}，找不到 ${counts.missing}`);
+// Storing queues each episode for analysis, which starts the job queue; it is stopped so the script exits.
+await stopBoss();
 await closeDb();

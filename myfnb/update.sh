@@ -44,6 +44,8 @@ main() {
   fi
   docker compose --profile https up -d
   docker image prune -f > /dev/null
+  # 每次构建留下约 0.4 GB 缓存，image prune 不清它；99 次部署攒了 40 GB、硬盘用到 84%（2026-10-12）。留 5 GB 给下次构建复用。
+  docker builder prune -f --max-used-space 5gb > /dev/null
   echo "已部署 ${next:0:7}"
 }
 main "$@"; exit $?

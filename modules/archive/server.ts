@@ -1,10 +1,11 @@
-// The archive's backend: an hourly import of the sources it opens that have not been taken in yet, an hourly note of
+// The archive's backend: an hourly import of the sources it opens that have not been taken in yet (or whose picks name
+// episodes not taken in yet, plansDue), an hourly note of
 // every podcast's new episodes, a queue that transcribes podcast episodes one at a time, and its status in numbers.
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { sql } from "@aihot/backend/db";
 import { ARCHIVE } from "./plan.ts";
-import { importSource, noteNewEpisodes } from "./backend/importer.ts";
+import { importSource, noteNewEpisodes, plansDue } from "./backend/importer.ts";
 import { episodesToTranscribe, transcribeEpisode } from "./backend/transcribe.ts";
 
 const TRANSCRIBE = defineQueue<{ articleId: string }>({
@@ -24,9 +25,8 @@ export default defineServerModule({
       // Reading feeds is collection: off unless COLLECT_ENABLED, like the engine's.
       when: () => process.env.COLLECT_ENABLED === "true",
       run: async () => {
-        const done = new Set((await sql<{ source_id: string }[]>`SELECT source_id FROM archive_sources WHERE finished_at IS NOT NULL`).map((r) => r.source_id));
         const results = [];
-        for (const plan of ARCHIVE.filter((p) => !done.has(p.id))) results.push(await importSource(plan));
+        for (const plan of await plansDue(ARCHIVE)) results.push(await importSource(plan));
         return { imported: results };
       },
     },

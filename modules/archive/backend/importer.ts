@@ -113,6 +113,22 @@ export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
   return result;
 }
 
+/** How long a finished archive with picks waits before it is read again for picks the site does not have yet. */
+export const REREAD = { ms: 6 * 3600_000 };
+
+/**
+ * The plans the hourly import reads: those never finished, and, once REREAD has passed since the last read, those
+ * whose picks name an episode the site does not have. Picks are added after a source's first import (10/11: 72 of
+ * 88 new picks sat unread behind finished sources); a pick its feed no longer lists is looked for only that often.
+ */
+export async function plansDue(plans: ArchivePlan[], now = new Date()): Promise<ArchivePlan[]> {
+  const rows = await sql<{ source_id: string; finished_at: Date | null; updated_at: Date }[]>`SELECT source_id, finished_at, updated_at FROM archive_sources`;
+  const state = new Map(rows.map((r) => [r.source_id, r]));
+  const stale = plans.filter((p) => p.only && state.get(p.id)?.finished_at && now.getTime() - state.get(p.id)!.updated_at.getTime() >= REREAD.ms);
+  const have = new Set(stale.length ? (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id IN ${sql(stale.map((p) => p.id))}`).map((r) => r.url) : []);
+  return plans.filter((p) => !state.get(p.id)?.finished_at || (stale.includes(p) && p.only!.some((url) => !have.has(url))));
+}
+
 /**
  * New episodes of every podcast the site collects, kept for transcription like the archive's: each recent episode
  * the collection took in without an entry here gets its audio file from the feed (the engine's reader keeps no

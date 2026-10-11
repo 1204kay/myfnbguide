@@ -2,7 +2,7 @@
 // collects is never kept for transcription, or waits behind the archive; an archive episode is transcribed though
 // its notes scored below the floor and nobody picked it, or while the service has no budget row; the transcript does not become the
 // article's body or is not analysed again; a rate limit marks an episode failed for good; an archive that names
-// its picks takes in others.
+// its picks takes in others, or a pick added after its first import is never read.
 import { tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import http from "node:http";
@@ -12,7 +12,7 @@ process.env.ALLOW_PRIVATE_NETWORK_FETCH = "true";
 process.env.GROQ_API_KEY = "test-speech-key";
 const { closeDb, sql } = await import("@aihot/backend/db");
 const { stopBoss } = await import("@aihot/backend/jobs/queue");
-const { audioByTitle, importSource, noteNewEpisodes, PACE } = await import("../backend/importer.ts");
+const { audioByTitle, importSource, noteNewEpisodes, PACE, plansDue, REREAD } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
 const { episodesToTranscribe, PART_BYTES, PICKED, SERVICE, SPEECH, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
@@ -169,6 +169,15 @@ test("an archive with picks takes in only the episodes it names", async () => {
   assert.deepEqual([result.found, result.created, result.finished], [1, 1, true], "an episode no longer listed is not looked for");
   const urls = (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id = ${`${SOURCE}-picked`}`).map((r) => r.url);
   assert.deepEqual(urls, [`${BASE}/picked/2`]);
+  // Finished: read again only for a pick the site lacks, and not before REREAD has passed.
+  const plan = { id: `${SOURCE}-picked`, only: [`${BASE}/picked/2`, `${BASE}/picked/3`] };
+  assert.deepEqual(await plansDue([plan]), [], "just read");
+  REREAD.ms = 0;
+  assert.deepEqual(await plansDue([plan, { id: `${SOURCE}-never` }]), [plan, { id: `${SOURCE}-never` }], "a new pick, and a source never read");
+  assert.deepEqual(await plansDue([{ ...plan, only: [`${BASE}/picked/2`] }]), [], "every pick taken in");
+  assert.equal((await importSource(plan)).created, 1);
+  assert.deepEqual(await plansDue([plan]), []);
+  REREAD.ms = 6 * 3600_000;
 });
 
 test("new episodes of a podcast the site collects are kept for transcription and go first, however thin their notes", async () => {

@@ -29,6 +29,17 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 apt-get install -y -qq ca-certificates curl git jq unattended-upgrades > /dev/null
 printf 'APT::Periodic::Update-Package-Lists "1";\nAPT::Periodic::Unattended-Upgrade "1";\n' > /etc/apt/apt.conf.d/20auto-upgrades
+# 腾讯云的镜像把 50unattended-upgrades 的来源删得只剩 noble 本身，安全补丁从来不装（2026-10-12 积压 120 个）。
+# 这里补回安全来源（apt 的列表跨文件累加）；要重启才生效的补丁，凌晨 5 点自动重启，容器随 Docker 自己起来。
+cat > /etc/apt/apt.conf.d/52myfnb-security <<'EOF'
+Unattended-Upgrade::Allowed-Origins { "${distro_id}:${distro_codename}-security"; "${distro_id}ESMApps:${distro_codename}-apps-security"; "${distro_id}ESM:${distro_codename}-infra-security"; };
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "05:00";
+EOF
+# 只准密钥登录：10/1–10/12 有 4.7 万次猜密码（2 千多次猜 root），成功的登录全是密钥；网页终端 OrcaTerm 和 VNC 不经过 sshd。
+# 文件名排在镜像的 50-cloud-init.conf 前面：sshd 以先读到的值为准。
+printf 'PasswordAuthentication no\nKbdInteractiveAuthentication no\nPermitRootLogin no\n' > /etc/ssh/sshd_config.d/01-myfnb-keys-only.conf
+sshd -t && systemctl reload ssh
 if ! command -v docker > /dev/null; then curl -fsSL https://get.docker.com | sh > /dev/null; fi
 docker compose version > /dev/null || die "Docker Compose 不可用。"
 # 构建镜像时内存吃紧：4 GB 的机器加 2 GB 交换空间，免得更新时构建被杀掉。

@@ -67,6 +67,23 @@ export function figureParts(value: string): [string, string] {
   return m ? [m[1]!, m[2]!] : [value, ""];
 }
 
+/**
+ * What a figure counts in: "近 170 项" and "超过 3200 项" both 项, "9%" and "30.6%" both %, "80 到 100 元" 元. Big numbers
+ * side by side only for figures in one unit: three facts in three units (a 翻台率, a 增长率, a 人次) set as equals
+ * read as one comparison they are not (用户 10/11: 数据都是千篇一律的展示方式，根本不清晰).
+ */
+export function figureUnit(value: string): string | null {
+  const m = /^(?:约|近|将近|超过|超|逾|至少|不到|不足)?\s*[-+]?[\d.,]+%?(?:\s*(?:到|至|-|–|~)\s*[\d.,]+%?)?\s*(.*)$/u.exec(value.trim());
+  if (!m) return null;
+  const pct = /%/.test(value.split(/\s/)[0] ?? "") || /^[^\d]*[\d.,]+%/.test(value.trim());
+  return (pct ? "%" : "") + m[1]!.replace(/^(?:多|余)/u, "").replace(/(?:以上|左右|多)$/u, "").trim();
+}
+
+export const comparable = (values: string[]) => {
+  const units = values.map(figureUnit);
+  return units.every((u) => u !== null && u === units[0]);
+};
+
 /** The figures strip: big numbers with their units. */
 export function Metrics({ items }: { items: Array<[number, string]> }) {
   return (
@@ -485,14 +502,26 @@ export function StoryBlock({ block }: { block: Block }) {
     case "numbers": return (
       <Figure kind="原文数据" caption={block.caption}>
         {block.point ? <p className="mb-3 text-[15.5px] font-bold leading-[1.6] text-ink">{block.point}</p> : null}
-        <div className={`grid gap-4 ${["", "", "grid-cols-2", "grid-cols-2 sm:grid-cols-3"][block.items.length]}`}>
-          {block.items.map((i, n) => (
-            <div key={n}>
-              <div className="num text-[28px] font-extrabold leading-tight text-accent lg:text-[32px]">{figureParts(i.value)[0]}<span className="ml-1 text-[15px] font-bold">{figureParts(i.value)[1]}</span></div>
-              <div className="mt-1 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
-            </div>
-          ))}
-        </div>
+        {block.items.length === 1 || comparable(block.items.map((i) => i.value)) ? (
+          <div className={`grid gap-4 ${["", "", "grid-cols-2", "grid-cols-2 sm:grid-cols-3"][block.items.length]}`}>
+            {block.items.map((i, n) => (
+              <div key={n}>
+                <div className="num text-[28px] font-extrabold leading-tight text-accent lg:text-[32px]">{figureParts(i.value)[0]}<span className="ml-1 text-[15px] font-bold">{figureParts(i.value)[1]}</span></div>
+                <div className="mt-1 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          // Figures in different units: a plain list, what each is beside its number, none set up as the others' equal.
+          <dl className="divide-y divide-line">
+            {block.items.map((i, n) => (
+              <div key={n} className="flex items-baseline justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
+                <dt className="text-[14.5px] leading-[1.55] text-ink-2">{i.label}</dt>
+                <dd className="num shrink-0 text-right text-[17px] font-bold text-accent">{i.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </Figure>
     );
     // Before and after side by side (one under the other on a phone), the after in the accent.

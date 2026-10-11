@@ -363,7 +363,6 @@
     {"url":"Buzzsprout-19375917","title":"Cafe Imports Source \"Where Do We Go From Here\" Panel hosted by Chris Baca - Ep# 456","grade":"可看","reason":"美国咖啡店老板主持座谈，纽约、波特兰、波多黎各三家咖啡店老板谈成本上涨下的定价、菜单取舍和人手安排"},
     {"url":"tag:soundcloud,2010:tracks/2301951455","title":"Taking Care of the Pack with Leah Wolff in HR - Ep #445","grade":"可看","reason":"美国 Cat & Cloud 咖啡店的人事主管谈招人、新人入职培训和流动性高的员工怎样带、怎样留"},
     {"url":"tag:soundcloud,2010:tracks/2024416092","title":"The C Market – Where coffee prices come from","grade":"可看","reason":"美国 Cat & Cloud 咖啡店合伙人谈生豆期货价格创新高的原因，以及怎样不按期货行情给咖啡定价"},
-    {"url":"tag:soundcloud,2010:tracks/2018800537","title":"The Seven Steps - Ushering guests into the rest of their day","grade":"可看","reason":"美国 Cat & Cloud 咖啡店老板谈店里用来培训服务的「七个步骤」是什么、为什么这样简单（只凭标题，另参照同集重播的简介）"},
     {"url":"tag:soundcloud,2010:tracks/1702273476","title":"Automagic","grade":"可看","reason":"美国 Cat & Cloud 咖啡店老板谈与咖啡机联动、自动调研磨度的新设备，以及店里自动化做到哪一步为止"},
     {"url":"tag:soundcloud,2010:tracks/1661004558","title":"Comfy Like Kobe","grade":"可看","reason":"美国 Cat & Cloud 咖啡店老板谈怎样教新人同时掌握岗位要求和待客，对还在学的人怎样给反馈和耐心"},
     {"url":"tag:soundcloud,2010:tracks/289471411","title":"Hoppers, Grind Settings, Reducing Waste","grade":"可看","reason":"美国 Cat & Cloud 咖啡店老板谈出杯量大时怎样保持研磨度稳定、清洁豆仓，以及店里减少浪费的做法"},
@@ -492,8 +491,7 @@
     {"url":"https://gastrounternehmer.podigee.io/7-valentin-spiess","title":"Valentin Spieß - WEN CHENG Hand-Pulled Noodles","grade":"可看","reason":"德国外行创办人从节庆摊位和快闪店起步，在柏林开出第一家手拉面店 Wen Cheng，随后再开两家"},
     {"url":"https://gastrounternehmer.podigee.io/5-thomas-leidner-katzentempel","title":"Thomas Leidner - Katzentempel (Feel Good Food)","grade":"可看","reason":"德国前投资银行职员 2013 年毫无经验在慕尼黑开猫咪餐厅，谈筹备的阻碍、开业时的混乱和转做加盟"},
     {"url":"https://gastrounternehmer.podigee.io/4-new-episode","title":"Tim Plasse - F&B Heroes","grade":"可看","reason":"德国法兰克福夜店和餐馆创办人谈公司破产的经过，以及之后重新起步"},
-    {"url":"https://gastrounternehmer.podigee.io/2-new-episode","title":"Coucou Food Market - Savoir Vivre To Go in München","grade":"可看","reason":"德国慕尼黑一对夫妻经营法式外带店 Coucou Food Market，谈怎样度过疫情并开到五家店"},
-    {"url":"https://gastrounternehmer.podigee.io/3-kaspar-schmauser","title":"Kaspar Schmauser - The world of SMART FOOD","grade":"可看","reason":"德国 Kaspar Schmauser 创办人 Philipp Selzle 谈用新技术改造出餐流程，成为店的核心"}
+    {"url":"https://gastrounternehmer.podigee.io/2-new-episode","title":"Coucou Food Market - Savoir Vivre To Go in München","grade":"可看","reason":"德国慕尼黑一对夫妻经营法式外带店 Coucou Food Market，谈怎样度过疫情并开到五家店"}
   ],
   "pod-at-das-erfolgsrezept": [
     {"url":"https://daserfolgsrezept.podigee.io/45-was-macht-ein-gutes-bier-eigentlich-aus-der-kampf-um-die-schank","title":"Was macht ein gutes Bier eigentlich aus? Der Kampf um die Schank","grade":"可看","reason":"奥地利维也纳餐饮顾问谈店里的生啤选哪家啤酒厂：品牌、供货条件、服务，以及合作方是否适合自己的店"},
@@ -909,8 +907,7 @@
     {"url":"108ba40f-8d73-456c-ba69-7755be2b2220","title":"Starting Strong: Mastering Startup Costs, Location Selection, and Lease Negotiation","grade":"可看","reason":"美国披萨店经营者谈开店前怎样估算成本、用保本工具评估位置、谈租约条款，为什么优先选二手餐厅铺位"},
     {"url":"2e7bb2d9-c0c8-40fb-bad4-088af87da761","title":"A few ways I'm using A.I. technology","grade":"可看","reason":"美国披萨店经营者谈他在店里和营销上实际怎样用 AI：写文案、写邮件和处理日常工作"},
     {"url":"Buzzsprout-14792241","title":"Episode 11 - The Crust of Success: The PNL is a Tool Not a Report","grade":"可看","reason":"美国披萨店经营者谈最低工资上涨时怎样把损益表当工具用，逐项看人工和其他开支"},
-    {"url":"Buzzsprout-14471250","title":"The Super Bowl of Pizza Sales","grade":"可看","reason":"美国披萨店经营者谈超级碗、万圣节这类高峰日怎样预估单量、安排人手和预购"},
-    {"url":"Buzzsprout-14895882","title":"Episode 12 - The Real Deal on Pizza Delivery: From Crazy Puffs Letdown to the DoorDash Dance","grade":"可看","reason":"美国披萨店经营者谈外卖怎样做：交给 DoorDash 等外卖平台还是自己雇送餐员，各自的利弊和他的选择"}
+    {"url":"Buzzsprout-14471250","title":"The Super Bowl of Pizza Sales","grade":"可看","reason":"美国披萨店经营者谈超级碗、万圣节这类高峰日怎样预估单量、安排人手和预购"}
   ],
   "pod-therealbarman": [
     {"url":"https://www.buzzsprout.com/1898808/episodes/19896383-how-much-do-photos-affect-your-restaurant-ranking.mp3","title":"How Much do Photos Affect Your Restaurant Ranking?","grade":"可看","reason":"美国酒吧顾问 Dave Allred 谈店铺在谷歌商家页面上的照片：谷歌为什么看重照片、该上传哪几类、多久更新一次、常见的错误"},
@@ -993,8 +990,7 @@
     {"url":"https://www.buzzsprout.com/1768302/episodes/10672256-folge-010-selbststandigkeit-in-der-gastronomie-wie-das-100-200-entstanden-ist.mp3","title":"Folge 010 | Selbstständigkeit in der Gastronomie - Wie das 100/200 entstanden ist","grade":"可看","reason":"德国汉堡一家餐厅的两位经营者谈这家店是怎样开起来的：很响的音乐、不能更改的套餐和预售票，为什么这样做"},
     {"url":"https://www.buzzsprout.com/1768302/episodes/9092117-folge-006-preisgestaltung-in-der-gastronomie.mp3","title":"Folge 006 | Preisgestaltung in der Gastronomie","grade":"可看","reason":"德国汉堡一家餐厅的两位经营者公开谈自己店里的定价，以及对餐饮业价格的看法"},
     {"url":"https://www.buzzsprout.com/1768302/episodes/8922887-folge-005-selbststandigkeit-und-zeitmanagement-in-der-gastronomie.mp3","title":"Folge 005 | Selbstständigkeit und Zeitmanagement in der Gastronomie","grade":"可看","reason":"德国汉堡一家餐厅的两位经营者谈自己当老板以后的时间安排：开业以来学到了什么、哪些事仍然做不好"},
-    {"url":"https://www.buzzsprout.com/1768302/episodes/8844356-folge-003-gastronomie-im-wandel-der-umgang-mit-krisen.mp3","title":"Folge 003 | Gastronomie im Wandel- der Umgang mit Krisen","grade":"可看","reason":"德国汉堡一家餐厅的两位经营者谈餐厅重新开业八周以来的体会，以及怎样面对危机"},
-    {"url":"Buzzsprout-9177197","title":"Folge 007 | Ausbildung und Kariere in der Gastronomie- Die Akademie des 100/200","grade":"可看","reason":"德国汉堡 100/200 kitchen 两位老板谈自己办的厨师培训学院：为何办、怎样带新人"}
+    {"url":"https://www.buzzsprout.com/1768302/episodes/8844356-folge-003-gastronomie-im-wandel-der-umgang-mit-krisen.mp3","title":"Folge 003 | Gastronomie im Wandel- der Umgang mit Krisen","grade":"可看","reason":"德国汉堡一家餐厅的两位经营者谈餐厅重新开业八周以来的体会，以及怎样面对危机"}
   ],
   "pod-your-life-and-restaurant": [
     {"url":"https://www.buzzsprout.com/1625317/episodes/7362235-where-do-most-of-your-headaches-come-from.mp3","title":"Where do most of your headaches come from?","grade":"必看","reason":"老板谈店里的麻烦多半出在哪里"},
@@ -1090,6 +1086,34 @@
     {"url":"Buzzsprout-18254623","title":"From Bartender to Bar Owner: How Steve Lewis Turned a Biker Bar into a Community Favorite","grade":"可看","reason":"美国调酒师 Steve Lewis 买下一家机车酒吧：执照、清理旧口碑、学会订货不断货也不积压"},
     {"url":"Buzzsprout-18137377","title":"How to Run a Profitable Bar Without Being There Full Time with H Joseph Ehrmann","grade":"可看","reason":"美国旧金山酒吧老板 H Joseph Ehrmann 人住博伊西，店照样赚钱，员工最长留了 17 年"},
     {"url":"Buzzsprout-17779143","title":"How Can Technology and Team Empowerment Transform Your Restaurant Operations with Amir Harpaz","grade":"可看","reason":"美国餐厅老板 Amir Harpaz 从 Toast 换到 SpotOn 收银系统，解决库存管理和断网问题"},
-    {"url":"Buzzsprout-14860378","title":"Building Educated Bar Teams for Success with Greg Buda: Training Strategies for Bar & Pub Owners","grade":"可看","reason":"美国调酒师 Greg Buda 从顾问转为酒吧老板，谈怎样分派工作、亲手带出懂行的团队"}
+    {"url":"Buzzsprout-14860378","title":"Building Educated Bar Teams for Success with Greg Buda: Training Strategies for Bar & Pub Owners","grade":"可看","reason":"美国调酒师 Greg Buda 从顾问转为酒吧老板，谈怎样分派工作、亲手带出懂行的团队"},
+    {"url":"Buzzsprout-19729713","title":"How to Increase Restaurant and Bar Revenue Without More Customers","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈不靠增加客人提高营业额：先算客单价，何时提示第二轮、菜单价格锚点"},
+    {"url":"Buzzsprout-19691795","title":"How to Set Clear Staff Expectations and Build a Better Bar Team","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈新人第一周的 20 分钟谈话：说清标准、决定方式和双方期望，减少流失"},
+    {"url":"Buzzsprout-19531370","title":"Bar Vendor Relationships: How to Get Better Pricing, Support, and Training","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈与供货商的关系：争取更好的价格、支持和培训，在法规允许时谈条件"},
+    {"url":"Buzzsprout-19518076","title":"AI for Bar Owners: How to Save Hours Without Trusting It Too Much","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈用 AI 写菜单描述、培训资料、供货商邮件和评价回复，哪些不能交给 AI"},
+    {"url":"Buzzsprout-19492128","title":"How to Control Bar Labor Costs Without Hurting Service","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈控制人工成本：人工占比、每工时营业额、交叉培训，按实际客流排班"},
+    {"url":"Buzzsprout-19347347","title":"How to Fix Guest Complaints Before They Become Bad Reviews","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈客人抱怨的当场处理：在差评出现之前发现不满，怎样问、怎样补救"},
+    {"url":"Buzzsprout-19312563","title":"Why Google Reviews Matter for Bar Marketing","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈谷歌评价：什么时候请客人留评价、怎样训练员工开口、怎样回复差评"},
+    {"url":"Buzzsprout-19272556","title":"Why Bad Bar Scheduling Is Driving Up Your Labor Cost","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈人工偏高常是排班问题：读每小时销售曲线，按爬升、高峰、回落排人"},
+    {"url":"Buzzsprout-19197434","title":"How One Private Event a Week Can Add $78K to Your Bar","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈每周一场私人包场可多赚 7.8 万美元：询价单、最低消费、订金和跟进"},
+    {"url":"Buzzsprout-19133488","title":"How Bad Bar Design Can Cost You $1M with Tobin Ellis","grade":"可看","reason":"美国酒吧设计师 Tobin Ellis 谈吧台设计：多走一步、多伸一次手，怎样拖慢出餐、吃掉利润"},
+    {"url":"Buzzsprout-19081984","title":"Your “High-Margin” Bottles Are Quietly Killing Your Bar’s Cash Flow","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈高毛利酒卖不动就是压住的现金：找出呆滞库存，定价清掉"},
+    {"url":"Buzzsprout-18466420","title":"The Leadership Development System: How to Build a Strong Management Bench","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈建立管理梯队：识别管理潜力、避免提拔错误、90 天带出接班人"},
+    {"url":"Buzzsprout-18315565","title":"December Bar Waste Audit: How to Stop Profit Leaks in Food Cost, Pour Cost, and Inventory","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈 48 小时浪费盘查：多倒、变质、短少，对照食材和酒水成本找出损耗"},
+    {"url":"Buzzsprout-18161850","title":"How to Run a 20-Minute Competitor Price Audit to Maximize Your Bar's Profits","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈 20 分钟附近同类酒吧价格盘查：四个步骤找出定低和定高的品项"},
+    {"url":"Buzzsprout-17916750","title":"Grow Your Bar with This 72 Hour Customer Retention Strategy","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈客人第一次来后的 72 小时：三步跟进，让客人记得再来"},
+    {"url":"Buzzsprout-17548137","title":"The Bar Tech Trap: How to Pick the Best Bar Technology for Real ROI","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈挑选酒吧科技工具：看一个指标判断值不值，功能多反而增加工作"},
+    {"url":"Buzzsprout-17357201","title":"Your Bar's Data Goldmine: What POS Reports Are Actually Worth Reading","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈收银系统里值得每周看的报表：找出呆滞库存，按数据订货减少变质"},
+    {"url":"Buzzsprout-17303900","title":"Speed Matters: Why Your Bartenders Are Too Slow (and What to Do About It)","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈调酒师出酒太慢：吧台摆设的错误、加快出酒的流程和训练"},
+    {"url":"Buzzsprout-16964480","title":"Navigating the Cashless Revolution: Strategy for Bar Owners","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈现金越来越少时的收款：调整收银系统，处理对账变复杂的问题"},
+    {"url":"Buzzsprout-16964469","title":"Bar Maintenance Mastery:  Preventive Equipment Care for Bar Owners","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈酒吧设备的预防保养：每日、每周、每月的保养表，训练员工及早发现故障"},
+    {"url":"Buzzsprout-16438487","title":"Streamlining Cash Handling: A Proven System for Bar Owners to Prevent Errors & Discrepancies","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈每日现金清点制度：核对流程、互相制衡，用简单的表格对账"},
+    {"url":"Buzzsprout-16438704","title":"A Bar Owner's Guide to Perfect Staff Training: The Tell-Show-Do-Review Method","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈“说明、示范、操作、复核”四步训练法，让每位调酒师做出一样的酒"},
+    {"url":"Buzzsprout-16332039","title":"Bar Owner's Guide to Operational Excellence: Why Checklists Are Your Secret Weapon","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈用检查清单维持日常运作：哪些环节要清单、怎样让员工真正照做"},
+    {"url":"Buzzsprout-15992772","title":"Mastering Ticket Times to Boost Bar Efficiency & Sales for Bar Owners","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈追踪出餐时间：怎样测量、在高峰时段监控，逐步缩短客人等待"},
+    {"url":"Buzzsprout-15316573","title":"Mastering Cash Flow for Bar Owners to Boost Financials & Avoid Common Pitfalls","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈父母在美国印第安纳波利斯的高级餐厅口碑很好仍倒闭，说明现金流为何要紧"},
+    {"url":"Buzzsprout-14238535","title":"5 Steps to Pricing Drinks for Profit: Essential Tips for Bar Owners","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈供货商涨价时按五个步骤调整饮品售价，用实际例子计算毛利"},
+    {"url":"Buzzsprout-13799619","title":"Reducing Food Costs for Bar Owners: Maximize Profitability & Efficiency","grade":"可看","reason":"美国酒吧顾问 Chris Schneider逐项检查“食材成本的 40 个漏洞”：采购、收货、储存、备料到销售"},
+    {"url":"Buzzsprout-13583693","title":"Efficient & Attractive Bar Design for Bar Owners: Maximize Space & Durability","grade":"可看","reason":"美国酒吧顾问 Chris Schneider谈吧台设计：吧台形状、座位安排、减少调酒师走动，哪些地方值得多花钱"}
   ]
 }

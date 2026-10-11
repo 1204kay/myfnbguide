@@ -14,6 +14,16 @@ export interface ArchivePlan {
 /** The old episodes picked one by one, by source (from myfnb/archive-episodes.ts), each with why. */
 const PICKS = JSON.parse(readFileSync(new URL("./picks.json", import.meta.url), "utf8")) as Record<string, Array<{ url: string }>>;
 
+/**
+ * Where picks sit beyond a feed's first page: vendors' blogs (10/11), whose older articles were picked one by one
+ * from titles and summaries (46 of 1,997: methods with steps or numbers, not product news or generic tips).
+ */
+const PAGES: Record<string, ArchivePlan["pages"]> = {
+  "rss-sischef": { url: "https://sischef.com/feed/?paged={n}", to: 5 },
+  "rss-gopos": { url: "https://gopos.pl/blog/feed/?paged={n}", to: 18 },
+  "rss-koust": { url: "https://koust.net/feed/?paged={n}", to: 28 },
+};
+
 export const ARCHIVE: ArchivePlan[] = [
   // Practice blogs whose old articles are whole text already: stories without transcription.
   { id: "rss-petpooja", pages: { url: "https://blog.petpooja.com/feed/?paged={n}", to: 30 } },
@@ -31,5 +41,5 @@ export const ARCHIVE: ArchivePlan[] = [
   // 10/5, 220 of 1,014 of fourteen more shows and 365 of 1,393 of thirty-two from the whole index on 10/10.
   // Your Life and Restaurant, the 10/4 trial, came in whole; its notes are a title, so on 10/11 its 38 business
   // episodes were picked by title (not the ones on sleep, books, holidays or the host's own life).
-  ...Object.entries(PICKS).map(([id, picks]) => ({ id, only: picks.map((p) => p.url) })),
+  ...Object.entries(PICKS).map(([id, picks]) => ({ id, ...(PAGES[id] ? { pages: PAGES[id] } : {}), only: picks.map((p) => p.url) })),
 ];

@@ -2,7 +2,7 @@
 // collects is never kept for transcription, or waits behind the archive; an archive episode is transcribed though
 // its notes scored below the floor and nobody picked it, or while the service has no budget row; the transcript does not become the
 // article's body or is not analysed again; a rate limit marks an episode failed for good; an archive that names
-// its picks takes in others, or a pick added after its first import is never read.
+// its picks takes in others, or a pick added after its first import is never read; a pick names no address.
 import { tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import http from "node:http";
@@ -75,6 +75,13 @@ before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config) VALUES (${`${SOURCE}-blog`}, 'Blog', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/blog.xml?paged=1`, denyUrlPrefixes: [`${BASE}/blog/compliance/`] })})`;
 });
 after(async () => { server.close(); await stopBoss(); await closeDb(); });
+
+test("every pick names its episode by the address the feed reader stores", async () => {
+  // 10/11: 94 picks copied a Buzzsprout guid ("Buzzsprout-19375917"); the reader stores such an episode under its audio file.
+  const { ARCHIVE } = await import("../plan.ts");
+  const odd = ARCHIVE.flatMap((p) => (p.only ?? []).filter((url) => !/^https?:\/\//.test(url)).map((url) => `${p.id}: ${url}`));
+  assert.deepEqual(odd, []);
+});
 
 test("each episode's audio is found by its title", () => {
   const audio = audioByTitle(`<rss><channel><item><title> A  title </title><enclosure url="https://x/a.mp3" type="audio/mpeg"/></item><item><title>No audio</title></item><item><title>It&#39;s here</title><enclosure url="https://x/b.mp3" type="audio/mpeg"/><podcast:transcript url="https://x/b.html" type="text/html"/><podcast:transcript url="https://x/b.vtt" type="text/vtt"/></item></channel></rss>`);

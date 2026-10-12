@@ -63,7 +63,7 @@ export const SITE = {
   /** 对外联系邮箱（选填）：llms.txt 和给 Agent 的使用说明里会写。 */
   contactEmail: "myfb.guide.my@gmail.com" as string | null,
   /** 关于页底部的一行小字（选填）。 */
-  footerNote: "由 AIHOT 开源框架驱动 · MyF&B 与 MakanBook（马来西亚小餐饮店用的记账和点单工具）由同一团队制作",
+  footerNote: "由 AIHOT 开源框架驱动",
   /** 中国大陆网站的 ICP 备案号（选填），填了就显示在侧栏底部和“我的”页底部，并链接到工信部备案系统。 */
   icp: null as string | null,
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
@@ -148,7 +148,7 @@ export const ABOUT = {
   /** 大标题：第一行正常颜色，第二行强调色。 */
   headline: ["餐饮经营的经验，散落在各地。", "我们把它汇集起来，整理成中文。"] as [string, string],
   /** 标题下面的一段话。{sources} 会换成实时的信源数（两边自动加空格，所以 {sources} 两边不写空格）；统计没取到时换成 sourcesFallback。 */
-  lead: `${SITE.name} 由餐饮人发起，从{sources}个来源收集各地店家的做法和经验，按经营者遇到的事整理成参考：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。`,
+  lead: `${SITE.name} 从{sources}个来源收集各地店家的做法和经验，按经营者遇到的事整理成参考：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。`,
   sourcesFallback: "数十",
   /** 信源河动画下面的四个环节。 */
   steps: {

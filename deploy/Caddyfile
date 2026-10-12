@@ -2,5 +2,28 @@
 # responses. Point the domain's DNS at this server first.
 {$SITE_DOMAIN} {
 	encode zstd gzip
+
+	# 访问计数（myfnb/HANDOFF.md §2.4）：只记时间、路径、状态码和“是不是机器人”，不记 IP、请求头（含 cookie 和浏览器标识）、
+	# 查询串，所以认不出是谁。机器人由浏览器标识判断，只留判断结果。myfnb/visits.sh 按天按类统计。
+	@bot header_regexp ua User-Agent (?i)bot|crawl|spider|slurp|scrape|headless|curl|wget|python|go-http|java/|preview
+	log_append @bot bot true
+	log {
+		output file /data/access.log {
+			roll_size 20MiB
+			roll_keep 10
+			roll_keep_for 720h
+		}
+		format filter {
+			wrap json
+			request>remote_ip delete
+			request>remote_port delete
+			request>client_ip delete
+			request>headers delete
+			request>tls delete
+			request>uri regexp \?.* ""
+			resp_headers delete
+		}
+	}
+
 	reverse_proxy web:3000
 }

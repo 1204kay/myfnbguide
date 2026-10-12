@@ -146,7 +146,7 @@ export const ABOUT = {
   /** 页面描述（搜索结果、分享卡片）。 */
   description: `关于 ${SITE.name}：${SITE.description}`,
   /** 大标题：第一行正常颜色，第二行强调色。 */
-  headline: ["餐饮经营的经验，散落在各地。", "我们把它汇集起来，整理成中文。"] as [string, string],
+  headline: ["散落在各地的餐饮经验，往往是同一套经营原理。", "我们把它收集起来，按事情整理清楚。"] as [string, string],
   /** 标题下面的一段话。{sources} 会换成实时的信源数（两边自动加空格，所以 {sources} 两边不写空格）；统计没取到时换成 sourcesFallback。 */
   lead: `${SITE.name} 从{sources}个来源收集各地店家的做法和经验，按经营者遇到的事整理成参考：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。`,
   sourcesFallback: "数十",

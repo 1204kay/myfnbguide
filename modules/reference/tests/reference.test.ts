@@ -59,6 +59,13 @@ test("numbers are looked up in the original in the forms it may write them", () 
   assert.deepEqual(unfoundNumbers("300 多万人", sourceNumbers("more than 3 million people")), []);
   assert.deepEqual(unfoundNumbers("一年多付 33,159 美元，开了 3 家店", source), ["33,159"], "a derived number is not in the original; small counts are words");
   assert.deepEqual(unfoundNumbers("1503 欧元", source), []);
+  assert.deepEqual(unfoundNumbers("投入 1500000 到 4000000 卢比", sourceNumbers("Rs 15-40 lakh to set up")), [], "lakh, both ends of a range");
+  assert.deepEqual(unfoundNumbers("资金 20000000 卢比", sourceNumbers("raised 2 crore")), [], "crore");
+  assert.deepEqual(unfoundNumbers("一杯 6000 欧元", sourceNumbers("pour 6 000 euros, 3 500 more")), [], "space as the thousands mark");
+  assert.deepEqual(unfoundNumbers("3500 欧元", sourceNumbers("3 500 euros")), []);
+  assert.deepEqual(unfoundNumbers("月租 72000 日元，押金 225000 日元", sourceNumbers("家賃7万2000円、敷金22万5千円")), [], "Japanese 万 followed by digits or 千");
+  assert.deepEqual(unfoundNumbers("售价 36 雷亚尔，157.2 卢比，12800 元", sourceNumbers("R$ 36,00; ₹157.20; 12800.00")), [], "trailing zeros");
+  assert.deepEqual(unfoundNumbers("多了 1 lack of 60 年", sourceNumbers("a lack of 3 lack")), ["60"], "lac must be a whole word");
 });
 
 test("what readers read is spaced between Chinese and digits or Latin, and dated with the year only when it is another", () => {

@@ -37,6 +37,9 @@ function forms(token: string): string[] {
   const out = new Set<string>([t.replace(/[,.\s]/g, "")]);
   if (/^\d+(?:,\d{3})*\.\d+$/.test(t)) out.add(t.replace(/,/g, ""));
   if (/^\d+,\d{1,2}$/.test(t)) out.add(t.replace(",", "."));
+  // "36,00", "157.20", "12800.00": trailing zeros after the decimal mark are no part of the value.
+  const plain = t.replace(/,(?=\d{3}(?!\d))/g, "");
+  if (/^\d+[.,]\d{1,2}$/.test(plain)) out.add(String(Number(plain.replace(",", "."))));
   return [...out].map((f) => f.replace(/^0+(?=\d)/, ""));
 }
 
@@ -47,6 +50,8 @@ export function sourceNumbers(text: string): Set<string> {
   const normal = text.normalize("NFKC");
   const found = new Set<string>();
   for (const token of normal.match(DIGITS) ?? []) for (const f of forms(token)) found.add(f);
+  // French and Italian thousands with a space ("6 000 euros"), also the narrow and no-break ones.
+  for (const m of normal.matchAll(/(?<![\d.,])\d{1,3}(?:[   ]\d{3})+(?:[.,]\d+)?(?![\d])/g)) for (const f of forms(m[0].replace(/[   ]/g, ""))) found.add(f);
   for (const run of normal.match(/[〇零一二两三四五六七八九十百千万]+/g) ?? []) {
     const n = kanjiNumber(run);
     if (n !== null) found.add(String(n));
@@ -76,6 +81,14 @@ export function sourceNumbers(text: string): Set<string> {
     const n = Number(m[1]!.replace(",", "."));
     const scale = SCALES.find(([word]) => word.test(m[2]!))![1] * (/^(億|억)$/.test(m[2]!) ? 100 : 1);
     found.add(String(Math.round(n * scale)));
+  }
+  // India: "15-40 lakh" (both ends), "2 crore". Japan: "7万2000円", "22万5千円".
+  for (const m of normal.matchAll(/(\d+(?:[.,]\d+)?)(?:\s*[-–—]\s*(\d+(?:[.,]\d+)?))?\s*(lakhs?|lacs?|crores?)\b/gi)) {
+    const scale = /^cr/i.test(m[3]!) ? 10_000_000 : 100_000;
+    for (const n of [m[1], m[2]]) if (n) found.add(String(Math.round(Number(n.replace(",", ".")) * scale)));
+  }
+  for (const m of normal.matchAll(/(\d+)万(?:(\d)千|(\d{1,4}))?/g)) {
+    found.add(String(Number(m[1]) * 10_000 + (m[2] ? Number(m[2]) * 1000 : 0) + (m[3] ? Number(m[3]) : 0)));
   }
   return found;
 }

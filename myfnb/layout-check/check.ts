@@ -196,7 +196,9 @@ function measure() {
 }
 
 async function open(page: Page, url: string) {
-  const res = await page.goto(BASE + url, { waitUntil: "networkidle", timeout: 45000 });
+  const res = await page.goto(BASE + url, { waitUntil: "load", timeout: 45000 });
+  // Not waiting for "networkidle" alone: a story page asks for its follow-ups and never reads a 404 answer, so Chromium keeps that request open.
+  await page.waitForLoadState("networkidle", { timeout: 4000 }).catch(() => {});
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
@@ -216,7 +218,7 @@ async function resolvePaths(browser: Browser): Promise<Map<string, string>> {
     const from = found.get(p.from!);
     if (!from) continue;
     await open(page, from);
-    const ways = p.through ? [...new Set(await page.locator(p.through).evaluateAll((as) => as.map((a) => a.getAttribute("href")!)))].slice(0, 12) : [from];
+    const ways = p.through ? [...new Set(await page.locator(p.through).evaluateAll((as) => as.map((a) => a.getAttribute("href")!)))].slice(0, 40) : [from];
     let href: string | null = null;
     for (const way of ways) {
       if (way !== from) await open(page, way);

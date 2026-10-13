@@ -77,7 +77,7 @@ export default function SituationRoute() {
         <section className="mt-8">
           <Kicker>先了解这种情况</Kicker>
           <p className={`mt-3 ${BODY} ${MEASURE}`}>{s.overview}</p>
-          <p className="mt-2 text-[13px] leading-[1.5] text-ink-4">AI 根据本页 {who}的原文归纳，各家的做法以原文为准。</p>
+          <p className={`mt-2 text-[13px] leading-[1.5] text-ink-4 ${MEASURE}`}>AI 根据本页 {who}的原文归纳，各家的做法以原文为准。</p>
         </section>
       )}
       <SituationFigure slug={s.slug} groups={titles}>

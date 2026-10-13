@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@aihot/archive": "*",
-    "@aihot/reference": "*"
+    "@aihot/reference": "*",
+    "@aihot/social": "*"
   }
 }

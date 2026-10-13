@@ -135,7 +135,7 @@ curl -sI https://new.myfnbguide.com/ | head -3        # 301，Location 是 https
 
 1. **IndexNow**（Bing 等）：在服务器 `.env` 加 `INDEXNOW_KEY=`（32 位十六进制，`openssl rand -hex 16` 现场生成，不用打印出来贴给任何人）和 `INDEXNOW_SUBMIT_ENABLED=true`（只认小写 `true`），`sudo docker compose --profile https up -d`。确认：`curl -s https://www.myfnbguide.com/<那串key>.txt` 返回的内容等于 key 本身（静态路由 `apps/api/src/routes/static.ts`）。第一次会把全站地址分批提交，之后每天提交新变化。
 2. **Google / Bing 站长工具**（Search Console、Bing Webmaster）：要登录 Kay 的账号，Kay 做；做不做由 Kay 说。不做也不影响收录，只是看不到数据。
-3. **社媒自动发**：**不属于上线门槛**。总开关保持关。要打开必须同时满足：（a）Kay 先看过样帖（L412）；（b）Kay 在各平台点过授权（Meta 开发者应用、FB 专页、IG 专业账号、微信服务号），长期凭证由 Kay 自己贴到服务器 `.env`（`HANDOFF.md:440`）；（c）模块测试模式已经验证。打开前再给 Kay 一条「要往外发了」的提醒。
+3. **社媒自动发**：模块并入 main、处于测试模式，是第 0 步的门槛之一；但**正式往外发不属于上线门槛**，总开关保持关。要打开必须同时满足：（a）Kay 先看过样帖（L412）；（b）Kay 在各平台点过授权（Meta 开发者应用、FB 专页、IG 专业账号、微信服务号），长期凭证由 Kay 自己贴到服务器 `.env`（`HANDOFF.md:440`）；（c）模块测试模式已经验证。打开前再给 Kay 一条「要往外发了」的提醒。
 
 ## 8. 旧站和账号收尾（§10 第 2–6 条）
 

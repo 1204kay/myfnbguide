@@ -32,7 +32,7 @@ for (const p of prefixes) {
     const m = r[field]?.match(OLD);
     if (m) problems.push(`${field} 残留旧词「${m[0]}」`);
   }
-  const w = wordingProblems({ titleZh: r.title, summaryZh: r.summary, reasonZh: r.reason });
+  const w = wordingProblems({ titleZh: r.title ?? "", summaryZh: r.summary ?? "", reasonZh: r.reason ?? "" });
   if (w.length) problems.push(`词表仍报 ${w.length} 项：${w.join("；").slice(0, 100)}`);
   console.log(`${p} ${problems.length ? "有问题：" + problems.join(" | ") : "通过"}`);
   bad += problems.length;

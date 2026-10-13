@@ -605,6 +605,8 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 
 ## 10. 旧站切换清单（上线当天做）
 
+> **逐步做法（顺序、命令、确认办法、退路）在 `myfnb/go-live-checklist.md`**（10/13 整理）。下面是 Kay 定的内容，两边不一致以下面和 Kay 的最新话为准，并把那份改齐。
+
 1. `www.myfnbguide.com` 指到新服务器；旧网址全部 301 到新站首页（在 Caddy 配置）。
 2. 关闭 5 个 Tally 表单：fix（EkJ0lN）、feedback（XxElML）、story（yPx8dx）、ask（Gxo91j）、join（dWZNBV）。
 3. FB / IG / 小红书 @myfnbguide 简介链接改新站。

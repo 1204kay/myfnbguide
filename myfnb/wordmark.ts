@@ -1,4 +1,4 @@
-// Draws the MyF&B wordmark (logo option 3, decided 10/4: capitals, wide tracking, "MY" in the accent) as SVG
+// Draws the MYFNB wordmark (logo option 3, decided 10/4: capitals, wide tracking, "MY" in the accent) as SVG
 // paths from Noto Sans SC Bold (SIL OFL 1.1), so no font loads: site/brand/wordmark.svg and wordmark-dark.svg
 // for share images, and the path data for site/brand/Logo.tsx.
 //   node myfnb/wordmark.ts <@fontsource/noto-sans-sc package directory>   (npm pack @fontsource/noto-sans-sc@5.3.0)
@@ -13,7 +13,7 @@ const font = opentype.parse(readFileSync(path.join(pkg, "files/noto-sans-sc-lati
 /** Cap height in the mark's units, and the space between two letters' inks. */
 const CAP = 100;
 const TRACK = CAP * 0.3;
-const parts = [{ text: "MY", accent: true }, { text: "F&B", accent: false }];
+const parts = [{ text: "MY", accent: true }, { text: "FNB", accent: false }];
 
 const scale = CAP / (font.tables.os2.sCapHeight as number);
 let x = 0;
@@ -35,7 +35,7 @@ const viewBox = `0 ${top} ${width} ${bottom - top}`;
 const d = { accent: paths.accent.join(""), ink: paths.ink.join("") };
 
 const svg = (accent: string, ink: string) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${width}" height="${bottom - top}" role="img" aria-label="MyF&amp;B"><path fill="${accent}" d="${d.accent}"/><path fill="${ink}" d="${d.ink}"/></svg>\n`;
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${width}" height="${bottom - top}" role="img" aria-label="MYFNB"><path fill="${accent}" d="${d.accent}"/><path fill="${ink}" d="${d.ink}"/></svg>\n`;
 writeFileSync("site/brand/wordmark.svg", svg("#176b75", "#1b2427"));
 writeFileSync("site/brand/wordmark-dark.svg", svg("#2ce2e8", "#e6eded"));
 writeFileSync(path.join(process.env.TEMP ?? ".", "wordmark-paths.json"), JSON.stringify({ viewBox, aspect: width / (bottom - top), ...d }));

@@ -18,14 +18,14 @@ export const EDITION_WHEN = {
 
 export const SITE = {
   /** 站名：导航、页面标题、分享图、RSS、MCP、后台都用它。 */
-  name: "MyF&B",
+  name: "MYFNB",
   /**
    * 行业词：拼进默认说法里，比如“AI 日报”“AI 动态”。
    * 改成“法律”“HR”“黄金”之类，页面上就会变成“法律日报”“法律动态”。
    */
   subject: "餐饮",
   /** 首页的完整标题（浏览器标签、搜索结果）。 */
-  homeTitle: "MyF&B — 餐饮人自己的参考站",
+  homeTitle: "MYFNB — 餐饮人自己的参考站",
   /** 主题目录页（/topics）的标题。 */
   topicsTitle: "餐饮主题：经营主题、品类与地区的最新动态",
   /** 反馈表单输入框里的示例。 */
@@ -37,7 +37,7 @@ export const SITE = {
   /** 一句话介绍：搜索引擎、分享卡片、RSS、llms.txt 会用。 */
   description: "餐饮小店的经营参考：收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。",
   /** llms.txt 里一句话介绍下面的一段详细介绍（选填）。 */
-  llmsIntro: "MyF&B 从各国经营者的播客、访谈和文章里挑选与开店、经营有关的内容，由 AI 写成中文标题、摘要和收录理由，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
+  llmsIntro: "MYFNB 从各国经营者的播客、访谈和文章里挑选与开店、经营有关的内容，由 AI 写成中文标题、摘要和收录理由，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
   /** 一行小字：分享图、海报下方。 */
   tagline: "餐饮人自己的参考站",
   /** 搜索引擎读到的关键词（首页结构化数据）。 */
@@ -70,7 +70,7 @@ export const SITE = {
   github: null as string | null,
   /** 结构化数据里的网站运营者（搜索引擎用）。 */
   organization: {
-    name: "MyF&B",
+    name: "MYFNB",
     /** 创始人（选填）。 */
     founder: null as null | { name: string; alternateName?: string; jobTitle?: string; description?: string; url?: string },
   },

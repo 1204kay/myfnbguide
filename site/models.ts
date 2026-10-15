@@ -50,6 +50,18 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "mimo", model: "mimo-v2.6-flash", baseUrlEnv: "XIAOMI_MIMO_BASE_URL", apiKeyEnv: "XIAOMI_MIMO_API_KEY",
     extra: { thinking: { type: "disabled" } }, jsonMode: true,
   },
+  // Claude through Anthropic's OpenAI-compatible endpoint (CLAUDE_BASE_URL=https://api.anthropic.com/v1), for comparing
+  // models (myfnb/HANDOFF.md, 10-16). These models reject any temperature but 1, so extra overrides the framework's 0.2;
+  // the endpoint ignores response_format, so no JSON mode (the reply is parsed from its text). Haiku skips thinking;
+  // Sonnet thinks only between tool calls, of which there are none here.
+  "claude-haiku-5-5": {
+    service: "anthropic", model: "claude-haiku-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
+    extra: { temperature: 1, thinking: { type: "disabled" } }, jsonMode: false,
+  },
+  "claude-sonnet-5-5": {
+    service: "anthropic", model: "claude-sonnet-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
+    extra: { temperature: 1, thinking: { type: "between_tools" } }, jsonMode: false,
+  },
   "qwen3-vl-flash": {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: false, vision: true,

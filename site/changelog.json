@@ -1,6 +1,15 @@
 {
-  "latestVersion": "2026-10-13T08:00",
+  "latestVersion": "2026-10-16T08:00",
   "releases": [
+    {
+      "date": "2026-10-16",
+      "time": "08:00",
+      "kind": "公告",
+      "title": "MyF&B 改名为 MYFNB",
+      "body": [
+        "本站改名为 MYFNB，网址和内容不变。"
+      ]
+    },
     {
       "date": "2026-10-13",
       "time": "08:00",

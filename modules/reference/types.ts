@@ -265,8 +265,6 @@ export interface SituationPage {
   groups: SituationGroupPart[];
   /** With `groups`, what is placed in no cause (其他做法); without, every practice and story of the page. */
   rest: PracticeList;
-  /** How many situations the library shows, for the line that leads to them all. */
-  situations: number;
   updatedAt: string | null;
 }
 
@@ -275,7 +273,7 @@ export interface CasePage {
   story: CaseStory;
   /** The item the story is written from, with its AI 导读 (summary) and 收录理由. */
   item: StarItem & { reason: string | null };
-  source: { name: string; kind: string | null; url: string; language: string | null; month: string; audioOnly: boolean };
+  source: { name: string; kind: string | null; url: string; month: string };
   /** Its situation, its practice there (the page opens at it) and what the situation counts. */
   situation: { slug: string; title: string; practice: string | null; count: Count } | null;
   /** The shop's page, when the shop has other stories than this one. */

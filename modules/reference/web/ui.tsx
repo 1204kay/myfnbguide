@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Link } from "react-router";
 import { ITEM_COPY, SITE } from "@aihot/site";
-import { IconArrowLeft, IconChevronRight, IconShare } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconChevronRight } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { siteUrl } from "@aihot/web/lib/seo";
@@ -293,16 +293,6 @@ export function SituationRows({ rows, from, category = false, children }: { rows
   );
 }
 
-/** The one-line note that says what this site is, for a reader who came straight to a page (layout A13). */
-export function SiteLine({ situations }: { situations: number }) {
-  return (
-    <div className="mt-6 border-t border-line pt-4 text-[13px] leading-[1.6] text-ink-4">
-      {SITE.name} 参考：按遇到的事，查各地店家的做法和经验。
-      {situations > 0 && <Link viewTransition to="/reference" className="ml-1 inline-flex items-center text-accent hover:text-accent-ink touch:min-h-11">看全部 {situations} 种情况 ›</Link>}
-    </div>
-  );
-}
-
 /**
  * A story's way back into the library at its end on phones, as the item page lists 相关事件 (AIHOT routes/item.tsx):
  * a small heading, then the row; `count` under the title.
@@ -358,19 +348,6 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
 
 /** A button of a page's own row on desktops (分享, 收藏, 打开原文): 36px, 44px on touch screens. */
 export const ROW_BUTTON = "inline-flex h-9 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[14px] text-ink-2 transition-colors hover:border-accent hover:text-accent touch:h-11";
-
-/** Phones: a page's bottom bar with 分享 alone, in place of the tab bar (situation pages; their handle has `toolbar`). */
-export function ShareBar({ onShare }: { onShare: () => void }) {
-  return (
-    <nav aria-label="页面操作" className="fixed inset-x-0 bottom-0 z-40 bg-surface/90 pb-[env(safe-area-inset-bottom)] pl-[var(--bottom-bar-l)] pr-[var(--bottom-bar-r)] shadow-[0_-1px_0_var(--line)] backdrop-blur-xl backdrop-saturate-150 lg:hidden">
-      <div className="mx-auto grid h-[50px] max-w-[var(--shell-max)]">
-        <button type="button" onClick={onShare} className="flex flex-col items-center justify-center gap-[2px] text-[10.5px] text-ink-3 active:opacity-50">
-          <IconShare size={22} />分享
-        </button>
-      </div>
-    </nav>
-  );
-}
 
 /** What kind a picture is, as a small tag before its caption: 原文数据 and 示意 in the accent, 举例 (made-up numbers) quieter. */
 export function KindTag({ kind }: { kind: "原文数据" | "举例" | "示意" }) {

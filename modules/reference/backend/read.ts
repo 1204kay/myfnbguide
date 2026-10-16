@@ -2,8 +2,7 @@
 // (publication/scope.ts), so a withdrawn or corrected item leaves the pages with the rest of the site. A
 // situation's stories are shown by practice where a grouping of this prompt is stored (backend/methods.ts),
 // one card a story where none is; who stands behind a practice or situation the program counts (tellerOf).
-// The country is the shop's, from the case; the source's own country is its first source tag. Neither the country
-// nor the shop's kind groups or counts anything here (layout J0): the library is too thin in both for now.
+// The country is the shop's, from the case. Neither the country nor the shop's kind groups or counts anything here (layout J0): the library is too thin in both for now.
 import { HOT_FACE_LIMIT, type HotParticipant } from "@aihot/contracts/site";
 import { sql } from "@aihot/backend/db";
 import { proxiedImage, proxiedImageSet } from "@aihot/backend/media/imgproxy";
@@ -19,16 +18,6 @@ import type {
 import { problemKind } from "./checks.ts";
 import { PROMPT_VERSION, type Member, type Method } from "./methods.ts";
 
-/** Source tags that say what a source is, not where it is. */
-const KINDS = new Set(["媒体", "协会", "平台", "播客", "服务商", "博客"]);
-/** The language of an original, by its source's country. */
-const LANGUAGE: Record<string, string> = {
-  中国: "中文", 中国台湾: "中文", 中国香港: "中文", 日本: "日文", 韩国: "韩文", 巴西: "葡萄牙文", 葡萄牙: "葡萄牙文",
-  意大利: "意大利文", 西班牙: "西班牙文", 阿根廷: "西班牙文", 墨西哥: "西班牙文", 法国: "法文", 德国: "德文", 奥地利: "德文", 比利时: "荷兰文",
-  美国: "英文", 英国: "英文", 加拿大: "英文", 澳大利亚: "英文", 新西兰: "英文", 爱尔兰: "英文", 印度: "英文",
-  南非: "英文", 荷兰: "荷兰文", 沙特阿拉伯: "阿拉伯文", 埃及: "阿拉伯文", 俄罗斯: "俄文",
-};
-
 interface Row {
   id: string;
   story: CaseStory;
@@ -42,7 +31,6 @@ interface Row {
   timeline_at: Date;
   source_id: string;
   source_name: string;
-  source_tags: string[];
   source_icon: string | null;
   title: string;
   summary: string | null;
@@ -54,7 +42,7 @@ interface Row {
 async function shownCases(where: ReturnType<typeof sql>, now: Date): Promise<Row[]> {
   return sql<Row[]>`
     SELECT c.article_id AS id, c.story, c.situations, c.shop_key, c.created_at, c.updated_at, p.url, p.published_at, p.timeline_at, p.title,
-           p.summary, p.reason, p.score, s.id AS source_id, s.name AS source_name, s.tags AS source_tags, s.icon_url AS source_icon
+           p.summary, p.reason, p.score, s.id AS source_id, s.name AS source_name, s.icon_url AS source_icon
     FROM reference_cases c
     JOIN publications p ON p.article_id = c.article_id
     JOIN sources s ON s.id = p.source_id
@@ -117,8 +105,6 @@ async function situationsShown(now: Date): Promise<number> {
         ELSE 'source:' || p.source_id END) >= ${LISTED.fromShops}) shown`;
   return row!.n;
 }
-
-const sourceCountry = (r: Row) => r.source_tags.find((t) => !KINDS.has(t)) ?? null;
 
 /** "意大利酒馆店主" of "料理画家クチーナカメヤマ（日本 · 意大利酒馆店主）": what the source is, after its country. */
 export function sourceKind(name: string): string | null {
@@ -357,7 +343,7 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
 export async function readSituation(slug: string, now = new Date()): Promise<SituationPage | null> {
   const situation = findSituation(slug);
   if (!situation) return null;
-  const [rows, stored, shops, situations] = await Promise.all([shownCases(sql`${slug} = ANY (c.situations)`, now), groupings(slug), shopsShown(now), situationsShown(now)]);
+  const [rows, stored, shops] = await Promise.all([shownCases(sql`${slug} = ANY (c.situations)`, now), groupings(slug), shopsShown(now)]);
   const grouping = stored.get(slug);
   const { built, loose } = grouping ? practices(rows, grouping.methods, situation, shops) : { built: [], loose: rows };
   const inCause = (key: string | null) => ({ built: built.filter((b) => b.group === key), loose: loose.filter((r) => groupOf(r, situation) === key) });
@@ -373,7 +359,7 @@ export async function readSituation(slug: string, now = new Date()): Promise<Sit
     causes: causes.map((g) => ({ key: g.key, title: g.title, line: g.line })),
     groups: split ? causes.map((g) => ({ key: g.key, title: g.title, line: g.line, ...list(inCause(g.key)) })) : [],
     rest: list(split ? inCause(null) : { built, loose }),
-    situations, updatedAt: latest([...rows.map((r) => r.updated_at), grouping?.updated_at]),
+    updatedAt: latest([...rows.map((r) => r.updated_at), grouping?.updated_at]),
   };
 }
 
@@ -393,7 +379,6 @@ async function placeOf(r: Row, now: Date): Promise<{ slug: string; title: string
 export async function readCase(id: string, now = new Date()): Promise<CasePage | null> {
   const [r] = await shownCases(sql`c.article_id = ${id}`, now);
   if (!r) return null;
-  const country = sourceCountry(r);
   const [situation, shops, situations] = await Promise.all([placeOf(r, now), shopsShown(now), situationsShown(now)]);
   // A shop's page lists its stories; with this one alone it would only repeat it.
   const total = r.shop_key ? (shops.get(r.shop_key)?.stories ?? 1) : 0;
@@ -401,8 +386,7 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
     id: r.id, story: r.story,
     item: { ...starItem(r), reason: r.reason },
     source: {
-      name: publicSourceName(r.source_name), kind: sourceKind(r.source_name), url: r.url, language: (country && LANGUAGE[country]) ?? null,
-      month: month(r.published_at ?? r.timeline_at), audioOnly: r.source_tags.includes("播客"),
+      name: publicSourceName(r.source_name), kind: sourceKind(r.source_name), url: r.url, month: month(r.published_at ?? r.timeline_at),
     },
     situation, shop: total > 1 ? { key: r.shop_key!, others: total - 1 } : null, situations,
   };

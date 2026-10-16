@@ -91,8 +91,8 @@ export default function CaseRoute() {
     <>
       <RailSection title="来源">
         <div className="text-[14px] font-semibold leading-snug text-ink">{source.name}</div>
-        {source.kind && <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">{source.kind}</div>}
-        <div className="mt-3 text-[12px] text-ink-4">原文{source.language ? ` · ${source.language}` : ""}{source.audioOnly ? " · 节目是音频" : ""}</div>
+        <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">{source.kind ?? hostOf(source.url)}</div>
+        <div className="mt-3 text-[12px] text-ink-4">发布时间</div>
         <div className="mt-0.5 text-[12.5px] text-ink-2">{source.month}</div>
       </RailSection>
       <RailSection title="店家">
@@ -142,8 +142,8 @@ export default function CaseRoute() {
           <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3 2xl:hidden">
             <span className="font-semibold text-ink-2">{source.name}</span>
             {source.kind && <span>· {source.kind}</span>}
-            <span>· {source.month}</span>
-            {(story.shop.country || story.shop.city) && <span>· {[story.shop.country, story.shop.city].filter(Boolean).join(" · ")}</span>}
+            <span>·</span>
+            <span>{source.month}</span>
           </div>
           <h1 data-page-title="" className="text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]">{story.title}</h1>
 
@@ -183,9 +183,7 @@ export default function CaseRoute() {
           <p className="mt-8 text-[13px] text-ink-4">
             来源：
             <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">{source.name}</a>
-            {/* The item page names the original's host here; a story names its language and whether it is audio
-                instead (left as it was: 待定 in myfnb original-audit 2026-10-16). */}
-            {source.language ? ` · 原文${source.language}` : ` · ${hostOf(source.url)}`}{source.audioOnly ? " · 节目是音频" : ""}
+            <span> · {hostOf(source.url)}</span>
           </p>
 
           {/* Desktops have it in the right rail. */}

@@ -23,7 +23,7 @@ import { publishArticle } from "@aihot/backend/publication/publish";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
-import reference, { SAMPLE_PATH } from "../server.ts";
+import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
@@ -494,7 +494,6 @@ test("cases are written for selected items, once more when the checks find probl
 test("the pages show public cases only, a situation once enough shops tell it, each shop once in a list, and the practices by shop", async () => {
   const thin = await get("/api/reference");
   assert.deepEqual([thin.categories, thin.totals.situations], [[], 0], "two shops are no page in the lists where they ask for five");
-  assert.equal((await get("/api/reference/situations/busy-no-profit")).situations, 0, "the count on a page is the lists' count");
   // The stories here are of two or three shops: the rest reads the lists as they are from two.
   LISTED.fromShops = 2;
   const home = await get("/api/reference");
@@ -542,7 +541,7 @@ test("the pages show public cases only, a situation once enough shops tell it, e
   assert.deepEqual([listing.recent.id, listing.recent.who], [ids.COFFEE, "日本一家社区咖啡店"], "最近收进: the story taken in last, its country written once");
 
   const one = await get(`/api/reference/cases/${ids.FIRST}`);
-  assert.deepEqual([one.source.name, one.source.kind, one.source.language, one.situation.title], ["Total Food Service", "餐饮媒体", "英文", "生意很忙，钱却留不下来"]);
+  assert.deepEqual([one.source.name, one.source.kind, one.situation.title], ["Total Food Service", "餐饮媒体", "生意很忙，钱却留不下来"]);
   assert.equal(one.situation.practice, practice.key, "the story leads to its practice on the page");
   assert.deepEqual([one.item.summary, one.item.reason, one.item.title, one.item.selected], ["摘要", null, "FIRST", true], "the item's AI 导读 and 收录理由 come with the story");
   assert.deepEqual([one.shop.others, one.situations], [1, 1]);
@@ -652,14 +651,6 @@ test("a page splits by cause only where two causes have two practices each; one 
       VALUES (${id[marker]!}, 1, 'story', ${sql.json(told as never)}, ${["retention"]}, ${`noodle-${marker.toLowerCase()}`}, 'test', ${at(minute)})`;
   }
   assert.deepEqual((await get("/api/reference")).categories[0].situations.map((s: { slug: string; count: Count }) => [s.slug, s.count.shops]), [["retention", 3], ["hiring", 2]]);
-});
-
-test("the sample pages are served at their unlisted address, kept from search engines", async () => {
-  const res = await app.inject(SAMPLE_PATH);
-  assert.equal(res.statusCode, 200);
-  assert.match(String(res.headers["content-type"]), /text\/html/);
-  assert.equal(res.headers["x-robots-tag"], "noindex");
-  assert.ok(res.body.startsWith("<!doctype html>") && res.body.includes("生意很忙，钱却留不下来"));
 });
 
 test("every listed item that is no story gets a write-up under its summary, checked like a case; a story is its item's write-up", async () => {

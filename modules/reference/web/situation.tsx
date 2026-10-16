@@ -2,21 +2,22 @@
 // the causes numbered, then its practices: cards for those two shops or more tell, rows for those one shop tells
 // alone, and (before the stories are grouped, or for stories written since) the stories. By cause only where two
 // causes have two practices or more each; else one list, most shops first.
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
-import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
+import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { AsideCard, ReadingLayout } from "@aihot/web/components/ui/Page";
-import { IconShare } from "@aihot/web/components/icons";
+import { IconCopy, IconMore, IconShare } from "@aihot/web/components/icons";
+import { ActionsSheet } from "@aihot/web/features/item/ReaderTools";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
-import { pageMeta, titled } from "@aihot/web/lib/seo";
+import { pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { PracticeList, SituationPage } from "../types.ts";
 import { GroupDrawing, SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
-import { BODY, Heading, MEASURE, PageHeader, Practice, ROW_BUTTON, ShareBar, ShopRows, SiteLine, StoryCards, useShare, BackLink } from "./ui";
+import { BODY, Heading, MEASURE, PageHeader, Practice, ROW_BUTTON, ShopRows, StoryCards, useShare, BackLink } from "./ui";
 
-export const handle: Screen = { tab: "reference", toolbar: true };
+export const handle: Screen = { tab: "reference" };
 
 export function headers() {
   return edgeTtl(60);
@@ -33,7 +34,8 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
 
 export default function SituationRoute() {
   const s = useLoaderData<typeof loader>();
-  const { share, toast } = useShare();
+  const { share, copy, toast } = useShare();
+  const [actionsOpen, setActionsOpen] = useState(false);
   const path = `/reference/${s.slug}`;
   const onShare = () => void share(s.title, path);
   const split = s.groups.length > 0;
@@ -63,7 +65,16 @@ export default function SituationRoute() {
   );
   return (
     <ReadingLayout aside={aside}>
-      <PhoneBar back={{ to: "/reference", label: "参考" }} title={s.title} />
+      {/* Phones: 分享 and 复制链接 behind the bar's ···, as the item page has its further actions; the tab bar stays. */}
+      <PhoneBar
+        back={{ to: "/reference", label: "参考" }}
+        title={s.title}
+        actions={
+          <BarButton label="更多操作" onClick={() => setActionsOpen(true)}>
+            <IconMore size={22} />
+          </BarButton>
+        }
+      />
       {/* As the topic page: 返回 on desktops (分享 is in the aside's card), then the header; desktops have the counts
           and the date in the aside. */}
       <BackLink to="/reference" label="参考" />
@@ -116,8 +127,14 @@ export default function SituationRoute() {
           <List list={rest} grouped={s.count.grouped} />
         </section>
       )}
-      <SiteLine situations={s.situations} />
-      <ShareBar onShare={onShare} />
+      <ActionsSheet
+        open={actionsOpen}
+        onClose={() => setActionsOpen(false)}
+        rows={[
+          { key: "share", label: "分享", icon: <IconShare size={20} />, onSelect: onShare },
+          { key: "copy", label: "复制链接", icon: <IconCopy size={20} />, onSelect: () => void copy(`${siteUrl()}${path}`) },
+        ]}
+      />
       {toast}
     </ReadingLayout>
   );

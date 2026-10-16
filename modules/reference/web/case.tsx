@@ -106,13 +106,13 @@ export default function CaseRoute() {
           {item.summary && (
             <>
               <div className="text-[12px] font-semibold text-accent">AI 导读</div>
-              <p className="mt-1">{item.summary}</p>
+              <p className={`mt-1 ${MEASURE}`}>{item.summary}</p>
             </>
           )}
           {item.reason && (
             <>
               <div className={`text-[12px] font-semibold text-ink-3 ${item.summary ? "mt-3" : ""}`}>{ITEM_COPY.reasonLabel}</div>
-              <p className="mt-1">{item.reason}</p>
+              <p className={`mt-1 ${MEASURE}`}>{item.reason}</p>
             </>
           )}
         </section>

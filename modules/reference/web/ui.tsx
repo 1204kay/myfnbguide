@@ -631,7 +631,7 @@ export function StoryBlock({ block }: { block: Block }) {
     case "example": return <Example b={block} />;
     // The original's key figures, each with what it counts, under the one sentence saying what they show. Three looks:
     // one figure large with what it is beside it; figures in one unit in a row between hairlines; figures in different
-    // units one under another, each on its own tinted strip with an accent edge, none set up as the others' equal.
+    // units in a plain list, what each is beside its number.
     case "numbers": {
       const one = block.items.length === 1;
       const short = block.items.every((i) => figureSplit(i.value).join("").length <= 6);
@@ -658,13 +658,13 @@ export function StoryBlock({ block }: { block: Block }) {
               ))}
             </div>
           ) : (
-            // Figures in different units: each its own strip, the figure first and what it is under it (beside it on a
-            // desktop, the figures in one column so they line up).
-            <dl className="grid gap-2.5 sm:grid-cols-[auto_minmax(0,1fr)]">
+            // Figures in different units: a plain list, what each is beside its number, none set up as the others' equal
+            // (the tinted strips tried in round four doubled the height on a phone and are not in the original).
+            <dl className="divide-y divide-line-soft">
               {block.items.map((i, n) => (
-                <div key={n} className="flex flex-col rounded-tile border-l-[3px] border-accent bg-accent-soft/60 px-4 py-3 sm:col-span-2 sm:grid sm:grid-cols-subgrid sm:items-center sm:gap-x-7 sm:px-5 sm:py-3.5">
-                  <dt className="order-2 mt-2 text-[14.5px] leading-[1.55] text-ink-2 sm:mt-0 sm:text-[15.5px]">{i.label}</dt>
-                  <dd className="order-1 leading-none"><FigureValue value={i.value} size="text-[30px] sm:text-[34px]" small="text-[15px] sm:text-[16px]" /></dd>
+                <div key={n} className="flex items-baseline justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+                  <dt className="min-w-0 text-[14.5px] leading-[1.55] text-ink-2 sm:text-[15.5px]">{i.label}</dt>
+                  <dd className="shrink-0 text-right leading-none"><FigureValue value={i.value} size="text-[26px] sm:text-[30px]" /></dd>
                 </div>
               ))}
             </dl>

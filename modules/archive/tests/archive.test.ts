@@ -92,7 +92,7 @@ test("each episode's audio is found by its title", () => {
   assert.equal(transcriptText("<html><body><p>We open at six.</p><p>Then the rush &amp; the line.</p></body></html>"), "We open at six.\nThen the rush & the line.");
 });
 
-test("an opened archive comes in as history, and only episodes whose notes score at the floor are transcribed", async () => {
+test("an opened archive comes in as history, and episodes whose notes were scored are transcribed, highest first", async () => {
   const result = await importSource({ id: SOURCE });
   assert.deepEqual([result.found, result.created, result.withAudio, result.finished], [3, 3, 3, true]);
   const rows = await sql<{ id: string; url: string; title: string; backfill: boolean; backfill_reason: string; audio_url: string }[]>`
@@ -101,13 +101,14 @@ test("an opened archive comes in as history, and only episodes whose notes score
   assert.deepEqual(rows.map((r) => r.audio_url), [1, 2, 3].map((n) => `${BASE}/audio/${n}.mp3`));
   assert.deepEqual((await importSource({ id: SOURCE })).created, 0, "a second import adds nothing");
 
-  // Scores of the notes: one above the floor, one below, one not analysed yet.
+  // Scores of the notes: a high one, a low one (heard too, after it), one not analysed yet.
   const [high, low] = rows;
   for (const [row, score] of [[high!, 55], [low!, 12]] as const) {
     await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, score, selected) VALUES (${row.id}, 1, 'rule', 'pass', ${score}, false)`;
   }
-  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id]);
-  // Picked by hand: transcribed though its notes scored below the floor or have no score, unless the prefilter blocked it.
+  assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id, low!.id]);
+  // Picked by hand: transcribed though its notes have no score yet, unless the prefilter blocked it; a blocked one is
+  // not heard for its score either.
   const unscored = rows[2]!;
   PICKED.add(low!.url).add(unscored.url);
   assert.deepEqual((await episodesToTranscribe(10)).filter((id) => rows.some((r) => r.id === id)), [high!.id, low!.id, unscored.id]);

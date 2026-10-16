@@ -38,12 +38,13 @@ export const PART_BYTES = { max: 24 * 1024 * 1024 };
 export const PICKED = new Set(ARCHIVE.flatMap((p) => p.only ?? []));
 
 /**
- * The notes' score an archive episode needs to be heard: below the understand floor (30). An owner telling their
- * own shop's story is what readers want most (用户 10/16), and those notes are often a title and a line, so the
- * score of the notes alone sits low (10/16: 397 archive episodes waited under 30, never to be heard). At 20 about
- * 260 more are heard, after every higher one (ORDER BY score); an episode below that is heard when it is picked.
+ * The notes' score an archive episode needs to be heard: none, every episode whose notes were scored and not
+ * blocked as off-topic. An owner telling their own shop's story is what readers want most (用户 10/16),
+ * and those notes are often a title and a line, so the score of the notes alone sits low. 10/16 the floor went from
+ * 30 to 20 and of the 24 episodes it let in, 19 scored 46 or more on the whole talk and were selected (10/17); the
+ * 25 left under 20 are heard too, after every higher one (ORDER BY score).
  */
-export const HEAR_FLOOR = 20;
+export const HEAR_FLOOR = 0;
 
 /**
  * Episodes to transcribe next, of sources still collected (one stopped for its terms is not read again): with an audio file and not done; from the archive those whose notes scored at least HEAR_FLOOR, and every new episode that passed the prefilter, listed or still waiting for its content (notes
@@ -59,7 +60,7 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
     JOIN sources s ON s.id = a.source_id AND s.enabled
     LEFT JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
     WHERE (e.audio_url IS NOT NULL OR e.transcript_url IS NOT NULL)
-      AND (n.score >= ${HEAR_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')) OR (a.url = ANY(${[...PICKED]}::text[]) AND n.relevance IS DISTINCT FROM 'block'))
+      AND ((n.score >= ${HEAR_FLOOR} AND n.relevance IS DISTINCT FROM 'block') OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')) OR (a.url = ANY(${[...PICKED]}::text[]) AND n.relevance IS DISTINCT FROM 'block'))
       AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${SPEECH.model}:%`}))
     ORDER BY e.transcript_url IS NULL, a.backfill, n.score DESC NULLS LAST, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);

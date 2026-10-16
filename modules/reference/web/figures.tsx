@@ -28,7 +28,8 @@ function causes(groups: string[], focus?: string) {
 }
 
 /**
- * 生意很忙，钱却留不下来: the money poured in leaks through three holes. Gold coins fall into a big bucket; the water
+ * 生意很忙，钱却留不下来: the money poured in leaks through three holes. Coins in the accent (the money, as the
+ * streams that leak it are) fall into a big bucket; the water
  * in it is what is left at the month's end; each hole runs out in a thick stream and a drop, numbered as the causes
  * under the picture are.
  */
@@ -46,7 +47,7 @@ function Bucket({ groups, focus }: { groups: string[]; focus?: string }) {
       <defs><marker id="ref-ar-coin" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-3)" }} /></marker></defs>
       {[[126, 22], [150, 40], [176, 16], [154, 10]].map(([cx, cy]) => (
         <g key={`${cx}-${cy}`}>
-          <circle cx={cx} cy={cy} r="10.5" style={{ fill: "var(--amber)", stroke: "var(--amber-ink)", strokeWidth: 1.5 }} />
+          <circle cx={cx} cy={cy} r="10.5" style={{ fill: "var(--accent)", stroke: "var(--surface)", strokeWidth: 1.5 }} />
           <circle cx={cx} cy={cy} r="6" style={{ fill: "none", stroke: "var(--surface)", strokeWidth: 1.4, opacity: 0.6 }} />
         </g>
       ))}

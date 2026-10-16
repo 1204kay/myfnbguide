@@ -11,6 +11,8 @@
 // 不带参数打印汇总，并把全部明细写到 .data/title-numbers-2026-10-13.tsv（不进仓库）；--all 同时打印 OK 的明细。
 //   sudo docker compose exec -T worker node myfnb/audit-title-numbers-2026-10-13.ts [--all]
 // 取出明细：sudo docker compose exec -T worker cat .data/title-numbers-2026-10-13.tsv > ~/title-numbers.tsv
+// --context：每条没对上的，再打印正文里提到这个数的一段、原文里数值相近（一半到两倍）的几段，供逐篇对着原文判断。
+// 10-16 经 myfnb-ops 跑时 worker 写不了 .data（EACCES），明细写不进去就只打印，不中断。
 import { mkdirSync, writeFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
@@ -26,6 +28,28 @@ import type { CaseStory } from "../modules/reference/types.ts";
 
 installModules(SERVER_MODULES);
 const showAll = process.argv.includes("--all");
+const withContext = process.argv.includes("--context");
+
+/** text 里 needle 前后各 60 字，换行压成空格。 */
+function around(text: string, at: number, length: number): string {
+  return text.slice(Math.max(0, at - 60), at + length + 60).replace(/\s+/g, " ");
+}
+
+/** 原文里数值在 value 的一半到两倍之间的数（最多 4 段），以及正文里提到这个数的那段。 */
+function context(storyText: string, sourceText: string, n: Mention): string[] {
+  const out: string[] = [];
+  const inStory = storyText.normalize("NFKC").indexOf(n.text.replace(/[^\d.%一-龥]/gu, "").slice(0, 4));
+  if (inStory >= 0) out.push(`    正文：…${around(storyText.normalize("NFKC"), inStory, n.text.length)}…`);
+  let shown = 0;
+  for (const m of sourceText.matchAll(/\d[\d,. ]*\d|\d/g)) {
+    const v = Number(m[0].replace(/[, ]/g, ""));
+    if (!Number.isFinite(v) || v < n.value / 2 || v > n.value * 2) continue;
+    out.push(`    原文：…${around(sourceText, m.index!, m[0].length)}…`);
+    if (++shown >= 4) break;
+  }
+  if (!shown) out.push("    原文：没有数值相近的数字");
+  return out;
+}
 
 /** 个数后面跟的量词：数出来的是“几条、几步”，不是金额。 */
 const COUNTER = "个|条|项|步|件|种|招|点|大|类|位|家|名|次|道|篇|段|套|样|层|轮|人|句|则|关|招";
@@ -115,7 +139,8 @@ for (const r of rows) {
     let verdict = "OK", note = "";
     if (!a) { verdict = "原文已删除"; tally.gone++; }
     else {
-      const source = sourceValues(renderContext(a));
+      const sourceText = renderContext(a);
+      const source = sourceValues(sourceText);
       const inSource = source.has(String(n.value));
       if (n.counted) {
         const body = bodyCounts(r.story);
@@ -128,13 +153,17 @@ for (const r of rows) {
     if (verdict === "OK") tally.ok++;
     tsv.push([r.id, onPage ? "是" : "否", verdict, r.story.title, n.text, n.counted ? "个数" : "数字", note].join("\t"));
     if (verdict !== "OK" || showAll) shown.push(`${verdict}\t${onPage ? "页内" : "页外"}\t${r.id}\t「${r.story.title}」\t${n.text}\t${note}`);
+    if (verdict !== "OK" && withContext && a) shown.push(...context(JSON.stringify(r.story.parts), renderContext(a), n));
   }
 }
-mkdirSync(".data", { recursive: true });
-writeFileSync(".data/title-numbers-2026-10-13.tsv", tsv.join("\n") + "\n");
+let saved = true;
+try {
+  mkdirSync(".data", { recursive: true });
+  writeFileSync(".data/title-numbers-2026-10-13.tsv", tsv.join("\n") + "\n");
+} catch { saved = false; }
 console.log(shown.join("\n"));
 console.log(`\n显示中的故事 ${tally.stories} 篇，其中不在够厚的情况页里 ${tally.notOnPage} 篇；标题带数目的 ${tally.withNumber} 篇（页外 ${tally.notOnPageWithNumber} 篇）`);
 console.log(`逐个数核对：OK ${tally.ok}，个数对不上 ${tally.count}，数字在原文里找不到 ${tally.figure}，原文已删除 ${tally.gone}`);
-console.log("明细：.data/title-numbers-2026-10-13.tsv");
+console.log(saved ? "明细：.data/title-numbers-2026-10-13.tsv" : "明细没写成（.data 不可写），以上面打印的为准");
 await stopBoss();
 await closeDb();

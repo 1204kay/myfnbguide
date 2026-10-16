@@ -61,12 +61,6 @@ export function Updated({ at }: { at: string | null | undefined }) {
   return at ? <p className="mt-10 text-[13px] text-ink-4">更新于 {day(at)}</p> : null;
 }
 
-/** A figure as its number (big) and its unit (small, after it): "3.02 美元/磅" is 3.02 and 美元/磅, so a long unit does not wrap. */
-export function figureParts(value: string): [string, string] {
-  const m = /^([-+]?[\d.,]+%?)\s*(.*)$/u.exec(value.trim());
-  return m ? [m[1]!, m[2]!] : [value, ""];
-}
-
 /**
  * What a figure counts in: "近 170 项" and "超过 3200 项" both 项, "9%" and "30.6%" both %, "80 到 100 元" 元. Big numbers
  * side by side only for figures in one unit: three facts in three units (a 翻台率, a 增长率, a 人次) set as equals
@@ -351,14 +345,24 @@ export function ShareBar({ onShare }: { onShare: () => void }) {
   );
 }
 
-/** A picture in its card, what kind it is and what it says right under it ("举例 · …"), then `after`. */
+/** What kind a picture is, as a small tag before its caption: 原文数据 and 示意 in the accent, 举例 (made-up numbers) quieter. */
+export function KindTag({ kind }: { kind: "原文数据" | "举例" | "示意" }) {
+  return (
+    <span className={`mr-2 inline-flex h-5 items-center rounded-full px-2 align-[1px] text-[12px] font-semibold leading-none ${kind === "举例" ? "bg-ink-4/12 text-ink-3" : "bg-accent-soft text-accent"}`}>{kind}</span>
+  );
+}
+
+/**
+ * A picture in its card, then what kind it is and what it says under a hairline ("举例 · …"), then `after`. Every
+ * figure of the library sits in this one frame: the same padding, the same caption, the same tag.
+ */
 export function Figure({ children, caption, kind, after }: { children: ReactNode; caption?: string | null; kind?: "原文数据" | "举例" | "示意"; after?: ReactNode }) {
   return (
-    <div className="card mt-3.5 p-4">
+    <div className="card mt-4 px-4 pb-3.5 pt-4 sm:px-5 sm:pt-5">
       {children}
       {(caption || kind) && (
-        <p className="mt-3 text-[13px] leading-[1.6] text-ink-4">
-          {kind && <span className={`font-semibold ${kind === "举例" ? "text-ink-3" : "text-accent"}`}>{kind}{caption ? " · " : ""}</span>}
+        <p className="mt-4 border-t border-line-soft pt-3 text-[13px] leading-[1.65] text-ink-4">
+          {kind && <KindTag kind={kind} />}
           {caption}
         </p>
       )}
@@ -368,16 +372,29 @@ export function Figure({ children, caption, kind, after }: { children: ReactNode
 }
 
 /**
- * One horizontal bar split into parts; widths are shares of the whole (0–1). Its labels are page text, not a
- * picture's (it is drawn in HTML and does not scale), so they keep the site's smallest size, 12px (layout A6).
+ * Shades for the parts of a bar, the quiet ones first: neutral greys for what is not the point, so the one part in
+ * the accent (or red for a loss) is what the eye finds. Shares of the theme's own ink, so both themes work.
+ */
+export const TONES = ["bg-ink-4/55", "bg-ink-4/35", "bg-ink-4/22", "bg-ink-4/13", "bg-line-strong"];
+/** Shades of the accent for the parts of one whole (原文数据 parts): one colour, so none reads as a warning. */
+const RAMP = ["bg-accent", "bg-accent/65", "bg-accent/40", "bg-accent/22", "bg-ink-4/30", "bg-ink-4/16"];
+/** A bar's empty track: visible on both themes' cards (bg-sunk is not, on the dark one). */
+const TRACK = "bg-ink-4/10";
+
+const tone = (t: "accent" | "loss" | number) => t === "accent" ? "bg-accent text-accent-contrast" : t === "loss" ? "bg-hot text-white" : `${TONES[t % TONES.length]} text-ink-2`;
+
+/**
+ * One horizontal bar split into parts; widths are shares of the whole (0–1), what is left of it the empty track.
+ * Each part ends in a hairline of the card's colour, so neighbours stay apart without moving any edge. Its labels are
+ * page text, not a picture's (it is drawn in HTML and does not scale), so they keep the site's smallest size, 12px
+ * (layout A6).
  */
 export function Fill({ parts }: { parts: Array<{ label: string; share: number; tone: "accent" | "loss" | number }> }) {
-  const tones = ["bg-ink-3/70", "bg-ink-4/70", "bg-ink-4/45", "bg-line-strong", "bg-line"];
   return (
-    <div className="flex h-7 overflow-hidden rounded-md bg-bg-sunk text-[12px] font-semibold">
+    <div className={`flex h-7 overflow-hidden rounded-control ${TRACK} text-[12px] font-semibold`}>
       {parts.filter((p) => p.share > 0).map((p, i) => (
         <div key={i} style={{ width: `${Math.min(p.share, 1) * 100}%` }}
-          className={`flex items-center overflow-hidden whitespace-nowrap px-1.5 ${p.tone === "accent" ? "bg-accent text-accent-contrast" : p.tone === "loss" ? "bg-hot text-white" : `${tones[p.tone % tones.length]} text-ink`}`}>
+          className={`flex items-center overflow-hidden whitespace-nowrap px-1.5 shadow-[inset_-2px_0_0_var(--surface)] last:shadow-none ${tone(p.tone)}`}>
           {p.label}
         </div>
       ))}
@@ -385,85 +402,171 @@ export function Fill({ parts }: { parts: Array<{ label: string; share: number; t
   );
 }
 
-/** A bar too short for its number has the number beside it. */
-const FITS = 0.45;
+/** A number of the original exactly as it writes it: up to two decimals ("15.95 澳元" is not 16), thousands grouped. */
+const exact = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace("-", "−");
+
+/** A label with its value at the right, over a thin bar of `share` (compare, list-total, percent-over). */
+function BarRow({ label, value, share, className, strong }: { label: ReactNode; value: ReactNode; share: number; className: string; strong?: boolean }) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-3 text-[13.5px] leading-[1.45]">
+        <span className={`min-w-0 ${strong ? "text-ink-2" : "text-ink-3"}`}>{label}</span>
+        <span className={`num shrink-0 text-right ${strong ? "font-bold text-ink" : "font-semibold text-ink-2"}`}>{value}</span>
+      </div>
+      <div className={`mt-1.5 h-2.5 overflow-hidden rounded-full ${TRACK}`}>
+        <div className={`h-full min-w-1 rounded-full ${className}`} style={{ width: `${Math.min(Math.max(share, 0), 1) * 100}%` }} />
+      </div>
+    </div>
+  );
+}
+
+/** What the program worked out from the original's numbers, under the bars: what it is in small grey, then the line. */
+function Worked({ children }: { children: ReactNode }) {
+  return (
+    <div className="mt-4">
+      <p className="text-[12.5px] leading-[1.5] text-ink-4">按原文数字计算</p>
+      <p className="mt-0.5 text-[14.5px] leading-[1.7] text-ink-2">{children}</p>
+    </div>
+  );
+}
+
+/** A number of a worked line: bigger and in ink, so the line reads at a glance. */
+const Big = ({ children, className = "text-ink" }: { children: ReactNode; className?: string }) => <b className={`num text-[18px] font-bold ${className}`}>{children}</b>;
 
 function Compare({ b }: { b: CompareBlock }) {
   const max = Math.max(...b.items.map((i) => i.value));
   const per = b.per ? `每${b.per} ` : "";
   return (
     <Figure kind="原文数据" caption={b.caption}>
-      <div className="grid grid-cols-[fit-content(40%)_minmax(0,1fr)] items-center gap-x-2 gap-y-2 text-[13px] text-ink-3">
+      <div className="grid gap-3.5">
         {b.items.map((item, i) => {
-          const share = item.value / max;
-          const label = `${per}${num(item.value)} ${b.unit}`;
-          return [
-            <span key={`l${i}`} className="leading-snug">{item.label}</span>,
-            <div key={`b${i}`} className="flex items-center gap-1.5">
-              <div className="min-w-0" style={{ width: `${share * 100}%` }}>
-                <Fill parts={[{ label: share >= FITS ? label : "", share: 1, tone: i === b.items.length - 1 ? "accent" : 1 }]} />
-              </div>
-              {share < FITS && <span className="shrink-0 whitespace-nowrap text-[12px] font-semibold text-ink-2">{label}</span>}
-            </div>,
-          ];
+          const last = i === b.items.length - 1;
+          return <BarRow key={i} label={item.label} strong={last} share={item.value / max} className={last ? "bg-accent" : "bg-ink-4/45"}
+            value={<>{per && <span className="mr-1 text-[12.5px] font-normal text-ink-3">{per.trim()}</span>}{exact(item.value)}<span className={`${b.unit === "%" ? "" : "ml-1"} text-[12.5px] font-normal text-ink-3`}>{b.unit}</span></>} />;
         })}
       </div>
       {b.change && b.change.amount !== 0 && (
-        <p className="mt-3 text-[14px] text-ink-2">
+        <Worked>
           {/* Between two percentages the change is in points (1.1% → 2.3%: 1.2 个百分点), not a percent of a percent. */}
-          按原文数字计算：{b.change.amount > 0 ? "多了" : "少了"} <b className="num text-[18px] text-ink">{num(Math.abs(b.change.amount))}</b> {b.unit === "%" ? "个百分点" : b.unit}{b.unit !== "%" && <>（{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%）</>}
-          {b.change.yearly !== null && <>，按一年算 <b className="num text-ink">{num(Math.abs(b.change.yearly))}</b> {b.unit}</>}
-        </p>
+          {b.change.amount > 0 ? "多了" : "少了"} <Big>{num(Math.abs(b.change.amount))}</Big>{" "}
+          <span className="whitespace-nowrap">
+            {b.unit === "%" ? "个百分点" : b.unit}
+            {b.unit !== "%" && <span className="num ml-1.5 inline-flex h-5 items-center rounded-full bg-ink-4/12 px-1.5 align-[2px] text-[12.5px] font-semibold text-ink-2">{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%</span>}
+          </span>
+          {b.change.yearly !== null && <>，<span className="whitespace-nowrap">按一年算 <Big>{num(Math.abs(b.change.yearly))}</Big> {b.unit}</span></>}
+        </Worked>
       )}
     </Figure>
+  );
+}
+
+/**
+ * Under a bar of parts, what each colour is and its number: the labels never have to fit inside the parts. Two
+ * columns from 641px, so a number stays near its label in the wide column.
+ */
+function Legend({ rows }: { rows: Array<{ label: string; value: ReactNode; tone: string }> }) {
+  return (
+    <ul className="mt-3 grid gap-x-8 gap-y-1.5 text-[13.5px] leading-[1.5] sm:grid-cols-2">
+      {rows.map((r, i) => (
+        <li key={i} className="flex items-baseline gap-2">
+          <i className={`size-2.5 shrink-0 translate-y-[1px] rounded-[3px] ${r.tone}`} />
+          <span className="min-w-0 flex-1 text-ink-3">{r.label}</span>
+          <span className="num shrink-0 font-semibold text-ink-2">{r.value}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A bar of parts with hairlines between them, no words inside; `tones` per part; `mark` a red line at a share (where the money ran out). */
+function Stack({ parts, mark }: { parts: Array<{ share: number; tone: string }>; mark?: number }) {
+  return (
+    <div className="relative">
+      <div className={`flex h-3.5 overflow-hidden rounded-full ${TRACK}`}>
+        {parts.filter((p) => p.share > 0).map((p, i) => (
+          <i key={i} className={`h-full shadow-[inset_-2px_0_0_var(--surface)] last:shadow-none ${p.tone}`} style={{ width: `${Math.min(p.share, 1) * 100}%` }} />
+        ))}
+      </div>
+      {mark !== undefined && <i aria-hidden="true" className="absolute -bottom-1 -top-1 w-[2px] -translate-x-1/2 rounded-full bg-hot" style={{ left: `${mark * 100}%` }} />}
+    </div>
   );
 }
 
 function Parts({ b }: { b: PartsBlock }) {
   const whole = Math.max(b.total, b.against?.value ?? 0);
+  const head = (label: string, value?: ReactNode) => (
+    <div className="mb-1.5 flex items-baseline justify-between gap-3 text-[13.5px]"><span className="text-ink-3">{label}</span>{value !== undefined && <span className="num font-semibold text-ink-2">{value}</span>}</div>
+  );
   return (
     <Figure kind="原文数据" caption={b.caption}>
-      <div className="grid grid-cols-[fit-content(40%)_minmax(0,1fr)] items-center gap-x-2 gap-y-2 text-[13px] text-ink-3">
-        {b.against && <><span>{b.against.label}</span><Fill parts={[{ label: num(b.against.value), share: b.against.value / whole, tone: "accent" }]} /></>}
-        <span>{b.against ? "支出" : "合计"}</span>
-        <Fill parts={b.items.map((i, n) => ({ label: i.label, share: i.value / whole, tone: n }))} />
+      <div className="grid gap-3.5">
+        {b.against && (
+          <div>
+            {head(b.against.label, <>{num(b.against.value)}<span className="ml-1 text-[12.5px] font-normal text-ink-3">{b.unit}</span></>)}
+            <div className={`h-3.5 overflow-hidden rounded-full ${TRACK}`}><div className="h-full rounded-full bg-ink-4/45" style={{ width: `${(b.against.value / whole) * 100}%` }} /></div>
+          </div>
+        )}
+        <div>
+          {head(b.against ? "支出" : "合计")}
+          <Stack parts={b.items.map((i, n) => ({ share: i.value / whole, tone: RAMP[n % RAMP.length]! }))} mark={b.against && b.gap !== null && b.gap < 0 ? b.against.value / whole : undefined} />
+        </div>
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-[13px] text-ink-3">
-        {b.items.map((i) => <div key={i.label} className="flex justify-between gap-2"><span>{i.label}</span><span className="num text-ink-2">{num(i.value)}</span></div>)}
-      </div>
-      <p className="mt-3 text-[14px] text-ink-2">
-        按原文数字计算：合计 {num(b.total)} {b.unit}
+      <Legend rows={b.items.map((i, n) => ({ label: i.label, value: num(i.value), tone: RAMP[n % RAMP.length]! }))} />
+      <Worked>
+        合计 {num(b.total)} {b.unit}
         {b.gap !== null && (b.gap < 0
-          ? <>，亏 <b className="num text-[18px] text-hot">{num(-b.gap)}</b> {b.unit}</>
-          : <>，剩 <b className="num text-[18px] text-ink">{num(b.gap)}</b> {b.unit}</>)}
-      </p>
+          ? <>，亏 <Big className="text-hot">{num(-b.gap)}</Big> {b.unit}</>
+          : <>，剩 <Big>{num(b.gap)}</Big> {b.unit}</>)}
+      </Worked>
     </Figure>
   );
 }
 
 function Example({ b }: { b: ExampleBlock }) {
-  const bar = b.rows.some((r) => r.share !== null) && b.kind !== "list-total" && b.kind !== "percent-over";
+  const rowsKind = b.kind === "list-total" || b.kind === "percent-over";
+  const bar = !rowsKind && b.rows.some((r) => r.share !== null);
+  // What is left (剩下, 毛利) is the point, in the accent, or red when it is a loss; what is taken off stays grey.
+  const shade = (r: ExampleBlock["rows"][number], i: number) => r.label === "剩下" || r.label === "毛利" ? (r.value < 0 ? "bg-hot" : "bg-accent") : TONES[i % TONES.length]!;
+  const max = Math.max(...b.rows.map((r) => r.share ?? 0), 1e-9);
   return (
     <Figure kind="举例" caption={b.caption}>
-      <div className="space-y-3">
-      {bar && <Fill parts={b.rows.map((r, i) => ({ label: `${r.label} ${num(r.value)}`, share: r.share ?? 0, tone: r.label === "剩下" || r.label === "毛利" ? (r.value < 0 ? "loss" : "accent") : i }))} />}
-      {(b.kind === "list-total" || b.kind === "percent-over") && (
-        <div className="grid gap-1.5 text-[13px]">
+      {bar && (
+        <>
+          <Stack parts={b.rows.map((r, i) => ({ share: r.share ?? 0, tone: shade(r, i) }))} />
+          <Legend rows={b.rows.map((r, i) => ({ label: r.label, tone: shade(r, i), value: <span className={r.value < 0 ? "text-hot" : ""}>{num(r.value)}<span className="ml-0.5 font-normal text-ink-4">{r.unit}</span></span> }))} />
+        </>
+      )}
+      {rowsKind && (
+        <div className="grid gap-3">
           {b.rows.map((r) => (
-            <div key={r.label} className="grid grid-cols-[minmax(0,1fr)_64px] items-center gap-2">
-              <div className="relative overflow-hidden rounded bg-bg-sunk px-2 py-1">
-                <i className={`absolute inset-y-0 left-0 ${r.flag ? "bg-hot-soft" : "bg-accent-soft"}`} style={{ width: `${(r.share ?? 0) * 100}%` }} />
-                <span className={`relative ${r.flag ? "text-hot" : "text-ink-2"}`}>{r.label}</span>
-              </div>
-              <span className="num text-right text-ink-2">{num(r.value)}{r.unit === "%" ? "%" : ""}</span>
-            </div>
+            <BarRow key={r.label} label={<span className={r.flag ? "text-hot" : ""}>{r.label}</span>} share={b.kind === "percent-over" ? r.share ?? 0 : (r.share ?? 0) / max}
+              className={r.flag ? "bg-hot" : "bg-ink-4/45"} value={<span className={r.flag ? "text-hot" : ""}>{num(r.value)}{r.unit === "%" ? "%" : ""}</span>} />
           ))}
         </div>
       )}
-      {b.equation && <p className="num rounded-md bg-bg-sunk px-3 py-2 text-center text-[14px] text-ink-2">{b.equation}</p>}
-      <p className="text-[14.5px] font-semibold text-ink">{b.result}</p>
-      </div>
+      {b.equation && <p className={`num well rounded-control ${bar || rowsKind ? "mt-4" : ""} px-3 py-2.5 text-center text-[15px] font-semibold text-ink-2`}>{b.equation}</p>}
+      <p className={`text-[15px] font-semibold leading-[1.6] text-ink ${bar || rowsKind || b.equation ? "mt-3.5" : ""}`}>{b.result}</p>
     </Figure>
+  );
+}
+
+/**
+ * A figure of the original as it writes it, its number big and the words around it small: "近 70 家" is 近, 70 and
+ * 家, "80 到 100 元" 80 到 100 and 元. A figure with no number stays as it is.
+ */
+export function figureSplit(value: string): [string, string, string] {
+  const m = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*(?:到|至|-|–|~)\s*\d[\d.,]*%?)?)\s*(.*)$/u.exec(value.trim());
+  return m ? [m[1]!, m[2]!, m[3]!] : ["", value, ""];
+}
+
+function FigureValue({ value, size }: { value: string; size: string }) {
+  const [before, n, after] = figureSplit(value);
+  return (
+    <span className="num">
+      {before && <span className="mr-1 text-[14px] font-semibold text-ink-3">{before}</span>}
+      <span className={`${size} font-bold tracking-[-0.02em] text-ink`}>{n}</span>
+      {after && <span className="ml-1 text-[14px] font-semibold text-ink-3">{after}</span>}
+    </span>
   );
 }
 
@@ -473,69 +576,82 @@ export const BODY = "text-[16px] leading-[1.85] text-ink-2 lg:text-[17px]";
 export function StoryBlock({ block }: { block: Block }) {
   switch (block.type) {
     case "text": return <p className={`mt-3 ${BODY}`}>{block.text}</p>;
+    // A point with its lead on a line of its own, so a phone reader can run down the leads.
     case "list": return (
-      <ul className={`mt-3 grid gap-2 ${BODY}`}>
-        {block.items.map((i, n) => <li key={n} className="relative pl-4 before:absolute before:left-0 before:top-[0.8em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent">{i.lead && <b className="text-ink">{i.lead}：</b>}{i.text}</li>)}
+      <ul className={`mt-3.5 grid gap-3 ${BODY}`}>
+        {block.items.map((i, n) => (
+          <li key={n} className="relative pl-5 before:absolute before:left-0.5 before:top-[0.72em] before:size-[7px] before:rounded-full before:bg-accent">
+            {i.lead && <b className="block font-semibold text-ink">{i.lead}</b>}{i.text}
+          </li>
+        ))}
       </ul>
     );
     // Steps one under another, numbered, joined by a line: read in order on a phone as on a desktop.
     case "flow": return (
-      <ol className="card mt-3.5 grid gap-0 p-4">
+      <ol className="card mt-4 grid px-4 py-4 sm:px-5">
         {block.steps.map((s, n) => (
-          <li key={n} className="relative flex gap-3 pb-3 last:pb-0">
-            {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute left-[11px] top-6 bottom-0 w-px bg-line-strong" />}
-            <span className="num relative flex size-6 shrink-0 items-center justify-center rounded-full bg-accent text-[12px] font-bold text-white">{n + 1}</span>
-            <span className="pt-0.5 text-[15px] leading-[1.6] text-ink-2">{s}</span>
+          <li key={n} className="relative flex gap-3.5 pb-4 last:pb-0">
+            {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute bottom-0 left-[13px] top-7 w-[2px] rounded-full bg-accent/20" />}
+            <span className="num relative flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-bold text-accent ring-1 ring-accent/30">{n + 1}</span>
+            <span className="min-w-0 pt-[3px] text-[15px] leading-[1.65] text-ink-2">{s}</span>
           </li>
         ))}
       </ol>
     );
+    // The words large under a quotation mark in the accent, who said them under a short rule.
     case "quote": return (
-      <blockquote className="mt-4 border-l-2 border-accent pl-4 text-[17px] font-semibold leading-relaxed text-ink">
-        {block.text}<small className="mt-1.5 block text-[13px] font-normal text-ink-4">{block.who}</small>
+      <blockquote className="relative mt-5 pl-8 sm:pl-9">
+        <span aria-hidden="true" className="absolute -top-1.5 left-0 font-serif text-[44px] font-bold leading-none text-accent/70">“</span>
+        <p className="text-[17px] font-semibold leading-[1.7] text-ink lg:text-[18px]">{block.text}</p>
+        <footer className="mt-2 flex gap-2 text-[13px] leading-[1.6] text-ink-4"><span aria-hidden="true" className="mt-[0.8em] h-px w-4 shrink-0 bg-ink-4/60" />{block.who}</footer>
       </blockquote>
     );
     case "compare": return <Compare b={block} />;
     case "parts": return <Parts b={block} />;
     case "example": return <Example b={block} />;
     // The original's key figures, big, each with what it counts, under the one sentence saying what they show.
-    case "numbers": return (
-      <Figure kind="原文数据" caption={block.caption}>
-        {block.point ? <p className="mb-3 text-[15.5px] font-bold leading-[1.6] text-ink">{block.point}</p> : null}
-        {block.items.length === 1 || comparable(block.items.map((i) => i.value)) ? (
-          <div className={`grid gap-4 ${["", "", "grid-cols-2", "grid-cols-2 sm:grid-cols-3"][block.items.length]}`}>
-            {block.items.map((i, n) => (
-              <div key={n}>
-                <div className="num text-[28px] font-extrabold leading-tight text-accent lg:text-[32px]">{figureParts(i.value)[0]}<span className="ml-1 text-[15px] font-bold">{figureParts(i.value)[1]}</span></div>
-                <div className="mt-1 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          // Figures in different units: a plain list, what each is beside its number, none set up as the others' equal.
-          <dl className="divide-y divide-line">
-            {block.items.map((i, n) => (
-              <div key={n} className="flex items-baseline justify-between gap-4 py-2.5 first:pt-0 last:pb-0">
-                <dt className="text-[14.5px] leading-[1.55] text-ink-2">{i.label}</dt>
-                <dd className="num shrink-0 text-right text-[17px] font-bold text-accent">{i.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
-      </Figure>
-    );
-    // Before and after side by side (one under the other on a phone), the after in the accent.
+    case "numbers": {
+      const one = block.items.length === 1;
+      const short = block.items.every((i) => figureSplit(i.value).join("").length <= 6);
+      return (
+        <Figure kind="原文数据" caption={block.caption}>
+          {block.point ? <p className="mb-4 text-[15.5px] font-semibold leading-[1.6] text-ink">{block.point}</p> : null}
+          {one || comparable(block.items.map((i) => i.value)) ? (
+            <div className={`grid gap-x-5 gap-y-5 ${one ? "" : block.items.length === 2 ? "grid-cols-2" : short ? "grid-cols-3" : "sm:grid-cols-3"}`}>
+              {block.items.map((i, n) => (
+                <div key={n} className="min-w-0">
+                  <span aria-hidden="true" className="block h-[3px] w-5 rounded-full bg-accent" />
+                  <div className="mt-2.5 leading-none"><FigureValue value={i.value} size="text-[30px] lg:text-[34px]" /></div>
+                  <div className="mt-2 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Figures in different units: a plain list, what each is beside its number, none set up as the others' equal.
+            <dl className="divide-y divide-line-soft">
+              {block.items.map((i, n) => (
+                <div key={n} className="flex items-baseline justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                  <dt className="min-w-0 text-[14.5px] leading-[1.55] text-ink-2">{i.label}</dt>
+                  <dd className="shrink-0 text-right leading-none"><FigureValue value={i.value} size="text-[20px]" /></dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </Figure>
+      );
+    }
+    // Before and after side by side (one under the other on a phone), the after in the accent, an arrow between.
     case "change": return (
       <Figure caption={block.caption}>
-        <div className="grid items-stretch gap-2 sm:grid-cols-[1fr_auto_1fr]">
-          <div className="rounded-control bg-bg-sunk p-3">
-            <div className="text-[12px] font-semibold text-ink-4">{block.before.label}</div>
-            <p className="mt-1 text-[15px] leading-[1.6] text-ink-3">{block.before.text}</p>
+        <div className="grid items-stretch gap-2.5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <div className="rounded-tile bg-ink-4/[0.07] px-3.5 py-3">
+            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-4"><i className="size-2 rounded-full border-[1.5px] border-ink-4" />{block.before.label}</div>
+            <p className="mt-1.5 text-[15px] leading-[1.65] text-ink-3">{block.before.text}</p>
           </div>
-          <span aria-hidden="true" className="self-center justify-self-center text-[18px] text-accent max-sm:rotate-90">→</span>
-          <div className="rounded-control bg-accent-soft p-3">
-            <div className="text-[12px] font-semibold text-accent">{block.after.label}</div>
-            <p className="mt-1 text-[15px] leading-[1.6] text-ink">{block.after.text}</p>
+          <span aria-hidden="true" className="flex size-7 items-center justify-center self-center justify-self-center relative z-10 rounded-full bg-surface text-[15px] text-accent ring-1 ring-line-strong max-sm:-my-[19px] max-sm:rotate-90">→</span>
+          <div className="rounded-tile bg-accent-soft px-3.5 py-3 ring-1 ring-inset ring-accent/25">
+            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-accent"><i className="size-2 rounded-full bg-accent" />{block.after.label}</div>
+            <p className="mt-1.5 text-[15px] leading-[1.65] text-ink">{block.after.text}</p>
           </div>
         </div>
       </Figure>

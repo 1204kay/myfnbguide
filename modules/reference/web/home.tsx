@@ -14,7 +14,7 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import { day } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
 import { figureKind, SituationDrawing } from "./figures";
-import { CARD, CountFigure, Dek, Heading, Metrics, openRest, Page, RANK, SituationRows, STRETCH, Updated, Who } from "./ui";
+import { CARD, CountFigure, Dek, Heading, KindTag, Metrics, openRest, Page, RANK, SituationRows, STRETCH, Updated, Who } from "./ui";
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
@@ -60,7 +60,7 @@ function Lead({ s, recent }: { s: SituationRow; recent: ReferenceHome["recent"] 
       </div>
       <div className="mx-auto mt-4 w-full max-w-[360px] empty:hidden [&_svg]:max-h-[200px] xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:ml-6 xl:mt-0 xl:w-[260px] xl:self-center">
         <SituationDrawing slug={s.slug} />
-        {kind && <p className={`mt-2 text-[13px] font-semibold ${kind === "举例" ? "text-ink-3" : "text-accent"}`}>{kind}</p>}
+        {kind && <p className="mt-2"><KindTag kind={kind} /></p>}
       </div>
       <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-4 xl:col-start-1 xl:row-start-2">
         {recent && (

@@ -85,11 +85,20 @@ export const comparable = (values: string[]) => {
   return units.every((u) => u !== null && u === units[0]);
 };
 
+/** A number written in Chinese numerals: 一万, 两三万, 三成, 十几. It starts with a digit word, so 万达 is not one. */
+const HANZI_NUMBER = "[零〇一二两三四五六七八九十几半][零〇一二两三四五六七八九十百千万亿几半]*成?";
+const RANGE = "\\s*(?:到|至|-|–|—|~|〜)\\s*";
+const HANZI_FIGURE = new RegExp(`^(接近|将近|大约|超过|突破|高达|多达|至少|不到|不足|近|约|超|逾|达|仅)?\\s*(${HANZI_NUMBER}(?:${RANGE}${HANZI_NUMBER})?)\\s*(.*)$`, "u");
+
 /**
  * A figure of the original as it writes it, its number big and the words around it small: "近 70 家" is 近, 70 and
- * 家, "80 到 100 元" 80 到 100 and 元. A figure with no number stays as it is.
+ * 家, "80 到 100 元" 80 到 100 and 元, "30 万—40 万元" 30 万—40 and 万元. Chinese numerals the same way: "接近一万家" is
+ * 接近, 一万 and 家 (用户 10/16: a figure in words was all big beside "1.9 亿元" split big and small). A figure with no
+ * number stays as it is.
  */
 export function figureSplit(value: string): [string, string, string] {
-  const m = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*(?:到|至|-|–|~)\s*\d[\d.,]*%?)?)\s*(.*)$/u.exec(value.trim());
-  return m ? [m[1]!, m[2]!, m[3]!] : ["", value, ""];
+  const v = value.trim();
+  const m = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*[万亿千]?\s*(?:到|至|-|–|—|~|〜)\s*\d[\d.,]*%?)?)\s*(.*)$/u.exec(v)
+    ?? HANZI_FIGURE.exec(v);
+  return m ? [m[1] ?? "", m[2]!, m[3]!] : ["", value, ""];
 }

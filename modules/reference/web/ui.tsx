@@ -337,13 +337,12 @@ export function KindTag({ kind }: { kind: "原文数据" | "举例" | "示意" }
 
 /**
  * A picture in its card, then what kind it is and what it says under a hairline ("举例 · …"), then `after`. Every
- * figure of the library sits in this one frame: the same padding, the same caption, the same tag. `narrow`: a chart
- * of bars or figures, at most 620px wide and centred in the column, so on a desktop its bars stay short enough to
- * compare and its labels stay near their numbers (the 760px column would spread them apart).
+ * figure of the library sits in this one frame: the same padding, the same caption, the same tag, and the width of the
+ * text it stands in (a narrower card centred under the text read as a size mistake, 用户 10/16: 大小是不是不符合).
  */
-export function Figure({ children, caption, kind, after, narrow = false }: { children: ReactNode; caption?: string | null; kind?: "原文数据" | "举例" | "示意"; after?: ReactNode; narrow?: boolean }) {
+export function Figure({ children, caption, kind, after }: { children: ReactNode; caption?: string | null; kind?: "原文数据" | "举例" | "示意"; after?: ReactNode }) {
   return (
-    <div className={`card mt-4 px-4 pb-3.5 pt-4 sm:px-6 sm:pb-4 sm:pt-5 ${narrow ? "sm:mx-auto sm:max-w-[620px]" : ""}`}>
+    <div className="card mt-4 px-4 pb-3.5 pt-4 sm:px-6 sm:pb-4 sm:pt-5">
       {children}
       {(caption || kind) && (
         <p className="mt-4 border-t border-line-soft pt-3 text-[13px] leading-[1.65] text-ink-4 sm:text-[13.5px]">
@@ -419,7 +418,7 @@ function Compare({ b }: { b: CompareBlock }) {
   const max = Math.max(...b.items.map((i) => i.value));
   const per = b.per ? `每${b.per} ` : "";
   return (
-    <Figure kind="原文数据" caption={b.caption} narrow>
+    <Figure kind="原文数据" caption={b.caption}>
       <div className="grid gap-4">
         {b.items.map((item, i) => {
           const last = i === b.items.length - 1;
@@ -493,7 +492,7 @@ function Parts({ b }: { b: PartsBlock }) {
   );
   const stack = <Stack parts={b.items.map((i, n) => ({ share: i.value / whole, tone: RAMP[n % RAMP.length]! }))} mark={spending && b.gap! < 0 ? b.against!.value / whole : undefined} />;
   return (
-    <Figure kind="原文数据" caption={b.caption} narrow>
+    <Figure kind="原文数据" caption={b.caption}>
       {breakdown ? (
         <div>{head(b.against!.label, value(b.against!.value))}{stack}</div>
       ) : b.against ? (
@@ -528,7 +527,7 @@ function Example({ b }: { b: ExampleBlock }) {
   const shade = (r: ExampleBlock["rows"][number], i: number) => r.label === "剩下" || r.label === "毛利" ? (r.value < 0 ? "bg-hot" : "bg-accent") : TONES[i % TONES.length]!;
   const max = Math.max(...b.rows.map((r) => r.share ?? 0), 1e-9);
   return (
-    <Figure kind="举例" caption={b.caption} narrow>
+    <Figure kind="举例" caption={b.caption}>
       {bar && (
         <>
           <Stack parts={b.rows.map((r, i) => ({ share: r.share ?? 0, tone: shade(r, i) }))} />
@@ -556,13 +555,14 @@ function Example({ b }: { b: ExampleBlock }) {
   );
 }
 
-function FigureValue({ value, size }: { value: string; size: string }) {
+/** A figure as the original writes it, the number at `size` and the words around it at `small`. */
+function FigureValue({ value, size, small = "text-[14px] sm:text-[15px]" }: { value: string; size: string; small?: string }) {
   const [before, n, after] = figureSplit(value);
   return (
     <span className="num">
-      {before && <span className="mr-1 text-[14px] font-semibold text-ink-3 sm:text-[15px]">{before}</span>}
+      {before && <span className={`mr-1 font-semibold text-ink-3 ${small}`}>{before}</span>}
       <span className={`${size} font-extrabold tracking-[-0.025em] text-ink`}>{n}</span>
-      {after && <span className="ml-1 text-[14px] font-semibold text-ink-3 sm:text-[15px]">{after}</span>}
+      {after && <span className={`ml-1 font-semibold text-ink-3 ${small}`}>{after}</span>}
     </span>
   );
 }
@@ -585,7 +585,7 @@ export function StoryBlock({ block }: { block: Block }) {
     );
     // Steps one under another, numbered, joined by a line: read in order on a phone as on a desktop.
     case "flow": return (
-      <ol className="card mt-4 grid px-4 py-4 sm:mx-auto sm:max-w-[620px] sm:px-6 sm:py-5">
+      <ol className="card mt-4 grid px-4 py-4 sm:px-6 sm:py-5">
         {block.steps.map((s, n) => (
           <li key={n} className="relative flex gap-3.5 pb-4 last:pb-0">
             {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute bottom-0 left-[13px] top-7 w-[2px] rounded-full bg-accent/25" />}
@@ -606,16 +606,26 @@ export function StoryBlock({ block }: { block: Block }) {
     case "compare": return <Compare b={block} />;
     case "parts": return <Parts b={block} />;
     case "example": return <Example b={block} />;
-    // The original's key figures, big, each with what it counts, under the one sentence saying what they show.
+    // The original's key figures, each with what it counts, under the one sentence saying what they show. Three looks:
+    // one figure large with what it is beside it; figures in one unit in a row between hairlines; figures in different
+    // units one under another, each on its own tinted strip with an accent edge, none set up as the others' equal.
     case "numbers": {
       const one = block.items.length === 1;
       const short = block.items.every((i) => figureSplit(i.value).join("").length <= 6);
       return (
-        <Figure kind="原文数据" caption={block.caption} narrow>
+        <Figure kind="原文数据" caption={block.caption}>
           {block.point ? <p className="mb-4 text-[16px] font-bold leading-[1.55] text-ink sm:text-[17px]">{block.point}</p> : null}
-          {one || comparable(block.items.map((i) => i.value)) ? (
+          {one ? (
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+              <div className="leading-none">
+                <FigureValue value={block.items[0]!.value} size="text-[48px] sm:text-[60px]" small="text-[17px] sm:text-[19px]" />
+                <span aria-hidden="true" className="mt-3 block h-[3px] w-10 rounded-full bg-accent" />
+              </div>
+              <div className="min-w-[11em] flex-1 text-[16px] font-medium leading-[1.6] text-ink-2 sm:border-l sm:border-line sm:py-1 sm:pl-7 sm:text-[17px]">{block.items[0]!.label}</div>
+            </div>
+          ) : comparable(block.items.map((i) => i.value)) ? (
             // In one row the figures are divided by hairlines; three long ones go one under another on a phone.
-            <div className={`grid gap-y-5 ${one ? "" : block.items.length === 2 || short ? `${block.items.length === 2 ? "grid-cols-2" : "grid-cols-3"} [&>*+*]:border-l [&>*+*]:border-line [&>*+*]:pl-4 sm:[&>*+*]:pl-6 [&>*]:pr-2` : "sm:grid-cols-3 sm:[&>*+*]:border-l sm:[&>*+*]:border-line sm:[&>*+*]:pl-6"}`}>
+            <div className={`grid gap-y-5 ${block.items.length === 2 || short ? `${block.items.length === 2 ? "grid-cols-2" : "grid-cols-3"} [&>*+*]:border-l [&>*+*]:border-line [&>*+*]:pl-4 sm:[&>*+*]:pl-6 [&>*]:pr-2` : "sm:grid-cols-3 sm:[&>*+*]:border-l sm:[&>*+*]:border-line sm:[&>*+*]:pl-6"}`}>
               {block.items.map((i, n) => (
                 <div key={n} className="min-w-0">
                   <div className="leading-none"><FigureValue value={i.value} size={block.items.length === 3 && short ? "text-[32px] sm:text-[40px]" : "text-[36px] sm:text-[42px]"} /></div>
@@ -625,12 +635,13 @@ export function StoryBlock({ block }: { block: Block }) {
               ))}
             </div>
           ) : (
-            // Figures in different units: a plain list, what each is beside its number, none set up as the others' equal.
-            <dl className="divide-y divide-line-soft">
+            // Figures in different units: each its own strip, the figure first and what it is under it (beside it on a
+            // desktop, the figures in one column so they line up).
+            <dl className="grid gap-2.5 sm:grid-cols-[auto_minmax(0,1fr)]">
               {block.items.map((i, n) => (
-                <div key={n} className="flex items-baseline justify-between gap-4 py-3 first:pt-0 last:pb-0">
-                  <dt className="min-w-0 text-[14.5px] leading-[1.55] text-ink-2 sm:text-[15.5px]">{i.label}</dt>
-                  <dd className="shrink-0 text-right leading-none"><FigureValue value={i.value} size="text-[22px] sm:text-[24px]" /></dd>
+                <div key={n} className="flex flex-col rounded-tile border-l-[3px] border-accent bg-accent-soft/60 px-4 py-3 sm:col-span-2 sm:grid sm:grid-cols-subgrid sm:items-center sm:gap-x-7 sm:px-5 sm:py-3.5">
+                  <dt className="order-2 mt-2 text-[14.5px] leading-[1.55] text-ink-2 sm:mt-0 sm:text-[15.5px]">{i.label}</dt>
+                  <dd className="order-1 leading-none"><FigureValue value={i.value} size="text-[30px] sm:text-[34px]" small="text-[15px] sm:text-[16px]" /></dd>
                 </div>
               ))}
             </dl>

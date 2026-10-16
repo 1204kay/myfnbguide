@@ -195,27 +195,39 @@ function LabourShare() {
 }
 
 /**
- * 老板自己累垮: one owner's day on a 24-hour dial, the 16 hours from 7:00 to 23:00 filled in the accent with a dot at
- * each thing he does, and the day's list beside it.
+ * 老板自己累垮: one owner's day on a line from 0:00 to 24:00, the 16 hours from 7:00 to 23:00 filled in the accent with a
+ * dot at each thing he does, and the day's list under it. A line and not a dial: a ring reads as a 12-hour clock face,
+ * and its hours then look wrong (用户 10/16: 会让人以为这是在画时钟). Laid out in HTML so its words stay at text size
+ * at any width; the list takes as many columns as the card has room for.
  */
 function OwnerDay() {
   const day: Array<[string, string]> = [["7:00", "采购"], ["9:00", "备料"], ["11:00", "午市"], ["14:00", "备料、对账、处理杂事"], ["17:00", "晚市"], ["21:00", "收尾、记账"]];
-  // A point on the dial at hour `h` (0 at the top, clockwise), `r` from the centre.
-  const at = (h: number, r = 52): [number, number] => [70 + r * Math.sin((h / 24) * 2 * Math.PI), 70 - r * Math.cos((h / 24) * 2 * Math.PI)];
-  const [x7, y7] = at(7);
-  const [x23, y23] = at(23);
+  const pct = (h: number) => `${(h / 24) * 100}%`;
+  const hour = (t: string) => Number(t.split(":")[0]);
+  // The filled span runs 7px past 7:00 and 23:00 so its round ends hold the first and last dots.
   return (
-    <div className="grid grid-cols-[122px_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-5">
-      <svg viewBox="0 0 140 140" role="img" aria-label="一天 24 小时里，从早上 7 点到晚上 11 点的 16 个小时都在店里" className="block w-full">
-        <circle cx="70" cy="70" r="52" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 15, opacity: 0.14 }} />
-        <path d={`M${x7} ${y7} A52 52 0 1 1 ${x23} ${y23}`} style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 15 }} />
-        {[0, 6, 12, 18].map((h) => { const [a, b] = at(h, 63); const [c, d] = at(h, 67); return <path key={h} d={`M${a} ${b} L${c} ${d}`} style={{ stroke: "var(--ink-4)", strokeWidth: 1.5, strokeLinecap: "round" }} />; })}
-        {day.map(([t]) => { const [cx, cy] = at(Number(t.split(":")[0])); return <circle key={t} cx={cx} cy={cy} r="3" style={{ fill: "var(--surface)" }} />; })}
-        <circle cx={x23} cy={y23} r="4.5" style={{ fill: "var(--surface)", stroke: "var(--ink-3)", strokeWidth: 2 }} />
-        <text x="70" y="78" textAnchor="middle" className="num" style={{ fill: "var(--accent)", fontSize: 38, fontWeight: 800 }}>16</text>
-        <text x="70" y="97" textAnchor="middle" style={{ fill: "var(--ink-3)", fontSize: 12 }}>小时在店里</text>
-      </svg>
-      <ol className="text-[13.5px] leading-[1.45] sm:text-[14px]">
+    <div className="@container">
+      <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+        <b className="num text-[44px] font-extrabold leading-none tracking-[-0.025em] text-accent">16</b>
+        <span className="text-[16px] font-semibold text-ink">小时在店里</span>
+        <span className="num text-[13px] text-ink-4">7:00 – 23:00</span>
+      </p>
+      <div role="img" aria-label="一天 24 小时里，从早上 7 点到晚上 11 点的 16 个小时都在店里" className="mx-1 mt-5">
+        <div className="relative h-3.5 rounded-full bg-ink-4/14">
+          <div className="absolute inset-y-0 rounded-full bg-accent" style={{ left: `calc(${pct(7)} - 7px)`, right: `calc(${pct(1)} - 7px)` }} />
+          {day.map(([t]) => <i key={t} className="absolute top-1/2 size-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-surface" style={{ left: pct(hour(t)) }} />)}
+          <i className="absolute top-1/2 size-[11px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink-3 bg-surface" style={{ left: pct(23) }} />
+        </div>
+        <div className="relative mt-1 h-7">
+          {[0, 6, 12, 18, 24].map((h) => (
+            <span key={h} className={`num absolute top-0 flex flex-col text-[12px] leading-none text-ink-4 ${h === 0 ? "items-start" : h === 24 ? "-translate-x-full items-end" : "-translate-x-1/2 items-center"}`} style={{ left: pct(h) }}>
+              <i className="h-1.5 w-px bg-ink-4/60" />
+              <span className="mt-1.5">{h}:00</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <ol className="mt-3 grid gap-x-6 border-t border-line-soft pt-3 text-[13.5px] leading-[1.45] @[22rem]:grid-cols-2 @[38rem]:grid-cols-3 sm:text-[14px]">
         {day.map(([time, what]) => (
           <li key={time} className="grid grid-cols-[42px_minmax(0,1fr)] gap-2 py-[3px]">
             <span className="num font-semibold text-accent">{time}</span>

@@ -11,7 +11,7 @@ import { ArticleLayout, RailSection } from "@aihot/web/components/ui/Page";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
-import { fullCountText } from "../format.ts";
+import { fullCountText, shareImagePath } from "../format.ts";
 import type { CasePage } from "../types.ts";
 import { BODY, MEASURE, ROW_BUTTON, StoryBlock, Title, useShare } from "./ui";
 
@@ -27,7 +27,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
   if (!data) return [{ title: titled("没有这一篇") }, { name: "robots", content: "noindex" }];
-  return pageMeta({ title: data.story.title, description: data.item.summary ?? data.story.lead, path: `/reference/cases/${data.id}`, type: "article" });
+  return pageMeta({ title: data.story.title, description: data.item.summary ?? data.story.lead, path: `/reference/cases/${data.id}`, type: "article", image: shareImagePath(data.id) });
 }
 
 export default function CaseRoute() {

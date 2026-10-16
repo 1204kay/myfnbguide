@@ -53,7 +53,9 @@ export async function draftToday(now = new Date()): Promise<number[]> {
   const pick = await storyToPost(now);
   if (!pick) return [];
   const link = `${config.siteUrl}/reference/cases/${pick.id}`;
-  const image = `${config.siteUrl}/og/items/${pick.id}.png`;
+  // The story's own share image (modules/reference backend/share.ts: its title over its strongest figure), the one
+  // its page gives as og:image; every post is drafted from a story, so there is always one.
+  const image = `${config.siteUrl}/og/reference/cases/${encodeURIComponent(pick.id)}.png`;
   const ids: number[] = [];
   for (const platform of PLATFORMS) {
     const d = compose(platform, pick.story, link, image);

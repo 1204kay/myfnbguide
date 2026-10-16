@@ -9,8 +9,9 @@ import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { SITUATIONS } from "./situations.ts";
 import {
-  membersBySituation, readCase, readHome, readItemText, readShop, readSituation, readStatus, sitemapEntries,
+  membersBySituation, readCase, readHome, readItemText, readShare, readShop, readSituation, readStatus, sitemapEntries,
 } from "./backend/read.ts";
+import { renderShare, shareCard, shareEtag } from "./backend/share.ts";
 import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
 import { blocking, problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
@@ -47,6 +48,8 @@ const SAMPLE_FILE = new URL("../../myfnb/samples/v2-busy-no-profit.html", import
 
 /** Shared caches keep a page as long as the engine keeps its topic pages: a minute. */
 const CACHE = "public, max-age=60, stale-while-revalidate=60";
+/** A story's share image is kept as the engine keeps its items' (apps/api/src/routes/og.ts CONTENT_IMAGE_CACHE): it changes with the story. */
+const IMAGE_CACHE = "public, max-age=300, s-maxage=3600, must-revalidate";
 
 export default defineServerModule({
   name: "reference",
@@ -154,6 +157,18 @@ export default defineServerModule({
     app.get("/api/reference/items/:id", async (req, reply) => {
       const text = await readItemText((req.params as { id: string }).id);
       return text ? reply.header("Cache-Control", CACHE).send(text) : reply.code(404).send({ error: "not found" });
+    });
+    // A story's share image (backend/share.ts), answered as the engine answers its items' (apps/api/src/routes/og.ts):
+    // an ETag of what the card shows, 304 for one the reader has, a plain 404 for a story not shown.
+    app.get("/og/reference/cases/:file", async (req, reply) => {
+      const file = (req.params as { file: string }).file;
+      const found = file.endsWith(".png") ? await readShare(file.slice(0, -4)) : null;
+      if (!found) return reply.code(404).header("Cache-Control", "public, max-age=300").type("text/plain; charset=utf-8").send("Not found");
+      const card = shareCard(found.story, found);
+      const tag = `"reference-${shareEtag(card)}"`;
+      reply.header("ETag", tag).header("Cache-Control", IMAGE_CACHE);
+      if (String(req.headers["if-none-match"] ?? "").split(",").some((t) => t.trim().replace(/^W\//, "") === tag)) return reply.code(304).send();
+      return reply.type("image/png").send(await renderShare(card));
     });
     app.get("/api/reference/shops/:key", async (req, reply) => {
       const page = await readShop((req.params as { key: string }).key);

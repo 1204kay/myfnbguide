@@ -61,3 +61,35 @@ export function month(at: string | Date): string {
   const [year, m] = beijingDate(at).split("-");
   return `${year} 年 ${Number(m)} 月`;
 }
+
+/** Where a story's share image is served (server.ts, backend/share.ts): its page's og:image (web/case.tsx). */
+export const shareImagePath = (id: string) => `/og/reference/cases/${encodeURIComponent(id)}.png`;
+
+/** A number of the original exactly as it writes it: up to two decimals ("15.95 澳元" is not 16), thousands grouped. */
+export const exact = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace("-", "−");
+
+/**
+ * What a figure counts in: "近 170 项" and "超过 3200 项" both 项, "9%" and "30.6%" both %, "80 到 100 元" 元. Big numbers
+ * side by side only for figures in one unit: three facts in three units (a 翻台率, a 增长率, a 人次) set as equals
+ * read as one comparison they are not (用户 10/11: 数据都是千篇一律的展示方式，根本不清晰).
+ */
+export function figureUnit(value: string): string | null {
+  const m = /^(?:约|近|将近|超过|超|逾|至少|不到|不足)?\s*[-+]?[\d.,]+%?(?:\s*(?:到|至|-|–|~)\s*[\d.,]+%?)?\s*(.*)$/u.exec(value.trim());
+  if (!m) return null;
+  const pct = /%/.test(value.split(/\s/)[0] ?? "") || /^[^\d]*[\d.,]+%/.test(value.trim());
+  return (pct ? "%" : "") + m[1]!.replace(/^(?:多|余)/u, "").replace(/(?:以上|左右|多)$/u, "").trim();
+}
+
+export const comparable = (values: string[]) => {
+  const units = values.map(figureUnit);
+  return units.every((u) => u !== null && u === units[0]);
+};
+
+/**
+ * A figure of the original as it writes it, its number big and the words around it small: "近 70 家" is 近, 70 and
+ * 家, "80 到 100 元" 80 到 100 and 元. A figure with no number stays as it is.
+ */
+export function figureSplit(value: string): [string, string, string] {
+  const m = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*(?:到|至|-|–|~)\s*\d[\d.,]*%?)?)\s*(.*)$/u.exec(value.trim());
+  return m ? [m[1]!, m[2]!, m[3]!] : ["", value, ""];
+}

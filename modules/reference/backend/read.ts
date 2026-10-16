@@ -408,6 +408,14 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
   };
 }
 
+/** What a story's share image needs (backend/share.ts): the story, its situation's title, and where it comes from as its card says. */
+export async function readShare(id: string, now = new Date()): Promise<{ story: CaseStory; situation: string | null; src: string } | null> {
+  const [r] = await shownCases(sql`c.article_id = ${id}`, now);
+  if (!r) return null;
+  const situation = r.story.placements[0] ? findSituation(r.story.placements[0].situation) : undefined;
+  return { story: r.story, situation: situation?.title ?? null, src: card(r, new Map()).src };
+}
+
 /**
  * What an item's page shows under its summary (web/item-part.tsx): its story when the library shows one, else its
  * write-up (backend/body.ts) while the item is listed; null when it has neither.

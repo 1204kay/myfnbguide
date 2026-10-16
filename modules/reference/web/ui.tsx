@@ -11,7 +11,7 @@ import { IconChevronLeft, IconChevronRight, IconShare } from "@aihot/web/compone
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { siteUrl } from "@aihot/web/lib/seo";
-import { day, fullCountText, listCount, listCountText, num, restCountText, tellersText } from "../format.ts";
+import { comparable, day, exact, figureSplit, fullCountText, listCount, listCountText, num, restCountText, tellersText } from "../format.ts";
 import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
 
 /**
@@ -60,23 +60,6 @@ export function Heading({ children, id }: { children: ReactNode; id?: string }) 
 export function Updated({ at }: { at: string | null | undefined }) {
   return at ? <p className="mt-10 text-[13px] text-ink-4">更新于 {day(at)}</p> : null;
 }
-
-/**
- * What a figure counts in: "近 170 项" and "超过 3200 项" both 项, "9%" and "30.6%" both %, "80 到 100 元" 元. Big numbers
- * side by side only for figures in one unit: three facts in three units (a 翻台率, a 增长率, a 人次) set as equals
- * read as one comparison they are not (用户 10/11: 数据都是千篇一律的展示方式，根本不清晰).
- */
-export function figureUnit(value: string): string | null {
-  const m = /^(?:约|近|将近|超过|超|逾|至少|不到|不足)?\s*[-+]?[\d.,]+%?(?:\s*(?:到|至|-|–|~)\s*[\d.,]+%?)?\s*(.*)$/u.exec(value.trim());
-  if (!m) return null;
-  const pct = /%/.test(value.split(/\s/)[0] ?? "") || /^[^\d]*[\d.,]+%/.test(value.trim());
-  return (pct ? "%" : "") + m[1]!.replace(/^(?:多|余)/u, "").replace(/(?:以上|左右|多)$/u, "").trim();
-}
-
-export const comparable = (values: string[]) => {
-  const units = values.map(figureUnit);
-  return units.every((u) => u !== null && u === units[0]);
-};
 
 /** The figures strip: big numbers with their units. */
 export function Metrics({ items }: { items: Array<[number, string]> }) {
@@ -404,9 +387,6 @@ export function Fill({ parts }: { parts: Array<{ label: string; share: number; t
   );
 }
 
-/** A number of the original exactly as it writes it: up to two decimals ("15.95 澳元" is not 16), thousands grouped. */
-const exact = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace("-", "−");
-
 /** A label with its value at the right, over a thin bar of `share` (compare, list-total, percent-over). */
 function BarRow({ label, value, share, className, strong }: { label: ReactNode; value: ReactNode; share: number; className: string; strong?: boolean }) {
   return (
@@ -574,15 +554,6 @@ function Example({ b }: { b: ExampleBlock }) {
       <p className={`text-[15.5px] font-bold leading-[1.6] text-ink sm:text-[16.5px] ${bar || rowsKind || b.equation ? "mt-3.5" : ""}`}>{b.result}</p>
     </Figure>
   );
-}
-
-/**
- * A figure of the original as it writes it, its number big and the words around it small: "近 70 家" is 近, 70 and
- * 家, "80 到 100 元" 80 到 100 and 元. A figure with no number stays as it is.
- */
-export function figureSplit(value: string): [string, string, string] {
-  const m = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*(?:到|至|-|–|~)\s*\d[\d.,]*%?)?)\s*(.*)$/u.exec(value.trim());
-  return m ? [m[1]!, m[2]!, m[3]!] : ["", value, ""];
 }
 
 function FigureValue({ value, size }: { value: string; size: string }) {

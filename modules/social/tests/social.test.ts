@@ -2,7 +2,7 @@
 // social switch is on without being turned on; a post says a number its story does not, a word the wording rules ban,
 // misses the AI label or the link, or is longer than its platform takes; two stories are posted on one day, or a story
 // twice; the weaker story is posted before the stronger; a story that left the site is still sent; a send leaves no record
-// or reaches the network; a failed send is lost.
+// or reaches the network; a failed send is lost; a post attaches the item's generic card, not its story's share image.
 import { tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -75,7 +75,7 @@ test("a story of the day becomes a draft for each platform, once a day, the stro
   assert.equal(made.length, 3);
   const posts = (await listPosts()).reverse();
   assert.deepEqual(posts.map((p) => [p.platform, p.status, p.article_id === ids.STRONG]), [["facebook", "pending", true], ["instagram", "pending", true], ["wechat", "pending", true]]);
-  assert.ok(posts[0]!.link.endsWith(`/reference/cases/${ids.STRONG}`) && posts[1]!.image_url?.endsWith(`/og/items/${ids.STRONG}.png`));
+  assert.ok(posts[0]!.link.endsWith(`/reference/cases/${ids.STRONG}`) && posts[1]!.image_url?.endsWith(`/og/reference/cases/${ids.STRONG}.png`), "the story's own share image");
   assert.deepEqual(await draftToday(), [], "one story a day");
   assert.deepEqual(await sendApproved(), [], "pending posts are not sent");
   const log = await sql`SELECT event FROM social_log WHERE post_id = ${posts[0]!.id}`;

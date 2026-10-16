@@ -2,5 +2,6 @@
 import type { ServerModule } from "@aihot/backend/modules";
 import archive from "@aihot/archive/server";
 import reference from "@aihot/reference/server";
+import social from "@aihot/social/server";
 
-export const SERVER_MODULES: readonly ServerModule[] = [reference, archive];
+export const SERVER_MODULES: readonly ServerModule[] = [reference, archive, social];

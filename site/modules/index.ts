@@ -4,5 +4,6 @@
 import type { ModuleDeclaration } from "@aihot/contracts/modules";
 import archive from "@aihot/archive/module";
 import reference from "@aihot/reference/module";
+import social from "@aihot/social/module";
 
-export const MODULES: readonly ModuleDeclaration[] = [reference, archive];
+export const MODULES: readonly ModuleDeclaration[] = [reference, archive, social];

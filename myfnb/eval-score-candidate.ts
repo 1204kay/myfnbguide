@@ -1,4 +1,4 @@
-// A candidate score prompt (myfnb/selection-score-candidate.md) beside the site's (industry/prompts/selection-score.md),
+// A candidate score prompt (myfnb/selection-score-candidate.md, written when a new one is tried; 10/16's went live) beside the site's (industry/prompts/selection-score.md),
 // on the items the user labelled, each scored twice like the score step of editorial/analyze.ts on its current material.
 // Nothing on the site changes and nothing is written under .data, so it runs without -u root through the ops gate.
 // The site's half reuses the receipts of the live scoring wherever the material is unchanged, so it is mostly free.

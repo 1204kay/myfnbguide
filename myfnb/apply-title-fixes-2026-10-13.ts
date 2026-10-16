@@ -26,4 +26,16 @@ if (apply) {
   }
   console.log(`已改 ${todo.length} 篇`);
 }
+// t3tp 这一篇不只标题：原文的 lakh（1 lakh = 10 万）在开头一句和两处合计里也少写了十倍，其余金额换算是对的。
+// 只换这三处原句，找不到原句的不动（说明已被重写过）。备份在上面同一张表里。
+const TEXT_FIXES: [string, string, string][] = [
+  ["t3tp3ob34832iaf04ec5wabya", "有人报 10 万卢比，有人报 40 万卢比，有人花了 75 万卢比", "有人报 100 万卢比，有人报 400 万卢比，有人花了 750 万卢比"],
+  ["t3tp3ob34832iaf04ec5wabya", "总计约 13.7 万卢比", "总计约 137 万卢比"],
+  ["t3tp3ob34832iaf04ec5wabya", "总计约 52 万卢比", "总计约 520 万卢比"],
+];
+for (const [id, from, to] of TEXT_FIXES) {
+  const [hit] = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM reference_cases WHERE article_id = ${id} AND position(${from} in story::text) > 0`;
+  console.log(`正文原句「${from}」：${hit!.n ? (apply ? "已改" : "要改") : "找不到，不改"}`);
+  if (apply && hit!.n) await sql`UPDATE reference_cases SET story = replace(story::text, ${from}, ${to})::jsonb, updated_at = now() WHERE article_id = ${id}`;
+}
 await closeDb();

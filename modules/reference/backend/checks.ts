@@ -296,6 +296,9 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     if (money.length > 1) problems.push(`第 ${i + 1} 段的数字卡里有 ${money.join("和")} 两种单位：读者没法直接比，分开放，或只留同一种单位的数`);
     // The card's sentence says what its figures show, not the heading over it again (10/9: 周一会员日 9.9 元猪脚饭 over
     // 每周一9.9元会员日，让周一的生意变好).
+    // A card whose figures the heading already gives says the heading again (10/16, 用户「是不是很重复」: 会员买一杯享
+    // 63% 折扣 over a card of 63% · 一杯的折扣; 25 live cards gave nothing the heading had not).
+    if (b.type === "numbers" && b.items.length && b.items.every((x) => { const d = x.value.replace(/[^0-9.]/g, ""); return d !== "" && part.heading.includes(d); })) problems.push(`第 ${i + 1} 段数字卡上的数小标题“${part.heading}”已经写了：删掉这张卡，或者小标题改写做法、不写这个数`);
     if (b.type === "numbers" && b.point && echoes(bare(b.point), bare(part.heading))) problems.push(`第 ${i + 1} 段数字卡上的结论“${b.point}”和小标题“${part.heading}”说的是同一件事：小标题写做法，卡片写这些数字说明的结果`);
     // Parts add up to one amount the writer can name. Live on 10/16, 63 parts bars had nothing against them and were
     // summed to a 合计 that was no amount at all: 10/12/4 美元 menu prices as 合计 26 美元, fee rates in %, a monthly

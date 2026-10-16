@@ -71,3 +71,10 @@ test("prices or options to pick from are no whole, however the writer names them
   }
   for (const whole of ["开店前期花费", "一根超长蛋挞的出厂成本", "一笔订单的平台扣款"]) assert.deepEqual(partsProblems(parts({ whole })), [], whole);
 });
+
+test("a numbers card that only repeats the heading's figures goes back", () => {
+  const card = (value: string): Block => ({ type: "numbers", point: "会员可享的折扣", items: [{ label: "一杯的折扣", value }], caption: null });
+  const repeats = (heading: string, value: string) => checkStory({ ...story([card(value)]), parts: [{ heading, blocks: [card(value)] }] }, "63% 30 8").filter((p) => /小标题.*已经写了/.test(p));
+  assert.equal(repeats("会员买一杯享 63% 折扣", "63%").length, 1);
+  assert.equal(repeats("会员买一杯能省一大半", "63%").length, 0, "a heading without the figure keeps its card");
+});

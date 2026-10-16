@@ -184,6 +184,10 @@ test("an archive with picks takes in only the episodes it names", async () => {
   assert.deepEqual(await plansDue([{ ...plan, only: [`${BASE}/picked/2`] }]), [], "every pick taken in");
   assert.equal((await importSource(plan)).created, 1);
   assert.deepEqual(await plansDue([plan]), []);
+  await sql`DELETE FROM archive_episodes WHERE article_id = (SELECT id FROM articles WHERE url = ${`${BASE}/picked/3`})`;
+  assert.deepEqual(await plansDue([plan]), [plan], "a pick taken in without an archive entry is read again for the entry");
+  await importSource(plan);
+  assert.deepEqual(await plansDue([plan]), []);
   REREAD.ms = 6 * 3600_000;
 });
 

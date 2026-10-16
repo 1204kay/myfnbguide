@@ -8,7 +8,6 @@
 import { sql } from "@aihot/backend/db";
 import { config, credential } from "@aihot/backend/config";
 import { upsertMaterial } from "@aihot/backend/content/materials";
-import { UNDERSTAND_FLOOR } from "@aihot/backend/editorial/analyze";
 import { queueProcessing } from "@aihot/backend/jobs/content";
 import { guardedFetch } from "@aihot/backend/lib/http-fetch";
 import { assertAccepted, BudgetExceededError, completeReceipt, paidRequest, ProviderRejectedError } from "@aihot/backend/providers/receipts";
@@ -39,8 +38,15 @@ export const PART_BYTES = { max: 24 * 1024 * 1024 };
 export const PICKED = new Set(ARCHIVE.flatMap((p) => p.only ?? []));
 
 /**
- * Episodes to transcribe next, of sources still collected (one stopped for its terms is not read again): with an audio file and not done; from the archive those whose notes scored at least the
- * understand floor, and every new episode that passed the prefilter, listed or still waiting for its content (notes
+ * The notes' score an archive episode needs to be heard: below the understand floor (30). An owner telling their
+ * own shop's story is what readers want most (用户 10/16), and those notes are often a title and a line, so the
+ * score of the notes alone sits low (10/16: 397 archive episodes waited under 30, never to be heard). At 20 about
+ * 260 more are heard, after every higher one (ORDER BY score); an episode below that is heard when it is picked.
+ */
+export const HEAR_FLOOR = 20;
+
+/**
+ * Episodes to transcribe next, of sources still collected (one stopped for its terms is not read again): with an audio file and not done; from the archive those whose notes scored at least HEAR_FLOOR, and every new episode that passed the prefilter, listed or still waiting for its content (notes
  * that only say what the episode will discuss get no summary and wait, prompts/content-understanding.md), first.
  * Those whose host published a transcript come before all: reading one is not paid and not rate-limited, and while
  * the speech service turned the first few away (10/10, a day's ceiling) the same few were asked again every run.
@@ -53,7 +59,7 @@ export async function episodesToTranscribe(limit: number): Promise<string[]> {
     JOIN sources s ON s.id = a.source_id AND s.enabled
     LEFT JOIN LATERAL (SELECT score, relevance FROM analyses n WHERE n.article_id = a.id AND n.input_revision = a.revision ORDER BY n.id DESC LIMIT 1) n ON true
     WHERE (e.audio_url IS NOT NULL OR e.transcript_url IS NOT NULL)
-      AND (n.score >= ${UNDERSTAND_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')) OR (a.url = ANY(${[...PICKED]}::text[]) AND n.relevance IS DISTINCT FROM 'block'))
+      AND (n.score >= ${HEAR_FLOOR} OR (NOT a.backfill AND n.relevance IN ('pass', 'unknown')) OR (a.url = ANY(${[...PICKED]}::text[]) AND n.relevance IS DISTINCT FROM 'block'))
       AND (e.status = 'imported' OR (e.status = 'failed' AND e.error NOT LIKE ${`${SPEECH.model}:%`}))
     ORDER BY e.transcript_url IS NULL, a.backfill, n.score DESC NULLS LAST, a.published_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);

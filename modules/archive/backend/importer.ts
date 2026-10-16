@@ -120,12 +120,14 @@ export const REREAD = { ms: 6 * 3600_000 };
  * The plans the hourly import reads: those never finished, and, once REREAD has passed since the last read, those
  * whose picks name an episode the site does not have. Picks are added after a source's first import (10/11: 72 of
  * 88 new picks sat unread behind finished sources); a pick its feed no longer lists is looked for only that often.
+ * A pick the site took in some other way, without an archive entry, is not had: without the entry it is never heard
+ * (10/16: a Behind the Counter episode the user marked a must-read).
  */
 export async function plansDue(plans: ArchivePlan[], now = new Date()): Promise<ArchivePlan[]> {
   const rows = await sql<{ source_id: string; finished_at: Date | null; updated_at: Date }[]>`SELECT source_id, finished_at, updated_at FROM archive_sources`;
   const state = new Map(rows.map((r) => [r.source_id, r]));
   const stale = plans.filter((p) => p.only && state.get(p.id)?.finished_at && now.getTime() - state.get(p.id)!.updated_at.getTime() >= REREAD.ms);
-  const have = new Set(stale.length ? (await sql<{ url: string }[]>`SELECT url FROM articles WHERE source_id IN ${sql(stale.map((p) => p.id))}`).map((r) => r.url) : []);
+  const have = new Set(stale.length ? (await sql<{ url: string }[]>`SELECT a.url FROM articles a JOIN archive_episodes e ON e.article_id = a.id WHERE a.source_id IN ${sql(stale.map((p) => p.id))}`).map((r) => r.url) : []);
   return plans.filter((p) => !state.get(p.id)?.finished_at || (stale.includes(p) && p.only!.some((url) => !have.has(url))));
 }
 

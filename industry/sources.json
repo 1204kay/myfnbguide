@@ -2883,6 +2883,451 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "note-komo-rita",
+      "name": "コモリタ（日本 · 大阪福岛 9 坪熟成寿司店店主，开业借钱撑过七年的经过）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/komo_rita/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-murata-kazunori",
+      "name": "村田一訓（日本 · 金泽便当店原店主，开店 3 年 8 个月后黑字转让的全记录）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/murata_kazunori/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-hokutomuto",
+      "name": "武藤北斗 · 海老フライ武藤（日本 · 大阪茨木炸虾店店主，不排班、员工自由出勤的做法，每周一篇）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/hokutomuto/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        },
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "投稿原案"
+          ]
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-nteam",
+      "name": "大畑直矢 · バルタン（日本 · 广岛从 4 坪居酒屋做到 7 家店的老板，开店和撤店的经过）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/nteam/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-fair-daisy3272",
+      "name": "miki（日本 · 原咖啡店老板的妻子，开店到闭店的钱和家里的事）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/fair_daisy3272/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-happy-m",
+      "name": "凛々子（日本 · 借 1,300 万日元开咖啡店、经营 12 年后转手的原店主）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/happy_m/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-ample-yucca7340",
+      "name": "FLAME@Y（日本 · 最多经营 4 家餐饮店的老板，交给店长以后遇到的事）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/ample_yucca7340/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-soba-kyouka",
+      "name": "15年続ける蕎麦屋店主の経営ノート（日本 · 金泽夫妻经营的 22 席荞麦面店，老板一人掌厨十五年）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/soba_kyouka/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-sane-acacia4519",
+      "name": "Hot coffee（日本 · 刚开业的小咖啡店，每个月的客人和营业额）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/sane_acacia4519/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-small-restaurant",
+      "name": "大久保翔平（日本 · 小餐馆店主，写自己店里的预约、人手和菜单的决定）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/small_restaurant/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-quiet-record-01",
+      "name": "静かな記録（日本 · 12 席、一人经营的小咖啡店，开业第一年）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/quiet_record_01/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-alocafe-note",
+      "name": "あろ（日本 · 26 岁在地方城市一个人开咖啡店，开业两年）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/alocafe_note/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-regal-laelia1212",
+      "name": "おけん（日本 · 经营六年、一周休三天的小咖啡店，房租、营业额和利润）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/regal_laelia1212/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-sudaku-wakaba",
+      "name": "焼肉すだく家族亭 都城若葉町店（日本 · 宫崎都城 2026 年开业的烤肉店，开业以后的营业和人手）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/sudaku_wakaba/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-gifukissa-lover",
+      "name": "樋口尚敬 · 喫茶星時（日本 · 岐阜一个人经营十年的喫茶店，不借钱开店、不雇人）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/gifukissa_lover/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-gekiuma-banhmi",
+      "name": "島田大輝 · 激うまバインミー（日本 · 大阪越南法棍三明治店店主，每月营业额和菜单的试验）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/gekiuma_banhmi/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-e-yu-shun",
+      "name": "みならい店長（日本 · 6.2 坪咖啡酒吧的店长，从开业贷款到保本的记录）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/e_yu_shun/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-yamanoshokudo",
+      "name": "山ノ食堂（日本 · 两位 40 多岁女性合开的食堂，从找店面开始的经过）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/yamanoshokudo/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-tsuduribito",
+      "name": "三輪浩朔 · Laughter（日本 · 京都咖啡店 Laughter 店主，开店六年的营业记录）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/tsuduribito/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-hamajimaya",
+      "name": "しらおまや · カフェLapin（日本 · 25 岁辞职在东京矢川开咖啡店的店主，开业三年）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/hamajimaya/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

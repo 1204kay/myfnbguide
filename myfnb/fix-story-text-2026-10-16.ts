@@ -1,16 +1,12 @@
-// 2026-10-16：标题数目核对（audit-title-numbers-2026-10-13.ts）逐篇对原文时，有两篇不只标题错，正文也错，这里只换下面这几处文字；
-// 标题照旧走 title-fixes-2026-10-13.tsv。印度咖啡店那篇把原文的 lakh（1 lakh = 10 万）当成了万，开头一句和两处合计都少了十倍；
-// 其余金额（押金 157500、装修 48 万等）原文写的是 Rs 1,57,500、Rs 4.8 lakh，是对的。意大利那篇原文是杂志文章，回复分四部分，不是四句话。
+// 2026-10-16：标题数目核对后，意大利差评回复那篇（zjgd）标题已改成「回复拆成四个部分」（title-fixes-2026-10-13.tsv），
+// 但情况页上的卡片还写着「把差评回复写成四句话」；原文是四个部分（quattro parti），不是四句话。这里只换卡片里这一处。
 // 改之前整行备份到 backup_ref_story_text_20261016；要换的文字在故事里不是正好一处的（说明已被重写）不改。
 // 不带参数只预览；--apply 执行。
 //   sudo docker compose exec -T worker node myfnb/fix-story-text-2026-10-16.ts [--apply]
 import { closeDb, sql } from "@aihot/backend/db";
 
 const FIXES: ReadonlyArray<readonly [id: string, from: string, to: string]> = [
-  ["t3tp3ob34832iaf04ec5wabya", "有人报 10 万卢比，有人报 40 万卢比，有人花了 75 万卢比还不够", "有人报 100 万卢比，有人报 400 万卢比，有人花了 750 万卢比还不够"],
-  ["t3tp3ob34832iaf04ec5wabya", "总计约 13.7 万卢比，开业五个月后", "总计约 137 万卢比，开业五个月后"],
-  ["t3tp3ob34832iaf04ec5wabya", "总计约 52 万卢比，预计", "总计约 520 万卢比，预计"],
-  ["zjgdsj6zvnjqvzjkqw6ge4ovf", "把差评回复写成四句话：", "差评回复分四步写："],
+  ["zjgdsj6zvnjqvzjkqw6ge4ovf", "把差评回复写成四句话：", "差评回复分四个部分写："],
 ];
 
 const apply = process.argv.includes("--apply");

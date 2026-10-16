@@ -40,9 +40,6 @@ export default function CaseRoute() {
   // full name, in place of a back line and a label over the title that both led there (layout J6).
   const back = situation ? { to: `/reference/${situation.slug}`, label: situation.title } : { to: "/reference", label: "参考" };
   const from = source.kind ? `${source.kind}「${source.name}」` : source.name;
-  const original = (
-    <a href={source.url} target="_blank" rel="noopener" className="-my-3 inline-flex min-h-11 min-w-11 items-center justify-center font-semibold text-accent hover:text-accent-ink">原文 ↗</a>
-  );
   // Rails, as the item page has them: where the story comes from on the left (wide screens), what to do with it and
   // where it sits in the library on the right.
   const facts = (
@@ -117,10 +114,7 @@ export default function CaseRoute() {
           )}
         </section>
       )}
-      <div className="mt-6 flex items-center justify-between gap-4 border-t border-line pt-3 text-[12px] text-ink-3">
-        <span>正文 · AI 整理自原文</span>
-        {original}
-      </div>
+      <div className="mt-6 border-t border-line pt-3 text-[12px] text-ink-3">正文 · AI 整理自原文</div>
       <p className={`mt-3 ${BODY}`}>{story.lead}</p>
       <p className={`mt-3 ${BODY}`}>{story.who}</p>
       {c.shop && (
@@ -135,12 +129,13 @@ export default function CaseRoute() {
         </section>
       ))}
       {story.open && <p className={`mt-6 text-[14px] leading-relaxed text-ink-4 ${MEASURE}`}>{story.open}</p>}
-      <div className="mt-10 border-t border-line pt-4">
-        <p className="text-[13px] text-ink-4">原文{source.language ? ` · ${source.language}` : ""}{source.audioOnly ? " · 节目是音频" : ""}</p>
-        <a href={source.url} target="_blank" rel="noopener" className="mt-3 flex h-11 w-full items-center justify-center rounded-full border border-line-strong bg-surface text-[15px] font-semibold text-accent transition-colors hover:border-accent">
-          打开原文 ↗
-        </a>
-      </div>
+      {/* The original's way in, as the item page has it (AIHOT item.tsx): one line naming the source; the button is the
+          desktop rail's and the phone toolbar's 原文. */}
+      <p className="mt-8 text-[13px] text-ink-4">
+        来源：
+        <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">{source.name}</a>
+        {source.language ? ` · 原文${source.language}` : ""}{source.audioOnly ? " · 节目是音频" : ""}
+      </p>
       {/* Desktops have it in the right rail. */}
       <div className="card mt-8 px-4 py-3.5 sm:px-5 lg:hidden">
         <p className="text-[13px] text-ink-4">收在 {SITE.name} 参考{situation ? ` · ${situation.title}` : ""}</p>

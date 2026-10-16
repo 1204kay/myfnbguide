@@ -2,7 +2,7 @@
 // 平时只自动写新进来的条目；改了写作要求以后，先看新条目写得好不好，确定写法以后才用这个脚本全面重写，
 // 不会一改要求就把全部重写一遍（用户 10/9：先确定一种方式，才来全面重写）。
 // 不带参数只数条数；--apply 执行，从新到旧；--limit 10 故事和正文各只写最新的 10 篇，用来先抽查；--bodies 只重写条目正文，不动故事；
-// --with numbers 只重写含某种图块的故事和正文（例如改了数字卡的写法以后）。每篇最多调用三次模型。
+// --with numbers 只重写含某种图块的故事和正文（例如改了数字卡的写法以后）；--ids a,b 只重写这几篇。每篇最多调用三次模型。
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts --apply --limit 10
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts --apply
@@ -28,7 +28,9 @@ const block = w > 0 ? process.argv[w + 1]! : null;
 const holding = block ? new Set((await sql<{ id: string }[]>`
   SELECT article_id AS id FROM reference_cases WHERE status = 'story' AND jsonb_path_exists(story, '$.parts[*].blocks[*] ? (@.type == $t)', ${sql.json({ t: block })})
   UNION SELECT article_id FROM reference_bodies WHERE status = 'body' AND jsonb_path_exists(body, '$.parts[*].blocks[*] ? (@.type == $t)', ${sql.json({ t: block })})`).map((r) => r.id)) : null;
-const only = (ids: string[]) => (holding ? ids.filter((id) => holding.has(id)) : ids);
+const at2 = process.argv.indexOf("--ids");
+const named = at2 > 0 ? new Set(process.argv[at2 + 1]!.split(",").map((id) => id.trim()).filter(Boolean)) : null;
+const only = (ids: string[]) => ids.filter((id) => (!holding || holding.has(id)) && (!named || named.has(id)));
 
 // Cases first: a case that comes out thin or held makes its item one to write up.
 const cases = only(await articlesToWrite(limit, new Date(), { all: true }));

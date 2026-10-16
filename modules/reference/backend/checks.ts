@@ -107,6 +107,7 @@ const MONEY = /万美元|亿美元|美元|美分|万元|亿元|日元|万日元|
 const LABEL_OPENING = /^(?:说话的人|这期(?:节目|播客)的主持人|主讲人|讲述者)是/u;
 
 /** Labels of numbers that are changes already. */
+const NUMERAL = /[0-9０-９零〇一二两三四五六七八九十百千万亿半]/u;
 const CHANGE = /增长|增加|提升|提高|下降|下滑|减少|上涨|下跌|同比|环比|涨幅|降幅/u;
 
 /** A number that is a figure: a decimal, or a whole number above 12 that is no year (days, months, 第 36 届 aside). */
@@ -280,6 +281,10 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     if (change) problems.push(`第 ${i + 1} 段的对比图里“${change.label}”本身就是变化的数：对比图只放同一个数的前后（去年和今年），涨幅和增长率放进 numbers`);
     // Figures in one card are read against each other: money in two units (3.02 美元 beside 437.95 美分, 10/9) cannot be.
     const money = b.type === "numbers" ? [...new Set(b.items.map((x) => MONEY.exec(x.value)?.[0]).filter(Boolean))] : [];
+    // A figure is a number: a ranking set as figures (10/16: 团购 GMV 增幅靠前 three times over 贵州豆米火锅, 菌菇火锅,
+    // 药膳火锅) reads as a table of nothing. Chinese numerals count (四倍, 六位数, 近两小时).
+    const word = b.type === "numbers" ? b.items.find((x) => !NUMERAL.test(x.value)) : undefined;
+    if (word) problems.push(`第 ${i + 1} 段的数字卡里“${word.value}”不是数字：数字卡只放数字，排名、名单和名称用 list 写`);
     if (money.length > 1) problems.push(`第 ${i + 1} 段的数字卡里有 ${money.join("和")} 两种单位：读者没法直接比，分开放，或只留同一种单位的数`);
     // The card's sentence says what its figures show, not the heading over it again (10/9: 周一会员日 9.9 元猪脚饭 over
     // 每周一9.9元会员日，让周一的生意变好).

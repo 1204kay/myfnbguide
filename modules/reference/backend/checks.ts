@@ -108,6 +108,11 @@ const LABEL_OPENING = /^(?:说话的人|这期(?:节目|播客)的主持人|主�
 
 /** Units of rates and scores: a parts bar in them adds up nothing (30% + 20% is no 50% of anything). */
 const RATE = /^(?:%|％|百分点|分|度)$/u;
+/**
+ * A whole that names prices or options, not one amount: after f394289 the writer still named 「标准展位与空场地报价」
+ * 「菜单上的价格」「四种模式的启动资金」「毛坯店面装修的每坪单价」 over items that are each a price to pick from.
+ */
+const NO_WHOLE = /价格|报价|单价|售价|定价|模式|方案|选项|档位|几种|[两三四五六七八九十]种/u;
 
 /** Labels of numbers that are changes already. */
 const NUMERAL = /[0-9０-９零〇一二两三四五六七八九十百千万亿半]/u;
@@ -297,6 +302,7 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     // series, 营业额 beside 房租, the prompt's word against alternatives notwithstanding. Naming the whole is the test.
     if (b.type === "parts") {
       if (!b.whole?.trim()) problems.push(`第 ${i + 1} 段的组成图没有写 whole：写出这几项合起来正好是哪一笔（不超过 12 字，如“开店前期花费”“一个蛋挞的出厂成本”）；说不出一笔真实的总数，这几项就不是组成，改用 list 或 numbers`);
+      if (b.whole?.trim() && NO_WHOLE.test(b.whole)) problems.push(`第 ${i + 1} 段的组成图 whole“${b.whole}”是几个可以另选的价格或做法，不是加起来的一笔：改用 list 或 numbers`);
       if (RATE.test(b.unit.trim())) problems.push(`第 ${i + 1} 段的组成图单位是“${b.unit}”：比率和分数加起来不是任何一个数，改用 numbers 或 list`);
       else if (b.whole?.trim() && b.against && bare(b.whole) === bare(b.against.label)) problems.push(`第 ${i + 1} 段的组成图 whole 写成了对照的“${b.against.label}”：whole 写这几项加起来是什么，对照的数只写在 against`);
     }

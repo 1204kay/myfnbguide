@@ -61,3 +61,13 @@ test("key figures in Chinese numerals are split and drawn on a share card like f
   assert.equal(pickFigure(story([numbers]))?.type, "numbers");
   assert.equal(pickFigure(story([{ ...numbers, items: [{ label: "客人", value: "很多" }] } as Block])), null, "a figure with no number is still passed over");
 });
+
+test("prices or options to pick from are no whole, however the writer names them", () => {
+  for (const whole of ["标准展位与空场地报价", "菜单上的价格", "四种模式的启动资金", "毛坯店面装修的每坪单价"]) {
+    const found = partsProblems(parts({ whole }));
+    assert.equal(found.length, 1, whole);
+    assert.match(found[0]!, /可以另选/);
+    assert.ok(blocking(found[0]!));
+  }
+  for (const whole of ["开店前期花费", "一根超长蛋挞的出厂成本", "一笔订单的平台扣款"]) assert.deepEqual(partsProblems(parts({ whole })), [], whole);
+});

@@ -9,3 +9,9 @@
 
 OFL 允许嵌入、子集化与再分发，要求保留版权与许可声明（本文件即为此）。子集化字体
 不得单独售卖，可随软件/产品自由分发。完整 OFL 全文见上方链接。
+
+MYFNB 另加的补充字体（2026-10-16，同一许可 OFL-1.1）：
+- noto-sans-cjk-extra-400/700.ttf：Noto Sans SC（google/fonts 的可变字体，按 400、700 取静态字重），
+  只留上面两个文件没有的字：Big5、Shift_JIS、EUC-KR 能编码的汉字和假名，加拉丁扩展和常用符号。
+- noto-sans-kr-hangul-400/700.ttf：Noto Sans KR（Copyright 2014-2021 Adobe），只留 KS X 1001 的韩文音节。
+分享图先用 Noto Sans SC，缺的字由这两个补（packages/backend/src/media/og.ts 的 FALLBACK_FONTS）。

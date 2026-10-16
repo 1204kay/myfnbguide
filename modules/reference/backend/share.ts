@@ -10,7 +10,7 @@ import { comparable, exact, figureSplit, isFigure, num } from "../format.ts";
 import type { Block, CaseStory, ChangeBlock, CompareBlock, NumbersBlock } from "../types.ts";
 
 /** Bumped when the drawing changes, so every card is drawn again. */
-export const SHARE_TEMPLATE_VERSION = "reference-share-2026-10-16.1";
+export const SHARE_TEMPLATE_VERSION = "reference-share-2026-10-16.2";
 
 type QuoteBlock = Extract<Block, { type: "quote" }>;
 export type ShareFigure = NumbersBlock | ChangeBlock | CompareBlock | QuoteBlock;

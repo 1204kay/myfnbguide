@@ -1,5 +1,6 @@
 // 1200×630 share images. satori lays out text with Noto Sans SC (assets/og-fonts) and emits glyphs
 // as paths, so rasterising with sharp needs no system fonts. Output is cached on disk by content.
+import { readdirSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
@@ -25,13 +26,22 @@ export interface OgCard {
 
 let fontsPromise: Promise<Array<{ name: string; data: Buffer; weight: 400 | 700; style: "normal" }>> | null = null;
 
+/**
+ * Fonts a site adds beside Noto Sans SC (assets/og-fonts/<name>-400.ttf and -700.ttf), for the characters it lacks:
+ * satori takes a glyph the first font has no outline for from the next one. None by default.
+ */
+const FALLBACK_FONTS = readdirSync(path.join(REPO_ROOT, "assets/og-fonts"))
+  .filter((f) => /-(400|700)\.ttf$/.test(f) && !f.startsWith("noto-sans-sc-")).sort();
+
 function fonts() {
   fontsPromise ??= Promise.all([
     readFile(path.join(REPO_ROOT, "assets/og-fonts/noto-sans-sc-400.ttf")),
     readFile(path.join(REPO_ROOT, "assets/og-fonts/noto-sans-sc-700.ttf")),
-  ]).then(([regular, bold]) => [
+    ...FALLBACK_FONTS.map((f) => readFile(path.join(REPO_ROOT, "assets/og-fonts", f))),
+  ]).then(([regular, bold, ...more]) => [
     { name: "Noto Sans SC", data: regular, weight: 400, style: "normal" },
     { name: "Noto Sans SC", data: bold, weight: 700, style: "normal" },
+    ...more.map((data, i) => ({ name: FALLBACK_FONTS[i].replace(/-(400|700)\.ttf$/, ""), data, weight: (FALLBACK_FONTS[i].endsWith("-700.ttf") ? 700 : 400) as 400 | 700, style: "normal" as const })),
   ]);
   return fontsPromise;
 }
@@ -167,7 +177,7 @@ async function render(file: string, size: { width: number; height: number }, tre
 }
 
 export function ogEtag(card: OgCard): string {
-  return createHash("sha256").update(OG_TEMPLATE_VERSION).update(JSON.stringify(card)).digest("hex").slice(0, 24);
+  return createHash("sha256").update(OG_TEMPLATE_VERSION).update(FALLBACK_FONTS.join()).update(JSON.stringify(card)).digest("hex").slice(0, 24);
 }
 
 /** PNG bytes for a card, from the disk cache when this exact card was rendered before. */

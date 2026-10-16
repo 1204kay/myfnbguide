@@ -93,7 +93,7 @@ export default function SituationRoute() {
             {s.causes.map((g, i) => {
               const body = (
                 <>
-                  <span className="num text-[26px] font-black leading-none tracking-tight text-accent lg:text-[28px]">{i + 1}</span>
+                  <span className="num text-[17px] font-[650] leading-[1.5] text-accent">{i + 1}</span>
                   <span><b className="block text-[16px] font-[650] leading-snug text-ink">{g.title}</b><span className="text-[13px] text-ink-3">{g.line}</span></span>
                 </>
               );
@@ -112,8 +112,8 @@ export default function SituationRoute() {
       {split ? s.groups.map((g, i) => (
         <section key={g.key} className="mt-10">
           <div id={g.key} className="flex scroll-mt-[calc(var(--bar-h)+8px)] items-baseline gap-3">
-            <span className="num text-[26px] font-black leading-none tracking-tight text-accent lg:text-[28px]">{i + 1}</span>
-            <h2 className="text-[20px] font-extrabold leading-[1.35] text-ink lg:text-[22px]">{g.title}</h2>
+            <span className="num text-[17px] font-[650] leading-[1.5] text-accent">{i + 1}</span>
+            <h2 className="text-[17px] font-[650] leading-[1.5] text-ink">{g.title}</h2>
           </div>
           <List list={g} grouped={s.count.grouped} figure={<GroupDrawing slug={s.slug} groups={titles} focus={g.title} />} />
         </section>

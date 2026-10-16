@@ -147,7 +147,6 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 | 存档 | 框架没有的功能，做成模块 `modules/archive`（已启用：`site/modules/index.ts`、`server.ts`，`site/package.json`、`Dockerfile` 各一行；没有网页部分）：按挑选名单（`picks.json`）导入播客和博客的旧单集、旧文章，作为回补条目走正常流程（不进日报，进参考库）；给播客单集转文字：订阅里有现成文字稿（`podcast:transcript`）的直接读，没有的把音频交给 Groq 的 Whisper（`GROQ_API_KEY`；10/10 以前用 Gemini，实测会漏掉一半内容，已换掉），10/9 起也给等待中的新单集转写（`backend/transcribe.ts`） | 作者 10/4 起默认首次导入后不收存档；本站要的店家经验多在旧节目里，只有简介的单集写不成故事（§9.2 第 4 项） | 用户 10/5 05:53「同意打开存档 然后你先试试 看可以跑多少」；随后（10/5 早上）「我觉得你可以扫一眼 看看哪些值得收集 才来花deepseek余额」，改为逐集挑 |
 | 访问计数 | 反向代理 Caddy 多记一份访问日志（`deploy/Caddyfile`，框架的文件）：只记时间、路径、状态码和“是不是机器人”，不记 IP、请求头、查询串；`myfnb/visits.sh` 按天按类统计。不装脚本、不改网页 | §2.4 要看哪些情况被查得多；原版没有；不识别个人。原文链接被点几次没做（外链直接跳出，要数就得在网页里加脚本，偏离原版；搜索点击和国家用 Search Console） | 十一 10/13 按 Kay 授权（决定记录 L366）加，Kay 未逐项确认 |
 | 云端运维 | 服务器多一把只给 GitHub 用的密钥，限死只能跑守门脚本 `myfnb/ops/gate.sh`（看状态和日志、跑已合进 main 的 `myfnb/` 脚本、只读账号 `myfnb_ro` 查库）；Kay 跑一次 `myfnb/ops/install.sh` 装上。发命令的工作流在私有仓库 coresystemstudio 的 `.github/workflows/myfnb-ops.yml`（本仓库公开，日志谁都看得见）。框架代码不动 | 云端会话连不了 SSH（出站只走 HTTPS 代理），服务器上的活原来只能在 Kay 电脑上做；Kay 要「全部搬上云端」 | Kay 10-16「你决定吧」，十一定（公司手册决定记录 L457） |
-| 情况页的原因组 | 原因组的小标题 20/22px、编号 26/28px，比原版最大的 17px 大（`modules/reference/web/situation.tsx`）；10/16 照原版全面检查（`/mnt/project-files/myfnb/original-audit-2026-10-16.md`）时其余框架部分已改回原版 | 编号要和情况图上的 1、2、3 对得上，是内容的一部分 | 十一 10/16 定，Kay 待确认 |
 
 **10/10 已经合进原版、从本表删掉的**：手机顶栏的返回文字（#171）、第一期日报以前的周和月不算到期（#170），作者 10/9 夜合并，本站 10/10 早上合并上游 `18ddc7b` 后用的就是原版。
 

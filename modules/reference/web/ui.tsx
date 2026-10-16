@@ -354,14 +354,16 @@ export function KindTag({ kind }: { kind: "原文数据" | "举例" | "示意" }
 
 /**
  * A picture in its card, then what kind it is and what it says under a hairline ("举例 · …"), then `after`. Every
- * figure of the library sits in this one frame: the same padding, the same caption, the same tag.
+ * figure of the library sits in this one frame: the same padding, the same caption, the same tag. `narrow`: a chart
+ * of bars or figures, at most 620px wide, so on a desktop its bars stay short enough to compare and its labels
+ * stay near their numbers (the 760px column would spread them apart).
  */
-export function Figure({ children, caption, kind, after }: { children: ReactNode; caption?: string | null; kind?: "原文数据" | "举例" | "示意"; after?: ReactNode }) {
+export function Figure({ children, caption, kind, after, narrow = false }: { children: ReactNode; caption?: string | null; kind?: "原文数据" | "举例" | "示意"; after?: ReactNode; narrow?: boolean }) {
   return (
-    <div className="card mt-4 px-4 pb-3.5 pt-4 sm:px-5 sm:pt-5">
+    <div className={`card mt-4 px-4 pb-3.5 pt-4 sm:px-6 sm:pb-4 sm:pt-5 ${narrow ? "sm:max-w-[620px]" : ""}`}>
       {children}
       {(caption || kind) && (
-        <p className="mt-4 border-t border-line-soft pt-3 text-[13px] leading-[1.65] text-ink-4">
+        <p className="mt-4 border-t border-line-soft pt-3 text-[13px] leading-[1.65] text-ink-4 sm:text-[13.5px]">
           {kind && <KindTag kind={kind} />}
           {caption}
         </p>
@@ -409,11 +411,11 @@ const exact = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 
 function BarRow({ label, value, share, className, strong }: { label: ReactNode; value: ReactNode; share: number; className: string; strong?: boolean }) {
   return (
     <div>
-      <div className="flex items-baseline justify-between gap-3 text-[13.5px] leading-[1.45]">
-        <span className={`min-w-0 ${strong ? "text-ink-2" : "text-ink-3"}`}>{label}</span>
+      <div className="flex items-baseline justify-between gap-3 text-[14px] leading-[1.45] sm:text-[15px]">
+        <span className={`min-w-0 ${strong ? "font-semibold text-ink" : "text-ink-3"}`}>{label}</span>
         <span className={`num shrink-0 text-right ${strong ? "font-bold text-ink" : "font-semibold text-ink-2"}`}>{value}</span>
       </div>
-      <div className={`mt-1.5 h-2.5 overflow-hidden rounded-full ${TRACK}`}>
+      <div className={`mt-2 h-3 overflow-hidden rounded-full ${TRACK}`}>
         <div className={`h-full min-w-1 rounded-full ${className}`} style={{ width: `${Math.min(Math.max(share, 0), 1) * 100}%` }} />
       </div>
     </div>
@@ -424,25 +426,25 @@ function BarRow({ label, value, share, className, strong }: { label: ReactNode; 
 function Worked({ children }: { children: ReactNode }) {
   return (
     <div className="mt-4">
-      <p className="text-[12.5px] leading-[1.5] text-ink-4">按原文数字计算</p>
-      <p className="mt-0.5 text-[14.5px] leading-[1.7] text-ink-2">{children}</p>
+      <p className="text-[12.5px] leading-[1.5] text-ink-4 sm:text-[13px]">按原文数字计算</p>
+      <p className="mt-0.5 text-[15px] leading-[1.7] text-ink-2 sm:text-[16px]">{children}</p>
     </div>
   );
 }
 
 /** A number of a worked line: bigger and in ink, so the line reads at a glance. */
-const Big = ({ children, className = "text-ink" }: { children: ReactNode; className?: string }) => <b className={`num text-[18px] font-bold ${className}`}>{children}</b>;
+const Big = ({ children, className = "text-ink" }: { children: ReactNode; className?: string }) => <b className={`num text-[20px] font-bold sm:text-[22px] ${className}`}>{children}</b>;
 
 function Compare({ b }: { b: CompareBlock }) {
   const max = Math.max(...b.items.map((i) => i.value));
   const per = b.per ? `每${b.per} ` : "";
   return (
-    <Figure kind="原文数据" caption={b.caption}>
-      <div className="grid gap-3.5">
+    <Figure kind="原文数据" caption={b.caption} narrow>
+      <div className="grid gap-4">
         {b.items.map((item, i) => {
           const last = i === b.items.length - 1;
-          return <BarRow key={i} label={item.label} strong={last} share={item.value / max} className={last ? "bg-accent" : "bg-ink-4/45"}
-            value={<>{per && <span className="mr-1 text-[12.5px] font-normal text-ink-3">{per.trim()}</span>}{exact(item.value)}<span className={`${b.unit === "%" ? "" : "ml-1"} text-[12.5px] font-normal text-ink-3`}>{b.unit}</span></>} />;
+          return <BarRow key={i} label={item.label} strong={last} share={item.value / max} className={last ? "bg-accent" : "bg-accent/30"}
+            value={<>{per && <span className="mr-1 text-[13px] font-normal text-ink-3">{per.trim()}</span>}{exact(item.value)}<span className={`${b.unit === "%" ? "" : "ml-1"} text-[13px] font-normal text-ink-3`}>{b.unit}</span></>} />;
         })}
       </div>
       {b.change && b.change.amount !== 0 && (
@@ -451,7 +453,7 @@ function Compare({ b }: { b: CompareBlock }) {
           {b.change.amount > 0 ? "多了" : "少了"} <Big>{num(Math.abs(b.change.amount))}</Big>{" "}
           <span className="whitespace-nowrap">
             {b.unit === "%" ? "个百分点" : b.unit}
-            {b.unit !== "%" && <span className="num ml-1.5 inline-flex h-5 items-center rounded-full bg-ink-4/12 px-1.5 align-[2px] text-[12.5px] font-semibold text-ink-2">{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%</span>}
+            {b.unit !== "%" && <span className="num ml-1.5 inline-flex h-6 items-center rounded-full bg-accent-soft px-2 align-[2px] text-[13px] font-bold text-accent">{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%</span>}
           </span>
           {b.change.yearly !== null && <>，<span className="whitespace-nowrap">按一年算 <Big>{num(Math.abs(b.change.yearly))}</Big> {b.unit}</span></>}
         </Worked>
@@ -466,10 +468,10 @@ function Compare({ b }: { b: CompareBlock }) {
  */
 function Legend({ rows }: { rows: Array<{ label: string; value: ReactNode; tone: string }> }) {
   return (
-    <ul className="mt-3 grid gap-x-8 gap-y-1.5 text-[13.5px] leading-[1.5] sm:grid-cols-2">
+    <ul className="mt-3 grid gap-x-8 gap-y-1.5 text-[14px] leading-[1.5] sm:grid-cols-2 sm:text-[15px]">
       {rows.map((r, i) => (
         <li key={i} className="flex items-baseline gap-2">
-          <i className={`size-2.5 shrink-0 translate-y-[1px] rounded-[3px] ${r.tone}`} />
+          <i className={`size-3 shrink-0 translate-y-[1px] rounded-[3px] ${r.tone}`} />
           <span className="min-w-0 flex-1 text-ink-3">{r.label}</span>
           <span className="num shrink-0 font-semibold text-ink-2">{r.value}</span>
         </li>
@@ -482,7 +484,7 @@ function Legend({ rows }: { rows: Array<{ label: string; value: ReactNode; tone:
 function Stack({ parts, mark }: { parts: Array<{ share: number; tone: string }>; mark?: number }) {
   return (
     <div className="relative">
-      <div className={`flex h-3.5 overflow-hidden rounded-full ${TRACK}`}>
+      <div className={`flex h-4 overflow-hidden rounded-full ${TRACK}`}>
         {parts.filter((p) => p.share > 0).map((p, i) => (
           <i key={i} className={`h-full shadow-[inset_-2px_0_0_var(--surface)] last:shadow-none ${p.tone}`} style={{ width: `${Math.min(p.share, 1) * 100}%` }} />
         ))}
@@ -492,32 +494,46 @@ function Stack({ parts, mark }: { parts: Array<{ share: number; tone: string }>;
   );
 }
 
+/** Units of money (元, 万元, 卢比, 美元…): only parts in money set against an income are 支出 with a 剩 or 亏. */
+const MONEY = /元|币|卢比|镑|令吉|铢|比索|卢布|里拉|兰特|法郎|盾|美分|欧|克朗|里亚尔|迪拉姆|[$€£¥]/u;
+
+/**
+ * Parts of a whole. Three cases, by what the writer set them against (prompts: against is written only when the parts
+ * are the whole of it): parts that add up to it exactly are a breakdown of it (门店总数 = 原有 + 新城市), one bar under
+ * its name and nothing worked out; parts in money against an income are 支出, with what is left or lost; with nothing
+ * against them, one bar and their 合计.
+ */
 function Parts({ b }: { b: PartsBlock }) {
   const whole = Math.max(b.total, b.against?.value ?? 0);
-  const head = (label: string, value?: ReactNode) => (
-    <div className="mb-1.5 flex items-baseline justify-between gap-3 text-[13.5px]"><span className="text-ink-3">{label}</span>{value !== undefined && <span className="num font-semibold text-ink-2">{value}</span>}</div>
+  const breakdown = b.against !== null && b.gap === 0;
+  const spending = b.against !== null && !breakdown && MONEY.test(b.unit);
+  const value = (n: number) => <>{num(n)}<span className="ml-1 text-[13px] font-normal text-ink-3">{b.unit}</span></>;
+  const head = (label: string, v?: ReactNode) => (
+    <div className="mb-2 flex items-baseline justify-between gap-3 text-[14px] sm:text-[15px]"><span className="font-semibold text-ink-2">{label}</span>{v !== undefined && <span className="num font-bold text-ink">{v}</span>}</div>
   );
+  const stack = <Stack parts={b.items.map((i, n) => ({ share: i.value / whole, tone: RAMP[n % RAMP.length]! }))} mark={spending && b.gap! < 0 ? b.against!.value / whole : undefined} />;
   return (
-    <Figure kind="原文数据" caption={b.caption}>
-      <div className="grid gap-3.5">
-        {b.against && (
+    <Figure kind="原文数据" caption={b.caption} narrow>
+      {breakdown ? (
+        <div>{head(b.against!.label, value(b.against!.value))}{stack}</div>
+      ) : b.against ? (
+        <div className="grid gap-4">
           <div>
-            {head(b.against.label, <>{num(b.against.value)}<span className="ml-1 text-[12.5px] font-normal text-ink-3">{b.unit}</span></>)}
-            <div className={`h-3.5 overflow-hidden rounded-full ${TRACK}`}><div className="h-full rounded-full bg-ink-4/45" style={{ width: `${(b.against.value / whole) * 100}%` }} /></div>
+            {head(b.against.label, value(b.against.value))}
+            <div className={`h-4 overflow-hidden rounded-full ${TRACK}`}><div className="h-full rounded-full bg-accent/30" style={{ width: `${(b.against.value / whole) * 100}%` }} /></div>
           </div>
-        )}
-        <div>
-          {head(b.against ? "支出" : "合计")}
-          <Stack parts={b.items.map((i, n) => ({ share: i.value / whole, tone: RAMP[n % RAMP.length]! }))} mark={b.against && b.gap !== null && b.gap < 0 ? b.against.value / whole : undefined} />
+          <div>{head(spending ? "支出" : "合计")}{stack}</div>
         </div>
-      </div>
+      ) : stack}
       <Legend rows={b.items.map((i, n) => ({ label: i.label, value: num(i.value), tone: RAMP[n % RAMP.length]! }))} />
-      <Worked>
-        合计 {num(b.total)} {b.unit}
-        {b.gap !== null && (b.gap < 0
-          ? <>，亏 <Big className="text-hot">{num(-b.gap)}</Big> {b.unit}</>
-          : <>，剩 <Big>{num(b.gap)}</Big> {b.unit}</>)}
-      </Worked>
+      {!breakdown && (
+        <Worked>
+          合计 {num(b.total)} {b.unit}
+          {spending && (b.gap! < 0
+            ? <>，亏 <Big className="text-hot">{num(-b.gap!)}</Big> {b.unit}</>
+            : <>，剩 <Big className="text-accent">{num(b.gap!)}</Big> {b.unit}</>)}
+        </Worked>
+      )}
     </Figure>
   );
 }
@@ -529,7 +545,7 @@ function Example({ b }: { b: ExampleBlock }) {
   const shade = (r: ExampleBlock["rows"][number], i: number) => r.label === "剩下" || r.label === "毛利" ? (r.value < 0 ? "bg-hot" : "bg-accent") : TONES[i % TONES.length]!;
   const max = Math.max(...b.rows.map((r) => r.share ?? 0), 1e-9);
   return (
-    <Figure kind="举例" caption={b.caption}>
+    <Figure kind="举例" caption={b.caption} narrow>
       {bar && (
         <>
           <Stack parts={b.rows.map((r, i) => ({ share: r.share ?? 0, tone: shade(r, i) }))} />
@@ -537,15 +553,15 @@ function Example({ b }: { b: ExampleBlock }) {
         </>
       )}
       {rowsKind && (
-        <div className="grid gap-3">
+        <div className="grid gap-4">
           {b.rows.map((r) => (
             <BarRow key={r.label} label={<span className={r.flag ? "text-hot" : ""}>{r.label}</span>} share={b.kind === "percent-over" ? r.share ?? 0 : (r.share ?? 0) / max}
-              className={r.flag ? "bg-hot" : "bg-ink-4/45"} value={<span className={r.flag ? "text-hot" : ""}>{num(r.value)}{r.unit === "%" ? "%" : ""}</span>} />
+              className={r.flag ? "bg-hot" : "bg-accent/30"} value={<span className={r.flag ? "text-hot" : ""}>{num(r.value)}{r.unit === "%" ? "%" : ""}</span>} />
           ))}
         </div>
       )}
-      {b.equation && <p className={`num well rounded-control ${bar || rowsKind ? "mt-4" : ""} px-3 py-2.5 text-center text-[15px] font-semibold text-ink-2`}>{b.equation}</p>}
-      <p className={`text-[15px] font-semibold leading-[1.6] text-ink ${bar || rowsKind || b.equation ? "mt-3.5" : ""}`}>{b.result}</p>
+      {b.equation && <p className={`num well rounded-control ${bar || rowsKind ? "mt-4" : ""} px-3 py-2.5 text-center text-[15px] font-semibold text-ink-2 sm:text-[16px]`}>{b.equation}</p>}
+      <p className={`text-[15.5px] font-bold leading-[1.6] text-ink sm:text-[16.5px] ${bar || rowsKind || b.equation ? "mt-3.5" : ""}`}>{b.result}</p>
     </Figure>
   );
 }
@@ -563,9 +579,9 @@ function FigureValue({ value, size }: { value: string; size: string }) {
   const [before, n, after] = figureSplit(value);
   return (
     <span className="num">
-      {before && <span className="mr-1 text-[14px] font-semibold text-ink-3">{before}</span>}
-      <span className={`${size} font-bold tracking-[-0.02em] text-ink`}>{n}</span>
-      {after && <span className="ml-1 text-[14px] font-semibold text-ink-3">{after}</span>}
+      {before && <span className="mr-1 text-[14px] font-semibold text-ink-3 sm:text-[15px]">{before}</span>}
+      <span className={`${size} font-extrabold tracking-[-0.025em] text-ink`}>{n}</span>
+      {after && <span className="ml-1 text-[14px] font-semibold text-ink-3 sm:text-[15px]">{after}</span>}
     </span>
   );
 }
@@ -588,12 +604,12 @@ export function StoryBlock({ block }: { block: Block }) {
     );
     // Steps one under another, numbered, joined by a line: read in order on a phone as on a desktop.
     case "flow": return (
-      <ol className="card mt-4 grid px-4 py-4 sm:px-5">
+      <ol className="card mt-4 grid px-4 py-4 sm:max-w-[620px] sm:px-6 sm:py-5">
         {block.steps.map((s, n) => (
           <li key={n} className="relative flex gap-3.5 pb-4 last:pb-0">
-            {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute bottom-0 left-[13px] top-7 w-[2px] rounded-full bg-accent/20" />}
-            <span className="num relative flex size-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-bold text-accent ring-1 ring-accent/30">{n + 1}</span>
-            <span className="min-w-0 pt-[3px] text-[15px] leading-[1.65] text-ink-2">{s}</span>
+            {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute bottom-0 left-[13px] top-7 w-[2px] rounded-full bg-accent/25" />}
+            <span className="num relative flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-[13px] font-bold text-accent-contrast">{n + 1}</span>
+            <span className="min-w-0 pt-[3px] text-[15px] leading-[1.65] text-ink-2 sm:text-[16px]">{s}</span>
           </li>
         ))}
       </ol>
@@ -614,15 +630,15 @@ export function StoryBlock({ block }: { block: Block }) {
       const one = block.items.length === 1;
       const short = block.items.every((i) => figureSplit(i.value).join("").length <= 6);
       return (
-        <Figure kind="原文数据" caption={block.caption}>
-          {block.point ? <p className="mb-4 text-[15.5px] font-semibold leading-[1.6] text-ink">{block.point}</p> : null}
+        <Figure kind="原文数据" caption={block.caption} narrow>
+          {block.point ? <p className="mb-4 text-[16px] font-bold leading-[1.55] text-ink sm:text-[17px]">{block.point}</p> : null}
           {one || comparable(block.items.map((i) => i.value)) ? (
-            <div className={`grid gap-x-5 gap-y-5 ${one ? "" : block.items.length === 2 ? "grid-cols-2" : short ? "grid-cols-3" : "sm:grid-cols-3"}`}>
+            // In one row the figures are divided by hairlines; three long ones go one under another on a phone.
+            <div className={`grid gap-y-5 ${one ? "" : block.items.length === 2 || short ? `${block.items.length === 2 ? "grid-cols-2" : "grid-cols-3"} [&>*+*]:border-l [&>*+*]:border-line [&>*+*]:pl-4 sm:[&>*+*]:pl-6 [&>*]:pr-2` : "sm:grid-cols-3 sm:[&>*+*]:border-l sm:[&>*+*]:border-line sm:[&>*+*]:pl-6"}`}>
               {block.items.map((i, n) => (
                 <div key={n} className="min-w-0">
-                  <span aria-hidden="true" className="block h-[3px] w-5 rounded-full bg-accent" />
-                  <div className="mt-2.5 leading-none"><FigureValue value={i.value} size="text-[30px] lg:text-[34px]" /></div>
-                  <div className="mt-2 text-[13.5px] leading-[1.5] text-ink-3">{i.label}</div>
+                  <div className="leading-none"><FigureValue value={i.value} size={block.items.length === 3 && short ? "text-[32px] sm:text-[40px]" : "text-[36px] sm:text-[42px]"} /></div>
+                  <div className="mt-2.5 text-[14px] leading-[1.5] text-ink-3 sm:text-[15px]">{i.label}</div>
                 </div>
               ))}
             </div>
@@ -631,8 +647,8 @@ export function StoryBlock({ block }: { block: Block }) {
             <dl className="divide-y divide-line-soft">
               {block.items.map((i, n) => (
                 <div key={n} className="flex items-baseline justify-between gap-4 py-3 first:pt-0 last:pb-0">
-                  <dt className="min-w-0 text-[14.5px] leading-[1.55] text-ink-2">{i.label}</dt>
-                  <dd className="shrink-0 text-right leading-none"><FigureValue value={i.value} size="text-[20px]" /></dd>
+                  <dt className="min-w-0 text-[14.5px] leading-[1.55] text-ink-2 sm:text-[15.5px]">{i.label}</dt>
+                  <dd className="shrink-0 text-right leading-none"><FigureValue value={i.value} size="text-[22px] sm:text-[24px]" /></dd>
                 </div>
               ))}
             </dl>

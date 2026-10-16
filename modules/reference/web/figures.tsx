@@ -28,42 +28,43 @@ function causes(groups: string[], focus?: string) {
 }
 
 /**
- * 生意很忙，钱却留不下来: the money poured in leaks through three holes. The coins fall in at the top; each hole
- * runs out in a stream and a drop, numbered as the causes under the picture are.
+ * 生意很忙，钱却留不下来: the money poured in leaks through three holes. Gold coins fall into a big bucket; the water
+ * in it is what is left at the month's end; each hole runs out in a thick stream and a drop, numbered as the causes
+ * under the picture are.
  */
 function Bucket({ groups, focus }: { groups: string[]; focus?: string }) {
   const { fade, mark } = causes(groups, focus);
   // [hole on the wall, the stream out of it, where its drop falls, where its number sits]
   const leaks: Array<[[number, number], string, [number, number], [number, number]]> = [
-    [[77, 134], "M74 134 Q52 137 43 162", [42, 172], [18, 168]],
-    [[222, 144], "M225 144 Q248 147 257 172", [258, 182], [284, 178]],
-    [[86, 192], "M83 192 Q61 195 53 218", [52, 228], [28, 226]],
+    [[70, 140], "M67 140 Q36 143 25 178", [24, 192], [30, 122]],
+    [[246, 160], "M249 160 Q281 163 291 198", [292, 212], [292, 140]],
+    [[82, 202], "M79 202 Q52 205 43 234", [42, 248], [10, 226]],
   ];
-  const drop = ([x, y]: [number, number]) => `M${x} ${y - 7} C${x + 2} ${y - 3} ${x + 5} ${y} ${x + 5} ${y + 3} A5 5 0 0 1 ${x - 5} ${y + 3} C${x - 5} ${y} ${x - 2} ${y - 3} ${x} ${y - 7} Z`;
+  const drop = ([x, y]: [number, number]) => `M${x} ${y - 10} C${x + 3} ${y - 5} ${x + 7} ${y} ${x + 7} ${y + 4} A7 7 0 0 1 ${x - 7} ${y + 4} C${x - 7} ${y} ${x - 3} ${y - 5} ${x} ${y - 10} Z`;
   return (
-    <svg viewBox="-10 0 320 246" role="img" aria-label="一只水桶：客人付的钱从上面倒进来，从几个洞漏出去，桶里剩下的才是月底的钱" className="mx-auto block w-full">
-      <defs><marker id="ref-ar-coin" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker></defs>
-      {[[129, 15], [151, 30], [173, 12]].map(([cx, cy]) => (
-        <g key={cx}>
-          <circle cx={cx} cy={cy} r="9" style={{ fill: "var(--surface)", stroke: "var(--ink-3)", strokeWidth: 1.6 }} />
-          <circle cx={cx} cy={cy} r="4.6" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1 }} />
+    <svg viewBox="-18 0 354 262" role="img" aria-label="一只水桶：客人付的钱从上面倒进来，从几个洞漏出去，桶里剩下的才是月底的钱" className="mx-auto block w-full">
+      <defs><marker id="ref-ar-coin" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-3)" }} /></marker></defs>
+      {[[126, 22], [150, 40], [176, 16], [154, 10]].map(([cx, cy]) => (
+        <g key={`${cx}-${cy}`}>
+          <circle cx={cx} cy={cy} r="10.5" style={{ fill: "var(--amber)", stroke: "var(--amber-ink)", strokeWidth: 1.5 }} />
+          <circle cx={cx} cy={cy} r="6" style={{ fill: "none", stroke: "var(--surface)", strokeWidth: 1.4, opacity: 0.6 }} />
         </g>
       ))}
-      <path d="M151 44 V58" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.6 }} markerEnd="url(#ref-ar-coin)" />
-      <text x="190" y="27" style={text}>客人付的钱</text>
-      <clipPath id="ref-bucket"><path d="M66 68 L234 68 L209 226 L91 226 Z" /></clipPath>
+      <path d="M152 56 V70" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2 }} markerEnd="url(#ref-ar-coin)" />
+      <text x="198" y="32" style={{ fill: "var(--ink-2)", fontSize: 15, fontWeight: 600 }}>客人付的钱</text>
+      <clipPath id="ref-bucket"><path d="M58 82 L262 82 L231 240 L89 240 Z" /></clipPath>
       <g clipPath="url(#ref-bucket)">
-        <path d="M60 104 Q85 96 110 104 T160 104 T210 104 T260 104 V232 H60 Z" style={{ fill: "var(--accent)", opacity: 0.14 }} />
-        <path d="M60 104 Q85 96 110 104 T160 104 T210 104 T260 104" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 1.5, opacity: 0.55 }} />
+        <path d="M50 118 Q80 108 110 118 T170 118 T230 118 T290 118 V250 H50 Z" style={{ fill: "var(--accent)", opacity: 0.2 }} />
+        <path d="M50 118 Q80 108 110 118 T170 118 T230 118 T290 118" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5, opacity: 0.7 }} />
       </g>
-      <path d="M66 68 L91 226 H209 L234 68" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round" }} />
-      <path d="M58 68 H242" style={{ stroke: "var(--ink-3)", strokeWidth: 3.5, strokeLinecap: "round" }} />
-      <text x="150" y="172" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>月底剩下的钱</text>
+      <path d="M58 82 L89 240 H231 L262 82" style={{ fill: "none", stroke: "var(--ink-2)", strokeWidth: 3, strokeLinejoin: "round", strokeLinecap: "round" }} />
+      <rect x="48" y="76" width="224" height="10" rx="5" style={{ fill: "var(--ink-2)" }} />
+      <text x="160" y="190" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 18, fontWeight: 800 }}>月底剩下的钱</text>
       {leaks.slice(0, groups.length).map(([[hx, hy], stream, at, [mx, my]], i) => (
         <g key={i} style={fade(groups[i]!)}>
-          <path d={stream} style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 3, strokeLinecap: "round" }} />
+          <path d={stream} style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 4.5, strokeLinecap: "round" }} />
           <path d={drop(at)} style={{ fill: "var(--accent)" }} />
-          <circle cx={hx} cy={hy} r="3.2" style={{ fill: "var(--ink-3)" }} />
+          <circle cx={hx} cy={hy} r="4.5" style={{ fill: "var(--surface)", stroke: "var(--ink-2)", strokeWidth: 2 }} />
           {mark(groups[i]!, mx, my)}
         </g>
       ))}
@@ -144,26 +145,33 @@ function Takings() {
 
 /**
  * 招不到人: people drop out at every step from the notice to the third month. Four bands, each narrower and paler than
- * the one above; at each step a few leave to the side.
+ * the one above; at each step two people walk off to the side.
  */
 function Funnel() {
   const steps = ["看到招聘启事", "来面试", "录用", "做满三个月"];
-  const top = [140, 110, 82, 56];
+  const top = [142, 112, 84, 58];
   const bottom = [114, 86, 60, 42];
-  const y = (i: number) => 4 + i * 46;
+  const cx = 148;
+  const y = (i: number) => 4 + i * 52;
+  const person = (x: number, py: number) => (
+    <g key={x} style={{ fill: "var(--ink-4)", opacity: 0.6 }}>
+      <circle cx={x} cy={py - 11} r="4.2" />
+      <path d={`M${x - 6.5} ${py + 3} Q${x - 6.5} ${py - 5} ${x} ${py - 5} Q${x + 6.5} ${py - 5} ${x + 6.5} ${py + 3} Z`} />
+    </g>
+  );
   return (
-    <svg viewBox="0 0 320 188" role="img" aria-label="示意图：看到招聘启事的人里，来面试的是一部分，录用的更少，做满三个月的又少一些" className="mx-auto block w-full">
+    <svg viewBox="0 0 320 212" role="img" aria-label="示意图：看到招聘启事的人里，来面试的是一部分，录用的更少，做满三个月的又少一些" className="mx-auto block w-full">
       <defs><marker id="ref-ar-out" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker></defs>
       {steps.map((step, i) => (
         <g key={step}>
-          <path d={`M${160 - top[i]!} ${y(i)} H${160 + top[i]!} L${160 + bottom[i]!} ${y(i) + 40} H${160 - bottom[i]!} Z`}
-            style={{ fill: "var(--accent)", stroke: "var(--accent)", strokeWidth: 3, strokeLinejoin: "round", opacity: [1, 0.72, 0.46, 0.24][i] }} />
-          <text x="160" y={y(i) + 25.5} textAnchor="middle" style={{ fill: i < 2 ? "var(--accent-contrast)" : "var(--ink)", fontSize: 15, fontWeight: 700 }}>{step}</text>
+          <path d={`M${cx - top[i]!} ${y(i)} H${cx + top[i]!} L${cx + bottom[i]!} ${y(i) + 46} H${cx - bottom[i]!} Z`}
+            style={{ fill: "var(--accent)", stroke: "var(--accent)", strokeWidth: 4, strokeLinejoin: "round", opacity: [1, 0.74, 0.48, 0.26][i] }} />
+          <text x={cx} y={y(i) + 29} textAnchor="middle" style={{ fill: i < 2 ? "var(--accent-contrast)" : "var(--ink)", fontSize: 16.5, fontWeight: 700 }}>{step}</text>
           {i < steps.length - 1 && (
             <g>
-              <path d={`M${160 + bottom[i]! + 6} ${y(i) + 30} q14 2 18 17`} style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.5 }} markerEnd="url(#ref-ar-out)" />
-              <circle cx={160 + bottom[i]! + 26} cy={y(i) + 57} r="4" style={{ fill: "var(--ink-4)", opacity: 0.5 }} />
-              <circle cx={160 + bottom[i]! + 36} cy={y(i) + 52} r="4" style={{ fill: "var(--ink-4)", opacity: 0.5 }} />
+              <path d={`M${cx + bottom[i]! + 5} ${y(i) + 36} q10 2 14 14`} style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.6 }} markerEnd="url(#ref-ar-out)" />
+              {person(cx + bottom[i]! + 30, y(i) + 58)}
+              {person(cx + bottom[i]! + 46, y(i) + 54)}
             </g>
           )}
         </g>
@@ -185,30 +193,39 @@ function LabourShare() {
   );
 }
 
-/** 老板自己累垮: one owner's day, every part of it his own, on one line from 7:00 to 23:00, bracketed as his 16 hours. */
+/**
+ * 老板自己累垮: one owner's day on a 24-hour dial, the 16 hours from 7:00 to 23:00 filled in the accent with a dot at
+ * each thing he does, and the day's list beside it.
+ */
 function OwnerDay() {
   const day: Array<[string, string]> = [["7:00", "采购"], ["9:00", "备料"], ["11:00", "午市"], ["14:00", "备料、对账、处理杂事"], ["17:00", "晚市"], ["21:00", "收尾、记账"]];
+  // A point on the dial at hour `h` (0 at the top, clockwise), `r` from the centre.
+  const at = (h: number, r = 52): [number, number] => [70 + r * Math.sin((h / 24) * 2 * Math.PI), 70 - r * Math.cos((h / 24) * 2 * Math.PI)];
+  const [x7, y7] = at(7);
+  const [x23, y23] = at(23);
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-stretch gap-3">
-      <ol className="relative text-[13.5px] leading-[1.5]">
-        <i aria-hidden="true" className="absolute bottom-3 left-[5px] top-3 w-[2px] rounded-full bg-accent/30" />
+    <div className="grid grid-cols-[122px_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-5">
+      <svg viewBox="0 0 140 140" role="img" aria-label="一天 24 小时里，从早上 7 点到晚上 11 点的 16 个小时都在店里" className="block w-full">
+        <circle cx="70" cy="70" r="52" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 15, opacity: 0.14 }} />
+        <path d={`M${x7} ${y7} A52 52 0 1 1 ${x23} ${y23}`} style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 15 }} />
+        {[0, 6, 12, 18].map((h) => { const [a, b] = at(h, 63); const [c, d] = at(h, 67); return <path key={h} d={`M${a} ${b} L${c} ${d}`} style={{ stroke: "var(--ink-4)", strokeWidth: 1.5, strokeLinecap: "round" }} />; })}
+        {day.map(([t]) => { const [cx, cy] = at(Number(t.split(":")[0])); return <circle key={t} cx={cx} cy={cy} r="3" style={{ fill: "var(--surface)" }} />; })}
+        <circle cx={x23} cy={y23} r="4.5" style={{ fill: "var(--surface)", stroke: "var(--ink-3)", strokeWidth: 2 }} />
+        <text x="70" y="78" textAnchor="middle" className="num" style={{ fill: "var(--accent)", fontSize: 38, fontWeight: 800 }}>16</text>
+        <text x="70" y="97" textAnchor="middle" style={{ fill: "var(--ink-3)", fontSize: 12 }}>小时在店里</text>
+      </svg>
+      <ol className="text-[13.5px] leading-[1.45] sm:text-[14px]">
         {day.map(([time, what]) => (
-          <li key={time} className="relative grid grid-cols-[12px_46px_minmax(0,1fr)] items-center gap-2 py-[3px]">
-            <i className="size-3 rounded-full bg-accent ring-[3px] ring-surface" />
-            <span className="num text-ink-4">{time}</span>
+          <li key={time} className="grid grid-cols-[42px_minmax(0,1fr)] gap-2 py-[3px]">
+            <span className="num font-semibold text-accent">{time}</span>
             <span className="text-ink-2">{what}</span>
           </li>
         ))}
-        <li className="relative grid grid-cols-[12px_46px_minmax(0,1fr)] items-center gap-2 py-[3px]">
-          <i className="size-3 rounded-full border-2 border-ink-4 bg-surface" />
-          <span className="num text-ink-4">23:00</span>
+        <li className="grid grid-cols-[42px_minmax(0,1fr)] gap-2 py-[3px]">
+          <span className="num font-semibold text-ink-4">23:00</span>
           <span className="text-ink-4">离开</span>
         </li>
       </ol>
-      <div className="flex items-center gap-3">
-        <i aria-hidden="true" className="h-[calc(100%-22px)] w-2 rounded-r-[4px] border-y-2 border-r-2 border-accent/45" />
-        <div className="text-center"><b className="num block text-[44px] font-black leading-none tracking-[-0.03em] text-accent">16</b><span className="mt-1 block text-[12px] text-ink-3">小时在店里</span></div>
-      </div>
     </div>
   );
 }

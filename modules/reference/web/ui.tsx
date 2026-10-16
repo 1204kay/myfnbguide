@@ -108,8 +108,14 @@ export function Who({ s, size = 22 }: { s: SituationRow; size?: number }) {
 export const CARD = "card relative transition-colors hover:border-accent touch:active:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:outline-offset-2 has-[.stretch:focus-visible]:outline-accent";
 /** The link that makes a whole card or row clickable; its own other links sit above it. */
 export const STRETCH = "stretch after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none";
-/** A place in 店家谈得最多的事, in front of its title. */
-export const RANK = "num shrink-0 font-extrabold text-accent";
+/** A place in 店家谈得最多的事, as the hot list writes it (AIHOT routes/hot.tsx): 01, its colour by place. */
+const RANK_COLOR = ["text-rank-1", "text-rank-2", "text-rank-3"];
+export const rankColor = (rank: number) => RANK_COLOR[rank - 1] ?? "text-rank-rest";
+export const pad = (rank: number) => String(rank).padStart(2, "0");
+/** The place over a card's title: NO.01. */
+export function RankTag({ rank }: { rank: number }) {
+  return <span className={`mono text-[12px] font-bold tracking-[0.16em] ${rankColor(rank)}`}>NO.{pad(rank)}</span>;
+}
 
 /**
  * A story's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
@@ -248,7 +254,7 @@ export function ShopRows({ shops, figure, className }: { shops: ShopPractices[];
 
 /** A row's columns: its place when ranked, the text, what it counts from 641px (one width, so the rows line up), ›. */
 const COLUMNS = {
-  ranked: "grid-cols-[22px_minmax(0,1fr)_16px] sm:grid-cols-[26px_minmax(0,1fr)_auto_16px]",
+  ranked: "grid-cols-[30px_minmax(0,1fr)_16px] sm:grid-cols-[30px_minmax(0,1fr)_auto_16px] lg:grid-cols-[44px_minmax(0,1fr)_auto_16px]",
   plain: "grid-cols-[minmax(0,1fr)_16px] sm:grid-cols-[minmax(0,1fr)_auto_16px]",
 };
 
@@ -266,7 +272,7 @@ export function SituationRows({ rows, from, category = false, children }: { rows
       <List start={from} className="divide-y divide-line-soft">
         {rows.map((s, i) => (
           <li key={s.slug} className={`relative grid items-center gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/70 touch:active:bg-bg-sunk has-[.stretch:focus-visible]:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:-outline-offset-2 has-[.stretch:focus-visible]:outline-accent sm:px-5 lg:px-6 lg:py-3.5 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
-            {from !== undefined && <span className={`${RANK} self-start text-[17px] leading-[24px]`}>{from + i}</span>}
+            {from !== undefined && <span className={`mono self-start text-[16px] font-semibold leading-[24px] lg:text-[17px] ${rankColor(from + i)}`} aria-label={`第 ${from + i} 位`}>{pad(from + i)}</span>}
             <div className="min-w-0">
               {category && <span className="block text-[13px] leading-[1.5] text-ink-4">{s.category}</span>}
               {/* The hot list's row type (AIHOT routes/hot.tsx Row): 15px title, a 13px line under it. */}

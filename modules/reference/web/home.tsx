@@ -2,9 +2,7 @@
 // ten situations the most shops shared a practice in, after AIHOT's 热点榜 (the first as a large card with its
 // picture, the next two as small cards beside it, the rest as rows); then each category's situations as rows, most
 // shops first. Neither countries nor shop kinds are ways in or counts (layout J0).
-import { useRef, useState } from "react";
 import { Link, useLoaderData, type LoaderFunctionArgs } from "react-router";
-import { IconChevronDown } from "@aihot/web/components/icons";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
 import { EmptyState } from "@aihot/web/components/ui/Page";
 import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
@@ -14,18 +12,11 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import { day, num } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
 import { figureKind, SituationDrawing } from "./figures";
-import { CARD, CountFigure, KindTag, openRest, Page, PageHeader, RANK, SituationRows, STRETCH, Who } from "./ui";
+import { CARD, CountFigure, KindTag, Page, PageHeader, RankTag, SituationRows, STRETCH, Who } from "./ui";
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
 const LEAD = "按遇到的事，查各地店家的做法和经验。每一条都附原文出处，由你自己判断。";
-
-/**
- * A category lists all its situations up to ALL_UP_TO; past that, the first SHOWN and a row that opens the rest in
- * place (layout J3-4): the library grows by rule, and a category would otherwise grow without end.
- */
-const ALL_UP_TO = 8;
-const SHOWN = 6;
 
 export function headers() {
   return edgeTtl(60);
@@ -51,9 +42,9 @@ function Lead({ s, recent }: { s: SituationRow; recent: ReferenceHome["recent"] 
   return (
     <article className={`${CARD} flex flex-col p-5 sm:p-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto] xl:grid-rows-[auto_1fr]`}>
       <div className="min-w-0 xl:col-start-1 xl:row-start-1">
-        {/* The hot list's first card type (AIHOT routes/hot.tsx Lead): 21/23/25px title, a 14px line. */}
-        <h3 className="flex gap-2.5 text-[21px] font-bold leading-[1.4] tracking-[-0.01em] text-ink sm:text-[23px] lg:text-[25px] lg:leading-[1.38]">
-          <span className={RANK}>1</span>
+        {/* The hot list's first card type (AIHOT routes/hot.tsx Lead): NO.01 over a 21/23/25px title, a 14px line. */}
+        <RankTag rank={1} />
+        <h3 className="mt-4 text-[21px] font-bold leading-[1.4] tracking-[-0.01em] text-ink sm:text-[23px] lg:text-[25px] lg:leading-[1.38]">
           <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
         </h3>
         <p className="mt-3 line-clamp-3 text-[14px] leading-[1.75] text-ink-3">{s.overview ?? s.dek}</p>
@@ -79,9 +70,9 @@ function Lead({ s, recent }: { s: SituationRow; recent: ReferenceHome["recent"] 
 function Runner({ s, rank }: { s: SituationRow; rank: number }) {
   return (
     <article className={`${CARD} flex flex-col px-5 py-4`}>
-      {/* The hot list's second and third (AIHOT routes/hot.tsx Runner): 16px title, a 13px line. */}
-      <h3 className="flex gap-2.5 text-[16px] font-[650] leading-[1.5] text-ink">
-        <span className={RANK}>{rank}</span>
+      {/* The hot list's second and third (AIHOT routes/hot.tsx Runner): NO.02 over a 16px title, a 13px line. */}
+      <RankTag rank={rank} />
+      <h3 className="mt-2.5 text-[16px] font-[650] leading-[1.5] text-ink">
         <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
       </h3>
       <p className="mt-1.5 line-clamp-2 text-[13px] leading-[1.7] text-ink-3">{s.practice ?? s.dek}</p>
@@ -108,23 +99,13 @@ function Ranking({ rows, recent }: { rows: SituationRow[]; recent: ReferenceHome
   );
 }
 
-/** A category: its title and its situations as rows, most shops first, the rest past SHOWN opened in place. */
+/** A category: its title and all its situations as rows, most shops first, as the topics page lists all its topics. */
 function Category({ c }: { c: CategoryRows }) {
-  const [open, setOpen] = useState(false);
-  const section = useRef<HTMLElement>(null);
-  const cut = !open && c.situations.length > ALL_UP_TO;
   return (
-    <section ref={section} className="pt-8">
+    <section className="pt-8">
       {/* A group's heading, as the topics page has it (AIHOT routes/topics.tsx). */}
       <h2 id={c.key} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[15px] font-bold text-ink">{c.title}</h2>
-      <SituationRows rows={cut ? c.situations.slice(0, SHOWN) : c.situations}>
-        {cut && (
-          <button type="button" onClick={() => openRest(() => setOpen(true), () => section.current?.querySelectorAll<HTMLElement>("h3 a")[SHOWN])}
-            className="flex min-h-11 w-full items-center justify-center gap-1 border-t border-line text-[14px] text-accent transition-colors hover:bg-bg-sunk/40 focus-visible:-outline-offset-2">
-            其余 {c.situations.length - SHOWN} 种情况<IconChevronDown size={15} />
-          </button>
-        )}
-      </SituationRows>
+      <SituationRows rows={c.situations} />
     </section>
   );
 }

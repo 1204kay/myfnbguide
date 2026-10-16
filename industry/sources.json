@@ -2707,6 +2707,182 @@
         "德国",
         "媒体"
       ]
+    },
+    {
+      "id": "pod-take-away-only",
+      "name": "TAKE AWAY ONLY（美国 · 疫情初期各国餐厅老板怎样撑店的访谈，已停更）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/takeaway2020",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-build-your-bakery",
+      "name": "Build Your Bakery Podcast（美国 · 阿拉巴马州一家面包店老板讲开店和经营）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/build-your-own-bakery",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-dirty-linen",
+      "name": "Dirty Linen（澳大利亚 · 美食记者访谈餐厅老板，谈行业里不好公开说的事）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/EIDWD2559442918",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "澳大利亚",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-deep-in-the-weeds",
+      "name": "Deep in the Weeds（澳大利亚 · 餐厅老板、厨师、食材生产者访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/deepintheweeds",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "澳大利亚",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-nz-food-truck-podcast",
+      "name": "The Food Truck Podcast（新西兰 · 奥克兰餐车老板访谈，已停更）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://app.kajabi.com/podcasts/2147781969/feed",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "新西兰",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-ru-malysh-na-million",
+      "name": "Малыш на миллион（俄罗斯 · 两位餐饮人访谈各地开店的人，谈成败和钱）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cloud.mave.digital/37094",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "俄罗斯",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-ru-masha-my-otkryvaem-bar",
+      "name": "Маша, мы открываем бар!（俄罗斯 · 四个程序员在办公室里开酒吧的全过程）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cloud.mave.digital/38583",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "俄罗斯",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-ru-polnaya-posadka",
+      "name": "Полная посадка（俄罗斯 · 新西伯利亚几位餐馆经理谈管店的难处）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cloud.mave.digital/44154",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "俄罗斯",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

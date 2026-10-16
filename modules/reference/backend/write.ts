@@ -67,7 +67,8 @@ export const blockSchema = (n: (cap: number) => number) => z.discriminatedUnion(
   z.object({ type: z.literal("flow"), steps: z.array(text.max(n(40))).min(2).max(n(6)) }),
   z.object({ type: z.literal("quote"), text: text.max(n(80)), who: text.max(n(60)) }),
   z.object({ type: z.literal("compare"), unit: text.max(n(8)), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(n(5)), caption: text.max(n(90)) }),
-  z.object({ type: z.literal("parts"), unit: text.max(n(8)), items: z.array(item).min(2).max(n(7)), against: item.nullable().default(null), caption: text.max(n(90)) }),
+  // `whole` may be missing here so an answer without it goes back with the reason (checks.ts), not as a format error.
+  z.object({ type: z.literal("parts"), whole: z.string().trim().max(n(12)).nullable().default(null), unit: text.max(n(8)), items: z.array(item).min(2).max(n(7)), against: item.nullable().default(null), caption: text.max(n(90)) }),
   z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(n(120)) }),
   z.object({ type: z.literal("numbers"), point: z.string().trim().max(n(30)).nullable().default(null), items: z.array(z.object({ value: text.max(n(16)), label: text.max(n(24)) })).min(1).max(n(3)), caption: z.string().trim().max(n(90)).nullable().default(null) }),
   z.object({ type: z.literal("change"), before: z.object({ label: text.max(n(8)), text: text.max(n(80)) }), after: z.object({ label: text.max(n(8)), text: text.max(n(80)) }), caption: z.string().trim().max(n(90)).nullable().default(null) }),
@@ -133,7 +134,7 @@ export function computeBlock(block: z.infer<typeof BlockSchema>): Block {
 
 const NAMES: Record<string, string> = {
   title: "标题", lead: "开头", who: "人物", open: "结尾说明", heading: "小标题", text: "文字", items: "列表", steps: "流程",
-  caption: "图的说明", card: "卡片", blocks: "内容块", parts: "段落", placements: "情况", shop: "店", label: "店家说明", example: "举例",
+  caption: "图的说明", whole: "合起来是什么", card: "卡片", blocks: "内容块", parts: "段落", placements: "情况", shop: "店", label: "店家说明", example: "举例",
 };
 
 /** Where in the answer a problem is, as the writer reads it: ["parts", 2, "blocks", 0, "text"] → "第 3 段第 1 块的文字". */
@@ -237,7 +238,7 @@ export function spaceStory(story: CaseStory): CaseStory {
       case "flow": return { ...b, steps: b.steps.map(s) };
       case "quote": return { ...b, text: s(b.text), who: s(b.who) };
       case "compare": return { ...b, caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })) };
-      case "parts": return { ...b, caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })), against: b.against && { ...b.against, label: s(b.against.label) } };
+      case "parts": return { ...b, whole: b.whole && s(b.whole), caption: s(b.caption), items: b.items.map((i) => ({ ...i, label: s(i.label) })), against: b.against && { ...b.against, label: s(b.against.label) } };
       case "example": return { ...b, caption: s(b.caption), result: s(b.result) };
       case "numbers": return { ...b, caption: b.caption && s(b.caption), items: b.items.map((i) => ({ value: s(i.value), label: s(i.label) })) };
       case "change": return { ...b, caption: b.caption && s(b.caption), before: { label: s(b.before.label), text: s(b.before.text) }, after: { label: s(b.after.label), text: s(b.after.text) } };

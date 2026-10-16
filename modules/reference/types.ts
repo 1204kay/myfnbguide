@@ -46,6 +46,11 @@ export interface CompareBlock {
 /** Numbers from the original that make up a whole; `against` is what they are set against (revenue). */
 export interface PartsBlock {
   type: "parts";
+  /**
+   * What the items add up to, named by the writer ("一个蛋挞的出厂成本"): the one real amount they make up. Blocks
+   * written before 10/16 have none and show 合计 until they are rewritten.
+   */
+  whole?: string | null;
   unit: string;
   items: Array<{ label: string; value: number }>;
   against: { label: string; value: number } | null;

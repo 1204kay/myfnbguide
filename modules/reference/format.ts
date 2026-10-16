@@ -88,6 +88,7 @@ export const comparable = (values: string[]) => {
 /** A number written in Chinese numerals: 一万, 两三万, 三成, 十几. It starts with a digit word, so 万达 is not one. */
 const HANZI_NUMBER = "[零〇一二两三四五六七八九十几半][零〇一二两三四五六七八九十百千万亿几半]*成?";
 const RANGE = "\\s*(?:到|至|-|–|—|~|〜)\\s*";
+const DIGIT_FIGURE = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*[万亿千]?\s*(?:到|至|-|–|—|~|〜)\s*\d[\d.,]*%?)?)\s*(.*)$/u;
 const HANZI_FIGURE = new RegExp(`^(接近|将近|大约|超过|突破|高达|多达|至少|不到|不足|近|约|超|逾|达|仅)?\\s*(${HANZI_NUMBER}(?:${RANGE}${HANZI_NUMBER})?)\\s*(.*)$`, "u");
 
 /**
@@ -98,7 +99,9 @@ const HANZI_FIGURE = new RegExp(`^(接近|将近|大约|超过|突破|高达|多
  */
 export function figureSplit(value: string): [string, string, string] {
   const v = value.trim();
-  const m = /^(\D*?)\s*([-+]?\d[\d.,]*%?(?:\s*[万亿千]?\s*(?:到|至|-|–|—|~|〜)\s*\d[\d.,]*%?)?)\s*(.*)$/u.exec(v)
-    ?? HANZI_FIGURE.exec(v);
+  const m = DIGIT_FIGURE.exec(v) ?? HANZI_FIGURE.exec(v);
   return m ? [m[1] ?? "", m[2]!, m[3]!] : ["", value, ""];
 }
+
+/** Whether a figure has a number in it, in digits or in Chinese numerals ("接近一万家" has, "很多" has not). */
+export const isFigure = (value: string) => DIGIT_FIGURE.test(value.trim()) || HANZI_FIGURE.test(value.trim());

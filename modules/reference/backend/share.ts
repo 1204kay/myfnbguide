@@ -6,7 +6,7 @@
 // stored blocks: no model is called, and each card is rendered once and kept on disk by its content.
 import { createHash } from "node:crypto";
 import { brandMark, clamp, h, nameMark, renderOg, renderPng, SITE_HOST, type Node } from "@aihot/backend/media/og";
-import { comparable, exact, figureSplit, num } from "../format.ts";
+import { comparable, exact, figureSplit, isFigure, num } from "../format.ts";
 import type { Block, CaseStory, ChangeBlock, CompareBlock, NumbersBlock } from "../types.ts";
 
 /** Bumped when the drawing changes, so every card is drawn again. */
@@ -24,7 +24,8 @@ export const QUOTE_MAX = 72;
 /** Whether a block can be drawn on a card as the story draws it: the parts it needs are there and make sense. */
 function usable(b: Block): b is ShareFigure {
   switch (b.type) {
-    case "numbers": return b.items.length > 0 && b.items.every((i) => i.label.trim() && /\d/.test(figureSplit(i.value)[1]));
+    // A figure in digits or in Chinese numerals (接近一万家): drawn as the page draws it, its number big.
+    case "numbers": return b.items.length > 0 && b.items.every((i) => i.label.trim() && isFigure(i.value));
     case "change": return !!(b.before.text.trim() && b.after.text.trim());
     case "compare": return b.items.length >= 2 && b.items.every((i) => Number.isFinite(i.value) && i.value >= 0) && Math.max(...b.items.map((i) => i.value)) > 0;
     case "quote": return !!(b.text.trim() && b.who.trim()) && [...b.text.trim()].length <= QUOTE_MAX;

@@ -480,10 +480,12 @@ const MONEY = /元|币|卢比|镑|令吉|铢|比索|卢布|里拉|兰特|法郎|
  * Parts of a whole. Three cases, by what the writer set them against (prompts: against is written only when the parts
  * are the whole of it): parts that add up to it exactly are a breakdown of it (门店总数 = 原有 + 新城市), one bar under
  * its name and nothing worked out; parts in money against an income are 支出, with what is left or lost; with nothing
- * against them, one bar and their 合计.
+ * against them, one bar and their total. The bar is titled with what the parts make up as the writer names it
+ * (`whole`: 一个蛋挞的出厂成本); a block written before there was one says 合计 (支出 against an income).
  */
 function Parts({ b }: { b: PartsBlock }) {
   const whole = Math.max(b.total, b.against?.value ?? 0);
+  const name = b.whole?.trim() || null;
   const breakdown = b.against !== null && b.gap === 0;
   const spending = b.against !== null && !breakdown && MONEY.test(b.unit);
   const value = (n: number) => <>{num(n)}<span className="ml-1 text-[13px] font-normal text-ink-3">{b.unit}</span></>;
@@ -501,16 +503,16 @@ function Parts({ b }: { b: PartsBlock }) {
             {head(b.against.label, value(b.against.value))}
             <div className={`h-4 overflow-hidden rounded-full ${TRACK}`}><div className="h-full rounded-full bg-accent/45" style={{ width: `${(b.against.value / whole) * 100}%` }} /></div>
           </div>
-          <div>{head(spending ? "支出" : "合计")}{stack}</div>
+          <div>{head(name ?? (spending ? "支出" : "合计"))}{stack}</div>
         </div>
       ) : (
-        <div>{head("合计", value(b.total))}{stack}</div>
+        <div>{head(name ?? "合计", value(b.total))}{stack}</div>
       )}
       <Legend rows={b.items.map((i, n) => ({ label: i.label, value: num(i.value), tone: RAMP[n % RAMP.length]! }))} />
-      {/* A breakdown adds up to its whole, and parts with nothing against them have their 合计 over the bar: nothing to work out. */}
+      {/* A breakdown adds up to its whole, and parts with nothing against them have their total over the bar: nothing to work out. */}
       {b.against && !breakdown && (
         <Worked>
-          合计 {num(b.total)} {b.unit}
+          {name ?? "合计"} {num(b.total)} {b.unit}
           {spending && (b.gap! < 0
             ? <>，亏 <Big className="text-hot">{num(-b.gap!)}</Big> {b.unit}</>
             : <>，剩 <Big className="text-accent">{num(b.gap!)}</Big> {b.unit}</>)}

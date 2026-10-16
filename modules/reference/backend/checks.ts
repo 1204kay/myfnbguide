@@ -106,6 +106,9 @@ const MONEY = /万美元|亿美元|美元|美分|万元|亿元|日元|万日元|
 /** An opening that labels its speaker instead of saying who they are: 说话的人是, 这期节目的主持人是. */
 const LABEL_OPENING = /^(?:说话的人|这期(?:节目|播客)的主持人|主讲人|讲述者)是/u;
 
+/** Units of rates and scores: a parts bar in them adds up nothing (30% + 20% is no 50% of anything). */
+const RATE = /^(?:%|％|百分点|分|度)$/u;
+
 /** Labels of numbers that are changes already. */
 const NUMERAL = /[0-9０-９零〇一二两三四五六七八九十百千万亿半]/u;
 const CHANGE = /增长|增加|提升|提高|下降|下滑|减少|上涨|下跌|同比|环比|涨幅|降幅/u;
@@ -210,7 +213,7 @@ function blockTexts(block: Block): string[] {
     case "flow": return block.steps;
     case "quote": return [block.text, block.who];
     case "compare": return [block.caption, ...block.items.map((i) => i.label)];
-    case "parts": return [block.caption, ...block.items.map((i) => i.label), block.against?.label ?? ""];
+    case "parts": return [block.whole ?? "", block.caption, ...block.items.map((i) => i.label), block.against?.label ?? ""];
     case "example": return [block.caption];
     case "numbers": return [block.point ?? "", block.caption ?? "", ...block.items.flatMap((i) => [i.value, i.label])];
     case "change": return [block.caption ?? "", block.before.label, block.before.text, block.after.label, block.after.text];
@@ -289,6 +292,14 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     // The card's sentence says what its figures show, not the heading over it again (10/9: 周一会员日 9.9 元猪脚饭 over
     // 每周一9.9元会员日，让周一的生意变好).
     if (b.type === "numbers" && b.point && echoes(bare(b.point), bare(part.heading))) problems.push(`第 ${i + 1} 段数字卡上的结论“${b.point}”和小标题“${part.heading}”说的是同一件事：小标题写做法，卡片写这些数字说明的结果`);
+    // Parts add up to one amount the writer can name. Live on 10/16, 63 parts bars had nothing against them and were
+    // summed to a 合计 that was no amount at all: 10/12/4 美元 menu prices as 合计 26 美元, fee rates in %, a monthly
+    // series, 营业额 beside 房租, the prompt's word against alternatives notwithstanding. Naming the whole is the test.
+    if (b.type === "parts") {
+      if (!b.whole?.trim()) problems.push(`第 ${i + 1} 段的组成图没有写 whole：写出这几项合起来正好是哪一笔（不超过 12 字，如“开店前期花费”“一个蛋挞的出厂成本”）；说不出一笔真实的总数，这几项就不是组成，改用 list 或 numbers`);
+      if (RATE.test(b.unit.trim())) problems.push(`第 ${i + 1} 段的组成图单位是“${b.unit}”：比率和分数加起来不是任何一个数，改用 numbers 或 list`);
+      else if (b.whole?.trim() && b.against && bare(b.whole) === bare(b.against.label)) problems.push(`第 ${i + 1} 段的组成图 whole 写成了对照的“${b.against.label}”：whole 写这几项加起来是什么，对照的数只写在 against`);
+    }
     // A quote is the words once: the text around it does not say them again.
     if (b.type === "quote" && bare(b.text).length >= 12 && bare(prose).includes(bare(b.text))) problems.push(`第 ${i + 1} 段的原话“${b.text.slice(0, 20)}”在文字里又写了一遍：删掉文字里的那一句，只留原话`);
   }
@@ -314,12 +325,13 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
 
 /**
  * Whether a problem keeps a story or write-up from readers: a number the original does not have, an answer that is not
- * one, an example that cannot be worked out, a situation the library has not. Everything else (wording, length, how a
+ * one, an example that cannot be worked out, a situation the library has not, a parts bar that is no whole (its 合计
+ * would state a sum that does not exist). Everything else (wording, length, how a
  * sentence opens) goes back to be mended and, still there after the last try, stands as the engine's wording does
  * (editorial/analyze.ts mendWording): a 讲 or a long paragraph is no reason to show nothing (10/9 eval: 9 of 20
  * write-ups held, most for one word or one label over its length).
  */
-export const blocking = (problem: string) => /在原文里找不到|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组/.test(problem);
+export const blocking = (problem: string) => /在原文里找不到|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组|的组成图/.test(problem);
 
 /** How bad an answer's problems are, to keep the best of the tries: any blocking one before any number of others. */
 export const badness = (written: unknown, problems: string[]) => written ? problems.filter(blocking).length * 1000 + problems.length : Infinity;
@@ -333,7 +345,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"], [/的组成图/, "组成图不是一个整体"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

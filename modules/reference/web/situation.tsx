@@ -14,7 +14,7 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import type { PracticeList, SituationPage } from "../types.ts";
 import { GroupDrawing, SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
-import { BODY, Dek, Heading, KICKER_LINK, MEASURE, Metrics, Practice, ROW_BUTTON, ShareBar, ShopRows, SiteLine, StoryCards, Title, Updated, useShare, BackLink } from "./ui";
+import { BODY, Heading, MEASURE, PageHeader, Practice, ROW_BUTTON, ShareBar, ShopRows, SiteLine, StoryCards, useShare, BackLink } from "./ui";
 
 export const handle: Screen = { tab: "reference", toolbar: true };
 
@@ -50,7 +50,7 @@ export default function SituationRoute() {
             <div key={unit} className="text-[13px] text-ink-4"><b className="num mr-1 text-[22px] font-extrabold tracking-tight text-ink">{num(n)}</b>{unit}</div>
           ))}
         </div>
-        {s.updatedAt && <p className="mt-3 border-t border-line-soft pt-3 text-[12.5px] text-ink-4">更新于 {day(s.updatedAt)}</p>}
+        {s.updatedAt && <p className="mt-3 border-t border-line-soft pt-3 text-[12.5px] text-ink-4"><span className="num">{day(s.updatedAt)}</span> 更新</p>}
         <button type="button" onClick={onShare} className={`${ROW_BUTTON} mt-3 w-full justify-center`}><IconShare size={16} />分享</button>
       </AsideCard>
       {s.overview && (
@@ -64,15 +64,11 @@ export default function SituationRoute() {
   return (
     <ReadingLayout aside={aside}>
       <PhoneBar back={{ to: "/reference", label: "参考" }} title={s.title} />
-      <div className="hidden items-center justify-between lg:flex">
-        <BackLink to="/reference" label="参考" />
-        <button type="button" onClick={onShare} className={ROW_BUTTON}><IconShare size={16} />分享</button>
-      </div>
-      <Link to={`/reference#${s.category.key}`} className={KICKER_LINK}><Kicker>{s.category.title}</Kicker></Link>
-      <Title>{s.title}</Title>
-      <Dek>{s.dek}</Dek>
-      {/* Desktops have the figures in the aside. */}
-      <div className="lg:hidden"><Metrics items={[...tellers(s.count), [s.count.cases, "条原文"]]} /></div>
+      {/* As the topic page: 返回 on desktops (分享 is in the aside's card), then the header; desktops have the counts
+          and the date in the aside. */}
+      <BackLink to="/reference" label="参考" />
+      <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
+        counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
       {s.overview && (
         <section className="mt-8">
           <Kicker>先了解这种情况</Kicker>
@@ -120,7 +116,6 @@ export default function SituationRoute() {
           <List list={rest} grouped={s.count.grouped} />
         </section>
       )}
-      <Updated at={s.updatedAt} />
       <SiteLine situations={s.situations} />
       <ShareBar onShare={onShare} />
       {toast}

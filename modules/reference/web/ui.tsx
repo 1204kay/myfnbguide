@@ -2,12 +2,13 @@
 // big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html,
 // and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): story cards, practice cards and rows,
 // and situations as compact rows, the same on phones and desktops. Who tells a situation shows as the hot list shows
-// who talks about a story: its sources' faces and every count (the owner, 10/6).
+// who talks about a story: its sources' faces and every count (the owner, 10/6). The frame around them (back links,
+// headers, counts, rows' and cards' type) follows the closest AIHOT page (the owner 10/16: modules keep the original).
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Link } from "react-router";
 import { ITEM_COPY, SITE } from "@aihot/site";
-import { IconChevronLeft, IconChevronRight, IconShare } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconChevronRight, IconShare } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { siteUrl } from "@aihot/web/lib/seo";
@@ -23,11 +24,11 @@ export function Page({ children, wide = false }: { children: ReactNode; wide?: b
   return <div className={`mx-auto pb-14 ${wide ? "" : "max-w-[var(--page-max-reading)]"}`}>{children}</div>;
 }
 
-/** Desktops: one line up to where the page sits (phones have the bar's back). */
+/** Desktops: one line back up to where the page sits, as the topic page has it (phones have the bar's back). */
 export function BackLink({ to, label }: { to: string; label: string }) {
   return (
-    <Link viewTransition to={to} className="-ml-1 hidden min-h-10 items-center gap-0.5 pr-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent touch:min-h-11 lg:inline-flex">
-      <IconChevronLeft size={16} />{label}
+    <Link viewTransition to={to} className="hidden items-center gap-1.5 py-2 text-[13px] text-ink-3 transition-colors hover:text-accent lg:inline-flex">
+      <IconArrowLeft size={14} /> 返回{label}
     </Link>
   );
 }
@@ -38,15 +39,37 @@ export function BackLink({ to, label }: { to: string; label: string }) {
  */
 export const MEASURE = "max-w-[44em]";
 
-/** A small label above a title that leads somewhere: its line is 44px tall to tap. */
-export const KICKER_LINK = "mt-1 inline-flex min-h-11 items-center lg:mt-2";
+/** The line over a body, as the item page's 正文 label. */
+export const BODY_LABEL = "mb-6 text-[12px] text-ink-4";
 
-/** A page's title: 26px on phones, 30px from desktops; the phone bar shows it once it has scrolled under the bar. */
-export function Title({ children }: { children: ReactNode }) {
-  return <h1 data-page-title="" className="mt-2 text-[26px] font-bold leading-[1.3] text-ink [text-wrap:balance] lg:text-[30px]">{children}</h1>;
+/**
+ * A page's header, as the topic page has it (AIHOT routes/topic.tsx): a small label in the accent (a link with `to`),
+ * the title, a line on what it is, its counts in one line (HANDOFF §2.4), and when it was updated on the right.
+ * `asideFacts`: the page's aside shows the counts and the date on desktops, so the header shows them on phones only.
+ */
+export function PageHeader({ kicker, to, title, dek, counts, updatedAt, asideFacts = false, className = "pb-5 pt-3 lg:pt-1" }: {
+  kicker?: string; to?: string; title: ReactNode; dek?: ReactNode; counts?: Array<[number, string]>; updatedAt?: string | null; asideFacts?: boolean; className?: string;
+}) {
+  const hide = asideFacts ? "lg:hidden" : "";
+  const label = "text-[12px] font-semibold tracking-[0.08em] text-accent";
+  return (
+    <header className={`flex flex-wrap items-end justify-between gap-x-6 gap-y-2 ${className}`}>
+      <div className="min-w-0 max-w-[760px]">
+        {kicker && (to ? <Link viewTransition to={to} className={`inline-flex items-center hover:text-accent-ink touch:min-h-11 ${label}`}>{kicker}</Link> : <p className={label}>{kicker}</p>)}
+        <h1 data-page-title="" className={`${kicker ? "mt-1.5" : ""} text-[24px] font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-[26px]`}>{title}</h1>
+        {dek && <p className="mt-1.5 text-pretty text-[13.5px] leading-relaxed text-ink-3">{dek}</p>}
+        {counts && counts.length > 0 && (
+          <p className={`mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-4 ${hide}`}>
+            {counts.map(([n, unit]) => <span key={unit}><span className="num font-semibold text-ink-2">{num(n)}</span> {unit}</span>)}
+          </p>
+        )}
+      </div>
+      {updatedAt && <p className={`text-[12px] text-ink-4 ${hide}`}><span className="num">{day(updatedAt)}</span> 更新</p>}
+    </header>
+  );
 }
 
-/** The line under a title or a heading (14.5/15px). */
+/** A practice card's line under its title (14.5/15px). */
 export function Dek({ children, className = "mt-2" }: { children: ReactNode; className?: string }) {
   return <p className={`text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px] ${className}`}>{children}</p>;
 }
@@ -54,20 +77,6 @@ export function Dek({ children, className = "mt-2" }: { children: ReactNode; cla
 /** A section's heading (20/22px); `id` lets a link land on it below the phone bar. */
 export function Heading({ children, id }: { children: ReactNode; id?: string }) {
   return <h2 id={id} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[20px] font-extrabold leading-[1.35] text-ink lg:text-[22px]">{children}</h2>;
-}
-
-/** "更新于 10 月 5 日" at a page's end (HANDOFF §2.4). */
-export function Updated({ at }: { at: string | null | undefined }) {
-  return at ? <p className="mt-10 text-[13px] text-ink-4">更新于 {day(at)}</p> : null;
-}
-
-/** The figures strip: big numbers with their units. */
-export function Metrics({ items }: { items: Array<[number, string]> }) {
-  return (
-    <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-y border-line py-3 text-[13px] text-ink-4">
-      {items.map(([n, unit]) => <span key={unit}><b className="num mr-1 text-[22px] font-extrabold tracking-tight text-ink">{num(n)}</b>{unit}</span>)}
-    </div>
-  );
 }
 
 /** What a situation counts in a list, its number at `size` px: "16 家店", "13 条原文" (layout J3-5). */
@@ -102,18 +111,25 @@ export const STRETCH = "stretch after:absolute after:inset-0 after:rounded-[inhe
 /** A place in 店家谈得最多的事, in front of its title. */
 export const RANK = "num shrink-0 font-extrabold text-accent";
 
-/** A story's card (layout A7-2): country, source and month, its title, the item's 收录理由, the way to its shop's page. */
+/**
+ * A story's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
+ * bookmark, its title, the item's 收录理由 under a hairline from desktops; then the way to its shop's page.
+ */
 export function StoryCard({ c }: { c: CaseCard }) {
   return (
-    <article className={`${CARD} px-4 py-3.5 sm:px-5 sm:py-4`}>
-      <div className="flex items-start gap-2">
-        <span className="min-w-0 flex-1 pt-0.5 text-[13px] leading-[1.5] text-ink-4">{c.src}</span>
-        <StarButton item={c.item} className="-my-2 -mr-2.5 size-9 touch:-my-2.5 touch:size-11" />
+    <article className={`${CARD} px-4 pb-3.5 pt-3.5 lg:px-[18px] lg:pb-[14px] lg:pt-[15px]`}>
+      <div className="flex min-h-[22px] items-center gap-1.5 text-[12.5px] leading-[18px] text-ink-4 lg:min-h-[18px]">
+        <span className="min-w-0 flex-1">{c.src}</span>
+        <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
       </div>
-      <h3 className="mt-1 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">
+      <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">
         <Link viewTransition to={`/reference/cases/${c.id}`} className={STRETCH}>{c.title}</Link>
       </h3>
-      {c.reason && <p className={`mt-1.5 line-clamp-2 text-[13px] leading-[1.5] text-note ${MEASURE}`}>{ITEM_COPY.reasonLabel}：{c.reason}</p>}
+      {c.reason && (
+        <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
+          <p className="line-clamp-2 text-[13px] leading-[1.65] text-note lg:leading-[1.75]">{ITEM_COPY.reasonLabel}：{c.reason}</p>
+        </div>
+      )}
       {c.shop && (
         <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="relative z-10 -mb-2 mt-0.5 flex min-h-11 items-center text-[13px] text-accent hover:text-accent-ink">
           这家店另有 {c.shop.others} 条原文 ›
@@ -247,16 +263,17 @@ export function SituationRows({ rows, from, category = false, children }: { rows
   const List = from === undefined ? "ul" : "ol";
   return (
     <div className="card mt-3 overflow-hidden">
-      <List start={from} className="divide-y divide-line">
+      <List start={from} className="divide-y divide-line-soft">
         {rows.map((s, i) => (
-          <li key={s.slug} className={`relative grid items-center gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/40 touch:active:bg-bg-sunk has-[.stretch:focus-visible]:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:-outline-offset-2 has-[.stretch:focus-visible]:outline-accent sm:px-5 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
-            {from !== undefined && <span className={`${RANK} self-start text-[17px] leading-[25px]`}>{from + i}</span>}
+          <li key={s.slug} className={`relative grid items-center gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/70 touch:active:bg-bg-sunk has-[.stretch:focus-visible]:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:-outline-offset-2 has-[.stretch:focus-visible]:outline-accent sm:px-5 lg:px-6 lg:py-3.5 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
+            {from !== undefined && <span className={`${RANK} self-start text-[17px] leading-[24px]`}>{from + i}</span>}
             <div className="min-w-0">
               {category && <span className="block text-[13px] leading-[1.5] text-ink-4">{s.category}</span>}
-              <h3 className="text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">
+              {/* The hot list's row type (AIHOT routes/hot.tsx Row): 15px title, a 13px line under it. */}
+              <h3 className="text-[15px] font-[650] leading-[1.55] text-ink">
                 <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
               </h3>
-              <p className="mt-0.5 line-clamp-2 text-[14px] leading-[1.6] text-ink-3">{s.practice ?? s.dek}</p>
+              <p className="mt-0.5 line-clamp-2 text-[13px] leading-[1.65] text-ink-4 lg:line-clamp-1">{s.practice ?? s.dek}</p>
               <span className="mt-1 block text-[13px] text-ink-4 sm:hidden">{fullCountText(s.count)}</span>
             </div>
             {/* As the hot list's rows: who tells it, then its shops in a big number with the rest of its count under it. */}
@@ -286,8 +303,27 @@ export function SiteLine({ situations }: { situations: number }) {
   );
 }
 
-/** Shares a page: the system's sheet where there is one (touch screens), else its address is copied. */
-export function useShare(): { share: (title: string, path: string) => Promise<void>; toast: ReactNode } {
+/**
+ * A story's way back into the library at its end on phones, as the item page lists 相关事件 (AIHOT routes/item.tsx):
+ * a small heading, then the row; `count` under the title.
+ */
+export function WhereFiled({ to, title, count }: { to: string; title: string; count: string | null }) {
+  return (
+    <section className="mt-8">
+      <h2 className="mb-2 text-[14px] font-semibold text-ink">收在 {SITE.name} 参考</h2>
+      <Link viewTransition to={to} className="block border-y border-line-soft py-2.5 text-[14px] text-ink-2 hover:text-accent">
+        {title}
+        {count && <span className="mt-0.5 block text-[13px] text-accent">{count} ›</span>}
+      </Link>
+    </section>
+  );
+}
+
+/**
+ * Shares a page: the system's sheet where there is one (touch screens), else its address is copied; and copies a
+ * link (the item page's 复制链接). Both say 链接已复制, as the item page does.
+ */
+export function useShare(): { share: (title: string, path: string) => Promise<void>; copy: (url: string) => Promise<void>; toast: ReactNode } {
   const [text, setText] = useState<string | null>(null);
   useEffect(() => {
     if (!text) return;
@@ -304,12 +340,20 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
       // The reader closed the sheet, or the clipboard is not allowed here.
     }
   };
+  const copy = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setText("链接已复制");
+    } catch {
+      // clipboard unavailable
+    }
+  };
   const toast = text && (
     <div role="status" className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-4 py-2 text-[13px] text-bg shadow-[var(--shadow-pop)] lg:bottom-8">
       {text}
     </div>
   );
-  return { share, toast };
+  return { share, copy, toast };
 }
 
 /** A button of a page's own row on desktops (分享, 收藏, 打开原文): 36px, 44px on touch screens. */

@@ -1,19 +1,22 @@
-// One story (layout B3, J6), with the item page's actions and names: where it comes from, the item's AI 导读 and
-// 收录理由 in one small block, then the story the AI wrote from the original, the original itself, and the way to
-// its situation.
-import { Link, useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
+// One story, in the item page's frame (AIHOT routes/item.tsx; the owner 10/16: modules keep the original's frame too):
+// 返回 and where it comes from in the left rail, 打开原文 / 收藏 / more and the 收录理由 in the right one; the source
+// line over the title, the AI 导读 under it, then the story the AI wrote from the original under 正文 · AI 整理自原文,
+// the 来源 line, and on phones the way to its situation and the reading toolbar.
+import { useState } from "react";
+import { Link, useLoaderData, useNavigate, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { ITEM_COPY, SITE } from "@aihot/site";
-import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
-import { IconBookmark, IconChevronLeft, IconShare } from "@aihot/web/components/icons";
-import { useStar } from "@aihot/web/features/feed/parts";
-import { ReaderToolbar } from "@aihot/web/features/item/ReaderTools";
+import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
+import { IconArrowLeft, IconCopy, IconExternal, IconMenu, IconMore, IconShare } from "@aihot/web/components/icons";
+import { StarButton } from "@aihot/web/features/feed/parts";
+import { ActionsSheet, ReaderToolbar } from "@aihot/web/features/item/ReaderTools";
+import { Menu, MenuItem } from "@aihot/web/components/ui/Menu";
 import { ArticleLayout, RailSection } from "@aihot/web/components/ui/Page";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
-import { pageMeta, titled } from "@aihot/web/lib/seo";
+import { pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { fullCountText, shareImagePath } from "../format.ts";
 import type { CasePage } from "../types.ts";
-import { BODY, MEASURE, ROW_BUTTON, StoryBlock, Title, useShare } from "./ui";
+import { BODY, BODY_LABEL, MEASURE, StoryBlock, useShare, WhereFiled } from "./ui";
 
 export const handle: Screen = { home: "reference", toolbar: true };
 
@@ -30,18 +33,60 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
   return pageMeta({ title: data.story.title, description: data.item.summary ?? data.story.lead, path: `/reference/cases/${data.id}`, type: "article", image: shareImagePath(data.id) });
 }
 
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
 export default function CaseRoute() {
   const c = useLoaderData<typeof loader>();
   const { story, source, item, situation } = c;
-  const star = useStar(item);
-  const { share, toast } = useShare();
-  const onShare = () => void share(story.title, `/reference/cases/${c.id}`);
-  // Phones: the bar's back, up to its situation when opened directly. Desktops: one line up to the situation, its
-  // full name, in place of a back line and a label over the title that both led there (layout J6).
-  const back = situation ? { to: `/reference/${situation.slug}`, label: situation.title } : { to: "/reference", label: "参考" };
-  const from = source.kind ? `${source.kind}「${source.name}」` : source.name;
-  // Rails, as the item page has them: where the story comes from on the left (wide screens), what to do with it and
-  // where it sits in the library on the right.
+  const navigate = useNavigate();
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const { share, copy, toast } = useShare();
+  const path = `/reference/cases/${c.id}`;
+  const onShare = () => void share(story.title, path);
+  const onCopy = () => void copy(`${siteUrl()}${path}`);
+  // Where 返回 goes when the story was opened directly: its situation, else the library.
+  const up = situation ? { to: `/reference/${situation.slug}`, label: situation.title } : { to: "/reference", label: "参考" };
+  const situationTo = situation ? `/reference/${situation.slug}${situation.practice ? `#${situation.practice}` : ""}` : "/reference";
+  const back = () => {
+    if (window.history.state?.idx > 0) navigate(-1);
+    else navigate(up.to);
+  };
+  const backButton = (
+    <button type="button" onClick={back} className="-ml-1.5 inline-flex h-8 items-center gap-1.5 rounded-full px-1.5 text-[13px] text-ink-3 transition-colors hover:text-ink">
+      <IconArrowLeft size={16} /> 返回
+    </button>
+  );
+  const moreMenu = (
+    <Menu label="更多操作" trigger={<IconMenu size={17} />}>
+      {(close) => (
+        <>
+          <MenuItem icon={<IconShare size={15} />} onSelect={() => { close(); onShare(); }}>分享链接</MenuItem>
+          <MenuItem icon={<IconCopy size={15} />} onSelect={() => { close(); onCopy(); }}>复制链接</MenuItem>
+        </>
+      )}
+    </Menu>
+  );
+  // Desktop actions head the right rail, one row as tall as 返回 at the head of the left one.
+  const actions = (
+    <div className="flex items-center gap-1">
+      <a
+        href={source.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
+      >
+        打开原文 <IconExternal size={13} />
+      </a>
+      <StarButton item={item} size={32} />
+      {moreMenu}
+    </div>
+  );
   const facts = (
     <>
       <RailSection title="来源">
@@ -62,24 +107,16 @@ export default function CaseRoute() {
   );
   const notes = (
     <>
-      <div className="grid gap-2">
-        <a href={source.url} target="_blank" rel="noopener" className="flex h-10 items-center justify-center gap-1 rounded-full border border-line-strong bg-surface text-[14px] font-semibold text-ink-2 transition-colors hover:border-accent hover:text-accent">
-          打开原文 ↗
-        </a>
-        <div className="flex gap-2">
-          <button type="button" onClick={star.toggle} aria-pressed={star.on} className={`${ROW_BUTTON} flex-1 justify-center ${star.on ? "border-accent text-accent" : ""}`}>
-            <IconBookmark size={16} filled={star.on} />{star.on ? "已收藏" : "收藏"}
-          </button>
-          <button type="button" onClick={onShare} className={`${ROW_BUTTON} flex-1 justify-center`}><IconShare size={16} />分享</button>
-        </div>
-      </div>
+      {item.reason && (
+        <RailSection title={ITEM_COPY.reasonLabel}>
+          <p className="text-[13.5px] leading-[1.8] text-ink-2">{item.reason}</p>
+        </RailSection>
+      )}
       <RailSection title={`收在 ${SITE.name} 参考`}>
         {situation ? (
-          <Link viewTransition to={`/reference/${situation.slug}${situation.practice ? `#${situation.practice}` : ""}`} className="block text-[14px] leading-snug text-ink-2 hover:text-accent">
+          <Link viewTransition to={situationTo} className="block text-[14px] leading-snug text-ink-2 hover:text-accent">
             <b className="font-[650] text-ink">{situation.title}</b>
-            <span className="mt-1 block text-[13px] text-accent">
-              {fullCountText(situation.count)} ›
-            </span>
+            <span className="mt-1 block text-[13px] text-accent">{fullCountText(situation.count)} ›</span>
           </Link>
         ) : (
           <Link viewTransition to="/reference" className="block text-[13px] text-accent hover:text-accent-ink">按遇到的事，查各地店家的做法和经验 ›</Link>
@@ -88,70 +125,78 @@ export default function CaseRoute() {
     </>
   );
   return (
-    <div className="pb-14">
-    <ArticleLayout left={facts} right={notes}>
-      <PhoneBar back={back} title={story.title} />
-      <Link viewTransition to={back.to} className="-ml-1 hidden min-h-10 items-center gap-0.5 pr-1.5 text-[13px] text-ink-3 transition-colors hover:text-accent touch:min-h-11 lg:inline-flex">
-        <IconChevronLeft size={16} />{back.label}
-      </Link>
-      <Title>{story.title}</Title>
-      <p className={`mt-3 text-[13px] leading-[1.5] text-ink-4 ${MEASURE}`}>{[story.shop.country, story.shop.city, from, source.month].filter(Boolean).join(" · ")}</p>
-      {/* Right after the source line, small and in the site's quiet panel for notes (app.css well), so the story's
-          own opening shows on a phone's first screen (layout J6); the desktop's buttons follow, as on the item page. */}
-      {(item.summary || item.reason) && (
-        <section className="well mt-5 rounded-panel px-4 py-3.5 text-[15px] leading-[1.75] text-ink-2 [text-wrap:pretty] sm:px-5">
+    <div className="mx-auto max-w-[var(--page-max-reading)] pb-8">
+      <PhoneBar
+        back={up}
+        title={story.title}
+        actions={
+          <BarButton label="更多操作" onClick={() => setActionsOpen(true)}>
+            <IconMore size={22} />
+          </BarButton>
+        }
+      />
+      <ArticleLayout left={<>{backButton}{facts}</>} right={<>{actions}{notes}</>}>
+        {/* Between lg and 2xl the left rail is hidden: 返回 stays at the top while reading, as on the item page. */}
+        <div className="sticky top-0 z-20 -mx-2 hidden bg-bg/95 px-2 py-1.5 backdrop-blur lg:block 2xl:hidden">{backButton}</div>
+        <article className="pb-6 pt-3 lg:pt-2 2xl:pt-1">
+          <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3 2xl:hidden">
+            <span className="font-semibold text-ink-2">{source.name}</span>
+            {source.kind && <span>· {source.kind}</span>}
+            <span>· {source.month}</span>
+            {(story.shop.country || story.shop.city) && <span>· {[story.shop.country, story.shop.city].filter(Boolean).join(" · ")}</span>}
+          </div>
+          <h1 data-page-title="" className="text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]">{story.title}</h1>
+
           {item.summary && (
-            <>
-              <div className="text-[12px] font-semibold text-accent">AI 导读</div>
-              <p className={`mt-1 ${MEASURE}`}>{item.summary}</p>
-            </>
+            <section className="mt-7 xl:mt-8">
+              <div className="mb-2 text-[12px] font-semibold text-accent">AI 导读</div>
+              <p className="text-[18px] leading-[1.7] text-ink xl:text-[20px] xl:leading-[1.7]">{item.summary}</p>
+            </section>
           )}
+
           {item.reason && (
-            <>
-              <div className={`text-[12px] font-semibold text-ink-3 ${item.summary ? "mt-3" : ""}`}>{ITEM_COPY.reasonLabel}</div>
-              <p className={`mt-1 ${MEASURE}`}>{item.reason}</p>
-            </>
+            <section className="mt-6 border-t border-line pt-4 lg:hidden">
+              <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
+              <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
+            </section>
           )}
-        </section>
-      )}
-      <div className="mt-6 border-t border-line pt-3 text-[12px] text-ink-3">正文 · AI 整理自原文</div>
-      <p className={`mt-3 ${BODY}`}>{story.lead}</p>
-      <p className={`mt-3 ${BODY}`}>{story.who}</p>
-      {c.shop && (
-        <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="flex min-h-11 items-center text-[14px] text-accent hover:text-accent-ink">
-          同一家店另有 {c.shop.others} 条原文 ›
-        </Link>
-      )}
-      {story.parts.map((part, i) => (
-        <section key={i} className="mt-8">
-          <h2 className="text-[18px] font-bold leading-[1.45] text-ink lg:text-[19px]">{part.heading}</h2>
-          {part.blocks.map((block, n) => <StoryBlock key={n} block={block} />)}
-        </section>
-      ))}
-      {story.open && <p className={`mt-6 text-[14px] leading-relaxed text-ink-4 ${MEASURE}`}>{story.open}</p>}
-      {/* The original's way in, as the item page has it (AIHOT item.tsx): one line naming the source; the button is the
-          desktop rail's and the phone toolbar's 原文. */}
-      <p className="mt-8 text-[13px] text-ink-4">
-        来源：
-        <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">{source.name}</a>
-        {source.language ? ` · 原文${source.language}` : ""}{source.audioOnly ? " · 节目是音频" : ""}
-      </p>
-      {/* Desktops have it in the right rail. */}
-      <div className="card mt-8 px-4 py-3.5 sm:px-5 lg:hidden">
-        <p className="text-[13px] text-ink-4">收在 {SITE.name} 参考{situation ? ` · ${situation.title}` : ""}</p>
-        {situation ? (
-          <Link viewTransition to={`/reference/${situation.slug}${situation.practice ? `#${situation.practice}` : ""}`} className="flex min-h-11 items-center text-[15px] font-[650] text-accent hover:text-accent-ink">
-            这种情况：{fullCountText(situation.count)} ›
-          </Link>
-        ) : (
-          <Link viewTransition to="/reference" className="flex min-h-11 items-center text-[15px] font-[650] text-accent hover:text-accent-ink">
-            按遇到的事，查各地店家的做法和经验{c.situations ? `：${c.situations} 种情况` : ""} ›
-          </Link>
-        )}
-      </div>
+
+          <section className="mt-9 border-t border-line pt-4 xl:mt-10">
+            <div className={BODY_LABEL}>正文 · AI 整理自原文</div>
+            <p className={BODY}>{story.lead}</p>
+            <p className={`mt-3 ${BODY}`}>{story.who}</p>
+            {/* Wide screens have it in the left rail. */}
+            {c.shop && (
+              <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="flex min-h-11 items-center text-[14px] text-accent hover:text-accent-ink 2xl:hidden">
+                同一家店另有 {c.shop.others} 条原文 ›
+              </Link>
+            )}
+            {story.parts.map((part, i) => (
+              <section key={i} className="mt-8">
+                <h2 className="text-[18px] font-bold leading-[1.45] text-ink lg:text-[19px]">{part.heading}</h2>
+                {part.blocks.map((block, n) => <StoryBlock key={n} block={block} />)}
+              </section>
+            ))}
+            {story.open && <p className={`mt-6 text-[14px] leading-relaxed text-ink-4 ${MEASURE}`}>{story.open}</p>}
+          </section>
+
+          <p className="mt-8 text-[13px] text-ink-4">
+            来源：
+            <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">{source.name}</a>
+            {/* The item page names the original's host here; a story names its language and whether it is audio
+                instead (left as it was: 待定 in myfnb original-audit 2026-10-16). */}
+            {source.language ? ` · 原文${source.language}` : ` · ${hostOf(source.url)}`}{source.audioOnly ? " · 节目是音频" : ""}
+          </p>
+
+          {/* Desktops have it in the right rail. */}
+          <div className="lg:hidden">
+            <WhereFiled to={situationTo} title={situation?.title ?? "按遇到的事，查各地店家的做法和经验"} count={situation ? fullCountText(situation.count) : c.situations ? `${c.situations} 种情况` : null} />
+          </div>
+        </article>
+      </ArticleLayout>
       <ReaderToolbar item={item} originalUrl={source.url} originalLabel="原文" onShare={onShare} />
+      <ActionsSheet open={actionsOpen} onClose={() => setActionsOpen(false)} rows={[{ key: "copy", label: "复制链接", icon: <IconCopy size={20} />, onSelect: onCopy }]} />
       {toast}
-    </ArticleLayout>
     </div>
   );
 }

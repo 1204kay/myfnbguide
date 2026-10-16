@@ -11,10 +11,10 @@ import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
-import { day } from "../format.ts";
+import { day, num } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
 import { figureKind, SituationDrawing } from "./figures";
-import { CARD, CountFigure, Dek, Heading, KindTag, Metrics, openRest, Page, RANK, SituationRows, STRETCH, Updated, Who } from "./ui";
+import { CARD, CountFigure, KindTag, openRest, Page, PageHeader, RANK, SituationRows, STRETCH, Who } from "./ui";
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
@@ -49,13 +49,14 @@ export function meta() {
 function Lead({ s, recent }: { s: SituationRow; recent: ReferenceHome["recent"] }) {
   const kind = figureKind(s.slug);
   return (
-    <article className={`${CARD} flex flex-col p-4 sm:p-5 lg:p-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto] xl:grid-rows-[auto_1fr]`}>
+    <article className={`${CARD} flex flex-col p-5 sm:p-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto] xl:grid-rows-[auto_1fr]`}>
       <div className="min-w-0 xl:col-start-1 xl:row-start-1">
-        <h3 className="flex gap-2.5 text-[18px] font-bold leading-[1.4] text-ink lg:text-[20px]">
+        {/* The hot list's first card type (AIHOT routes/hot.tsx Lead): 21/23/25px title, a 14px line. */}
+        <h3 className="flex gap-2.5 text-[21px] font-bold leading-[1.4] tracking-[-0.01em] text-ink sm:text-[23px] lg:text-[25px] lg:leading-[1.38]">
           <span className={RANK}>1</span>
           <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
         </h3>
-        <p className="mt-2 line-clamp-3 text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px]">{s.overview ?? s.dek}</p>
+        <p className="mt-3 line-clamp-3 text-[14px] leading-[1.75] text-ink-3">{s.overview ?? s.dek}</p>
         <div className="mt-3"><Who s={s} size={24} /></div>
       </div>
       <div className="mx-auto mt-4 w-full max-w-[360px] empty:hidden [&_svg]:max-h-[200px] xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:ml-6 xl:mt-0 xl:w-[260px] xl:self-center">
@@ -77,12 +78,13 @@ function Lead({ s, recent }: { s: SituationRow; recent: ReferenceHome["recent"] 
 /** The second and third: place and title, 代表做法 on a line, the shops. */
 function Runner({ s, rank }: { s: SituationRow; rank: number }) {
   return (
-    <article className={`${CARD} flex flex-col px-4 py-3.5 sm:px-5 sm:py-4`}>
-      <h3 className="flex gap-2.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">
+    <article className={`${CARD} flex flex-col px-5 py-4`}>
+      {/* The hot list's second and third (AIHOT routes/hot.tsx Runner): 16px title, a 13px line. */}
+      <h3 className="flex gap-2.5 text-[16px] font-[650] leading-[1.5] text-ink">
         <span className={RANK}>{rank}</span>
         <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
       </h3>
-      <p className="mt-1 line-clamp-2 text-[14px] leading-[1.6] text-ink-3">{s.practice ?? s.dek}</p>
+      <p className="mt-1.5 line-clamp-2 text-[13px] leading-[1.7] text-ink-3">{s.practice ?? s.dek}</p>
       <div className="mt-auto flex items-end justify-between gap-3 pt-3"><Who s={s} /><CountFigure count={s.count} size={22} /></div>
     </article>
   );
@@ -112,8 +114,9 @@ function Category({ c }: { c: CategoryRows }) {
   const section = useRef<HTMLElement>(null);
   const cut = !open && c.situations.length > ALL_UP_TO;
   return (
-    <section ref={section} className="mt-9">
-      <Heading id={c.key}>{c.title}</Heading>
+    <section ref={section} className="pt-8">
+      {/* A group's heading, as the topics page has it (AIHOT routes/topics.tsx). */}
+      <h2 id={c.key} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[15px] font-bold text-ink">{c.title}</h2>
       <SituationRows rows={cut ? c.situations.slice(0, SHOWN) : c.situations}>
         {cut && (
           <button type="button" onClick={() => openRest(() => setOpen(true), () => section.current?.querySelectorAll<HTMLElement>("h3 a")[SHOWN])}
@@ -128,15 +131,20 @@ function Category({ c }: { c: CategoryRows }) {
 
 export default function ReferenceHomePage() {
   const data = useLoaderData<typeof loader>();
+  const counts: Array<[number, string]> = [[data.totals.situations, "种情况"], [data.totals.cases, "条原文"]];
   return (
     <Page wide>
-      <PhoneBar title="参考" large />
-      <h1 className="hidden text-[30px] font-bold leading-[1.25] text-ink lg:block">参考</h1>
-      <Dek className="lg:mt-2">{LEAD}</Dek>
-      <Metrics items={[[data.totals.situations, "种情况"], [data.totals.cases, "条原文"]]} />
-      {!data.categories.length && <EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会出现在这里。</EmptyState>}
+      {/* As the hot list: the bar's large title on phones with the lead under it, a header on desktops (the topic
+          page's counts line and date, HANDOFF §2.4, on both). */}
+      <PhoneBar title="参考" large sub={LEAD} />
+      <PageHeader title="参考" dek={LEAD} counts={counts} updatedAt={data.updatedAt} className="hidden pb-5 pt-1 lg:flex" />
+      <p className="flex flex-wrap gap-x-4 gap-y-1 pb-1 text-[12.5px] text-ink-4 lg:hidden">
+        {counts.map(([n, unit]) => <span key={unit}><span className="num font-semibold text-ink-2">{num(n)}</span> {unit}</span>)}
+        {data.updatedAt && <span><span className="num">{day(data.updatedAt)}</span> 更新</span>}
+      </p>
+      {!data.categories.length && <div className="card rounded-sheet"><EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会出现在这里。</EmptyState></div>}
       {data.ranking.length > 0 && (
-        <section className="mt-8">
+        <section className="mt-6 lg:mt-2">
           {/* The label is the section's heading, so the places under it are not headings straight under the page's. */}
           <div role="heading" aria-level={2}><Kicker>店家谈得最多的事</Kicker></div>
           <p className="mt-1.5 text-[13px] text-ink-4">按分享过做法的店家数排列</p>
@@ -147,7 +155,6 @@ export default function ReferenceHomePage() {
       <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-x-6">
         {data.categories.map((c) => <Category key={c.key} c={c} />)}
       </div>
-      <Updated at={data.updatedAt} />
     </Page>
   );
 }

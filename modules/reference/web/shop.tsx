@@ -1,13 +1,12 @@
 // One shop (layout B5): who it is in Chinese, its original name and where it is, and all its stories, newest first.
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
-import { Kicker } from "@aihot/web/components/ui/Kicker";
 import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { findShopKind } from "../situations.ts";
 import type { ShopPage } from "../types.ts";
-import { MEASURE, Metrics, Page, StoryCards, Title, Updated, BackLink } from "./ui";
+import { Page, PageHeader, StoryCards, BackLink } from "./ui";
 
 export const handle: Screen = { home: "reference" };
 
@@ -34,15 +33,11 @@ export default function ShopRoute() {
   return (
     <Page>
       <PhoneBar back={{ to: "/reference", label: "参考" }} title={nameOf(data)} />
+      {/* As the topic page: 返回, then the header with the count and the date. */}
       <BackLink to="/reference" label="参考" />
-      <div className="mt-3 lg:mt-4"><Kicker>店家</Kicker></div>
-      <Title>{nameOf(data)}</Title>
-      <p className={`mt-2 text-[13px] leading-[1.5] text-ink-4 [overflow-wrap:anywhere] ${MEASURE}`}>
-        {[original, shop.country, shop.city, findShopKind(shop.kind)?.title, shop.size].filter(Boolean).join(" · ")}
-      </p>
-      <Metrics items={[[cases.length, "条原文"]]} />
+      <PageHeader kicker="店家" title={nameOf(data)} counts={[[cases.length, "条原文"]]} updatedAt={data.updatedAt}
+        dek={<span className="[overflow-wrap:anywhere]">{[original, shop.country, shop.city, findShopKind(shop.kind)?.title, shop.size].filter(Boolean).join(" · ")}</span>} />
       <StoryCards cards={cases} />
-      <Updated at={data.updatedAt} />
     </Page>
   );
 }

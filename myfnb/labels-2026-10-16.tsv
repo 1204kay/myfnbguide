@@ -1,0 +1,116 @@
+# 用户 10/16 下午的标注：relabel = 从 gold-labels.tsv 里抽 34 条重标（新标签以这里为准），new80 = 过去一周新收的 80 条。
+article_id	label	split	stratum	source_id	url	title
+bgxtyivdtwjg49bntkw979u7e	可看	development	2026-10-16-relabel
+c04l962cgcgzqtt0l1h95qclr	必看	development	2026-10-16-relabel
+eeqvayyeswc5gmh3njl1henqq	不看	development	2026-10-16-relabel
+j1qrd28lbjko1168uht690j9y	可看	development	2026-10-16-relabel
+l60aojhqi8u2lmbkvji2vgwo2	可看	development	2026-10-16-relabel
+lfa0jbfyejg952zektvq636k4	必看	development	2026-10-16-relabel
+nz0zrzeaxll5xau519x66rm0h	可看	development	2026-10-16-relabel
+r2-074	可看	development	2026-10-16-relabel	rss-foodbank-kr	http://www.foodbank.co.kr/news/articleView.html?idxno=68555	자영업자 대출 1098조원… 연체율 1.99% 상승
+r2-081	可看	development	2026-10-16-relabel	rss-hospitality-au	https://www.hospitalitymagazine.com.au/baker-bleu-announces-second-sydney-location/	Baker Bleu announces second Sydney location
+r2-263	可看	development	2026-10-16-relabel	rss-hospitality-ireland	https://www.hospitalityireland.com/general-industry/main-meals-lead-irish-menu-price-growth-217426	Main Meals Lead Irish Menu Price Growth
+r2-287	可看	development	2026-10-16-relabel	rss-marginedge	https://www.marginedge.com/blog/how-to-connect-restaurant-data-for-prime-cost-visibility	How to connect restaurant data for prime cost visibility
+r2-298	可看	development	2026-10-16-relabel	pod-jp-inshoku-ai-radio	https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/ep-e3pe66l	飲食店、 忙しいのに、なぜ利益が残らない？
+r2-306	可看	development	2026-10-16-relabel	pod-jp-inshoku-ai-radio	https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/10-AI-e3p2bar	忘年会の予約は、10月にはもう始まっている AIで戦略・コース・発信を早めに整える方法
+r2-321	可看	development	2026-10-16-relabel	pod-horeca-audio-news-le-pillole-quotidiane	https://www.spreaker.com/episode/10-826-global-mixology-contro-la-crisi-i-bar-tagliano-i-prezzi-e-i-produttori-dimezzano-le-bottiglie--75512085	10.826 - Global mixology contro la crisi i bar tagliano i prezzi e i produttori dimezzano le bottiglie
+r2-423	可看	development	2026-10-16-relabel	rss-qsrmedia-au	https://qsrmedia.com/community/news/starbucks-trains-over-10000-uk-baristas-stammer-awareness	Baristas learn about stammering and how to support customers.
+r2-436	可看	development	2026-10-16-relabel	pod-marketing-morsels-for-restaurants	3892b1f1-ccce-592a-8ac8-62317f378cf6	Marketing Isn’t Just Getting Attention — What Happens Next?
+r2-454	可看	development	2026-10-16-relabel	rss-ristorazione-italiana	https://www.ristorazioneitalianamagazine.it/radici-dimenticate-ristorante/	Le radici dimenticate: il food cost basso che sembra gourmet
+r2-459	可看	development	2026-10-16-relabel	pod-total-food-service	https://totalfood.com/vbs-136-the-first-90-days-when-opening-excitement-meets-operational-reality/#utm_source=rss&utm_medium=rss&utm_campaign=vbs-136-the-first-90-days-when-opening-excitement-meets-operational-reality	VBS #136 – The First 90 Days: When Opening Excitement Meets Operational Reality
+r2-504	必看	development	2026-10-16-relabel	pod-jp-omise-radio-smaregi	2edf297e-b434-11f1-be52-53745ca077d5	#77 TANPAC株式会社 中崎祐史さん リサーチ・マーケティングで大ヒット！「筋肉食堂」の秘密に迫ります。
+r2-522	可看	development	2026-10-16-relabel	rss-foodnews-kr	http://www.foodnews.co.kr/news/articleView.html?idxno=120398	원자재ㆍ환율 급등, 식품ㆍ외식 물가 압박…농식품부 “가격 인상 최소화 총력”
+r2-599	必看	development	2026-10-16-relabel	pod-panaderia-facil	https://podcasters.spotify.com/pod/show/connybroese/episodes/Estrategia-Marketing-Digital-e-Instagram-para-Emprendedores-Gastronmicos-Charla-con-Eleonora-Valentini-e3pi0ni	Estrategia Marketing Digital e Instagram para Emprendedores Gastronómicos: Charla con Eleonora Valentini
+r2-607	必看	development	2026-10-16-relabel	pod-tw-kaidian-zhejianshi	https://open.firstory.fm/story/cmu0lyz1w09xu01yng49d8qio	S2E18 覺得自己幸運的人通常都會很幸運｜w/ 鯛魚燒工房 介媛
+r2-608	可看	development	2026-10-16-relabel	pod-restaurant-prosperity-formula	https://dspweb.wpenginepowered.com/podcast/id-rather-be-short-staffed-than-have-the-wrong-restaurant-employee	I'd Rather Be Short-Staffed Than Have the Wrong Restaurant Employee
+r2-626	可看	development	2026-10-16-relabel	rss-ristorando	https://www.ristorando.eu/2026/10/street-food-4-286-imprese-attive-in-1-975-comuni-italiani/	Street food, 4.286 imprese attive in 1.975 comuni italiani
+r2-650	可看	development	2026-10-16-relabel	pod-restaurant-marketing-secrets	https://686f7962-44af-40e0-9559-7c93e4e096de.libsyn.com/3-strategies-to-keep-your-restaurant-customers-coming-back-restaurant-marketing-secrets-episode-989	3 Strategies to Keep Your Restaurant Customers Coming Back - Restaurant Marketing Secrets - Episode 989
+r3-036	必看	development	2026-10-16-relabel	pod-elevated-hospitality	https://podcasters.spotify.com/pod/show/tal-shnall2/episodes/How-Leaders-Build-Confidence-with-Their-Team-e3n5vgp	How Leaders Build Confidence with Their Team
+r3-039	必看	development	2026-10-16-relabel	pod-entre-hosteleros	https://podcasters.spotify.com/pod/show/entre-hosteleros/episodes/JORGE-GIMNEZ-LO-QUE-NADIE-TE-CUENTA-DE-TENER-UNA-HAMBURGUESERA-e3omvbv	JORGE GIMÉNEZ: LO QUE NADIE TE CUENTA DE TENER UNA HAMBURGUESERÍA
+r3-061	可看	development	2026-10-16-relabel	pod-fr-passe-moi-le-sel	https://podcast.ausha.co/passe-moi-le-sel/62-etre-plus-qu-un-operationnel-pour-etre-rentable-avec-leo-guarneri-rentabilite-concept	#62- Être plus qu'un opérationnel pour être rentable - Avec Léo Guarneri (Rentabilité Concept)
+r3-081	可看	development	2026-10-16-relabel	rss-ristorazione-italiana	https://www.ristorazioneitalianamagazine.it/dolci-dei-morti-ristorante-ognissanti/	Festa di Ognissanti e commemorazione dei defunti: l’alternativa ad Halloween
+r3-104	可看	development	2026-10-16-relabel	rss-petpooja	https://blog.petpooja.com/procurement-cost-control/inventory-turnover-ratio-formula/	Inventory Turnover Ratio: Formula, Example and Real Targets
+r3-105	可看	development	2026-10-16-relabel	pod-full-comp	https://share.transistor.fm/s/32953adc	Brianna Keefe: Stay In The Weeds Longer Than You Want
+r3-106	可看	development	2026-10-16-relabel	pod-full-comp	https://share.transistor.fm/s/df782a14	The Takeaway: Nobody Ever Wished They Paid Less
+rwgohh8glyh6wittqd2cvezgz	可看	development	2026-10-16-relabel
+y7kwvribxgbv8xa48wn1prlqv	可看	development	2026-10-16-relabel
+a0n381d3fqanahy82vgihw9a4	可看	development	2026-10-16-new80
+a8tjb9ley8hjm6gr0h30kt4ne	可看	development	2026-10-16-new80
+aa4o6ztoi3r4vdpcvi17jdrcp	可看	development	2026-10-16-new80
+ap14mhcab8qo0gmqqvz67z9y2	可看	development	2026-10-16-new80
+axajsgqc9lwna8q3ztfvjm78v	可看	development	2026-10-16-new80
+b7as7wwdo8dj2jkc4swau8z6a	可看	development	2026-10-16-new80
+biyv8013d5cje9dyjjgjl6a58	必看	development	2026-10-16-new80
+bwg9zjpqxfug2lat5l2wzl9kb	可看	development	2026-10-16-new80
+c8hqf7ih021hkqxhyxh52remf	可看	development	2026-10-16-new80
+cf2t4wxz3wyf7kzo8kzr3c2va	可看	development	2026-10-16-new80
+cf6clghcazpsyq5ks7jno471v	可看	development	2026-10-16-new80
+cvqkryxsci53x4255s69rd6je	可看	development	2026-10-16-new80
+czy0iqsfaw5pad48ejsm82jrq	必看	development	2026-10-16-new80
+drmox19hwczd1hiis40zqs4g3	必看	development	2026-10-16-new80
+dwzcl7bycqs7vw31kq3w34l9d	可看	development	2026-10-16-new80
+eb0qeeh4i907kp5m65v4lmepn	可看	development	2026-10-16-new80
+efdcpe6gwtx9w4pc35jo65m63	可看	development	2026-10-16-new80
+ehmwte11k6g13al2zws1far89	可看	development	2026-10-16-new80
+ep4bu3c5l0no2n2wmfna385by	必看	development	2026-10-16-new80
+evdcphs0fbwgusd6rak68axlv	可看	development	2026-10-16-new80
+fg65axnm6av6ukm5b473fzv1g	必看	development	2026-10-16-new80
+g5q3ge9ha3estjwvyiej7zg9z	可看	development	2026-10-16-new80
+g9o1yr1nzlujwzwwppvipf6og	可看	development	2026-10-16-new80
+gpfwzcz2tes7ycitl4ohibd2y	可看	development	2026-10-16-new80
+hczlowlmu71jh4lzfutcdw4ns	可看	development	2026-10-16-new80
+hmddwso7gjp0swq5msonon4kk	可看	development	2026-10-16-new80
+ida30979jql2eg62z4ayj8cib	可看	development	2026-10-16-new80
+ihgv3yicb3rc5t5anxy45j3hp	可看	development	2026-10-16-new80
+ioip0yl46tz2lypb16opw2oim	可看	development	2026-10-16-new80
+iox6z0a6k9xs6kgczd7w3ozca	可看	development	2026-10-16-new80
+jbqdyhrl1bl1647rz6b3xz9sj	可看	development	2026-10-16-new80
+jgw208uv7weuxs1xuo92lspry	可看	development	2026-10-16-new80
+k6zqbdcypmq6audeoanj4x07i	可看	development	2026-10-16-new80
+ke9to2uj5e9gbp3zxulzuc508	必看	development	2026-10-16-new80
+kn96e1o5ddk0lw4ef6wwmag6z	可看	development	2026-10-16-new80
+kurfmi7sshrkd6cn5df87eq1j	可看	development	2026-10-16-new80
+lafdth7uirh0p76e1k9aqnr4z	可看	development	2026-10-16-new80
+lfdgtlnd2zpil9r1je6zy6t1m	可看	development	2026-10-16-new80
+lj9kiizcygao2njdjqehhg5hp	可看	development	2026-10-16-new80
+lwv53qyg1z8sa4mkvqd52b0m9	可看	development	2026-10-16-new80
+lyd1x686pqyjtmu095f3lk2a1	可看	development	2026-10-16-new80
+m4ydi08dbp90aar4vvloge7ik	可看	development	2026-10-16-new80
+mmb4y9a487edc799byhpqel68	可看	development	2026-10-16-new80
+mo8fngiw9y5r1461zp0s4npei	必看	development	2026-10-16-new80
+mz8pq7oyud2sej50r0dbqtyys	必看	development	2026-10-16-new80
+o02udmz509293vwec7je9z5qn	可看	development	2026-10-16-new80
+o7k1f7cnph5vh99jcax2jzaha	必看	development	2026-10-16-new80
+odutaufj25k3hvve4a141sf62	可看	development	2026-10-16-new80
+oekgjdaq64lba0lr75nok49so	必看	development	2026-10-16-new80
+oew7y8tbnyju74i6plzp3sxif	可看	development	2026-10-16-new80
+ojympkw0p6p3oegefoel0ppv2	可看	development	2026-10-16-new80
+osm73b42fp1fnchyrfodbuzcp	可看	development	2026-10-16-new80
+p9p6qm19kkfc7hk3e38q5cg5d	可看	development	2026-10-16-new80
+pbwjc2qxexxidjcro85qhye66	可看	development	2026-10-16-new80
+peucbq4ad0q6s1rwjyxrx5plr	可看	development	2026-10-16-new80
+pkezo5heflj4uc69zs863owoz	必看	development	2026-10-16-new80
+pwt1zv3tkqynwgxit7v0g73uy	可看	development	2026-10-16-new80
+qjnme2tkd7bejq5byubyt2xte	必看	development	2026-10-16-new80
+qxi7j08mx3q2w71o8kg7ejijw	可看	development	2026-10-16-new80
+r3r1e1wigm2midewx9ejlv530	可看	development	2026-10-16-new80
+sdex6vz60fvvxe1um3p1r5gmx	可看	development	2026-10-16-new80
+se5w59jkj6yyn844n64krt14w	可看	development	2026-10-16-new80
+ta5ztbpu471hkb8hdp0pkjynw	可看	development	2026-10-16-new80
+tjez1g9b3gufsm354gmnq1eey	可看	development	2026-10-16-new80
+tn3yr433knnawc09dwpflkdlk	可看	development	2026-10-16-new80
+ts6ft2xr6o7rh087ee836cw5e	可看	development	2026-10-16-new80
+tugx84j87t8823bmaomul62rk	可看	development	2026-10-16-new80
+uoq390rwonzt6g12fw8usox1f	可看	development	2026-10-16-new80
+uotfvktfw1jq7p0558qyfep46	必看	development	2026-10-16-new80
+uzk56elqs0x51q2gph7s2krti	可看	development	2026-10-16-new80
+v4lf5h6rc6s27byoi0chyi40t	可看	development	2026-10-16-new80
+vqae0j8wbcl1um73nji2bn1kf	必看	development	2026-10-16-new80
+wr5ct0iy4mt8ot3qjpeywdjcr	可看	development	2026-10-16-new80
+wvx5q3p7ptbndrtr5kexat195	可看	development	2026-10-16-new80
+xozu90rk6k6obupcps8o8dy2p	可看	development	2026-10-16-new80
+xwwhc5r48mqjl019l5fxezm0x	可看	development	2026-10-16-new80
+yegxskh2g8zy0fve0yp1mru1c	可看	development	2026-10-16-new80
+yfi0doa9ohord2zhiurn0y1c3	可看	development	2026-10-16-new80
+yyq3w8fk8npt8ca4ol4fzr92e	可看	development	2026-10-16-new80
+z4p5snf99bp1b9pl4ml3grjxk	可看	development	2026-10-16-new80

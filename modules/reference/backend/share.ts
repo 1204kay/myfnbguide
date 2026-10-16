@@ -10,7 +10,7 @@ import { comparable, exact, figureSplit, isFigure, num } from "../format.ts";
 import type { Block, CaseStory, ChangeBlock, CompareBlock, NumbersBlock } from "../types.ts";
 
 /** Bumped when the drawing changes, so every card is drawn again. */
-export const SHARE_TEMPLATE_VERSION = "reference-share-2026-10-17";
+export const SHARE_TEMPLATE_VERSION = "reference-share-2026-10-17.2";
 
 type QuoteBlock = Extract<Block, { type: "quote" }>;
 export type ShareFigure = NumbersBlock | ChangeBlock | CompareBlock | QuoteBlock;
@@ -150,10 +150,11 @@ function numbers(b: NumbersBlock): Node {
   }
   // Figures in different units: what each is beside its number, none set up as the others' equal.
   return col({}, items.map((i, n) => row({
-    alignItems: "center", justifyContent: "space-between", gap: 32, padding: items.length === 3 ? "12px 0" : "20px 0", borderTop: n ? `1px solid ${HAIR}` : "none",
+    alignItems: "center", justifyContent: "space-between", gap: 32, padding: items.length === 3 ? "8px 0" : "14px 0", borderTop: n ? `1px solid ${HAIR}` : "none",
   }, [
     text({ flex: 1, fontSize: 30, lineHeight: 1.35, color: INK }, fitText(i.label, 30, INNER * 0.55, 1)),
-    figureValue(i.value, items.length === 3 ? 56 : 68),
+    // As large as fits under a two-line title: about 206px are left for the figure.
+    figureValue(i.value, items.length === 3 ? 46 : 60),
   ])));
 }
 

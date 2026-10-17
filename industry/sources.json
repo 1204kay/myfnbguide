@@ -3176,28 +3176,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "note-sudaku-wakaba",
-      "name": "焼肉すだく家族亭 都城若葉町店（日本 · 宫崎都城 2026 年开业的烤肉店，开业以后的营业和人手）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://note.com/sudaku_wakaba/rss",
-        "fetchPublicContent": true,
-        "_aihot": {
-          "initialBackfillLimit": 25
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "tags": [
-        "日本",
-        "博客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "note-gifukissa-lover",
       "name": "樋口尚敬 · 喫茶星時（日本 · 岐阜一个人经营十年的喫茶店，不借钱开店、不雇人）",
       "kind": "rss",

@@ -18223,3 +18223,4 @@ l1017-sfa	Southern Foodways Alliance 口述史	https://www.southernfoodways.org	
 l1017-jfc	日本政策金融公庫 事例	https://www.jfc.go.jp	2026-10-17·note 店主与新池子	不接	条款禁止未许可转载；放进征求同意名单
 import-mirasapo	ミラサポplus 支援事例（中小企業庁）	https://mirasapo-plus.go.jp/jirei-api/case_studies/{id}	2026-10-17·note 店主与新池子	不接	PDL1.0、robots 写 ai-input=yes，条款可以；但 10/17 在服务器上读它的 JSON 接口，26 个全部 HTTP 403（本机读得到，挡的是服务器 IP）。按规则 6 不接、不绕道；导入脚本和来源已撤下
 l1017-sba	SBA Success Stories（公有领域）	https://legacy.sba.gov	2026-10-17·note 店主与新池子	不接	公有领域、robots 不挡 /success-story/，但页面、站点地图都没有发布日期（只有修改时间），框架不公开没有可信日期的条目；内容多是 SBA 贷款的宣传稿。不接
+note-sudaku-wakaba	焼肉すだく家族亭 都城若葉町店	https://note.com/sudaku_wakaba/rss	2026-10-17·停用（零入选）	停用	首轮 15 篇（9/21–10/14）入选 0，最高 38 分（门槛 46）；每天一篇的营业日记，短、少有做法和数字

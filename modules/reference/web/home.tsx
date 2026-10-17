@@ -100,9 +100,9 @@ function Ranking({ rows, recent }: { rows: SituationRow[]; recent: ReferenceHome
 }
 
 /** A category: its title and all its situations as rows, most shops first, as the topics page lists all its topics. */
-function Category({ c }: { c: CategoryRows }) {
+function Category({ c, top = "pt-8" }: { c: CategoryRows; top?: string }) {
   return (
-    <section className="pt-8">
+    <section className={top}>
       {/* A group's heading, as the topics page has it (AIHOT routes/topics.tsx). */}
       <h2 id={c.key} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[15px] font-bold text-ink">{c.title}</h2>
       <SituationRows rows={c.situations} />
@@ -132,9 +132,18 @@ export default function ReferenceHomePage() {
           <Ranking rows={data.ranking} recent={data.recent} />
         </section>
       )}
-      {/* From 1280px two categories side by side: the lists' width goes to columns, not longer lines (layout J2). */}
+      {data.categories.length > 0 && (
+        // The categories get the ranking's kind of label, so where the ranking ends and the full list begins is said
+        // (Kay 10/17: past the tenth place a reader could not tell they had left it).
+        <div className="mt-12 lg:mt-14">
+          <div role="heading" aria-level={2}><Kicker>按类别看全部情况</Kicker></div>
+          <p className="mt-1.5 text-[13px] text-ink-4"><span className="num">{num(data.totals.situations)}</span> 种情况，分成 <span className="num">{num(data.categories.length)}</span> 类</p>
+        </div>
+      )}
+      {/* From 1280px two categories side by side: the lists' width goes to columns, not longer lines (layout J2). The
+          first row sits closer to the label above it. */}
       <div className="xl:grid xl:grid-cols-2 xl:items-start xl:gap-x-6">
-        {data.categories.map((c) => <Category key={c.key} c={c} />)}
+        {data.categories.map((c, i) => <Category key={c.key} c={c} top={i === 0 ? "pt-5" : i === 1 ? "pt-8 xl:pt-5" : "pt-8"} />)}
       </div>
     </Page>
   );

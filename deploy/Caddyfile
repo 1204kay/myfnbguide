@@ -1,7 +1,13 @@
 # HTTPS in front of the site: Caddy gets and renews the certificate for SITE_DOMAIN and compresses
 # responses. Point the domain's DNS at this server first.
-{$SITE_DOMAIN} {
+# 上线切换（myfnb/go-live-checklist.md 第 2 步，HANDOFF §3.0「域名转址」）：www 是站，切换期间 new 照常能开；根域转到 www 首页。
+www.myfnbguide.com, new.myfnbguide.com {
 	encode zstd gzip
+
+	# 旧站（静态参考书）的网址转到首页。名单取自旧站 sitemap.xml（10/17，155 个地址）里新站没有的几组路径；
+	# /about、/sources 新站有同名页面，保留新站的。名单以外的路径不动，新站真正的 404 照常是 404。
+	@oldsite path /appendix /appendix/* /contents /contents/* /handbook /handbook/* /map /map/* /public/* /quick-start /quick-start/* /resources /resources/* /start /start/* /support /support/* /tools /tools/* /updates /updates/*
+	redir @oldsite / permanent
 
 	# 访问计数（myfnb/HANDOFF.md §2.4）：只记时间、路径、状态码和“是不是机器人”，不记 IP、请求头（含 cookie 和浏览器标识）、
 	# 查询串，所以认不出是谁。机器人由浏览器标识判断，只留判断结果。myfnb/visits.sh 按天按类统计。
@@ -26,4 +32,8 @@
 	}
 
 	reverse_proxy web:3000
+}
+
+myfnbguide.com {
+	redir https://www.myfnbguide.com/ permanent
 }

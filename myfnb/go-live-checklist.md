@@ -142,7 +142,7 @@ curl -sI https://new.myfnbguide.com/ | head -3        # 301，Location 是 https
 这些都是对旧站的收尾，做完旧站就没有了。**按顺序，前一步确认了再做下一步**，每一步都留下「做了什么、什么时候」的记录在 `HANDOFF.md` 上线那条里：
 
 1. （Kay 做）关闭 5 个 Tally 表单：fix（EkJ0lN）、feedback（XxElML）、story（yPx8dx）、ask（Gxo91j）、join（dWZNBV）。**先确认新站没有任何地方还链到它们**：`grep -rn "tally.so" site apps modules industry` 无输出。`forms` CNAME 和 SendGrid 的记录**不动**（`HANDOFF.md` §10 第 7 条）。
-2. （Kay 做）FB、IG、小红书的 @myfnbguide 简介链接改成 `https://www.myfnbguide.com`。
+2. （Kay 做）FB、IG 的（小红书 Kay 10/17 定剔除） @myfnbguide 简介链接改成 `https://www.myfnbguide.com`。
 3. （电脑会话做）GitHub 仓库 `1204kay/myf-b_book` 设为 Archive，不删。可随时撤回。
 4. （Kay 做）确认 `myfbguide.com` 的转址通（第 4 步已做），**然后**停掉 Vercel 旧项目。停之前再看一遍：`dig` 的结果都已指向服务器，没有任何记录还指 Vercel。停之后 Vercel 里的旧站就没有了，所以最后做。
 

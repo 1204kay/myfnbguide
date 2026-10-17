@@ -17,7 +17,7 @@ import { selectedCondition } from "@aihot/backend/publication/scope";
 import { spaced } from "../format.ts";
 import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
-import { badness, blocking, checkStory } from "./checks.ts";
+import { badness, blocking, checkStory, pictureProblems } from "./checks.ts";
 import { computeExample, ExampleInputSchema } from "./examples.ts";
 
 export const MODEL_STEP = "referenceCase";
@@ -295,7 +295,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     const read = readOutput(res.data);
     written = read.written;
     answer = res.data;
-    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material)] : read.problems;
+    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material), ...pictureProblems(written.story)] : read.problems;
     // A later try can be worse than an earlier one: the best of them is the one kept.
     if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, answer, problems };
     if (!problems.length) break;
@@ -316,7 +316,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     });
     receiptIds.push(styled.receiptId);
     const read = readOutput(styled.data);
-    const after = read.written?.status === "story" ? checkStory(read.written.story, material) : null;
+    const after = read.written?.status === "story" ? [...checkStory(read.written.story, material), ...pictureProblems(read.written.story)] : null;
     if (read.written?.status === "story" && after && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
       written = read.written;
       problems = after;

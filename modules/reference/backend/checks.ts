@@ -341,6 +341,16 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   return problems;
 }
 
+/** The blocks the page draws as a picture; a quote or a list is still words. */
+const DRAWN = new Set(["compare", "parts", "example", "numbers", "change", "flow"]);
+
+/**
+ * A story with no picture of its own (Kay 10-17: every story gets one that says what its title says; too much plain
+ * text turns readers away). Not blocking: after the last try the story stands as it is written.
+ */
+export const pictureProblems = (story: CaseStory) => story.parts.some((part) => part.blocks.some((b) => DRAWN.has(b.type))) ? [] :
+  ["没有一张图：每篇至少一张图，说明标题说的那件事。原文有能比的数字用 compare、parts 或 numbers；没有，就用 change 写这家店改之前和改之后，或用 flow 写它的做法步骤；内容和数字都只用原文有的"];
+
 /**
  * Whether a problem keeps a story or write-up from readers: a number the original does not have, an answer that is not
  * one, an example that cannot be worked out, a situation the library has not, a parts bar that is no whole (its 合计
@@ -365,6 +375,6 @@ export function problemKind(problem: string): string {
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
   for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/不是同一个量/, "数字卡不是同一个量"], [/的区间/, "对比图区间"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"], [/的组成图/, "组成图不是一个整体"],
-    [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
+    [/没有一张图/, "没有图"], [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

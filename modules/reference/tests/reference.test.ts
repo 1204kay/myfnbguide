@@ -379,24 +379,26 @@ test("what the model wrote goes back named: lengths against what the prompt asks
 // that stays wrong. The first two are about the same shop; COFFEE is an owner in Japan who names no shop.
 const T = tag();
 const bistro = { ...story().shop, name: "Corner Bistro", label: "加州一家小酒馆" };
+// Every story has at least one picture (pictureProblems); the steps say what the shop did.
+const FLOW = [{ type: "flow", steps: ["收齐合同和账单", "逐行对比"] }];
 const answers: Record<string, unknown[]> = {
   FIRST: [
     { material: "story", ...story({ who: "顾问讲，一年多付 33,159 美元。", shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }, { heading: "假设你的餐饮店也这样做", blocks: [{ type: "example", example: { kind: "margin", price: 30, cost: 12 }, caption: "一份卖 30 元。" }] }] },
     { material: "story", ...story({ shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }, { heading: "他把账单逐行对比", blocks: [{ type: "flow", steps: ["收齐合同和账单", "第一张和最近一张逐行对比"] }] }] },
   ],
   // Placed twice in one situation (two groups): it counts once, under the first. Its shop's name has a gloss.
-  SECOND: [{ material: "story", ...story({ title: "同一家店的另一笔账", shop: { ...bistro, name: "Corner Bistro（街角小馆）" }, placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
+  SECOND: [{ material: "story", ...story({ title: "同一家店的另一笔账", shop: { ...bistro, name: "Corner Bistro（街角小馆）" }, placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) }],
   // Its label repeats its country, which the pages write before it once.
-  COFFEE: [{ material: "story", ...story({ title: "电费账单每周从865美元涨到1,503美元", shop: { name: null, label: "日本一家社区咖啡店", country: "日本", city: null, kind: "coffee", size: null, speaker: "owner" } }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) }],
+  COFFEE: [{ material: "story", ...story({ title: "电费账单每周从865美元涨到1,503美元", shop: { name: null, label: "日本一家社区咖啡店", country: "日本", city: null, kind: "coffee", size: null, speaker: "owner" } }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) }],
   // Only a spoken word: sent back as an edit of the story, without the material (its title carries the marker);
   // in no situation, so the pages below count as before.
   TEXTONLY: [
-    { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "顾问讲，账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
-    { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
+    { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "顾问讲，账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) },
+    { material: "story", ...story({ title: `TEXTONLY-${T} 账单`, lead: "账单每周都在涨。", shop: { ...story().shop, name: "Harbor Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) },
   ],
   THIN: [{ material: "thin", reason: "只有节目的题目" }],
   NEWS: [{ material: "news", reason: "一个国家的新规" }],
-  WRONG: [{ material: "story", ...story({ who: "一年多付 99,999 美元。" }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "多了 88,888 美元。" }] })) }],
+  WRONG: [{ material: "story", ...story({ who: "一年多付 99,999 美元。" }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "多了 88,888 美元。" }, ...FLOW] })) }],
 };
 const calls: string[] = [];
 const users: Record<string, string[]> = {};

@@ -211,14 +211,18 @@ if (ONLY) {
   console.log(`只画 ${figures.length} 张：${figures.map((f) => f.id).join("、")}`);
 }
 
-/** 静态页：网站的样式表、页面底色，图放在 id="stage" 的栏里（四周 16px，手机上就是页面左右的边距）。 */
+/**
+ * 静态页：网站的样式表、页面底色，图放在 id="stage" 的栏里（四周 16px，手机上就是页面左右的边距）。栏宽是卡片的宽：网站的样式表
+ * 把所有元素设成 border-box，这里要改回 content-box，否则 16px 边距会从栏宽里扣掉，卡片比真的窄 32px（320 宽手机上的图从
+ * 实际的 254px 量成 222px，字号跟着少算 13%；2026-10-17 用线上页面核对）。
+ */
 function pageHtml(shot: Shot, title: string): string {
   const width = shot.column === "fit" ? "width: fit-content" : `width: ${shot.column}px`;
   return `<!doctype html>
 <html lang="zh-CN"${shot.dark ? ' data-theme="dark"' : ""}>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)}</title>
 <link rel="stylesheet" href="../build/site.css">
-<style>body { margin: 0 } #stage { ${width}; padding: 16px; } #stage > * { margin-top: 0 }</style></head>
+<style>body { margin: 0 } #stage { ${width}; padding: 16px; box-sizing: content-box; } #stage > * { margin-top: 0 }</style></head>
 <body><main id="stage">${shot.markup}</main></body></html>`;
 }
 const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");

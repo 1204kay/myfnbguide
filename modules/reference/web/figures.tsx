@@ -16,8 +16,8 @@ function causes(groups: string[]) {
   const n = (title: string) => (groups.length > 1 ? groups.indexOf(title) + 1 : 0);
   const mark = (title: string, x: number, y: number) => n(title) > 0 && (
     <g>
-      <circle cx={x} cy={y} r="10.5" style={{ fill: "var(--accent)", stroke: "var(--surface)", strokeWidth: 2 }} />
-      <text x={x} y={y + 4.8} textAnchor="middle" style={{ fill: "var(--accent-contrast)", fontSize: 13.5, fontWeight: 700 }}>{n(title)}</text>
+      <circle cx={x} cy={y} r="11.5" style={{ fill: "var(--accent)", stroke: "var(--surface)", strokeWidth: 2 }} />
+      <text x={x} y={y + 5.3} textAnchor="middle" style={{ fill: "var(--accent-contrast)", fontSize: 15, fontWeight: 700 }}>{n(title)}</text>
     </g>
   );
   return { n, mark };
@@ -517,10 +517,10 @@ function AiFirst() {
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)"><path d="M88 33 Q104 40 114 64" /><path d="M88 83 H112" /><path d="M88 133 Q104 126 114 102" /></g>
       <rect x="116" y="46" width="100" height="74" rx="10" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
       <text x="166" y="80" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>AI 先做一遍</text>
-      <text x="166" y="98" textAnchor="middle" style={{ ...text, fontSize: 12.5 }}>整理、起草、回答</text>
+      <text x="166" y="98" textAnchor="middle" style={text}>整理、起草、回答</text>
       <path d="M218 83 H244" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)" />
       <rect x="248" y="56" width="66" height="54" rx="8" style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }} />
-      <g textAnchor="middle" style={strong}><text x="281" y="80">店里的人</text><text x="281" y="96">再看一遍</text></g>
+      <g textAnchor="middle" style={strong}><text x="281" y="79">店里的人</text><text x="281" y="97">再看一遍</text></g>
     </svg>
   );
 }
@@ -1279,6 +1279,16 @@ const hot = "var(--hot)";
 const accent = "var(--accent)";
 const box = { fill: "var(--fig-box)", stroke: "var(--line-strong)" } as const;
 const soft = { fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.2 } as const;
+/**
+ * 「举例」 beside the number it is about, like the caption's KindTag (十一 10-17: a made-up number has to read as
+ * one at a glance, not only from the tag under the picture). `x` is its left edge, `y` the baseline of the number.
+ */
+const Eg = ({ x, y }: { x: number; y: number }) => (
+  <g>
+    <rect x={x} y={y - 15} width="40" height="20" rx="10" style={{ fill: "var(--ink-4)", opacity: 0.12 }} />
+    <text x={x + 20} y={y} textAnchor="middle" style={{ fill: "var(--ink-3)", fontSize: 14, fontWeight: 600 }}>举例</text>
+  </g>
+);
 
 /** 食材用得比配方多: the portion the recipe says against the one served in a rush; the extra in red. */
 function OverPortion() {
@@ -1294,7 +1304,8 @@ function OverPortion() {
       <rect x={x(100)} y="76" width="8" height="24" style={{ fill: hot }} />
       <path d={`M${x(100)} 76 V100`} style={{ stroke: "var(--surface)", strokeWidth: 2 }} />
       <text x={x(120) + 8} y="93" style={strong}>120 克</text>
-      <text x={(x(100) + x(120)) / 2} y="68" textAnchor="middle" style={{ fill: hot, fontSize: 13.5, fontWeight: 700 }}>多装 20 克</text>
+      <text x={x(120)} y="68" textAnchor="end" style={{ fill: hot, fontSize: 14, fontWeight: 700 }}>多装 20 克</text>
+      <Eg x={x(120) - 124} y={67} />
     </svg>
   );
 }
@@ -1314,6 +1325,7 @@ function CreepingCosts() {
         </g>
       ))}
       <text x="64" y="140" style={{ fill: hot, fontSize: 14, fontWeight: 700 }}>三年后每月多付 900 元</text>
+      <Eg x={238} y={139} />
     </svg>
   );
 }
@@ -1334,7 +1346,8 @@ function OrderSplit() {
       </g>
       <text x={x(25) - 6} y="84" textAnchor="end" style={{ fill: hot, fontSize: 14, fontWeight: 700 }}>房租 4 元</text>
       <text x={x(30)} y="84" textAnchor="end" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>剩 5 元</text>
-      <text x="160" y="120" textAnchor="middle" style={strong}>一份 30 元，抽成和房租拿走 13 元</text>
+      <text x="0" y="120" style={strong}>一份 30 元，抽成和房租拿走 13 元</text>
+      <Eg x={250} y={119} />
     </svg>
   );
 }
@@ -1451,7 +1464,7 @@ function TwoWeeks() {
         <g key={name}>
           <text x="0" y={r * 44 + 45} style={strong}>{name}</text>
           {days.map((d, i) => off.includes(i)
-            ? <g key={d}><rect x={98 + i * 32} y={r * 44 + 24} width="28" height="30" rx="5" style={{ ...box, strokeDasharray: "3 3" }} /><text x={98 + i * 32 + 14} y={r * 44 + 44} textAnchor="middle" style={{ ...text, fontSize: 13 }}>休</text></g>
+            ? <g key={d}><rect x={98 + i * 32} y={r * 44 + 24} width="28" height="30" rx="5" style={{ ...box, strokeDasharray: "3 3" }} /><text x={98 + i * 32 + 14} y={r * 44 + 44} textAnchor="middle" style={text}>休</text></g>
             : <rect key={d} x={98 + i * 32} y={r * 44 + 24} width="28" height="30" rx="5" style={{ fill: r === 0 ? hot : accent, opacity: r === 0 ? 0.75 : 0.55 }} />)}
         </g>
       ))}

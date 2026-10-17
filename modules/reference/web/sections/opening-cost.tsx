@@ -55,28 +55,7 @@ function Cushion() {
   );
 }
 
-/** 不同店型的开店成本: a stall, a small shop and a full restaurant, each costing more to open (only the order, no sums). */
-function ByFormat() {
-  const formats: Array<[string, number]> = [["摊位", 26], ["小店", 58], ["正式餐厅", 98]];
-  return (
-    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：摊位、小店、正式餐厅，开店要花的钱一个比一个多" className="block w-full">
-      {formats.map(([name, h], i) => {
-        const cx = 58 + i * 102;
-        return (
-          <g key={name}>
-            <rect x={cx - 38} y={116 - h} width="76" height={h} rx="6" style={{ fill: accent, opacity: 0.3 + i * 0.25 }} />
-            <text x={cx} y="140" textAnchor="middle" style={strong}>{name}</text>
-          </g>
-        );
-      })}
-      <path d="M0 116 H320" style={{ stroke: "var(--line-strong)", strokeWidth: 1.5 }} />
-      <text x="0" y="22" style={{ ...text, fill: "var(--ink-2)" }}>开店要花的钱</text>
-    </svg>
-  );
-}
-
 export const sections: Record<string, Section> = {
   "build-out": { kind: "示意", caption: "装修和设备是开店最大的一笔开支。几家店的做法是逐项列出各项费用，预算留出余量，避免施工中追加；也有店接手前一家店留下的装修和设备，或买二手设备，把这笔开支压下来。", draw: () => <BuildOut /> },
   "working-capital": { kind: "示意", caption: "开业以后，房租、工资和进货每月照付，营业额要过几个月才涨上来；线只表示涨跌，不是实际金额。中间差的部分要靠事先备好的周转金，生活费和还款也要一起算进去。", draw: () => <Cushion /> },
-  "by-format": { kind: "示意", caption: "摊位、小店和正式餐厅，开店要花的钱差别很大；柱子只表示多少，不是实际金额。先选定店型，再按店型定预算和做法。", draw: () => <ByFormat /> },
 };

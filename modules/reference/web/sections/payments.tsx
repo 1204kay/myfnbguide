@@ -20,32 +20,6 @@ function FeeShare() {
   );
 }
 
-/** 收款公司的风险: what was taken each day reaches the shop days later; the last days' money is still with the processor. */
-function MoneyInTransit() {
-  const days = ["一", "二", "三", "四", "五", "六", "日"];
-  const x = (i: number) => 64 + i * 36;
-  return (
-    <svg viewBox="0 0 320 112" role="img" aria-label="示意图：每天收的钱过两天才到店里，到了周日，周六和周日收的钱还在收款公司" className="block w-full">
-      <text x={x(6) + 30} y="14" textAnchor="end" style={{ fill: hot, fontSize: 14, fontWeight: 700 }}>还在收款公司</text>
-      <path d={`M${x(5)} 22 H${x(6) + 30}`} style={{ stroke: hot, strokeWidth: 1.5 }} />
-      <text x="0" y="51" style={strong}>收款</text>
-      <text x="0" y="95" style={strong}>到账</text>
-      {days.map((d, i) => {
-        const held = i >= 5;
-        return (
-          <g key={d}>
-            <rect x={x(i)} y="30" width="32" height="30" rx="5" style={{ fill: held ? hot : accent, opacity: held ? 0.3 : 0.4 }} />
-            <text x={x(i) + 16} y="50" textAnchor="middle" style={{ ...text, fill: held ? hot : "var(--ink)", fontWeight: held ? 700 : 400 }}>{d}</text>
-            {i < 2
-              ? <rect x={x(i)} y="74" width="32" height="30" rx="5" style={{ ...box, strokeDasharray: "3 3" }} />
-              : <g><rect x={x(i)} y="74" width="32" height="30" rx="5" style={{ fill: accent, opacity: 0.4 }} /><text x={x(i) + 16} y="94" textAnchor="middle" style={{ ...text, fill: "var(--ink)" }}>{days[i - 2]}</text></g>}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
 /** 现金和对账: what the till recorded against what came in, by way of paying; one line does not match. */
 function TillAgainstTakings() {
   const rows: Array<[string, number, number]> = [["现金", 1, 1], ["刷卡", 1, 0.72], ["电子钱包", 0.8, 0.8]];
@@ -73,6 +47,5 @@ function TillAgainstTakings() {
 
 export const sections: Record<string, Section> = {
   "fees": { kind: "举例", caption: "假设你的餐饮店每月刷卡和电子钱包收 30,000 元，到账 29,100 元，差的 900 元是手续费，实际费率 3%。几家店的做法是先这样算出自己实际付的费率，再拿去和别家收款公司比较，或从毛利、菜单上消化。", draw: () => <FeeShare /> },
-  "risks": { kind: "示意", caption: "刷卡和电子钱包收的钱，要过几天才转到店里；图里按过两天到账画，各家收款公司不一样。任何一天，总有几天的营业款还在收款公司，收款公司出了问题，这部分钱就可能被压住。", draw: () => <MoneyInTransit /> },
   "reconcile": { kind: "示意", caption: "每天把收银系统记的营业额和实际收到的钱逐项对一遍：现金点数、刷卡到账、电子钱包到账。哪一项对不上，当天就查原因。", draw: () => <TillAgainstTakings /> },
 };

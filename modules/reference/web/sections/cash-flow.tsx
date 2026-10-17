@@ -1,5 +1,5 @@
 // The pictures of the sections of cash-flow (sections/index.ts keys them by "cash-flow/<cause key>").
-import { text, strong, hot, accent, box, soft, Eg, type Section } from "./kit";
+import { text, strong, accent, box, soft, Eg, type Section } from "./kit";
 
 /** 钱被什么占住: what holds the cash (slow stock, paying before the goods come) and the change that frees it. */
 function CashBack() {
@@ -46,27 +46,7 @@ function MonthsKept() {
   );
 }
 
-/** 借钱和还款: borrowing when the money has already run out, against borrowing to a plan made before. */
-function TwoWaysToBorrow() {
-  const rows: Array<[string, string]> = [["信用卡、消费金融", "银行、公共金融机构"], ["利息高", "利息低"], ["急着凑钱还", "按月固定还"]];
-  return (
-    <svg viewBox="0 0 320 158" role="img" aria-label="示意图：缺钱了才借，多半是信用卡和消费金融，利息高、急着还；事先有计划地借，向银行和公共金融机构借，利息低、按月固定还" className="block w-full">
-      <text x="75" y="16" textAnchor="middle" style={{ ...strong, fill: hot }}>缺钱了才借</text>
-      <text x="245" y="16" textAnchor="middle" style={{ ...strong, fill: accent }}>事先有计划地借</text>
-      {rows.map(([late, planned], i) => (
-        <g key={late}>
-          <rect x="0" y={i * 44 + 28} width="150" height="34" rx="6" style={box} />
-          <text x="75" y={i * 44 + 50} textAnchor="middle" style={text}>{late}</text>
-          <rect x="170" y={i * 44 + 28} width="150" height="34" rx="6" style={soft} />
-          <text x="245" y={i * 44 + 50} textAnchor="middle" style={{ ...strong, fill: accent, fontSize: 14 }}>{planned}</text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 export const sections: Record<string, Section> = {
   "cash-tied-up": { kind: "示意", caption: "卖不动的库存和先付出去的货款都占着现金。几家店的做法是把放久了的货降价清掉、跟供货商改成货到付款、收紧补货点，让钱回到手上；缺口已经出现时，有的店先用短期借款补上。", draw: () => <CashBack /> },
   reserve: { kind: "举例", caption: "假设你的餐饮店每月房租、工资、进货等开支合计 20,000 元。按几位老板的建议手上至少留 3 个月，就是 60,000 元；留到 6 个月是 120,000 元。有的店从开业起每月固定存一笔，钱紧时再调低。", draw: () => <MonthsKept /> },
-  borrowing: { kind: "示意", caption: "同样是借钱，缺口出现时才借，常常只能用信用卡取现或消费金融；事先有计划地向银行或公共金融机构借，利息较低，还款也能按月排好。", draw: () => <TwoWaysToBorrow /> },
 };

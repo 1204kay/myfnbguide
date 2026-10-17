@@ -45,27 +45,7 @@ function FirstWeeks() {
   );
 }
 
-/** 排班和工作量: one person's week, a long shift every day against a week with two days off. */
-function TwoWeeks() {
-  const days = ["一", "二", "三", "四", "五", "六", "日"];
-  const rows: Array<[string, number[]]> = [["天天长班", []], ["有两天休息", [1, 4]]];
-  return (
-    <svg viewBox="0 0 320 106" role="img" aria-label="示意图：一周七天都排长班，和一周有两天休息的排法" className="block w-full">
-      {days.map((d, i) => <text key={d} x={98 + i * 32 + 14} y="14" textAnchor="middle" style={text}>{d}</text>)}
-      {rows.map(([name, off], r) => (
-        <g key={name}>
-          <text x="0" y={r * 44 + 45} style={strong}>{name}</text>
-          {days.map((d, i) => off.includes(i)
-            ? <g key={d}><rect x={98 + i * 32} y={r * 44 + 24} width="28" height="30" rx="5" style={{ ...box, strokeDasharray: "3 3" }} /><text x={98 + i * 32 + 14} y={r * 44 + 44} textAnchor="middle" style={text}>休</text></g>
-            : <rect key={d} x={98 + i * 32} y={r * 44 + 24} width="28" height="30" rx="5" style={{ fill: r === 0 ? hot : accent, opacity: r === 0 ? 0.75 : 0.55 }} />)}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 export const sections: Record<string, Section> = {
   "beyond-pay": { kind: "示意", caption: "留住员工的理由不只是薪水。各家店谈到的还有：排班照顾员工的生活、工资和晋升的规则写清楚、把利润或股份分给员工。", draw: () => <ReasonsToStay /> },
   "first-weeks": { kind: "示意", caption: "新人最容易在开始的几周离开；曲线只表示先后，不是实际人数。几家店的做法是在这几周按步骤带新人，并在有人想走之前先谈一次。", draw: () => <FirstWeeks /> },
-  "workload": { kind: "示意", caption: "同一个人一周七天都排长班，和一周有两天休息的排法。工作量长期过大，人就会离开。", draw: () => <TwoWeeks /> },
 };

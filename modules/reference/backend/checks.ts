@@ -349,7 +349,7 @@ const DRAWN = new Set(["compare", "parts", "example", "numbers", "change", "flow
  * text turns readers away). Not blocking: after the last try the story stands as it is written.
  */
 export const pictureProblems = (story: CaseStory) => story.parts.some((part) => part.blocks.some((b) => DRAWN.has(b.type))) ? [] :
-  ["没有一张图：每篇至少一张图，说明标题说的那件事。原文有能比的数字用 compare、parts 或 numbers；没有，就用 change 写这家店改之前和改之后，或用 flow 写它的做法步骤；内容和数字都只用原文有的"];
+  ["没有一张图：标题说的那件事能画成一张说明它的图，就补上一张。原文有能比的数字用 compare、parts 或 numbers；没有，就用 change 写这家店改之前和改之后，或用 flow 写它的做法步骤；内容和数字都只用原文有的。原文撑不起一张真正说明标题的图，就不放，不凑一张，其余保持不变"];
 
 /**
  * Whether a problem keeps a story or write-up from readers: a number the original does not have, an answer that is not

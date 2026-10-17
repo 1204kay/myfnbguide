@@ -29,31 +29,6 @@ function Roster() {
   );
 }
 
-/** 一人多岗: one person who has learnt several stations moves to whichever is busy. */
-function Stations() {
-  const stations: Array<[number, number, string]> = [[8, 10, "收银"], [212, 10, "出餐"], [110, 112, "洗碗"]];
-  return (
-    <svg viewBox="0 0 320 152" role="img" aria-label="示意图：一个人学会收银、出餐和洗碗几个岗位，哪里忙就去哪里补位" className="block w-full">
-      <defs><marker id="sec-sch-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: accent }} /></marker></defs>
-      {stations.map(([x, y, name]) => (
-        <g key={name}>
-          <rect x={x} y={y} width="100" height="36" rx="6" style={box} />
-          <text x={x + 50} y={y + 23} textAnchor="middle" style={strong}>{name}</text>
-        </g>
-      ))}
-      <circle cx="160" cy="54" r="9" style={{ fill: "none", stroke: accent, strokeWidth: 2 }} />
-      <path d="M146 84 Q146 67 160 67 Q174 67 174 84" style={{ fill: "none", stroke: accent, strokeWidth: 2 }} />
-      <g style={{ fill: "none", stroke: accent, strokeWidth: 2 }}>
-        <path d="M140 60 C128 54 120 48 112 40" markerEnd="url(#sec-sch-ar)" />
-        <path d="M180 60 C192 54 200 48 208 40" markerEnd="url(#sec-sch-ar)" />
-        <path d="M160 90 V106" markerEnd="url(#sec-sch-ar)" />
-      </g>
-      <text x="8" y="80" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>哪里忙</text>
-      <text x="8" y="98" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>去哪里</text>
-    </svg>
-  );
-}
-
 /** 临时人手: the regular staff cover the whole day; a part-timer comes only for the lunch and dinner rush. */
 function PartTime() {
   const x = (h: number) => 92 + ((h - 10) / 12) * 224;
@@ -79,6 +54,5 @@ function PartTime() {
 
 export const sections: Record<string, Section> = {
   "by-traffic": { kind: "示意", caption: "按每个时段的客人数排人：午市和晚市多排，下午少排，周末比平日多。班表提前定下来，员工也能安排自己的时间。", draw: () => <Roster /> },
-  "multi-role": { kind: "示意", caption: "员工学会收银、出餐、洗碗等几个岗位，忙的时候哪里缺人就去哪里补位。", draw: () => <Stations /> },
   "flexible-help": { kind: "示意", caption: "正式员工从开门做到关门，兼职只在午市和晚市的高峰来几个小时。也有店把休息日从一天改成两天，让留下的人手够用。", draw: () => <PartTime /> },
 };

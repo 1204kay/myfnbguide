@@ -441,7 +441,7 @@ header { padding: 20px 24px 0; font-size: 15px; color: var(--ink-3) } header b {
 main { display: grid; grid-template-columns: repeat(4, 390px); gap: 28px 20px; padding: 20px 24px 28px; align-items: start; width: max-content }
 figure { margin: 0 } img { display: block; border-radius: 4px } figcaption { margin-top: 8px; font-size: 13px; line-height: 1.5 } figcaption b { color: var(--ink) }
 .bad { color: var(--hot) }
-</style></head><body><header><b>MyF&amp;B 图总览</b>手机宽度（卡宽 358），${theme === "light" ? "浅色" : "深色"} · 第 ${n + 1}/${total} 页 · 第 ${n * PER_SHEET + 1}–${n * PER_SHEET + part.length} 张，共 ${figures.length} 张</header><main>${cells}</main></body></html>`;
+</style></head><body><header><b>MYFNB 图总览</b>手机宽度（卡宽 358），${theme === "light" ? "浅色" : "深色"} · 第 ${n + 1}/${total} 页 · 第 ${n * PER_SHEET + 1}–${n * PER_SHEET + part.length} 张，共 ${figures.length} 张</header><main>${cells}</main></body></html>`;
     const file = path.join(OUT, "sheets", `sheet-${theme}-${String(n + 1).padStart(2, "0")}.html`);
     writeFileSync(file, html);
     sheets.push(file);

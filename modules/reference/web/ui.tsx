@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Link } from "react-router";
 import { ITEM_COPY, SITE } from "@aihot/site";
-import { IconArrowLeft, IconChevronRight } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { siteUrl } from "@aihot/web/lib/seo";
@@ -177,7 +177,7 @@ export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode })
         <div className="min-w-0 lg:flex-1">
           <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
           <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
-          <Dek className="mt-1.5">{p.summary}</Dek>
+          <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>
         </div>
       </div>
       <ul ref={list} className="mt-3 border-t border-line">
@@ -194,8 +194,11 @@ export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode })
         ))}
       </ul>
       {!open && p.lines.length > LINES_SHOWN && (
-        <button type="button" onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])} className="flex h-11 w-full items-center justify-center border-t border-line-soft text-[14px] text-accent">
-          展开其余 {p.lines.length - LINES_SHOWN} 家
+        // The original's toggle for a group's other reports (AIHOT features/feed/ReadingGroup.tsx Toggle): 12.5px, grey,
+        // a chevron down; 44px tall to tap. HANDOFF §3.0: the original folds repeats of one story, this the shops' own ways.
+        <button type="button" aria-expanded={false} onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])}
+          className="relative z-10 inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent">
+          另有 {p.lines.length - LINES_SHOWN} 家的做法<IconChevronDown size={13} />
         </button>
       )}
     </article>

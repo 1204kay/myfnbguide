@@ -13,15 +13,16 @@ const LINK_LINE = "完整故事和原文出处：";
 /** Instagram does not make a link in a caption clickable. */
 const IG_LINK_LINE = "完整故事和原文出处：见主页链接";
 
-/** What a post takes from a story (reference_cases.story): its title, its opening line and the figures it shows big. */
+/**
+ * What a post takes from a story (reference_cases.story): its title, its opening line and the one line that says what
+ * the shop did (the card its first situation shows). The figures stay on the share image the post carries: a list of
+ * them in the text took only the story's first block of figures, which was often not the shop's own (Kay 10/17).
+ */
 export interface StoryParts {
   title: string;
   lead: string;
-  figures: Array<{ value: string; label: string }>;
+  card: string;
 }
-
-/** Most figures a post shows; the first block of figures in the story gives them. */
-const FIGURES = 3;
 /** Longest a post may be, by platform (characters): Facebook reads better short, Instagram's limit is 2,200, a WeChat title takes 64. */
 export const LIMITS: Record<Platform, { body: number; title: number }> = {
   facebook: { body: 500, title: 80 },
@@ -29,20 +30,12 @@ export const LIMITS: Record<Platform, { body: number; title: number }> = {
   wechat: { body: 900, title: 64 },
 };
 
-/** The parts of a stored story (any block of its parts may hold the figures), tolerant of what it does not know. */
+/** The parts of a stored story, tolerant of what it does not know. */
 export function storyParts(story: unknown): StoryParts | null {
-  const s = story as { title?: unknown; lead?: unknown; parts?: unknown } | null;
+  const s = story as { title?: unknown; lead?: unknown; placements?: unknown } | null;
   if (!s || typeof s.title !== "string" || !s.title.trim()) return null;
-  const figures: StoryParts["figures"] = [];
-  for (const part of Array.isArray(s.parts) ? s.parts : []) {
-    for (const block of Array.isArray(part?.blocks) ? part.blocks : []) {
-      if (block?.type !== "numbers" || figures.length) continue;
-      for (const item of Array.isArray(block.items) ? block.items : []) {
-        if (typeof item?.value === "string" && typeof item?.label === "string" && figures.length < FIGURES) figures.push({ value: item.value.trim(), label: item.label.trim() });
-      }
-    }
-  }
-  return { title: s.title.trim(), lead: typeof s.lead === "string" ? s.lead.trim() : "", figures };
+  const card = Array.isArray(s.placements) ? (s.placements[0] as { card?: unknown } | undefined)?.card : undefined;
+  return { title: s.title.trim(), lead: typeof s.lead === "string" ? s.lead.trim() : "", card: typeof card === "string" ? card.trim() : "" };
 }
 
 export interface Drafted {
@@ -56,10 +49,9 @@ export interface Drafted {
 
 /** The post for one platform. `imageUrl` is the story's share image; Instagram cannot post without one. */
 export function compose(platform: Platform, story: StoryParts, link: string, imageUrl: string | null): Drafted {
-  const figures = story.figures.map((f) => `· ${f.value}　${f.label}`);
   const body = [
     story.lead,
-    figures.length ? figures.join("\n") : "",
+    story.card,
     platform === "instagram" ? IG_LINK_LINE : `${LINK_LINE}${link}`,
     AI_LABEL,
   ].filter(Boolean).join("\n\n");
@@ -82,7 +74,7 @@ export function check(post: Drafted, story: StoryParts): string[] {
   if (!post.body.includes(AI_LABEL)) problems.push("缺“AI 辅助生成”标识");
   if (post.platform !== "instagram" && !post.body.includes(post.link)) problems.push("缺故事链接");
   if (post.platform === "instagram" && !post.imageUrl) problems.push("Instagram 的帖子必须有图");
-  const shown = digits(`${story.title} ${story.lead} ${story.figures.map((f) => `${f.value} ${f.label}`).join(" ")}`);
+  const shown = digits(`${story.title} ${story.lead} ${story.card}`);
   const outside = [...digits(post.body.replace(post.link, "")), ...digits(post.title)].filter((n) => !shown.has(n));
   if (outside.length) problems.push(`有数字不在故事里：${[...new Set(outside)].join("、")}`);
   for (const [rule, fix] of READER_WORDING) {

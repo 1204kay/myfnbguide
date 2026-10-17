@@ -23,6 +23,7 @@ const story = (over: Record<string, unknown> = {}) => ({
   lead: "这家面馆发现外卖每单要付平台 25%。",
   who: "店主",
   parts: [{ heading: "账", blocks: [{ type: "numbers", point: "", caption: null, items: [{ value: "25%", label: "平台抽成" }, { value: "18 元", label: "每碗成本" }] }] }],
+  placements: [{ situation: "pricing", group: "g", card: "这家面馆把外卖价提高 25%，堂食价不动。" }],
   open: null,
   ...over,
 });
@@ -32,19 +33,19 @@ test("a post is the story's own words with the label and the link, per platform"
   const posts = Object.fromEntries(PLATFORMS.map((p) => [p, compose(p, parts(), LINK, IMAGE)]));
   for (const p of PLATFORMS) {
     assert.deepEqual(posts[p]!.problems, [], p);
-    assert.ok(posts[p]!.body.includes(AI_LABEL) && posts[p]!.body.includes("· 25%　平台抽成"), p);
+    assert.ok(posts[p]!.body.includes(AI_LABEL) && posts[p]!.body.includes("这家面馆把外卖价提高 25%，堂食价不动。") && !posts[p]!.body.includes("平台抽成"), p);
   }
   assert.ok(posts.facebook!.body.includes(LINK) && posts.wechat!.body.includes(LINK));
   assert.ok(!posts.instagram!.body.includes(LINK) && posts.instagram!.body.includes("见主页链接"), "Instagram does not link a caption");
   assert.equal(posts.instagram!.imageUrl, IMAGE);
   assert.deepEqual(storyParts({ title: "  " }), null);
-  assert.deepEqual(storyParts(story())!.figures.length, 2);
+  assert.equal(storyParts(story({ placements: [] }))!.card, "", "a story with no card still makes a post");
 });
 
 test("the checks hold a post that says what its story does not, or breaks a rule", () => {
   const problems = (over: Record<string, unknown>, platform: (typeof PLATFORMS)[number] = "facebook", image: string | null = IMAGE) => compose(platform, parts(over), LINK, image).problems.join("|");
   const post = compose("facebook", parts(), LINK, IMAGE);
-  assert.match(check({ ...post, body: `${post.body}\n一年多付 33,159 元` }, parts()).join(), /数字不在故事里：33159/, "a number the story's title, opening and figures do not have");
+  assert.match(check({ ...post, body: `${post.body}\n一年多付 33,159 元` }, parts()).join(), /数字不在故事里：33159/, "a number the story's title, opening and card do not have");
   assert.deepEqual(check({ ...post, body: post.body.replace(AI_LABEL, "") }, parts()), ["缺“AI 辅助生成”标识"]);
   assert.deepEqual(check({ ...post, body: post.body.replace(LINK, "") }, parts()), ["缺故事链接"]);
   assert.match(problems({ lead: "老板你应该算清抽成。" }), /你应该/, "the wording rules");

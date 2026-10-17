@@ -2,22 +2,22 @@
 //
 // 用法（一条命令重新生成全部；浏览器目录换成本机 Playwright 浏览器所在的目录）：
 //   PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/figure-sheet/sheet.ts [--refresh] [--base https://new.myfnbguide.com]
-//   改完几张图只看这几张：加 --only s-rent,g-cash-flow,c-<故事 id>（逗号分隔的图编号，见 index.md；写 g-cash-flow 包括它的各组），
+//   改完几张图只看这几张：加 --only s-rent,g-cash-flow,c-<故事 id>（逗号分隔的图编号，见 index.md；写 g-busy-no-profit 包括它的各节），
 //   再加 --out <目录> 把结果写到别处（几个人同时改图时互不覆盖；目录要在仓库里，例如 .data/figure-sheet-a，打包后的渲染入口才找得到
 //   node_modules；故事数据仍读默认目录的 cache/）。
 //
 // 做的事：
 //   1. 用 rolldown 打包同目录的 entry.tsx（它引用页面上实际的组件 figures.tsx、ui.tsx），在 Node 里渲染成 HTML；样式表用
 //      Tailwind 按 apps/web/app/app.css 现编（与网站构建同一套来源），浅色、深色两套变量都来自 app.css。
-//   2. 图有三类：50 张情况图（SituationDrawing / 情况页图卡）；带分组的情况图每一组突出时的样子（GroupDrawing focus）；
+//   2. 图有三类：50 张情况图（SituationDrawing / 情况页图卡）；情况页每一节自己的图（SectionFigure）；
 //      故事里程序按原文数字画的图（compare、parts、example），数据取自线上只读接口 /api/reference/situations/<slug> 和
 //      /api/reference/cases/<id>，挑 28–30 篇带图的故事（各情况轮流取，补齐没出现过的图种）。接口结果存在
 //      .data/figure-sheet/cache/，再跑时直接用；加 --refresh 重新取。
 //   3. 每张图截四种（png/<id>--<种>.png，静态 HTML 在 html/）：
-//        phone-light / phone-dark  手机 390 宽，卡片宽 358（情况页图卡；做法卡上的分组图；故事页的图）
+//        phone-light / phone-dark  手机 390 宽，卡片宽 358（情况页图卡；分节图卡；故事页的图）
 //        narrow-light              最窄的位置：情况图在参考首页第 1 名大卡右栏（≥ 1280，宽 260，最高 200）；
-//                                  分组图在 ≥ 961 做法卡右栏（宽 280，最高 220）；故事的图在 320 宽手机（卡片宽 288）
-//        desktop-light             电脑：情况页图卡（栏宽 760，图最宽 360）；分组图在单店做法行卡上（图宽 328）；
+//                                  分节图和故事的图在 320 宽手机（卡片宽 288）
+//        desktop-light             电脑：情况页图卡（栏宽 760，图最宽 360）；分节图卡（栏宽 760，图最宽 360）；
 //                                  故事页（栏宽 760）
 //   4. 同时量：图里每个 text 实际显示的字号（px，小于 11 算问题）、是否超出 svg 的边框（会被裁掉）、文字之间是否重叠
 //      （按字形的实际范围算）；HTML 部分：字号、标签（不长于 24 个字的块）在两个字之间折行（「处理杂｜事」）、数字和
@@ -176,16 +176,16 @@ for (const s of R.situations) {
   });
 }
 for (const s of R.situations) {
-  if (!s.grouped) continue;
   s.groups.forEach((g, i) => {
-    const practice = R.groupFigure(s.slug, g.title, "practice");
+    if (!g.drawn) return;
+    const card = R.sectionFigure(s.slug, g.key);
     figures.push({
-      id: `g-${s.slug}-${i + 1}`, kind: "group", label: `${s.slug} · 第 ${i + 1} 组`, name: g.title, slug: s.slug,
+      id: `g-${s.slug}-${i + 1}`, kind: "group", label: `${s.slug} · 第 ${i + 1} 节`, name: g.title, slug: s.slug,
       shots: {
-        "phone-light": phone(practice, "做法卡上的分组图，手机（卡宽 358）", false),
-        "phone-dark": phone(practice, "做法卡上的分组图，手机（卡宽 358）", true),
-        "narrow-light": { viewport: 1440, column: "fit", dark: false, place: "做法卡右栏，≥ 961（宽 280，最高 220）", markup: practice },
-        "desktop-light": { viewport: 1440, column: 760, dark: false, place: "单店做法行卡最上面，电脑（图宽 328，最高 220）", markup: R.groupFigure(s.slug, g.title, "rows") },
+        "phone-light": phone(card, "情况页一节的图卡，手机（卡宽 358）", false),
+        "phone-dark": phone(card, "情况页一节的图卡，手机（卡宽 358）", true),
+        "narrow-light": { viewport: 320, column: 288, dark: false, place: "情况页一节的图卡，320 宽手机（卡宽 288）", markup: card },
+        "desktop-light": { viewport: 1440, column: 760, dark: false, place: "情况页一节的图卡，电脑（栏宽 760，图最宽 360）", markup: card },
       },
     });
   });
@@ -466,8 +466,8 @@ writeFileSync(path.join(OUT, "measure.json"), JSON.stringify({
   browser: `Chromium ${browser.version()}，Windows 字体（中文为微软雅黑），deviceScaleFactor 2`,
   variants: {
     "phone-light": "手机 390 宽，卡宽 358，浅色", "phone-dark": "同上，深色",
-    "narrow-light": "最窄的位置：情况图在首页第 1 名大卡右栏（260，最高 200）；分组图在做法卡右栏（280，最高 220）；故事的图在 320 宽手机（卡宽 288）",
-    "desktop-light": "电脑：情况页图卡（图最宽 360）；分组图在单店做法行卡（图宽 328）；故事页（栏宽 760）",
+    "narrow-light": "最窄的位置：情况图在首页第 1 名大卡右栏（260，最高 200）；分节图和故事的图在 320 宽手机（卡宽 288）",
+    "desktop-light": "电脑：情况页图卡（图最宽 360）；分节图卡（图最宽 360）；故事页（栏宽 760）",
   },
   summary: Object.fromEntries(Object.keys(PROBLEM_NAMES).map((t) => [t, issues.flatMap((i) => i.problems.filter((p) => p.type === t).map((p) => `${i.id} [${i.variant}] ${p.text}：${p.detail}`))])),
   issues,
@@ -480,7 +480,7 @@ writeFileSync(path.join(OUT, "measure.json"), JSON.stringify({
   })),
 }, null, 1));
 
-const KIND_TITLES = { situation: "情况图（每种情况一张）", group: "分组图（带分组的情况图，每一组突出）", story: "故事里程序画的图（原文数据图、举例算例）" };
+const KIND_TITLES = { situation: "情况图（每种情况一张）", group: "分节图（情况页每一节自己的图）", story: "故事里程序画的图（原文数据图、举例算例）" };
 const md = [
   "# 图的总览",
   "",
@@ -505,7 +505,7 @@ const md = [
 ].join("\n");
 writeFileSync(path.join(OUT, "index.md"), md);
 
-console.log(`图 ${figures.length} 张（情况 ${figures.filter((f) => f.kind === "situation").length}，分组 ${figures.filter((f) => f.kind === "group").length}，故事 ${figures.filter((f) => f.kind === "story").length}，来自 ${stories.length} 篇故事），截图 ${results.length} 张，总览 ${sheets.length} 页。`);
+console.log(`图 ${figures.length} 张（情况 ${figures.filter((f) => f.kind === "situation").length}，分节 ${figures.filter((f) => f.kind === "group").length}，故事 ${figures.filter((f) => f.kind === "story").length}，来自 ${stories.length} 篇故事），截图 ${results.length} 张，总览 ${sheets.length} 页。`);
 for (const [type, name] of Object.entries(PROBLEM_NAMES)) {
   const n = issues.reduce((sum, i) => sum + i.problems.filter((p) => p.type === type).length, 0);
   if (n) console.log(`  ${name}：${n} 处`);

@@ -13,7 +13,7 @@ import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { PracticeList, SituationPage } from "../types.ts";
-import { GroupDrawing, SituationFigure } from "./figures";
+import { SectionFigure, SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
 import { BODY, Heading, MEASURE, PageHeader, Practice, ROW_BUTTON, ShopRows, StoryCards, useShare, BackLink } from "./ui";
 
@@ -115,7 +115,8 @@ export default function SituationRoute() {
             <span className="num text-[17px] font-[650] leading-[1.5] text-accent">{i + 1}</span>
             <h2 className="text-[17px] font-[650] leading-[1.5] text-ink">{g.title}</h2>
           </div>
-          <List list={g} grouped={s.count.grouped} figure={<GroupDrawing slug={s.slug} groups={titles} focus={g.title} />} />
+          <SectionFigure slug={s.slug} group={g.key} />
+          <List list={g} grouped={s.count.grouped} />
         </section>
       )) : (
         <section className="mt-9"><List list={s.rest} grouped={s.count.grouped} /></section>
@@ -142,18 +143,17 @@ export default function SituationRoute() {
 
 /**
  * One list: the practice cards, the rows of practices one shop tells alone, then the stories in no practice (all
- * of them before the stories are grouped). `figure`, the cause's part of the picture, goes on the first card, or
- * on top of the rows where there is no card.
+ * of them before the stories are grouped).
  */
-function List({ list, grouped, figure }: { list: PracticeList; grouped: boolean; figure?: ReactNode }) {
+function List({ list, grouped }: { list: PracticeList; grouped: boolean }) {
   return (
     <>
       {list.practices.length > 0 && (
         <div className="mt-3.5 grid gap-2.5">
-          {list.practices.map((p, i) => <Practice key={p.key} p={p} figure={i === 0 ? figure : undefined} />)}
+          {list.practices.map((p) => <Practice key={p.key} p={p} />)}
         </div>
       )}
-      <ShopRows shops={list.shops} figure={list.practices.length ? undefined : figure} className={list.practices.length ? "mt-2.5" : "mt-3.5"} />
+      <ShopRows shops={list.shops} className={list.practices.length ? "mt-2.5" : "mt-3.5"} />
       {list.cases.length > 0 && (
         <>
           {grouped && <p className="mt-5 text-[13px] text-ink-4">最近收进来的原文</p>}

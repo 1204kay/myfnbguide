@@ -18221,5 +18221,5 @@ l1017-pod-co	pod.co / Audiomeans 上的节目		2026-10-17·note 店主与新池�
 l1017-j-net21	J-Net21 案例（中小機構）	https://j-net21.smrj.go.jp	2026-10-17·note 店主与新池子	不接	站点条款禁止转载未许可；放进征求同意名单
 l1017-sfa	Southern Foodways Alliance 口述史	https://www.southernfoodways.org	2026-10-17·note 店主与新池子	不接	版权声明只许个人教育用途；放进征求同意名单
 l1017-jfc	日本政策金融公庫 事例	https://www.jfc.go.jp	2026-10-17·note 店主与新池子	不接	条款禁止未许可转载；放进征求同意名单
-l1017-mirasapo	ミラサポplus 事例（PDL1.0）	https://mirasapo-plus.go.jp	2026-10-17·note 店主与新池子	不接	可用（PDL1.0，ai-input=yes），第二批一次性导入，这批不接
-l1017-sba	SBA Success Stories（公有领域）	https://legacy.sba.gov	2026-10-17·note 店主与新池子	不接	可用（公有领域），第二批一次性导入，这批不接
+import-mirasapo	ミラサポplus 支援事例（中小企業庁）	https://mirasapo-plus.go.jp/jirei-api/case_studies/{id}	2026-10-17·note 店主与新池子	接入	PDL1.0（可商用、须注明出处，本站来源行写明）；robots 不挡 /jirei-api/，Content-Signal ai-input=yes；案例页是前端模板抽不到正文，用公开 JSON 接口一次性导入 26 个餐饮案例（38 个里去掉重复登记 7 个、非开店 5 个），myfnb/import-mirasapo-2026-10-17.ts
+l1017-sba	SBA Success Stories（公有领域）	https://legacy.sba.gov	2026-10-17·note 店主与新池子	不接	公有领域、robots 不挡 /success-story/，但页面、站点地图都没有发布日期（只有修改时间），框架不公开没有可信日期的条目；内容多是 SBA 贷款的宣传稿。不接

@@ -137,8 +137,8 @@ export async function writeBody(articleId: string): Promise<BodyResult | null> {
   if (!a) return null;
   const { status, body, reason, problems, receiptIds } = await composeBody(a);
   await sql.begin(async (tx) => {
-    // A write-up already shown stays when writing it again fails the checks (as a case does, write.ts).
-    const [shown] = status === "held" ? await tx`SELECT 1 FROM reference_bodies WHERE article_id = ${a.id} AND status = 'body'` : [];
+    // A write-up already shown stays when writing it again fails the checks or comes out thin (as a case does, write.ts).
+    const [shown] = status !== "body" ? await tx`SELECT 1 FROM reference_bodies WHERE article_id = ${a.id} AND status = 'body'` : [];
     if (shown) await tx`UPDATE reference_bodies SET prompt_version = ${PROMPT_VERSION}, receipt_ids = ${receiptIds}, problems = ${sql.json(problems as never)}, updated_at = now() WHERE article_id = ${a.id}`;
     else await tx`
       INSERT INTO reference_bodies (article_id, revision, status, body, problems, receipt_ids, prompt_version, updated_at)

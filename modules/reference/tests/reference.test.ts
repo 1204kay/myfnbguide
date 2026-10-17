@@ -691,6 +691,11 @@ test("every listed item that is no story gets a write-up under its summary, chec
   const [stored] = await sql<{ body: ItemBody; receipt_ids: string[] }[]>`SELECT body, receipt_ids FROM reference_bodies WHERE article_id = ${news}`;
   assert.equal(stored!.body.parts[0]!.heading, "布草账单四年涨到每周 1,503 美元");
   assert.equal(stored!.receipt_ids.length, 2);
+  // Shown, then written again too thin: the shown write-up stays.
+  await sql`UPDATE reference_bodies SET status = 'body', body = ${sql.json(stored!.body as never)} WHERE article_id = ${short}`;
+  assert.equal((await writeBody(short))!.status, "thin");
+  assert.equal((await sql<{ status: string }[]>`SELECT status FROM reference_bodies WHERE article_id = ${short}`)[0]!.status, "body", "the shown write-up stays");
+  await sql`UPDATE reference_bodies SET status = 'thin', body = NULL WHERE article_id = ${short}`;
   assert.ok(!(await articlesToBody(50)).includes(news), "written up once");
   // A changed prompt rewrites nothing by itself; an item listed days ago waits for the rewrite script too.
   const [{ prompt_version: current }] = await sql<{ prompt_version: string }[]>`SELECT prompt_version FROM reference_bodies WHERE article_id = ${news}`;

@@ -163,23 +163,17 @@ const LINES_SHOWN = 4;
 
 /**
  * A practice two shops or more tell (layout A7-3, J4-2): who tells it, what to do, how the shops did it, and a line
- * a shop leading to its newest story in it. The first card of a cause may carry its part of the situation's picture
- * (`figure`), beside the text from 961px; where that picture has no such part, the text keeps the card's width.
+ * a shop leading to its newest story in it.
  */
-export function Practice({ p, figure }: { p: PracticeCard; figure?: ReactNode }) {
+export function Practice({ p }: { p: PracticeCard }) {
   const [open, setOpen] = useState(false);
   const list = useRef<HTMLUListElement>(null);
   const lines = open ? p.lines : p.lines.slice(0, LINES_SHOWN);
   return (
     <article id={p.key} className="card scroll-mt-[calc(var(--bar-h)+8px)] px-4 pb-1 pt-3.5 sm:px-5 lg:pt-[18px]">
-      <div className="lg:flex lg:gap-6">
-        {figure && <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[220px] lg:order-2 lg:mb-0 lg:w-[280px] lg:shrink-0">{figure}</div>}
-        <div className="min-w-0 lg:flex-1">
-          <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
-          <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
-          <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>
-        </div>
-      </div>
+      <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
+      <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
+      <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>
       <ul ref={list} className="mt-3 border-t border-line">
         {lines.map((l) => (
           <li key={l.caseId} className="border-t border-line-soft first:border-t-0">
@@ -231,13 +225,11 @@ function PracticeRow({ p, who }: { p: ShopPractices["practices"][number]; who?: 
 /**
  * The practices one shop tells alone (layout J4-3, J4-4), rows in one card with a hairline between them: no summary
  * and no count. A shop with several has them under one line naming it, "日本 · 京都一家小酒馆 · 2 种做法".
- * `figure` is its cause's part of the picture, on top, where no practice card above carries it.
  */
-export function ShopRows({ shops, figure, className }: { shops: ShopPractices[]; figure?: ReactNode; className: string }) {
+export function ShopRows({ shops, className }: { shops: ShopPractices[]; className: string }) {
   if (!shops.length) return null;
   return (
     <div className={`card overflow-hidden ${className}`}>
-      {figure && <div className="mx-auto max-w-[360px] px-4 pt-4 empty:hidden [&_svg]:max-h-[220px]">{figure}</div>}
       <ul className="divide-y divide-line">
         {shops.map((shop) => {
           const who = `${shop.country} · ${shop.name}`;

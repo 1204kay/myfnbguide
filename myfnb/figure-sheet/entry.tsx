@@ -2,22 +2,20 @@
 // 用 renderToStaticMarkup 渲染成 HTML 片段。外面那一层照页面上图所在的位置写（类名抄自对应页面，所以样式表里都有）。
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { figureKind, GroupDrawing, SituationDrawing, SituationFigure } from "../../modules/reference/web/figures";
+import { figureKind, hasSectionFigure, SectionFigure, SituationDrawing, SituationFigure } from "../../modules/reference/web/figures";
 import { StoryBlock } from "../../modules/reference/web/ui";
 import { SITUATIONS } from "../../modules/reference/situations.ts";
 import type { Block } from "../../modules/reference/types.ts";
 
 const html = (node: ReactNode) => renderToStaticMarkup(<>{node}</>);
 
-/** 每种情况：情况名、各组（情况页图卡下的编号列表）、图是「举例」还是「示意」（没有图为 null）、是否按原因组画。 */
+/** 每种情况：情况名、各组（情况页图卡下的编号列表；有自己的分节图的组带 key）、图是「举例」还是「示意」（没有图为 null）。 */
 export const situations = SITUATIONS.map((s) => {
-  const groups = s.groups.map((g) => g.title);
   return {
     slug: s.slug,
     title: s.title,
-    groups: s.groups.map((g) => ({ title: g.title, line: g.line })),
+    groups: s.groups.map((g) => ({ key: g.key, title: g.title, line: g.line, drawn: hasSectionFigure(s.slug, g.key) })),
     kind: figureKind(s.slug),
-    grouped: groups.length > 0 && html(<GroupDrawing slug={s.slug} groups={groups} focus={groups[0]!} />) !== "",
   };
 });
 
@@ -59,26 +57,9 @@ export function homeColumn(slug: string): string {
   );
 }
 
-/**
- * 一组突出时的图（GroupDrawing focus）。`practice`：做法卡第一张上的图（ui.tsx Practice：手机在卡片最上面，≥ 961 在
- * 右侧 280px 一栏，最高 220px）；`rows`：这一组没有做法卡、只有单店做法行时，放在行卡最上面（ui.tsx ShopRows，最宽 360px）。
- */
-export function groupFigure(slug: string, focus: string, place: "practice" | "rows"): string {
-  const titles = SITUATIONS.find((x) => x.slug === slug)!.groups.map((g) => g.title);
-  const drawing = <GroupDrawing slug={slug} groups={titles} focus={focus} />;
-  return html(
-    place === "practice" ? (
-      <article className="card px-4 pb-1 pt-3.5 sm:px-5 lg:pt-[18px]">
-        <div className="lg:flex lg:gap-6">
-          <div className="mx-auto mb-3 max-w-[360px] empty:hidden [&_svg]:max-h-[220px] lg:order-2 lg:mb-0 lg:w-[280px] lg:shrink-0">{drawing}</div>
-        </div>
-      </article>
-    ) : (
-      <div className="card overflow-hidden">
-        <div className="mx-auto max-w-[360px] px-4 pt-4 empty:hidden [&_svg]:max-h-[220px]">{drawing}</div>
-      </div>
-    ),
-  );
+/** 情况页一节自己的图（situation.tsx：节标题下面一张图卡，和情况页图卡同一个框）。 */
+export function sectionFigure(slug: string, key: string): string {
+  return html(<SectionFigure slug={slug} group={key} />);
 }
 
 /** 故事里程序画的图（原文数据图、举例算例），用故事页实际的组件。 */

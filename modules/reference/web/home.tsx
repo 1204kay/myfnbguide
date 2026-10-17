@@ -16,7 +16,7 @@ import { CARD, CountFigure, KindTag, Page, PageHeader, RankTag, SituationRows, S
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
-const LEAD = "按遇到的事，查各地店家的做法和经验。每一条都附原文出处，由你自己判断。";
+const LEAD = "各地店家在成本、人员、顾客、运营、开店关店等方面的做法，按情况分类，附原文出处。";
 
 export function headers() {
   return edgeTtl(60);

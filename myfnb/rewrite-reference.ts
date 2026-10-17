@@ -54,7 +54,10 @@ const tried = async (write: () => Promise<{ status: string } | null>, id: string
   try { return (await write())?.status ?? "原文已删除"; } catch (error) { console.log(`${id} 出错：${(error as Error).message.slice(0, 120)}`); return "出错"; }
 };
 if (apply && !onlyBodies) for (const [i, id] of cases.entries()) {
-  count(`故事 ${await tried(() => writeCase(id), id)}`);
+  const status = await tried(() => writeCase(id), id);
+  // A shown story the rewrite finds thin stays shown (writeCase); listed to judge by hand.
+  if (status === "thin") console.log(`判成 thin：${id}`);
+  count(`故事 ${status}`);
   if ((i + 1) % 20 === 0) console.log(`故事已写 ${i + 1}/${cases.length}`);
 }
 const bodies = only(await articlesToBody(limit, new Date(), { all: true }));

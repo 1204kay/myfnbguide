@@ -712,7 +712,7 @@ test("every listed item that is no story gets a write-up under its summary, chec
   assert.equal((await app.inject(`/api/reference/items/${news}`)).statusCode, 404, "a withdrawn item shows no write-up");
 });
 
-test("a story already shown stays when writing it again fails the checks", async () => {
+test("a story already shown stays when writing it again fails the checks or comes out thin", async () => {
   // WRONG's answers always fail: shown under an earlier prompt, it is tried once more and kept.
   await sql`UPDATE reference_cases SET status = 'story', story = ${sql.json(story({ placements: [] }) as never)}, prompt_version = 'reference-case@older' WHERE article_id = ${ids.WRONG!}`;
   assert.ok((await articlesToWrite(50, new Date(), { all: true })).includes(ids.WRONG!));
@@ -720,6 +720,12 @@ test("a story already shown stays when writing it again fails the checks", async
   const [row] = await sql<{ status: string; story: CaseStory | null }[]>`SELECT status, story FROM reference_cases WHERE article_id = ${ids.WRONG!}`;
   assert.deepEqual([row!.status, row!.story?.title], ["story", "布草租金四年涨了 74%"], "the shown story stays");
   assert.ok(!(await articlesToWrite(50, new Date(), { all: true })).includes(ids.WRONG!), "tried under this prompt: not again until the next change");
+  // THIN's answers are always thin: a shown story is not taken off the pages by one.
+  await sql`UPDATE reference_cases SET status = 'story', story = ${sql.json(story({ placements: [] }) as never)}, prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
+  assert.equal((await writeCase(ids.THIN!))!.status, "thin");
+  const [kept] = await sql<{ status: string }[]>`SELECT status FROM reference_cases WHERE article_id = ${ids.THIN!}`;
+  assert.equal(kept!.status, "story", "the shown story stays");
+  await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.THIN!}`;
 });
 
 test("the last eval run reads case by case, the site's prompt beside the candidate", async () => {

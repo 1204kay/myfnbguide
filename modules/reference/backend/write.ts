@@ -335,10 +335,11 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
   const shopKey = story?.shop.name ? createHash("sha256").update(`${story.shop.country}|${shopNameKey(story.shop.name)}`).digest("hex").slice(0, 12) : null;
   const situations = status === "story" && story ? story.placements.map((p) => p.situation) : [];
   await sql.begin(async (tx) => {
-    // A story already shown stays when writing it again (a new prompt, a new revision) fails the checks: rewriting
-    // every case would otherwise hide a quarter of the library (27% of first writes were held, 10/9). It is marked
-    // as tried under this prompt, so it is not written again until the next change.
-    const [shown] = status === "held" ? await tx`SELECT 1 FROM reference_cases WHERE article_id = ${a.id} AND status = 'story'` : [];
+    // A story already shown stays when writing it again (a new prompt, a new revision) fails the checks or comes out
+    // thin: rewriting every case would otherwise hide a quarter of the library (27% of first writes were held, 10/9;
+    // 5 of the first 21 rewritten for the figure rules came out thin, 2 of them real shops, 10/17). It is marked as
+    // tried under this prompt, so it is not written again until the next change.
+    const [shown] = status !== "story" ? await tx`SELECT 1 FROM reference_cases WHERE article_id = ${a.id} AND status = 'story'` : [];
     if (shown) {
       // What held the new one, for the status page: the shown story stays, its problems are the rewrite's.
       await tx`UPDATE reference_cases SET prompt_version = ${PROMPT_VERSION}, receipt_ids = ${receiptIds}, problems = ${sql.json(problems as never)}, updated_at = now() WHERE article_id = ${a.id}`;

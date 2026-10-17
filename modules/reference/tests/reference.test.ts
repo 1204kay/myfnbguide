@@ -30,7 +30,7 @@ import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeC
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { LISTED, membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
-import { day, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
+import { day, figureUnit, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
 import type { CaseStory, Count, ItemBody, Shop, SituationRow } from "../types.ts";
 
 const example = (input: unknown, caption = "说明") => computeExample(ExampleInputSchema.parse(input), caption);
@@ -158,13 +158,15 @@ const SOURCE = "A restaurant's linen bill grew 74% from $865 to $1,503 per week 
 
 test("key figures and before-and-after cards are read, spaced and checked like every block", () => {
   const out = readOutput({ material: "story", ...story(), parts: [{ heading: "账单涨到每周 1,503 美元", blocks: [
-    { type: "numbers", point: "布草账单四年里涨了七成多", items: [{ value: "1,503美元", label: "每周的布草账单" }, { value: "74%", label: "四年涨幅" }] },
+    { type: "numbers", point: "布草账单四年里涨到每周一千五百多美元", items: [{ value: "1,503美元", label: "每周的布草账单" }] },
+    { type: "compare", by: "group", unit: "美元", items: [{ label: "这家店每周", value: 1503 }, { label: "四年前每周", value: 865, to: null }], caption: "账单" },
     { type: "change", before: { label: "以前", text: "账单自动付掉，没人细看" }, after: { label: "现在", text: "每周对一次账单" } },
   ] }] });
   assert.equal(out.problems.length, 0, out.problems.join(" / "));
   assert.ok(out.written?.status === "story");
   const spaced = spaceStory(out.written.story);
-  const [numbers, change] = spaced.parts[0]!.blocks;
+  const [numbers, groups, change] = spaced.parts[0]!.blocks;
+  assert.ok(groups?.type === "compare" && groups.change === null, "groups side by side have no change from first to last");
   assert.ok(numbers?.type === "numbers" && numbers.items[0]!.value === "1,503 美元" && numbers.caption === null, "spaced; no caption is null");
   assert.ok(change?.type === "change" && change.after.text === "每周对一次账单");
   assert.deepEqual(checkStory(spaced, SOURCE), []);
@@ -208,7 +210,21 @@ test("a story the checks pass; each problem is named for the writer", () => {
   const quoted = [{ heading: "一杯咖啡利润只剩一两块钱", blocks: [{ type: "text" as const, text: `有店长说，${said}` }, { type: "quote" as const, text: said, who: "门店店长" }] }, story().parts[1]!];
   assert.ok(checkStory(story({ parts: quoted }), SOURCE).some((p) => /又写了一遍/.test(p)), "a quote said again in the text");
   const units = [{ heading: "期货价", blocks: [{ type: "numbers" as const, point: "咖啡豆期货价还在高位", items: [{ value: "3.02 美元", label: "现在每磅" }, { value: "437.95 美分", label: "去年最高每磅" }], caption: null }] }, story().parts[1]!];
-  assert.ok(checkStory(story({ parts: units }), `${SOURCE} 3.02 437.95`).some((p) => /两种单位/.test(p)), "dollars beside cents");
+  assert.ok(checkStory(story({ parts: units }), `${SOURCE} 3.02 437.95`).some((p) => /不是同一个量/.test(p) && blocking(p)), "dollars beside cents");
+  const card = (items: Array<[string, string]>) => [{ heading: "人手", blocks: [{ type: "numbers" as const, point: "缺人", items: items.map(([value, label]) => ({ value, label })), caption: null }] }, story().parts[1]!];
+  assert.ok(checkStory(story({ parts: card([["约 25%", "过量生产减少"], ["40 页", "每天的生产计划"]]) }), SOURCE).some((p) => /不是同一个量/.test(p)), "a share beside a count of pages");
+  assert.ok(checkStory(story({ parts: card([["105 美元", "广告花费"], ["32 人", "注册会员"]]) }), SOURCE).some((p) => /不是同一个量/.test(p)), "money beside people");
+  assert.ok(!checkStory(story({ parts: card([["29%", "周一订单增加"], ["13.1%", "营收增加"]]) }), SOURCE).some((p) => /不是同一个量/.test(p)), "two results of one event in one unit");
+  assert.ok(checkStory(story({ parts: card([["73.2%", "会员消费占营收"], ["12 个百分点", "比去年提升"]]) }), SOURCE).some((p) => /不是同一个量/.test(p)), "a share beside points");
+  assert.deepEqual(["15% 至 20%", "近 6 万", "1.9 亿元", "3 个百分点", "45 分钟到 2 小时", "接近一万家", "-3.4%"].map(figureUnit), ["%", "", "元", "百分点", "小时", "家", "%"]);
+  const months = [{ heading: "电费", blocks: [{ type: "parts" as const, whole: "四个月的电费", unit: "日元", items: [{ label: "7 月", value: 26688 }, { label: "8 月", value: 29211 }], against: null, caption: "账单", total: 55899, gap: null }] }, story().parts[1]!];
+  assert.ok(checkStory(story({ parts: months }), `${SOURCE} 26688 29211`).some((p) => /按月或按年/.test(p) && blocking(p)), "months added up as parts");
+  const groups = { type: "compare" as const, by: "group" as const, unit: "%", per: null, items: [{ label: "In-N-Out 门店", value: 15, to: 20 }, { label: "快餐连锁平均增长", value: 5, to: 8 }], caption: "净利润率", change: null };
+  assert.deepEqual(checkStory(story({ parts: [{ heading: "利润率", blocks: [groups] }, story().parts[1]!] }), `${SOURCE} 15 20 5 8`).filter((p) => /变化|区间|找不到/.test(p)), [], "groups side by side, ranges from the original");
+  assert.ok(checkStory(story({ parts: [{ heading: "利润率", blocks: [{ ...groups, items: [{ label: "In-N-Out 门店", value: 15, to: 25 }, { label: "快餐", value: 8, to: 5 }] }] }, story().parts[1]!] }), `${SOURCE} 15 5 8`)
+    .some((p) => /的区间/.test(p)) , "a range that runs backwards");
+  assert.ok(checkStory(story({ parts: [{ heading: "利润率", blocks: [{ ...groups, items: [{ label: "In-N-Out 门店", value: 15, to: 25 }, { label: "快餐", value: 5, to: 8 }] }] }, story().parts[1]!] }), `${SOURCE} 15 5 8`)
+    .some((p) => /25 在原文里找不到/.test(p)), "a range's top is a number from the original too");
   const ranking = [{ heading: "三种特色火锅", blocks: [{ type: "numbers" as const, point: "团购增幅靠前的是三种特色火锅", items: [{ value: "贵州豆米火锅", label: "团购 GMV 增幅靠前" }, { value: "菌菇火锅", label: "团购 GMV 增幅靠前" }], caption: null }] }, story().parts[1]!];
   assert.ok(checkStory(story({ parts: ranking }), SOURCE).some((p) => /不是数字/.test(p)), "a ranking set as figures");
   const spelled = [{ heading: "翻了几倍", blocks: [{ type: "numbers" as const, point: "订单翻了几倍", items: [{ value: "四倍", label: "订单" }], caption: null }] }, story().parts[1]!];

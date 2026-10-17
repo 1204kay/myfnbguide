@@ -6,6 +6,7 @@ import { READER_WORDING } from "@aihot/industry/wording";
 import type { Block, CaseStory } from "../types.ts";
 import { exampleNumbers } from "./examples.ts";
 import { SITUATIONS } from "../situations.ts";
+import { comparable } from "../format.ts";
 
 /** Counts this small read as words, not data ("3 家店", "2 个人"), and are not looked up. */
 const SMALL = 12;
@@ -101,10 +102,11 @@ function echoes(sentence: string, heading: string): boolean {
   return chars.length >= 6 && chars.filter((c) => own.has(c)).length / chars.length >= 0.7;
 }
 
-/** Money units, to find a figures card that mixes two. */
-const MONEY = /万美元|亿美元|美元|美分|万元|亿元|日元|万日元|欧元|英镑|韩元|港元|新台币|澳元|加元|元/u;
 /** An opening that labels its speaker instead of saying who they are: 说话的人是, 这期节目的主持人是. */
 const LABEL_OPENING = /^(?:说话的人|这期(?:节目|播客)的主持人|主讲人|讲述者)是/u;
+
+/** A label that is a month, a year or a week: a parts bar of them is a series (7 月 to 10 月 electricity, live 10/17). */
+const SERIES = /^(?:(?:FY)?\d{2,4}\s*年度?)?\s*(?:\d{1,2}\s*月(?:份)?|第\s*\d+\s*周)?$|^(?:FY)?\d{2,4}\s*年度?$/u;
 
 /** Units of rates and scores: a parts bar in them adds up nothing (30% + 20% is no 50% of anything). */
 const RATE = /^(?:%|％|百分点|分|度)$/u;
@@ -239,7 +241,8 @@ function texts(story: CaseStory): Array<[where: string, text: string, fromSource
 function dataValues(story: CaseStory): Array<[string, number]> {
   return story.parts.flatMap((part, i) => part.blocks.flatMap((b): Array<[string, number]> =>
     b.type === "compare" || b.type === "parts"
-      ? [...b.items, ...(b.type === "parts" && b.against ? [b.against] : [])].map((item) => [`第 ${i + 1} 段的图`, item.value])
+      ? [...b.items, ...(b.type === "parts" && b.against ? [b.against] : [])].flatMap((item): Array<[string, number]> =>
+        [[`第 ${i + 1} 段的图`, item.value], ...("to" in item && item.to != null ? [[`第 ${i + 1} 段的图`, item.to] as [string, number]] : [])])
       : []));
 }
 
@@ -285,15 +288,20 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
   for (const [i, part] of story.parts.entries()) for (const b of part.blocks) {
     // A compare draws one quantity before and after; changes already (增长 29%, 同比提升 13.1%) set side by side make a
     // difference that means nothing (a live story of 10/9 drew 订单量增长 29% against 营收同比 13.1%: −54.8%).
-    const change = b.type === "compare" ? b.items.find((x) => CHANGE.test(x.label)) : undefined;
-    if (change) problems.push(`第 ${i + 1} 段的对比图里“${change.label}”本身就是变化的数：对比图只放同一个数的前后（去年和今年），涨幅和增长率放进 numbers`);
-    // Figures in one card are read against each other: money in two units (3.02 美元 beside 437.95 美分, 10/9) cannot be.
-    const money = b.type === "numbers" ? [...new Set(b.items.map((x) => MONEY.exec(x.value)?.[0]).filter(Boolean))] : [];
+    // Across groups a change is the quantity compared (两家店各自的增长), so only a before-and-after is held to this.
+    const change = b.type === "compare" && b.by !== "group" ? b.items.find((x) => CHANGE.test(x.label)) : undefined;
+    if (change) problems.push(`第 ${i + 1} 段的对比图里“${change.label}”本身就是变化的数：前后对比只放同一个数的前后（去年和今年），涨幅和增长率放进 numbers`);
+    const range = b.type === "compare" ? b.items.find((x) => x.to != null && x.to <= x.value) : undefined;
+    if (range) problems.push(`第 ${i + 1} 段的对比图里“${range.label}”的区间 ${range.value} 到 ${range.to} 不对：value 写区间的下限，to 写上限，上限要比下限大`);
+    // Figures in one card are read against each other, so they are one quantity in one unit. Live on 10/17, 56 of 156
+    // cards set different ones big side by side (近 6 万 新增岗位 beside 约 70 万 劳动力减少 reads as a comparison it is
+    // not; 25% beside 40 页; 3.02 美元 beside 437.95 美分): the unit is what the program can tell them by.
+    const mixed = b.type === "numbers" && !comparable(b.items.map((x) => x.value));
     // A figure is a number: a ranking set as figures (10/16: 团购 GMV 增幅靠前 three times over 贵州豆米火锅, 菌菇火锅,
     // 药膳火锅) reads as a table of nothing. Chinese numerals count (四倍, 六位数, 近两小时).
     const word = b.type === "numbers" ? b.items.find((x) => !NUMERAL.test(x.value)) : undefined;
     if (word) problems.push(`第 ${i + 1} 段的数字卡里“${word.value}”不是数字：数字卡只放数字，排名、名单和名称用 list 写`);
-    if (money.length > 1) problems.push(`第 ${i + 1} 段的数字卡里有 ${money.join("和")} 两种单位：读者没法直接比，分开放，或只留同一种单位的数`);
+    if (mixed) problems.push(`第 ${i + 1} 段的数字卡里的数不是同一个量（${b.type === "numbers" ? b.items.map((x) => x.value).join("、") : ""}）：一张卡只放同一个量、同一种单位的数，只留最要紧的一个，其余写进文字`);
     // The card's sentence says what its figures show, not the heading over it again (10/9: 周一会员日 9.9 元猪脚饭 over
     // 每周一9.9元会员日，让周一的生意变好).
     // A card whose figures the heading already gives says the heading again (10/16, 用户「是不是很重复」: 会员买一杯享
@@ -306,6 +314,7 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     if (b.type === "parts") {
       if (!b.whole?.trim()) problems.push(`第 ${i + 1} 段的组成图没有写 whole：写出这几项合起来正好是哪一笔（不超过 12 字，如“开店前期花费”“一个蛋挞的出厂成本”）；说不出一笔真实的总数，这几项就不是组成，改用 list 或 numbers`);
       if (b.whole?.trim() && NO_WHOLE.test(b.whole)) problems.push(`第 ${i + 1} 段的组成图 whole“${b.whole}”是几个可以另选的价格或做法，不是加起来的一笔：改用 list 或 numbers`);
+      if (b.items.every((x) => SERIES.test(x.label.normalize("NFKC").trim()))) problems.push(`第 ${i + 1} 段的组成图是按月或按年排的一串数（${b.items.map((x) => x.label).join("、")}）：几个月的数加起来不是一笔，改用 compare（by 写 time）`);
       if (RATE.test(b.unit.trim())) problems.push(`第 ${i + 1} 段的组成图单位是“${b.unit}”：比率和分数加起来不是任何一个数，改用 numbers 或 list`);
       else if (b.whole?.trim() && b.against && bare(b.whole) === bare(b.against.label)) problems.push(`第 ${i + 1} 段的组成图 whole 写成了对照的“${b.against.label}”：whole 写这几项加起来是什么，对照的数只写在 against`);
     }
@@ -335,12 +344,13 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
 /**
  * Whether a problem keeps a story or write-up from readers: a number the original does not have, an answer that is not
  * one, an example that cannot be worked out, a situation the library has not, a parts bar that is no whole (its 合计
- * would state a sum that does not exist). Everything else (wording, length, how a
+ * would state a sum that does not exist), a figures card of different quantities or a bar whose range runs backwards
+ * (both read as comparisons that are not there). Everything else (wording, length, how a
  * sentence opens) goes back to be mended and, still there after the last try, stands as the engine's wording does
  * (editorial/analyze.ts mendWording): a 讲 or a long paragraph is no reason to show nothing (10/9 eval: 9 of 20
  * write-ups held, most for one word or one label over its length).
  */
-export const blocking = (problem: string) => /在原文里找不到|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组|的组成图/.test(problem);
+export const blocking = (problem: string) => /在原文里找不到|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组|的组成图|不是同一个量|的区间/.test(problem);
 
 /** How bad an answer's problems are, to keep the best of the tries: any blocking one before any number of others. */
 export const badness = (written: unknown, problems: string[]) => written ? problems.filter(blocking).length * 1000 + problems.length : Infinity;
@@ -354,7 +364,7 @@ export function problemKind(problem: string): string {
   // How much too long, so the limit can be set from what the writer does: 1,300–1,600, 1,600–2,000, over 2,000.
   const total = /^全文 (\d+) 字/.exec(problem);
   if (total) { const n = Number(total[1]); return `太长：全文${n < 1600 ? " 1,300–1,600" : n < 2000 ? " 1,600–2,000" : "超过 2,000"} 字`; }
-  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/两种单位/, "数字卡单位不同"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"], [/的组成图/, "组成图不是一个整体"],
+  for (const [pattern, kind] of [[/太长/, "太长：某一块"], [/没有翻译/, "没有翻译"], [/原文说/, "反复写原文说"], [/分格标签/, "分格标签"], [/^标题以/, "标题以国家或来源开头"], [/从哪里来/, "开头写来源"], [/写成了问句/, "开头是问句"], [/直接从这个人写起/, "开头像填表"], [/不是同一个量/, "数字卡不是同一个量"], [/的区间/, "对比图区间"], [/说的是同一件事/, "数字卡重复小标题"], [/重复了导读/, "开头重复导读"], [/本身就是变化/, "对比图用错"], [/又写了一遍/, "原话重复"], [/的组成图/, "组成图不是一个整体"],
     [/举例/, "举例"], [/^格式不对/, "格式"], [/不在清单|这一组/, "情况或分组"]] as const) if (pattern.test(problem)) return kind;
   return "其他";
 }

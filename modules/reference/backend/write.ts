@@ -58,6 +58,8 @@ const PARAGRAPH = 200;
 /** Blocks a part may hold: three as asked, more where long paragraphs were split (splitLong) or the writer went over. */
 export const BLOCKS = 6;
 const item = z.object({ label: text.max(30), value: number });
+/** A bar of a compare: a range the original gives ("15%–20%") has its top in `to`. */
+const bar = item.extend({ to: number.nullable().default(null) });
 
 // Every part has a ceiling a little above what the prompt asks (prompts/case.md), so a long story comes back
 // with the very block to shorten named (see `where`), not only its total.
@@ -66,7 +68,7 @@ export const blockSchema = (n: (cap: number) => number) => z.discriminatedUnion(
   z.object({ type: z.literal("list"), items: z.array(z.object({ lead: z.string().trim().max(n(14)).nullable().default(null), text: text.max(n(90)) })).min(1).max(n(6)) }),
   z.object({ type: z.literal("flow"), steps: z.array(text.max(n(40))).min(2).max(n(6)) }),
   z.object({ type: z.literal("quote"), text: text.max(n(80)), who: text.max(n(60)) }),
-  z.object({ type: z.literal("compare"), unit: text.max(n(8)), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(item).min(2).max(n(5)), caption: text.max(n(90)) }),
+  z.object({ type: z.literal("compare"), by: z.enum(["time", "group"]).default("time"), unit: text.max(n(8)), per: z.enum(["周", "月"]).nullable().default(null), items: z.array(bar).min(2).max(n(6)), caption: text.max(n(90)) }),
   // `whole` may be missing here so an answer without it goes back with the reason (checks.ts), not as a format error.
   z.object({ type: z.literal("parts"), whole: z.string().trim().max(n(12)).nullable().default(null), unit: text.max(n(8)), items: z.array(item).min(2).max(n(7)), against: item.nullable().default(null), caption: text.max(n(90)) }),
   z.object({ type: z.literal("example"), example: ExampleInputSchema, caption: text.max(n(120)) }),
@@ -117,6 +119,8 @@ type Written = { status: "thin"; reason: string } | { status: "story"; story: Ca
 export function computeBlock(block: z.infer<typeof BlockSchema>): Block {
   switch (block.type) {
     case "compare": {
+      // Groups side by side, or a range at either end, have no one change from the first to the last.
+      if (block.by === "group" || block.items[0]!.to != null || block.items.at(-1)!.to != null) return { ...block, change: null };
       const first = block.items[0]!.value;
       const last = block.items.at(-1)!.value;
       const amount = last - first;

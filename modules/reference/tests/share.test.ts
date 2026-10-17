@@ -54,7 +54,7 @@ test("a block the card cannot draw as the story does is passed over", () => {
 test("every kind of card is drawn as a 1200×630 PNG, Chinese and Latin alike", async () => {
   const place = { situation: "菜单怎么定价", src: "美国 · 播客 · 2025 年 1 月" };
   const long = "Bar Francine 把利润的 10% 分给全店，核心员工持股，每周只开四天，一年后员工一个都没有走，老板说这是最划算的一笔支出";
-  for (const blocks of [[NUMBERS], [{ ...NUMBERS, items: [{ value: "10%", label: "公司利润分给员工" }, { value: "4 天", label: "全店每周工作天数" }, { value: "约 3 人", label: "持股的核心员工" }] } as Block], [CHANGE], [COMPARE], [QUOTE], []]) {
+  for (const blocks of [[NUMBERS], [{ ...NUMBERS, items: [{ value: "10%", label: "公司利润分给员工" }, { value: "4 天", label: "全店每周工作天数" }, { value: "约 3 人", label: "持股的核心员工" }] } as Block], [CHANGE], [COMPARE], [{ ...COMPARE, by: "group", unit: "%", change: null, items: [{ label: "In-N-Out 门店", value: 15, to: 20 }, { label: "快餐连锁平均", value: 5, to: 8 }, { label: "正餐餐馆平均", value: 3, to: 6 }, { label: "第四组", value: 2 }] } as Block], [QUOTE], []]) {
     for (const title of ["牛排馆老板把客单价做到约 100 美元", long]) {
       const card = shareCard(story(blocks, title), place);
       const meta = await sharp(await renderShare(card)).metadata();

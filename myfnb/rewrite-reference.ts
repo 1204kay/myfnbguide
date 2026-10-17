@@ -3,6 +3,7 @@
 // 不会一改要求就把全部重写一遍（用户 10/9：先确定一种方式，才来全面重写）。
 // 不带参数只数条数；--apply 执行，从新到旧；--limit 10 故事和正文各只写最新的 10 篇，用来先抽查；--bodies 只重写条目正文，不动故事；
 // --with numbers 只重写含某种图块的故事和正文（例如改了数字卡的写法以后）；--ids a,b 只重写这几篇。每篇最多调用三次模型。
+// --backup 名字 先把要重写的故事和正文整行备份到 backup_ref_cases_名字、backup_ref_bodies_名字 两张表（已有就不覆盖）。
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts --apply --limit 10
 //   sudo docker compose exec -T -u root worker node myfnb/rewrite-reference.ts --apply
@@ -32,8 +33,19 @@ const at2 = process.argv.indexOf("--ids");
 const named = at2 > 0 ? new Set(process.argv[at2 + 1]!.split(",").map((id) => id.trim()).filter(Boolean)) : null;
 const only = (ids: string[]) => ids.filter((id) => (!holding || holding.has(id)) && (!named || named.has(id)));
 
+const at3 = process.argv.indexOf("--backup");
+const backup = at3 > 0 ? process.argv[at3 + 1]! : null;
+if (backup !== null && !/^[a-z0-9_]{1,40}$/.test(backup)) throw new Error("--backup 只写小写字母、数字和下划线");
+
 // Cases first: a case that comes out thin or held makes its item one to write up.
 const cases = only(await articlesToWrite(limit, new Date(), { all: true }));
+if (apply && backup) {
+  // The write-ups to come are known only once the stories are written, so every write-up of the chosen ones is kept.
+  const ids = [...new Set([...cases, ...only(await articlesToBody(limit, new Date(), { all: true }))])];
+  await sql`CREATE TABLE IF NOT EXISTS ${sql(`backup_ref_cases_${backup}`)} AS SELECT * FROM reference_cases WHERE article_id IN ${sql(ids.length ? ids : [""])}`;
+  await sql`CREATE TABLE IF NOT EXISTS ${sql(`backup_ref_bodies_${backup}`)} AS SELECT * FROM reference_bodies WHERE article_id IN ${sql(ids.length ? ids : [""])}`;
+  console.log(`已备份 ${ids.length} 篇的故事和正文到 backup_ref_cases_${backup}、backup_ref_bodies_${backup}`);
+}
 console.log(`要写的故事 ${cases.length} 篇${apply ? "" : "（预览）"}${onlyBodies ? "（--bodies：这次不写）" : ""}`);
 const results: Record<string, number> = {};
 const count = (status: string) => { results[status] = (results[status] ?? 0) + 1; };

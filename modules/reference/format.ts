@@ -69,20 +69,21 @@ export const shareImagePath = (id: string) => `/og/reference/cases/${encodeURICo
 export const exact = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 2 }).replace("-", "−");
 
 /**
- * What a figure counts in: "近 170 项" and "超过 3200 项" both 项, "9%" and "30.6%" both %, "80 到 100 元" 元. Big numbers
+ * What a figure counts in, its number and its 约/近/以上 taken off: 「15% 至 20%」 → %, 「近 6 万」 → "", 「1.9 亿元」 → 元,
+ * 「3 个百分点」 → 百分点, 「接近一万家」 → 家, 「45 分钟到 2 小时」 → 小时 (a range reads in its last unit). Big numbers
  * side by side only for figures in one unit: three facts in three units (a 翻台率, a 增长率, a 人次) set as equals
  * read as one comparison they are not (用户 10/11: 数据都是千篇一律的展示方式，根本不清晰).
  */
-export function figureUnit(value: string): string | null {
-  const m = /^(?:约|近|将近|超过|超|逾|至少|不到|不足)?\s*[-+]?[\d.,]+%?(?:\s*(?:到|至|-|–|~)\s*[\d.,]+%?)?\s*(.*)$/u.exec(value.trim());
-  if (!m) return null;
-  const pct = /%/.test(value.split(/\s/)[0] ?? "") || /^[^\d]*[\d.,]+%/.test(value.trim());
-  return (pct ? "%" : "") + m[1]!.replace(/^(?:多|余)/u, "").replace(/(?:以上|左右|多)$/u, "").trim();
+export function figureUnit(value: string): string {
+  const last = value.normalize("NFKC").replace(/个?百分点/gu, "百分点").split(/至|到|[~～〜–—]|(?<=\S)\s*-\s*(?=\d)/u).at(-1)!;
+  return last.replace(/^\s*(?:约|近|接近|将近|大约|超过|不到|不足|突破|高达|多达|逾|超|达|最少|至少|最多|仅|只有|第|[+\-−])+/u, "")
+    .replace(/(?:以上|以下|左右|上下|前后|出头|多|余)\s*$/u, "")
+    .replace(/[0-9.,\s零〇一二两三四五六七八九十千万亿半几]|百(?!分点)/gu, "");
 }
 
 export const comparable = (values: string[]) => {
   const units = values.map(figureUnit);
-  return units.every((u) => u !== null && u === units[0]);
+  return units.every((u) => u === units[0]);
 };
 
 /** A number written in Chinese numerals: 一万, 两三万, 三成, 十几. It starts with a digit word, so 万达 is not one. */

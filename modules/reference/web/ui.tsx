@@ -416,16 +416,21 @@ export function Fill({ parts }: { parts: Array<{ label: string; share: number; t
   );
 }
 
-/** A label with its value at the right, over a thin bar of `share` (compare, list-total, percent-over). */
-function BarRow({ label, value, share, className, strong }: { label: ReactNode; value: ReactNode; share: number; className: string; strong?: boolean }) {
+/**
+ * A label with its value at the right, over a thin bar of `share` (compare, list-total, percent-over); a range's top
+ * runs on to `upTo` in a paler `upToClass`.
+ */
+function BarRow({ label, value, share, className, strong, upTo, upToClass }: { label: ReactNode; value: ReactNode; share: number; className: string; strong?: boolean; upTo?: number; upToClass?: string }) {
+  const width = (s: number) => `${Math.min(Math.max(s, 0), 1) * 100}%`;
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3 text-[14px] leading-[1.45] sm:text-[15px]">
         <span className={`min-w-0 ${strong ? "font-semibold text-ink" : "text-ink-3"}`}>{label}</span>
         <span className={`num shrink-0 text-right ${strong ? "font-bold text-ink" : "font-semibold text-ink-2"}`}>{value}</span>
       </div>
-      <div className={`mt-2 h-3 overflow-hidden rounded-full ${TRACK}`}>
-        <div className={`h-full min-w-1 rounded-full ${className}`} style={{ width: `${Math.min(Math.max(share, 0), 1) * 100}%` }} />
+      <div className={`mt-2 flex h-3 overflow-hidden rounded-full ${TRACK}`}>
+        <div className={`h-full min-w-1 ${upTo === undefined ? "rounded-full" : "rounded-l-full"} ${className}`} style={{ width: width(share) }} />
+        {upTo !== undefined && <div className={`h-full rounded-r-full ${upToClass}`} style={{ width: width(upTo - share) }} />}
       </div>
     </div>
   );
@@ -445,15 +450,19 @@ function Worked({ children }: { children: ReactNode }) {
 const Big = ({ children, className = "text-ink" }: { children: ReactNode; className?: string }) => <b className={`num text-[20px] font-bold sm:text-[22px] ${className}`}>{children}</b>;
 
 function Compare({ b }: { b: CompareBlock }) {
-  const max = Math.max(...b.items.map((i) => i.value));
+  const max = Math.max(...b.items.map((i) => i.to ?? i.value));
   const per = b.per ? `每${b.per} ` : "";
+  // Before and after: the last, where it went, in the accent. Groups side by side: the first, the story's own.
+  const main = b.by === "group" ? 0 : b.items.length - 1;
   return (
     <Figure kind="原文数据" caption={b.caption}>
       <div className="grid gap-4">
         {b.items.map((item, i) => {
-          const last = i === b.items.length - 1;
-          return <BarRow key={i} label={item.label} strong={last} share={item.value / max} className={last ? "bg-accent" : "bg-accent/45"}
-            value={<>{per && <span className="mr-1 text-[13px] font-normal text-ink-3">{per.trim()}</span>}{exact(item.value)}<span className={`${b.unit === "%" ? "" : "ml-1"} text-[13px] font-normal text-ink-3`}>{b.unit}</span></>} />;
+          const strong = i === main;
+          const range = item.to != null;
+          return <BarRow key={i} label={item.label} strong={strong} share={item.value / max} className={strong ? "bg-accent" : "bg-accent/45"}
+            upTo={range ? item.to! / max : undefined} upToClass={strong ? "bg-accent/50" : "bg-accent/22"}
+            value={<>{per && <span className="mr-1 text-[13px] font-normal text-ink-3">{per.trim()}</span>}{exact(item.value)}{range && <>–{exact(item.to!)}</>}<span className={`${b.unit === "%" ? "" : "ml-1"} text-[13px] font-normal text-ink-3`}>{b.unit}</span></>} />;
         })}
       </div>
       {b.change && b.change.amount !== 0 && (

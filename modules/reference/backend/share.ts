@@ -184,28 +184,39 @@ function change(b: ChangeBlock): Node {
   ]);
 }
 
-/** The original's numbers as bars, the last in the accent; what the program worked out beside them, as the story has it. */
+/**
+ * The original's numbers as bars, the one the story is about in the accent (the last of a before and after, the first
+ * of groups side by side); what the program worked out beside them, as the story has it.
+ */
 function compare(b: CompareBlock): Node {
-  // Three bars at most: the first and the last two, so where it went from and to stays.
-  const items = b.items.length > 3 ? [b.items[0]!, ...b.items.slice(-2)] : b.items;
-  const max = Math.max(...items.map((i) => i.value));
+  const group = b.by === "group";
+  // Three bars at most: of a before and after the first and the last two, so where it went from and to stays; of
+  // groups the first three, the story's own first.
+  const items = b.items.length <= 3 ? b.items : group ? b.items.slice(0, 3) : [b.items[0]!, ...b.items.slice(-2)];
+  const main = group ? 0 : items.length - 1;
+  const max = Math.max(...items.map((i) => i.to ?? i.value));
   const worked = b.change && b.change.amount !== 0 ? b.change : null;
   const barsWidth = worked ? INNER - 340 : INNER;
   const unit = (s: string) => text({ fontSize: 22, color: SOFT, marginLeft: b.unit === "%" ? 2 : 8 }, s);
-  const bars = col({ width: barsWidth, gap: items.length === 3 ? 18 : 26 }, items.map((item, i) => {
-    const last = i === items.length - 1;
+  // Three bars under a title of two lines fill the card to its footer at full size (seen 10/17), so they are set smaller.
+  const tight = items.length === 3;
+  const bars = col({ width: barsWidth, gap: tight ? 12 : 26 }, items.map((item, i) => {
+    const last = i === main;
+    const bar = (value: number) => Math.round((value / max) * barsWidth);
     return col({}, [
       row({ alignItems: "baseline", justifyContent: "space-between", gap: 24 }, [
-        text({ flex: 1, fontSize: 26, color: last ? WHITE : SOFT, fontWeight: last ? 700 : 400 }, fitText(item.label, 26, barsWidth - 260, 1)),
+        text({ flex: 1, fontSize: tight ? 23 : 26, color: last ? WHITE : SOFT, fontWeight: last ? 700 : 400 }, fitText(item.label, tight ? 23 : 26, barsWidth - 260, 1)),
         row({ alignItems: "baseline" }, [
           b.per ? text({ fontSize: 22, color: SOFT, marginRight: 8 }, `每${b.per}`) : null,
-          text({ fontSize: 34, fontWeight: 700, color: last ? WHITE : INK }, exact(item.value)),
+          text({ fontSize: tight ? 30 : 34, fontWeight: 700, color: last ? WHITE : INK }, item.to != null ? `${exact(item.value)}–${exact(item.to)}` : exact(item.value)),
           unit(b.unit),
         ].filter(Boolean)),
       ]),
-      row({ marginTop: 10, height: 16, borderRadius: 999, backgroundColor: TRACK, overflow: "hidden" }, [
-        h("div", { width: Math.max(8, Math.round((item.value / max) * barsWidth)), height: 16, borderRadius: 999, backgroundColor: last ? ACCENT : "rgba(44,226,232,0.45)" }),
-      ]),
+      row({ marginTop: tight ? 6 : 10, height: 16, borderRadius: 999, backgroundColor: TRACK, overflow: "hidden" }, [
+        h("div", { width: Math.max(8, bar(item.value)), height: 16, borderRadius: item.to != null ? "999px 0 0 999px" : 999, backgroundColor: last ? ACCENT : "rgba(44,226,232,0.45)" }),
+        // A range's top in the same colour, paler.
+        item.to != null ? h("div", { width: Math.max(0, bar(item.to) - Math.max(8, bar(item.value))), height: 16, borderRadius: "0 999px 999px 0", backgroundColor: last ? "rgba(44,226,232,0.5)" : "rgba(44,226,232,0.22)" }) : null,
+      ].filter(Boolean)),
     ]);
   }));
   if (!worked) return bars;

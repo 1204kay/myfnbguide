@@ -31,11 +31,17 @@ export interface Placement {
   card: string;
 }
 
-/** Numbers from the original, drawn as bars; the program adds the change between the first and last. */
+/**
+ * One quantity from the original, drawn as bars on one scale: before and after ("time"), or side by side across
+ * groups ("group": this shop against the trade, three kinds of shop). The program adds the change between the first
+ * and last of a "time" one. Blocks written before 10/17 have no `by` and are "time".
+ */
 export interface CompareBlock {
   type: "compare";
+  by?: "time" | "group";
   unit: string;
-  items: Array<{ label: string; value: number }>;
+  /** `to` is the top of a range the original gives (净利润率 15%–20%: value 15, to 20). */
+  items: Array<{ label: string; value: number; to?: number | null }>;
   /** "周" or "月": each value is per that period, and the change is also shown for a year. */
   per: "周" | "月" | null;
   caption: string;

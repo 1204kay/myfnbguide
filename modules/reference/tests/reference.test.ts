@@ -26,7 +26,7 @@ import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, hasPicture, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
-import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
+import { articlesToWrite, drawPicture, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { LISTED, membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
@@ -442,7 +442,7 @@ const model = await stub((_hit, req) => {
     const marker = Object.keys(answers).find((m) => user.includes(`${m}-${T}`))!;
     (pictureUsers[marker] ??= []).push(user);
     const change = (text: string) => ({ type: "change", before: { label: "以前", text: "账单没有人细看" }, after: { label: "现在", text }, caption: null });
-    const out = marker !== "PLAIN" ? { none: "原文说不出这家店改了什么" } : { part: 1, block: change(user.includes("有以下问题") ? "每月逐行对比账单" : "每月省下 99,999 美元") };
+    const out = marker === "LONG" ? { part: 1, block: change("每月逐行对比账单") } : marker !== "PLAIN" ? { none: "原文说不出这家店改了什么" } : { part: 1, block: change(user.includes("有以下问题") ? "每月逐行对比账单" : "每月省下 99,999 美元") };
     return { id: `stub-picture-${marker}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
   // The last pass over a story that passed: hands it back with one spoken word made written; SECOND's comes back
@@ -782,6 +782,12 @@ test("a story written without a picture is asked for one on its own, and stands 
   const [bare] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.NOPIC!}`;
   assert.ok(!hasPicture(bare!.story), "the original carries no picture: none");
   await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id IN (${ids.PLAIN!}, ${ids.NOPIC!})`;
+  // A story already too long names a new total with its picture in it; its length is the writer's, not the picture's.
+  answers.LONG = [];
+  const long = { ...story(), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text" as const, text: "店里没有人批准过一次大涨价。".repeat(70) }] })) };
+  const drawn = await drawPicture(long, `LONG-${T}`, { subject: "test", promptVersion: "test" });
+  assert.equal(drawn.reason, null);
+  assert.ok(hasPicture(drawn.story), "a good picture of a story already too long is kept");
 });
 
 test("the last eval run reads case by case, the site's prompt beside the candidate", async () => {

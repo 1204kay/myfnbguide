@@ -17,7 +17,7 @@ import { selectedCondition } from "@aihot/backend/publication/scope";
 import { spaced } from "../format.ts";
 import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
-import { badness, blocking, checkStory, DRAWN, hasPicture } from "./checks.ts";
+import { badness, blocking, checkStory, DRAWN } from "./checks.ts";
 import { computeExample, ExampleInputSchema } from "./examples.ts";
 
 export const MODEL_STEP = "referenceCase";
@@ -277,6 +277,19 @@ export interface ComposedCase {
   receiptIds: number[];
 }
 
+/**
+ * No picture while a story is written, for now: checked against the originals on 10-18, 18 of 30 pictures of the
+ * first batch and 39 of 93 of the second were wrong, most of them advice, plans or comparisons drawn as this shop's
+ * before and after. Told not to draw (case.md), the writer may still; a part that held only a picture goes with it.
+ * Pictures come back once each one is checked against the original on its own.
+ */
+function withoutPictures(read: ReturnType<typeof readOutput>): ReturnType<typeof readOutput> {
+  if (read.written?.status !== "story") return read;
+  const parts = read.written.story.parts.map((p) => ({ ...p, blocks: p.blocks.filter((b) => !DRAWN.has(b.type)) })).filter((p) => p.blocks.length);
+  if (!parts.length) return { written: null, problems: [...read.problems, "只有图，没有文字"] };
+  return { ...read, written: { status: "story", story: { ...read.written.story, parts } } };
+}
+
 /** Writes one article's case with a prompt: up to three answers, checked, and the wording pass. Stores nothing. */
 export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Promise<ComposedCase> {
   const material = renderContext(a, { annotateQuoted: true });
@@ -303,7 +316,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
       continue;
     }
     receiptIds.push(res.receiptId);
-    const read = readOutput(res.data);
+    const read = withoutPictures(readOutput(res.data));
     written = read.written;
     answer = res.data;
     problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material)] : read.problems;
@@ -326,11 +339,9 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
       system: STYLE_SYSTEM, user: JSON.stringify(answer), schema: z.unknown(), temperature: 0.2, maxTokens: 6000, timeoutMs: 180_000,
     });
     receiptIds.push(styled.receiptId);
-    const read = readOutput(styled.data);
+    const read = withoutPictures(readOutput(styled.data));
     const after = read.written?.status === "story" ? checkStory(read.written.story, material) : null;
-    // Nor may it drop the picture: it did to 1 in 5 samples, while the checks above see no picture at all (10-18).
-    const keepsPicture = read.written?.status === "story" && (hasPicture(read.written.story) || !hasPicture(written.story));
-    if (read.written?.status === "story" && after && keepsPicture && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
+    if (read.written?.status === "story" && after && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
       written = read.written;
       problems = after;
     }

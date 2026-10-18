@@ -25,7 +25,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
-import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
+import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, pictureProblems, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
@@ -435,10 +435,13 @@ const model = await stub((_hit, req) => {
       : { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("77,777"), open: null };
     return { id: `stub-body-${bodies.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
-  // The last pass over a story that passed: hands it back with one spoken word made written.
+  // The last pass over a story that passed: hands it back with one spoken word made written; SECOND's comes back
+  // without its only picture (deepseek did so to 1 in 5 stories, 10-18).
   if (body.messages.some((m) => m.role === "system" && m.content.includes("把口语词、方言词"))) {
     styled += 1;
-    return { id: `stub-style-${styled}`, model: "stub", choices: [{ message: { content: user.replace("账单每周都在涨", "账单每周都在上涨") } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+    const back = JSON.parse(user.replace("账单每周都在涨", "账单每周都在上涨")) as { title: string; parts: Array<{ blocks: Array<{ type: string }> }> };
+    if (back.title.startsWith("同一家店的另一笔账")) for (const part of back.parts) part.blocks = part.blocks.filter((b) => b.type !== "flow");
+    return { id: `stub-style-${styled}`, model: "stub", choices: [{ message: { content: JSON.stringify(back) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
   const marker = Object.keys(answers).find((m) => user.includes(`${m}-${T}`))!;
   calls.push(marker);
@@ -501,6 +504,8 @@ test("cases are written for selected items, once more when the checks find probl
   assert.equal(stored!.receipt_ids.length, 3, "the answer, the one sent back, and the wording pass");
   const [edited] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.TEXTONLY!}`;
   assert.equal(edited!.story.lead, "账单每周都在上涨。", "the wording pass is kept when the checks still pass");
+  const [second] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.SECOND!}`;
+  assert.deepEqual(pictureProblems(second!.story), [], "a wording pass that drops the only picture is not kept");
   const [coffee] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.COFFEE!}`;
   assert.equal(coffee!.story.title, "电费账单每周从 865 美元涨到 1,503 美元", "stored spaced");
   const keys = await sql<{ shop_key: string }[]>`SELECT DISTINCT shop_key FROM reference_cases WHERE article_id IN (${ids.FIRST!}, ${ids.SECOND!})`;

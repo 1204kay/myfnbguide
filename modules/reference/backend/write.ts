@@ -319,7 +319,9 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     receiptIds.push(styled.receiptId);
     const read = readOutput(styled.data);
     const after = read.written?.status === "story" ? checkStory(read.written.story, material) : null;
-    if (read.written?.status === "story" && after && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
+    // Nor may it drop the picture: it did to 1 in 5 samples, while the checks above see no picture at all (10-18).
+    const keepsPicture = read.written?.status === "story" && pictureProblems(read.written.story).length <= pictureProblems(written.story).length;
+    if (read.written?.status === "story" && after && keepsPicture && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
       written = read.written;
       problems = after;
     }

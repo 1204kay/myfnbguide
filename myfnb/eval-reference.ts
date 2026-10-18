@@ -9,6 +9,7 @@
 // identical re-run free, so the site's half costs nothing when only a candidate changed.
 //   sudo docker compose exec -T -u root worker node myfnb/eval-reference.ts
 //   sudo docker compose exec -T -u root worker node myfnb/eval-reference.ts --apply
+//   sudo docker compose exec -T -u root worker node myfnb/eval-reference.ts --apply --ids a,b,c
 import { existsSync, readFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
@@ -29,7 +30,10 @@ const maxCalls = at > 0 ? Number(process.argv[at + 1]) : 200;
 if (!Number.isInteger(maxCalls) || maxCalls < 1) throw new Error("--max-calls 要写正整数");
 
 const here = (file: string) => new URL(file, import.meta.url);
-const ids = [...new Set(readFileSync(here("./reference-eval-cases.txt"), "utf8").split("\n").map((l) => l.replace(/#.*/, "").trim()).filter(Boolean))];
+// --ids a,b,c tries these instead of the fixed cases (10-18: 20 new items after the prompt was changed).
+const named = process.argv.indexOf("--ids");
+const ids = named > 0 ? [...new Set(process.argv[named + 1]!.split(",").map((id) => id.trim()).filter(Boolean))]
+  : [...new Set(readFileSync(here("./reference-eval-cases.txt"), "utf8").split("\n").map((l) => l.replace(/#.*/, "").trim()).filter(Boolean))];
 const candidate = (file: string) => existsSync(here(`../modules/reference/prompts/${file}`)) ? readFileSync(here(`../modules/reference/prompts/${file}`), "utf8") : null;
 const caseText = candidate("case-candidate.md");
 const bodyText = candidate("body-candidate.md");

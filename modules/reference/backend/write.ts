@@ -219,6 +219,27 @@ export function readOutput(answer: unknown): { written: Written | null; problems
   }
 }
 
+/**
+ * The original's own sentences behind the title and the conditions of the practice (prompts/case.md title_quote,
+ * conditions), each to be found in the original as written. 30 live stories checked against their originals (10-18)
+ * had 11 serious errors: titles the original does not carry (a paper card "changed" to LINE where the shop had none),
+ * and the original's conditions left out (a kiosk pays off only above 150 orders a day). The quotes are not shown.
+ */
+export function groundProblems(answer: unknown, originals: string[]): string[] {
+  const out = answer as { material?: unknown; title_quote?: unknown; conditions?: unknown } | null;
+  if (!out || out.material !== "story") return [];
+  const bare = (t: string) => t.normalize("NFKC").replace(/[\s\p{P}\p{S}]/gu, "").toLowerCase();
+  const sources = originals.map(bare);
+  const found = (quote: string) => sources.some((s) => s.includes(bare(quote)));
+  const list = (v: unknown) => (Array.isArray(v) ? v : typeof v === "string" ? [v] : []).filter((q): q is string => typeof q === "string" && q.trim().length > 0);
+  const problems: string[] = [];
+  const title = list(out.title_quote);
+  if (!title.length) problems.push("没有写 title_quote：照抄原文里直接说出标题那件事的一两句话；原文没有这样的句子，就改标题，只写原文说了的");
+  for (const q of title) if (!found(q)) problems.push(`标题的原句「${q.slice(0, 40)}」在原文里找不到：title_quote 要用原文的语言一字不改地照抄，每句一项，不翻译、不拼接；原文没有一句话直接说出标题那件事，就改标题`);
+  for (const q of list(out.conditions)) if (!found(q)) problems.push(`条件的原句「${q.slice(0, 40)}」在原文里找不到：conditions 要用原文的语言一字不改地照抄`);
+  return problems;
+}
+
 export interface CaseResult {
   status: "story" | "thin" | "held";
   problems: string[];
@@ -319,7 +340,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     const read = withoutPictures(readOutput(res.data));
     written = read.written;
     answer = res.data;
-    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material)] : read.problems;
+    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material), ...groundProblems(res.data, [material, a.bodyText ?? "", a.excerpt ?? ""])] : read.problems;
     // A later try can be worse than an earlier one: the best of them is the one kept.
     if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, answer, problems };
     if (!problems.length) break;

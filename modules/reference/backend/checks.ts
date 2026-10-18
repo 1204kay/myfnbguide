@@ -140,6 +140,36 @@ export function summaryFigures(text: string, summary: string): string[] {
   return [...new Set(tokens.filter((t) => figure(t) && forms(t).some((f) => shown.has(f))))];
 }
 
+const SCALE: Record<string, number> = { 万: 1e4, 萬: 1e4, 亿: 1e8, 億: 1e8, lakh: 1e5, lakhs: 1e5, crore: 1e7, crores: 1e7, thousand: 1e3, k: 1e3, million: 1e6, mn: 1e6, m: 1e6, billion: 1e9, bn: 1e9 };
+const amountKey = (v: number) => Number(v.toPrecision(6));
+
+/**
+ * Every amount the original writes, as a value: its numbers, and each with the unit after it (20 lakh is 2,000,000,
+ * 1.5 crore 15,000,000, 1億2000万 120,000,000). A story's 20 万 is checked against these, not against its digits:
+ * 20 lakh written as 20 万卢比 kept the 20 and passed the number check, ten times too small (10-18: 3 in one story).
+ */
+export function sourceAmounts(text: string): Set<number> {
+  const normal = text.normalize("NFKC");
+  const found = new Set<number>();
+  for (const f of sourceNumbers(normal)) if (Number.isFinite(Number(f))) found.add(amountKey(Number(f)));
+  for (const m of normal.matchAll(/(\d+(?:[.,]\d+)*)\s*(万|萬|亿|億|lakhs?|crores?|thousand|k|million|mn|m|billion|bn)(?![a-z])/gi)) {
+    // The digits before a unit as a value: 1.5 crore is one and a half, never 15 (forms reads 1.5 also as 1,5 thousands).
+    found.add(amountKey(Number(m[1]!.replace(/,(?=\d{3}(?!\d))/g, "").replace(",", ".")) * SCALE[m[2]!.toLowerCase()]!));
+  }
+  for (const m of normal.matchAll(/(\d+(?:\.\d+)?)\s*[亿億]\s*(\d+)\s*[万萬]/g)) found.add(amountKey(Number(m[1]) * 1e8 + Number(m[2]) * 1e4));
+  return found;
+}
+
+/** A story's amounts in 万 and 亿 the original does not write at that size ("20 万" for its 20 lakh). */
+export function unfoundAmounts(text: string, amounts: Set<number>): string[] {
+  const missing: string[] = [];
+  for (const m of text.normalize("NFKC").matchAll(/(\d+(?:[.,]\d+)*)\s*多?\s*([万亿])/g)) {
+    const value = Number(m[1]!.replace(/,/g, "")) * SCALE[m[2]!]!;
+    if (Number.isFinite(value) && !amounts.has(amountKey(value))) missing.push(`${m[1]} ${m[2]}`);
+  }
+  return missing;
+}
+
 export function unfoundNumbers(text: string, source: Set<string>): string[] {
   const missing: string[] = [];
   const normal = text.normalize("NFKC");
@@ -249,6 +279,7 @@ function dataValues(story: CaseStory): Array<[string, number]> {
 /** What is wrong with a written case, each as a sentence the writer can act on; empty when it may be shown. */
 export function checkStory(story: CaseStory, sourceText: string): string[] {
   const source = sourceNumbers(sourceText);
+  const amounts = sourceAmounts(sourceText);
   const problems: string[] = [];
   const all = texts(story).filter(([, , fromSource]) => fromSource).map(([, text]) => text).join("");
   const total = chars(all);
@@ -265,7 +296,9 @@ export function checkStory(story: CaseStory, sourceText: string): string[] {
     const foreign = untranslated(text);
     if (foreign) problems.push(`${where}有没有翻译的${foreign}：原话和说明都译成中文，只有店名、人名、菜名可以保留原文`);
     const missing = fromSource ? unfoundNumbers(text, source) : [];
-    if (missing.length) problems.push(`${where}的数字 ${missing.join("、")} 在原文里找不到：删掉，或改成原文写的数字；要算出来的数放进图，由程序计算`);
+    if (missing.length) problems.push(`${where}的数字 ${missing.join("、")} 在原文里找不到：删掉，或改成原文写的数字；要算出来的数不写`);
+    const scaled = fromSource && !missing.length ? unfoundAmounts(text, amounts) : [];
+    if (scaled.length) problems.push(`${where}的「${scaled.join("、")}」按原文的单位算，在原文里找不到这么大的数：lakh、crore、million 不能直接写成万、亿，照原文的数和单位写（20 lakh 卢比是 200 万卢比）`);
     for (const [pattern, fix] of WORDING) {
       const hit = pattern.exec(text);
       // The words around it, so the next try (and whoever reads the held cases) finds the very place.
@@ -356,7 +389,7 @@ export const hasPicture = (story: CaseStory) => story.parts.some((part) => part.
  * (editorial/analyze.ts mendWording): a 讲 or a long paragraph is no reason to show nothing (10/9 eval: 9 of 20
  * write-ups held, most for one word or one label over its length).
  */
-export const blocking = (problem: string) => /在原文里找不到|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组|的组成图|不是同一个量|的区间/.test(problem);
+export const blocking = (problem: string) => /在原文里找不到|^没有写 title_quote|^格式不对|举例算不出来|不在清单|没有 \S+ 这一组|的组成图|不是同一个量|的区间/.test(problem);
 
 /** How bad an answer's problems are, to keep the best of the tries: any blocking one before any number of others. */
 export const badness = (written: unknown, problems: string[]) => written ? problems.filter(blocking).length * 1000 + problems.length : Infinity;

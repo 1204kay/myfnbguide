@@ -25,7 +25,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
-import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, pictureProblems, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
+import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, hasPicture, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
@@ -379,7 +379,7 @@ test("what the model wrote goes back named: lengths against what the prompt asks
 // that stays wrong. The first two are about the same shop; COFFEE is an owner in Japan who names no shop.
 const T = tag();
 const bistro = { ...story().shop, name: "Corner Bistro", label: "加州一家小酒馆" };
-// Every story has at least one picture (pictureProblems); the steps say what the shop did.
+// Every story has at least one picture (hasPicture); the steps say what the shop did.
 const FLOW = [{ type: "flow", steps: ["收齐合同和账单", "逐行对比"] }];
 const answers: Record<string, unknown[]> = {
   FIRST: [
@@ -402,6 +402,7 @@ const answers: Record<string, unknown[]> = {
 };
 const calls: string[] = [];
 const users: Record<string, string[]> = {};
+const pictureUsers: Record<string, string[]> = {};
 let styled = 0;
 let grouped = 0;
 const groupUsers: string[] = [];
@@ -434,6 +435,15 @@ const model = await stub((_hit, req) => {
     const out = user.includes("有以下问题") ? { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("1,503"), open: null }
       : { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("77,777"), open: null };
     return { id: `stub-body-${bodies.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+  }
+  // A picture asked for on its own: PLAIN's first has a number the original never wrote, then right when told; any other
+  // says the original cannot carry one.
+  if (body.messages.some((m) => m.role === "system" && m.content.includes("这篇故事还没有图"))) {
+    const marker = Object.keys(answers).find((m) => user.includes(`${m}-${T}`))!;
+    (pictureUsers[marker] ??= []).push(user);
+    const change = (text: string) => ({ type: "change", before: { label: "以前", text: "账单没有人细看" }, after: { label: "现在", text }, caption: null });
+    const out = marker !== "PLAIN" ? { none: "原文说不出这家店改了什么" } : { part: 1, block: change(user.includes("有以下问题") ? "每月逐行对比账单" : "每月省下 99,999 美元") };
+    return { id: `stub-picture-${marker}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
   // The last pass over a story that passed: hands it back with one spoken word made written; SECOND's comes back
   // without its only picture (deepseek did so to 1 in 5 stories, 10-18).
@@ -505,7 +515,7 @@ test("cases are written for selected items, once more when the checks find probl
   const [edited] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.TEXTONLY!}`;
   assert.equal(edited!.story.lead, "账单每周都在上涨。", "the wording pass is kept when the checks still pass");
   const [second] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.SECOND!}`;
-  assert.deepEqual(pictureProblems(second!.story), [], "a wording pass that drops the only picture is not kept");
+  assert.ok(hasPicture(second!.story), "a wording pass that drops the only picture is not kept");
   const [coffee] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.COFFEE!}`;
   assert.equal(coffee!.story.title, "电费账单每周从 865 美元涨到 1,503 美元", "stored spaced");
   const keys = await sql<{ shop_key: string }[]>`SELECT DISTINCT shop_key FROM reference_cases WHERE article_id IN (${ids.FIRST!}, ${ids.SECOND!})`;
@@ -741,17 +751,37 @@ test("a story already shown stays when writing it again fails the checks or come
 });
 
 test("an answer that is no JSON after a usable one is one try that failed, and the story is still written", async () => {
-  // No picture, so sent back; the answer to that is no JSON (deepseek's was not for 1 in 9 send-backs, 10-18); the
-  // next try draws one. In no situation, like TEXTONLY, and made here so the counts above stay as they are.
+  // A number the original never wrote, so sent back; the answer to that is no JSON (deepseek's was not for 1 in 9
+  // send-backs, 10-18); the next try is right. In no situation, like TEXTONLY, and made here so the counts above stay.
+  const pier = { ...story().shop, name: "Pier Cafe", kind: null };
   answers.BROKEN = [
-    { material: "story", ...story({ shop: { ...story().shop, name: "Pier Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
+    { material: "story", ...story({ who: "一年多付 77,777 美元。", shop: pier, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) },
     '{"material": "story", "parts": [{"blocks": [}]}',
-    { material: "story", ...story({ shop: { ...story().shop, name: "Pier Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) },
+    { material: "story", ...story({ shop: pier, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) },
   ];
   ids.BROKEN = await selectedItem("BROKEN");
   assert.deepEqual(await writeCase(ids.BROKEN!), { status: "story", problems: [] });
-  assert.equal(users.BROKEN!.length, 3, "no picture, no JSON, then a picture");
+  assert.equal(users.BROKEN!.length, 3, "a stray number, no JSON, then right");
   await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.BROKEN!}`;
+});
+
+test("a story written without a picture is asked for one on its own, and stands without one rather than with a filler", async () => {
+  const words = (shop: string) => ({ material: "story", ...story({ shop: { ...story().shop, name: shop, kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) });
+  answers.PLAIN = [words("Plain Diner")];
+  answers.NOPIC = [words("Bare Bistro")];
+  ids.PLAIN = await selectedItem("PLAIN");
+  ids.NOPIC = await selectedItem("NOPIC");
+  assert.deepEqual(await writeCase(ids.PLAIN!), { status: "story", problems: [] });
+  assert.deepEqual(await writeCase(ids.NOPIC!), { status: "story", problems: [] });
+  assert.equal(users.PLAIN!.length, 1, "not sent back to write the whole story again for a picture");
+  assert.equal(pictureUsers.PLAIN!.length, 2, "a picture with a number the original never wrote goes back once");
+  assert.match(pictureUsers.PLAIN![1]!, /99,999.*在原文里找不到/s);
+  const [plain] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.PLAIN!}`;
+  assert.deepEqual(plain!.story.parts[0]!.blocks.map((b) => b.type), ["text", "change"], "after the first block of the part it names");
+  assert.equal(pictureUsers.NOPIC!.length, 1);
+  const [bare] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.NOPIC!}`;
+  assert.ok(!hasPicture(bare!.story), "the original carries no picture: none");
+  await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id IN (${ids.PLAIN!}, ${ids.NOPIC!})`;
 });
 
 test("the last eval run reads case by case, the site's prompt beside the candidate", async () => {

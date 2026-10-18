@@ -2,7 +2,7 @@
 // in Chinese numerals are figures. Pure checks, no database.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { blocking, checkStory, pictureProblems, problemKind } from "../backend/checks.ts";
+import { blocking, checkStory, hasPicture, problemKind } from "../backend/checks.ts";
 import { pickFigure } from "../backend/share.ts";
 import { figureSplit, isFigure } from "../format.ts";
 import type { Block, CaseStory, PartsBlock } from "../types.ts";
@@ -79,16 +79,10 @@ test("a numbers card that only repeats the heading's figures goes back", () => {
   assert.equal(repeats("会员买一杯能省一大半", "63%").length, 0, "a heading without the figure keeps its card");
 });
 
-test("a story with no picture goes back once more for one, and stands as written after the last try", () => {
+test("text, a quote and a list are words; a chart, a card, a change or steps is a picture", () => {
   const words: Block[] = [{ type: "text", text: "他把成本拆开算。" }, { type: "quote", text: "算清楚才知道。", who: "店主" }, { type: "list", items: [{ lead: null, text: "挞皮" }] }];
-  const found = pictureProblems(story(words));
-  assert.equal(found.length, 1, "text, a quote and a list are all words: no picture yet");
-  assert.match(found[0]!, /没有一张图.*change.*flow/);
-  assert.doesNotMatch(found[0]!, /不放/, "the first send-back asks for a picture without offering a way out");
-  assert.match(pictureProblems(story(words), true)[0]!, /撑不起.*不放/, "the second may conclude there is no fitting picture: no filler (Kay 10-17)");
-  assert.ok(!blocking(found[0]!), "a missing picture never keeps a story from readers");
-  assert.equal(problemKind(found[0]!), "没有图");
+  assert.equal(hasPicture(story(words)), false);
   for (const b of [parts({}), { type: "flow", steps: ["拆开算", "比价", "换供应商"] }, { type: "change", before: { label: "以前", text: "不算" }, after: { label: "现在", text: "逐项算" }, caption: null }] as Block[]) {
-    assert.deepEqual(pictureProblems(story([...words, b])), [], `${b.type} is a picture`);
+    assert.ok(hasPicture(story([...words, b])), `${b.type} is a picture`);
   }
 });

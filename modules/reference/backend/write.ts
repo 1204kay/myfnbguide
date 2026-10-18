@@ -40,7 +40,7 @@ export const EDIT = "下面是你按系统规则写好的故事（JSON），有�
  * checks still pass and no number changed.
  */
 const STYLE_SYSTEM = promptFromText("reference/style", readFileSync(new URL("../prompts/style.md", import.meta.url), "utf8"));
-/** A story written without a picture is asked for one on its own (drawPicture). */
+/** A live story without a picture can be asked for one on its own (drawPicture, by myfnb/add-pictures.ts). */
 const PICTURE_SYSTEM = promptFromText("reference/picture", readFileSync(new URL("../prompts/picture.md", import.meta.url), "utf8"));
 // The prompts, the edit request and the checks: the rewrite script writes again every case written under others.
 /**
@@ -335,11 +335,6 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
       problems = after;
     }
   }
-  if (!problems.some(blocking) && written?.status === "story" && !hasPicture(written.story)) {
-    const drawn = await drawPicture(written.story, material, { subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version });
-    receiptIds.push(...drawn.receiptIds);
-    written = { status: "story", story: drawn.story };
-  }
   const status: CaseResult["status"] = !written || problems.some(blocking) ? "held" : written.status;
   const story = written?.status === "story" ? spaceStory(written.story) : null;
   return { status, story, reason: written?.status === "thin" ? written.reason : null, problems, receiptIds };
@@ -351,6 +346,8 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
  * L652 宁缺毋滥: none rather than a filler). Sent back to add one to the whole story, the writer copied the story out
  * again with text only, three times over even with a number in its title (10-18: 380 of 796 stories still had none).
  * The block is kept only when the story's checks find nothing new with it; told what is wrong, it gets one more try.
+ * Writing a story does not ask for one: checked against the originals, 39 of 93 such pictures were wrong (10-18),
+ * most of them before-and-after cards of advice, comparisons or plans; it comes back once each is checked.
  */
 export async function drawPicture(story: CaseStory, material: string, { subject, promptVersion }: { subject: string; promptVersion: string }):
   Promise<{ story: CaseStory; reason: string | null; receiptIds: number[] }> {

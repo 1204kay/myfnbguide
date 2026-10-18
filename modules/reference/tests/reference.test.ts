@@ -765,29 +765,30 @@ test("an answer that is no JSON after a usable one is one try that failed, and t
   await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.BROKEN!}`;
 });
 
-test("a story written without a picture is asked for one on its own, and stands without one rather than with a filler", async () => {
+test("a story is written without a separate picture step; asked for one, it stands without one rather than with a filler", async () => {
   const words = (shop: string) => ({ material: "story", ...story({ shop: { ...story().shop, name: shop, kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) });
   answers.PLAIN = [words("Plain Diner")];
-  answers.NOPIC = [words("Bare Bistro")];
+  answers.NOPIC = [];
   ids.PLAIN = await selectedItem("PLAIN");
-  ids.NOPIC = await selectedItem("NOPIC");
   assert.deepEqual(await writeCase(ids.PLAIN!), { status: "story", problems: [] });
-  assert.deepEqual(await writeCase(ids.NOPIC!), { status: "story", problems: [] });
   assert.equal(users.PLAIN!.length, 1, "not sent back to write the whole story again for a picture");
+  assert.ok(!("PLAIN" in pictureUsers), "no picture is asked for while writing (10-18: 39 of 93 checked were wrong)");
+  const [plain] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.PLAIN!}`;
+  assert.ok(!hasPicture(plain!.story));
+  await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.PLAIN!}`;
+  const drawn = await drawPicture(plain!.story, `PLAIN-${T}`, { subject: "test", promptVersion: "test" });
   assert.equal(pictureUsers.PLAIN!.length, 2, "a picture with a number the original never wrote goes back once");
   assert.match(pictureUsers.PLAIN![1]!, /99,999.*在原文里找不到/s);
-  const [plain] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.PLAIN!}`;
-  assert.deepEqual(plain!.story.parts[0]!.blocks.map((b) => b.type), ["text", "change"], "after the first block of the part it names");
+  assert.deepEqual(drawn.story.parts[0]!.blocks.map((b) => b.type), ["text", "change"], "after the first block of the part it names");
+  const bare = await drawPicture(plain!.story, `NOPIC-${T}`, { subject: "test", promptVersion: "test" });
   assert.equal(pictureUsers.NOPIC!.length, 1);
-  const [bare] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.NOPIC!}`;
-  assert.ok(!hasPicture(bare!.story), "the original carries no picture: none");
-  await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id IN (${ids.PLAIN!}, ${ids.NOPIC!})`;
+  assert.ok(!hasPicture(bare.story) && bare.reason, "the original carries no picture: none");
   // A story already too long names a new total with its picture in it; its length is the writer's, not the picture's.
   answers.LONG = [];
   const long = { ...story(), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text" as const, text: "店里没有人批准过一次大涨价。".repeat(70) }] })) };
-  const drawn = await drawPicture(long, `LONG-${T}`, { subject: "test", promptVersion: "test" });
-  assert.equal(drawn.reason, null);
-  assert.ok(hasPicture(drawn.story), "a good picture of a story already too long is kept");
+  const drawnLong = await drawPicture(long, `LONG-${T}`, { subject: "test", promptVersion: "test" });
+  assert.equal(drawnLong.reason, null);
+  assert.ok(hasPicture(drawnLong.story), "a good picture of a story already too long is kept");
 });
 
 test("the last eval run reads case by case, the site's prompt beside the candidate", async () => {

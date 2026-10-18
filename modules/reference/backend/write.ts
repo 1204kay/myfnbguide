@@ -295,8 +295,9 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     const read = readOutput(res.data);
     written = read.written;
     answer = res.data;
-    // A story with no picture goes back once, and may come back without one: no picture is better than a filler (Kay 10-17).
-    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material), ...(attempt === 0 ? pictureProblems(written.story) : [])] : read.problems;
+    // A story with no picture goes back for one; the second time it may say the source cannot carry one: no picture is
+    // better than a filler (Kay 10-17). Told so the first time, the model left out pictures its titles plainly had.
+    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material), ...(attempt < 2 ? pictureProblems(written.story, attempt === 1) : [])] : read.problems;
     // A later try can be worse than an earlier one: the best of them is the one kept.
     if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, answer, problems };
     if (!problems.length) break;

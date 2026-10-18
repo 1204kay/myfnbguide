@@ -381,6 +381,14 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 
 ## 9. 下一步
 
+### 9.0 10-18 晚接手先看：参考库新写法（未完成的草稿）
+
+- 现状：新故事、新导读都已暂停（`modules/reference/server.ts` 的 `STORIES_PAUSED`、`BODIES_PAUSED`，#29、#32）。新收录只显示标题、摘要、原文链接；线上已有的 1,134 篇没动。原因：抽查原文，故事 11/13、导读 6/19 有严重错，主要是把建议、举例、别家店写成「这家店做的」，以及加了原文没有的细节。
+- 十一定的方向：原文确实是一家店讲自己的经历 → 写成故事，写完逐句对原文核，不合的句子删掉、不让模型修；其他（建议、比较、数据、新闻）→ 摘要在前，3–5 条完整句子的要点，每条注明依据原文第几句，数字必须在那几句里，再用一次模型逐条核，不合的整条删。判断「是不是一家店自己的经历」也要抽查，拿不准一律走要点。
+- 草稿在本分支 `claude/project-thread-7une0v`：`modules/reference/backend/digest.ts`（`composeTraced`）和 `prompts/kind.md`、`digest.md`、`digest-check.md`、`story-check.md`。**还没跑过 typecheck 和测试，也没接到任何队列**，只给试写用。
+- 下一步：① 跑 typecheck，给 `sentencesOf`、`ownShop`、`pointProblem`、`withoutFailing` 写单测（先红后绿）；② 在 `myfnb/eval-reference.ts` 加一个选项调 `composeTraced`，结果只写 `reference_evals`；③ 两种写法各试 20 篇（`scratchpad` 里的 20 篇不在了，重新从线上挑），各做盲核，严重错 ≤1 篇才过；④ 给 Kay 看 3 篇样子，他说可以才换线上：先备份全部，再换，换完抽 30 篇对原文；⑤ 再打开新收录；⑥ 摘要同样方法改。每一步先说范围、对备份核对。
+- 试写记录：`/mnt/project-files/myfnb/新写法试写20篇-2026-10-18.md`（新账号可能看不到共享文件夹）。
+
 ### 9.1 等用户的事（只有这些找用户）
 
 **10/11 上午：DeepSeek 充值（要紧）**：余额 US$3.38（06:30 用写作模型的密钥查 `api.deepseek.com/user/balance`），积压处理时每天约 3.5 美元；本机转写好的约 550 集导入以后，长文字稿的分析和写故事还要约 10–20 美元（估计）。建议充 US$50。充值以后 Claude 导入本机转写的文字稿。

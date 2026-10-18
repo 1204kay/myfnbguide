@@ -16,11 +16,16 @@ import { blocking, problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
+// 10-18: new stories are not written for now (十一). 30 live stories checked against their originals had 11 with
+// serious errors (myfnb/HANDOFF.md §3.1); until the prompt and checks are fixed and tried on 20 new ones, items keep
+// their title and summary only. Jobs queued before are dropped too. Set back to false to write again.
+const STORIES_PAUSED = true;
+
 const CASES = defineQueue<{ articleId: string }>({
   name: "reference.case",
   options: { policy: "short", retryLimit: 3, retryDelay: 120, retryBackoff: true, expireInSeconds: 900 },
   worker: { localConcurrency: 2, pollingIntervalSeconds: 5 },
-  run: async (jobs) => { for (const { articleId } of jobs) await writeCase(articleId); },
+  run: async (jobs) => { if (!STORIES_PAUSED) for (const { articleId } of jobs) await writeCase(articleId); },
 });
 
 const BODIES = defineQueue<{ articleId: string }>({
@@ -61,6 +66,7 @@ export default defineServerModule({
     cron: "*/10 * * * *",
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      if (STORIES_PAUSED) return { queued: 0, reason: "new stories are paused (10-18)" };
       const ids = await articlesToWrite(30);
       for (const articleId of ids) await enqueueOn(CASES, { articleId }, { singletonKey: articleId });
       return { queued: ids.length };

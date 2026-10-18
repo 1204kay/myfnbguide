@@ -386,7 +386,9 @@ export async function drawPicture(story: CaseStory, material: string, { subject,
         const block = computeBlock(parsed.data);
         // After the part's first block: its text says what the picture then shows.
         drawn = { ...story, parts: story.parts.map((p, i) => i === part ? { ...p, blocks: [...p.blocks.slice(0, 1), block, ...p.blocks.slice(1)] } : p) };
-        problems = checkStory(drawn, material).filter((p) => !before.includes(p));
+        // The whole story's length is the writer's, not the picture's: a story already too long names a new total with
+        // its block in it (10-18: a good picture of a 1,519-字 story dropped for that), and length holds nothing back.
+        problems = checkStory(drawn, material).filter((p) => !before.includes(p) && !/^全文 \d+ 字/.test(p));
       } catch (error) {
         problems = [`举例算不出来：${(error as Error).message}`];
       }

@@ -447,8 +447,8 @@ const model = await stub((_hit, req) => {
   calls.push(marker);
   (users[marker] ??= []).push(user);
   const list = answers[marker]!;
-  const out = user.includes("有以下问题") ? list.at(-1) : list[0];
-  return { id: `stub-${calls.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+  const out = marker === "BROKEN" ? list[users[marker]!.length - 1] : user.includes("有以下问题") ? list.at(-1) : list[0];
+  return { id: `stub-${calls.length}`, model: "stub", choices: [{ message: { content: typeof out === "string" ? out : JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
 });
 pointModels(model.url, ["deepseek-flash"]);
 process.env.REFERENCE_CASE_MODEL = "deepseek-flash";
@@ -738,6 +738,20 @@ test("a story already shown stays when writing it again fails the checks or come
   const [kept] = await sql<{ status: string }[]>`SELECT status FROM reference_cases WHERE article_id = ${ids.THIN!}`;
   assert.equal(kept!.status, "story", "the shown story stays");
   await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.THIN!}`;
+});
+
+test("an answer that is no JSON after a usable one is one try that failed, and the story is still written", async () => {
+  // No picture, so sent back; the answer to that is no JSON (deepseek's was not for 1 in 9 send-backs, 10-18); the
+  // next try draws one. In no situation, like TEXTONLY, and made here so the counts above stay as they are.
+  answers.BROKEN = [
+    { material: "story", ...story({ shop: { ...story().shop, name: "Pier Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] })) },
+    '{"material": "story", "parts": [{"blocks": [}]}',
+    { material: "story", ...story({ shop: { ...story().shop, name: "Pier Cafe", kind: null }, placements: [] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) },
+  ];
+  ids.BROKEN = await selectedItem("BROKEN");
+  assert.deepEqual(await writeCase(ids.BROKEN!), { status: "story", problems: [] });
+  assert.equal(users.BROKEN!.length, 3, "no picture, no JSON, then a picture");
+  await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.BROKEN!}`;
 });
 
 test("the last eval run reads case by case, the site's prompt beside the candidate", async () => {

@@ -25,8 +25,8 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
-import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, hasPicture, sourceNumbers, unfoundNumbers, untranslated } from "../backend/checks.ts";
-import { articlesToWrite, drawPicture, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
+import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, hasPicture, sourceAmounts, sourceNumbers, unfoundAmounts, unfoundNumbers, untranslated } from "../backend/checks.ts";
+import { articlesToWrite, drawPicture, groundProblems, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { LISTED, membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
@@ -66,6 +66,23 @@ test("numbers are looked up in the original in the forms it may write them", () 
   assert.deepEqual(unfoundNumbers("月租 72000 日元，押金 225000 日元", sourceNumbers("家賃7万2000円、敷金22万5千円")), [], "Japanese 万 followed by digits or 千");
   assert.deepEqual(unfoundNumbers("售价 36 雷亚尔，157.2 卢比，12800 元", sourceNumbers("R$ 36,00; ₹157.20; 12800.00")), [], "trailing zeros");
   assert.deepEqual(unfoundNumbers("多了 1 lack of 60 年", sourceNumbers("a lack of 3 lack")), ["60"], "lac must be a whole word");
+});
+
+test("an amount in 万 or 亿 is checked at its size against the original's lakh, crore, million and 万", () => {
+  const source = sourceAmounts("Rs 20 lakh to start, 1.5 crore a year, $1.2 million, 家賃7万2000円, 1億2000万円, 60,000 rupees");
+  assert.deepEqual(unfoundAmounts("投入 20 万卢比，年收入 1.5 亿卢比", source), ["20 万", "1.5 亿"], "20 lakh is 200 万, 1.5 crore 1,500 万 (10-18)");
+  assert.deepEqual(unfoundAmounts("投入 200 万卢比，年收入 1,500 万卢比，120 万美元，月租 7.2 万日元，1.2 亿日元，6 万卢比", source), []);
+});
+
+test("a story's title and conditions rest on the original's own sentences", () => {
+  const original = "We started a LINE card this year. It pays off only if you serve 150 orders a day.";
+  assert.deepEqual(groundProblems({ material: "story", title_quote: ["We started a LINE card this year."], conditions: ["It pays off only if you serve 150 orders a day"] }, [original]), [], "punctuation and spacing aside");
+  const [none] = groundProblems({ material: "story" }, [original]);
+  assert.ok(none && blocking(none), "no quote behind the title holds the story");
+  const made = groundProblems({ material: "story", title_quote: ["We changed our paper card to LINE."], conditions: ["only for big shops"] }, [original]);
+  assert.equal(made.length, 2);
+  assert.ok(made.every(blocking), "a sentence the original does not have holds it too");
+  assert.deepEqual(groundProblems({ material: "thin", reason: "x" }, [original]), [], "only stories");
 });
 
 test("what readers read is spaced between Chinese and digits or Latin, and dated with the year only when it is another", () => {
@@ -456,7 +473,9 @@ const model = await stub((_hit, req) => {
   calls.push(marker);
   (users[marker] ??= []).push(user);
   const list = answers[marker]!;
-  const out = marker === "BROKEN" ? list[users[marker]!.length - 1] : user.includes("有以下问题") ? list.at(-1) : list[0];
+  const picked = marker === "BROKEN" ? list[users[marker]!.length - 1] : user.includes("有以下问题") ? list.at(-1) : list[0];
+  // A story quotes the original behind its title, as the prompt asks (groundProblems is tried on its own below).
+  const out = picked && typeof picked === "object" && (picked as { material?: string }).material === "story" ? { title_quote: [SOURCE], conditions: [], ...picked } : picked;
   return { id: `stub-${calls.length}`, model: "stub", choices: [{ message: { content: typeof out === "string" ? out : JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
 });
 pointModels(model.url, ["deepseek-flash"]);
@@ -490,7 +509,7 @@ test("cases are written for selected items, once more when the checks find probl
   assert.equal((await writeCase(ids.SECOND!))!.status, "story");
   assert.equal((await writeCase(ids.COFFEE!))!.status, "story");
   assert.deepEqual(await writeCase(ids.TEXTONLY!), { status: "story", problems: [] });
-  assert.ok(users.TEXTONLY!.length === 2 && !users.TEXTONLY![1]!.includes(SOURCE) && users.TEXTONLY![1]!.includes("用了“讲”"), "a word alone goes back as an edit, without the material");
+  assert.ok(users.TEXTONLY!.length === 2 && !users.TEXTONLY![1]!.includes("请按系统规则把以下材料写成") && users.TEXTONLY![1]!.includes("用了“讲”"), "a word alone goes back as an edit, without the material");
   assert.ok(users.FIRST![1]!.includes(SOURCE), "a number not in the original goes back with the material");
   assert.equal(styled, 4, "every story that passed got the wording pass, the held and thin ones none");
   assert.equal((await writeCase(ids.THIN!))!.status, "thin");

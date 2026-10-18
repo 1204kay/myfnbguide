@@ -169,7 +169,9 @@ const RECENT_DAYS = 3;
 /**
  * Listed items to write up, newest first. A selected item waits for its case (the story is its write-up) and is
  * written up only when the case came out thin or held. As they come: items of the last days with no write-up, or
- * whose article changed. With all (myfnb/rewrite-reference.ts): every listed item whose write-up is missing or was
+ * whose article changed and whose write-up is not shown. A shown write-up is not rewritten by itself (10-18, as the
+ * cases): one that failed the checks kept its old revision and was written again every few runs, 68 calls for 2
+ * write-ups in a week. With all (myfnb/rewrite-reference.ts): every listed item whose write-up is missing or was
  * written under another prompt, so a changed prompt rewrites the old ones only once it has been checked on new ones
  * (用户 10/9：先确定写法，才全面重写).
  */
@@ -183,7 +185,7 @@ export async function articlesToBody(limit: number, now = new Date(), { all = fa
       AND (NOT p.selected OR c.status IN ('thin', 'held'))
       AND ${all
         ? sql`(b.article_id IS NULL OR b.revision < a.revision OR b.prompt_version <> ${PROMPT_VERSION})`
-        : sql`(b.revision < a.revision OR (b.article_id IS NULL AND p.sort_at > ${now}::timestamptz - make_interval(days => ${RECENT_DAYS})))`}
+        : sql`((b.revision < a.revision AND b.status <> 'body') OR (b.article_id IS NULL AND p.sort_at > ${now}::timestamptz - make_interval(days => ${RECENT_DAYS})))`}
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }

@@ -454,8 +454,9 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 **Kay 13:15 同意**：试写时用 Claude API 免费额度，和 DeepSeek 各写同样的 20 期来比。正式每天用 Claude 写，要先算清每月用量再问 Kay。
 
 **额度恢复后的第一步**
+0. 先查六个主要信源的转载条款（不花钱、不用服务器），结果写进本节。
 1. 写代码：三步流程、每天一期十一说的生成，并接进 `myfnb/eval-reference.ts`（结果只写 `reference_evals`）。草稿 `modules/reference/backend/digest.ts` 和 `prompts/{kind,digest,digest-check,story-check}.md` 里，句子编号和逐句核对可以复用，其余按本节重写。先跑 typecheck，新守卫先红后绿。
-2. 从线上挑 20 篇试写，盲核，再量自动核对的漏检。
+2. 从线上挑 20 期的素材试写（选题覆盖参考库主要书架；DeepSeek 和 Claude 各写一份），盲核，再量自动核对的漏检。服务器通道要 GitHub Actions 额度恢复才能用。
 3. 用 Claude Design 出一期页面的两个方向给 Kay 挑（设计规则）。
 4. 每一步都先说范围，再对着备份核对。
 

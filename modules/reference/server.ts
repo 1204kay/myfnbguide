@@ -20,6 +20,9 @@ import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 // serious errors (myfnb/HANDOFF.md §3.1); until the prompt and checks are fixed and tried on 20 new ones, items keep
 // their title and summary only. Jobs queued before are dropped too. Set back to false to write again.
 const STORIES_PAUSED = true;
+// 10-18: new write-ups are paused as well (十一): 19 tried on the same items had 6 with serious errors. New items show
+// their title, summary and the original link; write-ups already shown stay. Set back to false to write again.
+const BODIES_PAUSED = true;
 
 const CASES = defineQueue<{ articleId: string }>({
   name: "reference.case",
@@ -32,7 +35,7 @@ const BODIES = defineQueue<{ articleId: string }>({
   name: "reference.body",
   options: { policy: "short", retryLimit: 3, retryDelay: 120, retryBackoff: true, expireInSeconds: 900 },
   worker: { localConcurrency: 2, pollingIntervalSeconds: 5 },
-  run: async (jobs) => { for (const { articleId } of jobs) await writeBody(articleId); },
+  run: async (jobs) => { if (!BODIES_PAUSED) for (const { articleId } of jobs) await writeBody(articleId); },
 });
 
 const METHODS = defineQueue<{ slug: string }>({
@@ -77,6 +80,7 @@ export default defineServerModule({
     cron: "*/10 * * * *",
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      if (BODIES_PAUSED) return { queued: 0, reason: "new write-ups are paused (10-18)" };
       const ids = await articlesToBody(40);
       for (const articleId of ids) await enqueueOn(BODIES, { articleId }, { singletonKey: articleId });
       return { queued: ids.length };

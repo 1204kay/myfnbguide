@@ -17,7 +17,7 @@ import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { MAX_BODY_CHARS } from "@aihot/backend/editorial/writing";
 import { chatJson } from "@aihot/backend/providers/llm";
-import type { CaseStory, ItemBody } from "../types.ts";
+import type { Block, CaseStory, ItemBody } from "../types.ts";
 import { BODY_STEP } from "./body.ts";
 import { sourceNumbers, unfoundNumbers } from "./checks.ts";
 import { type Article, composeCase } from "./write.ts";
@@ -143,7 +143,7 @@ export function withoutFailing(story: CaseStory, sentences: ReturnType<typeof st
   const keep = (t: string) => split(t).filter((s) => !gone(s)).join("");
   const parts = story.parts.map((p, pi) => ({
     ...p,
-    blocks: p.blocks.flatMap((b, bi) => {
+    blocks: p.blocks.flatMap((b, bi): Block[] => {
       if (b.type === "text") { const text = keep(b.text); return text ? [{ ...b, text }] : []; }
       if (b.type === "quote") return bad.some((s) => s.spot.at === "text" && s.spot.part === pi && s.spot.block === bi && s.text === b.text) ? [] : [b];
       if (b.type === "list") {

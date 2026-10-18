@@ -10,6 +10,7 @@
 //   sudo docker compose exec -T -u root worker node myfnb/eval-reference.ts
 //   sudo docker compose exec -T -u root worker node myfnb/eval-reference.ts --apply
 //   sudo docker compose exec -T -u root worker node myfnb/eval-reference.ts --apply --ids a,b,c
+// --bodies writes only the write-up for every case, selected or not (10-18: write-ups instead of stories, on trial).
 import { existsSync, readFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
@@ -25,6 +26,7 @@ import { CASE_PROMPT, casePrompt, composeCase, type Prompt } from "../modules/re
 installModules(SERVER_MODULES);
 
 const apply = process.argv.includes("--apply");
+const bodiesOnly = process.argv.includes("--bodies");
 const at = process.argv.indexOf("--max-calls");
 const maxCalls = at > 0 ? Number(process.argv[at + 1]) : 200;
 if (!Number.isInteger(maxCalls) || maxCalls < 1) throw new Error("--max-calls 要写正整数");
@@ -46,7 +48,7 @@ const found = new Map(rows.map((r) => [r.id, r]));
 const missing = ids.filter((id) => !found.has(id));
 if (missing.length) throw new Error(`不是公开的条目：${missing.join("、")}`);
 // At most: a story three answers and the wording pass, then a write-up three answers.
-const most = ids.reduce((n, id) => n + (found.get(id)!.selected ? 7 : 3), 0) * variants.length;
+const most = ids.reduce((n, id) => n + (found.get(id)!.selected && !bodiesOnly ? 7 : 3), 0) * variants.length;
 console.log(`${ids.length} 个案例 × ${variants.map((v) => v.name).join("、")}，最多 ${most} 次调用${apply ? "" : "（预览）"}`);
 if (apply && most > maxCalls) throw new Error(`最多 ${most} 次调用，超过 --max-calls ${maxCalls}：一次都不发`);
 
@@ -66,7 +68,7 @@ if (apply) {
     if (!a) { console.log(`${id}  原文已删除`); continue; }
     for (const v of variants) {
       try {
-        let body = !found.get(id)!.selected;
+        let body = bodiesOnly || !found.get(id)!.selected;
         if (!body) {
           const c = await composeCase(a, v.case);
           await store(id, v.name, "story", { ...c, output: c.story });

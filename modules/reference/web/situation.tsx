@@ -13,7 +13,7 @@ import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { PracticeList, SituationPage } from "../types.ts";
-import { SectionFigure, SituationFigure } from "./figures";
+import { SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
 import { BODY, Heading, MEASURE, PageHeader, Practice, ROW_BUTTON, ShopRows, StoryCards, useShare, BackLink } from "./ui";
 
@@ -115,7 +115,8 @@ export default function SituationRoute() {
             <span className="num text-[17px] font-[650] leading-[1.5] text-accent">{i + 1}</span>
             <h2 className="text-[17px] font-[650] leading-[1.5] text-ink">{g.title}</h2>
           </div>
-          <SectionFigure slug={s.slug} group={g.key} />
+          {/* No section picture for now: 6 of 20 checked against their stories were wrong (10-18); they come back one
+              by one once each is checked (sections/, myfnb/figure-sheet still draws them all). */}
           <List list={g} grouped={s.count.grouped} />
         </section>
       )) : (

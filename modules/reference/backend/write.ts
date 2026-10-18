@@ -11,7 +11,7 @@ import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { renderContext } from "@aihot/backend/editorial/writing";
-import { chatJson } from "@aihot/backend/providers/llm";
+import { chatJson, ModelOutputError } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { selectedCondition } from "@aihot/backend/publication/scope";
 import { spaced } from "../format.ts";
@@ -287,10 +287,19 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
   let best: { written: Written | null; answer: unknown; problems: string[] } | null = null;
   // The first answer, and up to two more with its problems named.
   for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await chatJson({
-      model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version,
-      system: prompt.system, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,
-    });
+    let res: Awaited<ReturnType<typeof chatJson>>;
+    try {
+      res = await chatJson({
+        model, purpose: PURPOSE, subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version,
+        system: prompt.system, user, schema: z.unknown(), temperature: 0.3, maxTokens: 6000, timeoutMs: 180_000,
+      });
+    } catch (error) {
+      // An answer that is no JSON after a usable one is one try that failed, asked again the same way: sent back to
+      // copy the whole story, deepseek broke a bracket in 1 in 9 answers (10-18), and the story before it was lost.
+      if (!(error instanceof ModelOutputError) || !best) throw error;
+      if (error.receiptId !== null) receiptIds.push(error.receiptId);
+      continue;
+    }
     receiptIds.push(res.receiptId);
     const read = readOutput(res.data);
     written = read.written;

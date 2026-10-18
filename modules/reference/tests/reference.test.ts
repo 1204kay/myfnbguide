@@ -751,6 +751,22 @@ test("a story already shown stays when writing it again fails the checks or come
   await sql`UPDATE reference_cases SET status = 'thin', story = NULL WHERE article_id = ${ids.THIN!}`;
 });
 
+test("a shown story or write-up is not written again by itself when its article changes; a thin one is", async () => {
+  await sql`UPDATE articles SET revision = revision + 1 WHERE id IN (${ids.WRONG!}, ${ids.THIN!})`;
+  assert.deepEqual(await articlesToWrite(50), [ids.THIN], "WRONG's story is shown, THIN's case came out thin");
+  assert.ok((await articlesToWrite(50, new Date(), { all: true })).includes(ids.WRONG!), "the rewrite script still writes it");
+  await sql`UPDATE reference_cases c SET revision = a.revision FROM articles a WHERE a.id = c.article_id AND c.article_id IN (${ids.WRONG!}, ${ids.THIN!})`;
+  // THIN's case is thin, so the item has a write-up of its own: shown, written for the article before it changed.
+  const shown = ids.THIN!;
+  await sql`INSERT INTO reference_bodies (article_id, revision, status, body, problems, receipt_ids, prompt_version, updated_at)
+            SELECT id, revision - 1, 'body', ${sql.json({ lead: null, open: [], parts: [] } as never)}, '[]', '{}', 'reference-body@older', now() FROM articles WHERE id = ${shown}`;
+  assert.ok(!(await articlesToBody(50)).includes(shown), "a shown write-up waits for the rewrite script");
+  assert.ok((await articlesToBody(50, new Date(), { all: true })).includes(shown));
+  await sql`UPDATE reference_bodies SET status = 'thin' WHERE article_id = ${shown}`;
+  assert.ok((await articlesToBody(50)).includes(shown), "a write-up not shown is written again for the changed article");
+  await sql`DELETE FROM reference_bodies WHERE article_id = ${shown}`;
+});
+
 test("an answer that is no JSON after a usable one is one try that failed, and the story is still written", async () => {
   // A number the original never wrote, so sent back; the answer to that is no JSON (deepseek's was not for 1 in 9
   // send-backs, 10-18); the next try is right. In no situation, like TEXTONLY, and made here so the counts above stay.

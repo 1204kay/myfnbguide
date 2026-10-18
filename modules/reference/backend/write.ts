@@ -439,7 +439,10 @@ export async function writeCase(articleId: string): Promise<CaseResult | null> {
 }
 
 /**
- * Selected items to write a case for, newest first: no case yet, or the article changed since. With all
+ * Selected items to write a case for, newest first: no case yet, or the article changed since and its case is not
+ * shown (thin or held: more of the original may make it a story). A shown story is not rewritten by itself when its
+ * article changes (10-18): the rewrite replaced live stories unchecked, and one that failed was tried again every few
+ * runs, its revision never moving (16 stories). With all
  * (myfnb/rewrite-reference.ts) also the cases written under another prompt, so a changed prompt rewrites the old
  * ones only once it has been checked on new ones (用户 10/9：先确定写法，才全面重写).
  */
@@ -449,7 +452,7 @@ export async function articlesToWrite(limit: number, now = new Date(), { all = f
     JOIN articles a ON a.id = p.article_id
     LEFT JOIN reference_cases c ON c.article_id = p.article_id
     WHERE ${selectedCondition(now)}
-      AND (c.article_id IS NULL OR c.revision < a.revision ${all ? sql`OR c.prompt_version <> ${PROMPT_VERSION}` : sql``})
+      AND (c.article_id IS NULL OR ${all ? sql`c.revision < a.revision OR c.prompt_version <> ${PROMPT_VERSION}` : sql`(c.revision < a.revision AND c.status <> 'story')`})
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
   return rows.map((r) => r.id);
 }

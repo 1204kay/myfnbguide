@@ -388,6 +388,13 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 - 草稿在本分支 `claude/project-thread-7une0v`：`modules/reference/backend/digest.ts`（`composeTraced`）和 `prompts/kind.md`、`digest.md`、`digest-check.md`、`story-check.md`。**还没跑过 typecheck 和测试，也没接到任何队列**，只给试写用。
 - 下一步：① 跑 typecheck，给 `sentencesOf`、`ownShop`、`pointProblem`、`withoutFailing` 写单测（先红后绿）；② 在 `myfnb/eval-reference.ts` 加一个选项调 `composeTraced`，结果只写 `reference_evals`；③ 两种写法各试 20 篇（`scratchpad` 里的 20 篇不在了，重新从线上挑），各做盲核，严重错 ≤1 篇才过；④ 给 Kay 看 3 篇样子，他说可以才换线上：先备份全部，再换，换完抽 30 篇对原文；⑤ 再打开新收录；⑥ 摘要同样方法改。每一步先说范围、对备份核对。
 - 试写记录：`/mnt/project-files/myfnb/新写法试写20篇-2026-10-18.md`（新账号可能看不到共享文件夹）。
+- 10-18 查的同行做法（Kay 要求先参考再定）：
+  - BBC 牵头、22 家公共媒体的研究（2025-10）：主流 AI 助手回答新闻问题，45% 有重大问题，20% 有严重的事实错误。我们抽查的 30% 左右和这个水平一致，不是提示词没调好。
+  - Apple 2025-01 因为新闻通知摘要出错（例如说嫌犯自杀了），暂停了新闻类摘要，回来时加上「测试版、可能有错」的标注。
+  - Bloomberg 2025 年给文章加 AI 要点，三个月更正了 36 条。Gannett（USA Today）和 WSJ 的 AI 要点都写明「AI 协助生成，经记者审过」，每条都有人看过才发。
+  - Techmeme 用原文的标题、链接原文，有编辑把关；Particle 的 AI 摘要把来源链接放在每段下面。
+  - 结论：没有一家把模型改写的内容不经人看就当事实大量发。能长期做的有两种：只用原文（标题、摘录、链接），或者 AI 写、每条有人核过。我们没有编辑，所以只能靠「每条指回原文第几句 + 自动核对 + 长期抽查」来代替人，而且要标明 AI 整理、以原文为准。
+- 据此定的顺序（我的建议，待 Kay 确认）：① 先改摘要（每篇都显示，错的影响最大；3/19 严重）；② 再做要点写法；③ 故事写法最后做，过关前不上；④ 上线后每周抽 10 篇对原文，严重错超过 1 篇就自动停回「标题、摘要、链接」；⑤ 页面上标明「AI 整理，以原文为准」。
 
 ### 9.1 等用户的事（只有这些找用户）
 

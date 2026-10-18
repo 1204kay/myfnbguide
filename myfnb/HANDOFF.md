@@ -453,6 +453,8 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 **避免「抄帆书」（Kay 13:15 担心）**：「替读者读、再说给读者听」、三分钟精华、思维导图是常见形式（得到、Blinkist、getAbstract 都在做），我们说的是餐饮文章、给全球说中文的经营者、每句标出处。会被说抄的是名字、样子和原话，所以：① 不用帆书的叫法（讲书、漫谈、非凡、AI 樊登），小标题用自己的，「你将获得」改成「这期说什么」；② 颜色和版式照 MYFNB 与 AIHOT 原版，不用帆书黄，不照搬它的页面；③ 开场白、结尾语自己写，「咱们下期见」换成我们自己的结尾；④ 网站上不提帆书。
 **Kay 13:15 同意**：试写时用 Claude API 免费额度，和 DeepSeek 各写同样的 20 期来比。正式每天用 Claude 写，要先算清每月用量再问 Kay。
 
+**哪些步骤不用等服务器通道（Kay 13:32 问是否要等到 11-01；十一补充）**：卡住的只是服务器通道（在私有仓库 coresystemstudio 里跑，用私有仓库的 Actions 分钟数，现在停在「付款失败或消费上限」，Kay 在 GitHub 账单设置里处理即可，不用等月初；也可以从 Kay 电脑直接跑服务器命令）。**不要把服务器通道搬到公开仓库，日志是公开的。** 不用等的：写代码、查信源条款、Claude Design 出稿、试写 20 期和盲核——试写在云端直接用 DeepSeek 和 Claude 的 API 做，结果先存文件，不进数据库。需要 DeepSeek key，放进新账号的环境变量，不写进聊天和手册。原文怎么拿：公开接口 `/api/site/items/:id/original` 在 `siteFulltext: false` 下 `body` 为空（10-18 实测），所以云端拿不到库里存的原文；两条路：① 从条目的原文链接直接抓网页（云端有网络），对一次性试写够用；② 请 Kay 电脑或服务器通道导出这 20 篇的 body_text。只有上线（写库、收起旧故事）才需要服务器。
+
 **额度恢复后的第一步**
 0. 先查六个主要信源的转载条款（不花钱、不用服务器），结果写进本节。
 1. 写代码：三步流程、每天一期十一说的生成，并接进 `myfnb/eval-reference.ts`（结果只写 `reference_evals`）。草稿 `modules/reference/backend/digest.ts` 和 `prompts/{kind,digest,digest-check,story-check}.md` 里，句子编号和逐句核对可以复用，其余按本节重写。先跑 typecheck，新守卫先红后绿。

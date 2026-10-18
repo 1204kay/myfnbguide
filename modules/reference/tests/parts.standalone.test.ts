@@ -84,7 +84,8 @@ test("a story with no picture goes back once more for one, and stands as written
   const found = pictureProblems(story(words));
   assert.equal(found.length, 1, "text, a quote and a list are all words: no picture yet");
   assert.match(found[0]!, /没有一张图.*change.*flow/);
-  assert.match(found[0]!, /撑不起.*不放/, "the send-back may conclude there is no fitting picture: no filler (Kay 10-17)");
+  assert.doesNotMatch(found[0]!, /不放/, "the first send-back asks for a picture without offering a way out");
+  assert.match(pictureProblems(story(words), true)[0]!, /撑不起.*不放/, "the second may conclude there is no fitting picture: no filler (Kay 10-17)");
   assert.ok(!blocking(found[0]!), "a missing picture never keeps a story from readers");
   assert.equal(problemKind(found[0]!), "没有图");
   for (const b of [parts({}), { type: "flow", steps: ["拆开算", "比价", "换供应商"] }, { type: "change", before: { label: "以前", text: "不算" }, after: { label: "现在", text: "逐项算" }, caption: null }] as Block[]) {

@@ -15,7 +15,7 @@ import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import type { CaseStory, ItemBody } from "../types.ts";
-import { badness, blocking, checkStory, repeatedNumbers, summaryFigures } from "./checks.ts";
+import { badness, blocking, checkStory, DRAWN, repeatedNumbers, summaryFigures } from "./checks.ts";
 import { type Article, BLOCKS, blockSchema, CHECKING, type Prompt, computeBlock, EDIT, exact, readWith, roomy, spaceStory, splitLong, textOnly } from "./write.ts";
 
 export const BODY_STEP = "referenceBody";
@@ -61,6 +61,18 @@ export function readBody(answer: unknown): { written: Written | null; problems: 
   }
 }
 
+/**
+ * No picture in a write-up for now, as in a story (write.ts withoutPictures): checked against the originals on 10-18,
+ * 3 of 20 write-ups' pictures were wrong and 9 more a little off. Told not to draw (body.md), the writer may still;
+ * a part that held only a picture goes with it.
+ */
+function withoutPictures(read: ReturnType<typeof readBody>): ReturnType<typeof readBody> {
+  if (read.written?.status !== "body") return read;
+  const parts = read.written.body.parts.map((p) => ({ ...p, blocks: p.blocks.filter((b) => !DRAWN.has(b.type)) })).filter((p) => p.blocks.length);
+  if (!parts.length) return { written: null, problems: [...read.problems, "只有图，没有文字"] };
+  return { ...read, written: { status: "body", body: { ...read.written.body, parts } } };
+}
+
 export interface BodyResult {
   status: "body" | "thin" | "held";
   problems: string[];
@@ -104,14 +116,14 @@ export async function composeBody(a: Article, prompt: Prompt = BODY_PROMPT): Pro
         system: prompt.system, user, schema: z.unknown(), temperature: 0.3, maxTokens: 5000, timeoutMs: 180_000,
       });
       receiptIds.push(res.receiptId);
-      const read = readBody(res.data);
+      const read = withoutPictures(readBody(res.data));
       written = read.written;
       problems = written?.status === "body" ? [...read.problems, ...checkStory(asStory(written.body), material)] : read.problems;
       const repeated = written?.status === "body" && shown?.summary ? repeatedNumbers(written.body.lead ?? "", shown.summary) : [];
-      if (repeated.length) problems.push(`开头重复了导读里的数字 ${repeated.join("、")}：读者刚读完导读，开头只写导读没写的（说话的人是谁、读后面需要知道的背景），这些数字留给后面的段落和图`);
+      if (repeated.length) problems.push(`开头重复了导读里的数字 ${repeated.join("、")}：读者刚读完导读，开头只写导读没写的（说话的人是谁、读后面需要知道的背景），这些数字留给后面的段落`);
       // The paragraphs below do not write the summary's figures out again either: a figure carries those it needs.
       const again = written?.status === "body" && shown?.summary ? summaryFigures(written.body.parts.flatMap((p) => p.blocks.flatMap((b) => b.type === "text" ? [b.text] : b.type === "list" ? b.items.map((x) => x.text) : [])).join("\n"), shown.summary) : [];
-      if (again.length >= 3) problems.push(`正文的文字重复了导读里的数字 ${again.slice(0, 6).join("、")}：读者刚读完导读，删掉文字里重复导读的句子，要用的数字放进图`);
+      if (again.length >= 3) problems.push(`正文的文字重复了导读里的数字 ${again.slice(0, 6).join("、")}：读者刚读完导读，删掉文字里重复导读的句子`);
       // A later try can be worse than an earlier one: the best of them is the one kept.
       if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, problems };
       if (!problems.length) break;

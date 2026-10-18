@@ -431,7 +431,8 @@ const model = await stub((_hit, req) => {
   // An item's write-up: a number the original never wrote first, then right when told.
   if (body.messages.some((m) => m.role === "system" && m.content.includes("正文 · AI 整理自原文"))) {
     bodies.push(user);
-    const parts = (n: string) => [{ heading: "布草账单四年涨到每周 1,503 美元", blocks: [{ type: "text", text: `账单从每周 865 美元涨到 ${n} 美元。` }] }];
+    // With a picture the writer drew anyway: taken out (10-18).
+    const parts = (n: string) => [{ heading: "布草账单四年涨到每周 1,503 美元", blocks: [{ type: "text", text: `账单从每周 865 美元涨到 ${n} 美元。` }, { type: "numbers", point: "布草账单涨到每周 1,503 美元", items: [{ value: "1,503 美元", label: "每周的布草账单" }] }] }];
     const out = user.includes("有以下问题") ? { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("1,503"), open: null }
       : { material: "body", lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: parts("77,777"), open: null };
     return { id: `stub-body-${bodies.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
@@ -706,6 +707,7 @@ test("every listed item that is no story gets a write-up under its summary, chec
   assert.equal(bodies.length, 2, "too little material: no call");
   const [stored] = await sql<{ body: ItemBody; receipt_ids: string[] }[]>`SELECT body, receipt_ids FROM reference_bodies WHERE article_id = ${news}`;
   assert.equal(stored!.body.parts[0]!.heading, "布草账单四年涨到每周 1,503 美元");
+  assert.deepEqual(stored!.body.parts[0]!.blocks.map((b) => b.type), ["text"], "a picture the writer drew is taken out (10-18: 3 of 20 wrong)");
   assert.equal(stored!.receipt_ids.length, 2);
   // Shown, then written again too thin: the shown write-up stays.
   await sql`UPDATE reference_bodies SET status = 'body', body = ${sql.json(stored!.body as never)} WHERE article_id = ${short}`;

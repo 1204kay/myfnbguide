@@ -415,24 +415,6 @@ function ComeBack() {
   );
 }
 
-/** 外卖评分下降: the guest scores the dish as it arrives, after a stretch on the road the shop never sees. */
-function OnTheRoad() {
-  const box = (cx: number) => `M${cx - 22} 58 H${cx + 22} L${cx + 18} 88 H${cx - 18} Z M${cx - 24} 58 H${cx + 24}`;
-  return (
-    <svg viewBox="-10 0 320 128" role="img" aria-label="示意图：外卖从出餐口出去，在路上走一段，客人打开以后打分" className="block w-full">
-      <defs><marker id="delivery-ratings-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker></defs>
-      <g textAnchor="middle" style={strong}><text x="46" y="18">出餐</text><text x="160" y="18">客人打开</text><text x="274" y="18">评分</text></g>
-      <path d="M38 50 q-5 -6 0 -12 q5 -6 0 -12 M54 50 q-5 -6 0 -12 q5 -6 0 -12" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.5, strokeLinecap: "round" }} />
-      <g style={{ fill: "var(--accent-soft)", stroke: "var(--ink-3)", strokeWidth: 1.8, strokeLinejoin: "round" }}><path d={box(46)} /><path d={box(160)} /></g>
-      <g style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2, strokeDasharray: "5 4" }} markerEnd="url(#delivery-ratings-ar)"><path d="M78 72 H124" /><path d="M192 72 H238" /></g>
-      <text x="101" y="64" textAnchor="middle" style={text}>路上</text>
-      <path d="M274 48 L281 63 L297 64 L285 75 L289 91 L274 83 L259 91 L263 75 L251 64 L267 63 Z" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.8, strokeLinejoin: "round" }} />
-      <g textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}><text x="46" y="116">外卖菜单、包装</text><text x="274" y="116">回复评价</text></g>
-      <text x="160" y="116" textAnchor="middle" style={text}>送到时的样子</text>
-    </svg>
-  );
-}
-
 /** 店面和厨房怎么布置: the same room empty and full; full, the chairs pushed back narrow the one aisle everyone uses. */
 function EmptyFull() {
   const plan = (x: number, full: boolean) => {
@@ -1235,7 +1217,6 @@ const FIGURES: Record<string, { kicker: string; caption: string; kind: "举例" 
   "delivery-margin": { kicker: "同一份菜，外卖剩得更少", kind: "举例", caption: "假设你的餐饮店一份菜堂食和外卖都卖 30 元，食材 12 元。外卖平台抽成 30%，一份扣 9 元，包装再花 2 元。剩下的钱还要付房租和工资。", draw: () => <DeliveryShare /> },
   training: { kicker: "教、做、检查的循环", kind: "示意", caption: "图里把带新人画成一个循环：教一件事，新人自己做一遍，再对照写下来的标准检查、说清对错，然后教下一件。对错按纸上的标准判断，不靠师傅的记性。", draw: () => <TeachLoop /> },
   regulars: { kicker: "从第一次到第二次", kind: "举例", caption: "假设你的餐饮店一个月有 20 位客人第一次来，下个月再来的只有 4 位。记住客人，是在客人还在店里的时候；提醒，是在客人离开以后；会员和积分，是给客人一个再来的理由。", draw: () => <ComeBack /> },
-  "delivery-ratings": { kicker: "客人打分时看到的样子", kind: "示意", caption: "菜从出餐口出去，在路上走一段才到客人手里，客人按打开时的样子打分，路上这一段店里看不到。店里能处理的在两头：出餐这一头是外卖菜单和包装，打分以后是回复评价。评分一降，店在平台上的排名就靠后，订单也跟着减少。", draw: () => <OnTheRoad /> },
   layout: { kicker: "空着的店和坐满的店", kind: "示意", caption: "装修时看到的是空着的店。坐满以后椅子往后推，通道变窄，进门的客人、取餐的外卖员和端菜的员工都从这一条通道经过。", draw: () => <EmptyFull /> },
   equipment: { kicker: "修好以前，生意停着", kind: "举例", caption: "假设你的餐饮店每天营业额 3,000 元，主要的炉灶周三早上坏了，等零件和维修人员，到周五开门前才修好。坏一次，付出去的是 800 元维修费；周三、周四停业两天，少收的营业额是 2 × 3,000 = 6,000 元。", draw: () => <DownDays /> },
   franchise: { kicker: "付出去的，换回来的", kind: "示意", caption: "加盟店开店时付加盟费，每月付管理费，有的还要向总部进货；换来的是品牌、配方和培训。菜单和售价能不能改、装修怎么做、要做几年、怎样退出，都写在合同里。", draw: () => <FranchiseFlows /> },

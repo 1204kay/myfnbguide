@@ -379,12 +379,12 @@ test("what the model wrote goes back named: lengths against what the prompt asks
 // that stays wrong. The first two are about the same shop; COFFEE is an owner in Japan who names no shop.
 const T = tag();
 const bistro = { ...story().shop, name: "Corner Bistro", label: "加州一家小酒馆" };
-// Every story has at least one picture (hasPicture); the steps say what the shop did.
+// Pictures the writer draws anyway are taken out (withoutPictures); the steps say what the shop did.
 const FLOW = [{ type: "flow", steps: ["收齐合同和账单", "逐行对比"] }];
 const answers: Record<string, unknown[]> = {
   FIRST: [
     { material: "story", ...story({ who: "顾问讲，一年多付 33,159 美元。", shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }, { heading: "假设你的餐饮店也这样做", blocks: [{ type: "example", example: { kind: "margin", price: 30, cost: 12 }, caption: "一份卖 30 元。" }] }] },
-    { material: "story", ...story({ shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }, { heading: "他把账单逐行对比", blocks: [{ type: "flow", steps: ["收齐合同和账单", "第一张和最近一张逐行对比"] }] }] },
+    { material: "story", ...story({ shop: bistro }), parts: [{ heading: "账单从每周 865 美元涨到 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, { type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }, { heading: "他把账单逐行对比", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, { type: "flow", steps: ["收齐合同和账单", "第一张和最近一张逐行对比"] }] }] },
   ],
   // Placed twice in one situation (two groups): it counts once, under the first. Its shop's name has a gloss.
   SECOND: [{ material: "story", ...story({ title: "同一家店的另一笔账", shop: { ...bistro, name: "Corner Bistro（街角小馆）" }, placements: [{ situation: "busy-no-profit", group: "food-over-recipe", card: "盘点出来的食材钱和配方算的放在一起比。" }, { situation: "busy-no-profit", group: "fixed-costs-creep", card: "另一组的卡片。" }] }), parts: story().parts.map((p) => ({ heading: p.heading, blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }, ...FLOW] })) }],
@@ -445,12 +445,10 @@ const model = await stub((_hit, req) => {
     const out = marker === "LONG" ? { part: 1, block: change("每月逐行对比账单") } : marker !== "PLAIN" ? { none: "原文说不出这家店改了什么" } : { part: 1, block: change(user.includes("有以下问题") ? "每月逐行对比账单" : "每月省下 99,999 美元") };
     return { id: `stub-picture-${marker}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
-  // The last pass over a story that passed: hands it back with one spoken word made written; SECOND's comes back
-  // without its only picture (deepseek did so to 1 in 5 stories, 10-18).
+  // The last pass over a story that passed: hands it back with one spoken word made written.
   if (body.messages.some((m) => m.role === "system" && m.content.includes("把口语词、方言词"))) {
     styled += 1;
     const back = JSON.parse(user.replace("账单每周都在涨", "账单每周都在上涨")) as { title: string; parts: Array<{ blocks: Array<{ type: string }> }> };
-    if (back.title.startsWith("同一家店的另一笔账")) for (const part of back.parts) part.blocks = part.blocks.filter((b) => b.type !== "flow");
     return { id: `stub-style-${styled}`, model: "stub", choices: [{ message: { content: JSON.stringify(back) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
   const marker = Object.keys(answers).find((m) => user.includes(`${m}-${T}`))!;
@@ -515,13 +513,14 @@ test("cases are written for selected items, once more when the checks find probl
   const [edited] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.TEXTONLY!}`;
   assert.equal(edited!.story.lead, "账单每周都在上涨。", "the wording pass is kept when the checks still pass");
   const [second] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.SECOND!}`;
-  assert.ok(hasPicture(second!.story), "a wording pass that drops the only picture is not kept");
+  assert.ok(!hasPicture(second!.story) && !hasPicture(stored!.story), "pictures the writer drew are taken out (10-18: over half wrong)");
   const [coffee] = await sql<{ story: CaseStory }[]>`SELECT story FROM reference_cases WHERE article_id = ${ids.COFFEE!}`;
   assert.equal(coffee!.story.title, "电费账单每周从 865 美元涨到 1,503 美元", "stored spaced");
   const keys = await sql<{ shop_key: string }[]>`SELECT DISTINCT shop_key FROM reference_cases WHERE article_id IN (${ids.FIRST!}, ${ids.SECOND!})`;
   assert.equal(keys.length, 1, "one shop's key with and without the gloss in brackets");
-  const compare = stored!.story.parts[0]!.blocks[0]!;
-  assert.ok(compare.type === "compare" && compare.change?.amount === 638 && compare.change.yearly === 638 * 52, "the change is computed");
+  const read = readOutput({ material: "story", ...story(), parts: [{ heading: "账单", blocks: [{ type: "compare", unit: "美元", per: "周", items: [{ label: "最早", value: 865 }, { label: "约四年后", value: 1503 }], caption: "顾问审过的账单。" }] }] });
+  const compare = read.written?.status === "story" ? read.written.story.parts[0]!.blocks[0]! : null;
+  assert.ok(compare?.type === "compare" && compare.change?.amount === 638 && compare.change.yearly === 638 * 52, "the change is computed");
 });
 
 test("the pages show public cases only, a situation once enough shops tell it, each shop once in a list, and the practices by shop", async () => {

@@ -3,7 +3,7 @@
 // failing sentence in the last check holds the whole issue. No database, no model.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { type Ask, BODY_CHARS, composeIssue, dailyLead, type Fact, issueArticle, issueMarkdown, issueProblems, type IssueText, pickMaterial } from "../backend/issue.ts";
+import { type Ask, BODY_CHARS, composeIssue, dailyLead, type Fact, issueArticle, issueMarkdown, issueProblems, issueSentences, type IssueText, pickMaterial } from "../backend/issue.ts";
 
 const ORIGINAL = [
   "A kiosk takes about 90 seconds per order, while a counter takes 2.5 to 3 minutes.",
@@ -98,7 +98,7 @@ test("fewer than four checked facts is no issue, and nothing is written", async 
   assert.ok(!calls.includes("reference_issue_write"));
 });
 
-const checked: Fact[] = FACTS.map((f, i) => ({ ...f, type: f.type as Fact["type"], id: `A${i + 1}`, article: "A" }));
+const checked: Fact[] = FACTS.map((f, i) => ({ ...f, type: f.type as Fact["type"], keep: "", id: `A${i + 1}`, article: "A" }));
 const problemsOf = (over: Partial<IssueText>, sourceId = "rss-petpooja") => issueProblems({ ...WRITTEN, ...over }, checked, [article("A", sourceId)]);
 
 test("the program sends a draft back for numbers its facts do not hold, a number in the view, length and wording", () => {
@@ -141,4 +141,38 @@ test("the pick keeps only listed originals and a known shelf", async () => {
   const { ask } = scripted({ reference_issue_pick: () => ({ pick: { topic: "火锅店的钱该花在哪", ids: [2, 0, 9, 2], shelf: "no-such-shelf", why: "" } }) });
   const { pick } = await pickMaterial(candidates, ask);
   assert.deepEqual(pick, { topic: "火锅店的钱该花在哪", ids: ["c", "a"], shelf: "", why: "" });
+});
+
+test("a fact left in Japanese is dropped before it is checked, and what a fact must keep reaches the writer", async () => {
+  const japanese = { text: "量が半分でも仕事は半分にならない", short: "仕事は半分にならない", who: "作者", type: "view", src: [2] };
+  const kept = { ...FACTS[4]!, keep: "这是作者的建议，不是已经发生的事" };
+  const written: string[] = [];
+  const { ask } = scripted({
+    reference_issue_facts: facts([...FACTS.slice(0, 4), kept, japanese]), reference_issue_facts_check: allOk,
+    reference_issue_write: (user) => { written.push(user); return WRITTEN; }, reference_issue_check: allOk,
+  });
+  const c = await composeIssue([article("A", "rss-petpooja")], { topic: "点餐机", shelf: "" }, ask);
+  assert.deepEqual(c.dropped.map((d) => d.why), ["没有译成中文"]);
+  assert.match(written[0]!, /A5（第 A 篇｜Petpooja｜advice｜必须保留：这是作者的建议，不是已经发生的事）/);
+});
+
+test("sentences that put facts together are marked for the check: the hook, the brief, the questions, a paragraph on two originals", () => {
+  const two: Fact[] = [...checked, { ...checked[0]!, id: "B1", article: "B" }];
+  const issue = { ...WRITTEN, body: [{ heading: null, text: "两篇都谈到速度。", bold: null, facts: ["A1", "B1"] }, ...WRITTEN.body] };
+  const marked = issueSentences(issue, two).filter((s) => s.joined).map((s) => s.at);
+  assert.deepEqual(marked, ["hook", "brief 1", "brief 2", "brief 3", "question 1", "question 2", "question 3", "body 1"]);
+});
+
+test("a draft still wrong after two rewrites is held, and is checked sentence by sentence all the same", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_facts: facts(), reference_issue_facts_check: allOk,
+    reference_issue_write: () => ({ ...WRITTEN, body: WRITTEN.body.slice(0, 2) }),
+    reference_issue_check: (user) => ({ items: allOk(user).items.map((x) => ({ ...x, ok: x.i !== 1, why: x.i === 1 ? "夸大" : "" })) }),
+  });
+  const c = await composeIssue([article("A", "rss-petpooja")], { topic: "点餐机", shelf: "" }, ask);
+  assert.deepEqual(calls.filter((p) => p === "reference_issue_write").length, 3);
+  assert.equal(c.status, "held");
+  assert.match(c.problems[0]!, /正文要 800 到 1200 字，写了 \d+ 字：补约 \d+ 字/);
+  assert.equal(c.problems[1], "成文核对没过：1 句");
+  assert.ok(calls.includes("reference_issue_check"));
 });

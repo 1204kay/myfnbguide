@@ -29,8 +29,8 @@ const all = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] 
 const one = (flag: string) => all(flag).at(-1);
 const apply = args.includes("--apply");
 const maxCalls = Number(one("--max-calls") ?? 250);
-/** The most calls one issue can make: the pick, two per original (three originals), two drafts and the check. */
-const PER_ISSUE = 10;
+/** The most calls one issue can make: the pick, two per original (three originals), three drafts, the check and a retry. */
+const PER_ISSUE = 12;
 /** An original shorter than this does not carry an issue's share of facts (backend/issue.ts reads 600 and up). */
 const MIN_BODY = 1500;
 

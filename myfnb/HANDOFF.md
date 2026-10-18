@@ -458,6 +458,7 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 
 **额度恢复后的第一步**
 - **10-18 晚进度**：第 0 步做完（上面「信源条款」）；第 1 步的代码写好了（`modules/reference/backend/issue.ts`、`prompts/issue-*.md`、试写脚本 `myfnb/trial-issues.ts`，假数据测试 `modules/reference/tests/issue.standalone.test.ts`），没有接进 `eval-reference.ts`：试写结果只写文件，不进 `reference_evals`。第 2 步改在 Kay 电脑直接 SSH 跑（Kay 10-18 21:59），完整指令在 `myfnb/十一说/试写指令-2026-10-18.md`。日报头条的接线（`ReportPaper` 的 lead 位）没做：要先过 §3.0 审核、Kay 确认，排在试写和 Claude Design 出稿之后；`issue.ts` 的 `dailyLead` 先给出头条要的标题和段落。
+- **10-19 凌晨：试写第 1 轮不过，第 2 轮（最后一轮）**：第 1 轮两家都 0/20 过程序核对，大多卡在字数和用词；把只因格式没过的 29 期盲核，严重错 DeepSeek 7/15、Claude 3/14，集中在合起来写的句子（标题、三分钟版、「这期说什么」、启示）。报告在 Core System Studio 手册分支 `claude/project-thread-9c6u2x` 的 `业务线/myfnbguide/记录/2026-10-18/十一说试写-第1轮.md`。第 2 轮改流程、不动过关线和 Kay 定的规格：事实多一栏「必须保留」（假设、构想、先后、数字口径）、成文核对单独查合写的句子和「这期说什么」、格式没过也照样逐句核对（才量得出漏检）、退回改两次、写稿前列出全部用词、事实里的日文拿掉、坏 JSON 再问一次、用词表的「坪単価」改法改正（原来的「每坪租金」是错的）。只跑 Claude，用第 1 轮同一批 20 期。**完整指令：`myfnb/十一说/试写指令-第2轮-2026-10-19.md`**（十一叫电脑会话照它跑）。第 2 轮不过就停，带两轮结果问 Kay，不试第三轮。
 0. 先查六个主要信源的转载条款（不花钱、不用服务器），结果写进本节。
 1. 写代码：三步流程、每天一期十一说的生成，并接进 `myfnb/eval-reference.ts`（结果只写 `reference_evals`）。草稿 `modules/reference/backend/digest.ts` 和 `prompts/{kind,digest,digest-check,story-check}.md` 里，句子编号和逐句核对可以复用，其余按本节重写。先跑 typecheck，新守卫先红后绿。
 2. 从线上挑 20 期的素材试写（选题覆盖参考库主要书架；DeepSeek 和 Claude 各写一份），盲核，再量自动核对的漏检。服务器通道要 GitHub Actions 额度恢复才能用。

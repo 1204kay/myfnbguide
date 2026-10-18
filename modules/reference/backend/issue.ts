@@ -8,27 +8,38 @@
 //    them, one more call checks each fact against them (prompts/issue-facts-check.md); a fact that fails is dropped;
 // 2. write: the issue is written from the kept facts alone, every sentence naming the facts it uses
 //    (prompts/issue-write.md); the program checks numbers, length, wording, quotes (only from QUOTABLE_SOURCES) and
-//    sends problems back once;
-// 3. check: a last call reads each sentence against the facts it names (prompts/issue-check.md). One failing sentence
-//    holds the whole issue: the daily then leads as it always did.
+//    sends problems back, at most twice;
+// 3. check: a last call reads each sentence against the facts it names (prompts/issue-check.md), sentences that put
+//    facts together marked as such: that is where the first trial's serious errors were (made-up causes and order,
+//    one original's point given to all, a plan or a supposed case told as done). It runs even when the program still
+//    finds problems, so the trial can tell what it would have let through. One failing sentence, or one problem
+//    left, holds the whole issue: the daily then leads as it always did.
 // Fewer than MIN_FACTS kept facts is no issue. Stores nothing: myfnb/trial-issues.ts tries it and writes files.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
-import { chatJson } from "@aihot/backend/providers/llm";
+import { chatJson, ModelOutputError } from "@aihot/backend/providers/llm";
 import { SITUATIONS, findSituation } from "../situations.ts";
 import { sourceNumbers, unfoundNumbers, WORDING } from "./checks.ts";
 import { sentencesOf } from "./digest.ts";
 
 export const ISSUE_STEP = "referenceIssue";
+/** Words an issue must not use besides the site's (HANDOFF §9.0, Kay 10-18 13:22): no spoken openings, no made-up experience. */
+const ISSUE_WORDING: ReadonlyArray<readonly [RegExp, string]> = [
+  [/大家好|咱们|小编/u, "不写口语的称呼，用书面语"],
+  [/下期见|打烊后/u, "结尾用自己的一句话，不用「下期见」「打烊后」"],
+  [/后来我发现|我开店|我当年|我的店/u, "十一是 AI，没有亲身经历：用原文的例子"],
+];
+const WORDING_FIXES = new Set([...WORDING, ...ISSUE_WORDING].map(([, fix]) => fix));
 const SITUATION_LIST = SITUATIONS.map((s) => `- ${s.slug}：${s.title}`).join("\n");
 const prompt = (name: string, values: Record<string, string> = {}) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), values);
 const PICK = prompt("issue-pick", { situations: SITUATION_LIST });
 const FACTS = prompt("issue-facts");
 const FACTS_CHECK = prompt("issue-facts-check");
-const WRITE = prompt("issue-write");
+// The words the program sends a draft back for, told beforehand: 20 of the first trial's 38 drafts were sent back for them.
+const WRITE = prompt("issue-write", { wording: [...WORDING_FIXES].map((f) => `- ${f}`).join("\n") });
 const CHECK = prompt("issue-check");
 export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(PICK).update(FACTS).update(FACTS_CHECK).update(WRITE).update(CHECK)
   .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
@@ -45,14 +56,12 @@ export const QUOTABLE_SOURCES: ReadonlySet<string> = new Set(["rss-petpooja", "r
 const MIN_MATERIAL = 600;
 /** Fewer kept facts than this is no issue (HANDOFF §9.0: 核过的事实不到 4 条，不写正文). */
 export const MIN_FACTS = 4;
-/** The body's length in characters, without spaces (HANDOFF §9.0: 800–1,200 字). */
+/** The body's length in characters, without spaces (HANDOFF §9.0: 800–1,200 字). The prompt aims at 900–1,100. */
 export const BODY_CHARS = { min: 800, max: 1200 } as const;
-/** Words an issue must not use besides the site's (HANDOFF §9.0, Kay 10-18 13:22): no spoken openings, no made-up experience. */
-const ISSUE_WORDING: ReadonlyArray<readonly [RegExp, string]> = [
-  [/大家好|咱们|小编/u, "不写口语的称呼，用书面语"],
-  [/下期见|打烊后/u, "结尾用自己的一句话，不用「下期见」「打烊后」"],
-  [/后来我发现|我开店|我当年|我的店/u, "十一是 AI，没有亲身经历：用原文的例子"],
-];
+/** Times a draft goes back with the program's problems; the stories' writing has gone back twice since 10/9. */
+const REWRITES = 2;
+/** Kana left in a fact: the map shows a fact's short as it is (first trial: Japanese left on 8 issues' maps). */
+const KANA = /[\u3040-\u30ff]/u;
 
 export interface IssueArticle {
   id: string;
@@ -75,7 +84,12 @@ export type Ask = <S extends z.ZodType>(purpose: string, system: string, user: s
 /** Asks the named model through the engine's receipts and budget; the receipts it made go to `receiptIds`. */
 export function modelAsk(model: string, subject: string, receiptIds: number[]): Ask {
   return async (purpose, system, user, schema) => {
-    const res = await chatJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, temperature: 0, maxTokens: 6000, timeoutMs: 240_000 });
+    const once = () => chatJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, temperature: 0, maxTokens: 6000, timeoutMs: 240_000 });
+    // Unusable output once is asked again once (first trial: 2 of 20 of Claude's issues, broken JSON); a second is the answer.
+    const res = await once().catch((error: unknown) => {
+      if (error instanceof ModelOutputError) return once();
+      throw error;
+    });
     receiptIds.push(res.receiptId);
     return res.data;
   };
@@ -109,12 +123,13 @@ export async function pickMaterial(candidates: Candidate[], ask: Ask): Promise<{
 // ---------------------------------------------------------------- 1. facts
 
 export type FactType = "fact" | "advice" | "example" | "view";
-export interface Fact { id: string; article: string; text: string; short: string; who: string; type: FactType; src: number[] }
+/** keep: what the fact must not lose when written (a supposed case, a plan, what a unit counts), "" when nothing. */
+export interface Fact { id: string; article: string; text: string; short: string; who: string; type: FactType; keep: string; src: number[] }
 export interface Dropped { text: string; why: string }
 
 const FactItem = z.object({
   text: z.string().trim().min(1), short: z.string().trim().min(1), who: z.string().trim().default("作者"),
-  type: z.enum(["fact", "advice", "example", "view"]).catch("view"), src: Ids,
+  type: z.enum(["fact", "advice", "example", "view"]).catch("view"), keep: z.string().trim().default(""), src: Ids,
 });
 const FactsAnswer = z.discriminatedUnion("material", [
   z.object({ material: z.literal("thin"), reason: z.string().default("") }),
@@ -128,6 +143,7 @@ const FactsAnswer = z.discriminatedUnion("material", [
 /** What is wrong with a fact before it is checked: no sentence named, one that is not there, a number not in them. */
 export function factProblem(f: { text: string; short: string; src: number[] }, lines: string[]): string | null {
   if (!f.src.length) return "没写依据哪几句";
+  if (KANA.test(f.text) || KANA.test(f.short)) return "没有译成中文";
   if (f.src.some((n) => n < 0 || n >= lines.length)) return "依据的句子编号不存在";
   const found = sourceNumbers(f.src.map((n) => lines[n]).join("\n"));
   const missing = [...new Set([...unfoundNumbers(f.text, found), ...unfoundNumbers(f.short, found)])];
@@ -150,7 +166,7 @@ export async function factsOf(a: IssueArticle, ask: Ask): Promise<{ facts: Fact[
   });
   let kept = listed;
   if (listed.length) {
-    const user = listed.map((f, i) => `${i + 1}. text：${f.text}\nshort：${f.short}\nwho：${f.who}\ntype：${f.type}\n依据：\n${f.src.map((n) => `[${n}] ${a.lines[n]}`).join("\n")}`).join("\n\n");
+    const user = listed.map((f, i) => `${i + 1}. text：${f.text}\nshort：${f.short}\nwho：${f.who}\ntype：${f.type}\nkeep：${f.keep || "（无）"}\n依据：\n${f.src.map((n) => `[${n}] ${a.lines[n]}`).join("\n")}`).join("\n\n");
     const check = await ask("reference_issue_facts_check", FACTS_CHECK, user, CheckAnswer);
     const ok = new Set(check.items.filter((c) => c.ok).map((c) => c.i - 1));
     kept = listed.filter((f, i) => {
@@ -177,18 +193,24 @@ export type IssueText = z.infer<typeof IssueAnswer>;
 
 const chars = (t: string) => t.replace(/\s/g, "").length;
 
-/** Every place a reader meets the issue's words, with the facts it claims to use (the hook may draw on any). */
-export function issueSentences(issue: IssueText, facts: Fact[]): Array<{ at: string; text: string; facts: string[] }> {
+/**
+ * Every place a reader meets the issue's words, with the facts it claims to use (the hook and the questions may draw
+ * on any). `joined`: the sentence puts facts together (the hook, the brief, the questions, a paragraph on more than one
+ * original), where the first trial's serious errors were; the check reads those for three more things.
+ */
+export function issueSentences(issue: IssueText, facts: Fact[]): Array<{ at: string; text: string; facts: string[]; joined: boolean }> {
   const all = facts.map((f) => f.id);
   const split = (t: string) => t.match(/[^。！？!?]+[。！？!?」”）)]*/gu)?.map((s) => s.trim()).filter(Boolean) ?? [t];
+  const several = (ids: string[]) => new Set(ids.map((id) => id.replace(/\d+$/u, ""))).size > 1;
   return [
-    { at: "hook", text: issue.hook, facts: all },
-    ...issue.brief.map((b, i) => ({ at: `brief ${i + 1}`, text: b.text, facts: b.facts })),
+    { at: "hook", text: issue.hook, facts: all, joined: true },
+    ...issue.brief.map((b, i) => ({ at: `brief ${i + 1}`, text: b.text, facts: b.facts, joined: true })),
+    ...issue.questions.map((q, i) => ({ at: `question ${i + 1}`, text: q, facts: all, joined: true })),
     ...issue.body.flatMap((p, i) => [
-      ...(p.heading ? [{ at: `body ${i + 1} heading`, text: p.heading, facts: p.facts }] : []),
-      ...split(p.text).map((text) => ({ at: `body ${i + 1}`, text, facts: p.facts })),
+      ...(p.heading ? [{ at: `body ${i + 1} heading`, text: p.heading, facts: p.facts, joined: several(p.facts) }] : []),
+      ...split(p.text).map((text) => ({ at: `body ${i + 1}`, text, facts: p.facts, joined: several(p.facts) })),
     ]),
-    { at: "view", text: issue.view, facts: [] },
+    { at: "view", text: issue.view, facts: [], joined: false },
   ];
 }
 
@@ -205,7 +227,13 @@ export function issueProblems(issue: IssueText, facts: Fact[], articles: IssueAr
   if (issue.questions.length !== 3) problems.push(`「这期说什么」要正好三个问题，写了 ${issue.questions.length} 个`);
   if (issue.map.length < 2 || issue.map.length > 4) problems.push(`要点图要 2 到 4 组，写了 ${issue.map.length} 组`);
   const length = issue.body.reduce((n, p) => n + chars(p.text), 0);
-  if (length < BODY_CHARS.min || length > BODY_CHARS.max) problems.push(`正文要 ${BODY_CHARS.min} 到 ${BODY_CHARS.max} 字，写了 ${length} 字`);
+  if (length < BODY_CHARS.min || length > BODY_CHARS.max) {
+    // Where to cut or add, in numbers: "too long" alone came back too long again (first trial, 13 of 20 of DeepSeek's).
+    const longest = issue.body.map((p, i) => [i + 1, chars(p.text)] as const).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([i, n]) => `第 ${i} 段 ${n} 字`).join("、");
+    problems.push(length > BODY_CHARS.max
+      ? `正文要 ${BODY_CHARS.min} 到 ${BODY_CHARS.max} 字，写了 ${length} 字：删去约 ${length - 1000} 字，删到 1,000 字左右（最长的是${longest}），删的是重复和铺垫，不删事实的限定`
+      : `正文要 ${BODY_CHARS.min} 到 ${BODY_CHARS.max} 字，写了 ${length} 字：补约 ${1000 - length} 字，只用清单里还没用到的事实`);
+  }
   const cited = [...issue.brief.map((b) => b.facts), ...issue.body.map((p) => p.facts), ...issue.map.map((g) => g.facts)].flat();
   const unknown = [...new Set(cited.filter((id) => !byId.has(id)))];
   if (unknown.length) problems.push(`事实编号 ${unknown.join("、")} 不在清单里`);
@@ -221,7 +249,8 @@ export function issueProblems(issue: IssueText, facts: Fact[], articles: IssueAr
   }
   const viewNumbers = unfoundNumbers(issue.view, new Set());
   if (viewNumbers.length) problems.push(`十一的看法不能带数字（${viewNumbers.join("、")}）`);
-  const reader = [issue.hook, ...issue.brief.map((b) => b.text), ...issue.questions, ...issue.body.flatMap((p) => [p.heading ?? "", p.text]), ...issue.map.map((g) => g.heading), issue.view].join("\n");
+  const shorts = issue.map.flatMap((g) => g.facts.map((id) => byId.get(id)?.short ?? ""));
+  const reader = [issue.hook, ...issue.brief.map((b) => b.text), ...issue.questions, ...issue.body.flatMap((p) => [p.heading ?? "", p.text]), ...issue.map.map((g) => g.heading), ...shorts, issue.view].join("\n");
   for (const [pattern, fix] of [...WORDING, ...ISSUE_WORDING]) if (pattern.test(reader)) problems.push(`用词：${fix}`);
   if (issue.quote) {
     const a = articles.find((x) => x.letter === issue.quote!.article);
@@ -264,29 +293,29 @@ export async function composeIssue(articles: IssueArticle[], pick: { topic: stri
   }
   if (facts.length < MIN_FACTS) return { ...base, status: "thin", issue: null, facts, dropped, problems: [...problems, `核过的事实只有 ${facts.length} 条，不到 ${MIN_FACTS} 条`] };
 
-  const list = facts.map((f) => `${f.id}（第 ${f.article} 篇｜${f.who}｜${f.type}）${f.text}`).join("\n");
+  const list = facts.map((f) => `${f.id}（第 ${f.article} 篇｜${f.who}｜${f.type}${f.keep ? `｜必须保留：${f.keep}` : ""}）${f.text}`).join("\n");
   const sources = articles.map((a) => `第 ${a.letter} 篇：${a.sourceName}《${a.title}》${base.ownShops[a.letter] ? `（${base.ownShops[a.letter]} 讲自己的店）` : ""}`).join("\n");
   const quotable = articles.filter((a) => QUOTABLE_SOURCES.has(a.sourceId)).map((a) => `第 ${a.letter} 篇（句子编号从 2 起是正文）：\n${numbered(a.lines)}`);
   const user = [`这一期的话题：${pick.topic}`, `原文：\n${sources}`, `事实清单：\n${list}`, quotable.length ? `可以摘句的原文：\n\n${quotable.join("\n\n")}` : "可以摘句的原文：无（quote 填 null）"].join("\n\n");
   let issue = await ask("reference_issue_write", WRITE, user, IssueAnswer);
   let found = issueProblems(issue, facts, articles);
-  if (found.length) {
-    // Once back with the problems named, as a case goes back (write.ts); what still fails holds the issue.
-    issue = await ask("reference_issue_write", WRITE, `${user}\n\n上一稿有这些问题，请改正后重写整期：\n${found.map((p) => `- ${p}`).join("\n")}\n\n上一稿：\n${JSON.stringify(issue)}`, IssueAnswer);
+  for (let round = 0; found.length && round < REWRITES; round += 1) {
+    // Back with the problems named, as a case goes back (write.ts); what still fails holds the issue.
+    issue = await ask("reference_issue_write", WRITE, `${user}\n\n上一稿有这些问题，请只改这些地方，其余照旧，输出整期：\n${found.map((p) => `- ${p}`).join("\n")}\n\n上一稿：\n${JSON.stringify(issue)}`, IssueAnswer);
     found = issueProblems(issue, facts, articles);
   }
-  if (found.length) return { ...base, status: "held", issue, facts, dropped, problems: [...problems, ...found] };
 
   const sentences = issueSentences(issue, facts);
   const byId = new Map(facts.map((f) => [f.id, f]));
   const checkUser = [
     `事实清单：\n${list}`,
-    `这一期的句子：\n${sentences.map((s, i) => `${i + 1}. ${s.at === "view" ? "【十一的看法】" : ""}${s.text}\n   用到：${s.at === "view" ? "无" : s.facts.filter((id) => byId.has(id)).join("、") || "无"}`).join("\n")}`,
+    `这一期的句子：\n${sentences.map((s, i) => `${i + 1}. ${s.at === "view" ? "【十一的看法】" : s.joined ? "【合写】" : ""}${s.text}\n   用到：${s.at === "view" ? "无" : s.facts.filter((id) => byId.has(id)).join("、") || "无"}`).join("\n")}`,
   ].join("\n\n");
   const check = await ask("reference_issue_check", CHECK, checkUser, CheckAnswer);
   const answered = new Map(check.items.map((c) => [c.i - 1, c]));
   const failing = sentences.flatMap((s, i) => (answered.get(i)?.ok ? [] : [{ text: `${s.at}：${s.text}`, why: answered.get(i)?.why || "核对没有答" }]));
-  if (failing.length) return { ...base, status: "held", issue, facts, dropped: [...dropped, ...failing], problems: [...problems, `成文核对没过：${failing.length} 句`] };
+  const held = [...found, ...(failing.length ? [`成文核对没过：${failing.length} 句`] : [])];
+  if (held.length) return { ...base, status: "held", issue, facts, dropped: [...dropped, ...failing], problems: [...problems, ...held] };
   return { ...base, status: "issue", issue, facts, dropped, problems };
 }
 
@@ -322,7 +351,7 @@ export function issueMarkdown(c: ComposedIssue, no: number): string {
     }
     out.push("## 十一的看法", i.view, "", "> 关于十一：十一是 AI。本期每一句事实都来自原文，并经过三步核对：拆出事实、逐条对照原文、成文后复查。「十一的看法」是十一的观点，并非原文内容。AI 整理，以原文为准。", "");
   }
-  out.push("## 事实清单（核过的）", ...c.facts.map((f) => `- ${f.id}｜${f.who}｜${f.type}｜${f.text}（原文第 ${f.src.join("、")} 句）`), "");
+  out.push("## 事实清单（核过的）", ...c.facts.map((f) => `- ${f.id}｜${f.who}｜${f.type}｜${f.text}${f.keep ? `（必须保留：${f.keep}）` : ""}（原文第 ${f.src.join("、")} 句）`), "");
   if (c.problems.length) out.push("## 问题", ...c.problems.map((p) => `- ${p}`), "");
   if (c.dropped.length) out.push("## 拿掉的", ...c.dropped.map((d) => `- ${d.text}：${d.why}`), "");
   return out.join("\n");

@@ -17,7 +17,7 @@ import { selectedCondition } from "@aihot/backend/publication/scope";
 import { spaced } from "../format.ts";
 import { SHOP_KINDS, SITUATIONS, type ShopKind } from "../situations.ts";
 import type { Block, CaseStory } from "../types.ts";
-import { badness, blocking, checkStory, pictureProblems } from "./checks.ts";
+import { badness, blocking, checkStory, DRAWN, hasPicture } from "./checks.ts";
 import { computeExample, ExampleInputSchema } from "./examples.ts";
 
 export const MODEL_STEP = "referenceCase";
@@ -40,13 +40,15 @@ export const EDIT = "下面是你按系统规则写好的故事（JSON），有�
  * checks still pass and no number changed.
  */
 const STYLE_SYSTEM = promptFromText("reference/style", readFileSync(new URL("../prompts/style.md", import.meta.url), "utf8"));
+/** A story written without a picture is asked for one on its own (drawPicture). */
+const PICTURE_SYSTEM = promptFromText("reference/picture", readFileSync(new URL("../prompts/picture.md", import.meta.url), "utf8"));
 // The prompts, the edit request and the checks: the rewrite script writes again every case written under others.
 /**
  * The code that checks and shapes an answer (checks.ts, and this file's schema and splitting): a story held under
  * one set of checks is written again under the next, by the rewrite script (myfnb/rewrite-reference.ts).
  */
 export const CHECKING = ["./checks.ts", "./write.ts"].map((f) => readFileSync(new URL(f, import.meta.url), "utf8")).join("\n");
-const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(STYLE_SYSTEM).update(CHECKING).digest("hex").slice(0, 10)}`;
+const PROMPT_VERSION = `reference-case@${createHash("sha256").update(CASE_SYSTEM).update(EDIT).update(STYLE_SYSTEM).update(PICTURE_SYSTEM).update(CHECKING).digest("hex").slice(0, 10)}`;
 const numbersOf = (story: CaseStory) => (JSON.stringify(story).match(/\d+(?:\.\d+)?/g) ?? []).sort().join(",");
 
 const text = z.string().trim().min(1);
@@ -304,9 +306,7 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     const read = readOutput(res.data);
     written = read.written;
     answer = res.data;
-    // A story with no picture goes back for one; the second time it may say the source cannot carry one: no picture is
-    // better than a filler (Kay 10-17). Told so the first time, the model left out pictures its titles plainly had.
-    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material), ...(attempt < 2 ? pictureProblems(written.story, attempt === 1) : [])] : read.problems;
+    problems = written?.status === "story" ? [...read.problems, ...checkStory(written.story, material)] : read.problems;
     // A later try can be worse than an earlier one: the best of them is the one kept.
     if (!best || badness(written, problems) < badness(best.written, best.problems)) best = { written, answer, problems };
     if (!problems.length) break;
@@ -329,15 +329,74 @@ export async function composeCase(a: Article, prompt: Prompt = CASE_PROMPT): Pro
     const read = readOutput(styled.data);
     const after = read.written?.status === "story" ? checkStory(read.written.story, material) : null;
     // Nor may it drop the picture: it did to 1 in 5 samples, while the checks above see no picture at all (10-18).
-    const keepsPicture = read.written?.status === "story" && pictureProblems(read.written.story).length <= pictureProblems(written.story).length;
+    const keepsPicture = read.written?.status === "story" && (hasPicture(read.written.story) || !hasPicture(written.story));
     if (read.written?.status === "story" && after && keepsPicture && !after.some(blocking) && after.length <= problems.length && numbersOf(read.written.story) === numbersOf(written.story)) {
       written = read.written;
       problems = after;
     }
   }
+  if (!problems.some(blocking) && written?.status === "story" && !hasPicture(written.story)) {
+    const drawn = await drawPicture(written.story, material, { subject: `article:${a.id}@${a.revision}`, promptVersion: prompt.version });
+    receiptIds.push(...drawn.receiptIds);
+    written = { status: "story", story: drawn.story };
+  }
   const status: CaseResult["status"] = !written || problems.some(blocking) ? "held" : written.status;
   const story = written?.status === "story" ? spaceStory(written.story) : null;
   return { status, story, reason: written?.status === "thin" ? written.reason : null, problems, receiptIds };
+}
+
+/**
+ * A picture for a story written without one, asked for on its own: the model gives one block and the part it goes in,
+ * or says the original cannot carry a picture of what the title says (Kay 10-17: every story a picture of its title;
+ * L652 宁缺毋滥: none rather than a filler). Sent back to add one to the whole story, the writer copied the story out
+ * again with text only, three times over even with a number in its title (10-18: 380 of 796 stories still had none).
+ * The block is kept only when the story's checks find nothing new with it; told what is wrong, it gets one more try.
+ */
+export async function drawPicture(story: CaseStory, material: string, { subject, promptVersion }: { subject: string; promptVersion: string }):
+  Promise<{ story: CaseStory; reason: string | null; receiptIds: number[] }> {
+  const model = await modelFor(MODEL_STEP);
+  const receiptIds: number[] = [];
+  const before = checkStory(story, material);
+  let user = [`故事：\n${JSON.stringify(story)}`, `原文：\n${material}`].join("\n\n");
+  let reason = "没有配出能用的图";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let data: unknown;
+    try {
+      const res = await chatJson({
+        model, purpose: PURPOSE, subject, promptVersion: `${promptVersion}+picture`,
+        system: PICTURE_SYSTEM, user, schema: z.unknown(), temperature: 0.3, maxTokens: 2000, timeoutMs: 120_000,
+      });
+      receiptIds.push(res.receiptId);
+      data = res.data;
+    } catch (error) {
+      if (!(error instanceof ModelOutputError)) throw error;
+      if (error.receiptId !== null) receiptIds.push(error.receiptId);
+      continue;
+    }
+    const answer = data as { none?: unknown; part?: unknown; block?: unknown } | null;
+    if (typeof answer?.none === "string") return { story, reason: answer.none, receiptIds };
+    const part = Number(answer?.part) - 1;
+    const parsed = BlockSchema.safeParse(answer?.block);
+    let problems: string[];
+    let drawn: CaseStory | null = null;
+    if (!parsed.success || !DRAWN.has(parsed.data.type)) problems = ["格式不对：block 要是 change、numbers、flow、compare 或 parts 中的一种，按系统规则的写法"];
+    else if (!Number.isInteger(part) || part < 0 || part >= story.parts.length) problems = [`part 要写 1 到 ${story.parts.length} 之间的段号`];
+    else {
+      try {
+        const block = computeBlock(parsed.data);
+        // After the part's first block: its text says what the picture then shows.
+        drawn = { ...story, parts: story.parts.map((p, i) => i === part ? { ...p, blocks: [...p.blocks.slice(0, 1), block, ...p.blocks.slice(1)] } : p) };
+        problems = checkStory(drawn, material).filter((p) => !before.includes(p));
+      } catch (error) {
+        problems = [`举例算不出来：${(error as Error).message}`];
+      }
+    }
+    if (drawn && !problems.length) return { story: drawn, reason: null, receiptIds };
+    reason = problems.join("；");
+    user = [`故事：\n${JSON.stringify(story)}`, `原文：\n${material}`, `你上一次的输出：\n${JSON.stringify(data)}`,
+      `上一次的输出有以下问题，请改正后重新输出，原文撑不起就回答不放：\n${problems.map((p) => `- ${p}`).join("\n")}`].join("\n\n");
+  }
+  return { story, reason, receiptIds };
 }
 
 /** Writes (or writes again) the case of one article and stores it. Null when the article is gone. */

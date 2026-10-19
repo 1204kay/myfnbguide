@@ -225,10 +225,17 @@ export const MIN_ITEMS = 3;
 export async function composeIssue(items: DayItem[], date: string, ask: Ask): Promise<ComposedIssue> {
   if (items.length < MIN_ITEMS) return { date, status: "thin", chosen: null, drafts: [], items };
   const drafts: Draft[] = [];
+  let unusable: unknown;
   for (const attempt of ["a", "b"]) {
-    const issue = await write(items, date, ask, attempt);
-    drafts.push({ issue, ...await checkIssue(issue, items, ask), edited: false });
+    // A draft the model could not write in usable form, even asked twice, leaves the other (trial 10-13: broken JSON twice).
+    const issue = await write(items, date, ask, attempt).catch((error: unknown) => {
+      if (!(error instanceof ModelOutputError)) throw error;
+      unusable = error;
+      return null;
+    });
+    if (issue) drafts.push({ issue, ...await checkIssue(issue, items, ask), edited: false });
   }
+  if (!drafts.length) throw unusable;
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
   let last = [...drafts].sort((x, y) => y.lively - x.lively || x.problems.length - y.problems.length)[0]!;

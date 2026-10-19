@@ -3,6 +3,7 @@
 // No database, no model.
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { ModelOutputError } from "@aihot/backend/providers/llm";
 import { type Ask, citedItems, composeIssue, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
@@ -69,6 +70,18 @@ test("when neither passes, the editor mends the livelier draft with its problems
   assert.equal(c.chosen?.edited, true);
   assert.equal(dailyLead(c, 1), null);
   assert.ok(issueMarkdown(c, 1).includes("没过核对，当天不出"));
+});
+
+test("a draft the model cannot write in usable form leaves the other; with neither, the day fails", async () => {
+  const { ask } = scripted({
+    reference_issue_write: (_u, attempt) => { if (attempt === "a") throw new ModelOutputError("broken JSON"); return issue("稿 b", "说了〔1〕。"); },
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-13", ask);
+  assert.equal(c.status, "issue");
+  assert.equal(c.chosen?.issue.title, "稿 b");
+  const { ask: broken } = scripted({ reference_issue_write: () => { throw new ModelOutputError("broken JSON"); } });
+  await assert.rejects(composeIssue(ITEMS, "2026-10-13", broken), ModelOutputError);
 });
 
 test("a citation of no item is a problem even when the check finds none", async () => {

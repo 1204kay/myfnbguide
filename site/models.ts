@@ -38,6 +38,14 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY", reasoningTokens: 4000, jsonMode: true,
   },
+  // 十一说的试写 on the server's own DeepSeek key (LLM_*; the DEEPSEEK_* pair is not set there). An issue is long, so
+  // thinking gets as much room as Opus has (10-09: 5 of 16 items cut off at 4,000).
+  "deepseek-flash-think-llm": {
+    service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
+  },
+  "deepseek-v4-pro-llm": {
+    service: "deepseek", model: "deepseek-v4-pro", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
+  },
   "qwen3.7-flash": {
     service: "dashscope", model: "qwen3.7-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: true,

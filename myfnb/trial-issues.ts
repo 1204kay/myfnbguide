@@ -27,8 +27,9 @@ const all = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] 
 const one = (flag: string) => all(flag).at(-1);
 const apply = args.includes("--apply");
 
-/** US$ per million input / output tokens: Anthropic's price list (10-19); DeepSeek's (10-01, uncached input, peak hours). Only the models a trial uses. */
-const PRICES: Record<string, [number, number]> = { "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10], "deepseek-flash": [0.3, 1.2], "deepseek-flash-think": [0.3, 1.2] };
+/** US$ per million input / output tokens: Anthropic's price list (10-19); DeepSeek's (10-19, uncached input, peak hours). Only the models a trial uses. */
+const PRICES: Record<string, [number, number]> = { "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10], "deepseek-flash": [0.3, 1.2], "deepseek-flash-think": [0.3, 1.2],
+  "deepseek-flash-think-llm": [0.3, 1.2], "deepseek-v4-pro-llm": [1.32, 3.96] };
 /** The most a call can cost: every character counted as an input token (more than any text here takes) and the 20k output limit. */
 const callUsd = (price: [number, number], chars: number) => (chars * price[0] + 20_000 * price[1]) / 1e6;
 /** What a day needs left before it starts: two drafts, each reading every item in full, and two checks no bigger than a draft. */

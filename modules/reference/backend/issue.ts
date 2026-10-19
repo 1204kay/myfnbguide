@@ -221,7 +221,7 @@ export interface ComposedIssue {
 /** Fewer than this many items is no issue: there is no day to tell. */
 export const MIN_ITEMS = 3;
 
-/** Writes the day's issue: two drafts, each checked; the livelier that passes, else the livelier mended up to twice. */
+/** Writes the day's issue: two drafts, each checked; the livelier that passes, else the livelier mended up to three times. */
 export async function composeIssue(items: DayItem[], date: string, ask: Ask): Promise<ComposedIssue> {
   if (items.length < MIN_ITEMS) return { date, status: "thin", chosen: null, drafts: [], items };
   const drafts: Draft[] = [];
@@ -232,7 +232,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
   let last = [...drafts].sort((x, y) => y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
-  for (const attempt of ["c", "d"]) {
+  for (const attempt of ["c", "d", "e"]) {
     const issue = await edit(last, items, ask, attempt);
     last = { issue, ...await checkIssue(issue, items, ask), edited: true };
     drafts.push(last);

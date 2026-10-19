@@ -51,7 +51,7 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
 });
 
-test("when neither passes, the editor mends the livelier draft with its problems and originals, then once more; still failing, the day is held", async () => {
+test("when neither passes, the editor mends the livelier draft with its problems and originals, then twice more; still failing, the day is held", async () => {
   const { ask, calls } = scripted({
     reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, attempt === "a" ? "说了〔9〕。" : "说了〔2〕。"),
     reference_issue_edit: (_u, attempt) => issue(`稿 ${attempt}`, "说了〔2〕。"),
@@ -59,12 +59,13 @@ test("when neither passes, the editor mends the livelier draft with its problems
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   // Both are as lively; draft a also cites an item that does not exist, so b, with fewer problems, is mended.
-  const [first, second] = calls.filter((x) => x.purpose === "reference_issue_edit");
+  const [first, second, third] = calls.filter((x) => x.purpose === "reference_issue_edit");
   assert.ok(first!.user.includes("稿 b") && first!.user.includes("第 2 条：「说了」像真事"));
   assert.ok(first!.user.includes(ITEMS[1]!.text), "the editor has the original the draft cites");
   assert.ok(second!.user.includes("稿 c"));
+  assert.ok(third!.user.includes("稿 d"));
   assert.equal(c.status, "held");
-  assert.equal(c.drafts.length, 4);
+  assert.equal(c.drafts.length, 5);
   assert.equal(c.chosen?.edited, true);
   assert.equal(dailyLead(c, 1), null);
   assert.ok(issueMarkdown(c, 1).includes("没过核对，当天不出"));

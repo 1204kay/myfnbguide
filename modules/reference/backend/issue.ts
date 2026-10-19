@@ -96,7 +96,11 @@ const IssueAnswer = z.object({
 export type IssueText = z.infer<typeof IssueAnswer>;
 const CheckAnswer = z.object({
   lively: z.coerce.number().default(0),
-  problems: z.array(z.object({ rule: z.coerce.number().int(), quote: z.string().default(""), why: z.string().default("") })).default([]),
+  problems: z.array(z.object({
+    rule: z.coerce.number().int(), quote: z.string().default(""), why: z.string().default(""),
+    /** The quoted sentence as the original bears it out; empty takes it out. Only the check writes one. */
+    fix: z.string().optional(),
+  })).default([]),
 });
 export type Problem = z.infer<typeof CheckAnswer>["problems"][number];
 
@@ -234,8 +238,14 @@ export interface ComposedIssue {
 /** Fewer than this many items is no issue: there is no day to tell. */
 export const MIN_ITEMS = 3;
 
-/** Rounds of mending before the program cuts what is still wrong. */
-export const EDIT_ROUNDS = 3;
+/**
+ * Rounds of mending before the program cuts what is still wrong. A round is one check (Kay 10-19: 「为什么不要核对员直接
+ * 改」): the check writes each fix as it finds the problem, as one who has the original open knows best how to mend it,
+ * and the program puts them in; a fresh check, which never sees the last one's verdict, reads the whole draft again,
+ * as a magazine's fact-checkers read what its editors mended. What the program found itself has no fix written (a missing
+ * event, the wrong number of news items, a citation of no item), so a round with one of those goes to the editor.
+ */
+export const EDIT_ROUNDS = 5;
 
 /** Sentences, each with its closing mark. */
 const sentences = (text: string) => text.split(/(?<=[。！？\n])/u).filter((x) => x.trim());
@@ -243,40 +253,57 @@ const sentences = (text: string) => text.split(/(?<=[。！？\n])/u).filter((x)
 const bare = (text: string) => text.replace(/〔[^〕]*〕|\s|^[「“]|[」”]$/gu, "");
 
 /**
- * Takes out what the check still found after the last mending (Kay 10-19: 「哪有人每天出的结果审核不过就不出了」): a
- * newspaper cuts the sentence it cannot stand behind and runs the page. A flagged sentence goes; a flagged news head or
- * lead sentence takes its item with it; the deep story's question, flagged, gives way to the first news head. What it
- * cannot place stays listed. Cutting adds no claim, so the result is not checked again.
+ * Puts each problem's replacement in place of the sentence it quotes; an empty replacement takes the sentence out. A
+ * flagged news head or lead sentence, taken out, takes its item with it; the deep story's question, taken out, gives way
+ * to the first news head. Problems it cannot place, or with no replacement, stay listed.
  */
-export function cutProblems(issue: IssueText, problems: Problem[]): { issue: IssueText; cut: string[]; kept: Problem[] } {
+export function amendIssue(issue: IssueText, problems: Problem[], replacement: (p: Problem) => string | undefined): { issue: IssueText; changed: string[]; kept: Problem[] } {
   const out: IssueText = { ...issue, brief: [...issue.brief], news: issue.news.map((x) => ({ ...x })) };
-  const cut: string[] = [];
+  const changed: string[] = [];
   const kept: Problem[] = [];
   // A quote may run over several sentences, so a whole sentence inside it counts; a short one ("一") does not.
   const hits = (text: string, q: string) => { const t = bare(text); return t.includes(q) || (t.length >= 6 && q.includes(t)); };
-  const trim = (text: string, q: string) => {
-    const keep = sentences(text).filter((x) => { if (!hits(x, q)) return true; cut.push(x.trim()); return false; });
-    return keep.join("").trim();
-  };
   for (const p of problems) {
     const q = bare(p.quote);
-    if (p.rule > 3 || q.length < 4) { kept.push(p); continue; }
-    const before = cut.length;
-    const lead = out.brief.findIndex((b) => hits(b, q));
-    if (lead >= 0) cut.push(...out.brief.splice(lead, 1));
+    const r = replacement(p)?.trim();
+    if (p.rule > 3 || q.length < 4 || r === undefined) { kept.push(p); continue; }
+    const before = changed.length;
+    let placed = false;
+    const swap = (text: string) => sentences(text).flatMap((x) => {
+      if (!hits(x, q)) return [x];
+      changed.push(x.trim());
+      if (placed || !r) return [];
+      placed = true;
+      return [r];
+    }).join("").trim();
+    const lead = out.brief.findIndex((x) => hits(x, q));
+    if (lead >= 0) { changed.push(out.brief[lead]!); if (r) out.brief[lead] = r; else out.brief.splice(lead, 1); }
     const head = out.news.findIndex((x) => hits(x.head, q));
-    if (head >= 0) { const [x] = out.news.splice(head, 1); cut.push(x!.head, x!.text); }
-    if (hits(out.title, q)) { cut.push(out.title); out.title = ""; }
-    out.preview = trim(out.preview, q);
-    for (const x of out.news) x.text = trim(x.text, q);
+    if (head >= 0) {
+      const x = out.news[head]!;
+      changed.push(x.head);
+      if (r) x.head = r; else { out.news.splice(head, 1); changed.push(x.text); }
+    }
+    if (hits(out.title, q)) { changed.push(out.title); out.title = r; }
+    out.preview = swap(out.preview);
+    for (const x of out.news) x.text = swap(x.text);
     out.news = out.news.filter((x) => x.text);
-    out.deep = trim(out.deep, q);
-    out.close = trim(out.close, q);
-    if (cut.length === before) kept.push(p);
+    out.deep = swap(out.deep);
+    out.close = swap(out.close);
+    if (changed.length === before) kept.push(p);
   }
   if (!out.deep || !out.title) out.title = out.news[0]?.head ?? out.title;
-  return { issue: out, cut, kept };
+  return { issue: out, changed, kept };
 }
+
+/**
+ * Takes out what the check still found after the last mending (Kay 10-19: 「哪有人每天出的结果审核不过就不出了」): a
+ * newspaper cuts the sentence it cannot stand behind and runs the page. Cutting adds no claim, so it is not checked again.
+ */
+export const cutProblems = (issue: IssueText, problems: Problem[]) => {
+  const { issue: out, changed, kept } = amendIssue(issue, problems, () => "");
+  return { issue: out, cut: changed, kept };
+};
 
 /**
  * The day's items as they stand, when the model gave no usable draft (trial 10-13): the best five, each by its own
@@ -312,7 +339,13 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
   let last = [...drafts].sort((x, y) => y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
   for (const attempt of "cdefg".slice(0, EDIT_ROUNDS)) {
-    const issue = await edit(last, items, ask, attempt);
+    let issue: IssueText;
+    if (last.problems.some((p) => p.fix === undefined)) issue = await edit(last, items, ask, attempt);
+    else {
+      const fixed = amendIssue(last.issue, last.problems, (p) => p.fix);
+      if (!fixed.changed.length) break;
+      issue = fixed.issue;
+    }
     last = { issue, ...await checkIssue(issue, items, ask), edited: true };
     drafts.push(last);
     if (!last.problems.length) break;

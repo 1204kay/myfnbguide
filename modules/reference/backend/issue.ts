@@ -33,12 +33,11 @@ export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRIT
  * pieces, note's terms forbid copying without the writer's consent, so neither is quoted. No source's pictures are used.
  */
 export const QUOTABLE_SOURCES: ReadonlySet<string> = new Set(["rss-petpooja", "rss-zieigyou", "rss-ryourigaka", "rss-kojinkuroji", "rss-yoshitencho"]);
-/** What the writer reads of each item: its summary and the start of its text (the day's 30–40 items in one call). */
-export const ITEM_CHARS = 3000;
 /**
- * What the check reads of each cited item: all of it. At 20,000 (the first trial day, 10-19) the check called two true
- * sentences unsupported because they sat 25,000 and 35,000 characters into podcast transcripts, and the rewrite then
- * dropped them for a made-up example. The bound only guards against a runaway page.
+ * What the writer and the check read of each item: all of it. At 20,000 (the first trial day, 10-19) the check called two
+ * true sentences unsupported because they sat 25,000 and 35,000 characters into podcast transcripts, and the rewrite then
+ * dropped them for a made-up example; the writer, reading 3,000, never saw such stories at all. The bound only guards
+ * against a runaway page.
  */
 export const FULL_CHARS = 200_000;
 
@@ -97,7 +96,7 @@ export function citedItems(issue: IssueText, items: DayItem[]): { cited: DayItem
 export const issueChars = (issue: IssueText) => `${issue.brief.join("")}${issue.body}`.replace(/〔[^〕]*〕/gu, "").replace(/\s/g, "").length;
 
 const itemList = (items: DayItem[]) => items.map((i) =>
-  `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : ""}\n摘要：${i.summary}\n原文开头：${i.text.slice(0, ITEM_CHARS)}`).join("\n\n");
+  `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : ""}\n摘要：${i.summary}\n原文：${i.text.slice(0, FULL_CHARS)}`).join("\n\n");
 
 async function write(items: DayItem[], date: string, ask: Ask, attempt: string, back?: { issue: IssueText; problems: Problem[] }): Promise<IssueText> {
   const user = [

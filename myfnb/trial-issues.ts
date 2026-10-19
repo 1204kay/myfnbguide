@@ -4,7 +4,8 @@
 // numbered as the issue cites them, for the blind check.
 //   --day 2026-10-16 (repeat it, one issue each); --model <a preset of site/models.ts> is required; --out is where the
 //   run's folder goes (default /out). Without --apply it lists each day's items and calls nothing.
-//   --cap-usd 20: no day starts without DAY_USD left under it, and no call without CALL_USD, so the run never pays more.
+//   --cap-usd 20: no call is made unless what it could cost is left under it, so the run never pays more; a day does not
+//   start without enough left for its two drafts and their checks.
 // On the server (a throwaway container with this branch's module mounted; the running worker is not touched):
 //   sudo docker compose run --rm -v /opt/myfnbguide-trial/modules/reference:/app/modules/reference:ro \
 //     -v /opt/myfnbguide-trial/myfnb:/app/myfnb:ro -v /opt/myfnbguide-trial/site/models.ts:/app/site/models.ts:ro \
@@ -27,17 +28,17 @@ const apply = args.includes("--apply");
 
 /** US$ per million input / output tokens, from Anthropic's price list (10-19). Only the models a trial uses. */
 const PRICES: Record<string, [number, number]> = { "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10] };
-/** What one day may cost (estimate, 10-19: 40 items ≈ 100k input tokens a draft, up to 3 drafts and 3 checks); a day is not started without it left. */
-const DAY_USD = 4;
-/** What one call can cost at most (150k input and the 20k output limit at Opus prices); no call is made without it left, so the cap holds. */
-const CALL_USD = 1;
+/** The most a call can cost: every character counted as an input token (more than any text here takes) and the 20k output limit. */
+const callUsd = (chars: number) => (chars * price[0] + 20_000 * price[1]) / 1e6;
+/** What a day needs left before it starts: two drafts, each reading every item in full, and two checks no bigger than a draft. */
+const dayUsd = (items: DayItem[]) => 4 * callUsd(items.reduce((s, i) => s + i.summary.length + i.text.length + 200, 0));
 
 const model = one("--model");
 if (!model || !MODELS[model]) throw new Error(`--model 要写 site/models.ts 里的一个：${Object.keys(MODELS).join("、")}`);
 const price = PRICES[model];
 if (!price) throw new Error(`没有 ${model} 的价钱，写进 PRICES 再跑`);
 const cap = Number(one("--cap-usd") ?? 20);
-if (!(cap > DAY_USD)) throw new Error(`--cap-usd 要大于一天最多的花费 ${DAY_USD}`);
+if (!(cap > 0)) throw new Error("--cap-usd 要大于 0");
 const days = all("--day");
 if (!days.length || days.some((d) => !/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error("写 --day 2026-10-16（可以写多个）");
 
@@ -67,13 +68,13 @@ if (apply) mkdirSync(dir, { recursive: true });
 for (const [k, date] of days.entries()) {
   const no = k + 1;
   const items = await dayItems(date);
-  if (!apply) { console.log(`${String(no).padStart(2)}  ${date}  ${items.length} 条，${items.reduce((s, i) => s + i.text.length, 0)} 字`); continue; }
-  if (usd(paid) + DAY_USD > cap) { results.push({ no, date, c: null, cost: 0, note: `没写：再写可能超过上限 US$${cap}` }); continue; }
+  if (!apply) { console.log(`${String(no).padStart(2)}  ${date}  ${items.length} 条，${items.reduce((s, i) => s + i.text.length, 0)} 字，开写要留 US$${dayUsd(items).toFixed(2)}`); continue; }
+  if (usd(paid) + dayUsd(items) > cap) { results.push({ no, date, c: null, cost: 0, note: `没写：再写可能超过上限 US$${cap}` }); continue; }
   const before = usd(paid);
   try {
     const ask = modelAsk(model, `issue:${date}`, receiptIds, (u) => { paid.input += u.input; paid.output += u.output; });
     const c = await composeIssue(items, date, (purpose, system, user, schema, attempt) => {
-      if (usd(paid) + CALL_USD > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
+      if (usd(paid) + callUsd(system.length + user.length) > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
       return ask(purpose, system, user, schema, attempt);
     });
     const name = String(no).padStart(2, "0");

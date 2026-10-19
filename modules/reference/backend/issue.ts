@@ -91,7 +91,7 @@ const IssueAnswer = z.object({
   preview: z.string().trim().min(1),
   news: z.array(z.object({ head: z.string().trim().min(1), text: z.string().trim().min(1) })).min(1),
   deep: z.string().trim().min(1),
-  close: z.string().trim().default(""),
+  close: z.string().trim().min(1),
 });
 export type IssueText = z.infer<typeof IssueAnswer>;
 const CheckAnswer = z.object({
@@ -103,6 +103,7 @@ export type Problem = z.infer<typeof CheckAnswer>["problems"][number];
 const WEEKDAYS = "日一二三四五六";
 /** 2026-10-11 → 2026年10月11日，星期日: from the calendar, as the model once guessed it wrong (10-11 told as a Saturday). */
 export function dayName(date: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`日期要写成 2026-10-11：${date}`);
   const [y, m, d] = date.split("-").map(Number) as [number, number, number];
   return `${y}年${m}月${d}日，星期${WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()]}`;
 }
@@ -159,20 +160,39 @@ const issueText = (issue: IssueText) => [
 const citedText = (cited: DayItem[]) => cited.map((i) =>
   `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : "（不可以引原句）"}\n${i.text.slice(0, FULL_CHARS)}`).join("\n\n") || "（没有点名任何收录）";
 
-/** Mends only the sentences the check named, against the originals the draft cites. */
+/** Mends only the sentences the check named, against the originals the draft cites and those of an event it left out. */
 async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): Promise<IssueText> {
+  const missed = new Set(draft.problems.filter((p) => p.rule === 4).flatMap((p) => [...p.quote.matchAll(/〔(\d+)〕/gu)].map((m) => Number(m[1]))));
+  const given = [...citedItems(draft.issue, items).cited, ...items.filter((i) => missed.has(i.n))];
   const user = [
     `十一的稿子：\n${issueText(draft.issue)}`,
     `核对员挑出的问题：\n${draft.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`,
-    `稿子点名的收录（全文）：\n\n${citedText(citedItems(draft.issue, items).cited)}`,
+    `稿子点名的收录（全文）：\n\n${citedText([...new Set(given)])}`,
   ].join("\n\n");
   return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
+}
+
+/** An event this many sources told must be in the issue: McDonald's on AI pricing (10-06) was six. */
+export const BIG_EVENT = 3;
+
+/** What the program finds itself, as rule 4: the shape of the issue, which the check model is not asked to count. */
+function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Problem[] {
+  const out: Problem[] = [];
+  if (issue.news.length < 4 || issue.news.length > 6) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: "快讯要 4 到 6 条" });
+  for (const x of issue.news) if (!/〔[\d、,，\s]+〕/u.test(x.text)) out.push({ rule: 4, quote: x.head, why: "这条快讯没标出处" });
+  const citedNs = new Set(cited.map((i) => i.n));
+  for (const ns of sameEvents(items)) {
+    if (ns.length >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {
+      out.push({ rule: 4, quote: ns.map((n) => `〔${n}〕`).join(""), why: `${ns.length} 家都在讲这件事，这一期没讲` });
+    }
+  }
+  return out;
 }
 
 /** Reads one draft for the three rules against the full text of what it cites; problems the program finds come first. */
 export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<{ lively: number; problems: Problem[] }> {
   const { cited, unknown } = citedItems(issue, items);
-  const own: Problem[] = unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" }));
+  const own: Problem[] = [...unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" })), ...shapeProblems(issue, items, cited)];
   const user = [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n");
   const answer = await ask("reference_issue_check", CHECK, user, CheckAnswer);
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
@@ -219,7 +239,7 @@ export function dailyLead(c: ComposedIssue, no: number): { kicker: string; title
   return { kicker: `十一说 · 第 ${no} 期`, title: c.chosen.issue.title, leadParagraph: c.chosen.issue.brief.join("") };
 }
 
-const RULES: Record<number, string> = { 1: "说是原文讲的，原文里没有／引了不能引的原句", 2: "假设的例子读起来像真事", 3: "把一家店的情况说成通用" };
+const RULES: Record<number, string> = { 1: "说是原文讲的，原文里没有／引了不能引的原句", 2: "假设的例子读起来像真事", 3: "把一家店的情况说成通用", 4: "漏了大事或快讯不合格式（程序查的）" };
 
 /** One draft as the reader hears it, top to bottom with the program's own lines, then what the check said. */
 function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {

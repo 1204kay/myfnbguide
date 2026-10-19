@@ -10,7 +10,11 @@ const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   summary: `摘要 ${n}`, text: `原文 ${n} 的全文。`.repeat(50), selected: false, storyId: null,
 });
 const ITEMS = [item(1), item(2, "rss-hongcan"), item(3), item(4)];
-const issue = (title: string, news: string): IssueText => ({ title, brief: ["一", "二", "三"], preview: "预告", news: [{ head: "快讯", text: news }], deep: "细说", close: "" });
+/** A draft whose first news item says `news`; three more items, each citing item 4, make up the 4 the shape needs. */
+const issue = (title: string, news: string): IssueText => ({
+  title, brief: ["一", "二", "三"], preview: "预告", deep: "细说", close: "合起来",
+  news: [{ head: "快讯", text: news }, ...[1, 2, 3].map(() => ({ head: "另一条", text: "也说了〔4〕。" }))],
+});
 
 /** A model that answers each purpose from a script and records what it was asked. */
 function scripted(answers: Partial<Record<string, (user: string, attempt?: string) => unknown>>) {
@@ -26,9 +30,9 @@ function scripted(answers: Partial<Record<string, (user: string, attempt?: strin
 
 test("citations are read in order of first citing, and numbers no item has are listed apart", () => {
   const { cited, unknown } = citedItems(issue("标题〔2〕", "先说〔3、1〕，再说〔2，9〕。"), ITEMS);
-  assert.deepEqual(cited.map((i) => i.n), [2, 3, 1]);
+  assert.deepEqual(cited.map((i) => i.n), [2, 3, 1, 4]);
   assert.deepEqual(unknown, [9]);
-  assert.equal(issueChars(issue("t", "一二〔3〕 三")), 10, "title, preview, news, deep and close, without the brief");
+  assert.equal(issueChars({ title: "t", brief: ["不算"], preview: "预告", news: [{ head: "头", text: "一二〔3〕 三" }], deep: "细说", close: "合" }), 10, "title, preview, news, deep and close, without the brief");
   assert.deepEqual(citedItems({ ...issue("t", "无"), deep: "细说〔4〕", close: "合起来〔1〕" }, ITEMS).cited.map((i) => i.n), [4, 1]);
 });
 
@@ -89,6 +93,21 @@ test("the date and weekday come from the calendar, and the program's own lines f
   assert.ok(calls[0]!.user.startsWith("日期：2026年10月11日，星期日"));
   const md = issueMarkdown(c, 1);
   assert.ok(md.includes("早上好，今天是2026年10月11日，星期日。我是十一。") && md.includes("下面，细说一件。") && md.includes("我们明天早上见。"));
+});
+
+test("the program finds what the check model is not asked to count: the number of news items, an item with no source, a big event left out", async () => {
+  const told = (n: number, storyId: string) => ({ ...item(n), storyId });
+  const items = [told(1, "mcd"), told(2, "mcd"), told(3, "mcd"), item(4), item(5)];
+  const { ask, calls } = scripted({
+    reference_issue_write: () => ({ ...issue("稿", "没有出处。"), news: issue("稿", "没有出处。").news.slice(0, 3) }),
+    reference_issue_edit: () => issue("改过", "麦当劳〔2〕。"),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(items, "2026-10-06", ask);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.why), ["快讯要 4 到 6 条", "这条快讯没标出处", "3 家都在讲这件事，这一期没讲"]);
+  assert.ok(calls.find((x) => x.purpose === "reference_issue_edit")!.user.includes(items[0]!.text), "the editor has the left-out event's originals");
+  assert.equal(c.status, "issue");
+  assert.equal(c.chosen?.issue.title, "改过");
 });
 
 test("a day with too few items is not written", async () => {

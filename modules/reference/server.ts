@@ -59,7 +59,7 @@ export default defineServerModule({
     [BODY_STEP]: { label: "条目页的正文（不是参考库故事的条目，整理自原文，写在导读下面）", env: "REFERENCE_BODY_MODEL", purposes: ["reference_body"] },
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
     // 10-18: only myfnb/trial-issues.ts calls it for now; nothing on the site is written with it yet.
-    [ISSUE_STEP]: { label: "十一说（读这一天的全部收录写两稿、核对、没过的改一次）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_check", "reference_issue_rewrite"] },
+    [ISSUE_STEP]: { label: "十一说（读这一天的全部收录写两稿、核对、没过的最多改两次）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_check", "reference_issue_rewrite"] },
   },
   queues: [CASES, BODIES, METHODS],
   // llms.txt names the library beside the engine's pages.

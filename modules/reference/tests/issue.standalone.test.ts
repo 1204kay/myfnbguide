@@ -46,18 +46,19 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
 });
 
-test("when neither passes, the closer draft goes back once with its problems; still failing, the day is held", async () => {
+test("when neither passes, the closer draft goes back with its problems, then the rewrite once more; still failing, the day is held", async () => {
   const { ask, calls } = scripted({
     reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, attempt === "a" ? "说了〔9〕。" : "说了〔2〕。"),
-    reference_issue_rewrite: () => issue("稿 c", "说了〔2〕。"),
+    reference_issue_rewrite: (_u, attempt) => issue(`稿 ${attempt}`, "说了〔2〕。"),
     reference_issue_check: () => ({ lively: 6, problems: [{ rule: 2, quote: "说了", why: "像真事" }] }),
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   // Draft a also cites an item that does not exist, so it has two problems to b's one: b goes back.
-  const rewrite = calls.find((x) => x.purpose === "reference_issue_rewrite")!;
-  assert.ok(rewrite.user.includes("稿 b") && rewrite.user.includes("第 2 条：「说了」像真事"));
+  const [first, second] = calls.filter((x) => x.purpose === "reference_issue_rewrite");
+  assert.ok(first!.user.includes("稿 b") && first!.user.includes("第 2 条：「说了」像真事"));
+  assert.ok(second!.user.includes("稿 c"));
   assert.equal(c.status, "held");
-  assert.equal(c.drafts.length, 3);
+  assert.equal(c.drafts.length, 4);
   assert.equal(c.chosen?.rewritten, true);
   assert.equal(dailyLead(c, 1), null);
   assert.ok(issueMarkdown(c, 1).includes("没过核对，当天不出"));

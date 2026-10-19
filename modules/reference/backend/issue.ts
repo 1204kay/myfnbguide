@@ -141,11 +141,16 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   }
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
-  const closer = [...drafts].sort((x, y) => x.problems.length - y.problems.length || y.lively - x.lively)[0]!;
-  const issue = await write(items, date, ask, "c", closer);
-  const again: Draft = { issue, ...await checkIssue(issue, items, ask), rewritten: true };
-  drafts.push(again);
-  return { date, status: again.problems.length ? "held" : "issue", chosen: again, drafts, items };
+  // Up to two rewrites, each of the last draft with what its check found: on the full-text trial (10-19) one rewrite
+  // always left one to three small problems, mostly new ones it had made.
+  let last = [...drafts].sort((x, y) => x.problems.length - y.problems.length || y.lively - x.lively)[0]!;
+  for (const attempt of ["c", "d"]) {
+    const issue = await write(items, date, ask, attempt, last);
+    last = { issue, ...await checkIssue(issue, items, ask), rewritten: true };
+    drafts.push(last);
+    if (!last.problems.length) break;
+  }
+  return { date, status: last.problems.length ? "held" : "issue", chosen: last, drafts, items };
 }
 
 // ---------------------------------------------------------------- the daily's top, and a page to read
@@ -165,7 +170,7 @@ function draftMarkdown(d: Draft, items: DayItem[]): string[] {
     `**${d.issue.title}**`, "", "### 三分钟版", ...d.issue.brief.map((b) => `- ${b}`), "", "### 正文", "", d.issue.body, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
     `> 关于十一：十一是 AI。它读完这一天收录的全部资料，用自己的话讲给你听；故事和数字是十一举的例子，点名的原文以原文为准。`, "",
-    `核对：${d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.rewritten ? "　（按问题改过一次）" : ""}`,
+    `核对：${d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.rewritten ? "　（按问题改过）" : ""}`,
     ...d.problems.map((p) => `- 第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
   ];
 }

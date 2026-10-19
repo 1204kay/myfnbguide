@@ -43,8 +43,10 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think-llm": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
   },
+  // 十一说's writer (Kay 10-19: DeepSeek's strongest, thinking as deep as it goes): Pro still leads Flash on reasoning.
   "deepseek-v4-pro-llm": {
     service: "deepseek", model: "deepseek-v4-pro", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
+    extra: { thinking: { type: "enabled" }, reasoning_effort: "high" },
   },
   "qwen3.7-flash": {
     service: "dashscope", model: "qwen3.7-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",

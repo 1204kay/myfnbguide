@@ -180,6 +180,16 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
   const out: Problem[] = [];
   if (issue.news.length < 4 || issue.news.length > 6) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: "快讯要 4 到 6 条" });
   for (const x of issue.news) if (!/〔[\d、,，\s]+〕/u.test(x.text)) out.push({ rule: 4, quote: x.head, why: "这条快讯没标出处" });
+  // A quotation in a sentence that cites only sources whose sentences may not be quoted (10-11: 「70元时代」 from a
+  // paper not on QUOTABLE_SOURCES; the check let it through).
+  const byN = new Map(items.map((i) => [i.n, i]));
+  for (const sentence of written(issue).split(/(?<=[。！？\n])/u)) {
+    const ns = [...sentence.matchAll(/〔([\d、,，\s]+)〕/gu)].flatMap((m) => m[1]!.split(/[、,，\s]+/u).filter(Boolean).map(Number));
+    const quoted = sentence.match(/[「“][^」”]+[」”]/u);
+    if (quoted && ns.length && !ns.some((n) => QUOTABLE_SOURCES.has(byN.get(n)?.sourceId ?? ""))) {
+      out.push({ rule: 1, quote: sentence.trim(), why: `${quoted[0]} 加了引号，但这句点名的来源不能引原句，要改成转述` });
+    }
+  }
   const citedNs = new Set(cited.map((i) => i.n));
   for (const ns of sameEvents(items)) {
     if (ns.length >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {

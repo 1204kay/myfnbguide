@@ -110,6 +110,18 @@ test("the program finds what the check model is not asked to count: the number o
   assert.equal(c.chosen?.issue.title, "改过");
 });
 
+test("a quotation in a sentence citing only sources that may not be quoted is a problem; from a quotable source it is not", async () => {
+  // Item 2 is 红餐网 (not quotable); item 1 is Petpooja (quotable).
+  const { ask } = scripted({
+    reference_issue_write: () => issue("稿", "他们说「进入70元时代」〔2〕。又说「先算账」〔1〕。"),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+    reference_issue_edit: () => issue("改过", "他们说已经进入 70 元时代〔2〕。"),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-11", ask);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["他们说「进入70元时代」〔2〕。"]);
+  assert.equal(c.chosen?.issue.title, "改过");
+});
+
 test("a day with too few items is not written", async () => {
   const { ask, calls } = scripted({});
   const c = await composeIssue(ITEMS.slice(0, MIN_ITEMS - 1), "2026-10-16", ask);

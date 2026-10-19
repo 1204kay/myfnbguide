@@ -1,150 +1,106 @@
-// 十一说的试写 (myfnb/HANDOFF.md §9.0「门槛和上限」): 20 issues from live originals, written by backend/issue.ts with
-// one named model, to files only. Nothing on the site changes and nothing is stored but the engine's receipts. The
-// same picks are then written by the other model (--from), so DeepSeek and Claude are compared on the same material,
-// and blind-checked against the numbered originals written beside each issue.
-//   Material: --day 2026-10-16 (the daily's window that day; repeat it), --shelf <situation slug> (originals of the
-//   library's stories on that shelf; repeat it), --ids a,b (one issue from these originals; repeat it), or
-//   --from <an earlier run's folder> (its picks again). A day or a shelf is picked by the model (prompts/issue-pick.md).
-//   --model <a preset of site/models.ts> is required; --out is where the run's folder goes (default /out).
-//   Without --apply it lists the material and counts the most calls; a run stops before going over --max-calls.
-//   --count-sources prints stories, selected and listed items by source, and stops.
+// 十一说的试写 (myfnb/HANDOFF.md §9.0, round 3): one issue per day from everything the daily listed in that day's
+// window, written and checked by backend/issue.ts with one named model, to files only. Nothing on the site changes and
+// nothing is stored but the engine's receipts. Each issue is written beside the full text of every item of its day,
+// numbered as the issue cites them, for the blind check.
+//   --day 2026-10-16 (repeat it, one issue each); --model <a preset of site/models.ts> is required; --out is where the
+//   run's folder goes (default /out). Without --apply it lists each day's items and calls nothing.
+//   --cap-usd 20: no day starts without DAY_USD left under it, and no call without CALL_USD, so the run never pays more.
 // On the server (a throwaway container with this branch's module mounted; the running worker is not touched):
 //   sudo docker compose run --rm -v /opt/myfnbguide-trial/modules/reference:/app/modules/reference:ro \
-//     -v /opt/myfnbguide-trial/myfnb:/app/myfnb:ro -v /tmp/myfnb-trial:/out worker node myfnb/trial-issues.ts …
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+//     -v /opt/myfnbguide-trial/myfnb:/app/myfnb:ro -v /opt/myfnbguide-trial/site/models.ts:/app/site/models.ts:ro \
+//     -v /tmp/myfnb-trial:/out worker node myfnb/trial-issues.ts …
+import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { addDays, beijingAt } from "@aihot/contracts/time";
 import { closeDb, sql } from "@aihot/backend/db";
-import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import { EDITION_TIMES } from "@aihot/site";
-import { type Ask, type Candidate, type ComposedIssue, composeIssue, issueArticle, issueMarkdown, ISSUE_VERSION, modelAsk, type Pick, pickMaterial } from "../modules/reference/backend/issue.ts";
-import { findSituation } from "../modules/reference/situations.ts";
+import { type ComposedIssue, composeIssue, type DayItem, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
 
 const args = process.argv.slice(2);
 const all = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] ? [args[i + 1]!] : []));
 const one = (flag: string) => all(flag).at(-1);
 const apply = args.includes("--apply");
-const maxCalls = Number(one("--max-calls") ?? 250);
-/** The most calls one issue can make: the pick, two per original (three originals), three drafts, the check and a retry. */
-const PER_ISSUE = 12;
-/** An original shorter than this does not carry an issue's share of facts (backend/issue.ts reads 600 and up). */
-const MIN_BODY = 1500;
 
-if (args.includes("--count-sources")) {
-  const rows = await sql<{ id: string; name: string; stories: number; selected: number; listed: number }[]>`
-    SELECT s.id, s.name, count(*) FILTER (WHERE c.status = 'story')::int AS stories, count(*) FILTER (WHERE p.selected)::int AS selected, count(*)::int AS listed
-    FROM publications p JOIN sources s ON s.id = p.source_id LEFT JOIN reference_cases c ON c.article_id = p.article_id
-    WHERE p.visibility = 'public' GROUP BY s.id, s.name ORDER BY stories DESC, selected DESC LIMIT 20`;
-  for (const r of rows) console.log(`${String(r.stories).padStart(5)} 故事 ${String(r.selected).padStart(5)} 入选 ${String(r.listed).padStart(6)} 公开  ${r.id}  ${r.name}`);
-  await closeDb();
-  process.exit(0);
-}
+/** US$ per million input / output tokens, from Anthropic's price list (10-19). Only the models a trial uses. */
+const PRICES: Record<string, [number, number]> = { "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10] };
+/** What one day may cost (estimate, 10-19: 40 items ≈ 100k input tokens a draft, up to 3 drafts and 3 checks); a day is not started without it left. */
+const DAY_USD = 4;
+/** What one call can cost at most (150k input and the 20k output limit at Opus prices); no call is made without it left, so the cap holds. */
+const CALL_USD = 1;
 
 const model = one("--model");
 if (!model || !MODELS[model]) throw new Error(`--model 要写 site/models.ts 里的一个：${Object.keys(MODELS).join("、")}`);
-if (!Number.isInteger(maxCalls) || maxCalls < PER_ISSUE) throw new Error(`--max-calls 至少 ${PER_ISSUE}`);
-for (const slug of all("--shelf")) if (!findSituation(slug)) throw new Error(`没有这个情况：${slug}`);
-const from = one("--from");
+const price = PRICES[model];
+if (!price) throw new Error(`没有 ${model} 的价钱，写进 PRICES 再跑`);
+const cap = Number(one("--cap-usd") ?? 20);
+if (!(cap > DAY_USD)) throw new Error(`--cap-usd 要大于一天最多的花费 ${DAY_USD}`);
+const days = all("--day");
+if (!days.length || days.some((d) => !/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error("写 --day 2026-10-16（可以写多个）");
 
 const run = `${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, "")}-${model}`;
 const dir = join(one("--out") ?? "/out", run);
-let calls = 0;
 const receiptIds: number[] = [];
-const counted = (subject: string): Ask => {
-  const ask = modelAsk(model, subject, receiptIds);
-  return (purpose, system, user, schema) => { calls += 1; return ask(purpose, system, user, schema); };
-};
+const paid: Usage = { input: 0, output: 0 };
+const usd = (u: Usage) => (u.input * price[0] + u.output * price[1]) / 1e6;
 
-/** Originals listed in the daily's window of `date`, long enough, best scored first. */
-async function dayCandidates(date: string, used: Set<string>): Promise<Candidate[]> {
+/** Everything the daily listed in the window of `date`, best scored first, numbered as the issue cites it. */
+async function dayItems(date: string): Promise<DayItem[]> {
   const end = beijingAt(date, EDITION_TIMES.daily);
   const start = beijingAt(addDays(date, -1), EDITION_TIMES.daily);
-  return sql<Candidate[]>`
-    SELECT p.article_id AS id, p.title, coalesce(p.summary, '') AS summary, s.name AS "sourceName"
+  const rows = await sql<Omit<DayItem, "n">[]>`
+    SELECT p.article_id AS id, a.source_id AS "sourceId", s.name AS "sourceName", p.title, a.url,
+      coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text
     FROM publications p JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
     WHERE ${listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
-      AND length(coalesce(a.body_text, '')) >= ${MIN_BODY} AND NOT p.article_id = ANY(${[...used]})
-    ORDER BY p.score DESC NULLS LAST LIMIT 40`;
+    ORDER BY p.score DESC NULLS LAST, p.article_id`;
+  return rows.map((r, i) => ({ n: i + 1, ...r }));
 }
 
-/** Originals of the library's stories on a shelf (the originals, not the stories: those had errors), in a fixed shuffled order. */
-async function shelfCandidates(slug: string, used: Set<string>): Promise<Candidate[]> {
-  return sql<Candidate[]>`
-    SELECT p.article_id AS id, p.title, coalesce(p.summary, '') AS summary, s.name AS "sourceName"
-    FROM reference_cases c JOIN publications p ON p.article_id = c.article_id JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
-    WHERE c.status = 'story' AND ${slug} = ANY(c.situations) AND ${listedCondition(new Date())}
-      AND length(coalesce(a.body_text, '')) >= ${MIN_BODY} AND NOT p.article_id = ANY(${[...used]})
-    ORDER BY md5(p.article_id || 'shiyi-trial') LIMIT 30`;
-}
-
-type Planned = { label: string } & ({ pick: Pick } | { day: string } | { shelf: string });
-const plan: Planned[] = from
-  ? (JSON.parse(readFileSync(join(from, "picks.json"), "utf8")) as Array<{ label: string; pick: Pick }>)
-  : [
-    ...all("--ids").map((ids) => ({ label: `指定 ${ids}`, pick: { topic: "（指定的原文）", ids: ids.split(",").map((x) => x.trim()).filter(Boolean), shelf: "", why: "" } })),
-    ...all("--day").map((day) => ({ label: `日报 ${day}`, day })),
-    ...all("--shelf").map((shelf) => ({ label: `书架 ${findSituation(shelf)!.title}`, shelf })),
-  ];
-if (!plan.length) throw new Error("没有材料：写 --day、--shelf、--ids 或 --from");
-console.log(`${plan.length} 期 × ${model}，最多 ${plan.length * PER_ISSUE} 次调用，上限 ${maxCalls}${apply ? "" : "（预览，不调模型）"}`);
-
-const used = new Set<string>();
-const picks: Array<{ label: string; pick: Pick }> = [];
-const results: Array<{ no: number; label: string; c: ComposedIssue | null; note: string }> = [];
+console.log(`${days.length} 天 × ${model}，花费上限 US$${cap}${apply ? "" : "（预览，不调模型）"}`);
+const results: Array<{ no: number; date: string; c: ComposedIssue | null; cost: number; note: string }> = [];
 if (apply) mkdirSync(dir, { recursive: true });
 
-for (const [n, p] of plan.entries()) {
-  const no = n + 1;
-  if ("pick" in p) p.pick.ids.forEach((id) => used.add(id));
-  const candidates = "day" in p ? await dayCandidates(p.day, used) : "shelf" in p ? await shelfCandidates(p.shelf, used) : [];
-  if (!apply) { console.log(`${String(no).padStart(2)}  ${p.label}  ${"pick" in p ? `${p.pick.ids.length} 篇` : `${candidates.length} 篇候选`}`); continue; }
-  if (calls + PER_ISSUE > maxCalls) { results.push({ no, label: p.label, c: null, note: `没写：再写会超过 --max-calls ${maxCalls}` }); continue; }
+for (const [k, date] of days.entries()) {
+  const no = k + 1;
+  const items = await dayItems(date);
+  if (!apply) { console.log(`${String(no).padStart(2)}  ${date}  ${items.length} 条，${items.reduce((s, i) => s + i.text.length, 0)} 字`); continue; }
+  if (usd(paid) + DAY_USD > cap) { results.push({ no, date, c: null, cost: 0, note: `没写：再写可能超过上限 US$${cap}` }); continue; }
+  const before = usd(paid);
   try {
-    let pick = "pick" in p ? p.pick : null;
-    if (!pick) {
-      const r = await pickMaterial(candidates, counted(`issue-pick:${p.label}`));
-      if (!r.pick) { results.push({ no, label: p.label, c: null, note: `没选出：${r.reason}` }); console.log(`${String(no).padStart(2, "0")}  没选出：${r.reason}`); continue; }
-      pick = { ...r.pick, shelf: r.pick.shelf || ("shelf" in p ? p.shelf : "") };
-    }
-    pick.ids.forEach((id) => used.add(id));
-    picks.push({ label: p.label, pick });
-    const articles = [];
-    for (const [i, id] of pick.ids.entries()) {
-      const a = await loadAnalyzeInput(id);
-      const [row] = await sql<{ source_id: string }[]>`SELECT source_id FROM articles WHERE id = ${id}`;
-      if (!a || !row) throw new Error(`原文已删除：${id}`);
-      articles.push(issueArticle("ABC"[i]!, { ...a, sourceId: row.source_id }));
-    }
-    const c = await composeIssue(articles, pick, counted(`issue:${pick.ids.join(",")}`));
+    const ask = modelAsk(model, `issue:${date}`, receiptIds, (u) => { paid.input += u.input; paid.output += u.output; });
+    const c = await composeIssue(items, date, (purpose, system, user, schema, attempt) => {
+      if (usd(paid) + CALL_USD > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
+      return ask(purpose, system, user, schema, attempt);
+    });
     const name = String(no).padStart(2, "0");
     writeFileSync(join(dir, `${name}.md`), issueMarkdown(c, no));
     writeFileSync(join(dir, `${name}.json`), JSON.stringify(c, null, 2));
-    // The originals as numbered sentences, for the blind check (and nothing else: they stay off the site).
-    writeFileSync(join(dir, `${name}-原文.md`), articles.map((a) => [`# 第 ${a.letter} 篇：${a.sourceName}《${a.title}》`, a.url, "", ...a.lines.map((l, k) => `[${k}] ${l}`)].join("\n")).join("\n\n"));
-    results.push({ no, label: p.label, c, note: "" });
-    console.log(`${name}  ${c.status.padEnd(5)}  ${pick.topic}  ${c.problems.join("；").slice(0, 120)}`);
+    // Every item of the day in full, for the blind check (and nothing else: they stay off the site).
+    writeFileSync(join(dir, `${name}-原文.md`), items.map((i) => [`# 〔${i.n}〕${i.sourceName}《${i.title}》（${i.sourceId}）`, i.url, "", i.text].join("\n")).join("\n\n"));
+    results.push({ no, date, c, cost: usd(paid) - before, note: "" });
+    console.log(`${name}  ${date}  ${c.status.padEnd(5)}  ${c.chosen?.issue.title ?? ""}  US$${(usd(paid) - before).toFixed(2)}`);
   } catch (error) {
-    // One garbled answer stops that issue, not the run.
-    results.push({ no, label: p.label, c: null, note: `出错：${(error as Error).message.slice(0, 200)}` });
-    console.log(`${String(no).padStart(2, "0")}  出错：${(error as Error).message.slice(0, 120)}`);
+    // One failed day stops that day, not the run.
+    results.push({ no, date, c: null, cost: usd(paid) - before, note: `出错：${(error as Error).message.slice(0, 200)}` });
+    console.log(`${String(no).padStart(2, "0")}  ${date}  出错：${(error as Error).message.slice(0, 120)}`);
   }
 }
 
 if (apply) {
-  writeFileSync(join(dir, "picks.json"), JSON.stringify(picks, null, 2));
-  const status = (c: ComposedIssue | null) => (c ? { issue: "过了核对", thin: "材料不够", held: "没过核对" }[c.status] : "没写");
+  const status = (c: ComposedIssue | null) => (c ? { issue: "出刊", thin: "收录太少", held: "没过核对" }[c.status] : "没写");
   const index = [
-    `# 十一说试写 ${run}`, "", `模型 ${model}；提示词与检查 ${ISSUE_VERSION}；调用 ${calls} 次。`, "",
-    "| 期 | 材料 | 结果 | 话题 | 书架 | 原文 | 问题 |", "|---|---|---|---|---|---|---|",
-    ...results.map(({ no, label, c, note }) => `| ${no} | ${label} | ${status(c)} | ${c?.topic ?? ""} | ${findSituation(c?.shelf ?? "")?.title ?? ""} | ${c?.articles.map((a) => a.sourceName).join("、") ?? ""} | ${(c?.problems.join("；") ?? note).replace(/\|/g, "／")} |`),
+    `# 十一说试写 ${run}`, "",
+    `模型 ${model}；提示词与检查 ${ISSUE_VERSION}；花费 US$${usd(paid).toFixed(2)}（输入 ${paid.input}、输出 ${paid.output} token，按 US$${price[0]}/${price[1]} 每百万算）；上限 US$${cap}。`, "",
+    "| 期 | 日期 | 收录 | 结果 | 标题 | 稿数 | 精彩 | 字数 | 花费 | 备注 |", "|---|---|---|---|---|---|---|---|---|---|",
+    ...results.map(({ no, date, c, cost, note }) => `| ${no} | ${date} | ${c?.items.length ?? ""} | ${status(c)} | ${(c?.chosen?.issue.title ?? "").replace(/\|/g, "／")} | ${c?.drafts.length ?? ""} | ${c?.chosen?.lively ?? ""} | ${c?.chosen ? issueChars(c.chosen.issue) : ""} | US$${cost.toFixed(2)} | ${note.replace(/\|/g, "／")} |`),
   ].join("\n");
   writeFileSync(join(dir, "index.md"), index);
   for (const id of receiptIds) await completeReceipt(sql, id);
-  console.log(`写在 ${dir}；下一个模型用同样的材料：--from ${dir}`);
+  console.log(`写在 ${dir}；共花 US$${usd(paid).toFixed(2)}`);
 }
 await stopBoss();
 await closeDb();

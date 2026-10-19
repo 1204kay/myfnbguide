@@ -46,7 +46,8 @@ const priceOf = (m: string | undefined) => {
 };
 const writePrice = priceOf(model);
 const checkPrice = priceOf(checkModel);
-const isCheck = (purpose: string) => purpose === "reference_issue_check";
+/** The check and the editor that mends what it found run on the check model. */
+const isCheck = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit";
 const cap = Number(one("--cap-usd") ?? 20);
 if (!(cap > 0)) throw new Error("--cap-usd 要大于 0");
 const days = all("--day");

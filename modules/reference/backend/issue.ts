@@ -7,8 +7,11 @@
 //   1. what is said to come from an original is in it (and a sentence is quoted only from QUOTABLE_SOURCES);
 //   2. made-up stories and numbers read as 十一's examples, never as things that happened;
 //   3. one shop's case is not told as what every shop should do.
-// Two drafts are written; the livelier of those that pass goes up. When neither passes, the one with fewer problems
-// goes back once with them named and is checked again; if it still fails, the daily leads as it always did.
+// Two drafts are written; the livelier of those that pass goes up. When neither passes, the livelier goes to an editor
+// that mends only the sentences the check named, with their originals in hand, the way a desk mends a reporter's copy
+// (Kay 10-19: 核查员直接编辑); the mended draft is checked again, and mended once more if it must. Sent back to be
+// rewritten whole (10-19 afternoon), a draft lost old problems and made new ones. Still failing, the daily leads as it
+// always did.
 // Rounds one and two (10-18/19) took facts apart and wrote from them sentence by sentence; both failed (serious errors
 // in the sentences that joined originals), and Kay turned the column into this on 10-19.
 // Stores nothing: myfnb/trial-issues.ts tries it and writes files.
@@ -23,7 +26,8 @@ const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");
 const CHECK = prompt("issue-check");
-export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK)
+const EDIT = prompt("issue-edit");
+export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT)
   .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
 
 /**
@@ -98,27 +102,35 @@ export const issueChars = (issue: IssueText) => `${issue.brief.join("")}${issue.
 const itemList = (items: DayItem[]) => items.map((i) =>
   `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : ""}\n摘要：${i.summary}\n原文：${i.text.slice(0, FULL_CHARS)}`).join("\n\n");
 
-async function write(items: DayItem[], date: string, ask: Ask, attempt: string, back?: { issue: IssueText; problems: Problem[] }): Promise<IssueText> {
+async function write(items: DayItem[], date: string, ask: Ask, attempt: string): Promise<IssueText> {
+  const user = [`日期：${date}（这是这一天日报收录的全部 ${items.length} 条）`, itemList(items)].join("\n\n");
+  return ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
+}
+
+const issueText = (issue: IssueText) => `标题：${issue.title}\n三分钟版：\n${issue.brief.map((b) => `- ${b}`).join("\n")}\n正文：\n${issue.body}`;
+const citedText = (cited: DayItem[]) => cited.map((i) =>
+  `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : "（不可以引原句）"}\n${i.text.slice(0, FULL_CHARS)}`).join("\n\n") || "（没有点名任何收录）";
+
+/** Mends only the sentences the check named, against the originals the draft cites. */
+async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): Promise<IssueText> {
   const user = [
-    `日期：${date}（这是这一天日报收录的全部 ${items.length} 条）`, itemList(items),
-    ...(back ? [`你上一稿：\n${JSON.stringify(back.issue)}`, `核对员指出的问题（改掉这些，其余照旧）：\n${back.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`] : []),
+    `十一的稿子：\n${issueText(draft.issue)}`,
+    `核对员挑出的问题：\n${draft.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`,
+    `稿子点名的收录（全文）：\n\n${citedText(citedItems(draft.issue, items).cited)}`,
   ].join("\n\n");
-  return ask(back ? "reference_issue_rewrite" : "reference_issue_write", WRITE, user, IssueAnswer, attempt);
+  return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
 }
 
 /** Reads one draft for the three rules against the full text of what it cites; problems the program finds come first. */
 export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<{ lively: number; problems: Problem[] }> {
   const { cited, unknown } = citedItems(issue, items);
   const own: Problem[] = unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" }));
-  const user = [
-    `这一期：\n标题：${issue.title}\n三分钟版：\n${issue.brief.map((b) => `- ${b}`).join("\n")}\n正文：\n${issue.body}`,
-    `这一期点名的收录（全文）：\n\n${cited.map((i) => `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : "（不可以引原句）"}\n${i.text.slice(0, FULL_CHARS)}`).join("\n\n") || "（没有点名任何收录）"}`,
-  ].join("\n\n");
+  const user = [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n");
   const answer = await ask("reference_issue_check", CHECK, user, CheckAnswer);
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
 }
 
-export interface Draft { issue: IssueText; lively: number; problems: Problem[]; rewritten: boolean }
+export interface Draft { issue: IssueText; lively: number; problems: Problem[]; edited: boolean }
 export interface ComposedIssue {
   date: string;
   status: "issue" | "held" | "thin";
@@ -131,22 +143,20 @@ export interface ComposedIssue {
 /** Fewer than this many items is no issue: there is no day to tell. */
 export const MIN_ITEMS = 3;
 
-/** Writes the day's issue: two drafts, each checked; the livelier that passes, else one rewrite of the closer one. */
+/** Writes the day's issue: two drafts, each checked; the livelier that passes, else the livelier mended up to twice. */
 export async function composeIssue(items: DayItem[], date: string, ask: Ask): Promise<ComposedIssue> {
   if (items.length < MIN_ITEMS) return { date, status: "thin", chosen: null, drafts: [], items };
   const drafts: Draft[] = [];
   for (const attempt of ["a", "b"]) {
     const issue = await write(items, date, ask, attempt);
-    drafts.push({ issue, ...await checkIssue(issue, items, ask), rewritten: false });
+    drafts.push({ issue, ...await checkIssue(issue, items, ask), edited: false });
   }
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
-  // Up to two rewrites, each of the last draft with what its check found: on the full-text trial (10-19) one rewrite
-  // always left one to three small problems, mostly new ones it had made.
-  let last = [...drafts].sort((x, y) => x.problems.length - y.problems.length || y.lively - x.lively)[0]!;
+  let last = [...drafts].sort((x, y) => y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
   for (const attempt of ["c", "d"]) {
-    const issue = await write(items, date, ask, attempt, last);
-    last = { issue, ...await checkIssue(issue, items, ask), rewritten: true };
+    const issue = await edit(last, items, ask, attempt);
+    last = { issue, ...await checkIssue(issue, items, ask), edited: true };
     drafts.push(last);
     if (!last.problems.length) break;
   }
@@ -170,7 +180,7 @@ function draftMarkdown(d: Draft, items: DayItem[]): string[] {
     `**${d.issue.title}**`, "", "### 三分钟版", ...d.issue.brief.map((b) => `- ${b}`), "", "### 正文", "", d.issue.body, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
     `> 关于十一：十一是 AI。它读完这一天收录的全部资料，用自己的话讲给你听；故事和数字是十一举的例子，点名的原文以原文为准。`, "",
-    `核对：${d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.rewritten ? "　（按问题改过）" : ""}`,
+    `核对：${d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.edited ? "　（编辑按问题改过）" : ""}`,
     ...d.problems.map((p) => `- 第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
   ];
 }

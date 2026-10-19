@@ -1,5 +1,5 @@
 // 十一说 (backend/issue.ts) on made-up items and a scripted model: two drafts, the livelier passing one goes up, a
-// citation of no item is a problem the program finds, and a day where nothing passes after one rewrite is held.
+// citation of no item is a problem the program finds, and a day where nothing passes after the editor's two mends is held.
 // No database, no model.
 import assert from "node:assert/strict";
 import { test } from "node:test";
@@ -46,20 +46,21 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
 });
 
-test("when neither passes, the closer draft goes back with its problems, then the rewrite once more; still failing, the day is held", async () => {
+test("when neither passes, the editor mends the livelier draft with its problems and originals, then once more; still failing, the day is held", async () => {
   const { ask, calls } = scripted({
     reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, attempt === "a" ? "说了〔9〕。" : "说了〔2〕。"),
-    reference_issue_rewrite: (_u, attempt) => issue(`稿 ${attempt}`, "说了〔2〕。"),
+    reference_issue_edit: (_u, attempt) => issue(`稿 ${attempt}`, "说了〔2〕。"),
     reference_issue_check: () => ({ lively: 6, problems: [{ rule: 2, quote: "说了", why: "像真事" }] }),
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
-  // Draft a also cites an item that does not exist, so it has two problems to b's one: b goes back.
-  const [first, second] = calls.filter((x) => x.purpose === "reference_issue_rewrite");
+  // Both are as lively; draft a also cites an item that does not exist, so b, with fewer problems, is mended.
+  const [first, second] = calls.filter((x) => x.purpose === "reference_issue_edit");
   assert.ok(first!.user.includes("稿 b") && first!.user.includes("第 2 条：「说了」像真事"));
+  assert.ok(first!.user.includes(ITEMS[1]!.text), "the editor has the original the draft cites");
   assert.ok(second!.user.includes("稿 c"));
   assert.equal(c.status, "held");
   assert.equal(c.drafts.length, 4);
-  assert.equal(c.chosen?.rewritten, true);
+  assert.equal(c.chosen?.edited, true);
   assert.equal(dailyLead(c, 1), null);
   assert.ok(issueMarkdown(c, 1).includes("没过核对，当天不出"));
 });
@@ -67,7 +68,7 @@ test("when neither passes, the closer draft goes back with its problems, then th
 test("a citation of no item is a problem even when the check finds none", async () => {
   const { ask } = scripted({
     reference_issue_write: () => issue("稿", "说了〔9〕。"),
-    reference_issue_rewrite: () => issue("改过", "说了〔1〕。"),
+    reference_issue_edit: () => issue("改过", "说了〔1〕。"),
     reference_issue_check: () => ({ lively: 7, problems: [] }),
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);

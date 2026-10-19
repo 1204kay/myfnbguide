@@ -74,6 +74,17 @@ test("when neither passes, the editor mends the livelier draft with its problems
   assert.ok(issueMarkdown(c, 1).includes("删掉 1 句后出刊"));
 });
 
+test("十一 saying it could not check what it tells is found by the program, and cut if never mended", async () => {
+  const { ask } = scripted({
+    reference_issue_write: () => issue("稿", "这篇不在今天点名的收录里，我没能核对。另一句对得上〔1〕。"),
+    reference_issue_edit: () => issue("稿", "这篇不在今天点名的收录里，我没能核对。另一句对得上〔1〕。"),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-14", ask);
+  assert.equal(c.drafts[0]!.problems[0]?.quote, "这篇不在今天点名的收录里，我没能核对。");
+  assert.equal(c.chosen?.issue.news[0]?.text, "另一句对得上〔1〕。");
+});
+
 test("a flagged news head takes its item, a flagged question gives way to the first head, and what cannot be found stays listed", () => {
   const draft = issue("一个说过头的问题", "说了〔1〕。");
   draft.news[1]!.head = "这条快讯的标题说过头了";

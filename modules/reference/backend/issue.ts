@@ -190,6 +190,13 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
       out.push({ rule: 1, quote: sentence.trim(), why: `${quoted[0]} 加了引号，但这句点名的来源不能引原句，要改成转述` });
     }
   }
+  // 十一 telling listeners it could not check its own lead (10-14: 「这篇不在今天点名的收录里，我没能核对」, though it was
+  // item 1); no check named it in three rounds.
+  for (const sentence of written(issue).split(/(?<=[。！？\n])/u)) {
+    if (/没能核对|无法核对|没法核对|无法核实|没能核实|不在[^。！？]{0,8}收录|找不到(原文|出处)/u.test(sentence)) {
+      out.push({ rule: 1, quote: sentence.trim(), why: "十一不对听的人说自己没核对过；讲的事都在当天的收录里" });
+    }
+  }
   const citedNs = new Set(cited.map((i) => i.n));
   for (const ns of sameEvents(items)) {
     if (ns.length >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {

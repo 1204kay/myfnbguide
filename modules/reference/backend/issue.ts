@@ -140,18 +140,21 @@ const itemList = (items: DayItem[]) => items.map((i) =>
 /**
  * The day's events several sources told, as the site grouped them. On 10-06 six items were about McDonald's denying AI
  * pricing, none of them 精选, and no draft told it: marked, it is plain that the day's sources were talking about it.
+ * Sources, not items: on 10-13 one source's twelve award lists, one per province, were grouped as one story, and the
+ * program then had a news item spent on them.
  */
-export function sameEvents(items: DayItem[]): number[][] {
-  const byStory = new Map<string, number[]>();
-  for (const i of items) if (i.storyId) byStory.set(i.storyId, [...byStory.get(i.storyId) ?? [], i.n]);
-  return [...byStory.values()].filter((ns) => ns.length > 1).sort((a, b) => b.length - a.length);
+export function sameEvents(items: DayItem[]): Array<{ ns: number[]; sources: number }> {
+  const byStory = new Map<string, DayItem[]>();
+  for (const i of items) if (i.storyId) byStory.set(i.storyId, [...byStory.get(i.storyId) ?? [], i]);
+  return [...byStory.values()].map((g) => ({ ns: g.map((i) => i.n), sources: new Set(g.map((i) => i.sourceId)).size }))
+    .filter((e) => e.sources > 1).sort((a, b) => b.sources - a.sources);
 }
 
 async function write(items: DayItem[], date: string, ask: Ask, attempt: string): Promise<IssueText> {
   const events = sameEvents(items);
   const user = [
     `日期：${dayName(date)}（这是这一天日报收录的全部 ${items.length} 条，其中 ${items.filter((i) => i.selected).length} 条是精选）`, itemList(items),
-    ...(events.length ? [`好几家都在讲的事：\n${events.map((ns) => `- ${ns.map((n) => `〔${n}〕`).join("")}讲的是同一件事`).join("\n")}`] : []),
+    ...(events.length ? [`好几家都在讲的事：\n${events.map((e) => `- ${e.ns.map((n) => `〔${n}〕`).join("")}讲的是同一件事`).join("\n")}`] : []),
   ].join("\n\n");
   return ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
 }
@@ -169,14 +172,15 @@ async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): 
   const missed = new Set(draft.problems.filter((p) => p.rule === 4).flatMap((p) => [...p.quote.matchAll(/〔(\d+)〕/gu)].map((m) => Number(m[1]))));
   const given = [...citedItems(draft.issue, items).cited, ...items.filter((i) => missed.has(i.n))];
   const user = [
-    `十一的稿子：\n${issueText(draft.issue)}`,
+    // As JSON, the shape it answers in: shown as issueText it copied the list numbers into heads and 「合起来：」 into the close (10-13, 10-14).
+    `十一的稿子：\n${JSON.stringify(draft.issue, null, 1)}`,
     `核对员挑出的问题：\n${draft.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`,
     `稿子点名的收录（全文）：\n\n${citedText([...new Set(given)])}`,
   ].join("\n\n");
   return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
 }
 
-/** An event this many sources told must be in the issue: McDonald's on AI pricing (10-06) was six. */
+/** An event this many sources told must be in the issue (on 10-06 the site grouped McDonald's on AI pricing from two). */
 export const BIG_EVENT = 3;
 
 /** What the program finds itself, as rule 4: the shape of the issue, which the check model is not asked to count. */
@@ -200,11 +204,13 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
     if (/没能核对|无法核对|没法核对|无法核实|没能核实|不在[^。！？]{0,8}收录|找不到(原文|出处)/u.test(sentence)) {
       out.push({ rule: 1, quote: sentence.trim(), why: "十一不对听的人说自己没核对过；讲的事都在当天的收录里" });
     }
+    // Japanese left as it stood (10-14: a blog's name, 《15年続ける蕎麦屋店主の経営ノート》), which no listener can follow.
+    if (/[\u3040-\u30ff]/u.test(sentence)) out.push({ rule: 1, quote: sentence.trim(), why: "日文没翻成中文，听的人听不懂" });
   }
   const citedNs = new Set(cited.map((i) => i.n));
-  for (const ns of sameEvents(items)) {
-    if (ns.length >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {
-      out.push({ rule: 4, quote: ns.map((n) => `〔${n}〕`).join(""), why: `${ns.length} 家都在讲这件事，这一期没讲` });
+  for (const { ns, sources } of sameEvents(items)) {
+    if (sources >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {
+      out.push({ rule: 4, quote: ns.map((n) => `〔${n}〕`).join(""), why: `${sources} 家都在讲这件事，这一期没讲` });
     }
   }
   return out;
@@ -247,8 +253,8 @@ export const MIN_ITEMS = 3;
  */
 export const EDIT_ROUNDS = 5;
 
-/** Sentences, each with its closing mark. */
-const sentences = (text: string) => text.split(/(?<=[。！？\n])/u).filter((x) => x.trim());
+/** Sentences, each with its closing mark, and the line breaks between paragraphs as they stand. */
+const sentences = (text: string) => text.split(/(?<=[。！？\n])/u).filter(Boolean);
 /** Compared without spaces, citation marks or the quotation marks the check puts around a quote. */
 const bare = (text: string) => text.replace(/〔[^〕]*〕|\s|^[「“]|[」”]$/gu, "");
 
@@ -275,7 +281,7 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
       if (placed || !r) return [];
       placed = true;
       return [r];
-    }).join("").trim();
+    }).join("").replace(/\n{3,}/gu, "\n\n").trim();
     const lead = out.brief.findIndex((x) => hits(x, q));
     if (lead >= 0) { changed.push(out.brief[lead]!); if (r) out.brief[lead] = r; else out.brief.splice(lead, 1); }
     const head = out.news.findIndex((x) => hits(x.head, q));

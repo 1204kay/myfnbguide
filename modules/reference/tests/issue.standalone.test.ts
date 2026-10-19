@@ -99,6 +99,29 @@ test("十一 saying it could not check what it tells is found by the program, an
   assert.equal(c.chosen?.issue.news[0]?.text, "另一句对得上〔1〕。");
 });
 
+test("mending a sentence keeps the deep story's paragraphs", () => {
+  const draft = { ...issue("问题", "说了〔1〕。"), deep: "第一段说过头了〔1〕。还有一句。\n\n第二段。\n\n第三段。" };
+  const { issue: out } = cutProblems(draft, [{ rule: 1, quote: "第一段说过头了〔1〕。", why: "" }]);
+  assert.equal(out.deep, "还有一句。\n\n第二段。\n\n第三段。");
+  assert.equal(cutProblems(draft, [{ rule: 1, quote: "第二段。还有", why: "" }]).issue.deep, draft.deep, "nothing found, nothing moved");
+  const twice = cutProblems({ ...draft, deep: "一段说过头了〔1〕。\n\n第二段。" }, [{ rule: 1, quote: "第二段。", why: "" }]);
+  assert.equal(twice.issue.deep, "一段说过头了〔1〕。");
+  assert.equal(cutProblems(draft, [{ rule: 1, quote: "第二段说过头了。", why: "" }]).issue.deep, draft.deep);
+  const middle = cutProblems({ ...draft, deep: "第一段。\n\n中间一段说过头了〔1〕。\n\n第三段。" }, [{ rule: 1, quote: "中间一段说过头了〔1〕。", why: "" }]);
+  assert.equal(middle.issue.deep, "第一段。\n\n第三段。", "a paragraph taken out leaves one break");
+});
+
+test("Japanese left untranslated is a problem the program finds", async () => {
+  const { ask } = scripted({
+    reference_issue_write: () => issue("稿", "老板在博客《蕎麦屋の経営ノート》里说〔1〕。"),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+    reference_issue_edit: () => issue("改过", "老板在博客《荞麦面店的经营笔记》里说〔1〕。"),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-14", ask);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.why), ["日文没翻成中文，听的人听不懂"]);
+  assert.equal(c.chosen?.issue.title, "改过");
+});
+
 test("a flagged news head takes its item, a flagged question gives way to the first head, and what cannot be found stays listed", () => {
   const draft = issue("一个说过头的问题", "说了〔1〕。");
   draft.news[1]!.head = "这条快讯的标题说过头了";
@@ -156,8 +179,9 @@ test("the date and weekday come from the calendar, and the program's own lines f
 });
 
 test("the program finds what the check model is not asked to count: the number of news items, an item with no source, a big event left out", async () => {
-  const told = (n: number, storyId: string) => ({ ...item(n), storyId });
-  const items = [told(1, "mcd"), told(2, "mcd"), told(3, "mcd"), item(4), item(5)];
+  const told = (n: number, storyId: string, sourceId = `rss-${n}`) => ({ ...item(n, sourceId), storyId });
+  // Twelve award lists from one source (10-13) are one source talking, not an event the day's sources were telling.
+  const items = [told(1, "mcd"), told(2, "mcd"), told(3, "mcd"), item(4), item(5), told(6, "awards", "web-canyin88"), told(7, "awards", "web-canyin88"), told(8, "awards", "web-canyin88")];
   const { ask, calls } = scripted({
     reference_issue_write: () => ({ ...issue("稿", "没有出处。"), news: issue("稿", "没有出处。").news.slice(0, 3) }),
     reference_issue_edit: () => issue("改过", "麦当劳〔2〕。"),
@@ -166,6 +190,9 @@ test("the program finds what the check model is not asked to count: the number o
   const c = await composeIssue(items, "2026-10-06", ask);
   assert.deepEqual(c.drafts[0]!.problems.map((p) => p.why), ["快讯要 4 到 6 条", "这条快讯没标出处", "3 家都在讲这件事，这一期没讲"]);
   assert.ok(calls.find((x) => x.purpose === "reference_issue_edit")!.user.includes(items[0]!.text), "the editor has the left-out event's originals");
+  const write = calls.find((x) => x.purpose === "reference_issue_write")!.user;
+  assert.ok(write.includes("〔1〕〔2〕〔3〕讲的是同一件事") && !write.includes("〔6〕〔7〕〔8〕"), "one source's several items are not told the writer as an event");
+  assert.ok(!/\n\d+\. 快讯|合起来：/u.test(calls.find((x) => x.purpose === "reference_issue_edit")!.user), "the editor sees the draft in the shape it answers in");
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "改过");
 });

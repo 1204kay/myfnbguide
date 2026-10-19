@@ -13,9 +13,9 @@
 //   3. one shop's case is not told as what every shop should do.
 // Two drafts are written; the livelier of those that pass goes up. When neither passes, the livelier goes to an editor
 // that mends only the sentences the check named, with their originals in hand, the way a desk mends a reporter's copy
-// (Kay 10-19: 核查员直接编辑); the mended draft is checked again, and mended once more if it must. Sent back to be
-// rewritten whole (10-19 afternoon), a draft lost old problems and made new ones. Still failing, the daily leads as it
-// always did.
+// (Kay 10-19: 核查员直接编辑); the mended draft is checked again, up to EDIT_ROUNDS times. Sent back to be rewritten
+// whole (10-19 afternoon), a draft lost old problems and made new ones. What is still wrong after that is cut and the
+// issue goes out every day (Kay 10-19 night: 「应该要十期出十期」); with no usable draft, the day's items go out as they stand.
 // Rounds one and two (10-18/19) took facts apart and wrote from them sentence by sentence; both failed (serious errors
 // in the sentences that joined originals), and Kay turned the column into this on 10-19.
 // Stores nothing: myfnb/trial-issues.ts tries it and writes files.
@@ -208,12 +208,18 @@ export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): 
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
 }
 
-export interface Draft { issue: IssueText; lively: number; problems: Problem[]; edited: boolean }
+export interface Draft {
+  issue: IssueText; lively: number; problems: Problem[]; edited: boolean;
+  /** Sentences the program took out because the editor could not mend them. */
+  cut?: string[];
+}
 export interface ComposedIssue {
   date: string;
-  status: "issue" | "held" | "thin";
-  /** The one that goes up (or, when held, the one that came closest). */
+  status: "issue" | "thin";
+  /** The one that goes up. */
   chosen: Draft | null;
+  /** Why the issue is not the usual one (no usable draft: the day's items as they stand). */
+  note?: string;
   drafts: Draft[];
   items: DayItem[];
 }
@@ -221,7 +227,63 @@ export interface ComposedIssue {
 /** Fewer than this many items is no issue: there is no day to tell. */
 export const MIN_ITEMS = 3;
 
-/** Writes the day's issue: two drafts, each checked; the livelier that passes, else the livelier mended up to three times. */
+/** Rounds of mending before the program cuts what is still wrong. */
+export const EDIT_ROUNDS = 3;
+
+/** Sentences, each with its closing mark. */
+const sentences = (text: string) => text.split(/(?<=[。！？\n])/u).filter((x) => x.trim());
+/** Compared without spaces, citation marks or the quotation marks the check puts around a quote. */
+const bare = (text: string) => text.replace(/〔[^〕]*〕|\s|^[「“]|[」”]$/gu, "");
+
+/**
+ * Takes out what the check still found after the last mending (Kay 10-19: 「哪有人每天出的结果审核不过就不出了」): a
+ * newspaper cuts the sentence it cannot stand behind and runs the page. A flagged sentence goes; a flagged news head or
+ * lead sentence takes its item with it; the deep story's question, flagged, gives way to the first news head. What it
+ * cannot place stays listed. Cutting adds no claim, so the result is not checked again.
+ */
+export function cutProblems(issue: IssueText, problems: Problem[]): { issue: IssueText; cut: string[]; kept: Problem[] } {
+  const out: IssueText = { ...issue, brief: [...issue.brief], news: issue.news.map((x) => ({ ...x })) };
+  const cut: string[] = [];
+  const kept: Problem[] = [];
+  // A quote may run over several sentences, so a whole sentence inside it counts; a short one ("一") does not.
+  const hits = (text: string, q: string) => { const t = bare(text); return t.includes(q) || (t.length >= 6 && q.includes(t)); };
+  const trim = (text: string, q: string) => {
+    const keep = sentences(text).filter((x) => { if (!hits(x, q)) return true; cut.push(x.trim()); return false; });
+    return keep.join("").trim();
+  };
+  for (const p of problems) {
+    const q = bare(p.quote);
+    if (p.rule > 3 || q.length < 4) { kept.push(p); continue; }
+    const before = cut.length;
+    const lead = out.brief.findIndex((b) => hits(b, q));
+    if (lead >= 0) cut.push(...out.brief.splice(lead, 1));
+    const head = out.news.findIndex((x) => hits(x.head, q));
+    if (head >= 0) { const [x] = out.news.splice(head, 1); cut.push(x!.head, x!.text); }
+    if (hits(out.title, q)) { cut.push(out.title); out.title = ""; }
+    out.preview = trim(out.preview, q);
+    for (const x of out.news) x.text = trim(x.text, q);
+    out.news = out.news.filter((x) => x.text);
+    out.deep = trim(out.deep, q);
+    out.close = trim(out.close, q);
+    if (cut.length === before) kept.push(p);
+  }
+  if (!out.deep || !out.title) out.title = out.news[0]?.head ?? out.title;
+  return { issue: out, cut, kept };
+}
+
+/**
+ * The day's items as they stand, when the model gave no usable draft (trial 10-13): the best five, each by its own
+ * title and summary, which the daily already carries.
+ */
+function itemsIssue(items: DayItem[]): IssueText {
+  const top = [...items.filter((i) => i.selected), ...items.filter((i) => !i.selected)].slice(0, 5);
+  return {
+    title: top[0]!.title, brief: top.slice(0, 3).map((i) => i.title), preview: `今天先说${top.length}件事。`,
+    news: top.map((i) => ({ head: i.title, text: `${i.sourceName}报道：${i.summary}〔${i.n}〕` })), deep: "", close: "",
+  };
+}
+
+/** Writes the day's issue: two drafts, each checked; the livelier that passes, else the livelier mended, then cut. */
 export async function composeIssue(items: DayItem[], date: string, ask: Ask): Promise<ComposedIssue> {
   if (items.length < MIN_ITEMS) return { date, status: "thin", chosen: null, drafts: [], items };
   const drafts: Draft[] = [];
@@ -235,17 +297,22 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     });
     if (issue) drafts.push({ issue, ...await checkIssue(issue, items, ask), edited: false });
   }
-  if (!drafts.length) throw unusable;
+  if (!drafts.length) {
+    const why = unusable instanceof Error ? unusable.message : String(unusable);
+    return { date, status: "issue", chosen: { issue: itemsIssue(items), lively: 0, problems: [], edited: false }, drafts, items, note: `两稿都没写成（${why.slice(0, 120)}），照当天收录的标题和摘要出简版` };
+  }
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
   let last = [...drafts].sort((x, y) => y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
-  for (const attempt of ["c", "d", "e"]) {
+  for (const attempt of "cdefg".slice(0, EDIT_ROUNDS)) {
     const issue = await edit(last, items, ask, attempt);
     last = { issue, ...await checkIssue(issue, items, ask), edited: true };
     drafts.push(last);
     if (!last.problems.length) break;
   }
-  return { date, status: last.problems.length ? "held" : "issue", chosen: last, drafts, items };
+  if (!last.problems.length) return { date, status: "issue", chosen: last, drafts, items };
+  const { issue, cut, kept } = cutProblems(last.issue, last.problems);
+  return { date, status: "issue", chosen: { issue, lively: last.lively, problems: kept, edited: true, cut }, drafts, items };
 }
 
 // ---------------------------------------------------------------- the daily's top, and a page to read
@@ -265,19 +332,20 @@ function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {
   return [
     `**${d.issue.title}**`, "", "### 三句话（日报头条用）", ...d.issue.brief.map((b) => `- ${b}`), "", "### 念出来的样子", "",
     f.open, "", d.issue.preview, "", ...d.issue.news.flatMap((x) => [`**${x.head}**`, "", x.text, ""]),
-    f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, "", ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
+    ...(d.issue.deep ? [f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, ""] : []), ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
     `> 关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。`, "",
-    `核对：${d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.edited ? "　（编辑按问题改过）" : ""}`,
-    ...d.problems.map((p) => `- 第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
+    `核对：${d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.edited ? "　（编辑按问题改过）" : ""}`,
+    ...(d.cut ?? []).map((x) => `- 删掉：${x}`),
+    ...d.problems.map((p) => `- ${d.cut ? "没能删掉，" : ""}第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
   ];
 }
 
 /** An issue as the trial reads it: the one that goes up first, then every draft with its check. */
 export function issueMarkdown(c: ComposedIssue, no: number): string {
-  const head = { issue: "出刊", held: "没过核对，当天不出", thin: "收录太少，不写" }[c.status];
-  const out = [`# 十一说 · 第 ${no} 期（${c.date}，${head}）`, "", `这一天收录 ${c.items.length} 条。`, ""];
-  if (c.chosen) out.push(`## ${c.status === "issue" ? "上线的这一篇" : "最接近的一篇"}`, "", ...draftMarkdown(c.chosen, c.items, c.date));
+  const head = { issue: "出刊", thin: "收录太少，不写" }[c.status];
+  const out = [`# 十一说 · 第 ${no} 期（${c.date}，${head}）`, "", `这一天收录 ${c.items.length} 条。`, "", ...(c.note ? [`> ${c.note}`, ""] : [])];
+  if (c.chosen) out.push("## 上线的这一篇", "", ...draftMarkdown(c.chosen, c.items, c.date));
   c.drafts.forEach((d, i) => { if (d !== c.chosen) out.push(`## 第 ${i + 1} 稿（没选）`, "", ...draftMarkdown(d, c.items, c.date)); });
   return out.join("\n");
 }

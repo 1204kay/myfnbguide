@@ -1,10 +1,10 @@
 // 十一说 (backend/issue.ts) on made-up items and a scripted model: two drafts, the livelier passing one goes up, a
-// citation of no item is a problem the program finds, and a day where nothing passes after the editor's two mends is held.
+// citation of no item is a problem the program finds, and what is still wrong after the editor's mends is cut, not held.
 // No database, no model.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ModelOutputError } from "@aihot/backend/providers/llm";
-import { type Ask, citedItems, composeIssue, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { type Ask, citedItems, composeIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -52,27 +52,45 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
 });
 
-test("when neither passes, the editor mends the livelier draft with its problems and originals, then twice more; still failing, the day is held", async () => {
+test("when neither passes, the editor mends the livelier draft with its problems and originals, three times; what is still wrong is cut and the day goes out", async () => {
   const { ask, calls } = scripted({
     reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, attempt === "a" ? "说了〔9〕。" : "说了〔2〕。"),
-    reference_issue_edit: (_u, attempt) => issue(`稿 ${attempt}`, "说了〔2〕。"),
-    reference_issue_check: () => ({ lively: 6, problems: [{ rule: 2, quote: "说了", why: "像真事" }] }),
+    reference_issue_edit: (_u, attempt) => issue(`稿 ${attempt}`, "说了一句原文没有的话〔2〕。另一句对得上〔2〕。"),
+    reference_issue_check: () => ({ lively: 6, problems: [{ rule: 2, quote: "说了一句原文没有的话", why: "像真事" }] }),
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   // Both are as lively; draft a also cites an item that does not exist, so b, with fewer problems, is mended.
-  const [first, second, third] = calls.filter((x) => x.purpose === "reference_issue_edit");
-  assert.ok(first!.user.includes("稿 b") && first!.user.includes("第 2 条：「说了」像真事"));
-  assert.ok(first!.user.includes(ITEMS[1]!.text), "the editor has the original the draft cites");
-  assert.ok(second!.user.includes("稿 c"));
-  assert.ok(third!.user.includes("稿 d"));
-  assert.equal(c.status, "held");
-  assert.equal(c.drafts.length, 5);
-  assert.equal(c.chosen?.edited, true);
-  assert.equal(dailyLead(c, 1), null);
-  assert.ok(issueMarkdown(c, 1).includes("没过核对，当天不出"));
+  const edits = calls.filter((x) => x.purpose === "reference_issue_edit");
+  assert.equal(edits.length, EDIT_ROUNDS);
+  assert.ok(edits[0]!.user.includes("稿 b") && edits[0]!.user.includes("第 2 条：「说了一句原文没有的话」像真事"));
+  assert.ok(edits[0]!.user.includes(ITEMS[1]!.text), "the editor has the original the draft cites");
+  assert.ok(edits[1]!.user.includes("稿 c"));
+  assert.equal(c.status, "issue");
+  assert.equal(c.drafts.length, 2 + EDIT_ROUNDS);
+  assert.equal(c.chosen?.issue.news[0]?.text, "另一句对得上〔2〕。");
+  assert.deepEqual(c.chosen?.cut, ["说了一句原文没有的话〔2〕。"]);
+  assert.deepEqual(c.chosen?.problems, []);
+  assert.equal(dailyLead(c, 1)?.title, "稿 e");
+  assert.ok(issueMarkdown(c, 1).includes("删掉 1 句后出刊"));
 });
 
-test("a draft the model cannot write in usable form leaves the other; with neither, the day fails", async () => {
+test("a flagged news head takes its item, a flagged question gives way to the first head, and what cannot be found stays listed", () => {
+  const draft = issue("一个说过头的问题", "说了〔1〕。");
+  draft.news[1]!.head = "这条快讯的标题说过头了";
+  const { issue: out, cut, kept } = cutProblems(draft, [
+    { rule: 1, quote: "一个说过头的问题", why: "" },
+    { rule: 3, quote: "这条快讯的标题说过头了", why: "" },
+    { rule: 1, quote: "稿子里没有这句话", why: "" },
+    { rule: 4, quote: "快讯 3 条", why: "" },
+  ]);
+  assert.equal(out.news.length, 3);
+  assert.equal(out.title, "快讯");
+  assert.ok(cut.includes("一个说过头的问题") && cut.includes("这条快讯的标题说过头了"));
+  assert.deepEqual(out.brief, ["一", "二", "三"], "a short sentence is not taken for part of a quote");
+  assert.deepEqual(kept.map((p) => p.quote), ["稿子里没有这句话", "快讯 3 条"]);
+});
+
+test("a draft the model cannot write in usable form leaves the other; with neither, the day goes out as its items stand", async () => {
   const { ask } = scripted({
     reference_issue_write: (_u, attempt) => { if (attempt === "a") throw new ModelOutputError("broken JSON"); return issue("稿 b", "说了〔1〕。"); },
     reference_issue_check: () => ({ lively: 7, problems: [] }),
@@ -81,7 +99,10 @@ test("a draft the model cannot write in usable form leaves the other; with neith
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "稿 b");
   const { ask: broken } = scripted({ reference_issue_write: () => { throw new ModelOutputError("broken JSON"); } });
-  await assert.rejects(composeIssue(ITEMS, "2026-10-13", broken), ModelOutputError);
+  const plain = await composeIssue(ITEMS, "2026-10-13", broken);
+  assert.equal(plain.status, "issue");
+  assert.equal(plain.chosen?.issue.news[0]?.text, `来源 1报道：${ITEMS[0]!.summary}〔1〕`);
+  assert.ok(issueMarkdown(plain, 8).includes("出简版") && !issueMarkdown(plain, 8).includes("下面，细说一件"));
 });
 
 test("a citation of no item is a problem even when the check finds none", async () => {

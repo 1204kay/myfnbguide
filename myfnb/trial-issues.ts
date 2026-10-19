@@ -109,7 +109,7 @@ for (const [k, date] of days.entries()) {
 }
 
 if (apply) {
-  const status = (c: ComposedIssue | null) => (c ? { issue: "出刊", thin: "收录太少", held: "没过核对" }[c.status] : "没写");
+  const status = (c: ComposedIssue | null) => (c ? (c.status === "thin" ? "收录太少" : c.note ? "出简版" : c.chosen?.cut ? `删 ${c.chosen.cut.length} 句后出刊` : "出刊") : "没写");
   const index = [
     `# 十一说试写 ${run}`, "",
     `写 ${model}，核对 ${checkModel}；提示词与检查 ${ISSUE_VERSION}；花费 US$${usd().toFixed(2)}（${Object.entries(paid).map(([m, u]) => `${m} 输入 ${u.input}、输出 ${u.output} token，按 US$${PRICES[m]![0]}/${PRICES[m]![1]} 每百万算`).join("；")}）；上限 US$${cap}。`, "",

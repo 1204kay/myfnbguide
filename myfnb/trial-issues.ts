@@ -3,7 +3,8 @@
 // nothing is stored but the engine's receipts. Each issue is written beside the full text of every item of its day,
 // numbered as the issue cites them, for the blind check.
 //   --day 2026-10-16 (repeat it, one issue each); --model <a preset of site/models.ts> is required and writes; --check-model
-//   checks (default: the same one), so writers can be compared under one check; --out is where the
+//   checks (default: the same one), so writers can be compared under one check; --selected takes only the day's 精选
+//   instead of everything listed (Kay 10-19: 那如果只挑精选呢); --out is where the
 //   run's folder goes (default /out). Without --apply it lists each day's items and calls nothing.
 //   --cap-usd 20: no call is made unless what it could cost is left under it, so the run never pays more; a day does not
 //   start without enough left for its two drafts and their checks.
@@ -18,7 +19,7 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
-import { listedCondition } from "@aihot/backend/publication/scope";
+import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
 import { EDITION_TIMES } from "@aihot/site";
 import { type ComposedIssue, composeIssue, type DayItem, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
 
@@ -26,6 +27,7 @@ const args = process.argv.slice(2);
 const all = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] ? [args[i + 1]!] : []));
 const one = (flag: string) => all(flag).at(-1);
 const apply = args.includes("--apply");
+const selectedOnly = args.includes("--selected");
 
 /** US$ per million input / output tokens: Anthropic's price list (10-19); DeepSeek's (10-19, uncached input, peak hours). Only the models a trial uses. */
 const PRICES: Record<string, [number, number]> = { "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10], "deepseek-flash": [0.3, 1.2], "deepseek-flash-think": [0.3, 1.2],
@@ -53,7 +55,7 @@ if (!(cap > 0)) throw new Error("--cap-usd 要大于 0");
 const days = all("--day");
 if (!days.length || days.some((d) => !/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error("写 --day 2026-10-16（可以写多个）");
 
-const run = `${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, "")}-${model}${checkModel === model ? "" : `-check-${checkModel}`}`;
+const run = `${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, "")}${selectedOnly ? "-selected" : ""}-${model}${checkModel === model ? "" : `-check-${checkModel}`}`;
 const dir = join(one("--out") ?? "/out", run);
 const receiptIds: number[] = [];
 /** Tokens paid for, per model, and what they cost. */
@@ -61,7 +63,7 @@ const paid: Record<string, Usage> = {};
 const usd = () => Object.entries(paid).reduce((s, [m, u]) => s + (u.input * PRICES[m]![0] + u.output * PRICES[m]![1]) / 1e6, 0);
 const count = (m: string) => (u: Usage) => { const p = (paid[m] ??= { input: 0, output: 0 }); p.input += u.input; p.output += u.output; };
 
-/** Everything the daily listed in the window of `date`, best scored first, numbered as the issue cites it. */
+/** Everything the daily listed in the window of `date` (or only its 精选), best scored first, numbered as the issue cites it. */
 async function dayItems(date: string): Promise<DayItem[]> {
   const end = beijingAt(date, EDITION_TIMES.daily);
   const start = beijingAt(addDays(date, -1), EDITION_TIMES.daily);
@@ -69,7 +71,7 @@ async function dayItems(date: string): Promise<DayItem[]> {
     SELECT p.article_id AS id, a.source_id AS "sourceId", s.name AS "sourceName", p.title, a.url,
       coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text
     FROM publications p JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
-    WHERE ${listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
+    WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
     ORDER BY p.score DESC NULLS LAST, p.article_id`;
   return rows.map((r, i) => ({ n: i + 1, ...r }));
 }

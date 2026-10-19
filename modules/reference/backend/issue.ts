@@ -180,6 +180,9 @@ async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): 
   return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
 }
 
+/** Figures in one news item past which it is a list, not news: the write-up asks for two or three. */
+export const MAX_FIGURES = 5;
+
 /** An event this many sources told must be in the issue (on 10-06 the site grouped McDonald's on AI pricing from two). */
 export const BIG_EVENT = 3;
 
@@ -188,15 +191,24 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
   const out: Problem[] = [];
   if (issue.news.length < 4 || issue.news.length > 6) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: "快讯要 4 到 6 条" });
   for (const x of issue.news) if (!/〔[\d、,，\s]+〕/u.test(x.text)) out.push({ rule: 4, quote: x.head, why: "这条快讯没标出处" });
+  // A string of figures no ear keeps (10-15: Domino's China in seven, a survey in seven percentages); years aside.
+  for (const x of issue.news) {
+    const figures = (x.text.replace(/〔[^〕]*〕/gu, "").match(/\d[\d,.]*/gu) ?? []).filter((d) => !/^(19|20)\d\d$/u.test(d)).length;
+    if (figures > MAX_FIGURES) out.push({ rule: 4, quote: x.head, why: `这条快讯说了 ${figures} 个数字，只留两三个最要紧的` });
+  }
   // A quotation in a sentence that cites only sources whose sentences may not be quoted (10-11: 「70元时代」 from a
-  // paper not on QUOTABLE_SOURCES; the check let it through).
+  // paper not on QUOTABLE_SOURCES; the check let it through). A sentence citing nothing tells the source last cited in
+  // its paragraph (10-15: “值不值” the sentence after 〔2〕).
   const byN = new Map(items.map((i) => [i.n, i]));
+  let told: number[] = [];
   for (const sentence of written(issue).split(/(?<=[。！？\n])/u)) {
     const ns = [...sentence.matchAll(/〔([\d、,，\s]+)〕/gu)].flatMap((m) => m[1]!.split(/[、,，\s]+/u).filter(Boolean).map(Number));
+    if (ns.length) told = ns;
     const quoted = sentence.match(/[「“][^」”]+[」”]/u);
-    if (quoted && ns.length && !ns.some((n) => QUOTABLE_SOURCES.has(byN.get(n)?.sourceId ?? ""))) {
+    if (quoted && told.length && !told.some((n) => QUOTABLE_SOURCES.has(byN.get(n)?.sourceId ?? ""))) {
       out.push({ rule: 1, quote: sentence.trim(), why: `${quoted[0]} 加了引号，但这句点名的来源不能引原句，要改成转述` });
     }
+    if (sentence.endsWith("\n")) told = [];
   }
   // 十一 telling listeners it could not check its own lead (10-14: 「这篇不在今天点名的收录里，我没能核对」, though it was
   // item 1); no check named it in three rounds.
@@ -299,6 +311,8 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
     if (changed.length === before) kept.push(p);
   }
   if (!out.deep || !out.title) out.title = out.news[0]?.head ?? out.title;
+  // The daily's lead is three sentences (10-15 went out with two): a lead sentence taken out gives way to a news head.
+  for (const x of out.news) if (out.brief.length < 3 && !out.brief.includes(x.head)) out.brief.push(x.head);
   return { issue: out, changed, kept };
 }
 

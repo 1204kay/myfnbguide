@@ -122,6 +122,26 @@ test("Japanese left untranslated is a problem the program finds", async () => {
   assert.equal(c.chosen?.issue.title, "改过");
 });
 
+test("a lead sentence taken out gives way to a news head, so the daily's lead stays three sentences", () => {
+  const { issue: out } = cutProblems(issue("问题", "说了〔1〕。"), [{ rule: 1, quote: "第二句说过头了", why: "" }].map((p) => ({ ...p, quote: "二" })));
+  assert.deepEqual(out.brief, ["一", "二", "三"], "a quote too short to place moves nothing");
+  const draft = { ...issue("问题", "说了〔1〕。"), brief: ["第一句话说的事", "第二句说过头了", "第三句话说的事"] };
+  assert.deepEqual(cutProblems(draft, [{ rule: 1, quote: "第二句说过头了", why: "" }]).issue.brief, ["第一句话说的事", "第三句话说的事", "快讯"]);
+});
+
+test("a news item with a string of figures, and quotation marks a sentence after a citation of a source that may not be quoted, are found by the program", async () => {
+  const { ask } = scripted({
+    reference_issue_write: () => ({
+      ...issue("稿", "2026 年前九个月开了 319 家，共 1634 家、87 座城市，三季度 84 家、12 座新城市，会员 4520 万〔4〕。"),
+      deep: "文章说县城火锅人均 50 到 70 元〔2〕。他们更在意“值不值”。\n\n十一说这是“土”。",
+    }),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+    reference_issue_edit: () => issue("改过", "前九个月开了 319 家〔4〕。"),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-15", ask);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["快讯", "他们更在意“值不值”。"]);
+});
+
 test("a flagged news head takes its item, a flagged question gives way to the first head, and what cannot be found stays listed", () => {
   const draft = issue("一个说过头的问题", "说了〔1〕。");
   draft.news[1]!.head = "这条快讯的标题说过头了";

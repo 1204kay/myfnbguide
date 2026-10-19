@@ -69,7 +69,8 @@ async function dayItems(date: string): Promise<DayItem[]> {
   const start = beijingAt(addDays(date, -1), EDITION_TIMES.daily);
   const rows = await sql<Omit<DayItem, "n">[]>`
     SELECT p.article_id AS id, a.source_id AS "sourceId", s.name AS "sourceName", p.title, a.url,
-      coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text
+      coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text,
+      p.selected, p.story_id::text AS "storyId"
     FROM publications p JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
     WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
     ORDER BY p.score DESC NULLS LAST, p.article_id`;

@@ -3,14 +3,14 @@
 // No database, no model.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { type Ask, citedItems, composeIssue, dailyLead, type DayItem, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { type Ask, citedItems, composeIssue, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
-  summary: `摘要 ${n}`, text: `原文 ${n} 的全文。`.repeat(50),
+  summary: `摘要 ${n}`, text: `原文 ${n} 的全文。`.repeat(50), selected: false, storyId: null,
 });
 const ITEMS = [item(1), item(2, "rss-hongcan"), item(3), item(4)];
-const issue = (title: string, body: string): IssueText => ({ title, brief: ["一", "二", "三"], body });
+const issue = (title: string, news: string): IssueText => ({ title, brief: ["一", "二", "三"], preview: "预告", news: [{ head: "快讯", text: news }], deep: "细说", close: "" });
 
 /** A model that answers each purpose from a script and records what it was asked. */
 function scripted(answers: Partial<Record<string, (user: string, attempt?: string) => unknown>>) {
@@ -28,7 +28,8 @@ test("citations are read in order of first citing, and numbers no item has are l
   const { cited, unknown } = citedItems(issue("标题〔2〕", "先说〔3、1〕，再说〔2，9〕。"), ITEMS);
   assert.deepEqual(cited.map((i) => i.n), [2, 3, 1]);
   assert.deepEqual(unknown, [9]);
-  assert.equal(issueChars(issue("t", "一二〔3〕 三")), 6);
+  assert.equal(issueChars(issue("t", "一二〔3〕 三")), 10, "title, preview, news, deep and close, without the brief");
+  assert.deepEqual(citedItems({ ...issue("t", "无"), deep: "细说〔4〕", close: "合起来〔1〕" }, ITEMS).cited.map((i) => i.n), [4, 1]);
 });
 
 test("of two passing drafts the livelier goes up, and the check reads what each cites in full", async () => {
@@ -75,6 +76,19 @@ test("a citation of no item is a problem even when the check finds none", async 
   assert.equal(c.drafts[0]!.problems[0]?.quote, "〔9〕");
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "改过");
+});
+
+test("the date and weekday come from the calendar, and the program's own lines frame what 十一 wrote", async () => {
+  assert.equal(dayName("2026-10-11"), "2026年10月11日，星期日");
+  assert.equal(dayName("2026-10-06"), "2026年10月6日，星期二");
+  const { ask, calls } = scripted({
+    reference_issue_write: () => issue("为什么？", "说了〔1〕。"),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-11", ask);
+  assert.ok(calls[0]!.user.startsWith("日期：2026年10月11日，星期日"));
+  const md = issueMarkdown(c, 1);
+  assert.ok(md.includes("早上好，今天是2026年10月11日，星期日。我是十一。") && md.includes("下面，细说一件。") && md.includes("我们明天早上见。"));
 });
 
 test("a day with too few items is not written", async () => {

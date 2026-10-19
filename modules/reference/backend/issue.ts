@@ -35,8 +35,12 @@ export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRIT
 export const QUOTABLE_SOURCES: ReadonlySet<string> = new Set(["rss-petpooja", "rss-zieigyou", "rss-ryourigaka", "rss-kojinkuroji", "rss-yoshitencho"]);
 /** What the writer reads of each item: its summary and the start of its text (the day's 30–40 items in one call). */
 export const ITEM_CHARS = 3000;
-/** What the check reads of each cited item: enough for a podcast transcript's main part. */
-export const FULL_CHARS = 20_000;
+/**
+ * What the check reads of each cited item: all of it. At 20,000 (the first trial day, 10-19) the check called two true
+ * sentences unsupported because they sat 25,000 and 35,000 characters into podcast transcripts, and the rewrite then
+ * dropped them for a made-up example. The bound only guards against a runaway page.
+ */
+export const FULL_CHARS = 200_000;
 
 export interface DayItem {
   /** 1, 2, 3…: how the issue cites it, as 〔3〕. */

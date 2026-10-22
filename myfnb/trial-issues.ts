@@ -14,14 +14,14 @@
 //     -v /tmp/myfnb-trial:/out worker node myfnb/trial-issues.ts …
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { addDays, beijingAt } from "@aihot/contracts/time";
+import { beijingAt } from "@aihot/contracts/time";
 import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
-import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
 import { EDITION_TIMES } from "@aihot/site";
-import { type ComposedIssue, composeIssue, type DayItem, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
+import { type ComposedIssue, composeIssue, type DayItem, isCheckPurpose, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
+import { dayItems } from "../modules/reference/backend/issues.ts";
 
 const args = process.argv.slice(2);
 const all = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] ? [args[i + 1]!] : []));
@@ -48,8 +48,6 @@ const priceOf = (m: string | undefined) => {
 };
 const writePrice = priceOf(model);
 const checkPrice = priceOf(checkModel);
-/** The check and the editor that mends what it found run on the check model. */
-const isCheck = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit";
 const cap = Number(one("--cap-usd") ?? 20);
 if (!(cap > 0)) throw new Error("--cap-usd 要大于 0");
 const days = all("--day");
@@ -63,27 +61,13 @@ const paid: Record<string, Usage> = {};
 const usd = () => Object.entries(paid).reduce((s, [m, u]) => s + (u.input * PRICES[m]![0] + u.output * PRICES[m]![1]) / 1e6, 0);
 const count = (m: string) => (u: Usage) => { const p = (paid[m] ??= { input: 0, output: 0 }); p.input += u.input; p.output += u.output; };
 
-/** Everything the daily listed in the window of `date` (or only its 精选), best scored first, numbered as the issue cites it. */
-async function dayItems(date: string): Promise<DayItem[]> {
-  const end = beijingAt(date, EDITION_TIMES.daily);
-  const start = beijingAt(addDays(date, -1), EDITION_TIMES.daily);
-  const rows = await sql<Omit<DayItem, "n">[]>`
-    SELECT p.article_id AS id, a.source_id AS "sourceId", s.name AS "sourceName", p.title, a.url,
-      coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text,
-      p.selected, p.story_id::text AS "storyId"
-    FROM publications p JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
-    WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
-    ORDER BY p.score DESC NULLS LAST, p.article_id`;
-  return rows.map((r, i) => ({ n: i + 1, ...r }));
-}
-
 console.log(`${days.length} 天 × ${model}${checkModel === model ? "" : `（核对 ${checkModel}）`}，花费上限 US$${cap}${apply ? "" : "（预览，不调模型）"}`);
 const results: Array<{ no: number; date: string; c: ComposedIssue | null; cost: number; note: string }> = [];
 if (apply) mkdirSync(dir, { recursive: true });
 
 for (const [k, date] of days.entries()) {
   const no = k + 1;
-  const items = await dayItems(date);
+  const items = await dayItems(beijingAt(date, EDITION_TIMES.daily), selectedOnly);
   if (!apply) { console.log(`${String(no).padStart(2)}  ${date}  ${items.length} 条，${items.reduce((s, i) => s + i.text.length, 0)} 字，开写要留 US$${dayUsd(items).toFixed(2)}`); continue; }
   if (usd() + dayUsd(items) > cap) { results.push({ no, date, c: null, cost: 0, note: `没写：再写可能超过上限 US$${cap}` }); continue; }
   const before = usd();
@@ -91,8 +75,8 @@ for (const [k, date] of days.entries()) {
     const write = modelAsk(model!, `issue:${date}`, receiptIds, count(model!));
     const check = modelAsk(checkModel!, `issue:${date}`, receiptIds, count(checkModel!));
     const c = await composeIssue(items, date, (purpose, system, user, schema, attempt) => {
-      if (usd() + callUsd(isCheck(purpose) ? checkPrice : writePrice, system.length + user.length) > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
-      return (isCheck(purpose) ? check : write)(purpose, system, user, schema, attempt);
+      if (usd() + callUsd(isCheckPurpose(purpose) ? checkPrice : writePrice, system.length + user.length) > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
+      return (isCheckPurpose(purpose) ? check : write)(purpose, system, user, schema, attempt);
     });
     const name = String(no).padStart(2, "0");
     writeFileSync(join(dir, `${name}.md`), issueMarkdown(c, no));

@@ -150,6 +150,7 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 | 云端运维 | 服务器多一把只给 GitHub 用的密钥，限死只能跑守门脚本 `myfnb/ops/gate.sh`（看状态和日志、跑已合进 main 的 `myfnb/` 脚本、只读账号 `myfnb_ro` 查库）；Kay 跑一次 `myfnb/ops/install.sh` 装上。发命令的工作流在私有仓库 coresystemstudio 的 `.github/workflows/myfnb-ops.yml`（本仓库公开，日志谁都看得见）。框架代码不动 | 云端会话连不了 SSH（出站只走 HTTPS 代理），服务器上的活原来只能在 Kay 电脑上做；Kay 要「全部搬上云端」 | Kay 10-16「你决定吧」，十一定（公司手册决定记录 L457） |
 | 分享图字体 | 框架的 `packages/backend/src/media/og.ts` 读 `assets/og-fonts/` 里另加的 `<名字>-400/700.ttf`，Noto Sans SC 缺的字由它们补；本站加了两组（`noto-sans-cjk-extra`：繁体、日文汉字和假名、拉丁扩展；`noto-sans-kr-hangul`：韩文），约 12MB。没有另加文件时和原版完全一样（缓存键也不变） | 原版字体只有 GB2312 加基本拉丁：10/16 线上故事和来源名里有 154 个字画不出来（营業、飲、Ç、ü、韩文），日本、港台、欧洲来源的分享图缺字。原版没有现成做法；代价是框架多 10 行，可以提给作者 | Claude 定（Kay 10/16「你决定」，十一知会） |
 | 情况页做法卡 | 一张做法卡先列 4 家，其余收在「另有 N 家的做法」后面，开关照原版 ReadingGroup 的样子（12.5px、灰、带下箭头）；电脑上摘要限宽 34em | 各家的做法正是这一页的内容；原版收起来的是同一条新闻的重复报道，没有现成的「同一件事的多家做法」，只借它的开关样子 | Kay 10/17 选方向 A（决定记录 4557a43，十一转达） |
+| 十一说 | 每天 05:00（北京时间）读前 24 小时列进「全部」的每一条，写一期十一说（`modules/reference/backend/issues.ts`，存 `reference_issues`）；08:00 日报的头条位放它：原版的「头条」小标题换成「十一说 · 第 N 期」，标题链到这一期的页面，摘要下面一行「读全文」，原本的头条照常留在看点和分区里。框架加一个模块插口 `dailyLead`（`packages/backend/src/modules.ts`，没有模块提供时日报照原版）和头条的两个可选字段 `kicker`、`href`（`ReportPaper.tsx`）。一期的页面 `/reference/issues/:no` 照参考库故事页的框架（返回、标题区、侧栏、正文标签、来源行），正文是念出来的样子，〔n〕链到「原文出处」 | 原版日报只有规则挑的头条，没有一篇读完当天全部收录的综述；Kay 10-18 13:22 定「每天放在 08:00 日报最上面」，10-20 定「直接公开上线」 | Kay 10-18、10-20（十一 10-23 照这两条接上，见手册决定记录 L779、L786） |
 
 **10/10 已经合进原版、从本表删掉的**：手机顶栏的返回文字（#171）、第一期日报以前的周和月不算到期（#170），作者 10/9 夜合并，本站 10/10 早上合并上游 `18ddc7b` 后用的就是原版。
 
@@ -465,6 +466,8 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 **Kay 13:15 同意**：试写时用 Claude API 免费额度，和 DeepSeek 各写同样的 20 期来比。正式每天用 Claude 写，要先算清每月用量再问 Kay。
 
 **哪些步骤不用等服务器通道（Kay 13:32 问是否要等到 11-01；十一补充）**：卡住的只是服务器通道（在私有仓库 coresystemstudio 里跑，用私有仓库的 Actions 分钟数，现在停在「付款失败或消费上限」，Kay 在 GitHub 账单设置里处理即可，不用等月初；也可以从 Kay 电脑直接跑服务器命令）。**不要把服务器通道搬到公开仓库，日志是公开的。** 不用等的：写代码、查信源条款、Claude Design 出稿、试写 20 期和盲核——试写在云端直接用 DeepSeek 和 Claude 的 API 做，结果先存文件，不进数据库。需要 DeepSeek key，放进新账号的环境变量，不写进聊天和手册。原文怎么拿：公开接口 `/api/site/items/:id/original` 在 `siteFulltext: false` 下 `body` 为空（10-18 实测），所以云端拿不到库里存的原文；两条路：① 从条目的原文链接直接抓网页（云端有网络），对一次性试写够用；② 请 Kay 电脑或服务器通道导出这 20 篇的 body_text。只有上线（写库、收起旧故事）才需要服务器。
+
+**10-23：十一说接上网站（全部进度盘点那条串，十一定，Kay 10-20 已批上线）**：两条十一说合成一条，以第 3 轮（本分支 PR #33）为准；分支 `claude/project-thread-7une0v` 10-22 手写的三期只留作参考。接法见 §3.0 清单「十一说」一行：每天 05:00 排一个任务写当天这一期（写手 `referenceIssue` 默认 deepseek-v4-pro-llm，核对 `referenceIssueCheck` 默认 claude-opus-5-5，`site/models.ts` 的 DEFAULTS；服务器要有 `LLM_*` 和 `CLAUDE_*` 的 key），写好存库；08:00 日报编排时有这一期就用它当头条，没写成（模型出错、额度用完、没赶上）日报照原版自己挑头条。同一天不会写第二次。从上线那天起跑满 7 天，再看质量、花费、重点有没有讲出来（决定记录 L786）。
 
 **额度恢复后的第一步**
 - **10-18 晚进度**：第 0 步做完（上面「信源条款」）；第 1 步的代码写好了（`modules/reference/backend/issue.ts`、`prompts/issue-*.md`、试写脚本 `myfnb/trial-issues.ts`，假数据测试 `modules/reference/tests/issue.standalone.test.ts`），没有接进 `eval-reference.ts`：试写结果只写文件，不进 `reference_evals`。第 2 步改在 Kay 电脑直接 SSH 跑（Kay 10-18 21:59），完整指令在 `myfnb/十一说/试写指令-2026-10-18.md`。日报头条的接线（`ReportPaper` 的 lead 位）没做：要先过 §3.0 审核、Kay 确认，排在试写和 Claude Design 出稿之后；`issue.ts` 的 `dailyLead` 先给出头条要的标题和段落。

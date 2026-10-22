@@ -308,3 +308,20 @@ export interface ItemBody {
 export type ItemText =
   | { kind: "case"; id: string; story: CaseStory; situation: { slug: string; title: string; count: Count } | null }
   | { kind: "body"; body: ItemBody };
+
+/** One 十一说 as its page reads it (backend/issues.ts readIssue, web/issue.tsx). */
+export interface IssuePage {
+  no: number;
+  /** The daily it leads, a Beijing date. */
+  date: string;
+  /** What 十一 wrote; citations are marked 〔n〕, n being a source below. */
+  issue: { title: string; brief: string[]; preview: string; news: Array<{ head: string; text: string }>; deep: string; close: string };
+  /** The program's own lines, the same every day: the greeting, the turn to the deep item, the goodbye. */
+  lines: { open: string; turn: string; end: string };
+  /** The originals it names, in order of first naming. */
+  sources: Array<{ n: number; sourceName: string; title: string; url: string }>;
+  /** How many items the day listed, all of which 十一 read. */
+  count: number;
+  prev: number | null;
+  next: number | null;
+}

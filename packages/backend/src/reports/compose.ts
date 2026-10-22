@@ -15,7 +15,7 @@ import { logError } from "../lib/log-error.ts";
 import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
-import { emit } from "../modules.ts";
+import { emit, moduleDailyLead } from "../modules.ts";
 import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
@@ -96,13 +96,21 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
   if (edition.entries.length === 0 && edition.stats.judgedReports === 0) throw new Error(`daily ${date}: nothing judged in its window`);
   const issue = arrangeDaily(edition.entries);
   const [lead, ...rest] = issue.main;
+  // A module's own lead (moduleDailyLead) takes the front page; the top entry then stays in its section and highlights.
+  // A module that fails leaves the lead to the rule: the daily goes out at its time all the same.
+  const own = lead ? await moduleDailyLead(date).catch((error: unknown) => {
+    console.error(JSON.stringify({ level: "warn", msg: "module lead failed; the daily leads by rule", report: `daily:${date}`, error: logError(error) }));
+    return null;
+  }) : null;
   const content = {
     date,
-    lead: lead
-      ? { title: lead.entry.title, leadParagraph: lead.entry.summary }
-      : { title: REPORTS.quiet.title, leadParagraph: REPORTS.quiet.paragraph.replace("{start}", windowPoint(start)).replace("{end}", windowPoint(end)) },
-    leadItemId: lead?.entry.itemId ?? null,
-    highlights: rest.slice(0, 3).map((e) => e.entry.itemId),
+    lead: own
+      ? own
+      : lead
+        ? { title: lead.entry.title, leadParagraph: lead.entry.summary }
+        : { title: REPORTS.quiet.title, leadParagraph: REPORTS.quiet.paragraph.replace("{start}", windowPoint(start)).replace("{end}", windowPoint(end)) },
+    leadItemId: own ? null : lead?.entry.itemId ?? null,
+    highlights: (own ? issue.main : rest).slice(0, 3).map((e) => e.entry.itemId),
     sections: SECTION_ORDER
       .map((label) => ({ label, items: issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry) }))
       .filter((s) => s.items.length > 0),

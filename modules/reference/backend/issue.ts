@@ -18,7 +18,7 @@
 // issue goes out every day (Kay 10-19 night: 「应该要十期出十期」); with no usable draft, the day's items go out as they stand.
 // Rounds one and two (10-18/19) took facts apart and wrote from them sentence by sentence; both failed (serious errors
 // in the sentences that joined originals), and Kay turned the column into this on 10-19.
-// Stores nothing: myfnb/trial-issues.ts tries it and writes files.
+// Stores nothing itself: backend/issues.ts writes the day's issue and keeps it; myfnb/trial-issues.ts tries it into files.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
@@ -26,6 +26,10 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson, ModelOutputError } from "@aihot/backend/providers/llm";
 
 export const ISSUE_STEP = "referenceIssue";
+/** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
+export const ISSUE_CHECK_STEP = "referenceIssueCheck";
+/** Purposes the check model answers (the writer answers reference_issue_write). */
+export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit";
 const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");

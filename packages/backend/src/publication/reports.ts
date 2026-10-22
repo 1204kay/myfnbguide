@@ -107,6 +107,8 @@ export interface IssueLead { itemId: string | null; title: string; leadParagraph
 
 /** A written lead's citation, using the same title match as a daily's front-page picture. */
 function writtenLeadId(content: Record<string, any>, kind: "daily" | "periodic", entries = entriesOf(content, kind)): string | null {
+  // A module's own lead (it has an address of its own) is about no one item.
+  if (kind === "daily" && content.lead?.href) return null;
   const title = kind === "daily" ? content.lead?.title : periodicHeadline(content);
   if (!title) return null;
   return leadItemOf(title, [], entries as ReportCitation[])?.itemId ?? null;
@@ -356,7 +358,7 @@ export async function loadReport(kind: ReportKind, key: string): Promise<ReportD
   const overview = kind === "daily" ? c.overview ?? null : periodOverview(c, kind, gone);
   const leadItem = hasCitedLead
     ? all.find((x) => x.itemId === named?.itemId)
-    : kind === "daily" ? leadItemOf(c.lead?.title, highlights, all) : (highlights.find((x) => x.available) ?? all.find((x) => x.available));
+    : kind === "daily" ? (c.lead?.href ? undefined : leadItemOf(c.lead?.title, highlights, all)) : (highlights.find((x) => x.available) ?? all.find((x) => x.available));
   const [{ prev, next }, picture] = await Promise.all([neighbors(kind, key), leadItem?.itemId && leadItem.available ? leadCover(leadItem.itemId) : null]);
   const cover = picture && leadItem ? { ...picture, caption: kind === "daily" || c.leadItemId ? null : leadItem.title } : null;
   const headline = kind === "daily" ? null : periodicHeadline(c);

@@ -89,4 +89,8 @@ export const PRESETS: Record<string, ModelPreset> = {
  * 每一步默认用的模型（步骤见后台“模型与评测”页），值是上面的名字或 default。没写的步骤用 default。
  * 例：{ score: "glm-5.3-flash-selection", groupReview: "mimo-v2.6-flash" }
  */
-export const DEFAULTS: Record<string, string> = {};
+export const DEFAULTS: Record<string, string> = {
+  // 十一说 (modules/reference): DeepSeek's strongest writes, Opus checks and mends (Kay 10-19; trial round 3, 10-13 to 10-15).
+  referenceIssue: "deepseek-v4-pro-llm",
+  referenceIssueCheck: "claude-opus-5-5",
+};

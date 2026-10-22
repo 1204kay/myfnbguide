@@ -6,6 +6,7 @@
 //   sudo docker compose exec -T worker node myfnb/fix-item-title-2026-10-23.ts [--apply]
 import { overrideFields } from "@aihot/backend/admin/content";
 import { closeDb, sql } from "@aihot/backend/db";
+import { stopBoss } from "@aihot/backend/jobs/queue";
 
 const ID = "bhkomm8vio2hu0iqharc82fja";
 const FROM = "四川火锅协会谈火锅店转向日常经营：社区小店复购率做到50%";
@@ -43,4 +44,6 @@ if (dailyTodo) {
 }
 const [after] = await sql<{ title: string }[]>`SELECT title FROM publications WHERE article_id = ${ID}`;
 console.log(`改后条目标题：${after?.title}`);
+// 人工更正会往 digest 队列加任务，打开了队列连接；不关掉进程就不退出（10-23 第一次执行就挂住了）。
+await stopBoss();
 await closeDb();

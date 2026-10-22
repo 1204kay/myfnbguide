@@ -3,6 +3,8 @@ import { Await, isRouteErrorResponse, Link, useAsyncError, useLoaderData, useNav
 import type { Route } from "./+types/item";
 import type { FeedItemSummary, SiteItemDetail } from "@aihot/contracts/site";
 import { ITEM_COPY, SITE } from "@aihot/site";
+import { CATEGORY_TAGS } from "@aihot/industry/taxonomy";
+import topicFile from "@aihot/industry/topics.json";
 import { apiGet, cachedPage, loadOr404 } from "../lib/api.server";
 import { pageReuse } from "../lib/page-reuse";
 import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "../lib/seo";
@@ -29,6 +31,17 @@ import { loadParts, readParts } from "../site-modules";
 
 export const handle: Screen = { home: "featured", toolbar: true };
 export { pageHeaders as headers } from "../lib/api.server";
+
+/**
+ * 本站：条目页的 # 标签不再重复主题和分类已经说过的（myfnb/HANDOFF.md §3.0「条目页标签」）。主题由标签组成
+ * （industry/topics.json 的 tags），分类标签就是日报分节，再列一遍只是同一件事写两次。
+ */
+const CATEGORY = new Set<string>(CATEGORY_TAGS);
+const TOPIC_TAGS = new Map<string, readonly string[]>(topicFile.topics.map((t: { slug: string; tags?: string[] }) => [t.slug, t.tags ?? []]));
+function shownTags(item: Pick<SiteItemDetail, "tags" | "topics">): string[] {
+  const covered = new Set(item.topics.flatMap((t) => TOPIC_TAGS.get(t.slug) ?? []));
+  return item.tags.filter((t) => !CATEGORY.has(t) && !covered.has(t));
+}
 
 const PosterSheet = lazy(() => import("../features/item/PosterSheet"));
 
@@ -412,10 +425,10 @@ function ItemView({ item, parts = {} }: Loaded) {
           </div>
         </RailSection>
       )}
-      {item.tags.length > 0 && (
+      {shownTags(item).length > 0 && (
         <RailSection title="标签">
           <div className="flex flex-wrap gap-1.5">
-            {item.tags.slice(0, 8).map((t) => (
+            {shownTags(item).slice(0, 8).map((t) => (
               <Link key={t} to={`/all?tag=${encodeURIComponent(t)}`} className="chip">
                 #{t}
               </Link>
@@ -552,14 +565,14 @@ function ItemView({ item, parts = {} }: Loaded) {
             <span> · {hostOf(item.links.original)}</span>
           </p>
 
-          {(item.topics.length > 0 || item.tags.length > 0) && (
+          {(item.topics.length > 0 || shownTags(item).length > 0) && (
             <div className="mt-4 flex flex-wrap gap-1.5 lg:hidden">
               {item.topics.map((t) => (
                 <Link viewTransition key={t.slug} to={`/topics/${t.slug}`} className="chip">
                   {t.name}
                 </Link>
               ))}
-              {item.tags.slice(0, 6).map((t) => (
+              {shownTags(item).slice(0, 6).map((t) => (
                 <Link key={t} to={`/all?tag=${encodeURIComponent(t)}`} className="chip">
                   #{t}
                 </Link>

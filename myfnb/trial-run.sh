@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# 十一说试写在服务器上的一整趟（myfnb/trial-issues.ts），从 Kay 的电脑用同一个 ssh 开头的几条命令就能跑完：
+# 每多一种命令形状，Kay 那边就要多点一次允许（10-23）。正在运行的服务、.env 和表结构都不动。
+#   bash myfnb/trial-run.sh start 2026-10-21 2026-10-22   后台开跑，马上返回
+#   bash myfnb/trial-run.sh status                         还在跑 / 跑完了，和日志最后几行
+#   bash myfnb/trial-run.sh pack                           把这一趟的结果打成 tar.gz 写到标准输出
+# 写稿 DeepSeek V4 Pro，核对 Opus 5.5；花费上限默认 US$8，可用 CAP_USD 改。
+set -euo pipefail
+TRIAL=/opt/myfnbguide-trial
+OUT=/tmp/myfnb-trial
+LOG=$OUT/run.log
+PID=$OUT/run.pid
+
+case "${1:-}" in
+  start)
+    shift
+    [ $# -gt 0 ] || { echo "写要跑的日期：start 2026-10-21 2026-10-22"; exit 1; }
+    if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "上一趟还在跑"; exit 1; fi
+    mkdir -p "$OUT"
+    days=(); for d in "$@"; do days+=(--day "$d"); done
+    cd /opt/myfnbguide
+    nohup sudo docker compose run --rm -T \
+      -v $TRIAL/modules/reference:/app/modules/reference:ro -v $TRIAL/myfnb:/app/myfnb:ro \
+      -v $TRIAL/site/models.ts:/app/site/models.ts:ro -v $OUT:/out \
+      worker node myfnb/trial-issues.ts --model deepseek-v4-pro-llm --check-model claude-opus-5-5 \
+      "${days[@]}" --apply --cap-usd "${CAP_USD:-8}" > "$LOG" 2>&1 &
+    echo $! > "$PID"
+    echo "开跑：$(git -C $TRIAL rev-parse --short HEAD)，${*}"
+    ;;
+  status)
+    if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "还在跑"; else echo "跑完了：$(ls -td $OUT/2*/ | head -1)"; fi
+    tail -n 15 "$LOG"
+    ;;
+  pack)
+    run=$(ls -td $OUT/2*/ | head -1)
+    tar -C "$run" -cz .
+    ;;
+  *) echo "用法：start 日期… | status | pack"; exit 1 ;;
+esac

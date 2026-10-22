@@ -383,7 +383,7 @@ const MendSchema = z.object({ titleZh: z.string().trim().min(1), summaryZh: z.st
  * words it uses most. The mended copy keeps the
  * identity guard and is used only when it leaves fewer such words and the same numbers.
  */
-async function mendWording(a: AnalyzeInputArticle, w: NonNullable<AnalysisRun["writing"]>, opts: StepOpts): Promise<NonNullable<AnalysisRun["writing"]>> {
+export async function mendWording(a: AnalyzeInputArticle, w: NonNullable<AnalysisRun["writing"]>, opts: StepOpts): Promise<NonNullable<AnalysisRun["writing"]>> {
   // A copy missing its title or summary waits for a whole one (normalizeAnalysis): nothing to mend, and no text to
   // let a model without the material fill in.
   if ((w.kind !== "understand" && w.kind !== "summarize") || !w.titleZh || !w.summaryZh) return w;

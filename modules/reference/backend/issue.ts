@@ -87,6 +87,9 @@ export function modelAsk(model: string, subject: string, receiptIds: number[], o
   };
 }
 
+/** The label the close is shown under (issueText), which the writer or the editor copied in (10-13, 10-14, 10-21). */
+const CLOSE_LABEL = /^合起来[：:]\s*/u;
+
 const IssueAnswer = z.object({
   /** The deep item's question. */
   title: z.string().trim().min(1),
@@ -95,7 +98,7 @@ const IssueAnswer = z.object({
   preview: z.string().trim().min(1),
   news: z.array(z.object({ head: z.string().trim().min(1), text: z.string().trim().min(1) })).min(1),
   deep: z.string().trim().min(1),
-  close: z.string().trim().min(1),
+  close: z.string().trim().min(1).transform((s) => s.replace(CLOSE_LABEL, "")),
 });
 export type IssueText = z.infer<typeof IssueAnswer>;
 const CheckAnswer = z.object({
@@ -223,6 +226,9 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
     // Japanese left as it stood (10-14: a blog's name, 《15年続ける蕎麦屋店主の経営ノート》), which no listener can follow.
     if (/[\u3040-\u30ff]/u.test(sentence)) out.push({ rule: 1, quote: sentence.trim(), why: "日文没翻成中文，听的人听不懂" });
   }
+  // 「十一觉得」 past the first, which the write-up allows once (10-21 said it twice): the editor says it plainly.
+  const views = written(issue).split(/(?<=[。！？\n])/u).filter((sentence) => sentence.includes("十一觉得"));
+  for (const sentence of views.slice(1)) out.push({ rule: 4, quote: sentence.trim(), why: "「十一觉得」一期只说一次，这句去掉它，直接把话说出来" });
   const citedNs = new Set(cited.map((i) => i.n));
   for (const { ns, sources } of sameEvents(items)) {
     if (sources >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {
@@ -311,7 +317,7 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
     for (const x of out.news) x.text = swap(x.text);
     out.news = out.news.filter((x) => x.text);
     out.deep = swap(out.deep);
-    out.close = swap(out.close);
+    out.close = swap(out.close).replace(CLOSE_LABEL, "");
     if (changed.length === before) kept.push(p);
   }
   if (!out.deep || !out.title) out.title = out.news[0]?.head ?? out.title;

@@ -122,6 +122,19 @@ test("Japanese left untranslated is a problem the program finds", async () => {
   assert.equal(c.chosen?.issue.title, "改过");
 });
 
+test("「十一觉得」 past the first goes to the editor, and the close never carries the label it is shown under", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: () => ({ ...issue("稿", "说了〔1〕。"), deep: "十一觉得这事要紧。后面还有。", close: "合起来：十一觉得都在算账。" }),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+    reference_issue_edit: () => ({ ...issue("改过", "说了〔1〕。"), close: "合起来：都在算账。" }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-21", ask);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["十一觉得都在算账。"]);
+  assert.equal(c.drafts[0]!.issue.close, "十一觉得都在算账。");
+  assert.ok(calls.some((x) => x.purpose === "reference_issue_edit"));
+  assert.equal(c.chosen?.issue.close, "都在算账。");
+});
+
 test("a lead sentence taken out gives way to a news head, so the daily's lead stays three sentences", () => {
   const { issue: out } = cutProblems(issue("问题", "说了〔1〕。"), [{ rule: 1, quote: "第二句说过头了", why: "" }].map((p) => ({ ...p, quote: "二" })));
   assert.deepEqual(out.brief, ["一", "二", "三"], "a quote too short to place moves nothing");

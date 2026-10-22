@@ -4,7 +4,7 @@
 // the 来源 line, and on phones the way to its situation and the reading toolbar.
 import { useState } from "react";
 import { Link, useLoaderData, useNavigate, type LoaderFunctionArgs, type MetaArgs } from "react-router";
-import { ITEM_COPY, SITE } from "@aihot/site";
+import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { IconArrowLeft, IconCopy, IconExternal, IconMenu, IconMore, IconShare } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
@@ -109,7 +109,7 @@ export default function CaseRoute() {
     <>
       {item.reason && (
         <RailSection title={ITEM_COPY.reasonLabel}>
-          <p className="text-[13.5px] leading-[1.8] text-ink-2">{item.reason}</p>
+          <ul className="space-y-1.5">{reasonLines(item.reason).map((l, i) => <li key={i} className="text-[13.5px] leading-[1.8] text-ink-2">{l}</li>)}</ul>
         </RailSection>
       )}
       <RailSection title={`收在 ${SITE.name} 参考`}>
@@ -157,7 +157,7 @@ export default function CaseRoute() {
           {item.reason && (
             <section className="mt-6 border-t border-line pt-4 lg:hidden">
               <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
-              <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
+              <ul className="space-y-1.5">{reasonLines(item.reason).map((l, i) => <li key={i} className="text-[15px] leading-[1.75] text-ink-2">{l}</li>)}</ul>
             </section>
           )}
 

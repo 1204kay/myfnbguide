@@ -2,7 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { Await, isRouteErrorResponse, Link, useAsyncError, useLoaderData, useNavigate, useRevalidator, type ClientLoaderFunctionArgs } from "react-router";
 import type { Route } from "./+types/item";
 import type { FeedItemSummary, SiteItemDetail } from "@aihot/contracts/site";
-import { ITEM_COPY, SITE } from "@aihot/site";
+import { ITEM_COPY, SITE, reasonLines } from "@aihot/site";
 import { CATEGORY_TAGS } from "@aihot/industry/taxonomy";
 import topicFile from "@aihot/industry/topics.json";
 import { apiGet, cachedPage, loadOr404 } from "../lib/api.server";
@@ -38,6 +38,17 @@ export { pageHeaders as headers } from "../lib/api.server";
  */
 const CATEGORY = new Set<string>(CATEGORY_TAGS);
 const TOPIC_TAGS = new Map<string, readonly string[]>(topicFile.topics.map((t: { slug: string; tags?: string[] }) => [t.slug, t.tags ?? []]));
+/** 要点一行一点；只有一行（旧条目）时照原样显示一段。 */
+function Reason({ text, className }: { text: string; className: string }) {
+  const lines = reasonLines(text);
+  if (lines.length < 2) return <p className={className}>{text}</p>;
+  return (
+    <ul className="list-disc space-y-1.5 pl-[1.2em]">
+      {lines.map((l, i) => <li key={i} className={className}>{l}</li>)}
+    </ul>
+  );
+}
+
 function shownTags(item: Pick<SiteItemDetail, "tags" | "topics">): string[] {
   const covered = new Set(item.topics.flatMap((t) => TOPIC_TAGS.get(t.slug) ?? []));
   return item.tags.filter((t) => !CATEGORY.has(t) && !covered.has(t));
@@ -220,7 +231,7 @@ function ItemPreview({ preview }: { preview: FeedItemSummary }) {
         {preview.reason && (
           <section className="mt-6 border-t border-line pt-4">
             <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
-            <p className="text-[15px] leading-[1.75] text-ink-2">{preview.reason}</p>
+            <Reason text={preview.reason} className="text-[15px] leading-[1.75] text-ink-2" />
           </section>
         )}
         <div className="mt-9 space-y-3 border-t border-line pt-6" aria-hidden="true">
@@ -406,14 +417,7 @@ function ItemView({ item, parts = {} }: Loaded) {
   );
   const notes = (
     <>
-      {item.reason && !summaryOnly ? (
-        <RailSection title={ITEM_COPY.reasonLabel}>
-          {verdict && <div className="mb-3">{verdict}</div>}
-          <p className="text-[13.5px] leading-[1.8] text-ink-2">{item.reason}</p>
-        </RailSection>
-      ) : (
-        verdict && <RailSection title={shownScore(item.score) !== null ? "AI 评分" : undefined}>{verdict}</RailSection>
-      )}
+      {verdict && <RailSection title={shownScore(item.score) !== null ? "AI 评分" : undefined}>{verdict}</RailSection>}
       {item.topics.length > 0 && (
         <RailSection title="主题">
           <div className="flex flex-wrap gap-1.5">
@@ -504,9 +508,9 @@ function ItemView({ item, parts = {} }: Loaded) {
           )}
 
           {item.reason && !summaryOnly && (
-            <section className="mt-6 border-t border-line pt-4 lg:hidden">
+            <section className="mt-6 border-t border-line pt-4">
               <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
-              <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
+              <Reason text={item.reason} className="text-[15px] leading-[1.75] text-ink-2 xl:text-[16px]" />
             </section>
           )}
 

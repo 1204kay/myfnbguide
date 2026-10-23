@@ -170,7 +170,7 @@ for (const phone of [false, true]) test(`a kept group is not greyed and its ${ph
     const title = page.getByRole("heading", { name: "代表文章" });
     await expect(title).toBeVisible();
     assert.equal(await greyed("代表文章"), false, "the kept group's card is not greyed");
-    await page.locator("article", { has: title }).getByRole("button", { name: "另外 1 家也报道了" }).filter({ visible: true }).click();
+    await page.locator("article", { has: title }).getByRole("button", { name: "另有 1 家来源报道" }).filter({ visible: true }).click();
     await expect(page.getByText("组内未读报道", { exact: true }).filter({ visible: true })).toBeVisible();
     assert.equal(await greyed("组内未读报道"), false, "an unread report keeps the normal colour");
     assert.equal(await greyed("组内已读报道"), true, "a read report is grey");

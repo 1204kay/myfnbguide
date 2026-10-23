@@ -25,6 +25,24 @@ const PAYWALLED_HOSTS = /^https?:\/\/(www\.)?note\.com\//;
 const MIN_ORIGINAL = 400;
 
 const isPoint = (p: Problem) => p.field === "point" || p.field === "points";
+
+/**
+ * Country names in our copy are ours to keep (check-item.md rule 6: readers are in many countries). 10-23 old items,
+ * batch 3: with that rule in the prompt the checker still turned 「中国火锅连锁」 into 「火锅连锁」 and 「在中国」 into
+ * 「全国」, so a fix that drops a country the sentence named is not used, and its problem is set aside with it:
+ * it was judged on the wrong premise. What else that fix changed in the sentence is lost; the sentence stays as written.
+ */
+const COUNTRIES = /中国|日本|韩国|美国|英国|法国|德国|意大利|西班牙|葡萄牙|荷兰|比利时|瑞士|瑞典|挪威|丹麦|芬兰|爱尔兰|奥地利|波兰|希腊|土耳其|俄罗斯|澳大利亚|新西兰|加拿大|墨西哥|巴西|阿根廷|智利|秘鲁|哥伦比亚|印度尼西亚|印尼|印度|泰国|越南|新加坡|马来西亚|菲律宾|柬埔寨|缅甸|阿联酋|沙特|以色列|南非|台湾|香港|澳门/g;
+export function dropsCountry(before: string, after: string): boolean {
+  return [...new Set(before.match(COUNTRIES) ?? [])].some((c) => !after.includes(c));
+}
+function sentenceOf(d: Partial<Draft>, p: Problem): string | undefined {
+  if (p.field === "title") return d.title;
+  if (p.field === "lead") return d.lead;
+  return isPoint(p) ? d.points?.[p.point - 1] : undefined;
+}
+const keepingCountries = (d: Partial<Draft>, ps: Problem[]) =>
+  ps.filter((p) => !(p.fix && dropsCountry(sentenceOf(d, p) ?? "", p.fix)));
 const serious = (ps: Problem[]) => ps.filter((p) => p.severity === "serious");
 const toFix = (ps: Problem[]) => ps.filter((p) => p.severity === "serious" || p.severity === "misleading");
 
@@ -48,6 +66,7 @@ export interface CheckResult { draft: Draft; held: boolean; copyWrong: boolean; 
 export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: string) => Promise<{ problems: Problem[]; receiptId: number }>): Promise<CheckResult> {
   const c = await ask(first, "check");
   const receiptIds = [c.receiptId];
+  c.problems = keepingCountries(first, c.problems);
   const fixes = toFix(c.problems);
   // No points means the reader still has to click.
   if (!fixes.length) return { draft: first, held: first.points.length === 0, copyWrong: false, receiptIds };
@@ -63,6 +82,7 @@ export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: s
   if (!Object.keys(partial).length) return { draft: fixed, held: held || fixed.points.length === 0, copyWrong: held, receiptIds };
   const r2 = await ask(partial, "recheck");
   receiptIds.push(r2.receiptId);
+  r2.problems = keepingCountries(partial, r2.problems);
   // The re-check only stops serious errors; a misleading one takes the checker's fix, with no third check
   // (10-23: re-checks kept finding new "misleading" in the changed sentences and held every item).
   const grave = serious(r2.problems);

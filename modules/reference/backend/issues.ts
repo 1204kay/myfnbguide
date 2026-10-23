@@ -12,7 +12,7 @@ import { beijingAt } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
 import type { IssuePage } from "../types.ts";
 import { issueAudio } from "./audio.ts";
-import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, ISSUE_VERSION, modelAsk } from "./issue.ts";
+import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, leadParagraph, ISSUE_VERSION, modelAsk } from "./issue.ts";
 
 /** Where an issue is read. */
 export const issuePath = (no: number) => `/reference/issues/${no}`;
@@ -74,7 +74,7 @@ export async function issueLead(date: string): Promise<{ kicker: string; title: 
     SELECT no, content->'issue'->>'title' AS title, content->'issue'->'brief' AS brief
     FROM reference_issues WHERE date = ${date} AND status = 'issue'`;
   if (!row?.title || !row.brief?.length) return null;
-  return { kicker: `十一说 · 第 ${row.no} 期`, title: row.title, leadParagraph: row.brief.join(""), href: issuePath(row.no) };
+  return { kicker: `十一说 · 第 ${row.no} 期`, title: row.title, leadParagraph: leadParagraph(row.brief), href: issuePath(row.no) };
 }
 
 /** One issue as its page reads it: the program's lines around what 十一 wrote, and the originals it names. */

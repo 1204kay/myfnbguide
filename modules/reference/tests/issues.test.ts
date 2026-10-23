@@ -67,10 +67,10 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.deepEqual(await writeIssue(DAY, editionAt("daily", DAY, -1800)), { date: DAY, status: "issue", no: 1 });
   assert.equal(users.length, calls, "a day written is not written again");
 
-  assert.deepEqual(await issueLead(DAY), { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价〔1〕。乙店没涨〔2〕。丙店在等〔3〕。", href: "/reference/issues/1" });
+  assert.deepEqual(await issueLead(DAY), { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价。乙店没涨。丙店在等。", href: "/reference/issues/1" });
   await composeDaily(DAY);
   const daily = await loadReport("daily", DAY);
-  assert.deepEqual(daily?.lead, { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价〔1〕。乙店没涨〔2〕。丙店在等〔3〕。", href: "/reference/issues/1" });
+  assert.deepEqual(daily?.lead, { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价。乙店没涨。丙店在等。", href: "/reference/issues/1" });
   assert.equal(daily?.leadItemId, null, "the issue leads, not an item");
   assert.equal(daily?.cover, null);
   assert.equal(daily?.highlights[0]?.itemId, ids[0], "the item the rule would have led with stays, first of the highlights");

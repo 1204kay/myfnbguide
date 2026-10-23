@@ -23,7 +23,8 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
-import { chatJson, ModelOutputError } from "@aihot/backend/providers/llm";
+import { chatJson } from "@aihot/backend/providers/llm";
+import { ModelOutputError } from "@aihot/backend/providers/receipts";
 
 export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */

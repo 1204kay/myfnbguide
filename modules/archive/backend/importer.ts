@@ -5,10 +5,10 @@ import { XMLParser } from "fast-xml-parser";
 import { sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { queueProcessing } from "@aihot/backend/jobs/content";
-import { guardedFetch } from "@aihot/backend/lib/http-fetch";
+import { guardedFetch, HttpStatusError } from "@aihot/backend/lib/http-fetch";
 import { admitListing } from "@aihot/backend/sources/filters";
 import { fetchRss } from "@aihot/backend/sources/rss";
-import { FetchError, type Candidate, type SourceRow } from "@aihot/backend/sources/types";
+import type { Candidate, SourceRow } from "@aihot/backend/sources/types";
 import type { ArchivePlan } from "../plan.ts";
 
 /** The pause between two pages of one archive: a blog answered 429 to pages read back to back (Petpooja, 10/4). Tests set 0. */
@@ -83,7 +83,7 @@ export async function importSource(plan: ArchivePlan): Promise<ImportResult> {
       try {
         listing = await readListing(source, url, source.tags.includes("播客"));
       } catch (error) {
-        if (i > 0 && error instanceof FetchError && error.status === 404) break;
+        if (i > 0 && error instanceof HttpStatusError && error.status === 404) break;
         throw error;
       }
       const { listed, audio } = listing;

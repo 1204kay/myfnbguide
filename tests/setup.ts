@@ -32,6 +32,8 @@ const STEP_MODELS: Record<string, [env: string, model: string]> = {
   translate: ["TRANSLATE_MODEL", "deepseek-flash"], wording: ["WORDING_MODEL", "deepseek-flash"],
 };
 for (const [step, [env, model]] of Object.entries(STEP_MODELS)) if (!DEFAULTS[step]) process.env[env] ??= model;
+// The checker's site default reads the deployment's own key (LLM_*); the tests send it to the stubbed DeepSeek preset.
+process.env.CHECK_MODEL ??= "deepseek-flash";
 
 /**
  * Sends the calls of the named model presets to a stub: sets each one's address and key variables, which

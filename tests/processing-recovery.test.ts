@@ -32,7 +32,8 @@ const provider = await stub(async (_hit, request) => {
     refuseScore = false;
     return new Reply(503, { error: "temporary outage" });
   }
-  const content = step === "prefilter" ? { label: original ? "BLOCK" : "PASS", reason: "local fixture" }
+  const content = step === "check" ? { problems: [] }
+    : step === "prefilter" ? { label: original ? "BLOCK" : "PASS", reason: "local fixture" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
     : step === "structure" ? { category: CATEGORIES[0]!.key, tags: [], subjects: [], fact: null }
     : { itemType: ITEM_TYPES[0], authorRole: "principal", tags: [CATEGORY_TAGS[0]], editorialJudgment: "模型能力提升", titleZh: `新判断 ${T}`, summaryZh: "模型发布并提供评测和价格。" };

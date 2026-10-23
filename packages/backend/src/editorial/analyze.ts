@@ -18,6 +18,7 @@ import { sql } from "../db.ts";
 import { chatJson, ModelOutputError, type ContentPart } from "../providers/llm.ts";
 import { completeReceipt, ProviderRejectedError, ReceiptUnknownError } from "../providers/receipts.ts";
 import { collapseWhitespace } from "../lib/text.ts";
+import { checkCopy } from "./check.ts";
 import { modelFor, modelSupportsVision } from "./models.ts";
 import { buildMaterial, firstImagePart, loadAnalyzeInput, type AnalyzeInputArticle } from "./input.ts";
 import { pageFetchable } from "../content/extract.ts";
@@ -207,6 +208,8 @@ export interface AnalysisRun {
     titleZh: string;
     summaryZh: string;
     reasonZh: string | null;
+    /** The checker found the copy still wrong, or the original too thin: not selected (check.ts). */
+    held?: boolean;
     itemType?: string;
     authorRole?: string;
     identityGuard?: IdentityGuard;
@@ -473,9 +476,15 @@ export async function runAnalysis(a: AnalyzeInputArticle, opts: StepOpts = {}): 
     const near = sum !== null && (sum >= scores!.threshold * SCORE_CALLS || sum > UNDERSTAND_FLOOR * SCORE_CALLS);
     const s = await structure;
     if ("error" in s) throw s.error;
-    const writing: NonNullable<AnalysisRun["writing"]> = original
+    let writing: NonNullable<AnalysisRun["writing"]> = original
       ? { kind: "verbatim", model: null, titleZh: original.title, summaryZh: original.summary ?? "", reasonZh: null, receiptIds: [], reused: true }
       : await mendWording(a, (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts)), opts);
+    // Only copy that will be shown as selected is checked; a near miss is not paid for.
+    if (writing.kind === "understand" && sum !== null && sum >= scores!.threshold * SCORE_CALLS) {
+      checkAnalysisRunning();
+      const c = await checkCopy(a, writing, subjectOf(a), tagged(opts.attemptTag, "check"));
+      writing = { ...writing, titleZh: c.draft.title, summaryZh: c.draft.lead, reasonZh: c.draft.points.join("\n") || null, held: c.held, receiptIds: [...writing.receiptIds, ...c.receiptIds] };
+    }
     return { prefilter, scores, writing, structure: s.value };
   } finally {
     // A score/writing error or deploy must not let the job finish while a paid structure request
@@ -497,7 +506,7 @@ export function normalizeAnalysis(run: AnalysisRun) {
   const sum = values?.length === SCORE_CALLS ? values.reduce((total, v) => total + v, 0) : null;
   const score = sum === null ? null : Math.floor(sum / SCORE_CALLS);
   const threshold = run.scores?.threshold ?? null;
-  const selected = relevance === "pass" && sum !== null && threshold !== null && sum >= threshold * SCORE_CALLS;
+  const selected = relevance === "pass" && sum !== null && threshold !== null && sum >= threshold * SCORE_CALLS && !run.writing?.held;
   const subjects = run.structure?.subjects ?? [];
   const tags = [...(run.structure?.tags ?? [])];
   for (const s of subjects) {

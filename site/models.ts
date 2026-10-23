@@ -84,4 +84,7 @@ export const PRESETS: Record<string, ModelPreset> = {
  * 每一步默认用的模型（步骤见后台“模型与评测”页），值是上面的名字或 default。没写的步骤用 default。
  * 例：{ score: "glm-5.3-flash-selection", groupReview: "mimo-v2.6-flash" }
  */
-export const DEFAULTS: Record<string, string> = {};
+export const DEFAULTS: Record<string, string> = {
+  // 要点的核对员（决定记录 2026-10-23）：考试 11/11 抓到严重错。
+  check: "deepseek-v4-pro-llm",
+};

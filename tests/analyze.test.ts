@@ -61,6 +61,7 @@ const provider = await stub((_hit, req) => {
     const judgment = marker === "POINTS" ? [1, 2, 3, 4, 5, 6, 7].map(point).join("\n") : `理由 ${marker}`;
     return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "工资", "外劳", "不存在的标签"], editorialJudgment: judgment, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
   }
+  if (step === "check") return answer({ problems: [] });
   if (step === "structure") return answer({ category: "policy", tags: ["政策/法规", "税费"], subjects: ["mcdonalds", "unknown-co"], scope: "single", fact: { title: `事实 ${marker}`, subject: "某州政府", action: "上调", object: "最低工资", occurredAt: null, evidence: "the state raised the minimum wage", conditions: [] } });
   return answer(`title_zh: 翻译标题 ${marker}\nsummary_zh: 翻译摘要 ${marker}。第二句补充影响。`);
 });
@@ -94,9 +95,9 @@ test("a selected item: prefilter, two scores, the content understanding and the 
   const id = await article("CLEAR");
   const res = await analyzeArticle(id);
   assert.deepEqual([res!.output!.selected, res!.output!.score], [true, T1 + 1], `${T1 + 3} + ${T1 - 1} >= 2 × ${T1}; the mean is shown`);
-  assert.deepEqual(calls("CLEAR").sort(), ["prefilter", "score", "score", "structure", "understand"]);
+  assert.deepEqual(calls("CLEAR").sort(), ["check", "prefilter", "score", "score", "structure", "understand"]);
   const r = await row(id);
-  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "policy", 5]);
+  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "policy", 6]);
   // Failure case: the writer's independent labels contradict the structural category.
   assert.deepEqual(r.tags, ["政策/法规", "税费", "麦当劳"], "category and tags come from the same structural judgement, plus the verified subject tag");
   assert.deepEqual(r.subjects, ["mcdonalds"]);

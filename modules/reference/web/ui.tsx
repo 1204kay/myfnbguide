@@ -11,6 +11,7 @@ import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
+import { copyText } from "@aihot/web/lib/clipboard";
 import { siteUrl } from "@aihot/web/lib/seo";
 import { comparable, day, exact, figureSplit, fullCountText, listCount, listCountText, num, restCountText, tellersText } from "../format.ts";
 import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
@@ -107,7 +108,7 @@ export function Who({ s, size = 22 }: { s: SituationRow; size?: number }) {
 /** A card's look (layout A7): hairline, the accent on hover, a sunk ground while pressed, the accent's ring for the keyboard. */
 export const CARD = "card relative transition-colors hover:border-accent touch:active:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:outline-offset-2 has-[.stretch:focus-visible]:outline-accent";
 /** The link that makes a whole card or row clickable; its own other links sit above it. */
-export const STRETCH = "stretch after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none";
+export const STRETCH = "stretch after:absolute after:inset-0 focus-visible:outline-none";
 /** A place in 店家谈得最多的事, as the hot list writes it (AIHOT routes/hot.tsx): 01, its colour by place. */
 const RANK_COLOR = ["text-rank-1", "text-rank-2", "text-rank-3"];
 export const rankColor = (rank: number) => RANK_COLOR[rank - 1] ?? "text-rank-rest";
@@ -189,7 +190,7 @@ export function Practice({ p }: { p: PracticeCard }) {
       </ul>
       {!open && p.lines.length > LINES_SHOWN && (
         // The original's toggle for a group's other reports (AIHOT features/feed/ReadingGroup.tsx Toggle): 12.5px, grey,
-        // a chevron down; 44px tall to tap. HANDOFF §3.0: the original folds repeats of one story, this the shops' own ways.
+        // a chevron down; 44px tall to tap. myfnb/DIFFERENCES.md: the original folds repeats of one story, this the shops' own ways.
         <button type="button" aria-expanded={false} onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])}
           className="relative z-10 inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent">
           另有 {p.lines.length - LINES_SHOWN} 家的做法<IconChevronDown size={13} />
@@ -325,7 +326,7 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
     const url = `${siteUrl()}${path}`;
     try {
       if (navigator.share && matchMedia("(pointer: coarse)").matches) return void (await navigator.share({ title, url }));
-      await navigator.clipboard.writeText(`${title}\n${url}`);
+      await copyText(`${title}\n${url}`);
       setText("链接已复制");
     } catch {
       // The reader closed the sheet, or the clipboard is not allowed here.
@@ -333,7 +334,7 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
   };
   const copy = async (url: string) => {
     try {
-      await navigator.clipboard.writeText(url);
+      await copyText(url);
       setText("链接已复制");
     } catch {
       // clipboard unavailable
@@ -481,7 +482,7 @@ function Legend({ rows }: { rows: Array<{ label: string; value: ReactNode; tone:
     <ul className="mt-3 grid gap-x-8 gap-y-1.5 text-[14px] leading-[1.5] sm:grid-cols-2 sm:text-[15px]">
       {rows.map((r, i) => (
         <li key={i} className="flex items-baseline gap-2">
-          <i className={`size-3 shrink-0 translate-y-[1px] rounded-[3px] ${r.tone}`} />
+          <i className={`size-3 shrink-0 translate-y-[1px] rounded-mark ${r.tone}`} />
           <span className="min-w-0 flex-1 text-ink-3">{r.label}</span>
           <span className="num shrink-0 font-semibold text-ink-2">{r.value}</span>
         </li>

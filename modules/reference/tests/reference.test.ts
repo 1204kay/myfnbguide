@@ -745,13 +745,11 @@ test("every listed item that is no story gets a write-up under its summary, chec
   assert.ok(rewrite.includes(news) && rewrite.includes(short), "the rewrite script writes both");
   await sql`UPDATE reference_bodies SET prompt_version = ${current!} WHERE article_id = ${news}`;
 
-  const page = await get(`/api/reference/items/${news}`);
-  assert.deepEqual([page.kind, page.body.lead], ["body", "美国一家餐饮媒体介绍一家小酒馆的布草账单。"]);
+  // The item page shows only the way to a story (十一 10-24: three parts on every item page); a write-up is not shown.
+  assert.equal((await app.inject(`/api/reference/items/${news}`)).statusCode, 404, "a written-up item shows nothing under its three parts");
   const story = await get(`/api/reference/items/${ids.FIRST}`);
-  assert.deepEqual([story.kind, story.id, story.situation.slug], ["case", ids.FIRST, "busy-no-profit"], "its story, and the way to its situation");
+  assert.deepEqual([story.id, story.situation.slug, "story" in story], [ids.FIRST, "busy-no-profit", false], "the way to its situation, not the story");
   assert.equal((await app.inject(`/api/reference/items/${short}`)).statusCode, 404, "nothing to show");
-  await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${news}`;
-  assert.equal((await app.inject(`/api/reference/items/${news}`)).statusCode, 404, "a withdrawn item shows no write-up");
 });
 
 test("a story already shown stays when writing it again fails the checks or comes out thin", async () => {

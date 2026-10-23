@@ -304,10 +304,12 @@ export interface ItemBody {
   open: string | null;
 }
 
-/** What the item page shows under its summary (web/item-part.tsx): the item's story in the library, or its write-up. */
-export type ItemText =
-  | { kind: "case"; id: string; story: CaseStory; situation: { slug: string; title: string; count: Count } | null }
-  | { kind: "body"; body: ItemBody };
+/**
+ * What the item page shows under its three parts (web/item-part.tsx): only the way to the item's story in the library.
+ * The story itself and the write-ups (backend/body.ts) are no longer drawn there (十一 10-24: every item page has the same
+ * three parts, title, 导读 and 原文要点; Kay「只保留一种」).
+ */
+export interface ItemText { id: string; title: string; situation: { slug: string; title: string; count: Count } | null }
 
 /** One 十一说 as its page reads it (backend/issues.ts readIssue, web/issue.tsx). */
 export interface IssuePage {
@@ -324,4 +326,6 @@ export interface IssuePage {
   count: number;
   prev: number | null;
   next: number | null;
+  /** The issue read aloud (backend/audio.ts), or null: then the page has no 听 button. */
+  audio: { url: string; seconds: number } | null;
 }

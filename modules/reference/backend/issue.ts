@@ -23,7 +23,8 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { z } from "zod";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
-import { chatJson, ModelOutputError } from "@aihot/backend/providers/llm";
+import { chatJson } from "@aihot/backend/providers/llm";
+import { ModelOutputError } from "@aihot/backend/providers/receipts";
 
 export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
@@ -503,10 +504,14 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
 
 // ---------------------------------------------------------------- the daily's top, and a page to read
 
+/** The three sentences as the daily's lead shows them: the 〔n〕 marks go to the originals on the issue's page, and the
+ * daily has no originals under it, so there they would be bare numbers to a reader (10-24, issues 1 and 2). */
+export const leadParagraph = (brief: string[]) => brief.join("").replace(/〔[^〕]*〕/gu, "");
+
 /** What the daily's lead carries for an issue (the original ReportPaper lead: a title and a paragraph). */
 export function dailyLead(c: ComposedIssue, no: number): { kicker: string; title: string; leadParagraph: string } | null {
   if (c.status !== "issue" || !c.chosen) return null;
-  return { kicker: `十一说 · 第 ${no} 期`, title: c.chosen.issue.title, leadParagraph: c.chosen.issue.brief.join("") };
+  return { kicker: `十一说 · 第 ${no} 期`, title: c.chosen.issue.title, leadParagraph: leadParagraph(c.chosen.issue.brief) };
 }
 
 const RULES: Record<number, string> = { 1: "说是原文讲的，原文里没有／引了不能引的原句", 2: "假设的例子读起来像真事", 3: "把一家店的情况说成通用", 4: "漏了大事或快讯不合格式（程序查的）" };

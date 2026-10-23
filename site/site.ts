@@ -2,6 +2,8 @@
 // 网页和后端都读它；改完重新构建（docker compose up --build）即可生效。
 // 域名不在这里：部署时用环境变量 SITE_URL 设置。
 
+import type { Founder } from "@aihot/contracts/site-config";
+
 /**
  * 日报、周报、月报什么时候出（北京时间，HH:mm）：日报收这个时间之前的 24 小时，周报在每个自然周之后的周一出，
  * 月报在每月 1 日出。排程、成刊时间窗口、缺期告警和所有提到时间的文案都读它（public/ 里的文件写占位
@@ -66,13 +68,15 @@ export const SITE = {
   footerNote: "由 AIHOT 开源框架驱动",
   /** 中国大陆网站的 ICP 备案号（选填），填了就显示在侧栏底部和“我的”页底部，并链接到工信部备案系统。 */
   icp: null as string | null,
+  /** 中国大陆网站的公安备案信息（选填），填了显示在侧栏底部和“我的”页底部。 */
+  psb: null as string | null,
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
   github: null as string | null,
   /** 结构化数据里的网站运营者（搜索引擎用）。 */
   organization: {
     name: "MYFNB",
     /** 创始人（选填）。 */
-    founder: null as null | { name: string; alternateName?: string; jobTitle?: string; description?: string; url?: string },
+    founder: null as Founder | null,
   },
   /** 抓取信源时报上的名字和版本（User-Agent 里用），不要冒用别的站。 */
   crawlerName: "MyFnBBot/1.0",
@@ -116,7 +120,7 @@ export const NAV = {
   /**
    * 不放进导航的引擎入口，目前只支持热点榜（"/hot"）和主题（"/topics"）。页面照样能打开；原来回到它的返回按钮和链接改回精选，
    * 写 "/hot" 时首页也不放当前热点。本站两项都不放：热点榜要几家来源同时讨论同一件事才有内容，本站的来源还凑不出来，10/6 线上是空的；
-   * 主题页各主题只列最近的精选，多数是几天到几年前的旧条目，所以不放进导航（出处见 myfnb/HANDOFF.md §3.0）。
+   * 主题页各主题只列最近的精选，多数是几天到几年前的旧条目，所以不放进导航（出处见 myfnb/DIFFERENCES.md）。
    */
   hidden: ["/hot", "/topics"] as Array<"/hot" | "/topics">,
 };
@@ -125,10 +129,10 @@ export const NAV = {
 export const ITEM_COPY = {
   /**
    * 模型写的那段理由叫什么：卡片、详情页、Markdown 导出、给 Agent 的回答和群推送都用它。本站写的是原文的要点，一行一点
-   * （10-23，读者不点原文也要知道原文说了什么；myfnb/HANDOFF.md §3.0），旧条目只有一行。
+   * （10-23，读者不点原文也要知道原文说了什么；myfnb/DIFFERENCES.md），旧条目只有一行。
    */
   reasonLabel: "原文要点",
-  /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。本站用「来源」（myfnb/HANDOFF.md §3.0）。 */
+  /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。本站用「来源」（myfnb/DIFFERENCES.md）。 */
   sourceWord: "来源",
   /** 读者在网页和分享图上看不看得到 AI 评分。只管显示：公开 API 和 MCP 的数据照样带 score，后台照常显示。 */
   showScore: false,
@@ -249,8 +253,6 @@ export const ALERTS = {
   usualFlow: null as string | null,
   /** worker 停了的告警里，怎么看它的日志。 */
   workerLogs: "看 worker 的日志（docker compose logs worker）",
-  /** 某家模型服务拒绝服务或额度用完时，告警里说哪些步骤停了；没写的服务用通用说法。 */
-  modelStops: {} as Record<string, string>,
 };
 
 /** 后台新建信源时的默认设置。 */

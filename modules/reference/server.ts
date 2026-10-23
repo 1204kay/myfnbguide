@@ -43,6 +43,9 @@ const BODIES = defineQueue<{ articleId: string }>({
 
 // 十一说 (backend/issues.ts): one a day; two drafts, checks and up to five rounds of mending take long, so it runs as a job
 // of its own with room for that, and one retry for a model that failed.
+// The first day 十一说 is written, a Beijing date; null: not yet. Each issue costs (about US$2, mostly the check), so
+// the code goes up first and the day is Kay's (10-23: launch waits on his date and on the month's model credit).
+const ISSUES_FROM = null as string | null;
 const ISSUES = defineQueue<{ date: string }>({
   name: "reference.issue",
   options: { policy: "short", retryLimit: 1, retryDelay: 300, expireInSeconds: 3 * 3600 },
@@ -121,6 +124,7 @@ export default defineServerModule({
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
       const date = beijingDate(new Date());
+      if (!ISSUES_FROM || date < ISSUES_FROM) return { queued: 0, reason: "十一说 has not started" };
       await enqueueOn(ISSUES, { date }, { singletonKey: date });
       return { queued: 1, date };
     },

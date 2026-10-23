@@ -72,7 +72,7 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "anthropic", model: "claude-sonnet-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
     extra: { temperature: 1, thinking: { type: "between_tools" } }, jsonMode: false,
   },
-  // 十一说 is written and checked by Opus (Kay 10-19: 「为什么不要一开始就用 opus」). Opus 5.5 takes no sampling
+  // 十一说 is checked, mended and picked by Opus (Kay 10-19; DeepSeek writes, 10-23). Opus 5.5 takes no sampling
   // parameters, so extra drops the framework's temperature (undefined is left out of the request); it always thinks,
   // and reasoningTokens leaves room for that.
   "claude-opus-5-5": {

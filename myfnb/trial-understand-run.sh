@@ -79,6 +79,12 @@ case "${1:-}" in
       worker node myfnb/trial-check.ts $flags --apply 2>&1 | grep --line-buffered -v '"level"'
     cat "$(ls -td $OUT/check-*/ | head -1)/核对.md"
     ;;
+  check-result)
+    # 上一趟考试写下的结果，原样打出来；没有就说没有（不重跑、不花钱）。
+    run=$(ls -td $OUT/check-*/ 2>/dev/null | head -1)
+    if [ -z "$run" ]; then echo "服务器上没有考试结果文件夹"; exit 0; fi
+    echo "=== $run"; ls -la "$run"; cat "$run/核对.md"
+    ;;
   check-status)
     # 考试跑着时只读地看一眼：容器还在不在、核了几份、花了多少（回执记的金额）。
     cd /opt/myfnbguide
@@ -102,7 +108,7 @@ case "${1:-}" in
       SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
         AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
     ;;
-  *) echo "用法：start | status | pack | all | check | check-status | fix | fix-apply | raw"; exit 1 ;;
+  *) echo "用法：start | status | pack | all | check | check-result | check-status | fix | fix-apply | raw"; exit 1 ;;
 esac
 }
 

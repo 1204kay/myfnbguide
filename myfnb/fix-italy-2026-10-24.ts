@@ -17,7 +17,6 @@ type Field = "title" | "summary" | "reason";
 const FIX: Array<{ prefix: string; field: Field; from: string; to: string }> = [
   { prefix: "g5fuya83", field: "title", from: "只有意大利一半", to: "只有意大利全国平均的一半" },
   { prefix: "g5fuya83", field: "summary", from: "意大利平均", to: "意大利全国平均" },
-  { prefix: "g5fuya83", field: "reason", from: "意大利平均", to: "意大利全国平均" },
 ];
 const DROP_TAGS: Record<string, string[]> = { bfjxsb5i: ["中国"] };
 

@@ -137,11 +137,25 @@ test("「十一觉得」 past the first goes to the editor, and the close never 
   assert.equal(c.chosen?.issue.close, "都在算账。");
 });
 
-test("a lead sentence taken out gives way to a news head, so the daily's lead stays three sentences", () => {
+test("a lead sentence taken out gives way to a part no sentence left tells, the deep piece first, so the daily's lead stays three sentences", () => {
   const { issue: out } = cutProblems(issue("问题", "说了〔1〕。"), [{ rule: 1, quote: "第二句说过头了", why: "" }].map((p) => ({ ...p, quote: "二" })));
   assert.deepEqual(out.brief, ["一", "二", "三"], "a quote too short to place moves nothing");
   const draft = { ...issue("问题", "说了〔1〕。"), brief: ["第一句话说的事", "第二句说过头了", "第三句话说的事"] };
-  assert.deepEqual(cutProblems(draft, [{ rule: 1, quote: "第二句说过头了", why: "" }]).issue.brief, ["第一句话说的事", "第三句话说的事", "快讯"]);
+  assert.deepEqual(cutProblems(draft, [{ rule: 1, quote: "第二句说过头了", why: "" }]).issue.brief, ["第一句话说的事", "第三句话说的事", "问题"]);
+  // 10-18 (8079e78): the sentence on the deep piece was cut and the first news head went in, which the first sentence already told.
+  const day: IssueText = {
+    title: "没开过餐饮店的人，凭什么开出三家门店？", preview: "预告", close: "合起来",
+    brief: ["日本店主说，接到活动出摊邀约别当场答应，先算清回店后的准备。", "调背景音乐前，先坐到客人位子上听。", "一位美国店主讲她怎么开出三家门店，最大的一家在春田。"],
+    news: [
+      { head: "活动出摊邀约先别答应", text: "店主说接到活动出摊邀约先别当场回复〔1〕。" },
+      { head: "调背景音乐前先坐到客人位子上听", text: "他说先坐到客人的位子上听〔2〕。" },
+      { head: "咖啡酒吧过祭典不加人手", text: "一家咖啡酒吧过祭典没有加人〔3〕。" },
+    ],
+    deep: "她从帮母亲改品牌开始，后来在春田拿下第三家店面〔4〕。",
+  };
+  assert.deepEqual(cutProblems(day, [{ rule: 1, quote: day.brief[2]!, why: "" }]).issue.brief, [day.brief[0], day.brief[1], day.title], "the title, not a head the first sentence told");
+  const noDeep = cutProblems({ ...day, brief: [day.brief[0]!, day.brief[1]!], deep: "" }, []).issue.brief;
+  assert.equal(noDeep[2], "咖啡酒吧过祭典不加人手", "without a deep piece, the first head no sentence tells");
 });
 
 test("a news item with a string of figures, and quotation marks a sentence after a citation of a source that may not be quoted, are found by the program", async () => {

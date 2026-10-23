@@ -338,8 +338,15 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
     if (changed.length === before) kept.push(p);
   }
   if (!out.deep || !out.title) out.title = out.news[0]?.head ?? out.title;
-  // The daily's lead is three sentences (10-15 went out with two): a lead sentence taken out gives way to a news head.
-  for (const x of out.news) if (out.brief.length < 3 && !out.brief.includes(x.head)) out.brief.push(x.head);
+  // The daily's lead is three sentences (10-15 went out with two): a lead sentence taken out gives way to a part of the
+  // issue no sentence left tells, the deep piece first, as it is the issue's title. Taking the next news head instead
+  // (10-18, 8079e78) put back a head the first sentence already told and left the deep piece out of the lead.
+  const parts = [...(out.deep ? [{ say: out.title, about: `${out.title}${out.deep}` }] : []), ...out.news.map((x) => ({ say: x.head, about: `${x.head}${x.text}` }))];
+  for (const x of parts) {
+    if (out.brief.length >= 3) break;
+    if (!x.say || out.brief.some((b) => b === x.say || told(b, x.about) || told(x.say, b))) continue;
+    out.brief.push(x.say);
+  }
   return { issue: out, changed, kept };
 }
 
@@ -347,6 +354,17 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
  * Takes out what the check still found after the last mending (Kay 10-19: 「哪有人每天出的结果审核不过就不出了」): a
  * newspaper cuts the sentence it cannot stand behind and runs the page. Cutting adds no claim, so it is not checked again.
  */
+/** Two-character pieces of a sentence, without spaces, punctuation or citation marks. */
+const pairs = (s: string) => {
+  const c = [...s.replace(/〔[^〕]*〕|[\s\p{P}]/gu, "")];
+  return new Set(c.slice(1).map((x, i) => c[i] + x));
+};
+/** Whether `sentence` tells of what `text` says: most of its two-character pieces are there (Chinese has no spaces to split words on). */
+const told = (sentence: string, text: string) => {
+  const a = pairs(sentence), b = pairs(text);
+  return a.size > 0 && [...a].filter((x) => b.has(x)).length / a.size >= 0.5;
+};
+
 export const cutProblems = (issue: IssueText, problems: Problem[]) => {
   const { issue: out, changed, kept } = amendIssue(issue, problems, () => "");
   return { issue: out, cut: changed, kept };

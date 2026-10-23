@@ -43,6 +43,11 @@ function sentenceOf(d: Partial<Draft>, p: Problem): string | undefined {
 }
 const keepingCountries = (d: Partial<Draft>, ps: Problem[]) =>
   ps.filter((p) => !(p.fix && dropsCountry(sentenceOf(d, p) ?? "", p.fix)));
+// Kinds 1–4 (a number, who said it, whether it happened, order and cause) are wrong facts by the prompt's own
+// definition, yet the checker grades the same one differently from run to run (10-23: "作者的做法是每单收 5 美元"
+// for the original's "for example", serious in one run and minor in the next). One with a fix is always put in.
+const FACT_KINDS = new Set([1, 2, 3, 4]);
+const graded = (ps: Problem[]) => ps.map((p) => (p.severity === "minor" && FACT_KINDS.has(p.kind) && p.fix ? { ...p, severity: "misleading" } : p));
 const serious = (ps: Problem[]) => ps.filter((p) => p.severity === "serious");
 const toFix = (ps: Problem[]) => ps.filter((p) => p.severity === "serious" || p.severity === "misleading");
 
@@ -66,7 +71,7 @@ export interface CheckResult { draft: Draft; held: boolean; copyWrong: boolean; 
 export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: string) => Promise<{ problems: Problem[]; receiptId: number }>): Promise<CheckResult> {
   const c = await ask(first, "check");
   const receiptIds = [c.receiptId];
-  c.problems = keepingCountries(first, c.problems);
+  c.problems = graded(keepingCountries(first, c.problems));
   const fixes = toFix(c.problems);
   // No points means the reader still has to click.
   if (!fixes.length) return { draft: first, held: first.points.length === 0, copyWrong: false, receiptIds };
@@ -82,7 +87,7 @@ export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: s
   if (!Object.keys(partial).length) return { draft: fixed, held: held || fixed.points.length === 0, copyWrong: held, receiptIds };
   const r2 = await ask(partial, "recheck");
   receiptIds.push(r2.receiptId);
-  r2.problems = keepingCountries(partial, r2.problems);
+  r2.problems = graded(keepingCountries(partial, r2.problems));
   // The re-check only stops serious errors; a misleading one takes the checker's fix, with no third check
   // (10-23: re-checks kept finding new "misleading" in the changed sentences and held every item).
   const grave = serious(r2.problems);

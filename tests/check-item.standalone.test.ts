@@ -37,6 +37,13 @@ test("on the re-check a serious point is dropped, a misleading one takes the fix
   assert.equal(lead.copyWrong, true);
 });
 
+test("a wrong fact (kinds 1–4) graded minor still takes its fix (10-23: an example written as the author's practice, serious one run, minor the next)", async () => {
+  const a = asker([p({ point: 1, kind: 3, severity: "minor", fix: "举例的要点一" }), p({ point: 2, kind: 5, severity: "minor", fix: "不改" }), p({ point: 3, kind: 1, severity: "minor" })], []);
+  const r = await checkAndFix(draft, a.ask);
+  assert.deepEqual(r.draft.points, ["举例的要点一", "要点二", "要点三"], "wording (kind 5) stays; a minor with no fix does not drop the point");
+  assert.deepEqual(a.asked[1], { d: { points: ["举例的要点一"] }, step: "recheck" });
+});
+
 test("a fix that drops a country the sentence named is not used (10-23 batch 3: 「在中国开出」 → 「全国开出」)", async () => {
   const d: Draft = { title: "中国火锅连锁放缓扩张", lead: "茶瀑布在中国开出1500多家门店。", points: ["要点一"] };
   const r = await checkAndFix(d, asker([p({ field: "title", fix: "火锅连锁放缓扩张" }), p({ field: "lead", severity: "misleading", fix: "茶瀑布全国开出1500多家门店。" }), p({ point: 1, fix: "日本的要点一" })], []).ask);

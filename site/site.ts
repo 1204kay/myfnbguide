@@ -127,7 +127,7 @@ export const ITEM_COPY = {
    * 模型写的那段理由叫什么：卡片、详情页、Markdown 导出、给 Agent 的回答和群推送都用它。本站写的是原文的要点，一行一点
    * （10-23，读者不点原文也要知道原文说了什么；myfnb/HANDOFF.md §3.0），旧条目只有一行。
    */
-  reasonLabel: "要点",
+  reasonLabel: "原文要点",
   /** 「另有 N 家…报道」里来源的叫法（列表卡和日报都用；默认“信源”）。本站用「来源」（myfnb/HANDOFF.md §3.0）。 */
   sourceWord: "来源",
   /** 读者在网页和分享图上看不看得到 AI 评分。只管显示：公开 API 和 MCP 的数据照样带 score，后台照常显示。 */

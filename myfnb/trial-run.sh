@@ -4,7 +4,7 @@
 #   bash myfnb/trial-run.sh start 2026-10-21 2026-10-22   后台开跑，马上返回
 #   bash myfnb/trial-run.sh status                         还在跑 / 跑完了，和日志最后几行
 #   bash myfnb/trial-run.sh pack                           把这一趟的结果打成 tar.gz 写到标准输出
-# 写稿 DeepSeek V4 Pro，核对 Opus 5.5；花费上限默认 US$8，可用 CAP_USD 改。
+# 写稿默认 DeepSeek V4 Pro（MODEL=deepseek-flash-think-llm 换成 flash），核对 Opus 5.5；花费上限默认 US$8，可用 CAP_USD 改。
 set -euo pipefail
 TRIAL=/opt/myfnbguide-trial
 OUT=/tmp/myfnb-trial
@@ -22,10 +22,10 @@ case "${1:-}" in
     nohup sudo docker compose run --rm -T \
       -v $TRIAL/modules/reference:/app/modules/reference:ro -v $TRIAL/myfnb:/app/myfnb:ro \
       -v $TRIAL/site/models.ts:/app/site/models.ts:ro -v $OUT:/out \
-      worker node myfnb/trial-issues.ts --model deepseek-v4-pro-llm --check-model claude-opus-5-5 \
+      worker node myfnb/trial-issues.ts --model "${MODEL:-deepseek-v4-pro-llm}" --check-model claude-opus-5-5 \
       "${days[@]}" --apply --cap-usd "${CAP_USD:-8}" > "$LOG" 2>&1 &
     echo $! > "$PID"
-    echo "开跑：$(git -C $TRIAL rev-parse --short HEAD)，${*}"
+    echo "开跑：$(git -C $TRIAL rev-parse --short HEAD)，${MODEL:-deepseek-v4-pro-llm}，${*}"
     ;;
   status)
     if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "还在跑"; else echo "跑完了：$(ls -td $OUT/2*/ | head -1)"; fi

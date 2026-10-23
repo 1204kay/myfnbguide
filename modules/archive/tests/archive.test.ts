@@ -2,7 +2,8 @@
 // collects is never kept for transcription, or waits behind the archive; an archive episode is transcribed though
 // its notes scored below the floor and nobody picked it, or while the service has no budget row; the transcript does not become the
 // article's body or is not analysed again; a rate limit marks an episode failed for good; an archive that names
-// its picks takes in others, or a pick added after its first import is never read; a pick names no address.
+// its picks takes in others, or a pick added after its first import is never read; a pick names no address; a later
+// listing's notes replace a transcript for good, or the same notes listed again replace it once more.
 import { tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import http from "node:http";
@@ -15,7 +16,7 @@ const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, noteNewEpisodes, PACE, plansDue, REREAD } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
-const { episodesToTranscribe, PART_BYTES, PICKED, SERVICE, SPEECH, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
+const { episodesToTranscribe, PART_BYTES, PICKED, RESTORE, restoreTranscripts, SERVICE, SPEECH, storeTranscript, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
 
 const T = tag();
 const SOURCE = `archive-${T}`;
@@ -213,4 +214,34 @@ test("new episodes of a podcast the site collects are kept for transcription and
   // Notes too thin to score at the floor, but past the prefilter and listed: transcribed too.
   await sql`UPDATE analyses SET relevance = 'pass' WHERE article_id = ${taken[0]!}`;
   assert.equal((await episodesToTranscribe(10))[0], taken[0]);
+});
+
+test("a transcript that a later listing's notes replaced goes back as the body, once", async () => {
+  const id = `${SOURCE}-relisted`;
+  await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, config, tags) VALUES (${id}, 'Cafe talk relisted', 'rss', 'T2', 'editorial', ${sql.json({ feedUrl: `${BASE}/feed.xml`, summaryIsBody: true })}, ${["播客"]})`;
+  const episode = { sourceId: id, url: `${BASE}/relisted/1`, title: `Relisted ${T}`, bodyStatus: "ok" as const, via: "fetch" };
+  const { articleId } = await upsertMaterial({ ...episode, bodyText: "First notes: a cafe owner on keeping the team." });
+  const [row] = await sql<{ identity_key: string }[]>`SELECT identity_key FROM articles WHERE id = ${articleId}`;
+  await sql`INSERT INTO archive_episodes (article_id, source_id, audio_url, status) VALUES (${articleId}, ${id}, ${`${BASE}/audio/1.mp3`}, 'imported')`;
+  await storeTranscript(articleId, { source_id: id, url: episode.url, identity_key: row!.identity_key, title: episode.title }, TRANSCRIPT);
+  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), [], "nothing to restore while the transcript is the body");
+
+  // The host edits the notes: the source's listing is a new revision, and its notes become the body.
+  const relisted = await upsertMaterial({ ...episode, bodyText: "Edited notes." });
+  assert.equal(relisted.revised, true);
+  // The backlog replaced before the cut-off waits while its notes were analysed; a stopped one does not.
+  const cutoff = RESTORE.backlogBefore;
+  RESTORE.backlogBefore = new Date(Date.now() + 3600_000);
+  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), [], "replaced before the cut-off, analysed: waits");
+  await sql`UPDATE articles SET processing_state = 'failed', processing_error = 'summaryZh too small' WHERE id = ${articleId}`;
+  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), [articleId], "stopped: restored at once");
+  RESTORE.backlogBefore = cutoff;
+  const [back] = await sql<{ revision: number; body_text: string; processing_state: string; grouping_status: string }[]>`
+    SELECT revision, body_text, processing_state, grouping_status FROM articles WHERE id = ${articleId}`;
+  assert.deepEqual([back!.revision, back!.body_text, back!.processing_state, back!.grouping_status], [4, TRANSCRIPT, "new", "pending"], "a new revision, analysed again");
+  assert.equal((await sql`SELECT body_text FROM article_revisions WHERE article_id = ${articleId} AND revision = 4`)[0]!.body_text, TRANSCRIPT);
+
+  // The same notes listed again are a version seen before: the transcript stays.
+  assert.equal((await upsertMaterial({ ...episode, bodyText: "Edited notes." })).revised, false);
+  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), []);
 });

@@ -7,7 +7,7 @@
 // budget row (receipts.ts treats a service without one as unlimited).
 import { sql } from "@aihot/backend/db";
 import { config, credential } from "@aihot/backend/config";
-import { upsertMaterial } from "@aihot/backend/content/materials";
+import { contentHash, reviseMaterial, upsertMaterial } from "@aihot/backend/content/materials";
 import { queueProcessing } from "@aihot/backend/jobs/content";
 import { guardedFetch } from "@aihot/backend/lib/http-fetch";
 import { assertAccepted, BudgetExceededError, completeReceipt, paidRequest, ProviderRejectedError } from "@aihot/backend/providers/receipts";
@@ -157,6 +157,47 @@ export async function storeTranscript(articleId: string, row: EpisodeRow, text: 
     if (receiptId !== null) await completeReceipt(tx, receiptId);
   });
   await queueProcessing(articleId);
+}
+
+/**
+ * Transcripts that a later listing replaced. The engine takes the source's own listing of an episode with other notes
+ * as a new revision of it (content/materials.ts), so the notes become the body in place of the transcript, and notes
+ * alone are often too thin for a summary: the analysis refuses them three times and the episode stops, out of the
+ * selection (10/15 and 10/20: 18 selected episodes of two Buzzsprout podcasts, for eight days). The transcript goes back
+ * as the body, a new revision analysed again; the same notes listed again are a version seen before and change nothing.
+ * The transcript is the episode's latest revision of the length it had when stored.
+ * The 113 replaced before 10/23 that were analysed on their notes and published wait (十一 10/23: the 28 that stopped
+ * first, checked on the site, then the rest); those replaced since, and every one that stopped, are restored.
+ */
+export const RESTORE = { backlogBefore: new Date("2026-10-23T12:00:00Z") as Date | null };
+
+export async function restoreTranscripts(limit: number): Promise<string[]> {
+  const rows = await sql<{ id: string; transcript: string }[]>`
+    SELECT a.id, t.body_text AS transcript FROM archive_episodes e
+    JOIN articles a ON a.id = e.article_id
+    JOIN LATERAL (SELECT r.body_text FROM article_revisions r WHERE r.article_id = a.id AND length(r.body_text) = e.transcript_chars
+                  ORDER BY r.revision DESC LIMIT 1) t ON true
+    WHERE e.status = 'transcribed' AND a.body_text IS DISTINCT FROM t.body_text
+      AND (a.processing_state = 'failed' OR ${RESTORE.backlogBefore}::timestamptz IS NULL
+           OR (SELECT r.created_at FROM article_revisions r WHERE r.article_id = a.id AND r.revision = a.revision) >= ${RESTORE.backlogBefore})
+    ORDER BY a.discovered_at DESC LIMIT ${limit}`;
+  const restored: string[] = [];
+  for (const row of rows) {
+    const done = await sql.begin(async (tx) => {
+      const [a] = await tx<{ title: string; excerpt: string | null; body_text: string | null }[]>`
+        SELECT title, excerpt, body_text FROM articles WHERE id = ${row.id} FOR UPDATE`;
+      if (!a || a.body_text === row.transcript) return false;
+      await reviseMaterial(tx, row.id, {
+        set: sql`body_text = ${row.transcript}, body_status = 'ok'`,
+        hash: contentHash({ title: a.title, bodyText: row.transcript, excerpt: a.excerpt }), title: a.title, bodyText: row.transcript,
+      });
+      return true;
+    });
+    if (!done) continue;
+    await queueProcessing(row.id);
+    restored.push(row.id);
+  }
+  return restored;
 }
 
 /**

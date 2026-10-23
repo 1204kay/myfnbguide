@@ -18230,7 +18230,7 @@ pod-de-gastrounternehmer	Gastrounternehmer Podcast（德国）	https://gastrount
 rss-tiller	Tiller 博客（法国 · 收银系统公司的旧博客）	https://www.tillersystems.com/fr/feed/	2026-10-24·告警修复	停用	订阅最新一篇是 2022-01，首次导入只取 12 个月内，接入以来一条都没收进来，也不在存档计划里
 v1011-omniwe	OmniWe（中国香港 · 收银系统公司）	https://www.omniwe.com/blog	2026-10-24·中文来源第四轮	不接	博客已撤（/blog 跳到 404，站点地图 33 个地址没有文章）
 v1011-foodpanda	foodpanda（台湾商家）（中国台湾 · 外卖平台商家学院）	https://partner.foodpanda.com.tw/zh_TW	2026-10-24·中文来源第四轮	不接	页面只是商家上架登记表，没有文章列表
-c1024-worldjournal	世界日报（美国 · 华文报纸）	https://www.worldjournal.com/search/tagging/2/%E9%A4%90%E9%A4%A8	2026-10-24·中文来源第四轮	待定	联合报系（同系的經濟日報 robots.txt 声明内容不得用于大型语言模型，10-09 按规则 3 不接）；世界日报自己的 robots.txt 没写这句，条款页没找到，要找到条款原文才能判
+c1024-worldjournal	世界日报（美国 · 华文报纸）	https://www.worldjournal.com/search/tagging/2/%E9%A4%90%E9%A4%A8	2026-10-24·中文来源第四轮	不接	联合报系（同系的經濟日報 robots.txt 声明内容不得用于大型语言模型，10-09 按规则 3 不接）；世界日报只有一页「隱私權與條款」，写了「偵測並阻止未經授權的機器人活動」，没说哪些算授权，按最低风险不接；「餐館」标签页的列表由脚本生成，程序读不到条目
 c1024-uschinapress	侨报（美国 · 华文报纸）	https://www.uschinapress.com/	2026-10-24·中文来源第四轮	不接	首页对采集器返回 403（规则 6 同理，不绕道）
 c1024-1688-au	澳洲新闻网 1688（澳大利亚 · 华文新闻网）	https://www.1688.com.au/	2026-10-24·中文来源第四轮	不接	首页对采集器返回 403
 c1024-zaobao	联合早报（新加坡 · 报纸）	https://www.zaobao.com.sg/	2026-10-24·中文来源第四轮	不接	复查：robots.txt 点名拒绝 ChatGPT-User、Claude-User、OAI-SearchBot、Perplexity-User（规则 2），和 10-09 结论一致

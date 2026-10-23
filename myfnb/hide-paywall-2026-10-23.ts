@@ -16,7 +16,7 @@ const REASON = "付费文章只拿到免费开头，要点写不出读者能用�
 const apply = process.argv.includes("--apply");
 
 const rows = await sql<{ id: string; url: string; title_zh: string | null; selected: boolean | null; visibility: string | null; version: number | null; body: number | null }[]>`
-  SELECT a.id, a.url, p.title_zh, p.selected, o.visibility, o.version, length(a.body_text) AS body
+  SELECT a.id, a.url, p.title AS title_zh, p.selected, o.visibility, o.version, length(a.body_text) AS body
   FROM articles a LEFT JOIN publications p ON p.article_id = a.id LEFT JOIN editorial_overrides o ON o.article_id = a.id
   WHERE a.url IN ${sql(URLS)}`;
 console.log(`找到 ${rows.length} 条（应为 ${URLS.length}）`);

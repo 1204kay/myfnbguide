@@ -3,7 +3,7 @@
 // No database, no model.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { ModelOutputError } from "@aihot/backend/providers/llm";
+import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { amendIssue, type Ask, citedItems, composeIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({

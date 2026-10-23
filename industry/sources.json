@@ -2179,6 +2179,10 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.gov.uk/search/news-and-communications.atom?organisations[]=food-standards-agency",
+        "detail": {
+          "publishedAtSelector": "meta[name=\"govuk:first-published-at\"]",
+          "maxFetches": 5
+        },
         "_aihot": {
           "initialBackfillLimit": 3
         }
@@ -2200,6 +2204,10 @@
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.gov.uk/government/organisations/low-pay-commission.atom",
+        "detail": {
+          "publishedAtSelector": "meta[name=\"govuk:first-published-at\"]",
+          "maxFetches": 5
+        },
         "_aihot": {
           "initialBackfillLimit": 3
         }

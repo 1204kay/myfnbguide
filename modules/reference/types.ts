@@ -155,6 +155,8 @@ export interface CaseCard {
   src: string;
   /** The item's 收录理由. */
   reason: string | null;
+  /** Folded (backend/read.ts foldedStories): the title is the item's, and the card leads to the item's page. */
+  folded: boolean;
   /** The shop's page, when the shop has other stories than this one ("这家店另有 N 条原文"). */
   shop: { key: string; others: number } | null;
 }
@@ -169,6 +171,8 @@ export interface PracticeLine {
   line: string;
   /** Its stories in the practice ("· 共 2 篇" from two). */
   cases: number;
+  /** Folded: the line names the source and the item's title, and leads to the item's page. */
+  folded: boolean;
 }
 
 /**
@@ -179,7 +183,8 @@ export interface PracticeCard {
   /** Its anchor on the situation page. */
   key: string;
   title: string;
-  summary: string;
+  /** Null once one of its stories is folded: it sums them up. */
+  summary: string | null;
   count: Count;
   lines: PracticeLine[];
 }
@@ -202,6 +207,8 @@ export interface ShopPractices {
     line: string | null;
     /** Its stories in the practice ("共 2 篇" from two), as a practice card's line counts them. */
     cases: number;
+    /** Folded: the row leads to the item's page. */
+    folded: boolean;
   }>;
 }
 
@@ -277,6 +284,8 @@ export interface SituationPage {
 export interface CasePage {
   id: string;
   story: CaseStory;
+  /** Folded (backend/read.ts foldedStories): the api answers its page with the way to the item's. */
+  folded: boolean;
   /** The item the story is written from, with its AI 导读 (summary) and 收录理由. */
   item: StarItem & { reason: string | null };
   source: { name: string; kind: string | null; url: string; month: string };
@@ -304,10 +313,12 @@ export interface ItemBody {
   open: string | null;
 }
 
-/** What the item page shows under its summary (web/item-part.tsx): the item's story in the library, or its write-up. */
-export type ItemText =
-  | { kind: "case"; id: string; story: CaseStory; situation: { slug: string; title: string; count: Count } | null }
-  | { kind: "body"; body: ItemBody };
+/**
+ * What the item page shows under its three parts (web/item-part.tsx): only the way to the item's story in the library.
+ * The story itself and the write-ups (backend/body.ts) are no longer drawn there (十一 10-24: every item page has the same
+ * three parts, title, 导读 and 原文要点; Kay「只保留一种」).
+ */
+export interface ItemText { id: string; title: string; situation: { slug: string; title: string; count: Count } | null }
 
 /** One 十一说 as its page reads it (backend/issues.ts readIssue, web/issue.tsx). */
 export interface IssuePage {
@@ -324,4 +335,6 @@ export interface IssuePage {
   count: number;
   prev: number | null;
   next: number | null;
+  /** The issue read aloud (backend/audio.ts), or null: then the page has no 听 button. */
+  audio: { url: string; seconds: number } | null;
 }

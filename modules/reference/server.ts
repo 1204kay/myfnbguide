@@ -17,6 +17,7 @@ import { blocking, problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
 import { ISSUE_CHECK_STEP, ISSUE_STEP } from "./backend/issue.ts";
 import { issueLead, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
+import { sendIssueAudio } from "./backend/audio.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
 // 10-18: new stories are not written for now (十一). 30 live stories checked against their originals had 11 with
@@ -187,12 +188,19 @@ export default defineServerModule({
       const page = Number.isSafeInteger(no) && no > 0 ? await readIssue(no) : null;
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
+    app.get("/api/reference/issues/:no/audio.mp3", async (req, reply) => {
+      const no = Number((req.params as { no: string }).no);
+      return Number.isSafeInteger(no) && no > 0 ? sendIssueAudio(req, reply, no) : reply.code(404).send({ error: "not found" });
+    });
     app.get("/api/reference/situations/:slug", async (req, reply) => {
       const page = await readSituation((req.params as { slug: string }).slug);
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
+    // A folded story (backend/read.ts foldedStories) is answered as the engine answers a merged story (routes/site.ts):
+    // 308 to its item, which the page follows.
     app.get("/api/reference/cases/:id", async (req, reply) => {
       const page = await readCase((req.params as { id: string }).id);
+      if (page?.folded) return reply.code(308).header("Location", `/api/site/items/${page.id}`).header("Cache-Control", CACHE).send({ mergedInto: page.id });
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
     // The item page's block (web/item-part.tsx): the item's story, or its write-up; 404 for neither.
@@ -214,6 +222,8 @@ export default defineServerModule({
     });
     app.get("/api/reference/shops/:key", async (req, reply) => {
       const page = await readShop((req.params as { key: string }).key);
+      // All its stories folded: to the library, as a folded story goes to its item.
+      if (page && "folded" in page) return reply.code(308).header("Location", "/api/reference").header("Cache-Control", CACHE).send({ mergedInto: "reference" });
       return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
   },

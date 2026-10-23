@@ -11,6 +11,7 @@ import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
+import { copyText } from "@aihot/web/lib/clipboard";
 import { siteUrl } from "@aihot/web/lib/seo";
 import { comparable, day, exact, figureSplit, fullCountText, listCount, listCountText, num, restCountText, tellersText } from "../format.ts";
 import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
@@ -107,7 +108,7 @@ export function Who({ s, size = 22 }: { s: SituationRow; size?: number }) {
 /** A card's look (layout A7): hairline, the accent on hover, a sunk ground while pressed, the accent's ring for the keyboard. */
 export const CARD = "card relative transition-colors hover:border-accent touch:active:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:outline-offset-2 has-[.stretch:focus-visible]:outline-accent";
 /** The link that makes a whole card or row clickable; its own other links sit above it. */
-export const STRETCH = "stretch after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none";
+export const STRETCH = "stretch after:absolute after:inset-0 focus-visible:outline-none";
 /** A place in 店家谈得最多的事, as the hot list writes it (AIHOT routes/hot.tsx): 01, its colour by place. */
 const RANK_COLOR = ["text-rank-1", "text-rank-2", "text-rank-3"];
 export const rankColor = (rank: number) => RANK_COLOR[rank - 1] ?? "text-rank-rest";
@@ -116,6 +117,9 @@ export const pad = (rank: number) => String(rank).padStart(2, "0");
 export function RankTag({ rank }: { rank: number }) {
   return <span className={`mono text-[12px] font-bold tracking-[0.16em] ${rankColor(rank)}`}>NO.{pad(rank)}</span>;
 }
+
+/** Where a story's card or line leads: its page, or for a folded one its item's (backend/read.ts foldedStories). */
+export const caseHref = (id: string, folded: boolean) => (folded ? `/items/${id}` : `/reference/cases/${id}`);
 
 /**
  * A story's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
@@ -129,7 +133,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
         <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
       </div>
       <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">
-        <Link viewTransition to={`/reference/cases/${c.id}`} className={STRETCH}>{c.title}</Link>
+        <Link viewTransition to={caseHref(c.id, c.folded)} className={STRETCH}>{c.title}</Link>
       </h3>
       {c.reason && (
         <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
@@ -173,11 +177,11 @@ export function Practice({ p }: { p: PracticeCard }) {
     <article id={p.key} className="card scroll-mt-[calc(var(--bar-h)+8px)] px-4 pb-1 pt-3.5 sm:px-5 lg:pt-[18px]">
       <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
       <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
-      <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>
+      {p.summary && <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>}
       <ul ref={list} className="mt-3 border-t border-line">
         {lines.map((l) => (
           <li key={l.caseId} className="border-t border-line-soft first:border-t-0">
-            <Link viewTransition to={`/reference/cases/${l.caseId}`} className="-mx-1 flex min-h-[52px] items-center gap-2 rounded-tile px-1 py-2 transition-colors hover:text-accent touch:active:bg-bg-sunk lg:min-h-11">
+            <Link viewTransition to={caseHref(l.caseId, l.folded)} className="-mx-1 flex min-h-[52px] items-center gap-2 rounded-tile px-1 py-2 transition-colors hover:text-accent touch:active:bg-bg-sunk lg:min-h-11">
               <span className="min-w-0 flex-1 leading-[1.5]">
                 <span className="block text-[13px] text-ink-4 lg:inline">{l.country} · {l.name}<span className="hidden lg:inline"> · </span></span>
                 <span className="block text-[14px] text-ink-2 lg:inline">{l.line}{l.cases > 1 && <span className="text-ink-4"> · 共 {l.cases} 篇</span>}</span>
@@ -189,7 +193,7 @@ export function Practice({ p }: { p: PracticeCard }) {
       </ul>
       {!open && p.lines.length > LINES_SHOWN && (
         // The original's toggle for a group's other reports (AIHOT features/feed/ReadingGroup.tsx Toggle): 12.5px, grey,
-        // a chevron down; 44px tall to tap. HANDOFF §3.0: the original folds repeats of one story, this the shops' own ways.
+        // a chevron down; 44px tall to tap. myfnb/DIFFERENCES.md: the original folds repeats of one story, this the shops' own ways.
         <button type="button" aria-expanded={false} onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])}
           className="relative z-10 inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent">
           另有 {p.lines.length - LINES_SHOWN} 家的做法<IconChevronDown size={13} />
@@ -206,7 +210,7 @@ export function Practice({ p }: { p: PracticeCard }) {
  */
 function PracticeRow({ p, who }: { p: ShopPractices["practices"][number]; who?: string }) {
   return (
-    <Link id={p.key} viewTransition to={`/reference/cases/${p.caseId}`}
+    <Link id={p.key} viewTransition to={caseHref(p.caseId, p.folded)}
       className={`flex min-h-[52px] scroll-mt-[calc(var(--bar-h)+8px)] items-center gap-2 px-4 transition-colors hover:bg-bg-sunk/40 focus-visible:-outline-offset-2 touch:active:bg-bg-sunk sm:px-5 ${who ? "py-3" : "py-2.5"}`}>
       <span className="min-w-0 flex-1">
         {who && <span className="block text-[13px] leading-[1.5] text-ink-4">{who}</span>}
@@ -325,7 +329,7 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
     const url = `${siteUrl()}${path}`;
     try {
       if (navigator.share && matchMedia("(pointer: coarse)").matches) return void (await navigator.share({ title, url }));
-      await navigator.clipboard.writeText(`${title}\n${url}`);
+      await copyText(`${title}\n${url}`);
       setText("链接已复制");
     } catch {
       // The reader closed the sheet, or the clipboard is not allowed here.
@@ -333,7 +337,7 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
   };
   const copy = async (url: string) => {
     try {
-      await navigator.clipboard.writeText(url);
+      await copyText(url);
       setText("链接已复制");
     } catch {
       // clipboard unavailable
@@ -481,7 +485,7 @@ function Legend({ rows }: { rows: Array<{ label: string; value: ReactNode; tone:
     <ul className="mt-3 grid gap-x-8 gap-y-1.5 text-[14px] leading-[1.5] sm:grid-cols-2 sm:text-[15px]">
       {rows.map((r, i) => (
         <li key={i} className="flex items-baseline gap-2">
-          <i className={`size-3 shrink-0 translate-y-[1px] rounded-[3px] ${r.tone}`} />
+          <i className={`size-3 shrink-0 translate-y-[1px] rounded-mark ${r.tone}`} />
           <span className="min-w-0 flex-1 text-ink-3">{r.label}</span>
           <span className="num shrink-0 font-semibold text-ink-2">{r.value}</span>
         </li>

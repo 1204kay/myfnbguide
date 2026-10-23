@@ -64,9 +64,9 @@ new.myfnbguide.com {
 并把第一个块的域名只留 `www.myfnbguide.com`（或改回 `{$SITE_DOMAIN}`，此时 `.env` 里已是 `www`）。
 
 做法与记录：
-- 这是对框架文件 `deploy/Caddyfile` 的又一处改动（访问计数已经改过一处）。**同一个提交里在 `HANDOFF.md` §3.0 的「与原版不同」清单加一行**：「域名转址 | `deploy/Caddyfile` 加根域、试运行域名的转址块和旧站路径名单 | 上线切换（§10 第 1 步）| Kay 在 §10 定了旧网址要转到新站」。
+- 这是对框架文件 `deploy/Caddyfile` 的又一处改动（访问计数已经改过一处）。**同一个提交里在 `DIFFERENCES.md` 的清单加一行**：「域名转址 | `deploy/Caddyfile` 加根域、试运行域名的转址块和旧站路径名单 | 上线切换（§10 第 1 步）| Kay 在 §10 定了旧网址要转到新站」。
 - 先在本机验证语法再推：`docker run --rm -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro" -e SITE_DOMAIN=www.myfnbguide.com caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile`（本机有 Docker 才行；没有就在服务器上、部署后用 `caddy validate` 先于 reload）。
-- 注意：服务器的 `update.sh` 部署后只做 `docker compose --profile https up -d`；Caddyfile 是挂载进容器的文件，**内容变了容器不会自己重载**，要 `sudo docker compose --profile https up -d --force-recreate caddy`（10/17 实测：单文件挂载在 git 换掉文件后仍指旧文件，只 reload 读到的是旧内容）。
+- 注意：Caddyfile 是挂载进容器的文件，**内容变了容器不会自己重载**（10/17 实测：单文件挂载在 git 换掉文件后仍指旧文件，只 reload 读到的是旧内容）。10/24 起 `update.sh` 每次部署后拿容器里的 Caddyfile 和磁盘上的比，不一样就重建 caddy；但改了这一条的那次部署跑的还是旧脚本，要等下一次部署，急的话手动 `sudo docker compose --profile https up -d --force-recreate caddy`。
 
 ## 3. 部署「第一次改」，让服务器同时认 www 和 new
 
@@ -122,7 +122,7 @@ dig +short www.myfnbguide.com    # 应该是 <服务器IP>
 - `deploy/Caddyfile`：`new.myfnbguide.com` 拆成转址块（第 2 步）。
 - `site/public/robots.txt`：换回作者的版本（试运行期整站 `Disallow: /`，`HANDOFF.md:222`）。作者的版本在历史里：`git show 81b6dee^:site/public/robots.txt > site/public/robots.txt`（里面有 `{{siteUrl}}/sitemap.xml` 占位符，发布时会替换成 `SITE_URL`，所以第 5 步必须先做完）。
 - `site/changelog.json`：加一条上线公告（日期、时间、种类「公告」、标题、正文；`latestVersion` 改成这一条的日期时间）。两份条款的内容没有变，**不要为了「同步上线日期」去改生效日期**，除非这次又改了条款内容（改了才更新版本号和日期）。
-- `HANDOFF.md` §3.0：robots 那一行从「试运行不让抓」改回原版。
+- `DIFFERENCES.md`：robots 那一行从「试运行不让抓」改回原版。
 - 提交信息说清「上线切换」。
 
 推 main、等部署、reload Caddy（同第 3 步）。确认：

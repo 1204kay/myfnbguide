@@ -43,6 +43,10 @@ main() {
     return 1
   fi
   docker compose --profile https up -d
+  # Caddyfile 是单文件挂载：git 换掉文件后容器仍看着旧文件，reload 也读旧的（2026-10-17 实测），只能重建。
+  # 拿容器里看到的和磁盘上的比，不比提交：这次部署跑的是拉取前的旧脚本，漏掉的下一次部署会补上。
+  docker compose exec -T caddy cat /etc/caddy/Caddyfile 2>/dev/null | cmp -s - deploy/Caddyfile \
+    || docker compose --profile https up -d --force-recreate caddy
   docker image prune -f > /dev/null
   # 每次构建留下约 0.4 GB 缓存，image prune 不清它；99 次部署攒了 40 GB、硬盘用到 84%（2026-10-12）。留 5 GB 给下次构建复用。
   docker builder prune -f --max-used-space 5gb > /dev/null

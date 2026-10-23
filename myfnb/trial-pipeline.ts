@@ -1,5 +1,5 @@
 // 「要点 + 核对」整条流程的试跑（决定记录 2026-10-23）：挑几条新近的精选，用这个分支的提示词写标题、导读和要点，
-// 核对员拿原文核；有严重或误导的问题就把它给的改法放进去再核，最多改两轮，还不过就记「不过」。只写到文件，站上什么都不变。
+// 核对员拿原文核一次，把它给的改法放进去，再只复查改过的句子：复查不过的要点删掉，标题或导读不过记「不过」。只写到文件，站上什么都不变。
 // 每条和现在站上的写法放在一起，给两名没看过稿的核对员盲核最后的稿。
 //   --limit 3                      挑几条（默认 3），按来源轮流挑；只挑有正文的文章（不挑播客），不挑 10-23 考卷里的条目
 //   --days 2                       从最近几天的精选里挑（默认 2）
@@ -57,7 +57,7 @@ const listed = (ps: Problem[]) => ps.length ? ps.map((p) => `- **${p.severity}**
 
 const out: string[] = [`# 要点 + 核对 试跑 ${run}`, "", `${picked.length} 条，核对：${model}。原文只在服务器的「原文/」里。`, ""];
 const json: unknown[] = [];
-const stats = { items: 0, passed: 0, held: 0, failed: 0, returns: 0, firstSerious: 0, firstToFix: 0, receipts: [] as number[] };
+const stats = { items: 0, passed: 0, held: 0, failed: 0, fixes: 0, dropped: 0, firstSerious: 0, firstToFix: 0, receipts: [] as number[] };
 async function runItem(k: number, r: Row): Promise<string[]> {
   const out: string[] = [];
   const no = String(k + 1).padStart(2, "0");
@@ -72,27 +72,49 @@ async function runItem(k: number, r: Row): Promise<string[]> {
     if (!w) { out.push("（模型拒写）", ""); stats.failed++; return out; }
     stats.receipts.push(...w.receiptIds);
     const drafts: Draft[] = [{ title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }];
-    const checks: Problem[][] = [];
-    // Check, put the serious problems' fixes in, check again: at most two rounds of fixes.
-    for (let round = 1; round <= 3; round++) {
-      const c = await checkDraft(model, a, drafts.at(-1)!, `pipeline-${round}`);
-      stats.receipts.push(c.receiptId);
-      checks.push(c.problems);
-      if (!toFix(c.problems).length || round === 3) break;
-      drafts.push(applyFixes(drafts.at(-1)!, c.problems));
-      stats.returns++;
+    // 十一 10-23 (Kay: 不要一直重核): check the whole draft once and put the checker's fixes in; then re-check only the
+    // sentences it changed. A changed point that still fails is dropped; a failing title or lead holds the item.
+    const c = await checkDraft(model, a, drafts[0]!, "pipeline-1");
+    stats.receipts.push(c.receiptId);
+    const checks: Problem[][] = [c.problems];
+    const fixes = toFix(c.problems);
+    if (serious(c.problems).length) stats.firstSerious++;
+    if (fixes.length) stats.firstToFix++;
+    let ok = true;
+    const dropped: string[] = [];
+    if (fixes.length) {
+      const fixed = applyFixes(drafts[0]!, c.problems);
+      stats.fixes += fixes.length;
+      // Only what changed goes back: the title or lead if rewritten, and each point that is new.
+      const before = new Set(drafts[0]!.points);
+      const changed = fixed.points.filter((p) => !before.has(p));
+      // A title or lead the checker could not fix (empty fix) stays wrong: the item is held.
+      if (fixes.some((p) => (p.field === "title" || p.field === "lead") && !p.fix)) ok = false;
+      const partial: Record<string, unknown> = {};
+      if (fixed.title !== drafts[0]!.title) partial.title = fixed.title;
+      if (fixed.lead !== drafts[0]!.lead) partial.lead = fixed.lead;
+      if (changed.length) partial.points = changed;
+      let still: Problem[] = [];
+      if (Object.keys(partial).length) {
+        const r2 = await checkDraft(model, a, partial as Draft, "pipeline-recheck");
+        stats.receipts.push(r2.receiptId);
+        checks.push(r2.problems);
+        still = toFix(r2.problems);
+      } else checks.push([]);
+      if (still.some((p) => (p.field === "title" && partial.title) || (p.field === "lead" && partial.lead))) ok = false;
+      const bad = new Set(still.filter((p) => p.field === "point" || p.field === "points").map((p) => changed[p.point - 1]).filter((x): x is string => !!x));
+      dropped.push(...bad);
+      drafts.push({ ...fixed, points: fixed.points.filter((p) => !bad.has(p)) });
+      if (drafts.at(-1)!.points.length === 0) ok = false;
     }
-    if (serious(checks[0]!).length) stats.firstSerious++;
-    if (toFix(checks[0]!).length) stats.firstToFix++;
-    const ok = !toFix(checks.at(-1)!).length;
+    stats.dropped += dropped.length;
     ok ? stats.passed++ : stats.held++;
-    out.push(`**结果：${ok ? "过" : "不过（两轮改完还有严重或误导，不上线）"}**；退回改写 ${drafts.length - 1} 次`, "");
-    for (const [i, d] of drafts.entries()) {
-      out.push(`### ${i === 0 ? "第一稿" : `改第 ${i} 轮后`}`, "", ...show(d), "核对：", ...listed(checks[i]!), "");
-    }
+    out.push(`**结果：${ok ? "过" : "不过（改过的标题或导读复查还不对，不上线）"}**；核对员改了 ${fixes.length} 处${dropped.length ? `，复查不过删掉 ${dropped.length} 条要点` : ""}`, "");
+    out.push("### 第一稿", "", ...show(drafts[0]!), "核对：", ...listed(checks[0]!), "");
+    if (drafts[1]) out.push("### 核对员改过以后", "", ...show(drafts[1]), "复查改过的句子：", ...listed(checks[1]!), ...dropped.map((p) => `- 删掉：${p}`), "");
     out.push("<details><summary>现在站上的写法</summary>", "", `**${r.title}**`, "", r.summary ?? "", "", `收录理由：${r.reason ?? "（无）"}`, "", "</details>", "");
     json.push({ no, id: r.id, url: r.url, site: { title: r.title, summary: r.summary, reason: r.reason }, drafts, checks, ok });
-    console.log(`${no} ${ok ? "过" : "不过"}，退回 ${drafts.length - 1} 次：${drafts.at(-1)!.title}`);
+    console.log(`${no} ${ok ? "过" : "不过"}，改了 ${fixes.length} 处，删 ${dropped.length} 条：${drafts.at(-1)!.title}`);
   } catch (error) {
     stats.failed++;
     out.push(`（失败：${error instanceof Error ? error.message : String(error)}）`, "");
@@ -100,12 +122,12 @@ async function runItem(k: number, r: Row): Promise<string[]> {
   }
   return out;
 }
-// Four items at a time: each is a write and up to three checks, a few minutes with DeepSeek thinking.
+// Four items at a time: each is a write, a check and a re-check, a few minutes with DeepSeek thinking.
 const parts: string[][] = [];
 for (let i = 0; i < picked.length; i += 4) parts.push(...await Promise.all(picked.slice(i, i + 4).map((r, j) => runItem(i + j, r))));
 out.push(...parts.flat());
 json.sort((x, y) => String((x as { no: string }).no).localeCompare(String((y as { no: string }).no)));
-const summary = `${stats.items} 条：过 ${stats.passed}，不过 ${stats.held}，失败 ${stats.failed}；第一稿有严重问题 ${stats.firstSerious} 条、有严重或误导 ${stats.firstToFix} 条；退回改写共 ${stats.returns} 次；用量 ${await spent(stats.receipts)}`;
+const summary = `${stats.items} 条：过 ${stats.passed}，不过 ${stats.held}，失败 ${stats.failed}；第一稿有严重问题 ${stats.firstSerious} 条、有严重或误导 ${stats.firstToFix} 条；核对员共改 ${stats.fixes} 处、复查不过删掉 ${stats.dropped} 条要点；用量 ${await spent(stats.receipts)}`;
 out.splice(3, 0, `**${summary}**`, "");
 writeFileSync(join(dir, "试跑.md"), out.join("\n"));
 writeFileSync(join(dir, "试跑.json"), JSON.stringify(json, null, 1));

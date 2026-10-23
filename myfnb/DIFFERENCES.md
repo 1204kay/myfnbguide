@@ -28,6 +28,7 @@
 | 地方 | 和原版不同 | 理由（特殊需求） | 用户确认 |
 |---|---|---|---|
 | 参考库 | 框架没有的功能，做成模块 `modules/reference`，只用原版插口（侧栏、手机底栏），地址 `/reference`；首页仍是原版的精选 | 本站要验证的东西（§0、§2.1）；模块是原版给的扩展方式 | 10/4 |
+| 核对员 | 入选条目的标题、导读和要点写好后，另一个模型拿原文逐句核一遍：第 1–4 类（数字、谁说的、发生过没有、先后因果）和误导照它的改法改，改过的再核一遍只拦严重错；要点有严重错删掉那条，标题或导读有严重错、或一条要点都不剩，不进精选（`held`）；删了原句里的国家名的修改不采用。代码在框架里：`packages/backend/src/editorial/check.ts`（新文件）、`analyze.ts` 的挂钩和入选判断（`!held`）、`models.ts` 的 `check`、`jobs/content.ts` 的 `check_item` 一步；提示词 `industry/prompts/check-item.md` | 10-23 盲核里模型写的标题、导读、要点有事实错（数字、谁说的、举例写成真事），原版没有核对这一步 | 十一 10-23 定（决定记录「条目页定为三段」那几条）。**放在框架里不合理**（Kay 10-24 问「核对员为什么要改框架」）：框架在「写完」和「定入选」之间没有模块插口，当时直接写进了框架；十一 10-24 定改成框架加一个通用插口、核对员搬进模块，排在「读者为什么想点开」修完 check.ts 之后 |
 | 条目和卡片 | 读者看不到 AI 评分（`ITEM_COPY.showScore`）；理由叫「原文要点」（`reasonLabel`，10-23 起叫「要点」，同日晚改为「原文要点」，写明内容出自原文、和我们写的导读分开，十一定；之前叫「收录理由」，见下面「要点」一行）。都是原版选项 | §3.1「不打分」 | Claude 10/4 定，没有用户原话（用户 10/5 21:25 反而问过「左侧像AIHOT放日期时间右侧放AI评分？」；10/5 10:51 用户自己说的是「AI导读和推荐理由」，即原版的叫法）；10/6 清理时按清理授权保留。**10/10 复核后保留**（用户：「全部你思考 你决定」）：最近 30 天入选的 121 条中位数 60 分、26% 低于 50 分、70 分以上只有 12%（本站门槛 40，原版 60–76），显示出来时入选条目旁边的「41」读起来像不及格，原版 70 分以上的强调色近九成用不上；「推荐」是替内容担保，违反 §3 第 1 条，「收录理由」只说我们为什么收 |
 | 导航 | 不放热点榜和主题（`site.ts` 的 `NAV.hidden: ["/hot", "/topics"]`）。**10/10 起是原版的选项**（#120 作者 10/9 合并），隐藏后电脑侧栏、手机底栏、「我的」页都不放，页面照样能打开，事件页、主题页的返回和链接改回精选 | 热点榜 10/6 线上是空的：要几家来源同时讨论同一件事，本站的来源还凑不出来；主题页各主题只列最近的精选，多数是几天到几年前的旧条目。有内容了就删掉对应的一项 | 热点榜：10/3 用户「热点榜是不是可以改成攻略合集之类的？」；10/6 清理授权。主题：10/4 Claude 逐页检查时定（归档 HANDOFF-2026-10-04.md §9「线上网站逐页检查」写明「改法 Claude 定」）；用户 10/5 21:25 问过「我们是不是少了主题这个页面？」；10/9「再次确认」出自云端会话，原话未存 |
 | 手机筛选 | 一排左右滑动的选项（`FEED.phoneFilter: "row"`，框架加的选项，默认 `"sheet"` 不变） | 用户 10/6 直接提出 | 10/6 |
@@ -36,7 +37,7 @@
 | 条目页 | 导读和收录理由下面加「正文 · AI 整理自原文」：已写成参考库故事的条目显示那篇故事和它所在的情况；其余公开条目（新闻、数据、规定、访谈）由参考库模块按同一格式另写一篇（`prompts/body.md`，和故事同一套检查：数字要在原文里、用词、长度），材料不够的不写。改了写作要求只自动写新进来的条目（最近 3 天），已有的和较早的条目不自动重写，和原版「已有综述不会被批量重写」一样；先看新条目写得怎样，确定写法后才跑 `myfnb/rewrite-reference.ts`（可以先 `--limit 10` 抽查）全面重写（用户 10/9：「先确定一种方式才来全面重写」）。改写作要求照原版事件综述的做法（`docs/story-digest-evaluation.md`）：候选写在 `modules/reference/prompts/body-candidate.md`、`case-candidate.md`，在固定的 20 个案例（`myfnb/reference-eval-cases.txt`）上用 `myfnb/eval-reference.ts` 和现行写法并排跑，结果存进 `reference_evals`，从 `/api/reference/eval` 读，截成手机页面人工比较；不让模型给模型打分，不为每种毛病加一条检查（用户 10/9：「不可能一个一个写条件限制」）。候选胜出后替换现行文件、删掉候选文件。两轮评测（10/9）的结论：只有原文里找不到的数字、坏掉的输出和不存在的情况才挡下，用词和长度改不好照样显示（这一改显示的从 11/20 升到 19/20）；整套换成「原则加范文」没有明显更好，第三轮（第三版候选以现行写作要求为底，只加了几处）两位审读都建议不换：20 篇里写法上的差别在几轮之间来回翻转，多是模型每次的随机波动。最后保留现行写作要求，只加进两处两轮都证明有效的：故事各段第一次提到人时写出身份、卖系统的不称顾问、同一个意思只说一次；正文开头不重复导读的结论、导读说清是谁时不写开头、结尾不写正文已回答的。候选文件已删；以后再改写作要求，照样先在这 20 个案例上并排评测。只有简介、没拿到内容的条目不收录（用户 10/9：「只有简介的，我们也没拿到内容，收录来干嘛」）：导读的写作要求让这类材料的导读留空，用原版的机制先等着（没有导读就不上线），播客单集等转写出来、文章等拿到正文后重新处理再上线；播客转写因此也挑“等待中”的新单集（`modules/archive/backend/transcribe.ts`）。判断一条有没有写好，看整条（标题、导读、正文合起来）是不是有头有尾：读者从头读到尾，知道发生了什么或谁说了什么、为什么、结果或结论是什么，读得懂；内容放在导读还是正文、有没有正文都是次要的（用户 10/9：「这个条目里面的内容是否有头有尾，重点不是导读还是其他的」）。框架只加一个通用插口 `WebModule.itemPart`（`apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`），照框架文档「插口不够用时加一个通用的插口」 | 原版的导读最多 200 字、三句，是给 AI 新闻快讯用的；本站多是外语播客和长访谈，读者看不懂原文，导读说不清原文说了什么（用户 10/9：「写了个导读什么都没说明就结束了」「全部以参考页面为标准」） | 10/9 |
 | 一手 | 报头不显示「N 件一手发布」（`REPORTS.metricUnits.firstPartyEvents: null`），筛选里没有「一手」（`FEED.firstPartyFilter: false`），都是框架加的选项，默认不变 | 本站的一手发布多是行业协会，报头常是「0 件一手发布」，筛选两周只筛出 3 条；对餐饮读者是费解的词 | 10/9 |
 | 日期 | 往年的日期写出年份（「2019年2月19日」，按北京时间判断是不是今年；`apps/web/app/lib/format.ts` 的 `monthDay`，框架错误修正，测试 `apps/web/tests/feed-dates.test.ts`） | 原版的错：存档补进来的旧条目在日期分组里只写「6月3日」，读者会以为是今年 | 10/9（用户「你决定」；可提给作者） |
-| 来源的叫法 | 「另有 N 家…报道」写「来源」不写「信源」（`ITEM_COPY.sourceWord`，框架加的选项，默认「信源」不变；列表卡和日报两处） | 条款和隐私说明写的是「来源」（两份都没有「信源」），列表卡和日报跟着一致；10/6 随框架换回时丢了 | Claude 定（10/9 用户「你决定」）；此前写的「用户 10/4 确认」找不到原话 |
+| 来源的叫法 | 「另有 N 家…报道」写「来源」不写「信源」（`ITEM_COPY.sourceWord`，框架加的选项，默认「信源」不变；列表卡和日报两处） | 「信源」是新闻行业的说法，开店的读者未必看得懂；「来源」是日常用语，条款和隐私说明也写「来源」（两份都没有「信源」）。10/6 随框架换回时丢过一次。代价：作者的网页测试按「另外 N 家也报道了」找按钮，合并上游时要改成本站的说法（10-23 有 4 条） | Claude 定（10/9 用户「你决定」）；此前写的「用户 10/4 确认」找不到原话。10-24 复核保留（Kay：「你们思考吧」，十一定） |
 | 存档 | 框架没有的功能，做成模块 `modules/archive`（已启用：`site/modules/index.ts`、`server.ts`，`site/package.json`、`Dockerfile` 各一行；没有网页部分）：按挑选名单（`picks.json`）导入播客和博客的旧单集、旧文章，作为回补条目走正常流程（不进日报，进参考库）；给播客单集转文字：订阅里有现成文字稿（`podcast:transcript`）的直接读，没有的把音频交给 Groq 的 Whisper（`GROQ_API_KEY`；10/10 以前用 Gemini，实测会漏掉一半内容，已换掉），10/9 起也给等待中的新单集转写（`backend/transcribe.ts`） | 作者 10/4 起默认首次导入后不收存档；本站要的店家经验多在旧节目里，只有简介的单集写不成故事（§9.2 第 4 项） | 用户 10/5 05:53「同意打开存档 然后你先试试 看可以跑多少」；随后（10/5 早上）「我觉得你可以扫一眼 看看哪些值得收集 才来花deepseek余额」，改为逐集挑 |
 | 访问计数 | 反向代理 Caddy 多记一份访问日志（`deploy/Caddyfile`，框架的文件）：只记时间、路径、状态码和“是不是机器人”，不记 IP、请求头、查询串；`myfnb/visits.sh` 按天按类统计。不装脚本、不改网页 | §2.4 要看哪些情况被查得多；原版没有；不识别个人。原文链接被点几次没做（外链直接跳出，要数就得在网页里加脚本，偏离原版；搜索点击和国家用 Search Console） | 十一 10/13 按 Kay 授权（决定记录 L366）加，Kay 未逐项确认 |
 | 域名转址 | `deploy/Caddyfile` 把站点块写死成 `www.myfnbguide.com`，`new.myfnbguide.com` 原路 301 到 www，加根域 `myfnbguide.com` 转到 www 首页的块，和旧站路径名单（`/handbook`、`/map`、`/appendix` 等旧站独有的几组）301 到首页 | 上线切换（§10 第 1 步，`go-live-checklist.md` 第 2 步）；名单取自旧站 sitemap（10/17，155 个地址），`/about`、`/sources` 新站有同名页，不转 | Kay 在 §10 定了旧网址要转到新站；10/17 Kay「开始」换正式网址 |
@@ -52,18 +53,26 @@
 
 **10/6 清理时改回原版的**（以后要再做，先按上面五关重新审核、找用户确认）：首页改成参考库（`NAV.home`）、资讯默认全部（`FEED.start`）、栏目改名（`NAV.labels`）、主题不进导航（10/9 已加回，见上表）；日期加空格（`DATES.spaced`）、641–960px 铺开（`LAYOUT.fluid`）、程序补空格（`READER_SPACING`）；日报的分节简讯、看点门槛、简讯不限条数、报头数字不显示一手（`flashPlacement`、`compactBelow`、`dailyFlashes`、`metricUnits`；其中报头不显示一手 10/9 已加回，见上表）；收藏备份（`STARRED`）、关于页的参考库规模、参考库的搜索和条目页附加块（模块插口 `figures`、`searchPart`、`itemPart`；其中 `itemPart` 10/9 已加回，见上表）；列表类来源的关键词过滤（`allowKeywords`，没有信源在用；综合媒体要用时从 `a2f7397` 取回）。随 `apps/` 整体换回、清理时没逐项记下的（10/9 复核补记）：来源的叫法（`sourceWord`，用户 10/4 确认过，读者现在看到原版的说法）、筛选名（`filterNames`）、搜索的排序说法（`SEARCH.sorts`、`sortNote`）、关于页和 Agent 页的版式与示例（`ABOUT.page`、`AGENT.covers`、`examples`）、反馈页标题、还没有一期时的说法（`noIssue`）、隐藏热点时 MCP 不提供热点工具、往年日期写出年份（`8f927ec`）、触屏 44px、侧栏名字折行、错误页标题字号。其中**往年日期写出年份**和**来源的叫法** 10/9 已加回（用户：「你决定」），见上表。
 
-## 3. 改了 `industry/`、`site/`、`modules/` 以外的文件
+## 3. 改了 `industry/`、`site/`、`modules/`、`myfnb/` 以外的文件
 
-快照 10/10（按 `git fetch upstream && git diff upstream/main --stat -- apps packages scripts tests docs` 的结果，上游到 `18ddc7b`）：框架和作者上游 main 的差别只有下面这些，和上面的清单一一对应。合并上游时只有这几处可能冲突。导航隐藏（`nav.ts`、`more.tsx`）、手机顶栏（`PhoneBar.tsx`）、第一期日报以前的周和月（`compose.ts`）、改用词一步（`analyze.ts`、`editorial/wording.ts` 等）10/9 夜已合进上游，用的是原版，不在表里。`scripts/` 没有差别。
+快照 10-24（合并上游 `b3998dc` 以后）。重新生成：`git fetch upstream && git diff --stat upstream/main HEAD -- apps packages scripts docs database Dockerfile deploy .github package.json tests`。框架和作者上游的差别只有下面这些，每一处对应清单里的一行；对不上的就是清单漏了，或者是该改回原版的。合并上游时只有这些文件可能冲突。
 
-| 文件 | 改了什么 | 清单哪一行 | 去向 |
-|---|---|---|---|
-| `apps/web/app/features/feed/Filters.tsx`、`routes/home.tsx`、`routes/all.tsx` | `FEED.phoneFilter = "row"` 时手机上放一排筛选选项，不要筛选按钮和选项单；`FEED.firstPartyFilter = false` 时筛选里没有「一手」 | 手机筛选、一手 | 作者 `AGENTS.md`：新开关先开 Issue（§7） |
-| `packages/backend/src/reports/edition.ts` | `REPORTS.dailyScope = "pool"` 时日报收「全部」里的每一条；没入选的条目按进站时间算；写全的位置只给有入选报道的事；默认设置和周报月报的计数走原版的写法 | 日报 | 同上 |
-| `apps/web/app/features/report/format.ts` | `REPORTS.metricUnits` 里写 null 的数不在报头显示 | 一手 | 同上 |
-| `apps/web/app/features/feed/ReadingGroup.tsx`、`features/report/ReportPaper.tsx` | 「另有 N 家…报道」用 `ITEM_COPY.sourceWord`（默认「信源」） | 来源的叫法 | 同上 |
-| `apps/web/app/lib/format.ts` | `monthDay` 对往年的日期写出年份 | 日期 | 错误修正，可以提给作者 |
-| `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx` | 通用插口 `itemPart`：模块在条目页导读和理由之后放一块，页面随自己的数据一起读它的接口，读不到就不放 | 条目页 | 跟行业无关，可以提给作者 |
-| `docs/architecture.md`、`docs/customize.md` | `architecture.md` 说明 `itemPart` 插口；`customize.md` 说明 `FEED.phoneFilter`、`firstPartyFilter`、`REPORTS.dailyScope`、`ITEM_COPY.sourceWord` | 同上各行 | 随对应改动 |
-| `Dockerfile`、`package-lock.json` | 装上本站的模块（参考库、存档） | 参考库、存档 | 本站自己的 |
-| `tests/` 里二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`native-video.test.ts` | 作者按 AI 示例行业写的例子改成从行业包取；新加 `tests/report-pool`、`tests/wording`（本站词表和地区标签）、`apps/web/tests/feed-dates`、`item-parts`、`phone-shell` | 各行的测试 | 本站自己的；同步上游时照同一原则处理新测试 |
+| 文件 | 改了什么 | 清单哪一行 |
+|---|---|---|
+| `Dockerfile` | 装上本站的模块（参考库、存档） | 参考库、存档 |
+| `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`、`docs/architecture.md`、`apps/web/tests/item-parts.test.ts` | 通用插口 `itemPart`：模块在条目页导读和要点之后放一块 | 条目页 |
+| `apps/web/app/routes/item.tsx` | 条目页的 # 标签去掉分类标签和主题已经表示的标签（`shownTags`）；要点放在主栏 | 条目页标签、要点 |
+| `apps/web/app/features/feed/Filters.tsx`、`routes/home.tsx`、`routes/all.tsx`、`docs/customize.md`、`apps/web/tests/phone-shell.test.ts` | `FEED.phoneFilter = "row"`、`FEED.firstPartyFilter = false` 两个选项 | 手机筛选、一手 |
+| `apps/web/app/features/report/format.ts` | `REPORTS.metricUnits` 里写 null 的数不在报头显示 | 一手 |
+| `packages/backend/src/reports/edition.ts`、`tests/report-pool.test.ts` | `REPORTS.dailyScope = "pool"`：日报收「全部」里的每一条 | 日报 |
+| `apps/web/app/features/feed/ReadingGroup.tsx`、`features/report/ReportPaper.tsx`、`apps/web/tests/page-width.test.ts`、`timeline-unread.test.ts` | 「另有 N 家…报道」用 `ITEM_COPY.sourceWord`；两个测试按本站的说法找按钮 | 来源的叫法 |
+| `apps/web/app/lib/format.ts`、`routes/story.tsx`、`routes/topic.tsx`、`apps/web/tests/feed-dates.test.ts` | `monthDay` 对往年的日期写出年份，几处改从 `lib/format.ts` 引 | 日期 |
+| `apps/web/app/features/feed/FeedItem.tsx`、`packages/backend/src/publication/agent.ts`、`publication/detail.ts` | 理由字段按行显示要点（`reasonLines`），Agent 出口的说明改成「说明原文讲了什么」 | 要点 |
+| `packages/backend/src/modules.ts`、`reports/compose.ts`、`publication/reports.ts`、`packages/contracts/src/site.ts`、`features/report/ReportPaper.tsx` | 模块插口 `dailyLead`，日报头条的可选字段 `kicker`、`href` | 十一说 |
+| `packages/backend/src/editorial/check.ts`、`analyze.ts`、`models.ts`、`jobs/content.ts`、`tests/check-item.standalone.test.ts`、`tests/analysis-steps.ts` 等 | 核对员（要搬进模块，见清单那一行） | 核对员 |
+| `packages/backend/src/media/og.ts` | 读 `assets/og-fonts/` 里另加的字体补字 | 分享图字体 |
+| `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |
+| `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑 | GitHub 检查里的网页测试 |
+| `tests/wording.test.ts` | 本站的不用词清单 | 写作 |
+| `tests/` 里其余二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`web-server.ts`、`cache.test.ts` | 作者按 AI 示例行业写的类别、标签、公司改成从行业包取 | 不是产品差别：同步上游时照同一原则处理作者的新测试 |
+| `scripts/smoke.ts` | 注释里的例子名 `MyF&B` 改成 `A&B` | 不是产品差别（作者的注释用了本站旧名） |

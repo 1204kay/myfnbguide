@@ -29,7 +29,7 @@ export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
 export const ISSUE_CHECK_STEP = "referenceIssueCheck";
 /** Purposes the check model answers (the writer answers reference_issue_write). */
-export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review";
+export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review" || purpose === "reference_issue_listen";
 const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");
@@ -37,7 +37,8 @@ const CHECK = prompt("issue-check");
 const EDIT = prompt("issue-edit");
 const REVIEW = prompt("issue-review");
 const SPEAK = prompt("issue-speak");
-export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW).update(SPEAK)
+const LISTEN = prompt("issue-listen");
+export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW).update(SPEAK).update(LISTEN)
   .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
 
 /**
@@ -191,6 +192,42 @@ const issueText = (issue: IssueText) => [
 const citedText = (cited: DayItem[]) => cited.map((i) =>
   `〔${i.n}〕${i.sourceName}《${i.title}》${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : "（不可以引原句）"}\n${i.text.slice(0, FULL_CHARS)}`).join("\n\n") || "（没有点名任何收录）";
 
+/**
+ * Puts the check's fixes into a draft and checks it again, up to EDIT_ROUNDS times (a fix the check could not write goes
+ * to the editor); what is still wrong after the last round is cut. Each round's draft is kept in `drafts`.
+ */
+async function mend(start: Draft, items: DayItem[], ask: Ask, drafts: Draft[], tag: string): Promise<Draft> {
+  let last = start;
+  for (const round of "cdefg".slice(0, EDIT_ROUNDS)) {
+    if (!last.problems.length) return last;
+    let issue: IssueText;
+    if (last.problems.some((p) => p.fix === undefined)) issue = await edit(last, items, ask, `${tag}${round}`);
+    else {
+      const fixed = amendIssue(last.issue, last.problems, (p) => p.fix);
+      if (!fixed.changed.length) break;
+      issue = fixed.issue;
+    }
+    last = { issue, ...await checkIssue(issue, items, ask), edited: true };
+    drafts.push(last);
+  }
+  if (!last.problems.length) return last;
+  const { issue, cut, kept } = cutProblems(last.issue, last.problems);
+  return { issue, lively: last.lively, problems: kept, edited: true, cut };
+}
+
+const ListenAnswer = z.object({ scores: z.array(z.object({ draft: z.coerce.number(), score: z.coerce.number(), why: z.string().default("") })) });
+
+/** The listener's score for each mended draft; with one draft, or no usable answer, none is given and the order stands. */
+async function listen(drafts: Draft[], ask: Ask): Promise<Array<{ score: number; why: string } | undefined>> {
+  if (drafts.length < 2) return [];
+  const user = drafts.map((d, i) => `第 ${i + 1} 稿：\n\n${issueText(d.issue)}`).join("\n\n————\n\n");
+  const answer = await ask("reference_issue_listen", LISTEN, user, ListenAnswer).catch((error: unknown) => {
+    if (error instanceof ModelOutputError) return { scores: [] };
+    throw error;
+  });
+  return drafts.map((_, i) => answer.scores.find((x) => x.draft === i + 1));
+}
+
 /** Mends only the sentences the check named, against the originals the draft cites and those of an event it left out. */
 async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): Promise<IssueText> {
   const missed = new Set(draft.problems.filter((p) => p.rule === 4).flatMap((p) => [...p.quote.matchAll(/〔(\d+)〕/gu)].map((m) => Number(m[1]))));
@@ -282,6 +319,9 @@ export interface Draft {
   reviewed?: Problem[];
   /** The draft as the writer gave it, before it was gone over for the ear. */
   written?: IssueText;
+  /** What the listener gave it, 1 to 10, once mended, and why. */
+  heard?: number;
+  heardWhy?: string;
 }
 export interface ComposedIssue {
   date: string;
@@ -427,24 +467,16 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     if (!reviewed.length) return { date, status: "issue", chosen, drafts, items };
     return { date, status: "issue", chosen: { ...chosen, issue: amendIssue(chosen.issue, reviewed, (p) => p.fix).issue, reviewed }, drafts, items };
   };
-  const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
-  if (passing.length) return done(passing[0]!);
-  let last = [...drafts].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
-  for (const attempt of "cdefg".slice(0, EDIT_ROUNDS)) {
-    let issue: IssueText;
-    if (last.problems.some((p) => p.fix === undefined)) issue = await edit(last, items, ask, attempt);
-    else {
-      const fixed = amendIssue(last.issue, last.problems, (p) => p.fix);
-      if (!fixed.changed.length) break;
-      issue = fixed.issue;
-    }
-    last = { issue, ...await checkIssue(issue, items, ask), edited: true };
-    drafts.push(last);
-    if (!last.problems.length) break;
-  }
-  if (!last.problems.length) return done(last);
-  const { issue, cut, kept } = cutProblems(last.issue, last.problems);
-  return done({ issue, lively: last.lively, problems: kept, edited: true, cut });
+  // Each draft is mended until it passes, then a listener who reads no original picks one: the check's own score for
+  // how lively a draft is picked the article told point by point over a bar's first night three times on 10-22
+  // (ee444d8, 3895dc2, 6bea306), and the livelier mended alone left the other as it was written.
+  const finals: Draft[] = [];
+  for (const [k, d] of [...drafts].entries()) finals.push(await mend(d, items, ask, drafts, "ab"[k]!));
+  const heard = await listen(finals, ask);
+  finals.forEach((d, i) => { d.heard = heard[i]?.score; d.heardWhy = heard[i]?.why; });
+  const chosen = [...finals].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (y.heard ?? 0) - (x.heard ?? 0)
+    || (x.cut?.length ?? 0) - (y.cut?.length ?? 0) || y.lively - x.lively)[0]!;
+  return done(chosen);
 }
 
 // ---------------------------------------------------------------- the daily's top, and a page to read
@@ -467,7 +499,7 @@ function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {
     ...(d.issue.deep ? [f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, ""] : []), ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
     `> 关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。`, "",
-    `核对：${d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.written ? `（为念出来改之前 ${issueChars(d.written)}）` : ""}${d.edited ? "　（编辑按问题改过）" : ""}`,
+    `核对：${d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10${d.heard !== undefined ? `　听众 ${d.heard}/10（${d.heardWhy}）` : ""}　字数 ${issueChars(d.issue)}${d.written ? `（为念出来改之前 ${issueChars(d.written)}）` : ""}${d.edited ? "　（编辑按问题改过）" : ""}`,
     ...(d.cut ?? []).map((x) => `- 删掉：${x}`),
     ...d.problems.map((p) => `- ${d.cut ? "没能删掉，" : ""}第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
   ];

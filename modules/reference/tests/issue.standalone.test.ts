@@ -22,8 +22,8 @@ function scripted(answers: Partial<Record<string, (user: string, attempt?: strin
   const calls: Array<{ purpose: string; user: string; attempt?: string }> = [];
   const ask: Ask = async (purpose, _system, user, schema, attempt) => {
     calls.push({ purpose, user, attempt });
-    // The read for the ear leaves a draft as written, and the last read for omissions finds nothing, unless a test scripts them.
-    const answer = answers[purpose] ?? (purpose === "reference_issue_review" ? () => ({ problems: [] })
+    // The read for the ear leaves a draft as written, the listener scores none, and the last read for omissions finds nothing, unless a test scripts them.
+    const answer = answers[purpose] ?? (purpose === "reference_issue_review" ? () => ({ problems: [] }) : purpose === "reference_issue_listen" ? () => ({ scores: [] })
       : purpose === "reference_issue_speak" ? (u: string) => JSON.parse(u.slice(u.indexOf("\n") + 1)) : undefined);
     if (!answer) throw new Error(`no scripted answer for ${purpose}`);
     return schema.parse(answer(user, attempt));
@@ -47,7 +47,7 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "好听的一稿");
-  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_review"]);
+  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_listen", "reference_issue_review"]);
   assert.ok(!calls[0]!.user.includes("另一稿细说"));
   assert.ok(calls[3]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
   assert.ok(calls[1]!.user.includes("平淡的一稿"), "each draft is gone over for the ear before its check");
@@ -57,27 +57,27 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
 });
 
-test("when neither passes, the check's own fixes go into the livelier draft and a fresh check reads it; what is still wrong after the last round is cut and the day goes out", async () => {
+test("when neither passes, the check's own fixes go into each draft and a fresh check reads it; what is still wrong after the last round is cut and the day goes out", async () => {
   let checks = 0;
   const { ask, calls } = scripted({
     reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, attempt === "a" ? "说了一句原文没有的话〔3〕。另一句对得上〔3〕。" : "说了一句原文没有的话〔2〕。另一句对得上〔2〕。"),
     reference_issue_check: (user) => {
       checks++;
-      // The first two checks, one per draft, find the sentence; each later check finds what the last fix left.
+      // The first two checks, one per draft, find the sentence; each later check finds what the last fix left in its draft.
       return { lively: user.includes("稿 b") ? 7 : 6, problems: [
         user.includes("说了一句原文没有的话") ? { rule: 2, quote: "说了一句原文没有的话〔2〕。", why: "像真事", fix: `改过的第 ${checks} 句〔2〕。` }
-          : { rule: 1, quote: `改过的第 ${checks - 1} 句〔2〕。`, why: "还是不对", fix: `改过的第 ${checks} 句〔2〕。` },
+          : { rule: 1, quote: `${user.match(/改过的第 \d+ 句/u)![0]}〔2〕。`, why: "还是不对", fix: `改过的第 ${checks} 句〔2〕。` },
       ] };
     },
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.ok(!calls.some((x) => x.purpose === "reference_issue_edit"), "the check's fixes need no editor");
-  assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 2 + EDIT_ROUNDS);
-  assert.ok(calls[6]!.user.includes("改过的第 2 句") && !calls[4]!.user.includes("像真事"), "the fresh check reads the fixed draft, not the last verdict");
+  assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 2 + 2 * EDIT_ROUNDS, "each draft is mended");
+  assert.ok(calls[6]!.user.includes("改过的第 1 句") && !calls[4]!.user.includes("像真事"), "the fresh check reads the fixed draft, not the last verdict");
   assert.equal(c.status, "issue");
-  assert.equal(c.drafts.length, 2 + EDIT_ROUNDS);
+  assert.equal(c.drafts.length, 2 + 2 * EDIT_ROUNDS);
   assert.equal(c.chosen?.issue.news[0]?.text, "另一句对得上〔2〕。");
-  assert.deepEqual(c.chosen?.cut, [`改过的第 ${2 + EDIT_ROUNDS - 1} 句〔2〕。`]);
+  assert.deepEqual(c.chosen?.cut, [`改过的第 ${2 + 2 * EDIT_ROUNDS - 1} 句〔2〕。`]);
   assert.equal(dailyLead(c, 1)?.title, "稿 b");
   assert.ok(issueMarkdown(c, 1).includes("删掉 1 句后出刊"));
 });
@@ -88,7 +88,7 @@ test("a fix that puts the draft right ends the rounds", async () => {
     reference_issue_check: (user) => ({ lively: 7, problems: user.includes("没有的话") ? [{ rule: 1, quote: "说了一句原文没有的话〔2〕。", why: "", fix: "原文这样说〔2〕。" }] : [] }),
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
-  assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 3);
+  assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 4, "one fix for each draft");
   assert.equal(c.chosen?.issue.news[0]?.text, "原文这样说〔2〕。");
   assert.equal(c.chosen?.cut, undefined);
 });
@@ -182,9 +182,10 @@ test("a draft that cites nothing loses to one that does, however clean its check
   });
   const c = await composeIssue(ITEMS, "2026-10-21", ask);
   assert.ok(c.drafts[1]!.problems.some((p) => p.why === "细说没标出处"));
-  assert.equal(c.chosen?.issue.title, "有出处的一稿", "the cited draft is the one mended, though its check found more");
-  const edit = calls.find((x) => x.purpose === "reference_issue_edit");
-  assert.ok(!edit || !edit.user.includes("这一天的全部收录"), "a draft that cites is not handed the day's list");
+  assert.notEqual(c.chosen?.issue.title, "没出处的一稿", "a clean check of a draft that cites nothing never takes it up as written");
+  const edits = calls.filter((x) => x.purpose === "reference_issue_edit");
+  assert.ok(edits.some((x) => x.user.includes("这一天的全部收录")), "the draft that cites nothing is mended with the day's list");
+  assert.ok(!edits.some((x) => x.user.includes("有出处的一稿") && x.user.includes("这一天的全部收录")), "a draft that cites is not handed the day's list");
 });
 
 test("an editor asked to add a source is given the day's numbers to add", async () => {
@@ -329,4 +330,18 @@ test("each draft is checked as it reads aloud, the writer's own kept beside it; 
   assert.equal(c.drafts[0]!.written?.news[0]!.text, "一串数字〔1〕。");
   assert.ok(calls.find((x) => x.purpose === "reference_issue_check")!.user.includes("念顺了"), "the check reads what will be said");
   assert.equal(c.drafts[1]!.issue.news[0]!.text, "一串数字〔1〕。");
+});
+
+test("of the mended drafts the listener's pick goes up, whatever the check thought livelier", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("一条条念的一稿", "说了〔1〕。") : issue("像故事的一稿", "说了〔3〕。")),
+    reference_issue_check: (user) => ({ lively: user.includes("一条条") ? 8 : 5, problems: [] }),
+    reference_issue_listen: () => ({ scores: [{ draft: 1, score: 5, why: "像念提纲" }, { draft: 2, score: 8, why: "像讲故事" }] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-22", ask);
+  assert.equal(c.chosen?.issue.title, "像故事的一稿");
+  assert.equal(c.chosen?.heard, 8);
+  const listen = calls.find((x) => x.purpose === "reference_issue_listen")!.user;
+  assert.ok(listen.includes("第 1 稿") && listen.includes("第 2 稿") && !listen.includes(ITEMS[0]!.text), "the listener reads the drafts, not the originals");
+  assert.ok(issueMarkdown(c, 1).includes("听众 8/10（像讲故事）"));
 });

@@ -85,7 +85,9 @@ case "${1:-}" in
     sudo git -C "$DIR" fetch -q origin "$BRANCH"
     sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
     cd /opt/myfnbguide
-    sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
+    # 核对员和提示词用这个分支的（还没部署时），其余用线上镜像
+    sudo docker compose run --rm -T -e REDO="${REDO:-}" -v $DIR/myfnb:/app/myfnb:ro -v $DIR/industry/prompts:/app/industry/prompts:ro \
+      -v $DIR/packages/backend/src/editorial:/app/packages/backend/src/editorial:ro \
       worker node myfnb/check-old-items-2026-10-23.ts --limit "${LIMIT:-20}" $([ "$1" = old-apply ] && echo --apply) 2>&1 | grep --line-buffered -v '"level"'
     ;;
   check)

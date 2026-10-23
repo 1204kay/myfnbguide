@@ -1,5 +1,6 @@
 // 2026-10-23：要点上线前已经入选的条目（约 1,340 条），用同一个核对员（packages/backend/src/editorial/check.ts）拿原文核一遍现有的
-// 标题、摘要、收录理由：严重和误导照核对员的改法改，改过的再核一遍；标题或摘要还错、或理由改不好的，撤下（withdrawn，不删）。
+// 标题、摘要、收录理由：严重和误导照核对员的改法改，改过的再核一遍；标题或摘要还错的撤下（withdrawn，不删）；只有理由改不好的，去掉理由、条目留着
+// （10-23 第 1 批：刘帅那条标题摘要都对，只因理由被删空就整条撤下，太严）。
 // 只核对、不重写（十一 10-23；Kay 10-23「你和十一讨论决定」「今天做不到？」）。从新到旧，每批 20 条，每批抽样盲核过了再下一批。
 // 分两步，花钱和改线上分开：
 //   不带 --apply：挑下一批（没核过的里最新的 LIMIT 条），调核对员，结果只写进 old_check_20261023，不动线上，打出改前改后。
@@ -32,6 +33,10 @@ const show = (r: Row) => {
   }
 };
 
+// REDO=id,id：先删掉这几条的核对结果（只删本表，不碰线上），这一批重新核它们。
+const redo = (process.env.REDO ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+if (redo.length) console.log(`重核 ${(await sql`DELETE FROM old_check_20261023 WHERE applied_at IS NULL AND article_id IN ${sql(redo)} RETURNING 1`).length} 条`);
+
 if (!apply) {
   const [{ batch }] = await sql<{ batch: number }[]>`SELECT coalesce(max(batch), 0) + 1 AS batch FROM old_check_20261023`;
   const picked = await sql<{ article_id: string; title: string; summary: string | null; reason: string | null }[]>`
@@ -47,7 +52,7 @@ if (!apply) {
       if (!a) throw new Error("读不到原文");
       const c = await checkCopy(a, { titleZh: p.title, summaryZh: p.summary ?? "", reasonZh: p.reason }, `article:${a.id}@${a.revision}`, TAG);
       await sql`INSERT INTO old_check_20261023 (article_id, batch, title, summary, reason, new_title, new_summary, new_reason, held, receipt_ids)
-        VALUES (${p.article_id}, ${batch}, ${p.title}, ${p.summary}, ${p.reason}, ${c.draft.title}, ${c.draft.lead}, ${c.draft.points.join("\n") || null}, ${c.held}, ${c.receiptIds})`;
+        VALUES (${p.article_id}, ${batch}, ${p.title}, ${p.summary}, ${p.reason}, ${c.draft.title}, ${c.draft.lead}, ${c.draft.points.join("\n") || null}, ${c.copyWrong}, ${c.receiptIds})`;
     } catch (e) {
       // 记下失败，下一批不再挑它；要重试就删掉这一行。
       await sql`INSERT INTO old_check_20261023 (article_id, batch, title, summary, reason, error) VALUES (${p.article_id}, ${batch}, ${p.title}, ${p.summary}, ${p.reason}, ${String(e)})`;

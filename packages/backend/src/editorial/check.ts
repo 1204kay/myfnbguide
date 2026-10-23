@@ -39,18 +39,18 @@ export function applyFixes(d: Draft, ps: Problem[]): Draft {
   return { title: out.title, lead: out.lead, points: out.points.filter((x): x is string => !!x) };
 }
 
-export interface CheckResult { draft: Draft; held: boolean; receiptIds: number[] }
+export interface CheckResult { draft: Draft; held: boolean; copyWrong: boolean; receiptIds: number[] }
 
 /**
  * Check once, put the fixes in, re-check only what changed. `ask` is the paid call (a test passes its own);
- * `held` means the item must not be selected: a title or lead still wrong, or no point left.
+ * `held` means the item must not be selected: a title or lead still wrong (`copyWrong`), or no point left.
  */
 export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: string) => Promise<{ problems: Problem[]; receiptId: number }>): Promise<CheckResult> {
   const c = await ask(first, "check");
   const receiptIds = [c.receiptId];
   const fixes = toFix(c.problems);
   // No points means the reader still has to click.
-  if (!fixes.length) return { draft: first, held: first.points.length === 0, receiptIds };
+  if (!fixes.length) return { draft: first, held: first.points.length === 0, copyWrong: false, receiptIds };
   const fixed = applyFixes(first, c.problems);
   // A title or lead the checker could not fix stays wrong.
   let held = fixes.some((p) => (p.field === "title" || p.field === "lead") && !p.fix);
@@ -60,7 +60,7 @@ export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: s
   if (fixed.title !== first.title) partial.title = fixed.title;
   if (fixed.lead !== first.lead) partial.lead = fixed.lead;
   if (changed.length) partial.points = changed;
-  if (!Object.keys(partial).length) return { draft: fixed, held: held || fixed.points.length === 0, receiptIds };
+  if (!Object.keys(partial).length) return { draft: fixed, held: held || fixed.points.length === 0, copyWrong: held, receiptIds };
   const r2 = await ask(partial, "recheck");
   receiptIds.push(r2.receiptId);
   // The re-check only stops serious errors; a misleading one takes the checker's fix, with no third check
@@ -75,7 +75,7 @@ export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: s
     else if (isPoint(p) && changed[p.point - 1] && !bad.has(changed[p.point - 1]!)) last.points[last.points.indexOf(changed[p.point - 1]!)] = p.fix;
   }
   const draft = { ...last, points: last.points.filter((p) => !bad.has(p)) };
-  return { draft, held: held || draft.points.length === 0, receiptIds };
+  return { draft, held: held || draft.points.length === 0, copyWrong: held, receiptIds };
 }
 
 /** The checker on a selected item's copy (title = titleZh, lead = summaryZh, points = the lines of reasonZh). */
@@ -84,7 +84,7 @@ export async function checkCopy(a: AnalyzeInputArticle, w: { titleZh: string; su
   const original = a.xPost ? String(a.xPost.text ?? a.title) : (a.bodyText ?? a.excerpt ?? "");
   // A paywalled article leaves only its free opening (10-23: note.com, 203 and 301 characters, no figure in them):
   // the points can say nothing the reader could use, so it is not selected, and nothing is paid to check it.
-  if (!a.xPost && PAYWALLED_HOSTS.test(a.url) && original.trim().length < MIN_ORIGINAL) return { draft: { title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }, held: true, receiptIds: [] };
+  if (!a.xPost && PAYWALLED_HOSTS.test(a.url) && original.trim().length < MIN_ORIGINAL) return { draft: { title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }, held: true, copyWrong: true, receiptIds: [] };
   return checkAndFix({ title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }, async (d, step) => {
     const res = await chatJson({
       model, purpose: "check_item", subject, promptVersion: VERSION, system: CHECK_SYSTEM,

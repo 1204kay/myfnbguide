@@ -13,14 +13,14 @@ function asker(...answers: Problem[][]) {
 
 test("a clean draft is checked once and kept", async () => {
   const a = asker([]);
-  assert.deepEqual(await checkAndFix(draft, a.ask), { draft, held: false, receiptIds: [1] });
+  assert.deepEqual(await checkAndFix(draft, a.ask), { draft, held: false, copyWrong: false, receiptIds: [1] });
   assert.equal((await checkAndFix({ ...draft, points: [] }, asker([]).ask)).held, true, "no points: the reader still has to click");
 });
 
 test("fixes go in and only the changed sentences are checked again", async () => {
   const a = asker([p({ field: "lead", fix: "改过的导读。" }), p({ point: 2, severity: "misleading", fix: "改过的要点二" }), p({ point: 3, severity: "minor", fix: "不改" })], []);
   const r = await checkAndFix(draft, a.ask);
-  assert.deepEqual(r, { draft: { title: "标题", lead: "改过的导读。", points: ["要点一", "改过的要点二", "要点三"] }, held: false, receiptIds: [1, 2] });
+  assert.deepEqual(r, { draft: { title: "标题", lead: "改过的导读。", points: ["要点一", "改过的要点二", "要点三"] }, held: false, copyWrong: false, receiptIds: [1, 2] });
   assert.deepEqual(a.asked[1], { d: { lead: "改过的导读。", points: ["改过的要点二"] }, step: "recheck" });
 });
 
@@ -33,5 +33,6 @@ test("on the re-check a serious point is dropped, a misleading one takes the fix
   assert.equal(lead.held, true);
   assert.equal((await checkAndFix(draft, asker([p({ field: "title" })]).ask)).held, true, "a title with no fix stays wrong");
   const none = await checkAndFix({ ...draft, points: ["要点一"] }, asker([p({ point: 1, fix: "新一" })], [p({ point: 1 })]).ask);
-  assert.deepEqual([none.draft.points, none.held], [[], true]);
+  assert.deepEqual([none.draft.points, none.held, none.copyWrong], [[], true, false], "no point left holds a new item, but the copy itself is right");
+  assert.equal(lead.copyWrong, true);
 });

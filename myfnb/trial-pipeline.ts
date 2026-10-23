@@ -58,17 +58,18 @@ const listed = (ps: Problem[]) => ps.length ? ps.map((p) => `- **${p.severity}**
 const out: string[] = [`# 要点 + 核对 试跑 ${run}`, "", `${picked.length} 条，核对：${model}。原文只在服务器的「原文/」里。`, ""];
 const json: unknown[] = [];
 const stats = { items: 0, passed: 0, held: 0, failed: 0, returns: 0, firstSerious: 0, firstToFix: 0, receipts: [] as number[] };
-for (const [k, r] of picked.entries()) {
+async function runItem(k: number, r: Row): Promise<string[]> {
+  const out: string[] = [];
   const no = String(k + 1).padStart(2, "0");
   const a = await loadAnalyzeInput(r.id);
-  if (!a) { out.push(`## ${no} ${r.title}`, "", "（读不到原文，跳过）", ""); continue; }
+  if (!a) { out.push(`## ${no} ${r.title}`, "", "（读不到原文，跳过）", ""); return out; }
   writeFileSync(join(dir, "原文", `${no}.txt`), [`来源：${r.source_name}`, `原题：${a.title}`, `链接：${a.url}`, "", a.bodyText ?? a.excerpt ?? ""].join("\n"));
   stats.items++;
   out.push(`## ${no} ${a.title}`, "", `来源：${r.source_name} · ${r.url}`, "");
   try {
     const first = await runUnderstand(a);
     const w = first ? await mendWording(a, first, {}) : null;
-    if (!w) { out.push("（模型拒写）", ""); stats.failed++; continue; }
+    if (!w) { out.push("（模型拒写）", ""); stats.failed++; return out; }
     stats.receipts.push(...w.receiptIds);
     const drafts: Draft[] = [{ title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }];
     const checks: Problem[][] = [];
@@ -97,7 +98,13 @@ for (const [k, r] of picked.entries()) {
     out.push(`（失败：${error instanceof Error ? error.message : String(error)}）`, "");
     console.log(`${no} 失败：${error instanceof Error ? error.message : String(error)}`);
   }
+  return out;
 }
+// Four items at a time: each is a write and up to three checks, a few minutes with DeepSeek thinking.
+const parts: string[][] = [];
+for (let i = 0; i < picked.length; i += 4) parts.push(...await Promise.all(picked.slice(i, i + 4).map((r, j) => runItem(i + j, r))));
+out.push(...parts.flat());
+json.sort((x, y) => String((x as { no: string }).no).localeCompare(String((y as { no: string }).no)));
 const summary = `${stats.items} 条：过 ${stats.passed}，不过 ${stats.held}，失败 ${stats.failed}；第一稿有严重问题 ${stats.firstSerious} 条、有严重或误导 ${stats.firstToFix} 条；退回改写共 ${stats.returns} 次；用量 ${await spent(stats.receipts)}`;
 out.splice(3, 0, `**${summary}**`, "");
 writeFileSync(join(dir, "试跑.md"), out.join("\n"));

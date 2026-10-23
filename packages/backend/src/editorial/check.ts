@@ -29,8 +29,10 @@ const isPoint = (p: Problem) => p.field === "point" || p.field === "points";
 /**
  * Country names in our copy are ours to keep (check-item.md rule 6: readers are in many countries). 10-23 old items,
  * batch 3: with that rule in the prompt the checker still turned 「中国火锅连锁」 into 「火锅连锁」 and 「在中国」 into
- * 「全国」, so a fix that drops a country the sentence named is not used, and its problem is set aside with it:
- * it was judged on the wrong premise. What else that fix changed in the sentence is lost; the sentence stays as written.
+ * 「全国」, so a fix that drops a country the sentence named is not used. A misleading or minor problem goes with it.
+ * A serious one stays, as a problem with no fix: the point is dropped, a title or lead holds the item (10-24: the
+ * checker found 「瓶装果汁美国平均成本」 was one brand's price, its fix also dropped 美国, and setting the problem
+ * aside put the wrong sentence live). Which words of a fix restore the country is not something code can tell.
  */
 const COUNTRIES = /中国|日本|韩国|美国|英国|法国|德国|意大利|西班牙|葡萄牙|荷兰|比利时|瑞士|瑞典|挪威|丹麦|芬兰|爱尔兰|奥地利|波兰|希腊|土耳其|俄罗斯|澳大利亚|新西兰|加拿大|墨西哥|巴西|阿根廷|智利|秘鲁|哥伦比亚|印度尼西亚|印尼|印度|泰国|越南|新加坡|马来西亚|菲律宾|柬埔寨|缅甸|阿联酋|沙特|以色列|南非|台湾|香港|澳门/g;
 export function dropsCountry(before: string, after: string): boolean {
@@ -41,8 +43,10 @@ function sentenceOf(d: Partial<Draft>, p: Problem): string | undefined {
   if (p.field === "lead") return d.lead;
   return isPoint(p) ? d.points?.[p.point - 1] : undefined;
 }
-const keepingCountries = (d: Partial<Draft>, ps: Problem[]) =>
-  ps.filter((p) => !(p.fix && dropsCountry(sentenceOf(d, p) ?? "", p.fix)));
+const keepingCountries = (d: Partial<Draft>, ps: Problem[]) => ps.flatMap((p) => {
+  if (!p.fix || !dropsCountry(sentenceOf(d, p) ?? "", p.fix)) return [p];
+  return p.severity === "serious" ? [{ ...p, fix: "" }] : [];
+});
 // Kinds 1–4 (a number, who said it, whether it happened, order and cause) are wrong facts by the prompt's own
 // definition, yet the checker grades the same one differently from run to run (10-23: "作者的做法是每单收 5 美元"
 // for the original's "for example", serious in one run and minor in the next). One with a fix is always put in.

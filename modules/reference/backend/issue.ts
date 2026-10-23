@@ -291,7 +291,10 @@ export const MIN_ITEMS = 3;
 export const EDIT_ROUNDS = 5;
 
 /** Sentences, each with its closing mark, and the line breaks between paragraphs as they stand. */
-const sentences = (text: string) => text.split(/(?<=[。！？\n])/u).filter(Boolean);
+/** A sentence keeps the citation marks after its full stop: split before them, a mended sentence that cites its source
+ * left the old mark standing beside its own (10-22, 0da591c: 〔8〕〔8〕 three times). */
+const sentences = (text: string) => text.split(/(?<=[。！？](?:〔[^〕]*〕)*|\n)(?!〔)/u).filter(Boolean);
+const CITATIONS = /(?:〔[^〕]*〕)+(?=\s*$)/u;
 /** Compared without spaces, citation marks or the quotation marks the check puts around a quote. */
 const bare = (text: string) => text.replace(/〔[^〕]*〕|\s|^[「“]|[」”]$/gu, "");
 
@@ -317,7 +320,9 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
       changed.push(x.trim());
       if (placed || !r) return [];
       placed = true;
-      return [r];
+      // A mend that drops the sentence's citation keeps it, so the check can still read it against its original.
+      const cites = x.match(CITATIONS)?.[0];
+      return [cites && !CITATION.test(r) ? `${r}${cites}${x.endsWith("\n") ? "\n" : ""}` : `${r}${x.endsWith("\n") && !r.endsWith("\n") ? "\n" : ""}`];
     }).join("").replace(/\n{3,}/gu, "\n\n").trim();
     const lead = out.brief.findIndex((x) => hits(x, q));
     if (lead >= 0) { changed.push(out.brief[lead]!); if (r) out.brief[lead] = r; else out.brief.splice(lead, 1); }

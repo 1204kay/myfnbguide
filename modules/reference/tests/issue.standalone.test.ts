@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ModelOutputError } from "@aihot/backend/providers/llm";
-import { type Ask, citedItems, composeIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { amendIssue, type Ask, citedItems, composeIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -304,4 +304,14 @@ test("the issue that goes up is read once more for what it left out; a fix goes 
   assert.equal(c.chosen?.issue.news.length, 3, "an empty fix cuts nothing");
   assert.equal(c.chosen?.reviewed?.length, 1);
   assert.equal(calls.filter((x) => x.purpose === "reference_issue_review").length, 1, "only the issue that goes up");
+});
+
+test("a mended sentence keeps one citation, whether or not its fix repeats it", () => {
+  const draft = { ...issue("稿", "景气指数跌到99.4。〔8〕赛道越挤越难赚钱。〔8〕"), deep: "细说〔4〕\n\n第二段。" };
+  const { issue: out } = amendIssue(draft, [
+    { rule: 1, quote: "景气指数跌到99.4。", why: "", fix: "景气指数跌到99.4，是季节性回摆。〔8〕" },
+    { rule: 1, quote: "赛道越挤越难赚钱。", why: "", fix: "红餐网认为赛道越挤越难赚钱。" },
+  ], (p) => p.fix);
+  assert.equal(out.news[0]!.text, "景气指数跌到99.4，是季节性回摆。〔8〕红餐网认为赛道越挤越难赚钱。〔8〕");
+  assert.equal(out.deep, "细说〔4〕\n\n第二段。");
 });

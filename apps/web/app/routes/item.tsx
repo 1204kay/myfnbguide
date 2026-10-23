@@ -35,7 +35,7 @@ export const handle: Screen = { home: "featured", toolbar: true };
 export { pageHeaders as headers } from "../lib/api.server";
 
 /**
- * 本站：条目页的 # 标签不再重复主题和分类已经说过的（myfnb/HANDOFF.md §3.0「条目页标签」）。主题由标签组成
+ * 本站：条目页的 # 标签不再重复主题和分类已经说过的（myfnb/DIFFERENCES.md「条目页标签」）。主题由标签组成
  * （industry/topics.json 的 tags），分类标签就是日报分节，再列一遍只是同一件事写两次。
  */
 const CATEGORY = new Set<string>(CATEGORY_TAGS);

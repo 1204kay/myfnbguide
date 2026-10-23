@@ -11,7 +11,7 @@ const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   summary: `摘要 ${n}`, text: `原文 ${n} 的全文。`.repeat(50), selected: false, storyId: null,
 });
 const ITEMS = [item(1), item(2, "rss-hongcan"), item(3), item(4)];
-/** A draft whose first news item says `news`; two more items, each citing item 4, make up the 3 the shape needs. */
+/** A draft whose first news item says `news`, then two more, each citing item 4. */
 const issue = (title: string, news: string): IssueText => ({
   title, brief: ["一", "二", "三"], preview: "预告", deep: "细说〔4〕", close: "合起来",
   news: [{ head: "快讯", text: news }, ...[1, 2].map(() => ({ head: "另一条", text: "也说了〔4〕。" }))],
@@ -125,17 +125,15 @@ test("Japanese left untranslated is a problem the program finds", async () => {
   assert.equal(c.chosen?.issue.title, "改过");
 });
 
-test("「十一觉得」 past the first goes to the editor, and the close never carries the label it is shown under", async () => {
+test("「十一觉得」 is the writer's to say as often as it likes, and the close never carries the label it is shown under", async () => {
   const { ask, calls } = scripted({
     reference_issue_write: () => ({ ...issue("稿", "说了〔1〕。"), deep: "十一觉得这事要紧〔1〕。后面还有。", close: "合起来：十一觉得都在算账。" }),
     reference_issue_check: () => ({ lively: 7, problems: [] }),
-    reference_issue_edit: () => ({ ...issue("改过", "说了〔1〕。"), close: "合起来：都在算账。" }),
   });
   const c = await composeIssue(ITEMS, "2026-10-21", ask);
-  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["十一觉得都在算账。"]);
-  assert.equal(c.drafts[0]!.issue.close, "十一觉得都在算账。");
-  assert.ok(calls.some((x) => x.purpose === "reference_issue_edit"));
-  assert.equal(c.chosen?.issue.close, "都在算账。");
+  assert.deepEqual(c.drafts[0]!.problems, []);
+  assert.ok(!calls.some((x) => x.purpose === "reference_issue_edit"));
+  assert.equal(c.chosen?.issue.close, "十一觉得都在算账。");
 });
 
 test("a lead sentence taken out gives way to a part no sentence left tells, the deep piece first, so the daily's lead stays three sentences", () => {
@@ -159,7 +157,7 @@ test("a lead sentence taken out gives way to a part no sentence left tells, the 
   assert.equal(noDeep[2], "咖啡酒吧过祭典不加人手", "without a deep piece, the first head no sentence tells");
 });
 
-test("a news item with a string of figures, and quotation marks a sentence after a citation of a source that may not be quoted, are found by the program", async () => {
+test("quotation marks a sentence after a citation of a source that may not be quoted are found by the program; a string of figures is the writer's", async () => {
   const { ask } = scripted({
     reference_issue_write: () => ({
       ...issue("稿", "2026 年前九个月开了 319 家，共 1634 家、87 座城市，三季度 84 家、12 座新城市，会员 4520 万〔4〕。"),
@@ -169,7 +167,7 @@ test("a news item with a string of figures, and quotation marks a sentence after
     reference_issue_edit: () => issue("改过", "前九个月开了 319 家〔4〕。"),
   });
   const c = await composeIssue(ITEMS, "2026-10-15", ask);
-  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["快讯", "他们更在意“值不值”。"]);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["他们更在意“值不值”。"]);
 });
 
 test("a draft that cites nothing loses to one that does, however clean its check", async () => {
@@ -196,18 +194,6 @@ test("an editor asked to add a source is given the day's numbers to add", async 
   await composeIssue(ITEMS, "2026-10-21", ask);
   const edit = calls.find((x) => x.purpose === "reference_issue_edit")!.user;
   assert.ok(edit.includes("这一天的全部收录") && edit.includes("〔2〕来源 2《第 2 条》"));
-});
-
-test("figures written in characters count as figures, and 十一 and 十分 are not figures", async () => {
-  const told = (news: string) => scripted({
-    reference_issue_write: () => issue("稿", news),
-    reference_issue_check: () => ({ lively: 7, problems: [] }),
-    reference_issue_edit: () => issue("改过", "说了〔4〕。"),
-  });
-  const many = await composeIssue(ITEMS, "2026-10-21", told("客流约三千人，高峰六千到八千，涨了四成〔4〕。").ask);
-  assert.deepEqual(many.drafts[0]!.problems.map((p) => p.quote), ["快讯"]);
-  const few = await composeIssue(ITEMS, "2026-10-21", told("十一觉得这十分要紧，客流约三千人，涨了四成〔4〕。").ask);
-  assert.deepEqual(few.drafts[0]!.problems, []);
 });
 
 test("a flagged news head takes its item, a flagged question gives way to the first head, and what cannot be found stays listed", () => {
@@ -266,7 +252,7 @@ test("the date and weekday come from the calendar, and the program's own lines f
   assert.ok(md.includes("早上好，今天是2026年10月11日，星期日。我是十一。") && md.includes("下面，细说一件。") && md.includes("我们明天早上见。"));
 });
 
-test("the program finds what the check model is not asked to count: the number of news items, an item with no source, a big event left out", async () => {
+test("the program finds what the check model is not asked to count: an item with no source, a big event left out; how many news items is the writer's", async () => {
   const told = (n: number, storyId: string, sourceId = `rss-${n}`) => ({ ...item(n, sourceId), storyId });
   // Twelve award lists from one source (10-13) are one source talking, not an event the day's sources were telling.
   const items = [told(1, "mcd"), told(2, "mcd"), told(3, "mcd"), item(4), item(5), told(6, "awards", "web-canyin88"), told(7, "awards", "web-canyin88"), told(8, "awards", "web-canyin88")];
@@ -276,7 +262,7 @@ test("the program finds what the check model is not asked to count: the number o
     reference_issue_check: () => ({ lively: 7, problems: [] }),
   });
   const c = await composeIssue(items, "2026-10-06", ask);
-  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.why), ["快讯要 3 条", "这条快讯没标出处", "3 家都在讲这件事，这一期没讲"]);
+  assert.deepEqual(c.drafts[0]!.problems.map((p) => p.why), ["这条快讯没标出处", "3 家都在讲这件事，这一期没讲"]);
   assert.ok(calls.find((x) => x.purpose === "reference_issue_edit")!.user.includes(items[0]!.text), "the editor has the left-out event's originals");
   const write = calls.find((x) => x.purpose === "reference_issue_write")!.user;
   assert.ok(write.includes("〔1〕〔2〕〔3〕讲的是同一件事") && !write.includes("〔6〕〔7〕〔8〕"), "one source's several items are not told the writer as an event");

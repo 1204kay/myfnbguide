@@ -1,6 +1,6 @@
 // 十一说 (myfnb/HANDOFF.md §9.0; Kay 10-19): one issue a day at the top of the 08:00 daily. The aim is that a reader who
 // hears today's 十一说 knows what the last 24 hours brought: 十一 reads everything listed in the daily's window and tells
-// it the way a morning news show does (声动早咖啡, which Kay showed us): 4 to 6 news items, each with who reported it,
+// it the way a morning news show does (声动早咖啡, which Kay showed us): a few news items, each with who reported it,
 // then one told in depth (the order of 得到头条), then a line on what the day's items add up to. Stories are the
 // originals' own; a made-up example only to work a sum. Until the evening of 10-19 十一 fused the whole day into one
 // story with made-up shops; the trial's errors sat where items were fused or invented, and what did not fit the story
@@ -163,8 +163,8 @@ async function write(items: DayItem[], date: string, ask: Ask, attempt: string, 
   const user = [
     `日期：${dayName(date)}（这是这一天日报收录的全部 ${items.length} 条，其中 ${items.filter((i) => i.selected).length} 条是精选）`, itemList(items),
     ...(events.length ? [`好几家都在讲的事：\n${events.map((e) => `- ${e.ns.map((n) => `〔${n}〕`).join("")}讲的是同一件事`).join("\n")}`] : []),
-    // The second draft tells another deep piece, from a shop's own scene: two drafts of one subject left nothing to choose (10-22).
-    ...(other ? [`另一稿细说的是「${other.title}」。这一稿细说换一件别的：从上面挑一件有店里真实场景的事（一家店、一个人、一个具体的时刻），讲成故事。`] : []),
+    // The second draft tells another deep piece: two drafts of one subject left nothing to choose (10-22).
+    ...(other ? [`另一稿细说的是「${other.title}」。这一稿细说换一件别的。`] : []),
   ].join("\n\n");
   return ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
 }
@@ -192,35 +192,21 @@ async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): 
   return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
 }
 
-/** Figures in one news item past which it is a list, not news: the write-up asks for two or three. */
-export const MAX_FIGURES = 3;
-/** Figures written in characters count too (10-21: 三千、六千到八千、三十多 slipped past a count of digits alone). */
-const HAN_FIGURE = /[一二两三四五六七八九]?[十百千万亿][零一二两三四五六七八九十百千万亿]*|[一二两三四五六七八九]成[一二三四五六七八九]?/gu;
-/** A lone 百、千、万 is a word (百货、千层), not a figure. */
-const NOT_FIGURES = new Set(["百", "千", "万"]);
 const CITATION = /〔[\d、,，\s]+〕/u;
 const UNCITED = "这条快讯没标出处";
 /** A draft with a part that cites nothing: its check had no original to read it against, so its few problems prove nothing. */
 const uncited = (d: Draft) => d.problems.some((p) => p.rule === 4 && (p.why === UNCITED || p.why === "细说没标出处"));
-/** How many news items an issue tells (10-23: six read like a report; the rest are still in the daily). */
-export const NEWS = 3;
 
 /** An event this many sources told must be in the issue (on 10-06 the site grouped McDonald's on AI pricing from two). */
 export const BIG_EVENT = 3;
 
-/** What the program finds itself, as rule 4: the shape of the issue, which the check model is not asked to count. */
+/** What the program finds itself, as rule 4: what the check model is not asked to count. How many news items, how many figures, how often 「十一觉得」 are the writer's
+ * (Kay 10-23: 「不要各种限制发挥 重点对就行了」); until then the program counted all three and sent drafts back for them. */
 function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Problem[] {
   const out: Problem[] = [];
-  if (issue.news.length !== NEWS) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: `快讯要 ${NEWS} 条` });
   for (const x of issue.news) if (!CITATION.test(x.text)) out.push({ rule: 4, quote: x.head, why: UNCITED });
   // A deep piece that cites nothing is one the check cannot hold to any original (10-21, ff56959: the second draft cited none and passed for the cleaner).
   if (!CITATION.test(issue.deep)) out.push({ rule: 4, quote: issue.title, why: "细说没标出处" });
-  // A string of figures no ear keeps (10-15: Domino's China in seven, a survey in seven percentages); years aside.
-  for (const x of issue.news) {
-    const text = x.text.replace(/〔[^〕]*〕/gu, "").replace(/十一(?=说|觉得|的|算|看|想)|十分(?!之)|千万(?=别|不|要)|万一/gu, "");
-    const figures = (text.match(/\d[\d,.]*/gu) ?? []).filter((d) => !/^(19|20)\d\d$/u.test(d)).length + (text.match(HAN_FIGURE) ?? []).filter((w) => !NOT_FIGURES.has(w)).length;
-    if (figures > MAX_FIGURES) out.push({ rule: 4, quote: x.head, why: `这条快讯说了 ${figures} 个数字，只留两三个最要紧的` });
-  }
   // A quotation in a sentence that cites only sources whose sentences may not be quoted (10-11: 「70元时代」 from a
   // paper not on QUOTABLE_SOURCES; the check let it through). A sentence citing nothing tells the source last cited in
   // its paragraph (10-15: “值不值” the sentence after 〔2〕).
@@ -244,9 +230,6 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
     // Japanese left as it stood (10-14: a blog's name, 《15年続ける蕎麦屋店主の経営ノート》), which no listener can follow.
     if (/[\u3040-\u30ff]/u.test(sentence)) out.push({ rule: 1, quote: sentence.trim(), why: "日文没翻成中文，听的人听不懂" });
   }
-  // 「十一觉得」 past the first, which the write-up allows once (10-21 said it twice): the editor says it plainly.
-  const views = written(issue).split(/(?<=[。！？\n])/u).filter((sentence) => sentence.includes("十一觉得"));
-  for (const sentence of views.slice(1)) out.push({ rule: 4, quote: sentence.trim(), why: "「十一觉得」一期只说一次，这句去掉它，直接把话说出来" });
   const citedNs = new Set(cited.map((i) => i.n));
   for (const { ns, sources } of sameEvents(items)) {
     if (sources >= BIG_EVENT && !ns.some((n) => citedNs.has(n))) {

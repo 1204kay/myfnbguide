@@ -654,8 +654,8 @@ test("a page splits by cause only where two causes have two practices each; one 
   assert.deepEqual(find.practices.map((p: { key: string; lines: Array<{ country: string; name: string }> }) => [p.key, p.lines.map((l) => `${l.country} · ${l.name}`)]),
     [["p1", ["美国 · 一家咖啡店", "日本 · 大阪一家家庭食堂"]]], "two shops: a card; Sun Diner by its newest label, its country once");
   assert.deepEqual(find.shops, [{ country: "日本", name: "大阪一家家庭食堂", practices: [
-    { key: "p2", title: "请老员工介绍朋友", caseId: id.H2, line: "介绍的朋友留得更久", cases: 1 },
-    { key: "p3", title: "在附近大学招兼职", caseId: id.H7, line: null, cases: 1 },
+    { key: "p2", title: "请老员工介绍朋友", caseId: id.H2, line: "介绍的朋友留得更久", cases: 1, folded: false },
+    { key: "p3", title: "在附近大学招兼职", caseId: id.H7, line: null, cases: 1, folded: false },
   ] }], "one shop's two practices under one line, newest first; a line that repeats its title left out");
   assert.deepEqual(interview.shops.map((s: { country: string; name: string; practices: Array<{ key: string }> }) => [s.country, s.name, s.practices.map((p) => p.key)]),
     [["中国", "一家面馆", ["p6"]], ["美国", "一家咖啡店", ["p5"]], ["美国", "一家酒吧", ["p4"]]], "a row each, newest first");
@@ -703,6 +703,40 @@ test("a page splits by cause only where two causes have two practices each; one 
       VALUES (${id[marker]!}, 1, 'story', ${sql.json(told as never)}, ${["retention"]}, ${`noodle-${marker.toLowerCase()}`}, 'test', ${at(minute)})`;
   }
   assert.deepEqual((await get("/api/reference")).categories[0].situations.map((s: { slug: string; count: Count }) => [s.slug, s.count.shops]), [["retention", 3], ["hiring", 2]]);
+
+  // 10-24: the stories folded by the settings row (foldedStories), two to try, then all; deleting the row undoes it.
+  type Line = { caseId: string; country: string; name: string; line: string; folded: boolean };
+  type Card = { key: string; summary: string | null; lines: Line[] };
+  const fold = (value: unknown) => sql`INSERT INTO settings (key, value) VALUES ('reference.folded', ${sql.json(value as never)}) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`;
+  const cardsOf = (page: { rest: { practices: Card[] }; groups: Array<{ practices: Card[] }> }) => [page.rest, ...page.groups].flatMap((part) => part.practices);
+  const before = await get("/api/reference/situations/hiring");
+  assert.ok(before.overview && cardsOf(before).every((c) => c.summary), "nothing folded: as it was");
+  await fold({ ids: [id.H3, id.H5] });
+  const moved = await app.inject(`/api/reference/cases/${id.H3}`);
+  assert.deepEqual([moved.statusCode, JSON.parse(moved.body).mergedInto], [308, id.H3], "a folded story's page goes to its item");
+  assert.equal((await app.inject(`/api/reference/cases/${id.H1}`)).statusCode, 200, "one not folded stays");
+  const tried = await get("/api/reference/situations/hiring");
+  const doorCard = cardsOf(tried).find((c) => c.key === "p1")!;
+  assert.deepEqual(doorCard.lines.find((l) => l.caseId === id.H3), { caseId: id.H3, country: "美国", name: "Total Food Service", line: "H3", cases: 1, folded: true },
+    "its line: the source and the item's own title, not the story's shop and line");
+  assert.equal(doorCard.summary, null, "a practice with a folded story sums nothing up");
+  assert.equal(tried.overview, null, "nor does the situation");
+  assert.equal((await get("/api/reference/shops/moon-cafe")).cases.find((c: { id: string }) => c.id === id.H5).title, "H5", "a shop with a story not folded keeps its page");
+  assert.equal((await get(`/api/reference/items/${id.H3}`)).situation.slug, "hiring", "its item still leads to the situation");
+
+  await fold({ all: true });
+  assert.equal((await app.inject(`/api/reference/cases/${id.H1}`)).statusCode, 308);
+  const shopMoved = await app.inject("/api/reference/shops/sun-diner");
+  assert.deepEqual([shopMoved.statusCode, JSON.parse(shopMoved.body).mergedInto], [308, "reference"], "a shop's page goes to the library");
+  const folded = await get("/api/reference/situations/hiring");
+  assert.ok(cardsOf(folded).length && cardsOf(folded).every((c) => c.summary === null && c.lines.every((l) => l.folded)), "the practices' titles stay, their lines are items");
+  assert.equal((await get("/api/reference")).recent, null, "no story taken in last to name");
+  const map = (await reference.sitemap!.entries!()).map((e) => e.loc);
+  assert.ok(map.includes("/reference/hiring") && !map.some((loc) => loc.startsWith("/reference/cases/") || loc.startsWith("/reference/shops/")), "the situations stay in the sitemap, the stories and shops leave it");
+
+  await sql`DELETE FROM settings WHERE key = 'reference.folded'`;
+  assert.equal((await app.inject(`/api/reference/cases/${id.H3}`)).statusCode, 200, "the row deleted: back as it was");
+  assert.deepEqual(await get("/api/reference/situations/hiring"), before);
 });
 
 test("every listed item that is no story gets a write-up under its summary, checked like a case; a story is its item's write-up", async () => {

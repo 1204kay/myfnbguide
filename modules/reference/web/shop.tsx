@@ -15,7 +15,8 @@ export function headers() {
 }
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  return loadOr404<ShopPage>(`/api/reference/shops/${encodeURIComponent(params.key!)}`, { signal: request.signal });
+  // A shop whose stories are all folded goes to the library (backend/read.ts foldedStories).
+  return loadOr404<ShopPage>(`/api/reference/shops/${encodeURIComponent(params.key!)}`, { signal: request.signal, merged: () => "/reference" });
 }
 
 /** The page's title: who the shop is in Chinese, or its own name in stories written before that was asked. */

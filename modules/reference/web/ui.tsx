@@ -118,6 +118,9 @@ export function RankTag({ rank }: { rank: number }) {
   return <span className={`mono text-[12px] font-bold tracking-[0.16em] ${rankColor(rank)}`}>NO.{pad(rank)}</span>;
 }
 
+/** Where a story's card or line leads: its page, or for a folded one its item's (backend/read.ts foldedStories). */
+export const caseHref = (id: string, folded: boolean) => (folded ? `/items/${id}` : `/reference/cases/${id}`);
+
 /**
  * A story's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
  * bookmark, its title, the item's 收录理由 under a hairline from desktops; then the way to its shop's page.
@@ -130,7 +133,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
         <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
       </div>
       <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">
-        <Link viewTransition to={`/reference/cases/${c.id}`} className={STRETCH}>{c.title}</Link>
+        <Link viewTransition to={caseHref(c.id, c.folded)} className={STRETCH}>{c.title}</Link>
       </h3>
       {c.reason && (
         <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
@@ -174,11 +177,11 @@ export function Practice({ p }: { p: PracticeCard }) {
     <article id={p.key} className="card scroll-mt-[calc(var(--bar-h)+8px)] px-4 pb-1 pt-3.5 sm:px-5 lg:pt-[18px]">
       <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
       <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
-      <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>
+      {p.summary && <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>}
       <ul ref={list} className="mt-3 border-t border-line">
         {lines.map((l) => (
           <li key={l.caseId} className="border-t border-line-soft first:border-t-0">
-            <Link viewTransition to={`/reference/cases/${l.caseId}`} className="-mx-1 flex min-h-[52px] items-center gap-2 rounded-tile px-1 py-2 transition-colors hover:text-accent touch:active:bg-bg-sunk lg:min-h-11">
+            <Link viewTransition to={caseHref(l.caseId, l.folded)} className="-mx-1 flex min-h-[52px] items-center gap-2 rounded-tile px-1 py-2 transition-colors hover:text-accent touch:active:bg-bg-sunk lg:min-h-11">
               <span className="min-w-0 flex-1 leading-[1.5]">
                 <span className="block text-[13px] text-ink-4 lg:inline">{l.country} · {l.name}<span className="hidden lg:inline"> · </span></span>
                 <span className="block text-[14px] text-ink-2 lg:inline">{l.line}{l.cases > 1 && <span className="text-ink-4"> · 共 {l.cases} 篇</span>}</span>
@@ -207,7 +210,7 @@ export function Practice({ p }: { p: PracticeCard }) {
  */
 function PracticeRow({ p, who }: { p: ShopPractices["practices"][number]; who?: string }) {
   return (
-    <Link id={p.key} viewTransition to={`/reference/cases/${p.caseId}`}
+    <Link id={p.key} viewTransition to={caseHref(p.caseId, p.folded)}
       className={`flex min-h-[52px] scroll-mt-[calc(var(--bar-h)+8px)] items-center gap-2 px-4 transition-colors hover:bg-bg-sunk/40 focus-visible:-outline-offset-2 touch:active:bg-bg-sunk sm:px-5 ${who ? "py-3" : "py-2.5"}`}>
       <span className="min-w-0 flex-1">
         {who && <span className="block text-[13px] leading-[1.5] text-ink-4">{who}</span>}

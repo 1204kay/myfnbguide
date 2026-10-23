@@ -25,7 +25,8 @@ export function headers() {
 }
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  return loadOr404<CasePage>(`/api/reference/cases/${encodeURIComponent(params.id!)}`, { signal: request.signal });
+  // A folded story goes to its item (backend/read.ts foldedStories), as a merged story does (AIHOT routes/story.tsx).
+  return loadOr404<CasePage>(`/api/reference/cases/${encodeURIComponent(params.id!)}`, { signal: request.signal, merged: (id) => `/items/${id}` });
 }
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {

@@ -155,6 +155,8 @@ export interface CaseCard {
   src: string;
   /** The item's 收录理由. */
   reason: string | null;
+  /** Folded (backend/read.ts foldedStories): the title is the item's, and the card leads to the item's page. */
+  folded: boolean;
   /** The shop's page, when the shop has other stories than this one ("这家店另有 N 条原文"). */
   shop: { key: string; others: number } | null;
 }
@@ -169,6 +171,8 @@ export interface PracticeLine {
   line: string;
   /** Its stories in the practice ("· 共 2 篇" from two). */
   cases: number;
+  /** Folded: the line names the source and the item's title, and leads to the item's page. */
+  folded: boolean;
 }
 
 /**
@@ -179,7 +183,8 @@ export interface PracticeCard {
   /** Its anchor on the situation page. */
   key: string;
   title: string;
-  summary: string;
+  /** Null once one of its stories is folded: it sums them up. */
+  summary: string | null;
   count: Count;
   lines: PracticeLine[];
 }
@@ -202,6 +207,8 @@ export interface ShopPractices {
     line: string | null;
     /** Its stories in the practice ("共 2 篇" from two), as a practice card's line counts them. */
     cases: number;
+    /** Folded: the row leads to the item's page. */
+    folded: boolean;
   }>;
 }
 
@@ -277,6 +284,8 @@ export interface SituationPage {
 export interface CasePage {
   id: string;
   story: CaseStory;
+  /** Folded (backend/read.ts foldedStories): the api answers its page with the way to the item's. */
+  folded: boolean;
   /** The item the story is written from, with its AI 导读 (summary) and 收录理由. */
   item: StarItem & { reason: string | null };
   source: { name: string; kind: string | null; url: string; month: string };

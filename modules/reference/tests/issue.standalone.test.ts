@@ -345,3 +345,8 @@ test("of the mended drafts the listener's pick goes up, whatever the check thoug
   assert.ok(listen.includes("第 1 稿") && listen.includes("第 2 稿") && !listen.includes(ITEMS[0]!.text), "the listener reads the drafts, not the originals");
   assert.ok(issueMarkdown(c, 1).includes("听众 8/10（像讲故事）"));
 });
+
+test("a fix that carries the label of its part goes in without it", () => {
+  const { issue: out } = amendIssue(issue("说重了的标题", "说了〔1〕。"), [{ rule: 1, quote: "说重了的标题", why: "", fix: "标题：改准的标题" }], (p) => p.fix);
+  assert.equal(out.title, "改准的标题");
+});

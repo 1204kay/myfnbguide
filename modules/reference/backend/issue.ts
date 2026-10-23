@@ -92,6 +92,7 @@ export function modelAsk(model: string, subject: string, receiptIds: number[], o
 
 /** The label the close is shown under (issueText), which the writer or the editor copied in (10-13, 10-14, 10-21). */
 const CLOSE_LABEL = /^合起来[：:]\s*/u;
+const PART_LABEL = /^(?:标题|三句话|预告|快讯|细说|合起来)[：:]\s*/u;
 
 const IssueAnswer = z.object({
   /** The deep item's question. */
@@ -367,7 +368,8 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
   const hits = (text: string, q: string) => { const t = bare(text); return t.includes(q) || (t.length >= 6 && q.includes(t)); };
   for (const p of problems) {
     const q = bare(p.quote);
-    const r = replacement(p)?.trim();
+    // A fix may carry the label it was shown under (10-20, 7466b97: the title went up as 「标题：意大利一家……」).
+    const r = replacement(p)?.trim().replace(PART_LABEL, "");
     if (p.rule > 3 || q.length < 4 || r === undefined) { kept.push(p); continue; }
     const before = changed.length;
     let placed = false;

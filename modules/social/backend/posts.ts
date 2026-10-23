@@ -2,6 +2,7 @@
 // and an approved one is sent through its platform's sender. Every step writes a row to social_log. Nothing is
 // sent unless the post was approved by a person (approve) and the story is still on the site (send).
 import { config } from "@aihot/backend/config";
+import { beijingAt, beijingDate } from "@aihot/contracts/time";
 import { sql } from "@aihot/backend/db";
 import { selectedCondition } from "@aihot/backend/publication/scope";
 import { compose, PLATFORMS, storyParts, type Platform, type StoryParts } from "./compose.ts";
@@ -48,7 +49,7 @@ export async function storyToPost(now = new Date()): Promise<{ id: string; story
 export async function draftToday(now = new Date()): Promise<number[]> {
   // The day is the site's own (Malaysia and Beijing share it).
   const [{ n }] = await sql<{ n: number }[]>`
-    SELECT count(*)::int AS n FROM social_posts WHERE created_at >= date_trunc('day', ${now}::timestamptz AT TIME ZONE 'Asia/Shanghai') AT TIME ZONE 'Asia/Shanghai'`;
+    SELECT count(*)::int AS n FROM social_posts WHERE created_at >= ${beijingAt(beijingDate(now), "00:00")}`;
   if (n > 0) return [];
   const pick = await storyToPost(now);
   if (!pick) return [];

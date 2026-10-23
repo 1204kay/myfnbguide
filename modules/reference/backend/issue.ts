@@ -218,7 +218,7 @@ async function mend(start: Draft, items: DayItem[], ask: Ask, drafts: Draft[], t
 
 const ListenAnswer = z.object({ scores: z.array(z.object({ draft: z.coerce.number(), score: z.coerce.number(), why: z.string().default("") })) });
 
-/** The listener's score for each mended draft; with one draft, or no usable answer, none is given and the order stands. */
+/** The listener's score for each draft as it will be said; with one draft, or no usable answer, none is given and the order stands. */
 async function listen(drafts: Draft[], ask: Ask): Promise<Array<{ score: number; why: string } | undefined>> {
   if (drafts.length < 2) return [];
   const user = drafts.map((d, i) => `第 ${i + 1} 稿：\n\n${issueText(d.issue)}`).join("\n\n————\n\n");
@@ -320,7 +320,7 @@ export interface Draft {
   reviewed?: Problem[];
   /** The draft as the writer gave it, before it was gone over for the ear. */
   written?: IssueText;
-  /** What the listener gave it, 1 to 10, once mended, and why. */
+  /** What the listener gave it, 1 to 10, as gone over for the ear and before the check's fixes, and why. */
   heard?: number;
   heardWhy?: string;
 }
@@ -443,7 +443,7 @@ function itemsIssue(items: DayItem[]): IssueText {
   };
 }
 
-/** Writes the day's issue: two drafts, each checked; the livelier that passes, else the livelier mended, then cut. */
+/** Writes the day's issue: two drafts, each gone over for the ear and checked; the listener's pick mended, then cut. */
 export async function composeIssue(items: DayItem[], date: string, ask: Ask): Promise<ComposedIssue> {
   if (items.length < MIN_ITEMS) return { date, status: "thin", chosen: null, drafts: [], items };
   const drafts: Draft[] = [];
@@ -469,15 +469,22 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     if (!reviewed.length) return { date, status: "issue", chosen, drafts, items };
     return { date, status: "issue", chosen: { ...chosen, issue: amendIssue(chosen.issue, reviewed, (p) => p.fix).issue, reviewed }, drafts, items };
   };
-  // Each draft is mended until it passes, then a listener who reads no original picks one: the check's own score for
-  // how lively a draft is picked the article told point by point over a bar's first night three times on 10-22
-  // (ee444d8, 3895dc2, 6bea306), and the livelier mended alone left the other as it was written.
+  // A listener who reads no original picks a draft as it will be said, and only the pick is mended: the check's own
+  // score for how lively a draft is picked the article told point by point over a bar's first night three times on
+  // 10-22 (ee444d8, 3895dc2, 6bea306), and mending both drafts before picking doubled what 10-20 cost (7466b97,
+  // US$4.53). A pick that cites nothing, or is still wrong after mending, leaves the other to be mended too (十一 10-23: 不出空期).
+  const heard = await listen(drafts, ask);
+  drafts.forEach((d, i) => { d.heard = heard[i]?.score; d.heardWhy = heard[i]?.why; });
+  const order = [...drafts].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (y.heard ?? 0) - (x.heard ?? 0) || y.lively - x.lively);
   const finals: Draft[] = [];
-  for (const [k, d] of [...drafts].entries()) finals.push(await mend(d, items, ask, drafts, "ab"[k]!));
-  const heard = await listen(finals, ask);
-  finals.forEach((d, i) => { d.heard = heard[i]?.score; d.heardWhy = heard[i]?.why; });
-  const chosen = [...finals].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (y.heard ?? 0) - (x.heard ?? 0)
-    || (x.cut?.length ?? 0) - (y.cut?.length ?? 0) || y.lively - x.lively)[0]!;
+  for (const d of order) {
+    const k = drafts.indexOf(d);
+    const m = await mend(d, items, ask, drafts, "ab"[k]!);
+    finals.push({ ...m, heard: d.heard, heardWhy: d.heardWhy });
+    if (!uncited(m) && !m.cut?.length && !m.problems.length) break;
+  }
+  const chosen = finals.sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (x.cut?.length ?? 0) - (y.cut?.length ?? 0)
+    || (y.heard ?? 0) - (x.heard ?? 0) || y.lively - x.lively)[0]!;
   return done(chosen);
 }
 

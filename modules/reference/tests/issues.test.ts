@@ -3,7 +3,10 @@
 // would have led with, a lead that points nowhere, and an issue page that lists originals the issue never names.
 import { editionAt, pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { after, before, test } from "node:test";
+import { config } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { publishArticle } from "@aihot/backend/publication/publish";
@@ -81,6 +84,30 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.deepEqual(page.sources.map((s: { n: number; title: string }) => [s.n, s.title]), [[1, "标题 1"], [2, "标题 2"], [3, "标题 3"]], "only the originals it names");
   assert.equal((await app.inject("/api/reference/issues/2")).statusCode, 404);
   assert.equal((await app.inject("/api/reference/issues/x")).statusCode, 404);
+});
+
+test("an issue has 听 only once its audio is in place, and the audio is served in byte ranges", async () => {
+  const dir = path.join(config.dataDir, "reference", "audio");
+  assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, null, "no audio, no 听 button");
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "1.mp3"), Buffer.from(Array.from({ length: 1000 }, (_, i) => i % 256)));
+  assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, null, "an mp3 without its seconds is not shown yet");
+  await writeFile(path.join(dir, "1.json"), JSON.stringify({ seconds: 687.4 }));
+  assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, { url: "/api/reference/issues/1/audio.mp3", seconds: 687 });
+
+  const whole = await app.inject("/api/reference/issues/1/audio.mp3");
+  assert.equal(whole.statusCode, 200);
+  assert.equal(whole.headers["accept-ranges"], "bytes");
+  assert.equal(whole.rawPayload.length, 1000);
+  const part = await app.inject({ url: "/api/reference/issues/1/audio.mp3", headers: { range: "bytes=100-199" } });
+  assert.equal(part.statusCode, 206, "Safari plays only what is served in ranges");
+  assert.equal(part.headers["content-range"], "bytes 100-199/1000");
+  assert.deepEqual([...part.rawPayload.subarray(0, 3)], [100, 101, 102]);
+  const tail = await app.inject({ url: "/api/reference/issues/1/audio.mp3", headers: { range: "bytes=-10" } });
+  assert.equal(tail.headers["content-range"], "bytes 990-999/1000");
+  assert.equal((await app.inject({ url: "/api/reference/issues/1/audio.mp3", headers: { range: "bytes=1000-" } })).statusCode, 416);
+  assert.equal((await app.inject("/api/reference/issues/2/audio.mp3")).statusCode, 404);
+  await rm(dir, { recursive: true });
 });
 
 test("a day without an issue leads by rule", async () => {

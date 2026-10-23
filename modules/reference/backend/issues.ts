@@ -11,6 +11,7 @@ import { listedCondition, selectedCondition } from "@aihot/backend/publication/s
 import { beijingAt } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
 import type { IssuePage } from "../types.ts";
+import { issueAudio } from "./audio.ts";
 import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, ISSUE_VERSION, modelAsk } from "./issue.ts";
 
 /** Where an issue is read. */
@@ -88,7 +89,7 @@ export async function readIssue(no: number): Promise<IssuePage | null> {
   return {
     no: row.no, date: row.date, issue, lines: fixedLines(row.date),
     sources: citedItems(issue, items).cited.map(({ n, sourceName, title, url }) => ({ n, sourceName, title, url })),
-    count: items.length, prev: row.prev, next: row.next,
+    count: items.length, prev: row.prev, next: row.next, audio: await issueAudio(row.no),
   };
 }
 

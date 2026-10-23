@@ -5,7 +5,7 @@
 //   --days 2                       从最近几天的精选里挑（默认 2）
 //   --id <id>                      指定条目（可以写多个）
 //   --skip <id>                    不挑这些条目（可以写多个，比如上一趟试过的）
-//   --check deepseek-v4-pro-llm    核对用的模型
+//   --check deepseek-v4-pro-llm    核对用的模型；它拿不出能用的结果时和 worker 一样改用 CHECK_BACKUP（site/models.ts）
 //   --out /out                     这一趟的文件夹放在哪
 //   不写 --apply 只列出会挑哪些条目，不调模型。
 // 在服务器上见 myfnb/trial-understand-run.sh 的 pipeline。
@@ -16,6 +16,7 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { mendWording, runUnderstand } from "@aihot/backend/editorial/analyze";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/input";
 import { reasonLines } from "@aihot/site";
+import { CHECK_BACKUP } from "@aihot/site/models";
 import { applyFixes, checkDraft, serious, spent, toFix, type Problem } from "./check.ts";
 
 const args = process.argv.slice(2);
@@ -59,6 +60,7 @@ const listed = (ps: Problem[]) => ps.length ? ps.map((p) => `- **${p.severity}**
 
 const out: string[] = [`# 要点 + 核对 试跑 ${run}`, "", `${picked.length} 条，核对：${model}。原文只在服务器的「原文/」里。`, ""];
 const json: unknown[] = [];
+const started = new Date();
 const stats = { items: 0, passed: 0, held: 0, failed: 0, fixes: 0, secondFixes: 0, dropped: 0, firstSerious: 0, firstToFix: 0, receipts: [] as number[] };
 async function runItem(k: number, r: Row): Promise<string[]> {
   const out: string[] = [];
@@ -76,7 +78,7 @@ async function runItem(k: number, r: Row): Promise<string[]> {
     const drafts: Draft[] = [{ title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }];
     // 十一 10-23 (Kay: 不要一直重核): check the whole draft once and put the checker's fixes in; then re-check only the
     // sentences it changed. A changed point with a serious error is dropped; a title or lead with one holds the item.
-    const c = await checkDraft(model, a, drafts[0]!, "pipeline-1");
+    const c = await checkDraft(model, a, drafts[0]!, "pipeline-1", undefined, CHECK_BACKUP);
     stats.receipts.push(c.receiptId);
     const checks: Problem[][] = [c.problems];
     const fixes = toFix(c.problems);
@@ -99,7 +101,7 @@ async function runItem(k: number, r: Row): Promise<string[]> {
       if (changed.length) partial.points = changed;
       let again: Problem[] = [];
       if (Object.keys(partial).length) {
-        const r2 = await checkDraft(model, a, partial as Draft, "pipeline-recheck");
+        const r2 = await checkDraft(model, a, partial as Draft, "pipeline-recheck", undefined, CHECK_BACKUP);
         stats.receipts.push(r2.receiptId);
         checks.push(r2.problems);
         again = r2.problems;
@@ -145,7 +147,16 @@ const done = (k: number, o: string[]) => { writeFileSync(join(dir, `条目-${Str
 for (let i = 0; i < picked.length; i += 4) parts.push(...await Promise.all(picked.slice(i, i + 4).map((r, j) => runItem(i + j, r).then((o) => done(i + j, o)))));
 out.push(...parts.flat());
 json.sort((x, y) => String((x as { no: string }).no).localeCompare(String((y as { no: string }).no)));
-const summary = `${stats.items} 条：过 ${stats.passed}，不过 ${stats.held}，失败 ${stats.failed}；第一稿有严重问题 ${stats.firstSerious} 条、有严重或误导 ${stats.firstToFix} 条；核对员共改 ${stats.fixes} 处、复查时又直接改 ${stats.secondFixes} 处、复查有严重错删掉 ${stats.dropped} 条要点；用量 ${await spent(stats.receipts)}`;
+// Every check receipt of this run, the failed ones too: an unusable answer is paid for, and it is what the backup took
+// over (十一 10-24: the real cost per item, and how often the backup is needed).
+const checks = picked.length ? await sql<{ id: number; model: string | null; status: string }[]>`
+  SELECT id, model, status FROM receipts WHERE purpose = 'trial_check_item' AND created_at >= ${started}
+    AND subject IN ${sql(picked.map((r) => `article:${r.id}`))}` : [];
+const byModel = new Map<string, number>();
+for (const c of checks) byModel.set(`${c.model} ${c.status}`, (byModel.get(`${c.model} ${c.status}`) ?? 0) + 1);
+const checkCalls = [...byModel].map(([k, n]) => `${k} ${n} 次`).join("、") || "无";
+stats.receipts = [...new Set([...stats.receipts, ...checks.map((c) => c.id)])];
+const summary = `${stats.items} 条：过 ${stats.passed}，不过 ${stats.held}，失败 ${stats.failed}；第一稿有严重问题 ${stats.firstSerious} 条、有严重或误导 ${stats.firstToFix} 条；核对员共改 ${stats.fixes} 处、复查时又直接改 ${stats.secondFixes} 处、复查有严重错删掉 ${stats.dropped} 条要点；核对调用（模型 状态）：${checkCalls}；用量 ${await spent(stats.receipts)}`;
 out.splice(3, 0, `**${summary}**`, "");
 writeFileSync(join(dir, "试跑.md"), out.join("\n"));
 writeFileSync(join(dir, "试跑.json"), JSON.stringify(json, null, 1));

@@ -38,6 +38,11 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY", reasoningTokens: 4000, jsonMode: true,
   },
+  // 十一说的写手（Kay 10-19）；要点的核对员候选（10-23，和 Opus 对比）。用服务器自己的 DeepSeek 密钥（LLM_*）。
+  "deepseek-v4-pro-llm": {
+    service: "deepseek", model: "deepseek-v4-pro", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
+    extra: { thinking: { type: "enabled" }, reasoning_effort: "high" },
+  },
   "qwen3.7-flash": {
     service: "dashscope", model: "qwen3.7-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: true,
@@ -61,6 +66,13 @@ export const PRESETS: Record<string, ModelPreset> = {
   "claude-sonnet-5-5": {
     service: "anthropic", model: "claude-sonnet-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
     extra: { temperature: 1, thinking: { type: "between_tools" } }, jsonMode: false,
+  },
+  // 十一说 is written and checked by Opus (Kay 10-19: 「为什么不要一开始就用 opus」). Opus 5.5 takes no sampling
+  // parameters, so extra drops the framework's temperature (undefined is left out of the request); it always thinks,
+  // and reasoningTokens leaves room for that.
+  "claude-opus-5-5": {
+    service: "anthropic", model: "claude-opus-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
+    extra: { temperature: undefined }, reasoningTokens: 12000, jsonMode: false,
   },
   "qwen3-vl-flash": {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",

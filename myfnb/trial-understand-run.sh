@@ -10,6 +10,8 @@
 #                                                                    （原文不打出来；要二三十分钟，在本机用后台方式跑）
 #   ssh <服务器> 'bash -s' -- fix        < myfnb/trial-understand-run.sh   预览 myfnb/fix-items-2026-10-23.ts（盲核查出的 6 条线上错句）
 #   ssh <服务器> 'bash -s' -- fix-apply  < myfnb/trial-understand-run.sh   执行它（先备份，再改条目、报告和故事里的那几句）
+#   ssh <服务器> 'bash -s' -- check  < myfnb/trial-understand-run.sh   核对员考试（myfnb/trial-check.ts）：拿 10-23 那 20 条考 CHECK_MODELS
+#                                                                    （默认 deepseek-v4-pro-llm），跑完把核对.md 打到标准输出；NOS="18 06" 只考这几条
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
@@ -63,6 +65,20 @@ case "${1:-}" in
     sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
       worker node myfnb/fix-items-2026-10-23.ts $([ "$1" = fix-apply ] && echo --apply)
     ;;
+  check)
+    [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
+    sudo git -C "$DIR" fetch -q origin "$BRANCH"
+    sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
+    mkdir -p "$OUT"
+    flags=""; for m in ${CHECK_MODELS:-deepseek-v4-pro-llm}; do flags="$flags --model $m"; done
+    for n in ${NOS:-}; do flags="$flags --no $n"; done
+    cd /opt/myfnbguide
+    echo "检出：$(sudo git -C $DIR rev-parse --short HEAD)"
+    sudo docker compose run --rm -T \
+      -v $DIR/industry/prompts:/app/industry/prompts:ro -v $DIR/site/models.ts:/app/site/models.ts:ro -v $DIR/myfnb:/app/myfnb:ro -v $OUT:/out \
+      worker node myfnb/trial-check.ts $flags --apply 2>&1 | grep -v '"level"'
+    cat "$(ls -td $OUT/check-*/ | head -1)/核对.md"
+    ;;
   raw)
     cd /opt/myfnbguide
     sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
@@ -73,7 +89,7 @@ case "${1:-}" in
       SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
         AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
     ;;
-  *) echo "用法：start | status | pack | raw"; exit 1 ;;
+  *) echo "用法：start | status | pack | all | check | fix | fix-apply | raw"; exit 1 ;;
 esac
 }
 

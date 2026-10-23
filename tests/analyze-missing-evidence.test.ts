@@ -14,7 +14,8 @@ const steps: string[] = [];
 const provider = await stub((_hit, request) => {
   const step = analysisStep(request.body);
   steps.push(step);
-  const output = step === "prefilter" ? { label, reason: "fixture" }
+  const output = step === "check" ? { problems: [] }
+    : step === "prefilter" ? { label, reason: "fixture" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
     : step === "structure" ? { scope: "unknown", category: CATEGORIES[0]!.key, tags: [], subjects: [], fact: null }
     : { itemType: ITEM_TYPES[0], authorRole: "principal", titleZh: "模型发布", summaryZh: "来源确认模型发布。", bodyZh: "来源确认模型发布。", tags: [], editorialJudgment: "fixture" };

@@ -13,11 +13,12 @@ import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
 import { SELECTION } from "@aihot/industry/selection";
-import { ITEM_COPY } from "@aihot/site";
+import { ITEM_COPY, reasonLines } from "@aihot/site";
 import { sql } from "../db.ts";
 import { chatJson, ModelOutputError, type ContentPart } from "../providers/llm.ts";
 import { completeReceipt, ProviderRejectedError, ReceiptUnknownError } from "../providers/receipts.ts";
 import { collapseWhitespace } from "../lib/text.ts";
+import { checkCopy } from "./check.ts";
 import { modelFor, modelSupportsVision } from "./models.ts";
 import { buildMaterial, firstImagePart, loadAnalyzeInput, type AnalyzeInputArticle } from "./input.ts";
 import { pageFetchable } from "../content/extract.ts";
@@ -145,7 +146,8 @@ const UnderstandSchema = z.object({
   authorRole: z.enum(["principal", "observer", "relayer"]).catch("relayer"),
   // The understanding prompt asks for tags; the public ones come from the structure step.
   tags: z.array(z.string()).max(12).catch([]),
-  editorialJudgment: z.string().max(400).catch(""),
+  // No length cap: one over it made the whole answer "" and the item lost every point (10-23); the points are cut at five below.
+  editorialJudgment: z.string().catch(""),
   titleZh: z.string().trim().min(1).max(200),
   summaryZh: z.string().trim().min(1).max(4000),
 });
@@ -206,6 +208,8 @@ export interface AnalysisRun {
     titleZh: string;
     summaryZh: string;
     reasonZh: string | null;
+    /** The checker found the copy still wrong, or the original too thin: not selected (check.ts). */
+    held?: boolean;
     itemType?: string;
     authorRole?: string;
     identityGuard?: IdentityGuard;
@@ -367,9 +371,11 @@ export async function runUnderstand(a: AnalyzeInputArticle, opts: StepOpts = {})
     }
   }
   const d = res.data;
+  // 提示词要求最多 5 条要点，模型不一定守：10-23 试写里有超出的，这里截断，不靠提示词。
+  const points = reasonLines(d.editorialJudgment).slice(0, 5).join("\n");
   const copy = finalizeCopy(translateInputOf(a), { titleZh: d.titleZh, summaryZh: d.summaryZh });
   return {
-    kind: "understand", model: res.model, titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: d.editorialJudgment.trim() || null,
+    kind: "understand", model: res.model, titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: points || null,
     itemType: d.itemType, authorRole: d.authorRole, identityGuard: copy.identityGuard, receiptIds: [res.receiptId], reused: res.reused,
   };
 }
@@ -383,7 +389,7 @@ const MendSchema = z.object({ titleZh: z.string().trim().min(1), summaryZh: z.st
  * words it uses most. The mended copy keeps the
  * identity guard and is used only when it leaves fewer such words and the same numbers.
  */
-async function mendWording(a: AnalyzeInputArticle, w: NonNullable<AnalysisRun["writing"]>, opts: StepOpts): Promise<NonNullable<AnalysisRun["writing"]>> {
+export async function mendWording(a: AnalyzeInputArticle, w: NonNullable<AnalysisRun["writing"]>, opts: StepOpts): Promise<NonNullable<AnalysisRun["writing"]>> {
   // A copy missing its title or summary waits for a whole one (normalizeAnalysis): nothing to mend, and no text to
   // let a model without the material fill in.
   if ((w.kind !== "understand" && w.kind !== "summarize") || !w.titleZh || !w.summaryZh) return w;
@@ -470,9 +476,15 @@ export async function runAnalysis(a: AnalyzeInputArticle, opts: StepOpts = {}): 
     const near = sum !== null && (sum >= scores!.threshold * SCORE_CALLS || sum > UNDERSTAND_FLOOR * SCORE_CALLS);
     const s = await structure;
     if ("error" in s) throw s.error;
-    const writing: NonNullable<AnalysisRun["writing"]> = original
+    let writing: NonNullable<AnalysisRun["writing"]> = original
       ? { kind: "verbatim", model: null, titleZh: original.title, summaryZh: original.summary ?? "", reasonZh: null, receiptIds: [], reused: true }
       : await mendWording(a, (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts)), opts);
+    // Only copy that will be shown as selected is checked; a near miss is not paid for.
+    if (writing.kind === "understand" && sum !== null && sum >= scores!.threshold * SCORE_CALLS) {
+      checkAnalysisRunning();
+      const c = await checkCopy(a, writing, subjectOf(a), tagged(opts.attemptTag, "check"));
+      writing = { ...writing, titleZh: c.draft.title, summaryZh: c.draft.lead, reasonZh: c.draft.points.join("\n") || null, held: c.held, receiptIds: [...writing.receiptIds, ...c.receiptIds] };
+    }
     return { prefilter, scores, writing, structure: s.value };
   } finally {
     // A score/writing error or deploy must not let the job finish while a paid structure request
@@ -494,7 +506,7 @@ export function normalizeAnalysis(run: AnalysisRun) {
   const sum = values?.length === SCORE_CALLS ? values.reduce((total, v) => total + v, 0) : null;
   const score = sum === null ? null : Math.floor(sum / SCORE_CALLS);
   const threshold = run.scores?.threshold ?? null;
-  const selected = relevance === "pass" && sum !== null && threshold !== null && sum >= threshold * SCORE_CALLS;
+  const selected = relevance === "pass" && sum !== null && threshold !== null && sum >= threshold * SCORE_CALLS && !run.writing?.held;
   const subjects = run.structure?.subjects ?? [];
   const tags = [...(run.structure?.tags ?? [])];
   for (const s of subjects) {

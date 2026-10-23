@@ -25,7 +25,8 @@ const provider = await stub((_hit, req) => {
   const step = analysisStep(req.body);
   seen.push({ model: (JSON.parse(req.body) as { model: string }).model, step });
   const content =
-    step === "prefilter" ? { label: "PASS", reason: "测试" }
+    step === "check" ? { problems: [] }
+    : step === "prefilter" ? { label: "PASS", reason: "测试" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
     : step === "understand" ? { itemType: ITEM_TYPES[0], authorRole: "principal", tags: [CATEGORY_TAGS[0]], editorialJudgment: "理由", titleZh: "一个模型的标题", summaryZh: "一个模型写的摘要。第二句。" }
     : step === "structure" ? { category: CATEGORIES[0]!.key, tags: [CATEGORY_TAGS[0]], subjects: [], fact: null }
@@ -51,7 +52,7 @@ test("one model runs the prefilter, both scores, the writing and the structure",
   const res = await analyzeArticle(articleId);
   assert.equal(res!.output!.selected, true);
   assert.equal(res!.output!.titleZh, "一个模型的标题");
-  assert.deepEqual(seen.map((r) => r.step).sort(), ["prefilter", "score", "score", "structure", "understand"]);
+  assert.deepEqual(seen.map((r) => r.step).sort(), ["check", "prefilter", "score", "score", "structure", "understand"]);
   assert.ok(seen.every((r) => r.model === "one-model"), "every request names the configured model");
   const services = await sql<{ service: string }[]>`SELECT DISTINCT service FROM receipts WHERE subject LIKE ${`article:${articleId}%`}`;
   assert.deepEqual(services.map((s) => s.service), ["llm"]);

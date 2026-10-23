@@ -44,6 +44,7 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
   },
   // 十一说's writer (Kay 10-19: DeepSeek's strongest, thinking as deep as it goes): Pro still leads Flash on reasoning.
+  // Also the checker of the item points (决定记录 2026-10-23).
   "deepseek-v4-pro-llm": {
     service: "deepseek", model: "deepseek-v4-pro", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
     extra: { thinking: { type: "enabled" }, reasoning_effort: "high" },
@@ -90,6 +91,8 @@ export const PRESETS: Record<string, ModelPreset> = {
  * 例：{ score: "glm-5.3-flash-selection", groupReview: "mimo-v2.6-flash" }
  */
 export const DEFAULTS: Record<string, string> = {
+  // 要点的核对员（决定记录 2026-10-23）：考试 11/11 抓到严重错。
+  check: "deepseek-v4-pro-llm",
   // 十一说 (modules/reference): DeepSeek's strongest writes, Opus checks and mends (Kay 10-19; trial round 3, 10-13 to 10-15).
   referenceIssue: "deepseek-v4-pro-llm",
   referenceIssueCheck: "claude-opus-5-5",

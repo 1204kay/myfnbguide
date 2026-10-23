@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { Link } from "react-router";
-import { ITEM_COPY, SITE } from "@aihot/site";
+import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
@@ -133,7 +133,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
       </h3>
       {c.reason && (
         <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
-          <p className="line-clamp-2 text-[13px] leading-[1.65] text-note lg:leading-[1.75]">{ITEM_COPY.reasonLabel}：{c.reason}</p>
+          <p className="line-clamp-2 text-[13px] leading-[1.65] text-note lg:leading-[1.75]">{ITEM_COPY.reasonLabel}：{reasonLines(c.reason)[0]}</p>
         </div>
       )}
       {c.shop && (

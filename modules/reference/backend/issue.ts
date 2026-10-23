@@ -185,6 +185,8 @@ async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): 
     `十一的稿子：\n${JSON.stringify(draft.issue, null, 1)}`,
     `核对员挑出的问题：\n${draft.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`,
     `稿子点名的收录（全文）：\n\n${citedText([...new Set(given)])}`,
+    // Without the day's list an editor asked to add a source has no number to add (10-21, ff56959: six rounds, none added).
+    ...(uncited(draft) ? [`这一天的全部收录（编号、来源、标题），补出处时照这里的编号标：\n${items.map((i) => `〔${i.n}〕${i.sourceName}《${i.title}》`).join("\n")}`] : []),
   ].join("\n\n");
   return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
 }
@@ -195,6 +197,10 @@ export const MAX_FIGURES = 3;
 const HAN_FIGURE = /[一二两三四五六七八九]?[十百千万亿][零一二两三四五六七八九十百千万亿]*|[一二两三四五六七八九]成[一二三四五六七八九]?/gu;
 /** A lone 百、千、万 is a word (百货、千层), not a figure. */
 const NOT_FIGURES = new Set(["百", "千", "万"]);
+const CITATION = /〔[\d、,，\s]+〕/u;
+const UNCITED = "这条快讯没标出处";
+/** A draft with a part that cites nothing: its check had no original to read it against, so its few problems prove nothing. */
+const uncited = (d: Draft) => d.problems.some((p) => p.rule === 4 && (p.why === UNCITED || p.why === "细说没标出处"));
 /** How many news items an issue tells (10-23: six read like a report; the rest are still in the daily). */
 export const NEWS = 3;
 
@@ -205,7 +211,9 @@ export const BIG_EVENT = 3;
 function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Problem[] {
   const out: Problem[] = [];
   if (issue.news.length !== NEWS) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: `快讯要 ${NEWS} 条` });
-  for (const x of issue.news) if (!/〔[\d、,，\s]+〕/u.test(x.text)) out.push({ rule: 4, quote: x.head, why: "这条快讯没标出处" });
+  for (const x of issue.news) if (!CITATION.test(x.text)) out.push({ rule: 4, quote: x.head, why: UNCITED });
+  // A deep piece that cites nothing is one the check cannot hold to any original (10-21, ff56959: the second draft cited none and passed for the cleaner).
+  if (!CITATION.test(issue.deep)) out.push({ rule: 4, quote: issue.title, why: "细说没标出处" });
   // A string of figures no ear keeps (10-15: Domino's China in seven, a survey in seven percentages); years aside.
   for (const x of issue.news) {
     const text = x.text.replace(/〔[^〕]*〕/gu, "").replace(/十一(?=说|觉得|的|算|看|想)|十分(?!之)|千万(?=别|不|要)|万一/gu, "");
@@ -376,7 +384,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   }
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
   if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
-  let last = [...drafts].sort((x, y) => y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
+  let last = [...drafts].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
   for (const attempt of "cdefg".slice(0, EDIT_ROUNDS)) {
     let issue: IssueText;
     if (last.problems.some((p) => p.fix === undefined)) issue = await edit(last, items, ask, attempt);

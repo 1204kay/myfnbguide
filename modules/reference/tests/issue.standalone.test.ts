@@ -13,7 +13,7 @@ const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
 const ITEMS = [item(1), item(2, "rss-hongcan"), item(3), item(4)];
 /** A draft whose first news item says `news`; two more items, each citing item 4, make up the 3 the shape needs. */
 const issue = (title: string, news: string): IssueText => ({
-  title, brief: ["一", "二", "三"], preview: "预告", deep: "细说", close: "合起来",
+  title, brief: ["一", "二", "三"], preview: "预告", deep: "细说〔4〕", close: "合起来",
   news: [{ head: "快讯", text: news }, ...[1, 2].map(() => ({ head: "另一条", text: "也说了〔4〕。" }))],
 });
 
@@ -126,7 +126,7 @@ test("Japanese left untranslated is a problem the program finds", async () => {
 
 test("「十一觉得」 past the first goes to the editor, and the close never carries the label it is shown under", async () => {
   const { ask, calls } = scripted({
-    reference_issue_write: () => ({ ...issue("稿", "说了〔1〕。"), deep: "十一觉得这事要紧。后面还有。", close: "合起来：十一觉得都在算账。" }),
+    reference_issue_write: () => ({ ...issue("稿", "说了〔1〕。"), deep: "十一觉得这事要紧〔1〕。后面还有。", close: "合起来：十一觉得都在算账。" }),
     reference_issue_check: () => ({ lively: 7, problems: [] }),
     reference_issue_edit: () => ({ ...issue("改过", "说了〔1〕。"), close: "合起来：都在算账。" }),
   });
@@ -155,6 +155,32 @@ test("a news item with a string of figures, and quotation marks a sentence after
   });
   const c = await composeIssue(ITEMS, "2026-10-15", ask);
   assert.deepEqual(c.drafts[0]!.problems.map((p) => p.quote), ["快讯", "他们更在意“值不值”。"]);
+});
+
+test("a draft that cites nothing loses to one that does, however clean its check", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: (_u, attempt) => (attempt === "a"
+      ? { ...issue("有出处的一稿", "说了一句原文没有的话〔3〕。"), deep: "细说〔3〕" }
+      : { ...issue("没出处的一稿", "说了。"), news: [1, 2, 3].map(() => ({ head: "没出处", text: "说了。" })), deep: "细说" }),
+    reference_issue_check: (user) => ({ lively: 7, problems: user.includes("有出处") ? [1, 2, 3, 4, 5, 6].map((n) => ({ rule: 1, quote: `第 ${n} 处〔3〕`, why: "", fix: "" })) : [] }),
+    reference_issue_edit: () => issue("改过", "说了〔3〕。"),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-21", ask);
+  assert.ok(c.drafts[1]!.problems.some((p) => p.why === "细说没标出处"));
+  assert.equal(c.chosen?.issue.title, "有出处的一稿", "the cited draft is the one mended, though its check found more");
+  const edit = calls.find((x) => x.purpose === "reference_issue_edit");
+  assert.ok(!edit || !edit.user.includes("这一天的全部收录"), "a draft that cites is not handed the day's list");
+});
+
+test("an editor asked to add a source is given the day's numbers to add", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: () => ({ ...issue("稿", "说了。"), deep: "细说" }),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+    reference_issue_edit: () => issue("改过", "说了〔2〕。"),
+  });
+  await composeIssue(ITEMS, "2026-10-21", ask);
+  const edit = calls.find((x) => x.purpose === "reference_issue_edit")!.user;
+  assert.ok(edit.includes("这一天的全部收录") && edit.includes("〔2〕来源 2《第 2 条》"));
 });
 
 test("figures written in characters count as figures, and 十一 and 十分 are not figures", async () => {

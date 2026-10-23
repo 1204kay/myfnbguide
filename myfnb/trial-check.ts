@@ -8,12 +8,10 @@
 // 在服务器上（一次性容器，挂上这个分支的提示词、模型表和脚本；正在跑的 worker 不动），见 myfnb/trial-understand-run.sh 的 check。
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { z } from "zod";
 import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/input";
-import { promptText, promptVersion } from "@aihot/backend/editorial/prompts";
-import { chatJson } from "@aihot/backend/providers/llm";
+import { checkDraft, type Problem } from "./check.ts";
 
 type Key = "serious" | "disputed" | "clean";
 type Exam = { items: Array<{ no: string; id: string; site: { title: string; summary: string; reason: string; key: Key }; new: { title: string; lead: string; points: string[]; key: Key } }> };
@@ -26,11 +24,6 @@ const only = all("--no");
 const exam = JSON.parse(readFileSync(new URL("./check-exam-2026-10-23.json", import.meta.url), "utf8")) as Exam;
 const items = exam.items.filter((it) => !only.length || only.includes(it.no));
 
-const SYSTEM = promptText("check-item");
-const VERSION = promptVersion("check-item");
-const Problem = z.object({ field: z.string(), quote: z.string(), kind: z.coerce.number(), severity: z.string(), why: z.string(), fix: z.string().catch("") });
-const Answer = z.object({ problems: z.array(Problem) });
-
 /** The draft as the reader sees it, in the fields the prompt names. */
 const draftOf = (it: Exam["items"][number], version: "site" | "new") => version === "site"
   ? { title: it.site.title, summary: it.site.summary, reason: it.site.reason }
@@ -40,7 +33,7 @@ const jobs = models.flatMap((model) => items.flatMap((it) => (["site", "new"] as
 console.log(`考 ${models.join("、") || "（没写 --model）"}：${items.length} 条 × 2 版 = 每个模型 ${items.length * 2} 份稿${apply ? "" : "（预览，不调模型）"}`);
 if (!apply || !models.length) { await stopBoss(); await closeDb(); process.exit(0); }
 
-type Result = { model: string; no: string; version: "site" | "new"; key: Key; problems: z.infer<typeof Problem>[] | null; error?: string; receiptId?: number };
+type Result = { model: string; no: string; version: "site" | "new"; key: Key; problems: Problem[] | null; error?: string; receiptId?: number };
 const results: Result[] = [];
 // Four at a time: DeepSeek with thinking takes a minute or two per draft.
 for (let i = 0; i < jobs.length; i += 4) {
@@ -49,13 +42,9 @@ for (let i = 0; i < jobs.length; i += 4) {
     const a = await loadAnalyzeInput(it.id);
     if (!a) { results.push({ model, no: it.no, version, key, problems: null, error: "读不到原文" }); return; }
     try {
-      const res = await chatJson({
-        model, purpose: "trial_check_item", subject: `article:${it.id}`, promptVersion: VERSION, system: SYSTEM,
-        user: [`来源：${a.source.name}`, `原题：${a.title}`, `原文：\n${a.bodyText ?? a.excerpt ?? ""}`, `中文稿：\n${JSON.stringify(draftOf(it, version), null, 1)}`].join("\n\n"),
-        schema: Answer, maxTokens: 4000, attemptTag: `check-${version}`,
-      });
-      results.push({ model, no: it.no, version, key, problems: res.data.problems, receiptId: res.receiptId });
-      console.log(`${model} ${it.no} ${version}：严重 ${res.data.problems.filter((p) => p.severity === "serious").length}，轻微 ${res.data.problems.filter((p) => p.severity !== "serious").length}`);
+      const res = await checkDraft(model, a, draftOf(it, version), `check-${version}`);
+      results.push({ model, no: it.no, version, key, problems: res.problems, receiptId: res.receiptId });
+      console.log(`${model} ${it.no} ${version}：严重 ${res.problems.filter((p) => p.severity === "serious").length}，轻微 ${res.problems.filter((p) => p.severity !== "serious").length}`);
     } catch (error) {
       results.push({ model, no: it.no, version, key, problems: null, error: error instanceof Error ? error.message : String(error) });
       console.log(`${model} ${it.no} ${version}：失败 ${error instanceof Error ? error.message : String(error)}`);

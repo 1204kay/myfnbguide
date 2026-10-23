@@ -24,7 +24,7 @@ export async function checkDraft(model: string, a: AnalyzeInputArticle, draft: D
     model, purpose: "trial_check_item", subject: `article:${a.id}`, promptVersion: VERSION, system: SYSTEM,
     user: [`来源：${a.source.name}`, `原题：${a.title}`, `原文：\n${a.bodyText ?? a.excerpt ?? ""}`, `中文稿：\n${JSON.stringify(draft, null, 1)}`].join("\n\n"),
     // The default 120 s cut one of 40 drafts in the 10-23 exam (DeepSeek thinking on a long original).
-    schema: Answer, maxTokens: 4000, attemptTag: tag, timeoutMs: 300_000,
+    schema: Answer, maxTokens: 8000, attemptTag: tag, timeoutMs: 300_000,
   });
   return { problems: res.data.problems, receiptId: res.receiptId };
 }

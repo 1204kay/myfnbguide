@@ -196,6 +196,14 @@ export interface RequestNotices {
   feed: (req: FastifyRequest, feedPath: string) => FeedNotice | null;
 }
 
+/** A daily's lead written by a module: its label over the headline, and where the headline goes to be read in full. */
+export interface DailyLead {
+  kicker: string;
+  title: string;
+  leadParagraph: string;
+  href: string;
+}
+
 export interface ServerModule {
   /** Its folder under modules/. */
   name: string;
@@ -228,6 +236,12 @@ export interface ServerModule {
   models?: Record<string, ModelStep>;
   /** Cron schedules (the worker). */
   schedules?: Scheduled[];
+  /**
+   * A daily's lead of its own, asked when the daily is composed (reports/compose.ts composeDaily): the first
+   * installed module with one leads the front page with it, and the issue's top entry stays among its pages.
+   * Null leaves the lead to the rule.
+   */
+  dailyLead?: (date: string) => Promise<DailyLead | null>;
   /** What is wrong now, for the owner's alerts (operations/alerts.ts), after the engine's problems. */
   alerts?: (now: number) => Promise<Finding[]>;
   /**
@@ -297,6 +311,15 @@ export function installModules(modules: readonly ServerModule[]): void {
 
 export function serverModules(): readonly ServerModule[] {
   return installed;
+}
+
+/** The first installed module's own lead for the daily of `date`, if any. */
+export async function moduleDailyLead(date: string): Promise<DailyLead | null> {
+  for (const m of installed) {
+    const lead = await m.dailyLead?.(date);
+    if (lead) return lead;
+  }
+  return null;
 }
 
 /** The first installed module's responder, if any. */

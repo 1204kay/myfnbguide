@@ -291,7 +291,8 @@ export interface ReportDetail {
   issueNumber: number;
   title: string;
   generatedAt: string;
-  lead: { title: string; leadParagraph: string } | null;
+  /** `kicker` and `href`: a module's own lead (a label over the headline, and the page it is read on). */
+  lead: { title: string; leadParagraph: string; kicker?: string; href?: string } | null;
   /** The still-public item the front page leads with (its headline links there). */
   leadItemId: string | null;
   overview: string | null;

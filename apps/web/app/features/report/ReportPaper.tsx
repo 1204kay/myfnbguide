@@ -288,11 +288,11 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
     <section aria-label="头版" className="grid @[880px]:grid-cols-[minmax(0,1fr)_300px] @[1040px]:grid-cols-[minmax(0,1fr)_340px]">
       {/* On a phone the headline comes before a landscape picture, so the first screen carries the news. */}
       <div id={leadStory ? (anchorOf(leadStory) ?? undefined) : undefined} className="flex min-w-0 scroll-mt-[calc(var(--bar-h)+1.5rem)] flex-col py-7 @[880px]:border-r @[880px]:border-line @[880px]:py-10 @[880px]:pr-10">
-        <Kicker>{byEvent ? "头条" : "本期导读"}</Kicker>
+        <Kicker>{report.lead?.kicker ?? (byEvent ? "头条" : "本期导读")}</Kicker>
         {cover && wide && <LeadPicture cover={cover} onError={() => setBroken(cover.url)} priority className="order-2 mt-5 @[560px]:order-1" />}
         <h2 className="order-1 mt-4 text-[32px] font-black leading-[1.28] tracking-[-0.03em] text-ink [text-wrap:balance] @[520px]:text-[40px] @[560px]:order-2 @[1040px]:text-[48px] @[1040px]:leading-[1.22]">
-          {leadStory?.itemId ? (
-            <IntentLink viewTransition to={`/items/${leadStory.itemId}`} className="transition-colors hover:text-accent">
+          {leadStory?.itemId || report.lead?.href ? (
+            <IntentLink viewTransition to={leadStory?.itemId ? `/items/${leadStory.itemId}` : report.lead!.href!} className="transition-colors hover:text-accent">
               {title}
             </IntentLink>
           ) : (
@@ -304,6 +304,12 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
             <p className={`text-[16.5px] leading-[1.9] text-ink-2 @[880px]:text-[17.5px] ${cover && !wide ? "" : "mt-6 @[560px]:text-justify @[880px]:mt-7"}`}>{dek}</p>
             {cover && !wide && <LeadPicture cover={cover} onError={() => setBroken(cover.url)} />}
           </div>
+        )}
+        {/* A module's own lead (moduleDailyLead): it is read in full on its own page. */}
+        {!leadStory && report.lead?.href && (
+          <IntentLink viewTransition to={report.lead.href} className={`${LINK} order-4 mt-5 self-start text-[12.5px] text-ink-3`}>
+            读全文 <IconArrowRight size={12} />
+          </IntentLink>
         )}
         {leadStory && (
           <div className="order-4 mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-ink-3">

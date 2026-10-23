@@ -335,4 +335,6 @@ export interface IssuePage {
   count: number;
   prev: number | null;
   next: number | null;
+  /** The issue read aloud (backend/audio.ts), or null: then the page has no 听 button. */
+  audio: { url: string; seconds: number } | null;
 }

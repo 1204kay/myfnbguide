@@ -6,7 +6,9 @@
 //   a case relabelled this round is taken from this round). Feed-labelled rows are found by url if collected since.
 //   myfnb/labels-2026-10-23.tsv (round "five"): items the 10-23 standard (五个理由, 决定记录 2026-10-23) takes in (可看)
 //   or still keeps out (不看), each checked against its original.
-//   node myfnb/eval-score-candidate.ts [--rounds five,new,old] [--max-calls 1200] [--concurrency 6]
+//   node myfnb/eval-score-candidate.ts [--rounds five,new,old] [--small] [--max-calls 1200] [--concurrency 6]
+//   --small (十一 10-24, DeepSeek nearly spent): round five whole, the first 15 必看 of round new (10-16 has only one 不看) and
+//   the first 15 不看 of round old, each side scored once.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
@@ -19,7 +21,7 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 
-const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old" }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
+const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old" }, small: { type: "boolean", default: false }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
 const ROUNDS = ["five", "new", "old"] as const;
 const rounds = new Set(values.rounds.split(","));
 
@@ -30,9 +32,11 @@ function readLabels(file: string, round: Row["round"]): Row[] {
     .map((l) => { const c = l.split("\t"); return { id: c[0]!, label: c[1]!, round, url: c[4] ? c[5] ?? "" : "" }; });
 }
 const five = readLabels("myfnb/labels-2026-10-23.tsv", "five");
-const fresh = readLabels("myfnb/labels-2026-10-16.tsv", "new");
-const seen = new Set(fresh.map((r) => r.id));
-const rows = [...five, ...fresh, ...readLabels("myfnb/gold-labels.tsv", "old").filter((r) => !seen.has(r.id))].filter((r) => rounds.has(r.round));
+const firstOf = (rs: Row[], label: string) => rs.filter((r) => r.label === label).slice(0, 15);
+const all16 = readLabels("myfnb/labels-2026-10-16.tsv", "new");
+const seen = new Set(all16.map((r) => r.id));
+const gold = readLabels("myfnb/gold-labels.tsv", "old").filter((r) => !seen.has(r.id));
+const rows = (values.small ? [...five, ...firstOf(all16, "必看"), ...firstOf(gold, "不看")] : [...five, ...all16, ...gold]).filter((r) => rounds.has(r.round));
 
 // Feed-labelled cases (r2-…, r3-…) are articles only if the source has collected that url since.
 const urls = rows.filter((r) => r.url).map((r) => r.url);
@@ -45,7 +49,8 @@ for (const r of rows) {
   const a = id ? await loadAnalyzeInput(id) : null;
   if (a) cases.push({ ...r, a }); else missing++;
 }
-const most = cases.length * 4;
+const times = values.small ? 1 : 2;
+const most = cases.length * 2 * times;
 console.log(`# ${cases.length} cases (${ROUNDS.map((r) => `${r} ${cases.filter((c) => c.round === r).length}`).join(", ")}), ${missing} not in the database · at most ${most} calls`);
 if (most > Number(values["max-calls"])) throw new Error(`at most ${most} calls, over --max-calls ${values["max-calls"]}: none sent`);
 
@@ -58,7 +63,7 @@ const model = await modelFor("score");
 // request identity, so an unchanged material reuses the live receipts.
 async function score(a: AnalyzeInputArticle, system: string, version: string, tag: string): Promise<number | null> {
   let sum = 0;
-  for (let i = 1; i <= 2; i++) {
+  for (let i = 1; i <= times; i++) {
     const res = await chatJson({
       model, purpose: "score_article", subject: `article:${a.id}@${a.revision}`, promptVersion: version, system, user: buildScoreInput(a),
       schema: ScoreSchema, temperature: 0.2, maxTokens: 1024, timeoutMs: 120_000, attemptTag: `${tag}score-${i}`,
@@ -66,7 +71,7 @@ async function score(a: AnalyzeInputArticle, system: string, version: string, ta
     await completeReceipt(sql, res.receiptId);
     sum += res.data.attentionScore;
   }
-  return sum / 2;
+  return sum / times;
 }
 
 const out: Array<{ c: (typeof cases)[number]; cur: number | null; cand: number | null }> = new Array(cases.length);

@@ -2,7 +2,7 @@
 // modules keep the original's frame): 返回 and the day in the left rail, 分享 in the right one; the label over the title,
 // the three sentences the daily leads with, then the issue as it is read out (the program's greeting, the news, the
 // turn to the one told in depth, the goodbye) under 正文, each 〔n〕 going to its original under 原文出处, and what
-// 十一 is. Only the frame's parts already on the story page are used (myfnb/HANDOFF.md §3.0).
+// 十一 is. Only the frame's parts already on the story page are used (myfnb/DIFFERENCES.md).
 import { Fragment, type ReactNode } from "react";
 import { Link, useLoaderData, useNavigate, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";

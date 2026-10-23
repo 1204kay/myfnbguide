@@ -1,6 +1,6 @@
 # HTTPS in front of the site: Caddy gets and renews the certificate for SITE_DOMAIN and compresses
 # responses. Point the domain's DNS at this server first.
-# 正式网址（myfnb/go-live-checklist.md 第 2、6 步，HANDOFF §3.0「域名转址」）：www 是站；根域转到 www 首页，试运行用的 new 原路转到 www。
+# 正式网址（myfnb/go-live-checklist.md 第 2、6 步，myfnb/DIFFERENCES.md「域名转址」）：www 是站；根域转到 www 首页，试运行用的 new 原路转到 www。
 www.myfnbguide.com {
 	encode zstd gzip
 

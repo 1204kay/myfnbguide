@@ -189,7 +189,7 @@ export function Practice({ p }: { p: PracticeCard }) {
       </ul>
       {!open && p.lines.length > LINES_SHOWN && (
         // The original's toggle for a group's other reports (AIHOT features/feed/ReadingGroup.tsx Toggle): 12.5px, grey,
-        // a chevron down; 44px tall to tap. HANDOFF §3.0: the original folds repeats of one story, this the shops' own ways.
+        // a chevron down; 44px tall to tap. myfnb/DIFFERENCES.md: the original folds repeats of one story, this the shops' own ways.
         <button type="button" aria-expanded={false} onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])}
           className="relative z-10 inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent">
           另有 {p.lines.length - LINES_SHOWN} 家的做法<IconChevronDown size={13} />

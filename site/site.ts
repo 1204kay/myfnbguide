@@ -39,7 +39,7 @@ export const SITE = {
   /** 一句话介绍：搜索引擎、分享卡片、RSS、llms.txt 会用。 */
   description: "餐饮小店的经营参考：收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。",
   /** llms.txt 里一句话介绍下面的一段详细介绍（选填）。 */
-  llmsIntro: "MYFNB 从各国经营者的播客、访谈和文章里挑选与开店、经营有关的内容，由 AI 写成中文标题、摘要和收录理由，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
+  llmsIntro: "MYFNB 从各国经营者的播客、访谈和文章里挑选与开店、经营有关的内容，由 AI 写成中文标题、导读和原文要点，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
   /** 一行小字：分享图、海报下方。 */
   tagline: "餐饮人自己的参考站",
   /** 搜索引擎读到的关键词（首页结构化数据）。 */
@@ -47,7 +47,7 @@ export const SITE = {
   /** 网站开始收录的年份（结构化数据的时间范围，选填）。 */
   since: "2026" as string | null,
   /** 界面语言（HTML lang、og:locale）。 */
-  locale: "zh-MY",
+  locale: "zh-CN",
   /** 默认域名，只在没设置 SITE_URL 时使用。 */
   defaultUrl: "http://localhost:3000",
   /** 标准图标（favicon.ico、icon.png、icon-192.png、apple-icon.png、logo.svg）以外也放在网站根目录的图标，site/brand/ 里的文件名（选填）；manifest.webmanifest 或外站引用了它们时用。 */

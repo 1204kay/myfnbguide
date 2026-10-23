@@ -188,7 +188,7 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 
 ### 5.1 站点（`site/`）
 
-- `site.ts`：站名 `MYFNB`，行业词 `餐饮`，标题、介绍、标语、关于页按 §2.1；日报出刊时间不写「每天」（§3 第 1 条）；条目上的那句理由叫「收录理由」，读者看不到 AI 评分（`ITEM_COPY.showScore: false`）；报头不显示「一手发布」。`locale: "zh-MY"`；`mcpPrefix: "myfnb"`（上线后不改）；联系邮箱 `myfb.guide.my@gmail.com`；`crawlerName: "MyFnBBot/1.0"`；页脚「由 AIHOT 开源框架驱动」（作者默认）。
+- `site.ts`：站名 `MYFNB`，行业词 `餐饮`，标题、介绍、标语、关于页按 §2.1；日报出刊时间不写「每天」（§3 第 1 条）；条目上的那句理由叫「收录理由」，读者看不到 AI 评分（`ITEM_COPY.showScore: false`）；报头不显示「一手发布」。`locale: "zh-CN"`（10-24 从 zh-MY 改回原版：读者是全球华人，不标马来西亚）；`mcpPrefix: "myfnb"`（上线后不改）；联系邮箱 `myfb.guide.my@gmail.com`；`crawlerName: "MyFnBBot/1.0"`；页脚「由 AIHOT 开源框架驱动」（作者默认）。
 - `brand/`：罗盘圆环图标，强调色 `#176b75`；报头「餐饮日报／周报／月报」。没有用 AIHOT 的名字和 Logo。网站配色是作者的，不改。Logo 定为 3 号（全大写宽字距，「MY」主题色；还没做，§9.2 第 7 项）。
 - `public/robots.txt`：作者的版本（试运行期整站不让抓取，10/17 换正式网址时换回）。
 - `changelog.json`：两条（2026-10-01 改版试运行；2026-10-13 隐私说明与使用规则更新）。

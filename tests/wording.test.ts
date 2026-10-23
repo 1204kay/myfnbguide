@@ -24,4 +24,5 @@ test("place names, spoken words, Japanese terms and notes to itself are sent bac
 test("region tags take the names readers see", () => {
   assert.deepEqual(normalizeTags(["行业动态", "澳洲", "香港", "台湾"]), ["行业动态", "澳大利亚", "中国香港", "中国台湾"]);
   assert.deepEqual(normalizeTags(["行业动态", "澳大利亚", "新西兰"]), ["行业动态", "澳大利亚"], "New Zealand is not filed as Australia");
+  assert.deepEqual(normalizeTags(["实战/经验", "法国", "奥地利", "埃及", "南非"]), ["实战/经验", "欧洲", "中东"], "a country without its own tag files under its region, or under none");
 });

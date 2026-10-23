@@ -114,6 +114,8 @@ case "${1:-}" in
     mkdir -p "$OUT"
     flags=""; for m in ${CHECK_MODELS:-deepseek-v4-pro-llm}; do flags="$flags --model $m"; done
     for n in ${NOS:-}; do flags="$flags --no $n"; done
+    [ -n "${MAX_TOKENS:-}" ] && flags="$flags --max-tokens $MAX_TOKENS"
+    for d in ${DRAFTS:-}; do flags="$flags --draft $d"; done
     cd /opt/myfnbguide
     echo "检出：$(sudo git -C $DIR rev-parse --short HEAD)"
     sudo docker compose run --rm -T \

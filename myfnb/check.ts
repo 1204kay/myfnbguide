@@ -19,12 +19,12 @@ export type Draft = { title: string; lead: string; points: string[] } | { title:
 const SYSTEM = promptText("check-item");
 const VERSION = promptVersion("check-item");
 
-export async function checkDraft(model: string, a: AnalyzeInputArticle, draft: Draft, tag: string): Promise<{ problems: Problem[]; receiptId: number }> {
+export async function checkDraft(model: string, a: AnalyzeInputArticle, draft: Draft, tag: string, maxTokens = 8000): Promise<{ problems: Problem[]; receiptId: number }> {
   const res = await chatJson({
     model, purpose: "trial_check_item", subject: `article:${a.id}`, promptVersion: VERSION, system: SYSTEM,
     user: [`来源：${a.source.name}`, `原题：${a.title}`, `原文：\n${a.bodyText ?? a.excerpt ?? ""}`, `中文稿：\n${JSON.stringify(draft, null, 1)}`].join("\n\n"),
     // The default 120 s cut one of 40 drafts in the 10-23 exam (DeepSeek thinking on a long original).
-    schema: Answer, maxTokens: 8000, attemptTag: tag, timeoutMs: 300_000,
+    schema: Answer, maxTokens, attemptTag: tag, timeoutMs: 300_000,
   });
   return { problems: res.data.problems, receiptId: res.receiptId };
 }

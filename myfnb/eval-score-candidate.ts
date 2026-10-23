@@ -4,7 +4,9 @@
 // The site's half reuses the receipts of the live scoring wherever the material is unchanged, so it is mostly free.
 //   Labels: myfnb/labels-2026-10-16.tsv (this round, the user's current taste) and myfnb/gold-labels.tsv (earlier rounds;
 //   a case relabelled this round is taken from this round). Feed-labelled rows are found by url if collected since.
-//   node myfnb/eval-score-candidate.ts [--max-calls 1200] [--concurrency 6]
+//   myfnb/labels-2026-10-23.tsv (round "five"): items the 10-23 standard (五个理由, 决定记录 2026-10-23) takes in (可看)
+//   or still keeps out (不看), each checked against its original.
+//   node myfnb/eval-score-candidate.ts [--rounds five,new,old] [--max-calls 1200] [--concurrency 6]
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
@@ -17,17 +19,20 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 
-const { values } = parseArgs({ options: { "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
+const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old" }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
+const ROUNDS = ["five", "new", "old"] as const;
+const rounds = new Set(values.rounds.split(","));
 
-type Row = { id: string; label: string; round: "new" | "old"; url: string };
+type Row = { id: string; label: string; round: (typeof ROUNDS)[number]; url: string };
 function readLabels(file: string, round: Row["round"]): Row[] {
   return readFileSync(path.resolve(REPO_ROOT, file), "utf8").split(/\r?\n/)
     .filter((l) => l.trim() && !l.startsWith("#") && !l.startsWith("article_id\t"))
     .map((l) => { const c = l.split("\t"); return { id: c[0]!, label: c[1]!, round, url: c[4] ? c[5] ?? "" : "" }; });
 }
+const five = readLabels("myfnb/labels-2026-10-23.tsv", "five");
 const fresh = readLabels("myfnb/labels-2026-10-16.tsv", "new");
 const seen = new Set(fresh.map((r) => r.id));
-const rows = [...fresh, ...readLabels("myfnb/gold-labels.tsv", "old").filter((r) => !seen.has(r.id))];
+const rows = [...five, ...fresh, ...readLabels("myfnb/gold-labels.tsv", "old").filter((r) => !seen.has(r.id))].filter((r) => rounds.has(r.round));
 
 // Feed-labelled cases (r2-…, r3-…) are articles only if the source has collected that url since.
 const urls = rows.filter((r) => r.url).map((r) => r.url);
@@ -41,7 +46,7 @@ for (const r of rows) {
   if (a) cases.push({ ...r, a }); else missing++;
 }
 const most = cases.length * 4;
-console.log(`# ${cases.length} cases (new ${cases.filter((c) => c.round === "new").length}, old ${cases.filter((c) => c.round === "old").length}), ${missing} not in the database · at most ${most} calls`);
+console.log(`# ${cases.length} cases (${ROUNDS.map((r) => `${r} ${cases.filter((c) => c.round === r).length}`).join(", ")}), ${missing} not in the database · at most ${most} calls`);
 if (most > Number(values["max-calls"])) throw new Error(`at most ${most} calls, over --max-calls ${values["max-calls"]}: none sent`);
 
 const CANDIDATE_TEXT = readFileSync(path.join(REPO_ROOT, "myfnb/selection-score-candidate.md"), "utf8");
@@ -77,7 +82,7 @@ await Promise.all(Array.from({ length: Number(values.concurrency) }, async () =>
 
 const auc = (hi: number[], lo: number[]) => hi.length && lo.length
   ? (hi.reduce((n, x) => n + lo.reduce((m, y) => m + (x > y ? 1 : x === y ? 0.5 : 0), 0), 0) / (hi.length * lo.length)).toFixed(3) : "-";
-for (const round of ["new", "old"] as const) {
+for (const round of ROUNDS) {
   const set = out.filter((x) => x.c.round === round);
   for (const which of ["cur", "cand"] as const) {
     const s = (label: string) => set.filter((x) => x.c.label === label && x[which] !== null).map((x) => x[which]!);
@@ -88,7 +93,7 @@ for (const round of ["new", "old"] as const) {
   }
 }
 console.log("# label | site | candidate | title");
-for (const x of out.filter((x) => x.c.round === "new").sort((p, q) => (q.cand ?? -1) - (p.cand ?? -1))) {
-  console.log(`${x.c.label} | ${x.cur ?? "-"} | ${x.cand ?? "-"} | ${x.c.a.title.slice(0, 50).replace(/\s+/g, " ")}`);
+for (const x of out.filter((x) => x.c.round !== "old").sort((p, q) => (q.cand ?? -1) - (p.cand ?? -1))) {
+  console.log(`${x.c.round} ${x.c.label} | ${x.cur ?? "-"} | ${x.cand ?? "-"} | ${x.c.a.title.slice(0, 50).replace(/\s+/g, " ")}`);
 }
 await closeDb();

@@ -1,0 +1,16 @@
+# 10-23 挑稿新标准（五个理由，决定记录 2026-10-23）的样本，都对原文核过（https://claude.ai/artifact/RbtcShc4M6iXHmUkBVUGRn 第二、三节）：
+# 可看 = 原来被压掉、新标准该收；不看 = 沾得上某个理由、但说不出门道或只有品牌通稿，仍然不收。
+article_id	label	split	stratum	source_id	url	title
+p4xq6t4pf11aeabbspx6q2pth	可看	development	2026-10-23-five			星巴克中国提出消费才可入座并投入超3亿元改造门店（谈资、走向）
+ea98lg6vymjbghv3d929uidef	可看	development	2026-10-23-five			瑞幸卖珍珠奶茶、古茗卖咖啡（走向）
+vg1t1aqc7zq383ukxkw86ymhp	可看	development	2026-10-23-five			泰奶背后的操盘手，又盯上了港奶（新奇、走向）
+qghcx1sxxto309taa4g35u50c	可看	development	2026-10-23-five			京东七鲜美食MALL：36个品牌共享就餐区、跨店点单（新奇）
+d3zmrd4pxnck8rh9h0qjshvhe	可看	development	2026-10-23-five			澳大利亚刷卡附加费禁令生效，51%餐饮店打算涨价（切身影响）
+m2vbu9h3c43xddcj1y1hhvg8o	可看	development	2026-10-23-five			Just Eat 的 AI 菜品图出错后暂停试点（谈资、工具）
+v61gdzkx9o375hodpl470ap7e	可看	development	2026-10-23-five			日本一人喫茶店店主谈用 AI 写菜单文案（工具、共鸣）
+r29alfq9c1kdf3xsb0fe3gr0t	可看	development	2026-10-23-five			意大利餐厅借居酒屋形式做炭火小串（原来还能这样用）
+vv26j9ij1ptxp92g7gkcbxr7y	不看	development	2026-10-23-five			新西兰肯德基推出私人包场抽奖（只是一次抽奖促销）
+gt38kji268ba44qrnyb2k3yki	不看	development	2026-10-23-five			Outback 推出「史上最佳牛排」计划（只有品牌自己的说法）
+i5sezcdebgb51xr8wgfl3nx07	不看	development	2026-10-23-five			茉莉奶白3天卖出1120万杯（数字全来自品牌通稿）
+t7vyh6bmepqbe7txmd2waw1jh	不看	development	2026-10-23-five			和府捞面会员突破5000万（品牌通稿，没说怎么做到）
+f4i5uv6snpv4tstghpiq7ym3m	不看	development	2026-10-23-five			咖啡店配方会被抄走，留客靠抄不走的关系（共鸣没有具体经营细节）

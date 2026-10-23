@@ -157,11 +157,13 @@ export function sameEvents(items: DayItem[]): Array<{ ns: number[]; sources: num
     .filter((e) => e.sources > 1).sort((a, b) => b.sources - a.sources);
 }
 
-async function write(items: DayItem[], date: string, ask: Ask, attempt: string): Promise<IssueText> {
+async function write(items: DayItem[], date: string, ask: Ask, attempt: string, other?: IssueText): Promise<IssueText> {
   const events = sameEvents(items);
   const user = [
     `日期：${dayName(date)}（这是这一天日报收录的全部 ${items.length} 条，其中 ${items.filter((i) => i.selected).length} 条是精选）`, itemList(items),
     ...(events.length ? [`好几家都在讲的事：\n${events.map((e) => `- ${e.ns.map((n) => `〔${n}〕`).join("")}讲的是同一件事`).join("\n")}`] : []),
+    // The second draft tells another deep piece, from a shop's own scene: two drafts of one subject left nothing to choose (10-22).
+    ...(other ? [`另一稿细说的是「${other.title}」。这一稿细说换一件别的：从上面挑一件有店里真实场景的事（一家店、一个人、一个具体的时刻），讲成故事。`] : []),
   ].join("\n\n");
   return ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
 }
@@ -354,7 +356,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   let unusable: unknown;
   for (const attempt of ["a", "b"]) {
     // A draft the model could not write in usable form, even asked twice, leaves the other (trial 10-13: broken JSON twice).
-    const issue = await write(items, date, ask, attempt).catch((error: unknown) => {
+    const issue = await write(items, date, ask, attempt, drafts[0]?.issue).catch((error: unknown) => {
       if (!(error instanceof ModelOutputError)) throw error;
       unusable = error;
       return null;

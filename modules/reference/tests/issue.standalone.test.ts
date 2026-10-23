@@ -46,6 +46,8 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "好听的一稿");
   assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_check", "reference_issue_write", "reference_issue_check"]);
+  assert.ok(!calls[0]!.user.includes("另一稿细说"));
+  assert.ok(calls[2]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
   const check = calls[3]!.user;
   assert.ok(check.includes("〔3〕来源 3《第 3 条》（可以引原句）") && check.includes(ITEMS[2]!.text));
   assert.ok(!check.includes(ITEMS[0]!.text), "an item the draft does not cite is not sent to the check");

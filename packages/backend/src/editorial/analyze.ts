@@ -13,7 +13,7 @@ import { z } from "zod";
 import { CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
 import { CATEGORIES } from "@aihot/industry/taxonomy";
 import { SELECTION } from "@aihot/industry/selection";
-import { ITEM_COPY } from "@aihot/site";
+import { ITEM_COPY, reasonLines } from "@aihot/site";
 import { sql } from "../db.ts";
 import { chatJson, ModelOutputError, type ContentPart } from "../providers/llm.ts";
 import { completeReceipt, ProviderRejectedError, ReceiptUnknownError } from "../providers/receipts.ts";
@@ -367,9 +367,11 @@ export async function runUnderstand(a: AnalyzeInputArticle, opts: StepOpts = {})
     }
   }
   const d = res.data;
+  // 提示词要求最多 5 条要点，模型不一定守：10-23 试写里有超出的，这里截断，不靠提示词。
+  const points = reasonLines(d.editorialJudgment).slice(0, 5).join("\n");
   const copy = finalizeCopy(translateInputOf(a), { titleZh: d.titleZh, summaryZh: d.summaryZh });
   return {
-    kind: "understand", model: res.model, titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: d.editorialJudgment.trim() || null,
+    kind: "understand", model: res.model, titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: points || null,
     itemType: d.itemType, authorRole: d.authorRole, identityGuard: copy.identityGuard, receiptIds: [res.receiptId], reused: res.reused,
   };
 }

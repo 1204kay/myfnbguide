@@ -82,7 +82,8 @@ async function runItem(k: number, r: Row): Promise<string[]> {
     const fixes = toFix(c.problems);
     if (serious(c.problems).length) stats.firstSerious++;
     if (fixes.length) stats.firstToFix++;
-    let ok = true;
+    // No points means the reader still has to click (10-23 3-item run: one draft came back with title and lead only).
+    let ok = drafts[0]!.points.length > 0;
     const dropped: string[] = [];
     if (fixes.length) {
       const fixed = applyFixes(drafts[0]!, c.problems);
@@ -111,7 +112,7 @@ async function runItem(k: number, r: Row): Promise<string[]> {
     }
     stats.dropped += dropped.length;
     ok ? stats.passed++ : stats.held++;
-    out.push(`**结果：${ok ? "过" : "不过（改过的标题或导读复查还不对，不上线）"}**；核对员改了 ${fixes.length} 处${dropped.length ? `，复查不过删掉 ${dropped.length} 条要点` : ""}`, "");
+    out.push(`**结果：${ok ? "过" : "不过（没有要点，或改过的标题、导读复查还不对，不上线）"}**；核对员改了 ${fixes.length} 处${dropped.length ? `，复查不过删掉 ${dropped.length} 条要点` : ""}`, "");
     out.push("### 第一稿", "", ...show(drafts[0]!), "核对：", ...listed(checks[0]!), "");
     if (drafts[1]) out.push("### 核对员改过以后", "", ...show(drafts[1]), "复查改过的句子：", ...listed(checks[1]!), ...dropped.map((p) => `- 删掉：${p}`), "");
     out.push("<details><summary>现在站上的写法</summary>", "", `**${r.title}**`, "", r.summary ?? "", "", `收录理由：${r.reason ?? "（无）"}`, "", "</details>", "");

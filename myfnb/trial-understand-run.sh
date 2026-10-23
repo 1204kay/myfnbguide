@@ -79,6 +79,19 @@ case "${1:-}" in
       worker node myfnb/trial-check.ts $flags --apply 2>&1 | grep --line-buffered -v '"level"'
     cat "$(ls -td $OUT/check-*/ | head -1)/核对.md"
     ;;
+  check-status)
+    # 考试跑着时只读地看一眼：容器还在不在、核了几份、花了多少（回执记的金额）。
+    cd /opt/myfnbguide
+    echo "=== 还在跑的一次性容器"; sudo docker ps --filter "name=worker-run" --format '{{.Names}} {{.RunningFor}} {{.Status}}'
+    echo "=== 核对回执（今天）"
+    sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
+      SELECT status, count(*), coalesce(sum(cost), 0), min(created_at), max(updated_at) FROM receipts
+      WHERE purpose = 'trial_check_item' AND created_at > now() - interval '12 hours' GROUP BY status;"
+    echo "=== 失败的回执（最多 5 条）"
+    sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
+      SELECT id, subject, left(coalesce(error, ''), 300) FROM receipts
+      WHERE purpose = 'trial_check_item' AND status NOT IN ('received', 'completed') AND created_at > now() - interval '12 hours' ORDER BY id DESC LIMIT 5;"
+    ;;
   raw)
     cd /opt/myfnbguide
     sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
@@ -89,7 +102,7 @@ case "${1:-}" in
       SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
         AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
     ;;
-  *) echo "用法：start | status | pack | all | check | fix | fix-apply | raw"; exit 1 ;;
+  *) echo "用法：start | status | pack | all | check | check-status | fix | fix-apply | raw"; exit 1 ;;
 esac
 }
 

@@ -88,6 +88,13 @@ after(async()=>{
   await web?.stop();
 });
 
+// The SSR HTML shows links before React takes them over; a click before that is a whole-document load,
+// which cannot come back offline. Wait for the router and for React on the link itself (WebKit on CI is slow enough to lose this race).
+const hydrated=(page:import('@playwright/test').Page,link:string)=>page.waitForFunction(name=>{
+  const a=[...document.querySelectorAll('a')].find(x=>x.textContent===name);
+  return (window as {__reactRouterDataRouter?:{state:{initialized:boolean}}}).__reactRouterDataRouter?.state.initialized&&!!a&&Object.keys(a).some(k=>k.startsWith('__reactProps'));
+},link);
+
 // One engine per behaviour: WebKit for what phone readers do (iPhone Safari), Chromium for desktop-only
 // intent such as hover. The router and caches are the same code in both.
 test('SSR list and visited query variants return offline without another read',async()=>{
@@ -96,6 +103,7 @@ test('SSR list and visited query variants return offline without another read',a
   try{
     await page.goto(origin+'/');
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible();
+    await hydrated(page,'性能检查文章');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
     await context.setOffline(true);

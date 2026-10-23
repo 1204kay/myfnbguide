@@ -36,3 +36,9 @@ test("on the re-check a serious point is dropped, a misleading one takes the fix
   assert.deepEqual([none.draft.points, none.held, none.copyWrong], [[], true, false], "no point left holds a new item, but the copy itself is right");
   assert.equal(lead.copyWrong, true);
 });
+
+test("a fix that drops a country the sentence named is not used (10-23 batch 3: 「在中国开出」 → 「全国开出」)", async () => {
+  const d: Draft = { title: "中国火锅连锁放缓扩张", lead: "茶瀑布在中国开出1500多家门店。", points: ["要点一"] };
+  const r = await checkAndFix(d, asker([p({ field: "title", fix: "火锅连锁放缓扩张" }), p({ field: "lead", severity: "misleading", fix: "茶瀑布全国开出1500多家门店。" }), p({ point: 1, fix: "日本的要点一" })], []).ask);
+  assert.deepEqual(r, { draft: { ...d, points: ["日本的要点一"] }, held: false, copyWrong: false, receiptIds: [1, 2] });
+});

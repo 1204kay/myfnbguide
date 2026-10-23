@@ -9,12 +9,13 @@
 //   sudo docker compose run --rm -T -v <检出>/myfnb:/app/myfnb:ro worker node myfnb/check-old-items-2026-10-23.ts [--limit 20] [--apply]
 import { overrideFields, setVisibility } from "@aihot/backend/admin/content";
 import { closeDb, sql } from "@aihot/backend/db";
-import { checkCopy } from "@aihot/backend/editorial/check";
+import { checkCopy, dropsCountry } from "@aihot/backend/editorial/check";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/input";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 
 const args = process.argv.slice(2);
 const apply = args.includes("--apply");
+const audit = args.includes("--audit");
 const limit = Number(args[args.indexOf("--limit") + 1]) || 20;
 const ACTOR = "核对员（讨论串 MYFNB 读者为什么想点开，旧条目核对 10-23）";
 const TAG = "old-1023";
@@ -36,8 +37,40 @@ const show = (r: Row) => {
 // REDO=id,id：先删掉这几条的核对结果（只删本表，不碰线上），这一批重新核它们。
 const redo = (process.env.REDO ?? "").split(",").map((x) => x.trim()).filter(Boolean);
 if (redo.length) console.log(`重核 ${(await sql`DELETE FROM old_check_20261023 WHERE applied_at IS NULL AND article_id IN ${sql(redo)} RETURNING 1`).length} 条`);
+// HOLD=id,id：这几条的核对结果先不写回（只在本表记一句，不碰线上）；要再核就 REDO。
+const hold = (process.env.HOLD ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+if (hold.length) console.log(`暂缓 ${(await sql`UPDATE old_check_20261023 SET error = '暂缓写回（人工看过）' WHERE applied_at IS NULL AND article_id IN ${sql(hold)} RETURNING 1`).length} 条`);
+// RESTORE=id,id：已经写回的这几条按备份改回去（后台人工更正 / 改回公开，有审计记录），本表这一行删掉，下一批可以重核。
+const restore = (process.env.RESTORE ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+for (const id of restore) {
+  const [r] = await sql<Row[]>`SELECT * FROM old_check_20261023 WHERE article_id = ${id} AND applied_at IS NOT NULL`;
+  const [b] = await sql<{ fields: Record<string, unknown> | null; visibility: string | null }[]>`SELECT fields, visibility FROM backup_old_check_20261023_override WHERE article_id = ${id} LIMIT 1`;
+  const [ov] = await sql<{ version: number }[]>`SELECT version FROM editorial_overrides WHERE article_id = ${id}`;
+  if (!r) { console.log(`${id} 没有写回过，跳过`); continue; }
+  const why = "旧条目核对 10-23 改回：核对员删了国家名或撤下理由不明（十一 10-23）";
+  if (r.held) await setVisibility(id, { visibility: (b?.visibility ?? "public") as "public", reason: why, version: ov?.version ?? 0 }, ACTOR);
+  else {
+    const set: Record<string, unknown> = {}, clear: string[] = [];
+    for (const [k, a, n] of [["title", r.title, r.new_title], ["summary", r.summary, r.new_summary], ["reason", r.reason, r.new_reason]] as const) {
+      if ((a ?? "") === (n ?? "")) continue;
+      if (b?.fields && k in b.fields) set[k] = b.fields[k]; else clear.push(k);
+    }
+    await overrideFields(id, { fields: set, clear, reason: why, version: ov?.version ?? 0 }, ACTOR);
+  }
+  await sql`DELETE FROM old_check_20261023 WHERE article_id = ${id}`;
+  console.log(`${id} 已改回`);
+}
 
-if (!apply) {
+if (audit) {
+  // 只读：已经写回的里，改后删了国家名的、撤下的，各列出来。
+  const done = await sql<Row[]>`SELECT * FROM old_check_20261023 WHERE applied_at IS NOT NULL ORDER BY batch, checked_at`;
+  for (const r of done) {
+    const lost = (["title", "summary", "reason"] as const).filter((k) => r[`new_${k}`] !== null && dropsCountry(r[k] ?? "", r[`new_${k}`] ?? ""));
+    if (r.held) console.log(`撤下  ${r.article_id}  ${r.title}`);
+    else if (lost.length) { console.log(`删了国家名（${lost.join("、")}）`); show(r); }
+  }
+  console.log(`已写回 ${done.length} 条`);
+} else if (!apply) {
   const [{ batch }] = await sql<{ batch: number }[]>`SELECT coalesce(max(batch), 0) + 1 AS batch FROM old_check_20261023`;
   const picked = await sql<{ article_id: string; title: string; summary: string | null; reason: string | null }[]>`
     SELECT p.article_id, p.title, p.summary, p.reason FROM publications p

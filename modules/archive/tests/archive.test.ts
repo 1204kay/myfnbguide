@@ -16,7 +16,7 @@ const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, noteNewEpisodes, PACE, plansDue, REREAD } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
-const { episodesToTranscribe, PART_BYTES, PICKED, restoreTranscripts, SERVICE, SPEECH, storeTranscript, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
+const { episodesToTranscribe, PART_BYTES, PICKED, RESTORE, restoreTranscripts, SERVICE, SPEECH, storeTranscript, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
 
 const T = tag();
 const SOURCE = `archive-${T}`;
@@ -229,8 +229,13 @@ test("a transcript that a later listing's notes replaced goes back as the body, 
   // The host edits the notes: the source's listing is a new revision, and its notes become the body.
   const relisted = await upsertMaterial({ ...episode, bodyText: "Edited notes." });
   assert.equal(relisted.revised, true);
+  // The backlog replaced before the cut-off waits while its notes were analysed; a stopped one does not.
+  const cutoff = RESTORE.backlogBefore;
+  RESTORE.backlogBefore = new Date(Date.now() + 3600_000);
+  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), [], "replaced before the cut-off, analysed: waits");
   await sql`UPDATE articles SET processing_state = 'failed', processing_error = 'summaryZh too small' WHERE id = ${articleId}`;
-  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), [articleId]);
+  assert.deepEqual(await restoreTranscripts(100).then((ids) => ids.filter((i) => i === articleId)), [articleId], "stopped: restored at once");
+  RESTORE.backlogBefore = cutoff;
   const [back] = await sql<{ revision: number; body_text: string; processing_state: string; grouping_status: string }[]>`
     SELECT revision, body_text, processing_state, grouping_status FROM articles WHERE id = ${articleId}`;
   assert.deepEqual([back!.revision, back!.body_text, back!.processing_state, back!.grouping_status], [4, TRANSCRIPT, "new", "pending"], "a new revision, analysed again");

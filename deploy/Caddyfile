@@ -9,10 +9,12 @@ www.myfnbguide.com {
 	@oldsite path /appendix /appendix/* /contents /contents/* /handbook /handbook/* /map /map/* /public/* /quick-start /quick-start/* /resources /resources/* /start /start/* /support /support/* /tools /tools/* /updates /updates/*
 	redir @oldsite / permanent
 
-	# 访问计数（myfnb/HANDOFF.md §2.4）：只记时间、路径、状态码和“是不是机器人”，不记 IP、请求头（含 cookie 和浏览器标识）、
+	# 访问计数（myfnb/HANDOFF.md §2.4）：只记时间、路径、状态码、“是不是机器人”和来源域名，不记 IP、请求头（含 cookie 和浏览器标识）、
 	# 查询串，所以认不出是谁。机器人由浏览器标识判断，只留判断结果。myfnb/visits.sh 按天按类统计。
 	@bot header_regexp ua User-Agent (?i)bot|crawl|spider|slurp|scrape|headless|curl|wget|python|go-http|java/|preview
 	log_append @bot bot true
+	# 从哪个网站点进来（Kay 10-24 同意，隐私说明 1.4 第 3 节）：只留来源网址的域名（google.com、facebook.com），路径和问号后面的都不记。
+	log_append from {http.request.header.Referer}
 	log {
 		output file /data/access.log {
 			roll_size 20MiB
@@ -27,6 +29,7 @@ www.myfnbguide.com {
 			request>headers delete
 			request>tls delete
 			request>uri regexp \?.* ""
+			from regexp ^[a-z]+://([^/:?#]+).*$ ${1}
 			resp_headers delete
 		}
 	}

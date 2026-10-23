@@ -18228,3 +18228,13 @@ web-sischef-blog	Sischef 博客（巴西 · 收银系统公司的博客）	https
 rss-sischef	Sischef（巴西 · 收银系统公司）	https://sischef.com/feed/	2026-10-24·告警修复	停用	网站改版后订阅 404（服务器 10-21 起连续 12 次），换成 web-sischef-blog
 pod-de-gastrounternehmer	Gastrounternehmer Podcast（德国）	https://gastrounternehmer.podigee.io/feed/mp3	2026-10-24·告警修复	停用	节目在 podigee 上整个下线（订阅和节目首页都 404，服务器连续 11 次），Apple 和网上搜不到搬去别处
 rss-tiller	Tiller 博客（法国 · 收银系统公司的旧博客）	https://www.tillersystems.com/fr/feed/	2026-10-24·告警修复	停用	订阅最新一篇是 2022-01，首次导入只取 12 个月内，接入以来一条都没收进来，也不在存档计划里
+v1011-omniwe	OmniWe（中国香港 · 收银系统公司）	https://www.omniwe.com/blog	2026-10-24·中文来源第四轮	不接	博客已撤（/blog 跳到 404，站点地图 33 个地址没有文章）
+v1011-foodpanda	foodpanda（台湾商家）（中国台湾 · 外卖平台商家学院）	https://partner.foodpanda.com.tw/zh_TW	2026-10-24·中文来源第四轮	不接	页面只是商家上架登记表，没有文章列表
+c1024-worldjournal	世界日报（美国 · 华文报纸）	https://www.worldjournal.com/search/tagging/2/%E9%A4%90%E9%A4%A8	2026-10-24·中文来源第四轮	待定	联合报系（同系的經濟日報 robots.txt 声明内容不得用于大型语言模型，10-09 按规则 3 不接）；世界日报自己的 robots.txt 没写这句，条款页没找到，要找到条款原文才能判
+c1024-uschinapress	侨报（美国 · 华文报纸）	https://www.uschinapress.com/	2026-10-24·中文来源第四轮	不接	首页对采集器返回 403（规则 6 同理，不绕道）
+c1024-1688-au	澳洲新闻网 1688（澳大利亚 · 华文新闻网）	https://www.1688.com.au/	2026-10-24·中文来源第四轮	不接	首页对采集器返回 403
+c1024-zaobao	联合早报（新加坡 · 报纸）	https://www.zaobao.com.sg/	2026-10-24·中文来源第四轮	不接	复查：robots.txt 点名拒绝 ChatGPT-User、Claude-User、OAI-SearchBot、Perplexity-User（规则 2），和 10-09 结论一致
+c1024-singtao-ca	星岛日报加拿大（加拿大 · 华文报纸）	https://www.singtao.ca/	2026-10-24·中文来源第四轮	待定	robots 只拒绝训练类机器人；首页 5KB 是脚本壳，没有找到餐饮经营的栏目或标签页，条款没读
+c1024-oushinet	欧洲时报（法国 · 华文报纸）	https://www.oushinet.com/	2026-10-24·中文来源第四轮	待定	robots.txt 404（视为没有限制）；首页没认出餐饮栏目，条款没读
+c1024-chinaqw	中国侨网（中国 · 侨务新闻网）	https://channel.chinaqw.com/u/qw/ms.shtml	2026-10-24·中文来源第四轮	待定	只有「美食」频道（写饮食文化），没有餐饮经营栏目；华商新闻在「经济科技」里，餐饮占比没量
+c1024-apple-zh-podcasts	Apple 播客目录里的中文餐饮播客（中国台湾、中国香港、新加坡、美国四区，11 个关键词）	https://itunes.apple.com/search	2026-10-24·中文来源第四轮	不接	326 个半年内有更新的节目，按名字筛出跟餐饮有关的 5 个：SBS 創業搵食、金曜開店已查过；其余 3 个都在小宇宙（规则 2，整体不接）。台湾的中文播客多在 SoundOn、Firstory、Spotify（规则 3），这条路仍然走不通

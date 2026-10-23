@@ -2,7 +2,7 @@
 // 新条目照旧（复核 serious 不进精选）；旧条目已经公开，撤下等于把读者看到的拿掉，所以这 3 条人工看过复核的改法后照它写回、恢复公开
 // （jpda3 只补「若业主将全部金额用于建筑和设备」这个前提，不加免责声明）。nguot 是 note.com 付费文章（正文 399 字），照付费墙规则撤下。
 // 十一 10-23 20:30 同意；Kay 10-23 19:04「你和十一决定」。改前留在 backup_old_check_20261023_*（old-apply 写回前备份过的）和审计记录里。
-// 不带参数只打出改前改后；--apply 写回。
+// 已经照改好的再跑一遍不会再改（字段相同就跳过）。不带参数只打出改前改后；--apply 写回。
 //   sudo docker compose run --rm -T -v <检出>/myfnb:/app/myfnb:ro worker node myfnb/old-items-recheck-fix-2026-10-23.ts [--apply]
 import { overrideFields, setVisibility } from "@aihot/backend/admin/content";
 import { closeDb, sql } from "@aihot/backend/db";
@@ -23,8 +23,13 @@ const FIX: Record<string, { title?: string; summary?: string; point1?: string; r
   },
   qd6h4xm6ahlsj0kyi1g06krt6: {
     summary: "中国烹饪协会调研显示，2026年国庆假期受访餐饮企业营业收入同比上升或持平的占53.6%。美团数据显示，今年中秋、国庆假期堂食餐饮日均消费额同比增长3.4%、客单价小幅下降3.4%，外卖餐饮日均消费额增长9.7%、客单价同比增长12.0%。分析指出，增长模型从提客单转向提翻台、提复购、提连带；煲仔皇做会员充值、四季椰林做储值，以提前锁定节后复购。",
-    // 核对员给的理由和摘要第二句几乎逐字一样，读者看到两遍；只核对不重写，所以去掉理由，条目留着。
-    reason: "",
+    // 核对员给的理由和摘要第二句几乎逐字一样，读者看到两遍；空理由在公开层会退回模型原句（publish.ts pickString），
+    // 所以只把原句里错的部分删掉：「国庆」补成原文的「中秋、国庆」，去掉原文没有的「小店判断……有据可依」。
+    reason: "中秋、国庆假期堂食客单价小幅下降3.4%、外卖客单价上涨12.0%。",
+  },
+  // 第 2 批：核对员两次判理由 serious 后理由被删空，空理由退回了模型原句；用复核给的改法（十一 10-23 20:36）。
+  sjmvh159b84udhd8kyfa2qfcl: {
+    reason: "美团外卖将与商家一起推进产品、店型和AI创新；15元以下低价订单占比同比减半，商家经营方式也需要跟着调整。",
   },
   nguotwlb9wncow84779a01jmo: { withdraw: true },
 };

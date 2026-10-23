@@ -190,7 +190,13 @@ async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): 
 }
 
 /** Figures in one news item past which it is a list, not news: the write-up asks for two or three. */
-export const MAX_FIGURES = 5;
+export const MAX_FIGURES = 3;
+/** Figures written in characters count too (10-21: 三千、六千到八千、三十多 slipped past a count of digits alone). */
+const HAN_FIGURE = /[一二两三四五六七八九]?[十百千万亿][零一二两三四五六七八九十百千万亿]*|[一二两三四五六七八九]成[一二三四五六七八九]?/gu;
+/** A lone 百、千、万 is a word (百货、千层), not a figure. */
+const NOT_FIGURES = new Set(["百", "千", "万"]);
+/** How many news items an issue tells (10-23: six read like a report; the rest are still in the daily). */
+export const NEWS = 3;
 
 /** An event this many sources told must be in the issue (on 10-06 the site grouped McDonald's on AI pricing from two). */
 export const BIG_EVENT = 3;
@@ -198,11 +204,12 @@ export const BIG_EVENT = 3;
 /** What the program finds itself, as rule 4: the shape of the issue, which the check model is not asked to count. */
 function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Problem[] {
   const out: Problem[] = [];
-  if (issue.news.length < 4 || issue.news.length > 6) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: "快讯要 4 到 6 条" });
+  if (issue.news.length !== NEWS) out.push({ rule: 4, quote: `快讯 ${issue.news.length} 条`, why: `快讯要 ${NEWS} 条` });
   for (const x of issue.news) if (!/〔[\d、,，\s]+〕/u.test(x.text)) out.push({ rule: 4, quote: x.head, why: "这条快讯没标出处" });
   // A string of figures no ear keeps (10-15: Domino's China in seven, a survey in seven percentages); years aside.
   for (const x of issue.news) {
-    const figures = (x.text.replace(/〔[^〕]*〕/gu, "").match(/\d[\d,.]*/gu) ?? []).filter((d) => !/^(19|20)\d\d$/u.test(d)).length;
+    const text = x.text.replace(/〔[^〕]*〕/gu, "").replace(/十一(?=说|觉得|的|算|看|想)|十分(?!之)|千万(?=别|不|要)|万一/gu, "");
+    const figures = (text.match(/\d[\d,.]*/gu) ?? []).filter((d) => !/^(19|20)\d\d$/u.test(d)).length + (text.match(HAN_FIGURE) ?? []).filter((w) => !NOT_FIGURES.has(w)).length;
     if (figures > MAX_FIGURES) out.push({ rule: 4, quote: x.head, why: `这条快讯说了 ${figures} 个数字，只留两三个最要紧的` });
   }
   // A quotation in a sentence that cites only sources whose sentences may not be quoted (10-11: 「70元时代」 from a

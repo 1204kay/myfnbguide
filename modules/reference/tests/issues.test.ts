@@ -26,8 +26,8 @@ const model = await stub((_hit, req) => {
   users.push(user);
   if (user.startsWith("这一期：")) return answer({ lively: 7, problems: [] });
   return answer({
-    title: "店里该不该涨价？", brief: ["甲店涨了价〔1〕。", "乙店没涨〔2〕。", "丙店在等〔3〕。"], preview: "今天说四件事。",
-    news: [1, 2, 3, 4].map((n) => ({ head: `第 ${n} 条`, text: `报道${n}说了这件事〔${n}〕。` })),
+    title: "店里该不该涨价？", brief: ["甲店涨了价〔1〕。", "乙店没涨〔2〕。", "丙店在等〔3〕。"], preview: "今天说三件事。",
+    news: [1, 2, 3].map((n) => ({ head: `第 ${n} 条`, text: `报道${n}说了这件事〔${n}〕。` })),
     deep: "甲店的老板说，涨价前先算了账〔1〕。", close: "几家店都在算同一笔账。",
   });
 });
@@ -78,7 +78,7 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.equal(page.date, DAY);
   assert.equal(page.count, 5);
   assert.match(page.lines.open, /2020年3月10日，星期二/);
-  assert.deepEqual(page.sources.map((s: { n: number; title: string }) => [s.n, s.title]), [[1, "标题 1"], [2, "标题 2"], [3, "标题 3"], [4, "标题 4"]], "only the originals it names");
+  assert.deepEqual(page.sources.map((s: { n: number; title: string }) => [s.n, s.title]), [[1, "标题 1"], [2, "标题 2"], [3, "标题 3"]], "only the originals it names");
   assert.equal((await app.inject("/api/reference/issues/2")).statusCode, 404);
   assert.equal((await app.inject("/api/reference/issues/x")).statusCode, 404);
 });

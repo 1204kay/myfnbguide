@@ -79,6 +79,14 @@ case "${1:-}" in
     sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
       worker node myfnb/hide-paywall-2026-10-23.ts $([ "$1" = hide-apply ] && echo --apply)
     ;;
+  country-fix|country-fix-apply)
+    [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
+    sudo git -C "$DIR" fetch -q origin "$BRANCH"
+    sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
+    cd /opt/myfnbguide
+    sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
+      worker node myfnb/country-fix-2026-10-23.ts $([ "$1" = country-fix-apply ] && echo --apply) 2>&1 | grep --line-buffered -v '"level"'
+    ;;
   recheck-fix|recheck-fix-apply)
     # 旧条目里复核判 serious、人工看过照改法写回的 3 条，和 1 条付费墙（myfnb/old-items-recheck-fix-2026-10-23.ts）
     [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
@@ -176,7 +184,7 @@ case "${1:-}" in
       SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
         AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
     ;;
-  *) echo "用法：start | status | pack | all | check | pipeline | check-result | check-status | fix | fix-apply | hide | hide-apply | old-check | old-apply | old-audit | recheck-fix | recheck-fix-apply | raw"; exit 1 ;;
+  *) echo "用法：start | status | pack | all | check | pipeline | check-result | check-status | fix | fix-apply | hide | hide-apply | old-check | old-apply | old-audit | recheck-fix | recheck-fix-apply | country-fix | country-fix-apply | raw"; exit 1 ;;
 esac
 }
 

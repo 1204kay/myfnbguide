@@ -6,6 +6,10 @@
 #   ssh <服务器> 'bash -s' -- start  < myfnb/trial-understand-run.sh   更新检出、后台开跑，马上返回
 #   ssh <服务器> 'bash -s' -- status < myfnb/trial-understand-run.sh   还在跑 / 跑完了，和日志最后几行
 #   ssh <服务器> 'bash -s' -- pack   < myfnb/trial-understand-run.sh   把结果打成 tar.gz 写到标准输出
+#   ssh <服务器> 'bash -s' -- all    < myfnb/trial-understand-run.sh   一条跑完：开跑、等到跑完，再把试写.md、试写.json 和 raw 打到标准输出
+#                                                                    （原文不打出来；要二三十分钟，在本机用后台方式跑）
+#   ssh <服务器> 'bash -s' -- fix        < myfnb/trial-understand-run.sh   预览 myfnb/fix-item-summary-2026-10-23.ts（印度那条 lakh 换算错）
+#   ssh <服务器> 'bash -s' -- fix-apply  < myfnb/trial-understand-run.sh   执行它（先备份，再改条目、报告和故事里的那一句）
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
@@ -15,7 +19,18 @@ OUT=/tmp/myfnb-understand
 LOG=$OUT/run.log
 PID=$OUT/run.pid
 
+main() {
 case "${1:-}" in
+  all)
+    main start
+    sleep 30
+    while [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; do sleep 30; done
+    run=$(ls -td $OUT/understand-*/ | head -1)
+    echo "=== 日志最后几行"; tail -n 25 "$LOG"
+    echo "=== 试写.md"; cat "$run/试写.md"
+    echo "=== 试写.json"; cat "$run/试写.json"
+    main raw
+    ;;
   start)
     if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "上一趟还在跑"; exit 1; fi
     [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
@@ -40,6 +55,14 @@ case "${1:-}" in
     run=$(ls -td $OUT/understand-*/ | head -1)
     tar -C "$run" -cz .
     ;;
+  fix|fix-apply)
+    [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
+    sudo git -C "$DIR" fetch -q origin "$BRANCH"
+    sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
+    cd /opt/myfnbguide
+    sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
+      worker node myfnb/fix-item-summary-2026-10-23.ts $([ "$1" = fix-apply ] && echo --apply)
+    ;;
   raw)
     cd /opt/myfnbguide
     sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
@@ -52,3 +75,6 @@ case "${1:-}" in
     ;;
   *) echo "用法：start | status | pack | raw"; exit 1 ;;
 esac
+}
+
+main "$@"

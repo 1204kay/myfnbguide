@@ -59,7 +59,7 @@ test("the day's issue is written once, from what was listed before it, and the d
   const written = await writeIssue(DAY, editionAt("daily", DAY, -3600));
   assert.deepEqual(written, { date: DAY, status: "issue", no: 1 });
   const calls = users.length;
-  assert.equal(calls, 3, "two drafts and a check: the stub writes the same draft twice, and its second check is the receipt already paid");
+  assert.equal(calls, 4, "two drafts, a check and the read for omissions: the stub writes the same draft twice, and its second check is the receipt already paid");
   assert.ok(users[0]!.includes("全部 5 条") && !users[0]!.includes("标题 6"), "what was listed after it was written waits for tomorrow's");
   assert.deepEqual(await writeIssue(DAY, editionAt("daily", DAY, -1800)), { date: DAY, status: "issue", no: 1 });
   assert.equal(users.length, calls, "a day written is not written again");

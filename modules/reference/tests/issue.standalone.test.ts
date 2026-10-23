@@ -22,7 +22,8 @@ function scripted(answers: Partial<Record<string, (user: string, attempt?: strin
   const calls: Array<{ purpose: string; user: string; attempt?: string }> = [];
   const ask: Ask = async (purpose, _system, user, schema, attempt) => {
     calls.push({ purpose, user, attempt });
-    const answer = answers[purpose];
+    // The last read for omissions finds nothing unless a test scripts it.
+    const answer = answers[purpose] ?? (purpose === "reference_issue_review" ? () => ({ problems: [] }) : undefined);
     if (!answer) throw new Error(`no scripted answer for ${purpose}`);
     return schema.parse(answer(user, attempt));
   };
@@ -45,7 +46,7 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "好听的一稿");
-  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_check", "reference_issue_write", "reference_issue_check"]);
+  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_check", "reference_issue_write", "reference_issue_check", "reference_issue_review"]);
   assert.ok(!calls[0]!.user.includes("另一稿细说"));
   assert.ok(calls[2]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
   const check = calls[3]!.user;
@@ -301,4 +302,20 @@ test("a day with too few items is not written", async () => {
   const c = await composeIssue(ITEMS.slice(0, MIN_ITEMS - 1), "2026-10-16", ask);
   assert.equal(c.status, "thin");
   assert.equal(calls.length, 0);
+});
+
+test("the issue that goes up is read once more for what it left out; a fix goes in, an empty one takes nothing out", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: () => issue("稿", "店里卖完了〔1〕。"),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+    reference_issue_review: () => ({ problems: [
+      { rule: 1, quote: "店里卖完了〔1〕。", why: "原文还说是天气热", fix: "店里卖完了，原文说那天特别热〔1〕。" },
+      { rule: 1, quote: "也说了〔4〕。", why: "", fix: "" },
+    ] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-18", ask);
+  assert.equal(c.chosen?.issue.news[0]?.text, "店里卖完了，原文说那天特别热〔1〕。");
+  assert.equal(c.chosen?.issue.news.length, 3, "an empty fix cuts nothing");
+  assert.equal(c.chosen?.reviewed?.length, 1);
+  assert.equal(calls.filter((x) => x.purpose === "reference_issue_review").length, 1, "only the issue that goes up");
 });

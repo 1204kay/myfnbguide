@@ -29,13 +29,14 @@ export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
 export const ISSUE_CHECK_STEP = "referenceIssueCheck";
 /** Purposes the check model answers (the writer answers reference_issue_write). */
-export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit";
+export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review";
 const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");
 const CHECK = prompt("issue-check");
 const EDIT = prompt("issue-edit");
-export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT)
+const REVIEW = prompt("issue-review");
+export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW)
   .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
 
 /**
@@ -264,10 +265,24 @@ export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): 
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
 }
 
+/**
+ * Reads the draft that goes up once more for what it left out, and nothing else (10-18, 10-19, 8079e78: the check
+ * found what a draft said wrong, but a blind check still found the other side, the owner's caveat or 十一's own guess
+ * passed off as the report's, 3 and 1 times). Its fixes only add, so they go in without another check.
+ */
+export async function reviewIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<Problem[]> {
+  const { cited } = citedItems(issue, items);
+  const user = [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n");
+  const answer = await ask("reference_issue_review", REVIEW, user, CheckAnswer);
+  return answer.problems.filter((p) => p.fix);
+}
+
 export interface Draft {
   issue: IssueText; lively: number; problems: Problem[]; edited: boolean;
   /** Sentences the program took out because the editor could not mend them. */
   cut?: string[];
+  /** What the last read for omissions found, its fixes put in. */
+  reviewed?: Problem[];
 }
 export interface ComposedIssue {
   date: string;
@@ -400,8 +415,13 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     const why = unusable instanceof Error ? unusable.message : String(unusable);
     return { date, status: "issue", chosen: { issue: itemsIssue(items), lively: 0, problems: [], edited: false }, drafts, items, note: `两稿都没写成（${why.slice(0, 120)}），照当天收录的标题和摘要出简版` };
   }
+  const done = async (chosen: Draft): Promise<ComposedIssue> => {
+    const reviewed = await reviewIssue(chosen.issue, items, ask);
+    if (!reviewed.length) return { date, status: "issue", chosen, drafts, items };
+    return { date, status: "issue", chosen: { ...chosen, issue: amendIssue(chosen.issue, reviewed, (p) => p.fix).issue, reviewed }, drafts, items };
+  };
   const passing = drafts.filter((d) => !d.problems.length).sort((x, y) => y.lively - x.lively);
-  if (passing.length) return { date, status: "issue", chosen: passing[0]!, drafts, items };
+  if (passing.length) return done(passing[0]!);
   let last = [...drafts].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || y.lively - x.lively || x.problems.length - y.problems.length)[0]!;
   for (const attempt of "cdefg".slice(0, EDIT_ROUNDS)) {
     let issue: IssueText;
@@ -415,9 +435,9 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     drafts.push(last);
     if (!last.problems.length) break;
   }
-  if (!last.problems.length) return { date, status: "issue", chosen: last, drafts, items };
+  if (!last.problems.length) return done(last);
   const { issue, cut, kept } = cutProblems(last.issue, last.problems);
-  return { date, status: "issue", chosen: { issue, lively: last.lively, problems: kept, edited: true, cut }, drafts, items };
+  return done({ issue, lively: last.lively, problems: kept, edited: true, cut });
 }
 
 // ---------------------------------------------------------------- the daily's top, and a page to read

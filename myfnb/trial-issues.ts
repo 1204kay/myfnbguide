@@ -8,7 +8,8 @@
 //   run's folder goes (default /out). Without --apply it lists each day's items and calls nothing.
 //   --check-only /out/<run>/01.json: no writing; checks that run's chosen issue once more with --check-model against its
 //   day's items (the date is the file's own), and writes what this check found beside the old one, to try a new check
-//   on a draft whose faults the blind check already listed (十一 10-23: 新核对要先单独验一下).
+//   on a draft whose faults the blind check already listed (十一 10-23: 新核对要先单独验一下). With --review it is the
+//   last read for omissions instead, and the file says which sentences its fixes would change.
 //   --cap-usd 20: no call is made unless what it could cost is left under it, so the run never pays more; a day does not
 //   start without enough left for its two drafts and their checks.
 // On the server (a throwaway container with this branch's module mounted; the running worker is not touched):
@@ -23,7 +24,7 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { EDITION_TIMES } from "@aihot/site";
-import { checkIssue, type ComposedIssue, composeIssue, type DayItem, isCheckPurpose, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
+import { amendIssue, checkIssue, type ComposedIssue, composeIssue, type DayItem, isCheckPurpose, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, reviewIssue, type Usage } from "../modules/reference/backend/issue.ts";
 import { dayItems } from "../modules/reference/backend/issues.ts";
 
 const args = process.argv.slice(2);
@@ -71,12 +72,16 @@ if (checkOnly) {
   const items = await dayItems(beijingAt(old.date, EDITION_TIMES.daily), selectedOnly);
   const check = modelAsk(checkModel!, `issue:${old.date}`, receiptIds, count(checkModel!));
   if (usd() + callUsd(checkPrice, items.reduce((s, i) => s + i.text.length, 0)) > cap) throw new Error(`停：这一次核对可能超过上限 US$${cap}`);
-  const found = await checkIssue(old.chosen.issue, items, check);
-  const out = checkOnly.replace(/\.json$/u, `-check-${ISSUE_VERSION}.json`);
-  writeFileSync(out, JSON.stringify({ date: old.date, title: old.chosen.issue.title, before: old.chosen.problems, ...found }, null, 2));
+  const review = args.includes("--review");
+  const found = review
+    ? { lively: old.chosen.lively, problems: await reviewIssue(old.chosen.issue, items, check) }
+    : await checkIssue(old.chosen.issue, items, check);
+  const out = checkOnly.replace(/\.json$/u, `-${review ? "review" : "check"}-${ISSUE_VERSION}.json`);
+  const changes = review ? amendIssue(old.chosen.issue, found.problems, (p) => p.fix).changed : undefined;
+  writeFileSync(out, JSON.stringify({ date: old.date, title: old.chosen.issue.title, before: old.chosen.problems, ...found, changes }, null, 2));
   for (const id of receiptIds) await completeReceipt(sql, id);
-  console.log(`${old.date}《${old.chosen.issue.title}》：这次核对精彩 ${found.lively}，问题 ${found.problems.length} 处，写在 ${out}；花 US$${usd().toFixed(2)}`);
-  for (const p of found.problems) console.log(`- 第 ${p.rule} 条：「${p.quote}」${p.why}`);
+  console.log(`${old.date}《${old.chosen.issue.title}》：这次${review ? "复核" : "核对"}精彩 ${found.lively}，问题 ${found.problems.length} 处，写在 ${out}；花 US$${usd().toFixed(2)}`);
+  for (const p of found.problems) console.log(`- 第 ${p.rule} 条：「${p.quote}」${p.why}${p.fix ? `\n  改成：${p.fix}` : ""}`);
   await stopBoss();
   await closeDb();
   process.exit(0);

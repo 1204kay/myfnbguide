@@ -166,10 +166,10 @@ export async function storeTranscript(articleId: string, row: EpisodeRow, text: 
  * selection (10/15 and 10/20: 18 selected episodes of two Buzzsprout podcasts, for eight days). The transcript goes back
  * as the body, a new revision analysed again; the same notes listed again are a version seen before and change nothing.
  * The transcript is the episode's latest revision of the length it had when stored.
- * The 113 replaced before 10/23 that were analysed on their notes and published wait (十一 10/23: the 28 that stopped
- * first, checked on the site, then the rest); those replaced since, and every one that stopped, are restored.
+ * Only an episode that stopped is restored. One analysed on its notes is left as it is: putting the transcript back pays
+ * for a second analysis, and a host who edits the notes of a whole feed sends every episode through again (10/24: Bar
+ * Business relisted 38 episodes at 03:12, restored and analysed again for about US$1.4 with US$2 left).
  */
-export const RESTORE = { backlogBefore: new Date("2026-10-23T12:00:00Z") as Date | null };
 
 export async function restoreTranscripts(limit: number): Promise<string[]> {
   const rows = await sql<{ id: string; transcript: string }[]>`
@@ -177,9 +177,7 @@ export async function restoreTranscripts(limit: number): Promise<string[]> {
     JOIN articles a ON a.id = e.article_id
     JOIN LATERAL (SELECT r.body_text FROM article_revisions r WHERE r.article_id = a.id AND length(r.body_text) = e.transcript_chars
                   ORDER BY r.revision DESC LIMIT 1) t ON true
-    WHERE e.status = 'transcribed' AND a.body_text IS DISTINCT FROM t.body_text
-      AND (a.processing_state = 'failed' OR ${RESTORE.backlogBefore}::timestamptz IS NULL
-           OR (SELECT r.created_at FROM article_revisions r WHERE r.article_id = a.id AND r.revision = a.revision) >= ${RESTORE.backlogBefore})
+    WHERE e.status = 'transcribed' AND a.body_text IS DISTINCT FROM t.body_text AND a.processing_state = 'failed'
     ORDER BY a.discovered_at DESC LIMIT ${limit}`;
   const restored: string[] = [];
   for (const row of rows) {

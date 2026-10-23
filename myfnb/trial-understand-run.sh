@@ -70,6 +70,15 @@ case "${1:-}" in
     sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
       worker node myfnb/fix-items-2026-10-23.ts $([ "$1" = fix-apply ] && echo --apply)
     ;;
+  hide|hide-apply)
+    # 付费墙 3 条撤下（myfnb/hide-paywall-2026-10-23.ts）：hide 预览，hide-apply 执行
+    [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
+    sudo git -C "$DIR" fetch -q origin "$BRANCH"
+    sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
+    cd /opt/myfnbguide
+    sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
+      worker node myfnb/hide-paywall-2026-10-23.ts $([ "$1" = hide-apply ] && echo --apply)
+    ;;
   check)
     [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
     sudo git -C "$DIR" fetch -q origin "$BRANCH"
@@ -147,7 +156,7 @@ case "${1:-}" in
       SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
         AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
     ;;
-  *) echo "用法：start | status | pack | all | check | pipeline | check-result | check-status | fix | fix-apply | raw"; exit 1 ;;
+  *) echo "用法：start | status | pack | all | check | pipeline | check-result | check-status | fix | fix-apply | hide | hide-apply | raw"; exit 1 ;;
 esac
 }
 

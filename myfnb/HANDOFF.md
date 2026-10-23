@@ -292,9 +292,9 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 - **10-24 后台信源告警逐条查完**（只读查询 `myfnb/sources-check.sql`，从 Kay 电脑经 ssh 跑；云端另用 `vet-sources.ts` 把 145 个全抓一遍对照）：
   - **「7 天没有新内容」61 个，没有一个是抓取失效**：除下面两个 404，其余 59 个服务器最后收到的那篇和原站订阅最新一篇对得上，是原站本来就没更新（多数是停更的播客和店主旧博客，留着是为了存档转写：`transcribe.ts` 只转写启用来源的节目，停用会断掉存档）。这条告警以后会一直报这批，看名单时先对 `last_pub`，不用逐个重查。
   - 404：Sischef 网站改版没有订阅了，改读博客列表（`web-sischef-blog`，取代 `rss-sischef`）；Gastrounternehmer 节目从 podigee 整个下线，停用。另停用 `rss-tiller`（2022 年后不更新，一条都没收进来过）。
-  - 新西兰 Restaurant & Café 的失败全是 HTTP 429（被对方限流），Petpooja 同样；两个抓取间隔从 120 分钟放到 360 分钟。
+  - 新西兰 Restaurant & Café 的失败全是 HTTP 429（被对方限流），Petpooja 同样；两个抓取间隔从 60 分钟（库里的实际值；sources.json 原写 120）放到 360 分钟。10-24 06:50 已在正式库改好（Kay 打字同意，改前 5 行整行备份在 Kay 电脑 `C:\myfnbguide\.data\sources-fix-2026-10-24.txt`），三个来源已停用。
   - 缺发布时间：餐饮老板内参（`web-watcn-art`）文章页头三天只写「20小时前」「2天前」，框架只认绝对日期，所以新文章几乎全按历史处理、进不了日报；QSR Media 1 篇、职业餐饮网 1 篇是原站那一页本身没日期（职业餐饮网那篇是空页面），不用修。
-  - 写正式库的部分在 `myfnb/sources-fix-2026-10-24-apply.sql`（Kay 打字同意后跑）；账本「2026-10-24·告警修复」。
+  - 写正式库的部分在 `myfnb/sources-fix-2026-10-24-apply.sql`（已跑）；账本「2026-10-24·告警修复」。
 
 ### 5.5 改了 `industry/`、`site/`、`modules/` 以外的文件
 

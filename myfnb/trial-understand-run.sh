@@ -76,7 +76,7 @@ case "${1:-}" in
     echo "检出：$(sudo git -C $DIR rev-parse --short HEAD)"
     sudo docker compose run --rm -T \
       -v $DIR/industry/prompts:/app/industry/prompts:ro -v $DIR/site/models.ts:/app/site/models.ts:ro -v $DIR/myfnb:/app/myfnb:ro -v $OUT:/out \
-      worker node myfnb/trial-check.ts $flags --apply 2>&1 | grep -v '"level"'
+      worker node myfnb/trial-check.ts $flags --apply 2>&1 | grep --line-buffered -v '"level"'
     cat "$(ls -td $OUT/check-*/ | head -1)/核对.md"
     ;;
   raw)

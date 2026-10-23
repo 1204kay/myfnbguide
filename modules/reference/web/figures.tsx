@@ -92,7 +92,7 @@ function Kitchen() {
         <text x="216" y="146" textAnchor="middle" style={text}>出餐口</text>
       </svg>
       <div className="mt-2 flex gap-4 text-[12.5px] text-ink-3">
-        <span className="flex items-center gap-1.5"><i className="h-[3px] w-5 rounded bg-accent" />出餐的路线</span>
+        <span className="flex items-center gap-1.5"><i className="h-[3px] w-5 rounded-mark bg-accent" />出餐的路线</span>
         <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-4" />收碗的路线</span>
       </div>
     </>
@@ -107,7 +107,7 @@ function OwnerHours() {
         <div key={n} className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-2">
           <span>{["一家店", "两家店", "三家店"][n - 1]}</span>
           <div className="flex gap-1">
-            {Array.from({ length: n }, (_, i) => <i key={i} className="num flex h-7 flex-1 items-center justify-center rounded-md bg-accent-soft text-[12px] font-semibold not-italic text-accent">{n === 1 ? "12 小时" : 12 / n}</i>)}
+            {Array.from({ length: n }, (_, i) => <i key={i} className="num flex h-7 flex-1 items-center justify-center rounded-mark bg-accent-soft text-[12px] font-semibold not-italic text-accent">{n === 1 ? "12 小时" : 12 / n}</i>)}
           </div>
         </div>
       ))}
@@ -458,7 +458,7 @@ function DownDays() {
           return (
             <div key={d}>
               <span className="text-[12px] text-ink-4">周{d}</span>
-              <i className={`mt-1 flex h-9 items-center justify-center rounded-md text-[12px] font-semibold not-italic ${down ? "border border-dashed border-ink-4 text-ink-4" : "bg-accent-soft text-accent"}`}>{down ? "停业" : "营业"}</i>
+              <i className={`mt-1 flex h-9 items-center justify-center rounded-mark text-[12px] font-semibold not-italic ${down ? "border border-dashed border-ink-4 text-ink-4" : "bg-accent-soft text-accent"}`}>{down ? "停业" : "营业"}</i>
             </div>
           );
         })}
@@ -596,7 +596,7 @@ function StaffCurve() {
         <g textAnchor="middle" style={text}><text x="20" y="157" textAnchor="start">开门</text><text x="78" y="157">午市</text><text x="160" y="157">下午</text><text x="242" y="157">晚市</text><text x="300" y="157" textAnchor="end">关门</text></g>
       </svg>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-3">
-        <span className="flex items-center gap-1.5"><i className="h-[3px] w-5 rounded bg-accent" />每个时段需要的人手</span>
+        <span className="flex items-center gap-1.5"><i className="h-[3px] w-5 rounded-mark bg-accent" />每个时段需要的人手</span>
         <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-4" />每个时段排的人手</span>
       </div>
     </>
@@ -840,7 +840,7 @@ function SeatsByDay() {
       </svg>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-3">
         <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-2" />够付一天房租和人工的客人数</span>
-        <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm border border-hot bg-hot-soft" />还差的客人</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-mark border border-hot bg-hot-soft" />还差的客人</span>
       </div>
     </>
   );
@@ -1001,7 +1001,7 @@ function IngredientRise() {
         ["自己承担", [food, more, { label: "毛利 15 元", share: share(15), tone: "accent" }]],
         ["调高售价", [food, more, { label: "毛利 18 元", share: share(18), tone: "accent" }]],
       ]} />
-      <div className="mt-2 flex items-center gap-1.5 text-[12.5px] text-ink-3"><i className={`h-3 w-5 rounded-sm ${TONES[0]}`} />主料涨价，每份多花的 3 元</div>
+      <div className="mt-2 flex items-center gap-1.5 text-[12.5px] text-ink-3"><i className={`h-3 w-5 rounded-mark ${TONES[0]}`} />主料涨价，每份多花的 3 元</div>
       <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">自己承担：一个月少赚 <b className="text-[16px] text-ink">3,900</b> 元<br />调高售价：每份从 30 元调到 <b className="text-[16px] text-ink">33</b> 元</p>
     </>
   );
@@ -1064,8 +1064,8 @@ function PartnersSplit() {
         ["分利润", [{ label: "甲 8,000 元", share: 0.8, tone: 1 }, { label: "", share: 0.2, tone: "accent" }]],
       ]} />
       <div className="mt-2 flex gap-4 text-[12.5px] text-ink-3">
-        <span className="flex items-center gap-1.5"><i className={`h-3 w-5 rounded-sm ${TONES[1]}`} />甲</span>
-        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-sm bg-accent" />乙</span>
+        <span className="flex items-center gap-1.5"><i className={`h-3 w-5 rounded-mark ${TONES[1]}`} />甲</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark bg-accent" />乙</span>
       </div>
       <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">乙出 5 万元，每天在店里 12 小时<br />利润按出钱分，乙分得 <b className="text-[16px] text-ink">2,000</b> 元</p>
     </>
@@ -1094,12 +1094,12 @@ function MealMoments() {
     <>
       <div className="flex gap-1">
         {["进门", "等位", "点菜", "上菜", "吃饭", "结账"].map((s) => (
-          <span key={s} className={`flex h-9 flex-1 items-center justify-center rounded-md text-[12.5px] font-semibold ${s === "吃饭" ? "bg-accent text-accent-contrast" : "border border-line-strong text-ink-3"}`}>{s}</span>
+          <span key={s} className={`flex h-9 flex-1 items-center justify-center rounded-mark text-[12.5px] font-semibold ${s === "吃饭" ? "bg-accent text-accent-contrast" : "border border-line-strong text-ink-3"}`}>{s}</span>
         ))}
       </div>
       <div className="mt-2.5 flex gap-4 text-[12.5px] text-ink-3">
-        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-sm bg-accent" />菜的味道</span>
-        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-sm border border-line-strong" />客人被怎样对待</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark bg-accent" />菜的味道</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark border border-line-strong" />客人被怎样对待</span>
       </div>
     </>
   );

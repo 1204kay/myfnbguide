@@ -1,28 +1,40 @@
 // 十一说的开、停和补写一期（modules/reference/server.ts 的 issuesFrom；Kay 10-23：今天就上，一句话能停）。
-// 每天 05:00 的任务只看 settings 的 reference.issues 一行；这个脚本改那一行，补写某一天的一期，盲核过了再让它当那天日报的头条。
+// 每天 05:00 的任务只看 settings 的 reference.issues 一行；这个脚本改那一行，放进会话里核好的一期，盲核过了再让它当那天日报的头条。
 // 不带参数：只看现在的状态，不写库。
 //   sudo docker compose exec -T worker node myfnb/issue-now.ts
 //   sudo docker compose exec -T worker node myfnb/issue-now.ts --from 2026-10-24     从这天起每天 05:00 写
 //   sudo docker compose exec -T worker node myfnb/issue-now.ts --stop                停：删掉那一行，已写好的各期照旧
-//   sudo docker compose exec -T worker node myfnb/issue-now.ts --write 2026-10-23    马上写这一天的一期（花模型钱，约 US$2）；
-//                                                                                    日报不动，先盲核（十一 10-23：过了才上头条）
 //   sudo docker compose exec -T worker node myfnb/issue-now.ts --dump 2026-10-23     这一期和它点名原文的全文，JSON，给盲核用
 //                                                                                    （原文只放在临时目录，核完删，不进任何仓库）
 //   sudo docker compose exec -T worker node myfnb/issue-now.ts --lead 2026-10-23     重排这一天的日报，让这一期当头条
+// 11-01 以前 Claude API 额度用完了，核对、改稿、挑稿在会话里照同一套提示词做（Kay 10-23），每天：
+//   ... --drafts 2026-10-24 > 临时目录/drafts.json    DeepSeek 写两稿并为念出来改过（几分钱），连同当天收录的全文，JSON
+//   ... --items 2026-10-24 > 临时目录/items.json      只要当天收录（编号、来源、标题、全文），不调模型；〔n〕照这里的编号标
+//   ... --put 2026-10-24 < 定稿.json                  放进会话里核好的一期（{"issue": {...}}），日报不动；再 --dump 盲核、--lead 上头条
 import { closeDb, sql } from "@aihot/backend/db";
+import { installModules } from "@aihot/backend/modules";
 import { composeDaily } from "@aihot/backend/reports/compose";
-import { writeIssue } from "../modules/reference/backend/issues.ts";
+import { SERVER_MODULES } from "@aihot/site/modules/server";
+import { beijingAt } from "@aihot/contracts/time";
+import { EDITION_TIMES } from "@aihot/site";
+import { DEFAULTS } from "@aihot/site/models";
+import { ISSUE_STEP, type IssueText, modelAsk, writeDrafts } from "../modules/reference/backend/issue.ts";
+import { dayItems } from "../modules/reference/backend/issues.ts";
+
+// composeDaily asks the installed modules for the daily's lead (moduleDailyLead): without them --lead leads by rule.
+installModules(SERVER_MODULES);
 
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
 const DATE = /^\d{4}-\d{2}-\d{2}$/u;
 
 const from = arg("--from");
-const write = arg("--write");
 const dump = arg("--dump");
 const lead = arg("--lead");
-for (const d of [dump, lead]) if (d !== undefined && !DATE.test(d)) throw new Error(`要一个日期，例如 2026-10-23`);
+const drafts = arg("--drafts");
+const put = arg("--put");
+const listed = arg("--items");
+for (const d of [dump, lead, drafts, put, listed]) if (d !== undefined && !DATE.test(d)) throw new Error(`要一个日期，例如 2026-10-23`);
 if (from !== undefined && !DATE.test(from)) throw new Error(`--from 要一个日期，例如 2026-10-24`);
-if (write !== undefined && !DATE.test(write)) throw new Error(`--write 要一个日期，例如 2026-10-23`);
 
 if (from) {
   await sql`INSERT INTO settings (key, value, updated_by) VALUES ('reference.issues', ${sql.json({ from })}, 'myfnb/issue-now.ts')
@@ -33,9 +45,45 @@ if (from) {
   console.log(n ? "十一说停了：明天起不再写；已写好的各期照旧。" : "本来就没开。");
 }
 
-if (write) {
-  const r = await writeIssue(write);
-  console.log(`${write}：${r.status === "issue" ? `第 ${r.no} 期，日报还没动` : "这天收录太少，没有写"}`);
+if (listed) {
+  const edition = beijingAt(listed, EDITION_TIMES.daily);
+  const now = new Date();
+  console.log(JSON.stringify({ date: listed, items: await dayItems(now < edition ? now : edition) }, null, 1));
+  await closeDb();
+  process.exit(0);
+}
+
+if (drafts) {
+  // Stdout only: the day's originals go to a temporary folder for the check, never into a repository (工作约定 §12).
+  const edition = beijingAt(drafts, EDITION_TIMES.daily);
+  const now = new Date();
+  const items = await dayItems(now < edition ? now : edition);
+  // The writer's preset (site/models.ts DEFAULTS); a script installs no module, so modelFor knows no step of theirs.
+  const writer = arg("--model") ?? DEFAULTS[ISSUE_STEP]!;
+  const two = await writeDrafts(items, drafts, modelAsk(writer, `issue:${drafts}`, []));
+  console.log(JSON.stringify({ date: drafts, writer, items, drafts: two }, null, 1));
+  await closeDb();
+  process.exit(0);
+}
+
+if (put) {
+  // What the session checked, in the shape the writer answers in; numbered as the next issue, its items kept without text.
+  const given = JSON.parse(await new Response(process.stdin as unknown as ReadableStream).text()) as { issue: IssueText; items?: Array<Record<string, unknown>> };
+  const i = given.issue;
+  if (!i?.title || !i.brief?.length || !i.preview || !i.news?.length || !i.deep || !i.close) throw new Error("定稿要有 title、brief、preview、news、deep、close");
+  const edition = beijingAt(put, EDITION_TIMES.daily);
+  const now = new Date();
+  const items = (await dayItems(now < edition ? now : edition)).map(({ text: _text, ...item }) => item);
+  const no = await sql.begin(async (tx) => {
+    const [{ next }] = await tx<{ next: number }[]>`SELECT coalesce(max(no), 0) + 1 AS next FROM reference_issues`;
+    const [row] = await tx<{ no: number }[]>`
+      INSERT INTO reference_issues (date, no, status, content, version, models)
+      VALUES (${put}, ${next}, 'issue', ${tx.json({ issue: i, lively: 0, edited: true, cut: [], problems: [], note: "核对在会话里做（11-01 前）", drafts: [], items } as never)},
+        'session', ${tx.json({ writer: arg("--writer") ?? DEFAULTS[ISSUE_STEP]!, checker: "session" })})
+      ON CONFLICT (date) DO NOTHING RETURNING no`;
+    return row?.no ?? null;
+  });
+  console.log(no ? `${put}：放进第 ${no} 期，日报还没动` : `${put} 已经有一期，没有放`);
 }
 
 if (dump) {

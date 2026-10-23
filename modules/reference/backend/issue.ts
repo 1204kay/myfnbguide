@@ -443,6 +443,19 @@ function itemsIssue(items: DayItem[]): IssueText {
   };
 }
 
+/**
+ * The day's two drafts as gone over for the ear, and nothing checked: until 11-01 the check, the mending and the pick
+ * are done by hand in a session, by the same prompts, for the month's Claude API credit is spent (Kay 10-23).
+ */
+export async function writeDrafts(items: DayItem[], date: string, ask: Ask): Promise<Array<{ written: IssueText; spoken: IssueText }>> {
+  const out: Array<{ written: IssueText; spoken: IssueText }> = [];
+  for (const attempt of ["a", "b"]) {
+    const written = await write(items, date, ask, attempt, out[0]?.spoken);
+    out.push({ written, spoken: await speak(written, ask, attempt) });
+  }
+  return out;
+}
+
 /** Writes the day's issue: two drafts, each gone over for the ear and checked; the listener's pick mended, then cut. */
 export async function composeIssue(items: DayItem[], date: string, ask: Ask): Promise<ComposedIssue> {
   if (items.length < MIN_ITEMS) return { date, status: "thin", chosen: null, drafts: [], items };

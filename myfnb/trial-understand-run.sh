@@ -8,8 +8,8 @@
 #   ssh <服务器> 'bash -s' -- pack   < myfnb/trial-understand-run.sh   把结果打成 tar.gz 写到标准输出
 #   ssh <服务器> 'bash -s' -- all    < myfnb/trial-understand-run.sh   一条跑完：开跑、等到跑完，再把试写.md、试写.json 和 raw 打到标准输出
 #                                                                    （原文不打出来；要二三十分钟，在本机用后台方式跑）
-#   ssh <服务器> 'bash -s' -- fix        < myfnb/trial-understand-run.sh   预览 myfnb/fix-item-summary-2026-10-23.ts（印度那条 lakh 换算错）
-#   ssh <服务器> 'bash -s' -- fix-apply  < myfnb/trial-understand-run.sh   执行它（先备份，再改条目、报告和故事里的那一句）
+#   ssh <服务器> 'bash -s' -- fix        < myfnb/trial-understand-run.sh   预览 myfnb/fix-items-2026-10-23.ts（盲核查出的 6 条线上错句）
+#   ssh <服务器> 'bash -s' -- fix-apply  < myfnb/trial-understand-run.sh   执行它（先备份，再改条目、报告和故事里的那几句）
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
@@ -61,7 +61,7 @@ case "${1:-}" in
     sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
     cd /opt/myfnbguide
     sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
-      worker node myfnb/fix-item-summary-2026-10-23.ts $([ "$1" = fix-apply ] && echo --apply)
+      worker node myfnb/fix-items-2026-10-23.ts $([ "$1" = fix-apply ] && echo --apply)
     ;;
   raw)
     cd /opt/myfnbguide

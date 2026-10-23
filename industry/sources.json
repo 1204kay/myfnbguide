@@ -482,7 +482,7 @@
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 360,
       "tags": [
         "印度",
         "媒体"
@@ -940,7 +940,7 @@
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 360,
       "site_fulltext": false,
       "syndicate_fulltext": false,
       "tags": [
@@ -1208,28 +1208,6 @@
       "interval_minutes": 240,
       "tags": [
         "比利时",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "pod-de-gastrounternehmer",
-      "name": "Gastrounternehmer Podcast（德国 · 餐饮创办人访谈播客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://gastrounternehmer.podigee.io/feed/mp3",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "德国",
         "播客"
       ],
       "site_fulltext": false,
@@ -2468,27 +2446,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-tiller",
-      "name": "Tiller 博客（法国 · 收银系统公司的旧博客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.tillersystems.com/fr/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 720,
-      "tags": [
-        "法国",
-        "服务商"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-typemenu",
       "name": "TypeMenu 博客（英国 · 外卖店线上点餐软件公司的博客）",
       "kind": "rss",
@@ -2531,11 +2488,19 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-sischef",
+      "id": "web-sischef-blog",
       "name": "Sischef 博客（巴西 · 收银系统公司的博客）",
-      "kind": "rss",
+      "kind": "web_list",
       "config": {
-        "feedUrl": "https://sischef.com/feed/",
+        "url": "https://sischef.com/blog/",
+        "itemSelector": "article",
+        "linkSelector": "h2 a, h3 a",
+        "titleSelector": "h2, h3",
+        "detail": {
+          "maxFetches": 6,
+          "publishedAtSelector": "time[datetime]",
+          "publishedAtUtcOffset": "-03:00"
+        },
         "_aihot": {
           "initialBackfillLimit": 3
         }

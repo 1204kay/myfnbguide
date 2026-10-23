@@ -18224,3 +18224,7 @@ l1017-jfc	日本政策金融公庫 事例	https://www.jfc.go.jp	2026-10-17·note
 import-mirasapo	ミラサポplus 支援事例（中小企業庁）	https://mirasapo-plus.go.jp/jirei-api/case_studies/{id}	2026-10-17·note 店主与新池子	不接	PDL1.0、robots 写 ai-input=yes，条款可以；但 10/17 在服务器上读它的 JSON 接口，26 个全部 HTTP 403（本机读得到，挡的是服务器 IP）。按规则 6 不接、不绕道；导入脚本和来源已撤下
 l1017-sba	SBA Success Stories（公有领域）	https://legacy.sba.gov	2026-10-17·note 店主与新池子	不接	公有领域、robots 不挡 /success-story/，但页面、站点地图都没有发布日期（只有修改时间），框架不公开没有可信日期的条目；内容多是 SBA 贷款的宣传稿。不接
 note-sudaku-wakaba	焼肉すだく家族亭 都城若葉町店	https://note.com/sudaku_wakaba/rss	2026-10-17·停用（零入选）	停用	首轮 15 篇（9/21–10/14）入选 0，最高 38 分（门槛 46）；每天一篇的营业日记，短、少有做法和数字
+web-sischef-blog	Sischef 博客（巴西 · 收银系统公司的博客）	https://sischef.com/blog/	2026-10-24·告警修复	接入	网站从 WordPress 换成 Astro，旧订阅 /feed/ 返回 404、新站没有订阅；改读博客列表页，文章页 <time datetime> 有发布时间（10-24 试抓 11 篇、日期都读到）。robots 允许全部；新站只有隐私政策、没有使用条款，隐私政策里没有禁止抓取或 AI 的句子；check-sources.mjs 通过。取代 rss-sischef
+rss-sischef	Sischef（巴西 · 收银系统公司）	https://sischef.com/feed/	2026-10-24·告警修复	停用	网站改版后订阅 404（服务器 10-21 起连续 12 次），换成 web-sischef-blog
+pod-de-gastrounternehmer	Gastrounternehmer Podcast（德国）	https://gastrounternehmer.podigee.io/feed/mp3	2026-10-24·告警修复	停用	节目在 podigee 上整个下线（订阅和节目首页都 404，服务器连续 11 次），Apple 和网上搜不到搬去别处
+rss-tiller	Tiller 博客（法国 · 收银系统公司的旧博客）	https://www.tillersystems.com/fr/feed/	2026-10-24·告警修复	停用	订阅最新一篇是 2022-01，首次导入只取 12 个月内，接入以来一条都没收进来，也不在存档计划里

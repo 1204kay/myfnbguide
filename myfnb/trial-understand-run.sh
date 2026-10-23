@@ -110,12 +110,12 @@ case "${1:-}" in
     sudo docker compose exec -T db psql -U aihot -d aihot -At -c "SELECT regexp_replace(logical_key, '^.*:', ''), status, count(*) FROM receipts WHERE purpose = 'trial_check_item' AND created_at > now() - interval '6 hours' GROUP BY 1, 2 ORDER BY 1, 2" 2>&1 || true
     ;;
   item-raw)
-    # 只读：IDS 里每个条目最近 6 小时写稿那一步（理解、用词修改）的模型原样回复，用来查某份稿为什么是那样。
+    # 只读：IDS 里每个条目最近几次写稿那一步（理解、用词修改）的模型原样回复，用来查某份稿为什么是那样。
     cd /opt/myfnbguide
     for id in ${IDS:-}; do
       sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
         SELECT '=== ' || id || ' ' || purpose || ' ' || status || E'\\n' || coalesce(response->'choices'->0->'message'->>'content', response::text)
-        FROM receipts WHERE purpose IN ('understand_article', 'mend_wording') AND subject = 'article:$id' AND created_at > now() - interval '6 hours' ORDER BY id;"
+        FROM (SELECT * FROM receipts WHERE purpose IN ('understand_article', 'mend_wording') AND subject LIKE 'article:$id@%' ORDER BY id DESC LIMIT 4) r ORDER BY id;"
     done
     ;;
   check-result)

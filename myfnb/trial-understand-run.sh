@@ -71,7 +71,7 @@ case "${1:-}" in
       worker node myfnb/fix-items-2026-10-23.ts $([ "$1" = fix-apply ] && echo --apply)
     ;;
   hide|hide-apply)
-    # 付费墙 3 条撤下（myfnb/hide-paywall-2026-10-23.ts）：hide 预览，hide-apply 执行
+    # 付费墙 2 条撤下（myfnb/hide-paywall-2026-10-23.ts）：hide 预览，hide-apply 执行
     [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
     sudo git -C "$DIR" fetch -q origin "$BRANCH"
     sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD

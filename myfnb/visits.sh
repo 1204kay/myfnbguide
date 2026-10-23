@@ -5,7 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 DAYS="${1:-7}"
-docker compose exec -T caddy sh -c 'cat /data/access.log* 2>/dev/null' | jq -rs --argjson days "$DAYS" '
+# 写满的日志被 Caddy 压缩改名成 access-<时间>.log.gz，要一起解压读进来。
+docker compose exec -T caddy sh -c 'for f in /data/access-*.log.gz; do [ -e "$f" ] && zcat "$f"; done; cat /data/access.log 2>/dev/null' | jq -rs --argjson days "$DAYS" '
   def kind:
     if . == "/" then "首页"
     elif test("^/reference/cases/") then "参考·故事"

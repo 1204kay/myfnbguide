@@ -106,9 +106,14 @@ test('SSR list and visited query variants return offline without another read',a
     await hydrated(page,'性能检查文章');
     await page.getByRole('link',{name:'性能检查文章',exact:true}).click();
     await expect(page.getByText('固定正文',{exact:true})).toBeVisible();
+    // Offline, a return that still needed the network could never show the list, so the reads are counted
+    // instead of timing the render: on CI a cold WebKit once took over 1.5 s to show it with no request at all.
+    const reads:string[]=[];
+    page.on('request',r=>{if(new URL(r.url()).pathname.endsWith('.data'))reads.push(r.url());});
     await context.setOffline(true);
     await page.goBack();
-    await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:1500});
+    await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:10_000});
+    assert.deepEqual(reads,[],'the list came back without another read');
     await context.setOffline(false);
     // Phones show the filter as a sheet behind a button, or as the desktop's row (site.ts FEED.phoneFilter).
     if(FEED.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
@@ -117,10 +122,12 @@ test('SSR list and visited query variants return offline without another read',a
     if(FEED.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
     await page.getByRole('link',{name:B!.label,exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 '+B!.key,exact:true})).toBeVisible();
+    reads.length=0;
     await context.setOffline(true);
     await page.goBack();
-    await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible({timeout:1500});
+    await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible({timeout:10_000});
     await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href',origin+'/?category='+A!.key);
+    assert.deepEqual(reads,[],'the visited query variant came back without another read');
   }finally{await context.close();}
 });
 

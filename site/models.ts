@@ -38,7 +38,13 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY", reasoningTokens: 4000, jsonMode: true,
   },
-  // 十一说的写手（Kay 10-19）；要点的核对员候选（10-23，和 Opus 对比）。用服务器自己的 DeepSeek 密钥（LLM_*）。
+  // 十一说的试写 on the server's own DeepSeek key (LLM_*; the DEEPSEEK_* pair is not set there). An issue is long, so
+  // thinking gets as much room as Opus has (10-09: 5 of 16 items cut off at 4,000).
+  "deepseek-flash-think-llm": {
+    service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
+  },
+  // 十一说's writer (Kay 10-19: DeepSeek's strongest, thinking as deep as it goes): Pro still leads Flash on reasoning.
+  // Also the checker of the item points (决定记录 2026-10-23).
   "deepseek-v4-pro-llm": {
     service: "deepseek", model: "deepseek-v4-pro", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
     extra: { thinking: { type: "enabled" }, reasoning_effort: "high" },
@@ -67,7 +73,7 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "anthropic", model: "claude-sonnet-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
     extra: { temperature: 1, thinking: { type: "between_tools" } }, jsonMode: false,
   },
-  // 十一说 is written and checked by Opus (Kay 10-19: 「为什么不要一开始就用 opus」). Opus 5.5 takes no sampling
+  // 十一说 is checked, mended and picked by Opus (Kay 10-19; DeepSeek writes, 10-23). Opus 5.5 takes no sampling
   // parameters, so extra drops the framework's temperature (undefined is left out of the request); it always thinks,
   // and reasoningTokens leaves room for that.
   "claude-opus-5-5": {
@@ -87,4 +93,7 @@ export const PRESETS: Record<string, ModelPreset> = {
 export const DEFAULTS: Record<string, string> = {
   // 要点的核对员（决定记录 2026-10-23）：考试 11/11 抓到严重错。
   check: "deepseek-v4-pro-llm",
+  // 十一说 (modules/reference): DeepSeek's strongest writes, Opus checks and mends (Kay 10-19; trial round 3, 10-13 to 10-15).
+  referenceIssue: "deepseek-v4-pro-llm",
+  referenceIssueCheck: "claude-opus-5-5",
 };

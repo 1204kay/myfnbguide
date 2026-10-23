@@ -6,6 +6,7 @@ import { config } from "@aihot/backend/config";
 import { sql } from "@aihot/backend/db";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
+import { beijingDate } from "@aihot/contracts/time";
 import { SITUATIONS } from "./situations.ts";
 import {
   membersBySituation, readCase, readHome, readItemText, readShare, readShop, readSituation, readStatus, sitemapEntries,
@@ -14,6 +15,8 @@ import { renderShare, shareCard, shareEtag } from "./backend/share.ts";
 import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
 import { blocking, problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
+import { ISSUE_CHECK_STEP, ISSUE_STEP } from "./backend/issue.ts";
+import { issueLead, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
 // 10-18: new stories are not written for now (十一). 30 live stories checked against their originals had 11 with
@@ -38,6 +41,23 @@ const BODIES = defineQueue<{ articleId: string }>({
   run: async (jobs) => { if (!BODIES_PAUSED) for (const { articleId } of jobs) await writeBody(articleId); },
 });
 
+// 十一说 (backend/issues.ts): one a day; two drafts, checks and up to five rounds of mending take long, so it runs as a job
+// of its own with room for that, and one retry for a model that failed.
+// 十一说 is written from the day the settings row `reference.issues` names ({"from": "2026-10-24"}, a Beijing date); with
+// no row it is not. Each issue costs (about US$2, mostly the check), so starting and stopping is Kay's and must not wait
+// for a deploy (10-23: one sentence stops it). Stop: DELETE FROM settings WHERE key = 'reference.issues'.
+async function issuesFrom(): Promise<string | null> {
+  const [row] = await sql<{ value: { from?: unknown } }[]>`SELECT value FROM settings WHERE key = 'reference.issues'`;
+  return typeof row?.value.from === "string" ? row.value.from : null;
+}
+
+const ISSUES = defineQueue<{ date: string }>({
+  name: "reference.issue",
+  options: { policy: "short", retryLimit: 1, retryDelay: 300, expireInSeconds: 3 * 3600 },
+  worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
+  run: async (jobs) => { for (const { date } of jobs) await writeIssue(date); },
+});
+
 const METHODS = defineQueue<{ slug: string }>({
   name: "reference.methods",
   options: { policy: "short", retryLimit: 2, retryDelay: 300, retryBackoff: true, expireInSeconds: 900 },
@@ -57,13 +77,17 @@ export default defineServerModule({
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
     [BODY_STEP]: { label: "条目页的正文（不是参考库故事的条目，整理自原文，写在导读下面）", env: "REFERENCE_BODY_MODEL", purposes: ["reference_body"] },
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
+    [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak"] },
+    [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen"] },
   },
-  queues: [CASES, BODIES, METHODS],
+  queues: [CASES, BODIES, METHODS, ISSUES],
+  // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
+  dailyLead: (date) => issueLead(date),
   // llms.txt names the library beside the engine's pages.
   llms: () => ({
     pages: [`- [参考](${config.siteUrl}/reference): 按遇到的事，查各地店家的做法和经验；说同一种做法的各家店归在一起，每个故事附原文出处`],
   }),
-  sitemap: { entries: () => sitemapEntries() },
+  sitemap: { entries: async () => [...await issueSitemap(), ...await sitemapEntries()] },
   schedules: [{
     name: "reference.cases",
     cron: "*/10 * * * *",
@@ -96,6 +120,19 @@ export default defineServerModule({
       const due = await situationsToGroup(await membersBySituation(), SITUATIONS.length);
       for (const [slug] of due) await enqueueOn(METHODS, { slug }, { singletonKey: slug });
       return { queued: due.length };
+    },
+  }, {
+    // 十一说: three hours before the 08:00 daily, from what it lists so far (the last three hours wait for tomorrow's).
+    name: "reference.issue",
+    cron: "0 5 * * *",
+    missed: "once",
+    run: async () => {
+      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      const date = beijingDate(new Date());
+      const from = await issuesFrom();
+      if (!from || date < from) return { queued: 0, reason: "十一说 is not on (settings reference.issues)" };
+      await enqueueOn(ISSUES, { date }, { singletonKey: date });
+      return { queued: 1, date };
     },
   }],
   http: (app) => {
@@ -144,6 +181,11 @@ export default defineServerModule({
         cases.set(r.id, c);
       }
       return reply.header("Cache-Control", "no-store").send({ run, cases: [...cases.values()] });
+    });
+    app.get("/api/reference/issues/:no", async (req, reply) => {
+      const no = Number((req.params as { no: string }).no);
+      const page = Number.isSafeInteger(no) && no > 0 ? await readIssue(no) : null;
+      return page ? reply.header("Cache-Control", CACHE).send(page) : reply.code(404).send({ error: "not found" });
     });
     app.get("/api/reference/situations/:slug", async (req, reply) => {
       const page = await readSituation((req.params as { slug: string }).slug);

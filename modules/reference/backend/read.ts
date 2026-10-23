@@ -36,11 +36,38 @@ interface Row {
   summary: string | null;
   reason: string | null;
   score: string | null;
+  /** Folded (foldedStories): the library shows its item, not the story. */
+  folded: boolean;
+}
+
+/**
+ * 10-24 (Kay「要改 就现在直接改 直接上线」, 十一): the stories are folded. Checked against their originals, 11 of 30
+ * had serious errors (myfnb/HANDOFF.md §3.1), and the summaries and lines on the situation pages are drawn from them.
+ * A folded story's page goes to its item's page (308, as a merged story goes, routes/site.ts); the situation pages
+ * keep their situations and practices' titles and list the items by their own titles, without the practices'
+ * summaries, the shops' lines or the overview; a shop's page goes to the library. Nothing in the tables changes:
+ * the settings row `reference.folded` says which, {"ids": [...]} a few (to try) or {"all": true} every one.
+ * Undo: DELETE FROM settings WHERE key = 'reference.folded'.
+ */
+export interface Folded {
+  all: boolean;
+  ids: Set<string>;
+}
+
+export async function foldedStories(): Promise<Folded> {
+  const [row] = await sql<{ value: { all?: unknown; ids?: unknown } }[]>`SELECT value FROM settings WHERE key = 'reference.folded'`;
+  const ids = Array.isArray(row?.value.ids) ? row.value.ids.filter((id): id is string => typeof id === "string") : [];
+  return { all: row?.value.all === true, ids: new Set(ids) };
 }
 
 /** The stories shown now, newest first. */
 async function shownCases(where: ReturnType<typeof sql>, now: Date): Promise<Row[]> {
-  return sql<Row[]>`
+  const [rows, folded] = await Promise.all([casesShown(where, now), foldedStories()]);
+  return rows.map((r) => ({ ...r, folded: folded.all || folded.ids.has(r.id) }));
+}
+
+async function casesShown(where: ReturnType<typeof sql>, now: Date): Promise<Array<Omit<Row, "folded">>> {
+  return sql<Array<Omit<Row, "folded">>>`
     SELECT c.article_id AS id, c.story, c.situations, c.shop_key, c.created_at, c.updated_at, p.url, p.published_at, p.timeline_at, p.title,
            p.summary, p.reason, p.score, s.id AS source_id, s.name AS source_name, s.icon_url AS source_icon
     FROM reference_cases c
@@ -112,6 +139,15 @@ export function sourceKind(name: string): string | null {
   return inner?.includes("·") ? inner.split("·").at(-1)!.trim() || null : null;
 }
 
+/** "日本" of the same: where the source is, for a folded story's line, which no longer reads the story's shop. */
+export function sourceCountry(name: string): string | null {
+  const inner = /（([^（）]*)）\s*$/.exec(name)?.[1];
+  return inner?.includes("·") ? inner.split("·")[0]!.trim() || null : null;
+}
+
+/** Where a story's line says it comes from: its shop's country, or for a folded one its source's. */
+const countryOf = (r: Row) => (r.folded ? sourceCountry(r.source_name) ?? r.story.shop.country : r.story.shop.country);
+
 /**
  * Who a story counts as (layout A7-3): an owner's own source is that one shop, whatever the story calls it; else a
  * named shop by its key; else, by who tells it, an owner or staff member once a source, and an adviser, a vendor or
@@ -155,6 +191,7 @@ export function withoutCountry(label: string, country: string): string {
  * were asked. Never repeating the country the line writes before it.
  */
 function shopName(r: Row, shops: Map<string, ShopSeen>): string {
+  if (r.folded) return publicSourceName(r.source_name);
   const label = OWNERS[r.source_id] ?? ((r.shop_key && shops.get(r.shop_key)?.label) || r.story.shop.label || r.story.shop.name || publicSourceName(r.source_name));
   return withoutCountry(label, r.story.shop.country);
 }
@@ -184,8 +221,9 @@ const starItem = (r: Row): StarItem => ({
 function card(r: Row, shops: Map<string, ShopSeen>): CaseCard {
   const total = r.shop_key ? (shops.get(r.shop_key)?.stories ?? 1) : 0;
   return {
-    id: r.id, title: r.story.title, item: starItem(r), reason: r.reason, shop: total > 1 ? { key: r.shop_key!, others: total - 1 } : null,
-    src: [r.story.shop.country, sourceKind(r.source_name) ?? publicSourceName(r.source_name), month(r.published_at ?? r.timeline_at)].join(" · "),
+    id: r.id, title: r.folded ? r.title : r.story.title, item: starItem(r), reason: r.reason, folded: r.folded,
+    shop: !r.folded && total > 1 ? { key: r.shop_key!, others: total - 1 } : null,
+    src: [countryOf(r), sourceKind(r.source_name) ?? publicSourceName(r.source_name), month(r.published_at ?? r.timeline_at)].join(" · "),
   };
 }
 
@@ -217,11 +255,14 @@ function practices(rows: Row[], methods: Method[], situation: Situation, shops: 
       const members = rows.filter((r) => s.caseIds.includes(r.id) && !used.has(r.id) && groupOf(r, situation) === m.group);
       for (const r of members) used.add(r.id);
       const first = members[0];
-      return first ? [{ members, line: { caseId: first.id, country: first.story.shop.country, name: shopName(first, shops), line: s.line, cases: members.length } }] : [];
+      // A folded story's line is its item's title: the shop's line was drawn from the story.
+      return first ? [{ members, line: { caseId: first.id, country: countryOf(first), name: shopName(first, shops), line: first.folded ? first.title : s.line, cases: members.length, folded: first.folded } }] : [];
     });
     const members = lines.flatMap((l) => l.members);
     if (!members.length) return [];
-    return [{ group: m.group, members, card: { key: m.key, title: m.title, summary: m.summary, count: countOf(members, true), lines: lines.map((l) => l.line) } }];
+    // The summary sums up its stories: none once one of them is folded.
+    const summary = members.some((r) => r.folded) ? null : m.summary;
+    return [{ group: m.group, members, card: { key: m.key, title: m.title, summary, count: countOf(members, true), lines: lines.map((l) => l.line) } }];
   });
   const newest = (b: Built) => Math.max(...b.members.map((r) => r.timeline_at.getTime()));
   built.sort((a, b) => b.card.count.shops - a.card.count.shops || b.card.count.insiders - a.card.count.insiders || newest(b) - newest(a));
@@ -242,7 +283,7 @@ function listOf(built: Built[], loose: Row[], shops: Map<string, ShopSeen>): Pra
     const l = b.card.lines.find((x) => x.caseId === newest.id)!;
     const teller = tellerOf(newest).key;
     const shop = alone.get(teller) ?? { country: l.country, name: l.name, practices: [] };
-    shop.practices.push({ key: b.card.key, title: b.card.title, caseId: l.caseId, line: repeats(l.line, b.card.title) ? null : l.line, cases: b.members.length });
+    shop.practices.push({ key: b.card.key, title: b.card.title, caseId: l.caseId, line: !l.folded && repeats(l.line, b.card.title) ? null : l.line, cases: b.members.length, folded: l.folded });
     alone.set(teller, shop);
   }
   return { practices: built.filter((b) => told(b) >= 2).map((b) => b.card), shops: [...alone.values()], cases: oneAShop(loose).map((r) => card(r, shops)) };
@@ -275,8 +316,8 @@ function situationRow(situation: Situation, rows: Row[], stored: Stored | undefi
   const faces = facesOf(rows);
   return {
     slug: situation.slug, category: categoryTitle(situation.category)!, title: situation.title, dek: situation.dek,
-    overview: stored?.overview ?? null, count: countOf(rows, !!stored),
-    practice: stored ? (practices(rows, stored.methods, situation, new Map()).built[0]?.card.title ?? null) : null,
+    overview: rows.some((r) => r.folded) ? null : (stored?.overview ?? null), count: countOf(rows, !!stored && !rows.some((r) => r.folded)),
+    practice: stored && !rows.some((r) => r.folded) ? (practices(rows, stored.methods, situation, new Map()).built[0]?.card.title ?? null) : null,
     faces, sources: faces.length,
   };
 }
@@ -320,7 +361,7 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
   const ranking = rankSituations([...listed.values()]);
   // The story the library took in last, of the first: a returning reader sees the library grow (layout J14). Its
   // shop's name may keep the country it opens with (withoutCountry), which is then not written twice.
-  const recent = ranking[0] && placed.get(ranking[0].slug)!.reduce((a, r) => (r.created_at > a.created_at ? r : a));
+  const recent = ranking[0] && placed.get(ranking[0].slug)!.filter((r) => !r.folded).reduce<Row | undefined>((a, r) => (!a || r.created_at > a.created_at ? r : a), undefined);
   const who = (r: Row) => {
     const name = shopName(r, shops);
     return spaced(name.startsWith(r.story.shop.country) ? name : `${r.story.shop.country}${name}`);
@@ -345,6 +386,22 @@ export async function readSituation(slug: string, now = new Date()): Promise<Sit
   if (!situation) return null;
   const [rows, stored, shops] = await Promise.all([shownCases(sql`${slug} = ANY (c.situations)`, now), groupings(slug), shopsShown(now)]);
   const grouping = stored.get(slug);
+  // Folded (foldedStories): the practices' titles go too, as their summaries do. 5 situations checked 10-24 had about
+  // a row in four under a practice it does not tell (myfnb 情况页做法组核对-5页-2026-10-24.md); the page lists the
+  // items by cause, under the titles this module writes (situations.ts), newest first.
+  if (rows.some((r) => r.folded)) {
+    const cards = (key: string | null) => rows.filter((r) => groupOf(r, situation) === key).map((r) => card(r, shops));
+    const causes = situation.groups.filter((g) => cards(g.key).length);
+    return {
+      slug, category: { key: situation.category, title: categoryTitle(situation.category)! }, title: situation.title, dek: situation.dek,
+      // Not grouped by practice any more: the page counts 条原文, and the list is not 最近收进来的原文 (web/situation.tsx).
+      overview: null, count: countOf(rows, false),
+      causes: causes.map((g) => ({ key: g.key, title: g.title, line: g.line })),
+      groups: causes.map((g) => ({ key: g.key, title: g.title, line: g.line, practices: [], shops: [], cases: cards(g.key) })),
+      rest: { practices: [], shops: [], cases: cards(null) },
+      updatedAt: latest([...rows.map((r) => r.updated_at), grouping?.updated_at]),
+    };
+  }
   const { built, loose } = grouping ? practices(rows, grouping.methods, situation, shops) : { built: [], loose: rows };
   const inCause = (key: string | null) => ({ built: built.filter((b) => b.group === key), loose: loose.filter((r) => groupOf(r, situation) === key) });
   const causes = situation.groups.filter((g) => {
@@ -355,7 +412,7 @@ export async function readSituation(slug: string, now = new Date()): Promise<Sit
   const list = (part: { built: Built[]; loose: Row[] }) => listOf(part.built, part.loose, shops);
   return {
     slug, category: { key: situation.category, title: categoryTitle(situation.category)! }, title: situation.title, dek: situation.dek,
-    overview: grouping?.overview ?? null, count: countOf(rows, !!grouping),
+    overview: rows.some((r) => r.folded) ? null : (grouping?.overview ?? null), count: countOf(rows, !!grouping),
     causes: causes.map((g) => ({ key: g.key, title: g.title, line: g.line })),
     groups: split ? causes.map((g) => ({ key: g.key, title: g.title, line: g.line, ...list(inCause(g.key)) })) : [],
     rest: list(split ? inCause(null) : { built, loose }),
@@ -372,7 +429,7 @@ async function placeOf(r: Row, now: Date): Promise<{ slug: string; title: string
   const built = grouping ? practices(rows, grouping.methods, situation, new Map()).built : null;
   return {
     slug: situation.slug, title: situation.title, practice: built?.find((b) => b.members.some((m) => m.id === r.id))?.card.key ?? null,
-    count: countOf(rows, !!grouping),
+    count: countOf(rows, !!grouping && !rows.some((r) => r.folded)),
   };
 }
 
@@ -383,7 +440,7 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
   // A shop's page lists its stories; with this one alone it would only repeat it.
   const total = r.shop_key ? (shops.get(r.shop_key)?.stories ?? 1) : 0;
   return {
-    id: r.id, story: r.story,
+    id: r.id, story: r.story, folded: r.folded,
     item: { ...starItem(r), reason: r.reason },
     source: {
       name: publicSourceName(r.source_name), kind: sourceKind(r.source_name), url: r.url, month: month(r.published_at ?? r.timeline_at),
@@ -395,7 +452,7 @@ export async function readCase(id: string, now = new Date()): Promise<CasePage |
 /** What a story's share image needs (backend/share.ts): the story, its situation's title, and where it comes from as its card says. */
 export async function readShare(id: string, now = new Date()): Promise<{ story: CaseStory; situation: string | null; src: string } | null> {
   const [r] = await shownCases(sql`c.article_id = ${id}`, now);
-  if (!r) return null;
+  if (!r || r.folded) return null;
   const situation = r.story.placements[0] ? findSituation(r.story.placements[0].situation) : undefined;
   return { story: r.story, situation: situation?.title ?? null, src: card(r, new Map()).src };
 }
@@ -403,14 +460,17 @@ export async function readShare(id: string, now = new Date()): Promise<{ story: 
 /** What an item's page shows under its three parts (web/item-part.tsx): the way to its story when the library shows one. */
 export async function readItemText(id: string, now = new Date()): Promise<ItemText | null> {
   const page = await readCase(id, now);
-  if (!page) return null;
+  // A folded story is left out of its item's page but for its situation: its own page leads back to the item.
+  if (!page || (page.folded && !page.situation)) return null;
   return { id: page.id, title: page.story.title, situation: page.situation && { slug: page.situation.slug, title: page.situation.title, count: page.situation.count } };
 }
 
 /** One shop's stories, newest first, each its own card (layout B5); named as every page names it (shopName). */
-export async function readShop(key: string, now = new Date()): Promise<ShopPage | null> {
+export async function readShop(key: string, now = new Date()): Promise<ShopPage | { folded: true } | null> {
   const rows = await shownCases(sql`c.shop_key = ${key}`, now);
   if (!rows.length) return null;
+  // Who the shop is comes from its stories: once they are all folded the page goes to the library.
+  if (rows.every((r) => r.folded)) return { folded: true };
   const shop = rows[0]!.story.shop;
   const label = rows.find((r) => r.story.shop.label)?.story.shop.label;
   return {
@@ -425,14 +485,14 @@ export async function sitemapEntries(now = new Date()): Promise<SitemapEntry[]> 
   const placed = bySituation(rows);
   const newest = (list: Row[]) => list.reduce((at, r) => (r.updated_at > at ? r.updated_at : at), list[0]!.updated_at);
   const shops = new Map<string, Row[]>();
-  for (const r of rows) if (r.shop_key) shops.set(r.shop_key, [...(shops.get(r.shop_key) ?? []), r]);
+  for (const r of rows) if (r.shop_key && !r.folded) shops.set(r.shop_key, [...(shops.get(r.shop_key) ?? []), r]);
   return [
     ...SITUATIONS.flatMap((s) => {
       const list = placed.get(s.slug) ?? [];
       return isListed(list) ? [{ loc: `/reference/${s.slug}`, lastmod: newest(list), changefreq: "daily", priority: 0.8 }] : [];
     }),
     ...[...shops].flatMap(([key, list]) => (list.length > 1 ? [{ loc: `/reference/shops/${key}`, lastmod: newest(list), changefreq: "weekly", priority: 0.5 }] : [])),
-    ...rows.map((r) => ({ loc: `/reference/cases/${r.id}`, lastmod: r.updated_at, changefreq: "monthly", priority: 0.6 })),
+    ...rows.filter((r) => !r.folded).map((r) => ({ loc: `/reference/cases/${r.id}`, lastmod: r.updated_at, changefreq: "monthly", priority: 0.6 })),
   ];
 }
 

@@ -66,7 +66,7 @@ new.myfnbguide.com {
 做法与记录：
 - 这是对框架文件 `deploy/Caddyfile` 的又一处改动（访问计数已经改过一处）。**同一个提交里在 `DIFFERENCES.md` 的清单加一行**：「域名转址 | `deploy/Caddyfile` 加根域、试运行域名的转址块和旧站路径名单 | 上线切换（§10 第 1 步）| Kay 在 §10 定了旧网址要转到新站」。
 - 先在本机验证语法再推：`docker run --rm -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro" -e SITE_DOMAIN=www.myfnbguide.com caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile`（本机有 Docker 才行；没有就在服务器上、部署后用 `caddy validate` 先于 reload）。
-- 注意：服务器的 `update.sh` 部署后只做 `docker compose --profile https up -d`；Caddyfile 是挂载进容器的文件，**内容变了容器不会自己重载**，要 `sudo docker compose --profile https up -d --force-recreate caddy`（10/17 实测：单文件挂载在 git 换掉文件后仍指旧文件，只 reload 读到的是旧内容）。
+- 注意：Caddyfile 是挂载进容器的文件，**内容变了容器不会自己重载**（10/17 实测：单文件挂载在 git 换掉文件后仍指旧文件，只 reload 读到的是旧内容）。10/24 起 `update.sh` 每次部署后拿容器里的 Caddyfile 和磁盘上的比，不一样就重建 caddy；但改了这一条的那次部署跑的还是旧脚本，要等下一次部署，急的话手动 `sudo docker compose --profile https up -d --force-recreate caddy`。
 
 ## 3. 部署「第一次改」，让服务器同时认 www 和 new
 

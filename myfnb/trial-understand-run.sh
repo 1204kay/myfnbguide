@@ -16,6 +16,7 @@
 #                                                                    新近精选，写、核、改，跑完把试跑.md 打到标准输出；IDS 写了就只跑这些条目，
 #                                                                    SKIP 里的不挑，DAYS 从最近几天里挑（默认 2）
 #   ssh <服务器> 'bash -s' -- pipeline-result < myfnb/trial-understand-run.sh   上一趟流程试跑的结果原样打出来（半路停了也打出已写下的）
+#   IDS=… ssh <服务器> 'bash -s' -- item-raw < myfnb/trial-understand-run.sh   这几个条目最近写稿那一步的模型原样回复（只读）
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
@@ -107,6 +108,15 @@ case "${1:-}" in
     echo "=== 最近 6 小时核对回执：哪一遍、什么状态、几份"
     cd /opt/myfnbguide
     sudo docker compose exec -T db psql -U aihot -d aihot -At -c "SELECT regexp_replace(logical_key, '^.*:', ''), status, count(*) FROM receipts WHERE purpose = 'trial_check_item' AND created_at > now() - interval '6 hours' GROUP BY 1, 2 ORDER BY 1, 2" 2>&1 || true
+    ;;
+  item-raw)
+    # 只读：IDS 里每个条目最近 6 小时写稿那一步（理解、用词修改）的模型原样回复，用来查某份稿为什么是那样。
+    cd /opt/myfnbguide
+    for id in ${IDS:-}; do
+      sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
+        SELECT '=== ' || id || ' ' || purpose || ' ' || status || E'\\n' || coalesce(response->'choices'->0->'message'->>'content', response::text)
+        FROM receipts WHERE purpose IN ('understand_article', 'mend_wording') AND subject = 'article:$id' AND created_at > now() - interval '6 hours' ORDER BY id;"
+    done
     ;;
   check-result)
     # 上一趟考试写下的结果，原样打出来；没有就说没有（不重跑、不花钱）。

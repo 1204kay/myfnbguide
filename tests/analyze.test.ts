@@ -22,6 +22,8 @@ const X_SOURCE = `test-analyze-x-${T}`;
 
 interface Req { step: AnalysisStep; marker: string; user: string }
 const requests: Req[] = [];
+// Long points: 10-23 a six-point answer of about 700 characters was dropped whole by a length cap.
+const point = (n: number) => `要点 ${n}：${"细节".repeat(50)}`;
 const MARKERS = ["CLEAR", "RESCUE", "LOW", "OFFTOPIC", "BARE", "VAGUE", "THIN", "SENSITIVE", "推文", "WORDY", "REFUSAL", "RENUMBER", "UNMENDED", "POINTS"];
 // The scores sit a few points around the pack's T1 threshold and understand floor, so each case means
 // the same after a site recalibrates them: selected when the two add up to 2 × T1, written like a
@@ -56,7 +58,7 @@ const provider = await stub((_hit, req) => {
   }
   if (step === "understand") {
     if (marker === "SENSITIVE") return new Reply(400, { contentFilter: [{ level: 1, role: "user" }], error: { code: "1301", message: "系统检测到输入或生成内容可能包含不安全或敏感内容" } });
-    const judgment = marker === "POINTS" ? [1, 2, 3, 4, 5, 6, 7].map((n) => `要点 ${n}`).join("\n") : `理由 ${marker}`;
+    const judgment = marker === "POINTS" ? [1, 2, 3, 4, 5, 6, 7].map(point).join("\n") : `理由 ${marker}`;
     return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "工资", "外劳", "不存在的标签"], editorialJudgment: judgment, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
   }
   if (step === "structure") return answer({ category: "policy", tags: ["政策/法规", "税费"], subjects: ["mcdonalds", "unknown-co"], scope: "single", fact: { title: `事实 ${marker}`, subject: "某州政府", action: "上调", object: "最低工资", occurredAt: null, evidence: "the state raised the minimum wage", conditions: [] } });
@@ -230,11 +232,11 @@ test("a short post in Chinese is its own copy; a content-filter refusal is trans
   assert.deepEqual(calls("SENSITIVE").filter((s) => s === "understand" || s === "summarize"), ["understand", "summarize"]);
 });
 
-test("the points stop at five, however many the model writes", async () => {
+test("the points stop at five, however many and however long the model writes", async () => {
   const id = await article("POINTS");
   await analyzeArticle(id);
   const r = await row(id);
-  assert.equal(r.reason_zh, ["要点 1", "要点 2", "要点 3", "要点 4", "要点 5"].join("\n"));
+  assert.equal(r.reason_zh, [1, 2, 3, 4, 5].map(point).join("\n"));
 });
 
 test("guards: a company the input does not name is not written in; long summaries are cut at sentences", () => {

@@ -145,7 +145,8 @@ const UnderstandSchema = z.object({
   authorRole: z.enum(["principal", "observer", "relayer"]).catch("relayer"),
   // The understanding prompt asks for tags; the public ones come from the structure step.
   tags: z.array(z.string()).max(12).catch([]),
-  editorialJudgment: z.string().max(600).catch(""),
+  // No length cap: one over it made the whole answer "" and the item lost every point (10-23); the points are cut at five below.
+  editorialJudgment: z.string().catch(""),
   titleZh: z.string().trim().min(1).max(200),
   summaryZh: z.string().trim().min(1).max(4000),
 });

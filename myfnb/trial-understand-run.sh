@@ -15,6 +15,7 @@
 #   ssh <服务器> 'bash -s' -- pipeline < myfnb/trial-understand-run.sh   「要点 + 核对」整条流程试跑（myfnb/trial-pipeline.ts）：挑 LIMIT（默认 3）条
 #                                                                    新近精选，写、核、改，跑完把试跑.md 打到标准输出；IDS 写了就只跑这些条目，
 #                                                                    SKIP 里的不挑，DAYS 从最近几天里挑（默认 2）
+#   ssh <服务器> 'bash -s' -- pipeline-result < myfnb/trial-understand-run.sh   上一趟流程试跑的结果原样打出来（半路停了也打出已写下的）
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
@@ -96,6 +97,16 @@ case "${1:-}" in
       -v $DIR/myfnb:/app/myfnb:ro -v $DIR/packages/backend/src/editorial/analyze.ts:/app/packages/backend/src/editorial/analyze.ts:ro -v $OUT:/out \
       worker node myfnb/trial-pipeline.ts --limit "${LIMIT:-3}" --days "${DAYS:-2}" --check "${CHECK_MODEL:-deepseek-v4-pro-llm}" $flags --apply 2>&1 | grep --line-buffered -v '"level"'
     cat "$(ls -td $OUT/pipeline-*/ | head -1)/试跑.md"
+    ;;
+  pipeline-result)
+    # 上一趟流程试跑留下的结果，原样打出来（不重跑、不花钱）：跑完了有 试跑.md；半路停了就把已写下的每条打出来。
+    run=$(ls -td $OUT/pipeline-*/ 2>/dev/null | head -1)
+    if [ -z "$run" ]; then echo "服务器上没有试跑结果文件夹"; exit 0; fi
+    echo "=== $run"; ls -la "$run"
+    if [ -f "$run/试跑.md" ]; then cat "$run/试跑.md"; else echo "（没有 试跑.md，这一趟没跑完）"; cat "$run"/条目-*.md 2>/dev/null || true; fi
+    echo "=== 最近 6 小时核对回执：哪一遍、什么状态、几份"
+    cd /opt/myfnbguide
+    sudo docker compose exec -T db psql -U aihot -d aihot -At -c "SELECT regexp_replace(logical_key, '^.*:', ''), status, count(*) FROM receipts WHERE purpose = 'trial_check_item' AND created_at > now() - interval '6 hours' GROUP BY 1, 2 ORDER BY 1, 2" 2>&1 || true
     ;;
   check-result)
     # 上一趟考试写下的结果，原样打出来；没有就说没有（不重跑、不花钱）。

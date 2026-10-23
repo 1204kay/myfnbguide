@@ -1,7 +1,7 @@
 // 「要点 + 核对」整条流程的试跑（决定记录 2026-10-23）：挑几条新近的精选，用这个分支的提示词写标题、导读和要点，
 // 核对员拿原文核一次，把它给的改法放进去，再只复查改过的句子：复查不过的要点删掉，标题或导读不过记「不过」。只写到文件，站上什么都不变。
 // 每条和现在站上的写法放在一起，给两名没看过稿的核对员盲核最后的稿。
-//   --limit 3                      挑几条（默认 3），按来源轮流挑；只挑有正文的文章（不挑播客），不挑 10-23 考卷里的条目
+//   --limit 3                      挑几条（默认 3），按来源轮流挑；只挑有正文的文章（不挑播客），不挑核对员核过的条目（考卷和之前几趟）
 //   --days 2                       从最近几天的精选里挑（默认 2）
 //   --id <id>                      指定条目（可以写多个）
 //   --skip <id>                    不挑这些条目（可以写多个，比如上一趟试过的）
@@ -37,6 +37,8 @@ const rows: Row[] = ids.length
       FROM publications p JOIN sources s ON s.id = p.source_id JOIN articles a ON a.id = p.article_id
       WHERE p.selected AND p.seat AND p.visibility = 'public' AND p.discovered_at > now() - make_interval(days => ${days})
         AND a.body_status = 'ok' AND p.url NOT LIKE '%.mp3'
+        -- Not one the checker has seen already (the exam, earlier pipeline runs): each run is on items not tried before.
+        AND NOT EXISTS (SELECT 1 FROM receipts r WHERE r.purpose = 'trial_check_item' AND r.subject = 'article:' || p.article_id)
       ORDER BY p.discovered_at DESC`).filter((r) => !exam.has(r.id) && !skip.has(r.id));
 
 const bySource = new Map<string, Row[]>();
@@ -114,6 +116,7 @@ async function runItem(k: number, r: Row): Promise<string[]> {
     if (drafts[1]) out.push("### 核对员改过以后", "", ...show(drafts[1]), "复查改过的句子：", ...listed(checks[1]!), ...dropped.map((p) => `- 删掉：${p}`), "");
     out.push("<details><summary>现在站上的写法</summary>", "", `**${r.title}**`, "", r.summary ?? "", "", `收录理由：${r.reason ?? "（无）"}`, "", "</details>", "");
     json.push({ no, id: r.id, url: r.url, site: { title: r.title, summary: r.summary, reason: r.reason }, drafts, checks, ok });
+    writeFileSync(join(dir, `条目-${no}.json`), JSON.stringify(json.at(-1), null, 1));
     console.log(`${no} ${ok ? "过" : "不过"}，改了 ${fixes.length} 处，删 ${dropped.length} 条：${drafts.at(-1)!.title}`);
   } catch (error) {
     stats.failed++;
@@ -124,7 +127,9 @@ async function runItem(k: number, r: Row): Promise<string[]> {
 }
 // Four items at a time: each is a write, a check and a re-check, a few minutes with DeepSeek thinking.
 const parts: string[][] = [];
-for (let i = 0; i < picked.length; i += 4) parts.push(...await Promise.all(picked.slice(i, i + 4).map((r, j) => runItem(i + j, r))));
+// Each item is written as soon as it is done: the 10-23 20-item run died mid-way (container gone) and left nothing on disk.
+const done = (k: number, o: string[]) => { writeFileSync(join(dir, `条目-${String(k + 1).padStart(2, "0")}.md`), o.join("\n")); return o; };
+for (let i = 0; i < picked.length; i += 4) parts.push(...await Promise.all(picked.slice(i, i + 4).map((r, j) => runItem(i + j, r).then((o) => done(i + j, o)))));
 out.push(...parts.flat());
 json.sort((x, y) => String((x as { no: string }).no).localeCompare(String((y as { no: string }).no)));
 const summary = `${stats.items} 条：过 ${stats.passed}，不过 ${stats.held}，失败 ${stats.failed}；第一稿有严重问题 ${stats.firstSerious} 条、有严重或误导 ${stats.firstToFix} 条；核对员共改 ${stats.fixes} 处、复查不过删掉 ${stats.dropped} 条要点；用量 ${await spent(stats.receipts)}`;

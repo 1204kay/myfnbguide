@@ -1,4 +1,4 @@
-# Checks on GitHub-hosted runners: install, typecheck, web build, the web and backend tests on a fresh
+# Checks on GitHub-hosted runners: install, typecheck, web build, the web tests in Playwright's image, the backend tests on a fresh
 # PostgreSQL, the built site's smoke check on the empty database, and the Docker image brought up with docker compose.
 # Only GitHub-owned actions, pinned to a full commit SHA.
 name: Check
@@ -67,10 +67,6 @@ jobs:
         run: npm run typecheck
       - name: Build web
         run: npm run build -w @aihot/web
-      - name: Browser test engines
-        run: npx playwright install --with-deps chromium webkit
-      - name: Web tests
-        run: node --test apps/web/tests/*.test.ts
 
       # Each test file runs on its own copy of aihot_ci (tests/databases.ts), which the run migrates and
       # leaves empty; the smoke check then reads that empty database.
@@ -90,6 +86,44 @@ jobs:
       - name: Server logs
         if: failure()
         run: tail -n 60 "$RUNNER_TEMP/api.log" "$RUNNER_TEMP/web.log" 2>/dev/null || true
+
+  # The web tests run in Playwright's own image, which already has the browsers and the system libraries they
+  # need. Installing those libraries on the runner (`playwright install --with-deps`, 142 MB from the runner's
+  # apt mirror) sometimes crawled at tens of KB/s and the job was cancelled at its time limit (2026-10-23).
+  # The image's version is read from the lockfile, so it moves together with @playwright/test.
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: version
+        run: echo "version=$(node -p "require('./package-lock.json').packages['node_modules/@playwright/test'].version")" >> "$GITHUB_OUTPUT"
+
+  web:
+    needs: playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.playwright.outputs.version }}
+    env:
+      SITE_URL: http://127.0.0.1:3000
+      API_BASE_URL: http://127.0.0.1:3001
+      SESSION_SECRET: ci-session-secret-0123456789abcdef
+      IMG_PROXY_SIGN_SECRET: ci-img-secret-0123456789abcdef
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Build web
+        run: npm run build -w @aihot/web
+      - name: Web tests
+        run: node --test apps/web/tests/*.test.ts
 
   docker:
     runs-on: ubuntu-latest

@@ -22,8 +22,9 @@ function scripted(answers: Partial<Record<string, (user: string, attempt?: strin
   const calls: Array<{ purpose: string; user: string; attempt?: string }> = [];
   const ask: Ask = async (purpose, _system, user, schema, attempt) => {
     calls.push({ purpose, user, attempt });
-    // The last read for omissions finds nothing unless a test scripts it.
-    const answer = answers[purpose] ?? (purpose === "reference_issue_review" ? () => ({ problems: [] }) : undefined);
+    // The read for the ear leaves a draft as written, and the last read for omissions finds nothing, unless a test scripts them.
+    const answer = answers[purpose] ?? (purpose === "reference_issue_review" ? () => ({ problems: [] })
+      : purpose === "reference_issue_speak" ? (u: string) => JSON.parse(u.slice(u.indexOf("\n") + 1)) : undefined);
     if (!answer) throw new Error(`no scripted answer for ${purpose}`);
     return schema.parse(answer(user, attempt));
   };
@@ -46,10 +47,11 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "好听的一稿");
-  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_check", "reference_issue_write", "reference_issue_check", "reference_issue_review"]);
+  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_review"]);
   assert.ok(!calls[0]!.user.includes("另一稿细说"));
-  assert.ok(calls[2]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
-  const check = calls[3]!.user;
+  assert.ok(calls[3]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
+  assert.ok(calls[1]!.user.includes("平淡的一稿"), "each draft is gone over for the ear before its check");
+  const check = calls[5]!.user;
   assert.ok(check.includes("〔3〕来源 3《第 3 条》（可以引原句）") && check.includes(ITEMS[2]!.text));
   assert.ok(!check.includes(ITEMS[0]!.text), "an item the draft does not cite is not sent to the check");
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
@@ -71,7 +73,7 @@ test("when neither passes, the check's own fixes go into the livelier draft and 
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.ok(!calls.some((x) => x.purpose === "reference_issue_edit"), "the check's fixes need no editor");
   assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 2 + EDIT_ROUNDS);
-  assert.ok(calls[4]!.user.includes("改过的第 2 句") && !calls[4]!.user.includes("像真事"), "the fresh check reads the fixed draft, not the last verdict");
+  assert.ok(calls[6]!.user.includes("改过的第 2 句") && !calls[4]!.user.includes("像真事"), "the fresh check reads the fixed draft, not the last verdict");
   assert.equal(c.status, "issue");
   assert.equal(c.drafts.length, 2 + EDIT_ROUNDS);
   assert.equal(c.chosen?.issue.news[0]?.text, "另一句对得上〔2〕。");
@@ -314,4 +316,17 @@ test("a mended sentence keeps one citation, whether or not its fix repeats it", 
   ], (p) => p.fix);
   assert.equal(out.news[0]!.text, "景气指数跌到99.4，是季节性回摆。〔8〕红餐网认为赛道越挤越难赚钱。〔8〕");
   assert.equal(out.deep, "细说〔4〕\n\n第二段。");
+});
+
+test("each draft is checked as it reads aloud, the writer's own kept beside it; a read for the ear that gives nothing usable leaves it as written", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, "一串数字〔1〕。"),
+    reference_issue_speak: (u) => { if (u.includes("稿 a")) return issue("稿 a", "念顺了〔1〕。"); throw new ModelOutputError("broken JSON"); },
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-22", ask);
+  assert.equal(c.drafts[0]!.issue.news[0]!.text, "念顺了〔1〕。");
+  assert.equal(c.drafts[0]!.written?.news[0]!.text, "一串数字〔1〕。");
+  assert.ok(calls.find((x) => x.purpose === "reference_issue_check")!.user.includes("念顺了"), "the check reads what will be said");
+  assert.equal(c.drafts[1]!.issue.news[0]!.text, "一串数字〔1〕。");
 });

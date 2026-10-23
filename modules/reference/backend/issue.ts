@@ -36,7 +36,8 @@ const WRITE = prompt("issue-write");
 const CHECK = prompt("issue-check");
 const EDIT = prompt("issue-edit");
 const REVIEW = prompt("issue-review");
-export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW)
+const SPEAK = prompt("issue-speak");
+export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW).update(SPEAK)
   .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
 
 /**
@@ -169,6 +170,19 @@ async function write(items: DayItem[], date: string, ask: Ask, attempt: string, 
   return ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
 }
 
+/**
+ * Goes over a draft once for the ear before it is checked, the second step of NotebookLlama (Meta's llama-cookbook):
+ * written for what to say, a draft read as a list (10-22, 0da591c: 22 figures in a thousand characters, sentences of 58).
+ * The check comes after, so what this changes is read against the originals like the rest; output it cannot give
+ * leaves the draft as written.
+ */
+async function speak(issue: IssueText, ask: Ask, attempt: string): Promise<IssueText> {
+  return ask("reference_issue_speak", SPEAK, `十一的稿子：\n${JSON.stringify(issue, null, 1)}`, IssueAnswer, attempt).catch((error: unknown) => {
+    if (error instanceof ModelOutputError) return issue;
+    throw error;
+  });
+}
+
 /** A draft as the check and the editor read it, part by part. */
 const issueText = (issue: IssueText) => [
   `标题：${issue.title}`, `三句话：\n${issue.brief.map((b) => `- ${b}`).join("\n")}`, `预告：${issue.preview}`,
@@ -266,6 +280,8 @@ export interface Draft {
   cut?: string[];
   /** What the last read for omissions found, its fixes put in. */
   reviewed?: Problem[];
+  /** The draft as the writer gave it, before it was gone over for the ear. */
+  written?: IssueText;
 }
 export interface ComposedIssue {
   date: string;
@@ -397,7 +413,10 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
       unusable = error;
       return null;
     });
-    if (issue) drafts.push({ issue, ...await checkIssue(issue, items, ask), edited: false });
+    if (issue) {
+      const spoken = await speak(issue, ask, attempt);
+      drafts.push({ issue: spoken, written: issue, ...await checkIssue(spoken, items, ask), edited: false });
+    }
   }
   if (!drafts.length) {
     const why = unusable instanceof Error ? unusable.message : String(unusable);
@@ -448,7 +467,7 @@ function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {
     ...(d.issue.deep ? [f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, ""] : []), ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
     `> 关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。`, "",
-    `核对：${d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.edited ? "　（编辑按问题改过）" : ""}`,
+    `核对：${d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10　字数 ${issueChars(d.issue)}${d.written ? `（为念出来改之前 ${issueChars(d.written)}）` : ""}${d.edited ? "　（编辑按问题改过）" : ""}`,
     ...(d.cut ?? []).map((x) => `- 删掉：${x}`),
     ...d.problems.map((p) => `- ${d.cut ? "没能删掉，" : ""}第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
   ];

@@ -49,7 +49,7 @@ case "${1:-}" in
     cd /opt/myfnbguide
     nohup sudo docker compose run --rm -T \
       -v $DIR/industry/prompts:/app/industry/prompts:ro -v $DIR/site/site.ts:/app/site/site.ts:ro -v $DIR/myfnb:/app/myfnb:ro \
-      -v $DIR/packages/backend/src/editorial/analyze.ts:/app/packages/backend/src/editorial/analyze.ts:ro -v $OUT:/out \
+      -v $DIR/packages/backend/src/editorial:/app/packages/backend/src/editorial:ro -v $OUT:/out \
       worker node myfnb/trial-understand.ts --days "${DAYS:-7}" --limit "${LIMIT:-20}" $ids --apply > "$LOG" 2>&1 &
     echo $! > "$PID"
     echo "开跑：$(sudo git -C $DIR rev-parse --short HEAD)"
@@ -95,7 +95,7 @@ case "${1:-}" in
     echo "检出：$(sudo git -C $DIR rev-parse --short HEAD)"
     sudo docker compose run --rm -T \
       -v $DIR/industry/prompts:/app/industry/prompts:ro -v $DIR/site/site.ts:/app/site/site.ts:ro -v $DIR/site/models.ts:/app/site/models.ts:ro \
-      -v $DIR/myfnb:/app/myfnb:ro -v $DIR/packages/backend/src/editorial/analyze.ts:/app/packages/backend/src/editorial/analyze.ts:ro -v $OUT:/out \
+      -v $DIR/myfnb:/app/myfnb:ro -v $DIR/packages/backend/src/editorial:/app/packages/backend/src/editorial:ro -v $OUT:/out \
       worker node myfnb/trial-pipeline.ts --limit "${LIMIT:-3}" --days "${DAYS:-2}" --check "${CHECK_MODEL:-deepseek-v4-pro-llm}" $flags --apply 2>&1 | grep --line-buffered -v '"level"'
     cat "$(ls -td $OUT/pipeline-*/ | head -1)/试跑.md"
     ;;

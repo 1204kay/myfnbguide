@@ -6,6 +6,7 @@
 #   ssh <服务器> 'bash -s' -- start  < myfnb/trial-understand-run.sh   更新检出、后台开跑，马上返回
 #   ssh <服务器> 'bash -s' -- status < myfnb/trial-understand-run.sh   还在跑 / 跑完了，和日志最后几行
 #   ssh <服务器> 'bash -s' -- pack   < myfnb/trial-understand-run.sh   把结果打成 tar.gz 写到标准输出
+#   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改。
 set -euo pipefail
 BRANCH=${BRANCH:-claude/project-thread-6l0m18}
@@ -37,5 +38,15 @@ case "${1:-}" in
     run=$(ls -td $OUT/understand-*/ | head -1)
     tar -C "$run" -cz .
     ;;
-  *) echo "用法：start | status | pack"; exit 1 ;;
+  raw)
+    cd /opt/myfnbguide
+    sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
+      SELECT '=== ' || id || ' ' || subject || E'\\n' || coalesce(error, '') || E'\\n--- 原样输出 ---\\n' || coalesce(response->'choices'->0->'message'->>'content', response::text)
+      FROM receipts WHERE purpose IN ('understand_article', 'mend_wording') AND status = 'failed' AND created_at > now() - interval '3 hours' ORDER BY id;"
+    echo "=== 之前 7 天（旧提示词）理解一步的回执状态"
+    sudo docker compose exec -T db psql -U aihot -d aihot -At -c "
+      SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
+        AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
+    ;;
+  *) echo "用法：start | status | pack | raw"; exit 1 ;;
 esac

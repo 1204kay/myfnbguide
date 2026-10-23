@@ -17,7 +17,7 @@ const detail = (id: string): SiteItemDetail => ({
   readingMode: "full", author: null, body: null, outline: [], relatedStories: [], topics: [], indexable: true, markdownAvailable: true, group: null,
   hasTranslation: false, bodyLanguage: "zh",
 } as SiteItemDetail);
-const WRITTEN = { kind: "body", body: { lead: "美国一家餐饮媒体介绍一家小酒馆的布草账单。", parts: [{ heading: "账单四年涨到每周 1,503 美元", blocks: [{ type: "text", text: "店里没有人批准过一次大涨价。" }] }], open: null } };
+const WRITTEN = { id: "written", title: "布草账单四年涨到每周 1,503 美元", situation: { slug: "busy-no-profit", title: "生意忙却不赚钱", count: { grouped: true, shops: 3, insiders: 0, cases: 3 } } };
 
 let web: ChildProcess;
 let origin: string;
@@ -65,12 +65,12 @@ async function page(path: string): Promise<string> {
   return res.text();
 }
 
-// The site's reference module gives the item page its write-up (modules/reference/web/item-part.tsx).
+// The site's reference module gives the item page the way to its story (modules/reference/web/item-part.tsx).
 test("an item page draws a module's block where its api has something, and leaves it out where not", async () => {
   const written = await page("/items/written");
-  for (const text of ["正文 · AI 整理自原文", WRITTEN.body.lead, WRITTEN.body.parts[0]!.heading]) assert.ok(written.includes(text), text);
+  for (const text of ["参考", WRITTEN.situation.title, "/reference/busy-no-profit"]) assert.ok(written.includes(text), text);
   for (const id of ["nothing", "broken"]) {
     const html = await page(`/items/${id}`);
-    assert.ok(html.includes("固定摘要") && !html.includes("正文 · AI 整理自原文"), `${id}: the page without the block`);
+    assert.ok(html.includes("固定摘要") && !html.includes(WRITTEN.situation.title), `${id}: the page without the block`);
   }
 });

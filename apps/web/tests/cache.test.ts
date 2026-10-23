@@ -93,7 +93,9 @@ test("HTML and navigation share freshness; cookies do not personalize public res
   assert.match(plain.headers.get("Cache-Control")!, /^public,/);
   assert.match(plain.headers.get("X-Accel-Expires")!, /^@\d+$/);
   assert.equal(signedIn.headers.get("Set-Cookie"), null);
-  assert.equal(await signedIn.text(), await plain.text());
+  // The browser deadline counts from each request's own second (cachedPage); two requests can straddle one.
+  const sameDeadline = (body: string) => body.replace(/"expiresAt",\d+/, '"expiresAt",0');
+  assert.equal(sameDeadline(await signedIn.text()), sameDeadline(await plain.text()));
   assert.ok(apiCookies.every((cookie) => !cookie));
 });
 

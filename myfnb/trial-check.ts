@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/input";
-import { checkDraft, type Problem } from "./check.ts";
+import { checkDraft, spent, type Problem } from "./check.ts";
 
 type Key = "serious" | "disputed" | "clean";
 type Exam = { items: Array<{ no: string; id: string; site: { title: string; summary: string; reason: string; key: Key }; new: { title: string; lead: string; points: string[]; key: Key } }> };
@@ -62,13 +62,12 @@ for (const model of models) {
   const of = (key: Key) => mine.filter((r) => r.key === key && r.problems);
   const caught = of("serious").filter(flagged), falseAlarm = of("clean").filter(flagged);
   const ids = mine.flatMap((r) => (r.receiptId ? [r.receiptId] : []));
-  const [cost] = ids.length ? await sql<{ usd: string | null }[]>`SELECT sum(cost)::text AS usd FROM receipts WHERE id IN ${sql(ids)}` : [{ usd: null }];
   const tag = (rs: Result[]) => rs.map((r) => `${r.no}${r.version === "site" ? "旧" : "新"}`).join(" ") || "无";
   out.push(`## ${model}`, "",
     `- 已知严重错：抓到 ${caught.length}/${of("serious").length}（${tag(caught)}）；漏掉 ${tag(of("serious").filter((r) => !flagged(r)))}`,
     `- 两人都判没严重错的：判成严重 ${falseAlarm.length}/${of("clean").length}（${tag(falseAlarm)}）`,
     `- 只有一人判严重的：判成严重 ${of("disputed").filter(flagged).length}/${of("disputed").length}（${tag(of("disputed").filter(flagged))}）`,
-    `- 失败 ${mine.filter((r) => !r.problems).length} 份；花费 ${cost?.usd ?? "未知"}（回执记的金额）`, "");
+    `- 失败 ${mine.filter((r) => !r.problems).length} 份；用量 ${await spent(ids)}`, "");
   for (const r of mine.sort((x, y) => x.no.localeCompare(y.no) || x.version.localeCompare(y.version))) {
     out.push(`### ${r.no} ${r.version === "site" ? "旧写法" : "要点"}（考卷：${r.key}）`, "");
     if (!r.problems) out.push(`失败：${r.error}`, "");

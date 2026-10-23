@@ -13,7 +13,8 @@
 #   ssh <服务器> 'bash -s' -- check  < myfnb/trial-understand-run.sh   核对员考试（myfnb/trial-check.ts）：拿 10-23 那 20 条考 CHECK_MODELS
 #                                                                    （默认 deepseek-v4-pro-llm），跑完把核对.md 打到标准输出；NOS="18 06" 只考这几条
 #   ssh <服务器> 'bash -s' -- pipeline < myfnb/trial-understand-run.sh   「要点 + 核对」整条流程试跑（myfnb/trial-pipeline.ts）：挑 LIMIT（默认 3）条
-#                                                                    新近精选，写、核、改，跑完把试跑.md 打到标准输出；IDS 写了就只跑这些条目
+#                                                                    新近精选，写、核、改，跑完把试跑.md 打到标准输出；IDS 写了就只跑这些条目，
+#                                                                    SKIP 里的不挑，DAYS 从最近几天里挑（默认 2）
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
 # 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
@@ -87,12 +88,13 @@ case "${1:-}" in
     sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
     mkdir -p "$OUT"
     flags=""; for id in ${IDS:-}; do flags="$flags --id $id"; done
+    for id in ${SKIP:-}; do flags="$flags --skip $id"; done
     cd /opt/myfnbguide
     echo "检出：$(sudo git -C $DIR rev-parse --short HEAD)"
     sudo docker compose run --rm -T \
       -v $DIR/industry/prompts:/app/industry/prompts:ro -v $DIR/site/site.ts:/app/site/site.ts:ro -v $DIR/site/models.ts:/app/site/models.ts:ro \
       -v $DIR/myfnb:/app/myfnb:ro -v $DIR/packages/backend/src/editorial/analyze.ts:/app/packages/backend/src/editorial/analyze.ts:ro -v $OUT:/out \
-      worker node myfnb/trial-pipeline.ts --limit "${LIMIT:-3}" --check "${CHECK_MODEL:-deepseek-v4-pro-llm}" $flags --apply 2>&1 | grep --line-buffered -v '"level"'
+      worker node myfnb/trial-pipeline.ts --limit "${LIMIT:-3}" --days "${DAYS:-2}" --check "${CHECK_MODEL:-deepseek-v4-pro-llm}" $flags --apply 2>&1 | grep --line-buffered -v '"level"'
     cat "$(ls -td $OUT/pipeline-*/ | head -1)/试跑.md"
     ;;
   check-result)

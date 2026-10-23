@@ -59,6 +59,7 @@ if (apply) {
       out.push("<details><summary>现在站上的写法</summary>", "", `**${r.title}**`, "", r.summary ?? "", "", `收录理由：${r.reason ?? "（无）"}`, "", "</details>", "");
       console.log(`${no} 写好：${w?.titleZh ?? "（拒写）"}`);
     } catch (error) {
+      json.push({ no, id: r.id, source: r.source_name, url: r.url, old: { title: r.title, summary: r.summary, reason: r.reason }, new: null });
       out.push(`## ${no} ${r.title}`, "", `（失败：${error instanceof Error ? error.message : String(error)}）`, "");
       console.log(`${no} 失败：${error instanceof Error ? error.message : String(error)}`);
     }

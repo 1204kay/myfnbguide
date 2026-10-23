@@ -7,7 +7,7 @@
 #   ssh <服务器> 'bash -s' -- status < myfnb/trial-understand-run.sh   还在跑 / 跑完了，和日志最后几行
 #   ssh <服务器> 'bash -s' -- pack   < myfnb/trial-understand-run.sh   把结果打成 tar.gz 写到标准输出
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
-# 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改。
+# 不读标准输入时也能在服务器上直接 bash 它。BRANCH、DAYS、LIMIT 可以用环境变量改；IDS 写了就只跑这些条目。
 set -euo pipefail
 BRANCH=${BRANCH:-claude/project-thread-6l0m18}
 DIR=/opt/myfnbguide-understand
@@ -22,13 +22,15 @@ case "${1:-}" in
     sudo git -C "$DIR" fetch -q origin "$BRANCH"
     sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
     mkdir -p "$OUT"
+    # 默认就是 10-23 第一趟的那 20 条，改了提示词以后拿同一批比；IDS= （空）则按天重新挑。
+    ids=""; for id in ${IDS-n9qd5cz6g2st5ecj30kvmx6hq tsb6o7zx4dudkki7hl13pvbk0 vvx9s8z2a0rmcl1pj3477cvt4 uf3o0dojy90hsygrmvggmn1wd kx2e4k9ergo6dcqys57dgaz86 wy7anjnay7byz8nsf96qxv1rf vw2y0eei7gpnri4i7rwl1hdzf ffcsxaolrffx320f6pp8z0lo1 q8lnhuzhbkenjfbbwxuijrahi i0k5mqtc5srqbiwmbyson6fwa px96mvv1r6ieht7egibw3tlil oltrw84hrvlvk1dxxnyhjuy3c jpda3ptzjph38d9rt6x89idpj qd6h4xm6ahlsj0kyi1g06krt6 skuun0auxsapw48tfnousvb9u nguotwlb9wncow84779a01jmo xrcbzs5wo1ehk5oj74mthoaun joyfz1on9lf1msiln1h9q8ehq z6iujzdwyqqu0fqi3po25ygs9 vjwc914uus7uc16jftykc59sv}; do ids="$ids --id $id"; done
     cd /opt/myfnbguide
     nohup sudo docker compose run --rm -T \
       -v $DIR/industry/prompts:/app/industry/prompts:ro -v $DIR/site/site.ts:/app/site/site.ts:ro -v $DIR/myfnb:/app/myfnb:ro \
       -v $DIR/packages/backend/src/editorial/analyze.ts:/app/packages/backend/src/editorial/analyze.ts:ro -v $OUT:/out \
-      worker node myfnb/trial-understand.ts --days "${DAYS:-7}" --limit "${LIMIT:-20}" --apply > "$LOG" 2>&1 &
+      worker node myfnb/trial-understand.ts --days "${DAYS:-7}" --limit "${LIMIT:-20}" $ids --apply > "$LOG" 2>&1 &
     echo $! > "$PID"
-    echo "开跑：$(git -C $DIR rev-parse --short HEAD)"
+    echo "开跑：$(sudo git -C $DIR rev-parse --short HEAD)"
     ;;
   status)
     if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "还在跑"; else echo "跑完了：$(ls -td $OUT/understand-*/ 2>/dev/null | head -1)"; fi

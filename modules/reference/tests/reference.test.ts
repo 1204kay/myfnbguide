@@ -705,8 +705,7 @@ test("a page splits by cause only where two causes have two practices each; one 
   assert.deepEqual((await get("/api/reference")).categories[0].situations.map((s: { slug: string; count: Count }) => [s.slug, s.count.shops]), [["retention", 3], ["hiring", 2]]);
 
   // 10-24: the stories folded by the settings row (foldedStories), two to try, then all; deleting the row undoes it.
-  type Line = { caseId: string; country: string; name: string; line: string; folded: boolean };
-  type Card = { key: string; summary: string | null; lines: Line[] };
+  type Card = { key: string; summary: string | null };
   const fold = (value: unknown) => sql`INSERT INTO settings (key, value) VALUES ('reference.folded', ${sql.json(value as never)}) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`;
   const cardsOf = (page: { rest: { practices: Card[] }; groups: Array<{ practices: Card[] }> }) => [page.rest, ...page.groups].flatMap((part) => part.practices);
   const before = await get("/api/reference/situations/hiring");
@@ -716,11 +715,12 @@ test("a page splits by cause only where two causes have two practices each; one 
   assert.deepEqual([moved.statusCode, JSON.parse(moved.body).mergedInto], [308, id.H3], "a folded story's page goes to its item");
   assert.equal((await app.inject(`/api/reference/cases/${id.H1}`)).statusCode, 200, "one not folded stays");
   const tried = await get("/api/reference/situations/hiring");
-  const doorCard = cardsOf(tried).find((c) => c.key === "p1")!;
-  assert.deepEqual(doorCard.lines.find((l) => l.caseId === id.H3), { caseId: id.H3, country: "美国", name: "Total Food Service", line: "H3", cases: 1, folded: true },
-    "its line: the source and the item's own title, not the story's shop and line");
-  assert.equal(doorCard.summary, null, "a practice with a folded story sums nothing up");
-  assert.equal(tried.overview, null, "nor does the situation");
+  assert.deepEqual(cardsOf(tried), [], "a situation with a folded story shows no practices: their titles and summaries were drawn from the stories");
+  assert.equal(tried.overview, null, "nor its overview");
+  assert.deepEqual(tried.groups.map((g: { key: string; cases: Array<{ id: string; title: string; folded: boolean }> }) => [g.key, g.cases.map((c) => [c.title, c.folded])]),
+    [["where-to-find", [["H2 的故事", false], ["H3", true], ["H7 的故事", false], ["H1 的故事", false]]], ["interview", [["H6 的故事", false], ["H5", true], ["H4 的故事", false]]]],
+    "the items by cause, newest first, a folded one by its item's own title");
+  assert.equal(tried.groups[0].cases.find((c: { id: string }) => c.id === id.H3).src.split(" · ")[0], "美国", "its country the source's");
   assert.equal((await get("/api/reference/shops/moon-cafe")).cases.find((c: { id: string }) => c.id === id.H5).title, "H5", "a shop with a story not folded keeps its page");
   assert.equal((await get(`/api/reference/items/${id.H3}`)).situation.slug, "hiring", "its item still leads to the situation");
 
@@ -729,8 +729,10 @@ test("a page splits by cause only where two causes have two practices each; one 
   const shopMoved = await app.inject("/api/reference/shops/sun-diner");
   assert.deepEqual([shopMoved.statusCode, JSON.parse(shopMoved.body).mergedInto], [308, "reference"], "a shop's page goes to the library");
   const folded = await get("/api/reference/situations/hiring");
-  assert.ok(cardsOf(folded).length && cardsOf(folded).every((c) => c.summary === null && c.lines.every((l) => l.folded)), "the practices' titles stay, their lines are items");
-  assert.equal((await get("/api/reference")).recent, null, "no story taken in last to name");
+  assert.ok(folded.groups.every((g: { cases: Array<{ folded: boolean; shop: unknown }> }) => g.cases.every((c) => c.folded && c.shop === null)), "every row an item, no shop's page");
+  const foldedHome = await get("/api/reference");
+  assert.deepEqual([foldedHome.recent, foldedHome.categories[0].situations.every((s: { practice: unknown; overview: unknown }) => s.practice === null && s.overview === null)], [null, true],
+    "no story taken in last, no 代表做法 or overview on the home page");
   const map = (await reference.sitemap!.entries!()).map((e) => e.loc);
   assert.ok(map.includes("/reference/hiring") && !map.some((loc) => loc.startsWith("/reference/cases/") || loc.startsWith("/reference/shops/")), "the situations stay in the sitemap, the stories and shops leave it");
 

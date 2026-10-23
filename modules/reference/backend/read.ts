@@ -316,8 +316,8 @@ function situationRow(situation: Situation, rows: Row[], stored: Stored | undefi
   const faces = facesOf(rows);
   return {
     slug: situation.slug, category: categoryTitle(situation.category)!, title: situation.title, dek: situation.dek,
-    overview: rows.some((r) => r.folded) ? null : (stored?.overview ?? null), count: countOf(rows, !!stored),
-    practice: stored ? (practices(rows, stored.methods, situation, new Map()).built[0]?.card.title ?? null) : null,
+    overview: rows.some((r) => r.folded) ? null : (stored?.overview ?? null), count: countOf(rows, !!stored && !rows.some((r) => r.folded)),
+    practice: stored && !rows.some((r) => r.folded) ? (practices(rows, stored.methods, situation, new Map()).built[0]?.card.title ?? null) : null,
     faces, sources: faces.length,
   };
 }
@@ -386,6 +386,22 @@ export async function readSituation(slug: string, now = new Date()): Promise<Sit
   if (!situation) return null;
   const [rows, stored, shops] = await Promise.all([shownCases(sql`${slug} = ANY (c.situations)`, now), groupings(slug), shopsShown(now)]);
   const grouping = stored.get(slug);
+  // Folded (foldedStories): the practices' titles go too, as their summaries do. 5 situations checked 10-24 had about
+  // a row in four under a practice it does not tell (myfnb 情况页做法组核对-5页-2026-10-24.md); the page lists the
+  // items by cause, under the titles this module writes (situations.ts), newest first.
+  if (rows.some((r) => r.folded)) {
+    const cards = (key: string | null) => rows.filter((r) => groupOf(r, situation) === key).map((r) => card(r, shops));
+    const causes = situation.groups.filter((g) => cards(g.key).length);
+    return {
+      slug, category: { key: situation.category, title: categoryTitle(situation.category)! }, title: situation.title, dek: situation.dek,
+      // Not grouped by practice any more: the page counts 条原文, and the list is not 最近收进来的原文 (web/situation.tsx).
+      overview: null, count: countOf(rows, false),
+      causes: causes.map((g) => ({ key: g.key, title: g.title, line: g.line })),
+      groups: causes.map((g) => ({ key: g.key, title: g.title, line: g.line, practices: [], shops: [], cases: cards(g.key) })),
+      rest: { practices: [], shops: [], cases: cards(null) },
+      updatedAt: latest([...rows.map((r) => r.updated_at), grouping?.updated_at]),
+    };
+  }
   const { built, loose } = grouping ? practices(rows, grouping.methods, situation, shops) : { built: [], loose: rows };
   const inCause = (key: string | null) => ({ built: built.filter((b) => b.group === key), loose: loose.filter((r) => groupOf(r, situation) === key) });
   const causes = situation.groups.filter((g) => {
@@ -413,7 +429,7 @@ async function placeOf(r: Row, now: Date): Promise<{ slug: string; title: string
   const built = grouping ? practices(rows, grouping.methods, situation, new Map()).built : null;
   return {
     slug: situation.slug, title: situation.title, practice: built?.find((b) => b.members.some((m) => m.id === r.id))?.card.key ?? null,
-    count: countOf(rows, !!grouping),
+    count: countOf(rows, !!grouping && !rows.some((r) => r.folded)),
   };
 }
 

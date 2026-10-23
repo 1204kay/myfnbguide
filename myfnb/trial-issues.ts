@@ -6,13 +6,16 @@
 //   checks (default: the same one), so writers can be compared under one check; --selected takes only the day's 精选
 //   instead of everything listed (Kay 10-19: 那如果只挑精选呢); --out is where the
 //   run's folder goes (default /out). Without --apply it lists each day's items and calls nothing.
+//   --check-only /out/<run>/01.json: no writing; checks that run's chosen issue once more with --check-model against its
+//   day's items (the date is the file's own), and writes what this check found beside the old one, to try a new check
+//   on a draft whose faults the blind check already listed (十一 10-23: 新核对要先单独验一下).
 //   --cap-usd 20: no call is made unless what it could cost is left under it, so the run never pays more; a day does not
 //   start without enough left for its two drafts and their checks.
 // On the server (a throwaway container with this branch's module mounted; the running worker is not touched):
 //   sudo docker compose run --rm -v /opt/myfnbguide-trial/modules/reference:/app/modules/reference:ro \
 //     -v /opt/myfnbguide-trial/myfnb:/app/myfnb:ro -v /opt/myfnbguide-trial/site/models.ts:/app/site/models.ts:ro \
 //     -v /tmp/myfnb-trial:/out worker node myfnb/trial-issues.ts …
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { beijingAt } from "@aihot/contracts/time";
 import { closeDb, sql } from "@aihot/backend/db";
@@ -20,7 +23,7 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { EDITION_TIMES } from "@aihot/site";
-import { type ComposedIssue, composeIssue, type DayItem, isCheckPurpose, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
+import { checkIssue, type ComposedIssue, composeIssue, type DayItem, isCheckPurpose, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
 import { dayItems } from "../modules/reference/backend/issues.ts";
 
 const args = process.argv.slice(2);
@@ -38,7 +41,8 @@ const callUsd = (price: [number, number], chars: number) => (chars * price[0] + 
 const dayUsd = (items: DayItem[]) => 2 * (callUsd(writePrice, dayChars(items)) + callUsd(checkPrice, dayChars(items)));
 const dayChars = (items: DayItem[]) => items.reduce((s, i) => s + i.summary.length + i.text.length + 200, 0);
 
-const model = one("--model");
+const checkOnly = one("--check-only");
+const model = one("--model") ?? (checkOnly ? one("--check-model") : undefined);
 const checkModel = one("--check-model") ?? model;
 const priceOf = (m: string | undefined) => {
   if (!m || !MODELS[m]) throw new Error(`--model / --check-model 要写 site/models.ts 里的一个：${Object.keys(MODELS).join("、")}`);
@@ -50,8 +54,8 @@ const writePrice = priceOf(model);
 const checkPrice = priceOf(checkModel);
 const cap = Number(one("--cap-usd") ?? 20);
 if (!(cap > 0)) throw new Error("--cap-usd 要大于 0");
-const days = all("--day");
-if (!days.length || days.some((d) => !/^\d{4}-\d{2}-\d{2}$/.test(d))) throw new Error("写 --day 2026-10-16（可以写多个）");
+const days = checkOnly ? [] : all("--day");
+if (!checkOnly && (!days.length || days.some((d) => !/^\d{4}-\d{2}-\d{2}$/.test(d)))) throw new Error("写 --day 2026-10-16（可以写多个）");
 
 const run = `${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, "")}${selectedOnly ? "-selected" : ""}-${model}${checkModel === model ? "" : `-check-${checkModel}`}`;
 const dir = join(one("--out") ?? "/out", run);
@@ -60,6 +64,23 @@ const receiptIds: number[] = [];
 const paid: Record<string, Usage> = {};
 const usd = () => Object.entries(paid).reduce((s, [m, u]) => s + (u.input * PRICES[m]![0] + u.output * PRICES[m]![1]) / 1e6, 0);
 const count = (m: string) => (u: Usage) => { const p = (paid[m] ??= { input: 0, output: 0 }); p.input += u.input; p.output += u.output; };
+
+if (checkOnly) {
+  const old = JSON.parse(readFileSync(checkOnly, "utf8")) as ComposedIssue;
+  if (!old.chosen) throw new Error(`${checkOnly} 没有出刊的那一稿`);
+  const items = await dayItems(beijingAt(old.date, EDITION_TIMES.daily), selectedOnly);
+  const check = modelAsk(checkModel!, `issue:${old.date}`, receiptIds, count(checkModel!));
+  if (usd() + callUsd(checkPrice, items.reduce((s, i) => s + i.text.length, 0)) > cap) throw new Error(`停：这一次核对可能超过上限 US$${cap}`);
+  const found = await checkIssue(old.chosen.issue, items, check);
+  const out = checkOnly.replace(/\.json$/u, `-check-${ISSUE_VERSION}.json`);
+  writeFileSync(out, JSON.stringify({ date: old.date, title: old.chosen.issue.title, before: old.chosen.problems, ...found }, null, 2));
+  for (const id of receiptIds) await completeReceipt(sql, id);
+  console.log(`${old.date}《${old.chosen.issue.title}》：这次核对精彩 ${found.lively}，问题 ${found.problems.length} 处，写在 ${out}；花 US$${usd().toFixed(2)}`);
+  for (const p of found.problems) console.log(`- 第 ${p.rule} 条：「${p.quote}」${p.why}`);
+  await stopBoss();
+  await closeDb();
+  process.exit(0);
+}
 
 console.log(`${days.length} 天 × ${model}${checkModel === model ? "" : `（核对 ${checkModel}）`}，花费上限 US$${cap}${apply ? "" : "（预览，不调模型）"}`);
 const results: Array<{ no: number; date: string; c: ComposedIssue | null; cost: number; note: string }> = [];

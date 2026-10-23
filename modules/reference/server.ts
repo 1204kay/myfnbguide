@@ -43,9 +43,14 @@ const BODIES = defineQueue<{ articleId: string }>({
 
 // 十一说 (backend/issues.ts): one a day; two drafts, checks and up to five rounds of mending take long, so it runs as a job
 // of its own with room for that, and one retry for a model that failed.
-// The first day 十一说 is written, a Beijing date; null: not yet. Each issue costs (about US$2, mostly the check), so
-// the code goes up first and the day is Kay's (10-23: launch waits on his date and on the month's model credit).
-const ISSUES_FROM = null as string | null;
+// 十一说 is written from the day the settings row `reference.issues` names ({"from": "2026-10-24"}, a Beijing date); with
+// no row it is not. Each issue costs (about US$2, mostly the check), so starting and stopping is Kay's and must not wait
+// for a deploy (10-23: one sentence stops it). Stop: DELETE FROM settings WHERE key = 'reference.issues'.
+async function issuesFrom(): Promise<string | null> {
+  const [row] = await sql<{ value: { from?: unknown } }[]>`SELECT value FROM settings WHERE key = 'reference.issues'`;
+  return typeof row?.value.from === "string" ? row.value.from : null;
+}
+
 const ISSUES = defineQueue<{ date: string }>({
   name: "reference.issue",
   options: { policy: "short", retryLimit: 1, retryDelay: 300, expireInSeconds: 3 * 3600 },
@@ -124,7 +129,8 @@ export default defineServerModule({
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
       const date = beijingDate(new Date());
-      if (!ISSUES_FROM || date < ISSUES_FROM) return { queued: 0, reason: "十一说 has not started" };
+      const from = await issuesFrom();
+      if (!from || date < from) return { queued: 0, reason: "十一说 is not on (settings reference.issues)" };
       await enqueueOn(ISSUES, { date }, { singletonKey: date });
       return { queued: 1, date };
     },

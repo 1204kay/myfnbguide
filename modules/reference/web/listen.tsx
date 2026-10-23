@@ -86,7 +86,7 @@ export function PlayerBar({ url, seconds, title, onClose }: { url: string; secon
       <div
         role="region"
         aria-label="播放十一说"
-        className="fixed inset-x-2 bottom-[calc(58px+env(safe-area-inset-bottom))] z-40 overflow-hidden rounded-[var(--radius-panel)] border border-line bg-surface shadow-[var(--shadow-pop)] lg:inset-x-auto lg:bottom-6 lg:right-6 lg:w-[380px]"
+        className="fixed inset-x-2 bottom-[calc(58px+env(safe-area-inset-bottom))] z-40 overflow-hidden rounded-panel border border-line bg-surface shadow-[var(--shadow-pop)] lg:inset-x-auto lg:bottom-6 lg:right-6 lg:w-[380px]"
       >
         <audio
           ref={audio}
@@ -133,7 +133,7 @@ export function PlayerBar({ url, seconds, title, onClose }: { url: string; secon
             type="button"
             aria-label="播放速度"
             onClick={nextSpeed}
-            className="h-8 min-w-12 rounded-[var(--radius-control)] border border-line-strong px-1.5 text-[13px] text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
+            className="h-8 min-w-12 rounded-control border border-line-strong px-1.5 text-[13px] text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
           >
             {speed === 1 ? "1.0" : speed}×
           </button>

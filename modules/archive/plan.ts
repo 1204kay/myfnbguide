@@ -19,7 +19,6 @@ const PICKS = JSON.parse(readFileSync(new URL("./picks.json", import.meta.url), 
  * from titles and summaries (46 of 1,997: methods with steps or numbers, not product news or generic tips).
  */
 const PAGES: Record<string, ArchivePlan["pages"]> = {
-  "rss-sischef": { url: "https://sischef.com/feed/?paged={n}", to: 5 },
   "rss-gopos": { url: "https://gopos.pl/blog/feed/?paged={n}", to: 18 },
   "rss-koust": { url: "https://koust.net/feed/?paged={n}", to: 28 },
 };

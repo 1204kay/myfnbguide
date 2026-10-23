@@ -1,12 +1,13 @@
 // The archive's backend: an hourly import of the sources it opens that have not been taken in yet (or whose picks name
 // episodes not taken in yet, plansDue), an hourly note of
-// every podcast's new episodes, a queue that transcribes podcast episodes one at a time, and its status in numbers.
+// every podcast's new episodes, a queue that transcribes podcast episodes one at a time (putting back transcripts a later
+// listing replaced), and its status in numbers.
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { sql } from "@aihot/backend/db";
 import { ARCHIVE } from "./plan.ts";
 import { importSource, noteNewEpisodes, plansDue } from "./backend/importer.ts";
-import { episodesToTranscribe, transcribeEpisode } from "./backend/transcribe.ts";
+import { episodesToTranscribe, restoreTranscripts, transcribeEpisode } from "./backend/transcribe.ts";
 
 const TRANSCRIBE = defineQueue<{ articleId: string }>({
   name: "archive.transcribe",
@@ -43,7 +44,8 @@ export default defineServerModule({
       run: async () => {
         const ids = await episodesToTranscribe(3);
         for (const articleId of ids) await enqueueOn(TRANSCRIBE, { articleId }, { singletonKey: articleId });
-        return { queued: ids.length };
+        // A few at a time: each restored episode is analysed again (paid), and a backlog clears in a few runs.
+        return { queued: ids.length, restored: (await restoreTranscripts(10)).length };
       },
     },
   ],

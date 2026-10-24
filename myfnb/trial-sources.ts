@@ -13,8 +13,8 @@
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
 // 同一条（同样的标题和正文）再判会直接用已有回执、不花钱，所以撞上限停下以后，第二天用同一条命令重开就是接着跑。
 // 结尾按订阅列出判了几条、过预筛几条、入选几条，用来挑命中高的那一档。
-//   --reserve 3000 模型调用熔断（budgets 表 llm，按过去 1 小时、24 小时滚动计数，和线上共用）离上限不到这么多次就停，
-//                  给线上留余量（默认 3000）。10-24 第一轮没有这道，撞了每小时上限，1,840 条没判，线上也跟着推迟。
+//   --reserve 3000 模型调用熔断（budgets 表 llm，按过去 1 小时、24 小时滚动计数，和线上共用）每天离上限不到这么多次就停，
+//                  这一小时离上限不到十分之一就等，给线上留余量（默认 3000）。10-24 第一轮没有这道，撞了每小时上限，1,840 条没判，线上也跟着推迟。
 // 在服务器上：ops 门 `bg myfnb/trial-sources.ts --apply`，再 `tail <编号>`。
 import { appendFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -105,8 +105,13 @@ const worker = async () => {
     const i = next++;
     const f = sample.feeds[i]!;
     if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
-    const left = await budgetLeft();
-    if (left.day < reserve || left.hour < reserve / 10) {
+    let left = await budgetLeft();
+    // 这一小时的余量不够就等（每分钟看一次，等前一小时的调用滚出窗口）；每天的余量不够才停。
+    while (left.day >= reserve && left.hour < reserve / 10) {
+      await new Promise((r) => setTimeout(r, 60_000));
+      left = await budgetLeft();
+    }
+    if (left.day < reserve) {
       stopped ||= `# 模型调用熔断只剩每天 ${left.day} 次、这一小时 ${left.hour} 次，给线上留 ${reserve} 次，停在第 ${i + 1} 个订阅（${f.name}）`;
       break;
     }

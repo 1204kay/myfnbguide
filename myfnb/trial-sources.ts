@@ -10,7 +10,8 @@
 //   --per 3        每个订阅取最新几条（默认 3）
 //   --cap-usd 1    回执累计到这个数就停（默认 1）
 // 在服务器上：ops 门 `bg myfnb/trial-sources.ts --apply`，再 `tail <编号>`。
-import { readFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { createHash } from "node:crypto";
@@ -61,11 +62,17 @@ if (!values.apply) {
 type Row = { group: Feed["group"]; feed: string; title: string; url: string; code: boolean; label: string | null; reason: string; scores: number[]; selected: boolean; cost: number; err?: string };
 const rows: Row[] = [];
 let spentUsd = 0;
+// 回执的 cost 栏在 DeepSeek 上是空的（10-24 第一趟：292 张全空，上限因此没起作用），花费按用量乘价格表算（同 myfnb/check.ts 的 spent）。
+const usd = sql`coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0)`;
+const price = sql`LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true`;
 const costOf = async (ids: number[]) => {
   if (!ids.length) return 0;
-  const [r] = await sql<{ usd: string | null }[]>`SELECT sum(cost)::text AS usd FROM receipts WHERE id IN ${sql(ids)}`;
+  const [r] = await sql<{ usd: string | null }[]>`SELECT sum(${usd})::text AS usd FROM receipts r ${price} WHERE r.id IN ${sql(ids)}`;
   return Number(r?.usd ?? 0);
 };
+// 逐条结果同时写进容器里的文件：第一趟的 ssh 连线断了，终端里的输出全丢了。
+const outFile = path.join(tmpdir(), `trial-sources-${new Date().toISOString().replace(/[:.]/g, "")}.jsonl`);
+console.log(`# 逐条结果也写在 ${outFile}`);
 
 for (const [i, f] of sample.feeds.entries()) {
   if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
@@ -75,6 +82,7 @@ for (const [i, f] of sample.feeds.entries()) {
       .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0)).slice(0, per);
   } catch (e) {
     console.log(`! ${f.name}：抓不到（${String(e).slice(0, 80)}）`);
+    appendFileSync(outFile, `${JSON.stringify({ group: f.group, feed: f.name, fetchError: String(e).slice(0, 200) })}\n`);
     continue;
   }
   for (const c of items) {
@@ -108,6 +116,7 @@ for (const [i, f] of sample.feeds.entries()) {
     row.cost = await costOf(ids);
     spentUsd += row.cost;
     rows.push(row);
+    appendFileSync(outFile, `${JSON.stringify(row)}\n`);
     console.log(`${row.group} | ${row.code ? "码过" : "码挡"} | ${row.label ?? "-"} | ${row.scores.join("+") || "-"}${row.selected ? " 入选" : ""} | ${row.title.slice(0, 50).replace(/\s+/g, " ")} | ${row.url}`);
   }
 }
@@ -128,9 +137,9 @@ for (const g of ["G", "S", "R", "全部"] as const) {
 
 // 线上最近 7 天：每一步的花费和条数，和同期过预筛、入选的文章数（只读）。
 const steps = await sql<{ purpose: string; n: string; usd: string | null }[]>`
-  SELECT purpose, count(*)::text AS n, sum(cost)::text AS usd FROM receipts
-  WHERE created_at > now() - interval '7 days' AND status IN ('received', 'completed') AND coalesce(subject, '') NOT LIKE 'article:trial-%'
-  GROUP BY purpose ORDER BY sum(cost) DESC NULLS LAST`;
+  SELECT r.purpose, count(*)::text AS n, sum(${usd})::text AS usd FROM receipts r ${price}
+  WHERE r.created_at > now() - interval '7 days' AND r.status IN ('received', 'completed') AND coalesce(r.subject, '') NOT LIKE 'article:trial-%'
+  GROUP BY r.purpose ORDER BY 3 DESC NULLS LAST`;
 console.log("\n# 线上最近 7 天每一步（回执条数 / US$）");
 for (const s of steps) console.log(`${s.purpose}\t${s.n}\t${Number(s.usd ?? 0).toFixed(3)}`);
 const [counts] = await sql<{ judged: string; pass: string; selected: string }[]>`

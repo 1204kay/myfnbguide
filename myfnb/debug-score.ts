@@ -8,7 +8,7 @@
 //   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"
 //   node myfnb/debug-score.ts [--below 40] [--max 20] [case ids...]
 //   --must (十一 10-24, 打分稳不稳: three 必看 under 46 in every one of ten scores): instead, every 必看 the user has
-//   labelled, as myfnb/eval-score-candidate.ts gathers them (10-16's labels, then the earlier gold rounds a 10-16 relabel
+//   labelled, as the score eval gathered them before 10-25 (10-16's labels, then the earlier gold rounds a 10-16 relabel
 //   does not override), on its current material in the database; no gold file needed. About 3 calls a case.
 import { readFileSync } from "node:fs";
 import path from "node:path";

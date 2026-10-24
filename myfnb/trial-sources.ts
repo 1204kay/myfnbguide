@@ -12,6 +12,8 @@
 //   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
 // 结尾按订阅列出判了几条、过预筛几条、入选几条，用来挑命中高的那一档。
+//   --reserve 3000 模型调用熔断（budgets 表 llm，按过去 1 小时、24 小时滚动计数，和线上共用）离上限不到这么多次就停，
+//                  给线上留余量（默认 3000）。10-24 第一轮没有这道，撞了每小时上限，1,840 条没判，线上也跟着推迟。
 // 在服务器上：ops 门 `bg myfnb/trial-sources.ts --apply`，再 `tail <编号>`。
 import { appendFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -30,6 +32,7 @@ import type { SourceRow } from "@aihot/backend/sources/types";
 const { values } = parseArgs({ options: {
   apply: { type: "boolean", default: false }, per: { type: "string", default: "3" }, "cap-usd": { type: "string", default: "1" },
   sample: { type: "string", default: "trial-sample-2026-10-24.json" }, jobs: { type: "string", default: "1" },
+  reserve: { type: "string", default: "3000" },
 } });
 type Feed = { group: string; name: string; feedUrl: string; perDay: number };
 const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.sample), "utf8")) as {
@@ -81,12 +84,27 @@ const costOf = async (ids: number[]) => {
 const outFile = path.join(tmpdir(), `trial-sources-${new Date().toISOString().replace(/[:.]/g, "")}.jsonl`);
 console.log(`# 逐条结果也写在 ${outFile}`);
 
+// 和 providers/receipts.ts 的 checkBudget 同一个数法；每小时的余量取每天余量的十分之一。
+const reserve = Number(values.reserve);
+const budgetLeft = async () => {
+  const [b] = await sql<{ hour: number; day: number }[]>`
+    SELECT (SELECT per_hour FROM budgets WHERE service = 'llm') - count(*) FILTER (WHERE started_at > now() - interval '1 hour') AS hour,
+           (SELECT per_day FROM budgets WHERE service = 'llm') - count(*) AS day
+    FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'`;
+  return b!;
+};
+let stopped = "";
 let next = 0;
 const worker = async () => {
   while (next < sample.feeds.length) {
     const i = next++;
     const f = sample.feeds[i]!;
     if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
+    const left = await budgetLeft();
+    if (left.day < reserve || left.hour < reserve / 10) {
+      stopped ||= `# 模型调用熔断只剩每天 ${left.day} 次、这一小时 ${left.hour} 次，给线上留 ${reserve} 次，停在第 ${i + 1} 个订阅（${f.name}）`;
+      break;
+    }
     let items;
     try {
       items = (await fetchRss(sourceOf(f, i), { force: true })).candidates
@@ -134,6 +152,7 @@ const worker = async () => {
 };
 // 同时跑几个订阅时，上限在每条判完后才看，最多多花 jobs 条的钱。
 await Promise.all(Array.from({ length: Number(values.jobs) }, worker));
+if (stopped) console.log(stopped);
 
 const pct = (n: number, d: number) => (d ? `${((n / d) * 100).toFixed(0)}%` : "-");
 console.log(`\n# 汇总：${rows.length} 条，回执合计 US$${spentUsd.toFixed(3)}`);

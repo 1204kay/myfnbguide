@@ -7,13 +7,16 @@
 // that scored below --below. Needs .data/gold.jsonl, so build it in the same container first:
 //   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"
 //   node myfnb/debug-score.ts [--below 40] [--max 20] [case ids...]
+//   --must (十一 10-24, 打分稳不稳: three 必看 under 46 in every one of ten scores): instead, every 必看 the user has
+//   labelled, as myfnb/eval-score-candidate.ts gathers them (10-16's labels, then the earlier gold rounds a 10-16 relabel
+//   does not override), on its current material in the database; no gold file needed. About 3 calls a case.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
 import { REPO_ROOT } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
-import { buildScoreInput, runSelectionScores, SCORE_SYSTEM, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
+import { buildScoreInput, loadAnalyzeInput, runSelectionScores, SCORE_SYSTEM, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
@@ -23,15 +26,35 @@ const markReceiptsCompleted = async (ids: number[]) => { for (const id of ids) a
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
-  options: { below: { type: "string", default: "40" }, max: { type: "string", default: "20" }, gold: { type: "string", default: ".data/gold.jsonl" } },
+  options: { below: { type: "string", default: "40" }, max: { type: "string", default: "20" }, gold: { type: "string", default: ".data/gold.jsonl" }, must: { type: "boolean", default: false } },
 });
+
+// --must: the user's 必看 labels, a 10-16 relabel winning over an earlier round; a feed-labelled row by its url.
+async function mustCases(): Promise<Array<{ id: string; input: AnalyzeInputArticle }>> {
+  const read = (file: string) => readFileSync(path.resolve(REPO_ROOT, file), "utf8").split(/\r?\n/)
+    .filter((l) => l.trim() && !l.startsWith("#") && !l.startsWith("article_id\t"))
+    .map((l) => { const c = l.split("\t"); return { id: c[0]!, label: c[1]!, url: c[4] ? c[5] ?? "" : "" }; });
+  const latest = read("myfnb/labels-2026-10-16.tsv");
+  const seen = new Set(latest.map((r) => r.id));
+  const rows = [...latest, ...read("myfnb/gold-labels.tsv").filter((r) => !seen.has(r.id))].filter((r) => r.label === "必看");
+  const urls = rows.filter((r) => r.url).map((r) => r.url);
+  const byUrl = new Map((urls.length ? await sql<{ id: string; url: string }[]>`SELECT id, url FROM articles WHERE url IN ${sql(urls)}` : [])
+    .map((a) => [a.url, a.id]));
+  const out = [];
+  for (const r of rows) {
+    const id = r.url ? byUrl.get(r.url) : r.id;
+    const input = id ? await loadAnalyzeInput(id) : null;
+    if (input) out.push({ id: r.id, input }); else console.log(`${r.id} 不在库里，跳过`);
+  }
+  return out;
+}
 
 interface GoldRow {
   caseId: string;
   material: { title: string; originalTitle: string | null; publishedAt: string | null; sourceName: string; bodyZh: string | null; bodyOriginal: string | null };
   sourceFacts: { sourceKind: string; sourceTier?: string; firstParty?: boolean };
 }
-const gold = new Map(readFileSync(path.resolve(REPO_ROOT, values.gold!), "utf8").split("\n").filter((l) => l.trim())
+const gold = new Map(values.must ? [] : readFileSync(path.resolve(REPO_ROOT, values.gold!), "utf8").split("\n").filter((l) => l.trim())
   .map((l) => JSON.parse(l) as GoldRow).map((r) => [r.caseId, r]));
 
 // The eval's own score for each case, to set beside the debugging answer.
@@ -39,7 +62,7 @@ const [run] = await sql<{ id: string; label: string }[]>`SELECT id, label FROM s
 const scored = run ? await sql<{ case_id: string; score: number | null }[]>`
   SELECT case_id, score FROM selectbench_results WHERE run_id = ${run.id}` : [];
 const evalScore = new Map(scored.map((r) => [r.case_id, r.score]));
-const ids = positionals.length ? positionals : run ? (await sql<{ case_id: string }[]>`
+const ids = values.must ? [] : positionals.length ? positionals : run ? (await sql<{ case_id: string }[]>`
   SELECT case_id FROM selectbench_results
   WHERE run_id = ${run.id} AND gold = 'select' AND relevance IN ('pass', 'unknown') AND score < ${Number(values.below)}
   ORDER BY score, case_id LIMIT ${Number(values.max)}`).map((r) => r.case_id) : [];
@@ -88,10 +111,13 @@ const text = (v: unknown) => (v === null || v === undefined ? "" : typeof v === 
 const one = (s: string) => s.replace(/\s+/g, " ").trim();
 
 const model = await modelFor("score");
-for (const id of ids) {
+const cases = values.must ? await mustCases() : ids.flatMap((id) => {
   const r = gold.get(id);
-  if (!r) { console.log(`${id} 不在 gold 里（先跑 build-gold.ts）`); continue; }
-  const input = toInput(r);
+  if (!r) { console.log(`${id} 不在 gold 里（先跑 build-gold.ts）`); return []; }
+  return [{ id, input: toInput(r) }];
+});
+if (values.must) console.log(`# --must · ${cases.length} 条必看`);
+for (const { id, input } of cases) {
   try {
     // The production score on the material as it is built now (podcasts read from their feed's own text).
     const prod = await runSelectionScores(input, {});

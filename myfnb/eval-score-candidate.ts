@@ -9,7 +9,8 @@
 //   node myfnb/eval-score-candidate.ts [--rounds five,new,old] [--small] [--max-calls 1200] [--concurrency 6]
 //   On the server, the --small run on the branch eval/score-candidate is myfnb/eval-score-run.sh (allowed on Kay's PC as one fixed command).
 //   --small (十一 10-24, DeepSeek nearly spent): round five whole, the first 15 必看 of round new (10-16 has only one 不看) and
-//   the first 15 不看 of round old, each side scored once.
+//   the first 15 不看 of round old. Each side is scored twice and the two averaged, as the site's selection rule does
+//   (industry/selection.ts): one score a side swung across 46 where the site's two would not (打分稳不稳, 手册 2026-10-24).
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
@@ -56,7 +57,7 @@ for (const r of rows) {
 const only = existsSync(path.join(REPO_ROOT, "myfnb/eval-only.json"))
   ? JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/eval-only.json"), "utf8")) as { titles: string[]; times: number } : null;
 if (only) cases.splice(0, cases.length, ...cases.filter((c) => only.titles.some((t) => c.a.title.includes(t))));
-const times = only ? only.times : values.small ? 1 : 2;
+const times = only ? only.times : 2;
 const most = cases.length * 2 * times;
 console.log(`# ${cases.length} cases (${ROUNDS.map((r) => `${r} ${cases.filter((c) => c.round === r).length}`).join(", ")}), ${missing} not in the database · at most ${most} calls`);
 if (most > Number(values["max-calls"])) throw new Error(`at most ${most} calls, over --max-calls ${values["max-calls"]}: none sent`);

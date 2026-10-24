@@ -1,6 +1,7 @@
 // The weekly trends' backend (Kay 10-24): after each weekly report, one job finds what 3 or more sources told that
 // week and writes it up (backend/compose.ts); the api answers its page and the line under the weekly (backend/read.ts).
 import { config } from "@aihot/backend/config";
+import { sql } from "@aihot/backend/db";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { composeWeek, TRENDS_STEP, weekToCompose } from "./backend/compose.ts";
@@ -13,6 +14,13 @@ const WEEKS = defineQueue<{ key: string; start: string; end: string }>({
   worker: { localConcurrency: 1, pollingIntervalSeconds: 30 },
   run: async (jobs) => { for (const { key, start, end } of jobs) await composeWeek(key, start, end); },
 });
+
+// On only while the settings row `trends.on` is there (十一 10-24: it goes live once a trial matched the handbook's
+// sample, myfnb/trends-trial.ts), so a merge does not start it and stopping needs no deploy.
+// Start: INSERT INTO settings (key, value) VALUES ('trends.on', '{}'). Stop: DELETE FROM settings WHERE key = 'trends.on'.
+async function on(): Promise<boolean> {
+  return (await sql`SELECT 1 FROM settings WHERE key = 'trends.on'`).length > 0;
+}
 
 /** Shared caches keep a page as long as the engine keeps its topic pages: a minute. */
 const CACHE = "public, max-age=60, stale-while-revalidate=60";
@@ -30,6 +38,7 @@ export default defineServerModule({
     cron: "*/30 10-23 * * 1",
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      if (!(await on())) return { queued: 0, reason: "trends are not on (settings trends.on)" };
       const week = await weekToCompose();
       if (!week) return { queued: 0 };
       await enqueueOn(WEEKS, week, { singletonKey: week.key });

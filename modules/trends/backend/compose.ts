@@ -107,8 +107,8 @@ async function checkLine(item: PoolItem, text: string, subject: string, receipts
   return c.held || c.titleZh !== item.title || lines.length !== 1 ? null : lines[0]!;
 }
 
-/** Find, write and check one week's topics, and keep them (an empty week too). */
-export async function composeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: number; dropped: number; pool: number }> {
+/** Find, write and check one week's topics (paid calls, nothing kept: myfnb/trends-trial.ts reads it as it is). */
+export async function writeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: Topic[]; dropped: Dropped[]; receipts: number[]; pool: PoolItem[] }> {
   const pool = await weekPool(startDate, endDate);
   const receipts: number[] = [];
   const model = await modelFor(TRENDS_STEP);
@@ -143,6 +143,12 @@ export async function composeWeek(key: string, startDate: string, endDate: strin
     const { topic, why } = finishTopic(res.data.heading.trim() || t.name, lines, pool);
     if (topic) topics.push(topic); else dropped.push({ name: t.name, ids: t.ids, why });
   }
+  return { topics, dropped, receipts, pool };
+}
+
+/** One week's topics, kept (an empty week too). */
+export async function composeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: number; dropped: number; pool: number }> {
+  const { topics, dropped, receipts, pool } = await writeWeek(key, startDate, endDate);
   await sql`
     INSERT INTO trends_issues (key, period_start, period_end, topics, dropped, receipt_ids)
     VALUES (${key}, ${startDate}, ${endDate}, ${sql.json(topics as never)}, ${sql.json(dropped as never)}, ${receipts})

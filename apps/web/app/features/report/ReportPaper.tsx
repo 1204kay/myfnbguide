@@ -142,7 +142,7 @@ function Coverage({ c }: { c: ReportCitation }) {
 }
 
 /** One story: source, headline, at most four lines of summary, and the original at the foot. */
-function Story({ c, dated, className = "" }: { c: ReportCitation; dated: boolean; className?: string }) {
+export function Story({ c, dated, className = "" }: { c: ReportCitation; dated: boolean; className?: string }) {
   return (
     <article id={anchorOf(c) ?? undefined} className={`flex min-w-0 scroll-mt-[calc(var(--bar-h)+1.5rem)] flex-col py-6 ${className}`}>
       <div className="flex items-center gap-2 text-[12px] text-ink-3">

@@ -11,15 +11,21 @@ import { ReportLayout } from "../features/report/ReportLayout";
 import { ReportPaper, reportOutline } from "../features/report/ReportPaper";
 import { feedLink, kindFromPath } from "../features/report/format";
 import type { Screen } from "../components/shell/screens";
+import { loadParts, readReportParts } from "../site-modules";
+import { apiGet } from "../lib/api.server";
 
 export const handle: Screen = { tab: "daily", name: "日报" };
 export { pageHeaders as headers } from "../lib/api.server";
 export const { clientLoader, shouldRevalidate } = pageReuse<typeof loader>();
 
+/** The modules' blocks after the issue (reportPart). */
+const PARTS = await loadParts((m) => m.reportPart);
+
 export async function loader({ request }: Route.LoaderArgs) {
   const kind = kindFromPath(new URL(request.url).pathname);
   const { index, report } = await loadOr404<ReportLatestPage>(`/api/site/reports/${kind}/latest-page`, { signal: request.signal });
-  return cachedPage(600, { kind, report, index, today: beijingDate(Date.now()) });
+  const parts = report ? await readReportParts(PARTS, kind, report.key, (path) => apiGet(path, { signal: request.signal })) : {};
+  return cachedPage(600, { kind, report, index, parts, today: beijingDate(Date.now()) });
 }
 
 export function meta({ loaderData, location }: Route.MetaArgs) {
@@ -37,10 +43,11 @@ export function meta({ loaderData, location }: Route.MetaArgs) {
 }
 
 export default function ReportLatestPage() {
-  const { kind, report, index, today } = useLoaderData<typeof loader>();
+  const { kind, report, index, parts, today } = useLoaderData<typeof loader>();
   return (
     <ReportLayout kind={kind} index={index} current={report?.key ?? null} today={today} outline={report ? reportOutline(report) : []}>
       {report ? <ReportPaper report={report} index={index} /> : <EmptyState title={subjectAfter("还没有发布", REPORT_NAMES[kind])}>第一期发布后会出现在这里。</EmptyState>}
+      {report && PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} kind={kind} reportKey={report.key} data={parts[name]} />))}
     </ReportLayout>
   );
 }

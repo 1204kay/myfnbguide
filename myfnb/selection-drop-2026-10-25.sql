@@ -2,8 +2,9 @@
 --   ssh -i ~/.ssh/myfnb_server ubuntu@43.160.228.180 "cd /opt/myfnbguide && sudo docker compose exec -T db psql -U aihot -d aihot -X -P pager=off < myfnb/selection-drop-2026-10-25.sql"
 -- 「到线未入选」= 过了预筛、两次分数加起来到了门槛的两倍，却没有入选：只会是核对员挡下（modules/checker，held 不另存）。
 BEGIN READ ONLY;
+-- 没打分的条目 output.scores 存的是 JSON null（不是缺这个键），所以先看类型再当数组读。
 -- 只读事务里不能建临时视图，所以用 psql 变量把同一个子查询放进每一段。
-\set d '(SELECT to_char(a.discovered_at AT TIME ZONE \'Asia/Kuala_Lumpur\', \'MM-DD\') AS day, a.id, a.processing_state, a.processing_error, x.relevance, x.selected, x.prompt_version, (x.output->>\'threshold\')::numeric AS thr, (SELECT sum(v::numeric) FROM jsonb_array_elements_text(coalesce(x.output->\'scores\', \'[]\')) v) AS total, jsonb_array_length(coalesce(x.output->\'scores\', \'[]\')) AS n_scores, x.output->\'prefilter\'->>\'label\' AS pre FROM articles a LEFT JOIN LATERAL (SELECT * FROM analyses WHERE article_id = a.id ORDER BY id DESC LIMIT 1) x ON true WHERE NOT a.backfill AND a.discovered_at >= timestamptz \'2026-10-20 00:00+08\')'
+\set d '(SELECT to_char(a.discovered_at AT TIME ZONE \'Asia/Kuala_Lumpur\', \'MM-DD\') AS day, a.id, a.processing_state, a.processing_error, x.relevance, x.selected, x.prompt_version, (x.output->>\'threshold\')::numeric AS thr, (SELECT sum(v::numeric) FROM jsonb_array_elements_text(CASE WHEN jsonb_typeof(x.output->\'scores\') = \'array\' THEN x.output->\'scores\' ELSE \'[]\' END) v) AS total, CASE WHEN jsonb_typeof(x.output->\'scores\') = \'array\' THEN jsonb_array_length(x.output->\'scores\') ELSE 0 END AS n_scores, x.output->\'prefilter\'->>\'label\' AS pre FROM articles a LEFT JOIN LATERAL (SELECT * FROM analyses WHERE article_id = a.id ORDER BY id DESC LIMIT 1) x ON true WHERE NOT a.backfill AND a.discovered_at >= timestamptz \'2026-10-20 00:00+08\')'
 
 \echo '=== 每天：发现、处理状态、预筛、打分、到线、入选、到线未入选'
 SELECT day, count(*) AS found,

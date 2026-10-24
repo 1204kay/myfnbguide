@@ -1,6 +1,6 @@
 // 全面找信源的成本样本（2026-10-24，十一同意，上限 US$1）：新候选每天约 3,900 条，接之前先量出真实的数，给 Kay 定接多少。
-// 从 myfnb/sourcing/trial-sample-2026-10-24.json 的订阅里各取最新几条（按每天产量加权抽的：G 综合全站订阅、S 其余新候选、
-// R 账本重开的），走站上同样的预筛和两次评分（editorial/analyze.ts 的 runSelectionPrefilter、runSelectionScores），量出：
+// 从 myfnb/sourcing/trial-sample-2026-10-24.json 的订阅里各取最新几条（层内按每天产量加权抽：G 综合全站订阅、S 其余新候选、
+// R 账本重开的；G 和 S 按搜索分组分层），走站上同样的预筛和两次评分（editorial/analyze.ts 的 runSelectionPrefilter、runSelectionScores），量出：
 //   过预筛的比例、评分过线（入选）的比例、预筛和评分每条实际花多少（回执的 cost）；
 //   一道不花钱的代码过滤（标题、摘要、网址里有没有餐饮词）会放过多少、漏掉多少预筛通过和入选的；
 //   线上最近 7 天每一步的花费和条数（只读），用来算过了预筛以后归类、写稿、核对每条要多花多少。

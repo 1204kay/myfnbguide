@@ -6,7 +6,7 @@
 // page's code: the page waits for its parts while its own code loads (site-modules.ts `loadParts`) and then
 // renders them like any import.
 import type { ComponentType, ReactNode } from "react";
-import type { TopicSummary } from "@aihot/contracts/site";
+import type { ReportKind, TopicSummary } from "@aihot/contracts/site";
 import type { NavItem, Tab } from "./components/shell/nav";
 
 export interface AdminNavEntry {
@@ -123,6 +123,16 @@ export interface ItemPart {
   Block: ComponentType<{ id: string; data: unknown }>;
 }
 
+/**
+ * A module's block on a report page (routes/report-detail.tsx, report-latest.tsx), after the issue: the page reads
+ * `path(kind, key)` from the api with its loader and draws `Block` with what came back. No path (a kind it has nothing
+ * for) is not read; a read that fails gives null; either way the block is left out.
+ */
+export interface ReportPart {
+  path: (kind: ReportKind, key: string) => string | null;
+  Block: ComponentType<{ kind: ReportKind; reportKey: string; data: unknown }>;
+}
+
 export interface WebModule {
   /** Its folder under modules/. */
   name: string;
@@ -158,6 +168,7 @@ export interface WebModule {
   agent?: Part<AgentPart>;
   topicPage?: Part<TopicPagePart>;
   itemPart?: Part<ItemPart>;
+  reportPart?: Part<ReportPart>;
   /** Paths of the marks it serves that are drawn in white, for a dark tile (components/BrandMark.tsx). */
   darkMarks?: string[];
   /** The starred page (routes/starred.tsx): buttons ahead of 导入文件 that bring stars in from elsewhere, each resolving to the line it reports. */

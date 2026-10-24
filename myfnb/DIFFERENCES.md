@@ -53,6 +53,7 @@
 | 条目页标签 | 条目页（右栏和手机版）的 # 标签去掉两类：分类标签（政策/法规、平台动态等，就是日报的分节），和已经由主题表示的标签（`industry/topics.json` 里该主题的 tags，例如主题「外卖与平台」就不再列「#外卖/平台」）。只改显示（`apps/web/app/routes/item.tsx` 的 `shownTags`），标签数据、筛选、API 照旧；`industry/package.json` 多导出 `topics.json` 给网页读 | Kay 10-21：「下面的 # 很多重复的标签」。10-22 巴西 Keeta 那条 7 个标签里 3 对是同一件事。原版的主题和标签各列一遍，本站的主题正是由标签组成，所以重复 | Kay 10-21 提出；十一 10-23 定做法 |
 | 相对时间 | 列表或详情页里日期那个元素只写「20小时前」「2天前」「昨天」「3 hours ago」时，按读到的那一刻往回算出发布时间（`packages/backend/src/sources/dates.ts` 的 `readRelativeDate`，`web-list.ts` 的 `elementDate` 在读不出日期时才用它；测试 `tests/source-dates.standalone.test.ts`）。只认整个元素就是这几种写法，句子里提到「两天前」不算；不到一天的保留时刻，一天以上只取来源时区的那一天。原版读不出就是没日期，行为只在原来会没日期的地方变 | 餐饮老板内参（watcn）新文章头几天只写相对时间：10-24 后台告警里它 7 天的新条目全部没日期，没日期的条目走回补，一条都进不了当天的精选和日报。职业餐饮网、QSR Media 同一告警另查（手册 `业务线/myfnbguide/记录/2026-10-24/信源告警修复.md`）。已收的旧条目不补日期（工作约定 §15）。框架错误修正，可以提给作者 | 十一 10-24 定（选方案①：改框架读相对时间，不另写模块） |
 | 事件页 | 只有一篇报道的事件页不进站点地图，页面加 `noindex`（`packages/backend/src/publication/sitemap.ts` 的事件查询要求 2 篇以上报道；`apps/web/app/routes/story.tsx` 的 `noindex: reportCount < 2`）。页面照常能打开，条目页和列表里的事件链接不变；第二篇报道归进来后自动进站点地图，IndexNow 会通知搜索引擎 | 10-24 全站体检抽 80 个事件页，74 个只有 1 篇报道，标题和内容与它的条目页重复，搜索引擎看到的是两份同样的页面。原版没有按报道数决定收不收录的选项；和热点榜、主题不进导航是同一个道理：内容还撑不起这一页。本站来源多起来、多数事件有两篇以上报道后，就删掉这一行改回原版。代价：两处各一行，合并上游时这两处可能冲突 | 十一 10-24 定（全站体检第 3 项） |
+| 每周趋势 | 框架没有的功能，做成模块 `modules/trends`：周报出来以后（周一 10:00 起每半小时看一次，`server.ts`），一次读完那一周列进「全部」的每一条（同一件事只算第一条），找出三家以上的来源各自讲到的同一个具体的东西（`prompts/find.md`；只是同一个大类、做法指南、同一件事多家报道都不算）；家数由代码数，不由模型（同一家的几个订阅算一家，`backend/publishers.ts`）；每条写一句，只写那一条自己说的，不下结论（`prompts/write.md`）；每句先对那条的标题和导读查名字和数字（周报导语用的 `grounded`），再交核对员对原文核；核完不足三家的不发。存在 `trends_issues`。入口只在周报页最后一块「这周几家都在讲」（不进侧栏和手机底栏），一周的页面 `/trends/:key` 用周报合订本的框架（`ReportLayout` 带返回、报头的日期行、`SectionPage` 一题一版、`Story` 一条一格，只把摘要换成我们那一句）。只做上线以后的周，不补以前的（工作约定 §15）。开关是 settings 里的 `trends.on` 一行（有这一行才跑，`server.ts`；关掉就删这一行，不用部署），上线前先用 `myfnb/trends-trial.ts` 试跑一周、只打印不存，和手册的样稿对照。框架加一个通用插口 `WebModule.reportPart`（`apps/web/app/modules.ts`、`site-modules.ts`、`routes/report-detail.tsx`、`report-latest.tsx`；没有模块提供时报告页照原版），`ReportPaper.tsx` 多导出 `Story`，`publication/reports.ts` 多导出 `citationsOf`（按条目 id 取报告引用的样子） | 同一个东西好几家同时在讲，单看每一条都太小、进不了精选，归组也归不到一起（10-24 回放：7 个已知话题召回 0/7）；原版只有按事件归组的热点，没有「好几家各自讲同一个方向」 | Kay 10-24「你和十一讨论 同意」（做这个模块、入口放周报页底部、话题边界从严）；十一 10-24「就按这个做」（手册决定记录「MYFNB 做每周趋势页」） |
 
 **10/10 已经合进原版、从本表删掉的**：手机顶栏的返回文字（#171）、第一期日报以前的周和月不算到期（#170），作者 10/9 夜合并，本站 10/10 早上合并上游 `18ddc7b` 后用的就是原版。
 
@@ -64,7 +65,7 @@
 
 | 文件 | 改了什么 | 清单哪一行 |
 |---|---|---|
-| `Dockerfile` | 装上本站的模块（参考库、存档、社媒、核对员） | 参考库、存档、核对员 |
+| `Dockerfile` | 装上本站的模块（参考库、存档、社媒、核对员、每周趋势） | 参考库、存档、核对员、每周趋势 |
 | `packages/backend/src/sources/dates.ts`、`sources/web-list.ts`、`tests/source-dates.standalone.test.ts` | `readRelativeDate`：日期元素只写相对时间时往回算 | 相对时间 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`、`docs/architecture.md`、`apps/web/tests/item-parts.test.ts` | 通用插口 `itemPart`：模块在条目页三段之后放一块（本站只放「收在 MYFNB 参考」的链接） | 条目页 |
 | `apps/web/app/routes/item.tsx` | 条目页的 # 标签去掉分类标签和主题已经表示的标签（`shownTags`）；要点放在主栏 | 条目页标签、要点 |
@@ -77,6 +78,7 @@
 | `packages/backend/src/modules.ts`、`reports/compose.ts`、`publication/reports.ts`、`packages/contracts/src/site.ts`、`features/report/ReportPaper.tsx` | 模块插口 `dailyLead`，日报头条的可选字段 `kicker`、`href` | 十一说 |
 | `packages/backend/src/publication/sitemap.ts`、`apps/web/app/routes/story.tsx`、`tests/discovery-updates.test.ts` | 一篇报道的事件页不进站点地图、加 `noindex`；作者的测试给事件多加一篇报道 | 事件页 |
 | `packages/backend/src/modules.ts`、`editorial/analyze.ts`、`jobs/content.ts`、`tests/analyze.test.ts` | 模块插口 `copyCheck`（核对员用它，代码在 `modules/checker`） | 核对员 |
+| `apps/web/app/modules.ts`、`site-modules.ts`、`routes/report-detail.tsx`、`routes/report-latest.tsx`、`features/report/ReportPaper.tsx`、`packages/backend/src/publication/reports.ts`、`apps/web/tests/report-parts.test.ts` | 通用插口 `reportPart`：模块在报告页最后放一块；`Story` 和 `citationsOf` 导出给模块用 | 每周趋势 |
 | `packages/backend/src/media/og.ts` | 读 `assets/og-fonts/` 里另加的字体补字 | 分享图字体 |
 | `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |
 | `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑 | GitHub 检查里的网页测试 |

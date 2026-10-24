@@ -1,6 +1,7 @@
 // The site's modules on the web (site/modules/web.ts). Shared engine files read them where they draw them,
 // not when they are imported, so a module's code may import any engine file.
 import { WEB_MODULES } from "@aihot/site/modules/web";
+import type { ReportKind } from "@aihot/contracts/site";
 import type { Part, WebModule } from "./modules";
 
 export function webModules(): readonly WebModule[] {
@@ -14,6 +15,19 @@ export async function readParts(
   get: (path: string) => Promise<unknown>,
 ): Promise<Record<string, unknown>> {
   return Object.fromEntries(await Promise.all(parts.map(async ({ name, part }) => [name, await get(part.path(key)).catch(() => null)] as const)));
+}
+
+/** What each report part has on one issue (its `path(kind, key)`, none for a kind it skips), by module; a read that fails is null. */
+export async function readReportParts(
+  parts: ReadonlyArray<{ name: string; part: { path: (kind: ReportKind, key: string) => string | null } }>,
+  kind: ReportKind,
+  key: string,
+  get: (path: string) => Promise<unknown>,
+): Promise<Record<string, unknown>> {
+  return Object.fromEntries(await Promise.all(parts.map(async ({ name, part }) => {
+    const path = part.path(kind, key);
+    return [name, path ? await get(path).catch(() => null) : null] as const;
+  })));
 }
 
 /** The parts a page draws, in the site's order: awaited at the top of the page's module, so they load with it. */

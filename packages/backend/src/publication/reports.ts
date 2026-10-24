@@ -242,6 +242,21 @@ function citationFrom(raw: Record<string, any>, avail: Map<string, Availability>
 }
 
 /**
+ * Items cited by id as the reports cite theirs (a module's own page of citations): title and original as
+ * published, withdrawn ones marked, in the order asked; ids not in this database are left out.
+ */
+export async function citationsOf(ids: string[]): Promise<ReportCitation[]> {
+  const unique = [...new Set(ids)];
+  if (!unique.length) return [];
+  const [avail, rows] = await Promise.all([
+    availability(unique),
+    sql<{ id: string; title: string; url: string }[]>`SELECT article_id AS id, title, url FROM publications WHERE article_id IN ${sql(unique)}`,
+  ]);
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  return unique.flatMap((id) => { const r = byId.get(id); return r ? [citationFrom({ itemId: id, title: r.title, sourceUrl: r.url }, avail)] : []; });
+}
+
+/**
  * How many sources an issue cites: those of its entries still public and of what is listed under them, as
  * the database has them, else as the issue recorded them.
  */

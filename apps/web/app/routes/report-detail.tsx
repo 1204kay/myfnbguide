@@ -10,10 +10,14 @@ import { ReportLayout } from "../features/report/ReportLayout";
 import { ReportPaper, reportOutline } from "../features/report/ReportPaper";
 import { feedLink, kindFromPath } from "../features/report/format";
 import type { Screen } from "../components/shell/screens";
+import { loadParts, readReportParts } from "../site-modules";
 
 export const handle: Screen = { tab: "daily", name: "日报" };
 export { pageHeaders as headers } from "../lib/api.server";
 export const { clientLoader, shouldRevalidate } = pageReuse<typeof loader>();
+
+/** The modules' blocks after the issue (reportPart). */
+const PARTS = await loadParts((m) => m.reportPart);
 
 const PATTERN: Record<ReportKind, RegExp> = {
   daily: /^\d{4}-\d{2}-\d{2}$/,
@@ -25,11 +29,12 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const kind = kindFromPath(new URL(request.url).pathname);
   const key = params.key ?? "";
   if (!PATTERN[kind].test(key)) throw data({ message: "not_found" }, { status: 404 });
-  const [report, { items: index }] = await Promise.all([
+  const [report, { items: index }, parts] = await Promise.all([
     loadOr404<ReportDetail>(`/api/site/reports/${kind}/${key}`, { signal: request.signal }),
     apiGet<ReportNavigationResponse>(`/api/site/reports/${kind}/navigation/${key}`, { signal: request.signal }),
+    readReportParts(PARTS, kind, key, (path) => apiGet(path, { signal: request.signal })),
   ]);
-  return cachedPage(3600, { report, index, today: beijingDate(Date.now()) });
+  return cachedPage(3600, { report, index, parts, today: beijingDate(Date.now()) });
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
@@ -48,10 +53,11 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function ReportDetailPage() {
-  const { report, index, today } = useLoaderData<typeof loader>();
+  const { report, index, parts, today } = useLoaderData<typeof loader>();
   return (
     <ReportLayout kind={report.kind} index={index} current={report.key} today={today} outline={reportOutline(report)}>
       <ReportPaper report={report} index={index} />
+      {PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} kind={report.kind} reportKey={report.key} data={parts[name]} />))}
     </ReportLayout>
   );
 }

@@ -16,6 +16,7 @@
     "@aihot/archive": "*",
     "@aihot/checker": "*",
     "@aihot/reference": "*",
-    "@aihot/social": "*"
+    "@aihot/social": "*",
+    "@aihot/trends": "*"
   }
 }

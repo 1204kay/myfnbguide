@@ -5,5 +5,6 @@ import type { ModuleDeclaration } from "@aihot/contracts/modules";
 import archive from "@aihot/archive/module";
 import reference from "@aihot/reference/module";
 import social from "@aihot/social/module";
+import trends from "@aihot/trends/module";
 
-export const MODULES: readonly ModuleDeclaration[] = [reference, archive, social];
+export const MODULES: readonly ModuleDeclaration[] = [reference, archive, social, trends];

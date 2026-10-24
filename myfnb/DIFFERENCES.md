@@ -31,7 +31,6 @@
 | 核对员 | 入选条目的标题、导读和要点写好后，另一个模型拿原文逐句核一遍：第 1–4 类（数字、谁说的、发生过没有、先后因果）和误导照它的改法改，改过的再核一遍只拦严重错；要点有严重错删掉那条，标题或导读有严重错、或一条要点都不剩，不进精选（`held`）；删了原句里的国家名的修改不采用。代码在模块 `modules/checker`（`backend/check.ts`；模型那一步仍叫 `check`，后台的切换和 `CHECK_MODEL` 照旧）；框架只加了一个通用插口 `copyCheck`（`packages/backend/src/modules.ts`，`analyze.ts` 在定入选前调用它、`!held` 不进精选，`jobs/content.ts` 放行它的回执后条目接着处理）；提示词 `industry/prompts/check-item.md` | 10-23 盲核里模型写的标题、导读、要点有事实错（数字、谁说的、举例写成真事），原版没有核对这一步 | 十一 10-23 定（决定记录「条目页定为三段」那几条）。Kay 10-24 问「核对员为什么要改框架」：框架在「写完」和「定入选」之间原来没有模块插口，当时直接写进了框架；十一 10-24 定改成框架加一个通用插口、核对员搬进模块，10-24 已搬。这个插口对所有站都成立，可以提给作者 |
 | 条目和卡片 | 读者看不到 AI 评分（`ITEM_COPY.showScore`）；理由叫「原文要点」（`reasonLabel`，10-23 起叫「要点」，同日晚改为「原文要点」，写明内容出自原文、和我们写的导读分开，十一定；之前叫「收录理由」，见下面「要点」一行）。都是原版选项 | §3.1「不打分」 | Claude 10/4 定，没有用户原话（用户 10/5 21:25 反而问过「左侧像AIHOT放日期时间右侧放AI评分？」；10/5 10:51 用户自己说的是「AI导读和推荐理由」，即原版的叫法）；10/6 清理时按清理授权保留。**10/10 复核后保留**（用户：「全部你思考 你决定」）：最近 30 天入选的 121 条中位数 60 分、26% 低于 50 分、70 分以上只有 12%（本站门槛 40，原版 60–76），显示出来时入选条目旁边的「41」读起来像不及格，原版 70 分以上的强调色近九成用不上；「推荐」是替内容担保，违反 §3 第 1 条，「收录理由」只说我们为什么收 |
 | 导航 | 不放热点榜和主题（`site.ts` 的 `NAV.hidden: ["/hot", "/topics"]`）。**10/10 起是原版的选项**（#120 作者 10/9 合并），隐藏后电脑侧栏、手机底栏、「我的」页都不放，页面照样能打开，事件页、主题页的返回和链接改回精选 | 热点榜 10/6 线上是空的：要几家来源同时讨论同一件事，本站的来源还凑不出来；主题页各主题只列最近的精选，多数是几天到几年前的旧条目。有内容了就删掉对应的一项 | 热点榜：10/3 用户「热点榜是不是可以改成攻略合集之类的？」；10/6 清理授权。主题：10/4 Claude 逐页检查时定（归档 HANDOFF-2026-10-04.md §9「线上网站逐页检查」写明「改法 Claude 定」）；用户 10/5 21:25 问过「我们是不是少了主题这个页面？」；10/9「再次确认」出自云端会话，原话未存 |
-| 手机筛选 | 一排左右滑动的选项（`FEED.phoneFilter: "row"`，框架加的选项，默认 `"sheet"` 不变） | 用户 10/6 直接提出 | 10/6 |
 | 日报 | 收当天列在「全部」里的每一条（`REPORTS.dailyScope: "pool"`，框架加的选项，默认不变）；版式和篇幅（12 条写全、10 条简讯）照原版，写全的位置只给有入选报道的事（10/9 读者审查：弱条目占了写全的位置，入选的好条目挤进简讯）；只改日报，周报、月报报头的「N 条精选」仍只数入选的。连带的效果：头条可能是没入选的条目，它的条目页没有收录理由 | 用户 10/5：「不管是什么餐饮消息都有人在意，问题是日报怎么选出来」 | 10/5 |
 | 写作 | 本站的不用词清单 `industry/wording.ts` 和改用词提示词 `industry/prompts/mend-wording.md`（多一句「整句删去」）。改用词这一步 **10/10 起是原版的**（#121 作者 10/9 合并），原版的词表是空的 | §3 第 5 条；10/5 有 64/166 条用了「讲」，只靠提示词挡不住 | 10/5 |
 | 条目页 | 每个条目页都只有三段：标题、AI 导读、原文要点。三段下面只多一行：条目已写成参考库故事的，放一条「收在 MYFNB 参考」的链接，指向它所在的情况页（用故事页原有的 `WhereFiled`）；其余条目下面什么都不放。框架只加一个通用插口 `WebModule.itemPart`（`apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`），照框架文档「插口不够用时加一个通用的插口」，模块的一块是 `modules/reference/web/item-part.tsx`。**10-24 以前**三段下面还有「正文 · AI 整理自原文」：故事整篇贴在这里，其他条目另写一篇正文（`backend/body.ts`，300–900 字）。10-24 起两样都不显示：故事只在参考库里读；已写好的正文留在 `reference_bodies` 表里，不删，要恢复就把 `read.ts` 的 `readItemText` 和 `item-part.tsx` 改回这次改动以前的样子（`git log -- modules/reference/web/item-part.tsx` 找到「条目页统一成三段」那个提交，取它的上一版）。新正文从 10-18 起就停写了（`server.ts` 的 `BODIES_PAUSED`） | 一个页面原来有三种样子（10-24 线上最近 160 条：65 条下面贴着故事，32 条贴着正文，63 条只有三段）；正文越接近原文全文，版权风险越大；三段本来就是让读者不点原文也知道讲了什么 | 三段：十一 10-23 定（手册决定记录「条目页定为三段」）。撤掉正文：Kay 10-24「只保留一种」，十一 10-24 定 |
@@ -57,6 +56,8 @@
 
 **10/10 已经合进原版、从本表删掉的**：手机顶栏的返回文字（#171）、第一期日报以前的周和月不算到期（#170），作者 10/9 夜合并，本站 10/10 早上合并上游 `18ddc7b` 后用的就是原版。
 
+**10-24 改回原版的**：手机筛选。10/6 按用户要求把手机上的筛选做成电脑那样一排左右滑动的选项（框架加的选项 `FEED.phoneFilter: "row"`，第一项叫「不限」）；Kay 10-24 看了线上说想换回原版，改回顶栏的「筛选」按钮和弹出的选项单，`phoneFilter` 这个选项连代码、测试和文档一起删掉。以后要再做，先按上面五关重新审核、找用户确认。
+
 **10/6 清理时改回原版的**（以后要再做，先按上面五关重新审核、找用户确认）：首页改成参考库（`NAV.home`）、资讯默认全部（`FEED.start`）、栏目改名（`NAV.labels`）、主题不进导航（10/9 已加回，见上表）；日期加空格（`DATES.spaced`）、641–960px 铺开（`LAYOUT.fluid`）、程序补空格（`READER_SPACING`）；日报的分节简讯、看点门槛、简讯不限条数、报头数字不显示一手（`flashPlacement`、`compactBelow`、`dailyFlashes`、`metricUnits`；其中报头不显示一手 10/9 已加回，见上表）；收藏备份（`STARRED`）、关于页的参考库规模、参考库的搜索和条目页附加块（模块插口 `figures`、`searchPart`、`itemPart`；其中 `itemPart` 10/9 已加回，见上表）；列表类来源的关键词过滤（`allowKeywords`，没有信源在用；综合媒体要用时从 `a2f7397` 取回）。随 `apps/` 整体换回、清理时没逐项记下的（10/9 复核补记）：来源的叫法（`sourceWord`，用户 10/4 确认过，读者现在看到原版的说法）、筛选名（`filterNames`）、搜索的排序说法（`SEARCH.sorts`、`sortNote`）、关于页和 Agent 页的版式与示例（`ABOUT.page`、`AGENT.covers`、`examples`）、反馈页标题、还没有一期时的说法（`noIssue`）、隐藏热点时 MCP 不提供热点工具、往年日期写出年份（`8f927ec`）、触屏 44px、侧栏名字折行、错误页标题字号。其中**往年日期写出年份**和**来源的叫法** 10/9 已加回（用户：「你决定」），见上表。
 
 ## 3. 改了 `industry/`、`site/`、`modules/`、`myfnb/` 以外的文件
@@ -69,7 +70,7 @@
 | `packages/backend/src/sources/dates.ts`、`sources/web-list.ts`、`tests/source-dates.standalone.test.ts` | `readRelativeDate`：日期元素只写相对时间时往回算 | 相对时间 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`、`docs/architecture.md`、`apps/web/tests/item-parts.test.ts` | 通用插口 `itemPart`：模块在条目页三段之后放一块（本站只放「收在 MYFNB 参考」的链接） | 条目页 |
 | `apps/web/app/routes/item.tsx` | 条目页的 # 标签去掉分类标签和主题已经表示的标签（`shownTags`）；要点放在主栏 | 条目页标签、要点 |
-| `apps/web/app/features/feed/Filters.tsx`、`routes/home.tsx`、`routes/all.tsx`、`docs/customize.md`、`apps/web/tests/phone-shell.test.ts` | `FEED.phoneFilter = "row"`、`FEED.firstPartyFilter = false` 两个选项 | 手机筛选、一手 |
+| `apps/web/app/features/feed/Filters.tsx`、`docs/customize.md` | `FEED.firstPartyFilter = false` 选项 | 一手 |
 | `apps/web/app/features/report/format.ts` | `REPORTS.metricUnits` 里写 null 的数不在报头显示 | 一手 |
 | `packages/backend/src/reports/edition.ts`、`tests/report-pool.test.ts` | `REPORTS.dailyScope = "pool"`：日报收「全部」里的每一条 | 日报 |
 | `apps/web/app/features/feed/ReadingGroup.tsx`、`features/report/ReportPaper.tsx`、`apps/web/tests/page-width.test.ts`、`timeline-unread.test.ts` | 「另有 N 家…报道」用 `ITEM_COPY.sourceWord`；两个测试按本站的说法找按钮 | 来源的叫法 |

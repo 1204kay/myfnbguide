@@ -19,7 +19,6 @@ import { FIXTURE_AT as at, fakeApi, feedItem, itemDetail, startWebServer, visit,
 const item = feedItem({id:'navigation-fixture',title:'性能检查文章'});
 const detail = itemDetail({id:item.id,title:item.title,originalTitle:'Fixture article'});
 import { CATEGORIES } from "@aihot/industry/taxonomy";
-import { FEED } from "@aihot/site";
 
 // Two of the industry pack's categories, as the filter names them (the example pack's 模型 and 产品).
 const [A, B] = CATEGORIES;
@@ -109,11 +108,10 @@ test('SSR list and visited query variants return offline without another read',a
     await expect(page.getByRole('link',{name:'性能检查文章',exact:true})).toBeVisible({timeout:10_000});
     assert.deepEqual(reads,[],'the list came back without another read');
     await context.setOffline(false);
-    // Phones show the filter as a sheet behind a button, or as the desktop's row (site.ts FEED.phoneFilter).
-    if(FEED.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
+    await page.getByRole('button',{name:/^筛选/}).click();
     await page.getByRole('link',{name:A!.label,exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 '+A!.key,exact:true})).toBeVisible();
-    if(FEED.phoneFilter!=='row')await page.getByRole('button',{name:/^筛选/}).click();
+    await page.getByRole('button',{name:/^筛选/}).click();
     await page.getByRole('link',{name:B!.label,exact:true}).click();
     await expect(page.getByRole('link',{name:'分类 '+B!.key,exact:true})).toBeVisible();
     reads.length=0;

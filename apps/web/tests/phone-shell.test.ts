@@ -1,7 +1,5 @@
-// The site's navigation and phone filter options (site/site.ts NAV.hidden, FEED.phoneFilter), rendered by the
-// production server over a stub api. Failure cases: a hidden way in still shows in the sidebar, the tab bar or 我的; with the
-// row, phones keep the filter button, miss the row, call its first option 全部 beside the 精选 | 全部 switch, or show the
-// category in use twice (in the row and as a chip).
+// The site's navigation option (site/site.ts NAV.hidden), rendered by the production server over a stub api.
+// Failure case: a hidden way in still shows in the sidebar, the tab bar or 我的.
 import assert from "node:assert/strict";
 import { spawn, type ChildProcess } from "node:child_process";
 import { once } from "node:events";
@@ -9,10 +7,8 @@ import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { CATEGORIES } from "@aihot/industry/taxonomy";
-import { FEED, NAV } from "@aihot/site";
+import { NAV } from "@aihot/site";
 
-const PHONE_ROW = FEED.phoneFilter === "row";
 let web: ChildProcess;
 let origin: string;
 let logs = "";
@@ -64,16 +60,5 @@ test("hidden ways in leave the sidebar, the tab bar and 我的", async () => {
   for (const path of ["/", "/more"]) {
     const html = await page(path);
     for (const to of NAV.hidden) assert.equal(html.includes(`href="${to}"`), false, `${path}: ${to} is linked`);
-  }
-});
-
-test("phones get the filter as the desktop's row of options, or behind a button", async () => {
-  const category = CATEGORIES[0]!;
-  for (const base of ["/", "/all"]) {
-    const html = await page(`${base}?category=${category.key}`);
-    assert.equal(html.match(/<nav[^>]*aria-label="筛选"/g)?.length, PHONE_ROW ? 2 : 1, `${base}: the row on desktops${PHONE_ROW ? " and on phones" : ""}`);
-    assert.equal(/<button[^>]*aria-label="筛选/.test(html), !PHONE_ROW, `${base}: the filter button`);
-    assert.equal(html.includes(`取消筛选：${category.label}`), !PHONE_ROW, `${base}: the category in use as a chip`);
-    if (PHONE_ROW) assert.match(html, /<nav[^>]*aria-label="筛选"[^>]*>(?:(?!<\/nav>)[\s\S])*?不限/, `${base}: the phone row starts at 不限`);
   }
 });

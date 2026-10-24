@@ -7,7 +7,7 @@ import { beijingTime } from "@aihot/contracts/time";
 import { cachedPage, loadOr404 } from "../lib/api.server";
 import { pageReuse } from "../lib/page-reuse";
 import { filterParams, hasFeedFilters, itemListLd, listPath, pageMeta, readFilters } from "../lib/seo";
-import { ActiveFilters, CategoryTabs, FeedBar, PHONE_ROW, PhoneFilterRow, SearchField } from "../features/feed/Filters";
+import { ActiveFilters, CategoryTabs, FeedBar, SearchField } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
 import { EmptyState } from "../components/ui/Page";
@@ -108,7 +108,6 @@ export default function AllPage() {
       ) : (
         <FeedBar base="/all" category={f.category} channel={f.channel} />
       )}
-      {PHONE_ROW && <PhoneFilterRow base="/all" category={f.category} channel={f.channel} layoutId="all-cat-phone" />}
       <ActiveFilters base="/all" category={f.category} channel={f.channel} tag={f.tag} />
 
       {/* Desktop, as on 精选: the title, then one filter row with the search field aligned on the right. */}

@@ -29,7 +29,7 @@ const WEEK = /^\d{4}-W\d{2}$/;
 export default defineServerModule({
   name: "trends",
   models: {
-    [TRENDS_STEP]: { label: "每周趋势（读一周的全部条目，找出 3 家以上来源讲到的同一个东西，每条写一句；每句再交核对员）", env: "TRENDS_MODEL", purposes: ["trends_find", "trends_write"] },
+    [TRENDS_STEP]: { label: "每周趋势（读一周的全部条目，找出 3 家以上来源讲到的同一个东西、再逐条补齐讲到它的条目，每条写一句；每句再交核对员）", env: "TRENDS_MODEL", purposes: ["trends_find", "trends_gather", "trends_write"] },
   },
   queues: [WEEKS],
   schedules: [{

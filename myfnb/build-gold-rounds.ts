@@ -9,7 +9,7 @@
 //   old       myfnb/gold-labels.tsv, the first 15 不看 (reject)
 //   capital   myfnb/labels-2026-10-24-capital.tsv  可看 select · 不看 reject
 //   country   myfnb/labels-2026-10-24-country.tsv  可看 select · 不看 reject
-//   real      myfnb/labels-2026-10-25-real.tsv     the source trial's two blind checks, not in the database
+//   real      myfnb/labels-2026-10-25-real.tsv     the source trial's two blind checks, Kay's 10-25 grades; not in the database
 // Holdout: myfnb/labels-2026-10-25-holdout.tsv, 30 the prompt was never tuned on, for the last check only.
 // Rows not in the database (real, holdout, feed-labelled r2-…) are read from their feed as myfnb/trial-sources.ts
 // reads them, or from the page when the feed has moved on; one that can be read neither way is counted and left out.
@@ -29,6 +29,8 @@ const lines = (file: string) => readFileSync(path.join(REPO_ROOT, file), "utf8")
 type Decision = "select" | "reject" | "either";
 type Case = { key: string; decision: Decision; stratum: string; split: "development" | "holdout"; id?: string; url?: string; feed?: [string, string]; title?: string };
 const yes = (label: string): Decision => (label === "可看" || label === "必看" ? "select" : "reject");
+// real is labelled by Kay in three grades (10-25): 必看 select, 可看 either, 不看 reject.
+const graded = (label: string): Decision => (label === "必看" ? "select" : label === "可看" ? "either" : "reject");
 
 const labelled = (file: string, stratum: string, decide: (label: string) => Decision | null): Case[] =>
   lines(file).flatMap(([id, label, , , , url]) => {
@@ -46,7 +48,7 @@ const cases: Case[] = [
   ...capital,
   ...country,
   ...lines("myfnb/labels-2026-10-25-real.tsv").map(([key, label, feed, feedUrl, url, title]) =>
-    ({ key: key!, decision: yes(label!), stratum: "real", split: "development" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
+    ({ key: key!, decision: graded(label!), stratum: "real", split: "development" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
   ...lines("myfnb/labels-2026-10-25-holdout.tsv").map(([key, label, feed, feedUrl, url, title]) =>
     ({ key: key!, decision: label as Decision, stratum: "holdout", split: "holdout" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
 ];

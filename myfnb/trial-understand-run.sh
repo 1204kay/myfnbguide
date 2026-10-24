@@ -16,6 +16,8 @@
 #                                                                    新近精选，写、核、改，跑完把试跑.md 打到标准输出；IDS 写了就只跑这些条目，
 #                                                                    SKIP 里的不挑，DAYS 从最近几天里挑（默认 2）
 #   ssh <服务器> 'bash -s' -- price    < myfnb/trial-understand-run.sh   列出价格表里的 DeepSeek 价钱；price-apply 补上 deepseek-flash
+#   ssh <服务器> 'bash -s' -- podcasts < myfnb/trial-understand-run.sh   列出正文被简介盖掉的播客；podcasts-apply 放回逐字稿重新分析
+#   ssh <服务器> 'bash -s' -- switch-check < myfnb/trial-understand-run.sh   核对员用的是哪个；switch-check-apply 换 flash，switch-check-back 换回
 #   ssh <服务器> 'bash -s' -- pipeline-result < myfnb/trial-understand-run.sh   上一趟流程试跑的结果原样打出来（半路停了也打出已写下的）
 #   IDS=… ssh <服务器> 'bash -s' -- item-raw < myfnb/trial-understand-run.sh   这几个条目最近写稿那一步的模型原样回复（只读）
 #   ssh <服务器> 'bash -s' -- raw    < myfnb/trial-understand-run.sh   最近 3 小时理解一步失败的回执原样输出，和之前 7 天的成败数对照
@@ -79,6 +81,24 @@ case "${1:-}" in
     cd /opt/myfnbguide
     sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
       worker node myfnb/price-deepseek-2026-10-24.ts $([ "$1" = price-apply ] && echo --apply) 2>&1 | grep --line-buffered -v '"level"'
+    ;;
+  podcasts|podcasts-apply)
+    # 按简介分析过的播客放回逐字稿（myfnb/restore-podcasts-2026-10-24.ts）：podcasts 列出，podcasts-apply 放回（LIMIT 限期数）
+    [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
+    sudo git -C "$DIR" fetch -q origin "$BRANCH"
+    sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
+    cd /opt/myfnbguide
+    sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
+      worker node myfnb/restore-podcasts-2026-10-24.ts $([ "$1" = podcasts-apply ] && echo --apply) $([ -n "${LIMIT:-}" ] && echo --limit "$LIMIT") 2>&1 | grep --line-buffered -v '"level"'
+    ;;
+  switch-check|switch-check-apply|switch-check-back)
+    # 核对员换 flash（myfnb/switch-check-2026-10-24.ts）：switch-check 只看，-apply 换，-back 换回默认
+    [ -d "$DIR/.git" ] || sudo git clone -q https://github.com/1204kay/myfnbguide.git "$DIR"
+    sudo git -C "$DIR" fetch -q origin "$BRANCH"
+    sudo git -C "$DIR" checkout -q -B trial FETCH_HEAD
+    cd /opt/myfnbguide
+    sudo docker compose run --rm -T -v $DIR/myfnb:/app/myfnb:ro \
+      worker node myfnb/switch-check-2026-10-24.ts $([ "$1" = switch-check-apply ] && echo --apply) $([ "$1" = switch-check-back ] && echo --back) 2>&1 | grep --line-buffered -v '"level"'
     ;;
   hide|hide-apply)
     # 付费墙 2 条撤下（myfnb/hide-paywall-2026-10-23.ts）：hide 预览，hide-apply 执行
@@ -196,7 +216,7 @@ case "${1:-}" in
       SELECT status, count(*) FROM receipts WHERE purpose = 'understand_article'
         AND created_at BETWEEN now() - interval '7 days 3 hours' AND now() - interval '3 hours' GROUP BY status;"
     ;;
-  *) echo "用法：start | status | pack | all | check | pipeline | price | price-apply | check-result | check-status | fix | fix-apply | hide | hide-apply | old-check | old-apply | old-audit | recheck-fix | recheck-fix-apply | country-fix | country-fix-apply | raw"; exit 1 ;;
+  *) echo "用法：start | status | pack | all | check | pipeline | price | price-apply | podcasts | podcasts-apply | switch-check | switch-check-apply | switch-check-back | check-result | check-status | fix | fix-apply | hide | hide-apply | old-check | old-apply | old-audit | recheck-fix | recheck-fix-apply | country-fix | country-fix-apply | raw"; exit 1 ;;
 esac
 }
 

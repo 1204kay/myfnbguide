@@ -41,6 +41,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
     path: `/story/${s.publicId}`,
     image: `/og/stories/${s.publicId}.png`,
     type: "article",
+    // MYFNB: a single-report story repeats its item page; only stories with two or more reports are indexed (myfnb/DIFFERENCES.md 「事件页」).
+    noindex: s.reportCount < 2,
     jsonLd: [
       storyLd(s),
       breadcrumbLd([{ name: SITE.name, path: "/" }, ...UP.crumbs, { name: s.title, path: `/story/${s.publicId}` }]),

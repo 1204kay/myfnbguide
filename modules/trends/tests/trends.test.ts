@@ -1,6 +1,6 @@
 // The weekly trends (backend/compose.ts): failure cases are a topic told by fewer than three publishers (two feeds of
 // one publisher count once), a sentence naming what its report does not, a sentence the checker still finds wrong
-// leaving a topic short, a week filled in after the newest weekly (§15), and a page showing a week with nothing.
+// leaving a topic short, the reports of a topic the find call left out, a week filled in after the newest weekly (§15), and a page showing a week with nothing.
 import { editionAt, pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -12,7 +12,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import checker from "@aihot/checker/server";
 import trends from "../server.ts";
-import { composeWeek, countTopics, lineGrounded, weekToCompose, type PoolItem } from "../backend/compose.ts";
+import { composeWeek, countTopics, lineGrounded, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
 import { publisherOf } from "../backend/publishers.ts";
 
 const T = tag();
@@ -37,6 +37,11 @@ const model = await stub((_hit, req) => {
   }
   const n = numbers(user);
   const at = (...titles: string[]) => titles.map((t) => n.get(t)!);
+  if (system.includes("只列出了最明显的几条")) {
+    asked.push("gather");
+    // The third and fourth report of 店面变小, which the find call left out.
+    return answer({ topics: [{ n: 1, items: at("门店丙", "门店丁") }] });
+  }
   if (system.includes("把它们摆在一起")) {
     asked.push("write");
     const lines = [...n.keys()].map((t, i) => ({ n: i + 1, text: t === "门店丁" ? "门店丁说 Acme 开了 845 家。" : `${t.replace(/-.*/, "")}说了这件事。` }));
@@ -44,7 +49,7 @@ const model = await stub((_hit, req) => {
   }
   asked.push("find");
   return answer({ topics: [
-    { name: "店面变小", items: at("门店甲", "门店乙", "门店丙", "门店丁"), why: "" },
+    { name: "店面变小", items: at("门店甲", "门店乙"), why: "" },
     { name: "两家讲的", items: at("双店甲", "双店乙", "双店丙"), why: "" },
     { name: "小店涨价", items: at("小店甲", "小店乙", "小店丙"), why: "" },
   ] });
@@ -89,6 +94,11 @@ test("publishers are counted by name, and a topic with fewer than three is left 
   assert.deepEqual(countTopics([{ name: "x", items: [1, 2, 3, 9] }], pool), { kept: [], dropped: [{ name: "x", ids: ["0", "1", "2"], why: "只有 2 家来源" }] });
 });
 
+test("the gather call adds to a topic's reports, never takes any away, and skips no topic", () => {
+  const found = [{ name: "a", items: [1, 2] }, { name: "b", items: [5] }];
+  assert.deepEqual(withGathered(found, [{ n: 1, items: [2, 3] }, { n: 9, items: [4] }]), [{ name: "a", items: [1, 2, 3] }, { name: "b", items: [5] }]);
+});
+
 test("a sentence names only what its report names, and keeps to its length", () => {
   const item: PoolItem = { id: "1", title: "门店甲开了 845 家", summary: "Acme 的新店", sourceId: "", sourceName: "", publisher: "" };
   assert.ok(lineGrounded("门店甲说 Acme 开了 845 家。", item));
@@ -99,7 +109,7 @@ test("a sentence names only what its report names, and keeps to its length", () 
 
 test("a week's topics are found, written, checked, kept once, and shown under its weekly", async () => {
   assert.deepEqual(await composeWeek(KEY, START, END), { topics: 1, dropped: 2, pool: 10 });
-  assert.deepEqual(asked.filter((a) => a !== "check"), ["find", "write", "write"], "the topic two publishers told is not written");
+  assert.deepEqual(asked.filter((a) => a !== "check"), ["find", "gather", "write", "write"], "the topic two publishers told is not written");
   const [row] = await sql<{ topics: Array<{ heading: string; lines: Array<{ text: string }> }>; dropped: Array<{ name: string; why: string }> }[]>`SELECT topics, dropped FROM trends_issues WHERE key = ${KEY}`;
   assert.deepEqual(row!.topics.map((t) => [t.heading, t.lines.map((l) => l.text)]), [["店面越开越小", ["门店甲说了这件事。", "门店乙把店面缩小了一半。", "门店丙说了这件事。"]]], "门店丁's sentence names what its report does not; 门店乙's is mended");
   assert.deepEqual(row!.dropped.map((d) => [d.name, d.why]), [["两家讲的", "只有 2 家来源"], ["小店涨价", "核对后只剩 2 家来源"]]);

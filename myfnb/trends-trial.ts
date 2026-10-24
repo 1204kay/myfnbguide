@@ -21,7 +21,11 @@ try {
     for (const l of t.lines) console.log(`- ${byId.get(l.id)?.sourceName}：${l.text}（${l.id}）`);
   }
   for (const d of dropped) console.log(`\n不发：${d.name}（${d.why}）${d.ids.map((id) => byId.get(id)?.sourceName).join("、")}`);
-  const [cost] = await sql<{ n: number; usd: string | null }[]>`SELECT count(*)::int AS n, sum(cost)::text AS usd FROM receipts WHERE id = ANY(${receipts})`;
+  // DeepSeek's receipts leave cost empty: usage times the price table, as myfnb/trial-sources.ts (#74).
+  const [cost] = await sql<{ n: number; usd: string | null }[]>`
+    SELECT count(*)::int AS n, sum(coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0))::text AS usd
+    FROM receipts r LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true
+    WHERE r.id = ANY(${receipts})`;
   console.log(`\n调用 ${cost?.n ?? 0} 次，US$${cost?.usd ?? "?"}`);
 } finally {
   await closeDb();

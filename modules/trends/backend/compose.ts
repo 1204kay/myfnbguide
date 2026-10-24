@@ -2,6 +2,9 @@
 // sources in a week, each source's report in one sentence of its own, no conclusion of ours. The grouping step
 // cannot catch these (10-24 replay: recall 0/7), so they are looked for here, once a week, over the whole pool:
 //   1. find: one call reads every listed report of the week (title and summary) and names the things 3+ sources told;
+//      gather: a second call reads them all again for every topic found and lists each report that tells it. One call
+//      names the topics but lists only the plainest few of their reports (10-24 trial: ten topics, each one report
+//      short of three publishers, the third in the sample's hand count every time);
 //   2. the publishers are counted here, not by the model (MIN_PUBLISHERS);
 //   3. write: one call a topic, one sentence a report, from that report's title and summary;
 //   4. each sentence must name only what its report names (grounded, the weekly overview's check), then goes to the
@@ -32,8 +35,9 @@ const MAX_LINE = 120;
 
 const prompt = (name: string) => promptFromText(`trends/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"));
 const FIND = prompt("find");
+const GATHER = prompt("gather");
 const WRITE = prompt("write");
-export const TRENDS_VERSION = `trends@${createHash("sha256").update(FIND).update(WRITE).digest("hex").slice(0, 10)}`;
+export const TRENDS_VERSION = `trends@${createHash("sha256").update(FIND).update(GATHER).update(WRITE).digest("hex").slice(0, 10)}`;
 
 export interface PoolItem { id: string; title: string; summary: string | null; sourceId: string; sourceName: string; publisher: string }
 export interface Topic { heading: string; lines: Array<{ id: string; text: string }> }
@@ -87,6 +91,7 @@ export function lineGrounded(text: string, item: PoolItem): boolean {
 }
 
 const FindSchema = z.object({ topics: z.array(z.object({ name: z.string(), items: z.array(z.coerce.number().int()), why: z.string().catch("") })) });
+const GatherSchema = z.object({ topics: z.array(z.object({ n: z.coerce.number().int(), items: z.array(z.coerce.number().int()) })) });
 const WriteSchema = z.object({ heading: z.string(), lines: z.array(z.object({ n: z.coerce.number().int(), text: z.string() })) });
 
 const itemLine = (p: PoolItem, n: number) => `[${n}] ${p.sourceName} | ${p.title} | ${(p.summary ?? "").replace(/\s+/g, " ")}`;
@@ -107,6 +112,23 @@ async function checkLine(item: PoolItem, text: string, subject: string, receipts
   return c.held || c.titleZh !== item.title || lines.length !== 1 ? null : lines[0]!;
 }
 
+/** Each topic with every report the gather call lists for it, its own reports kept (a topic it skips keeps those). */
+export function withGathered<T extends { items: number[] }>(found: T[], answer: Array<{ n: number; items: number[] }>): T[] {
+  return found.map((t, i) => ({ ...t, items: [...new Set([...t.items, ...answer.filter((a) => a.n === i + 1).flatMap((a) => a.items)])] }));
+}
+
+async function gather(found: Array<{ name: string; items: number[]; why: string }>, pool: PoolItem[], model: string, subject: string, receipts: number[]) {
+  if (!found.length) return found;
+  const topics = found.map((t, i) => `(${i + 1}) ${t.name}：${t.why}`).join("\n");
+  const res = await chatJson({
+    model, purpose: "trends_gather", subject, promptVersion: TRENDS_VERSION, system: GATHER,
+    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
+  });
+  receipts.push(res.receiptId);
+  await completeReceipt(sql, res.receiptId);
+  return withGathered(found, res.data.topics);
+}
+
 /** Find, write and check one week's topics (paid calls, nothing kept: myfnb/trends-trial.ts reads it as it is). */
 export async function writeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: Topic[]; dropped: Dropped[]; receipts: number[]; pool: PoolItem[] }> {
   const pool = await weekPool(startDate, endDate);
@@ -122,7 +144,8 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
     await completeReceipt(sql, res.receiptId);
     return res.data;
   })());
-  const { kept, dropped } = countTopics(found.topics, pool);
+  const gathered = await gather(found.topics, pool, model, subject, receipts);
+  const { kept, dropped } = countTopics(gathered, pool);
   const byId = new Map(pool.map((p) => [p.id, p]));
   const topics: Topic[] = [];
   for (const t of kept) {

@@ -1,0 +1,1959 @@
+{
+"$comment": "2026-10-24 全量试吃第一轮补判：第一轮（trial-full-2026-10-24.json）撞了模型调用每小时上限，这些订阅有条目没判、判了的又都没过预筛，所以还不能算淘汰。照第一轮跑法补（--per 6）：判过的会直接用已有回执，不再收费。",
+"volume": {
+"N": {
+"feeds": 44,
+"perDay": 453
+},
+"R": {
+"feeds": 280,
+"perDay": 50
+}
+},
+"feeds": [
+{
+"group": "N",
+"name": "中華經濟研究院（中国台湾 · 研究机构）",
+"feedUrl": "https://www.cier.edu.tw/feed/",
+"perDay": 1.33
+},
+{
+"group": "N",
+"name": "PTT 美食板 Food（中国台湾 · 社区）",
+"feedUrl": "https://www.ptt.cc/atom/Food.xml",
+"perDay": 1.82
+},
+{
+"group": "N",
+"name": "PTT 酒板 Wine（中国台湾 · 社区）",
+"feedUrl": "https://www.ptt.cc/atom/Wine.xml",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Tecnovino（西班牙葡萄酒业）",
+"feedUrl": "https://www.tecnovino.com/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Foodmonitor（瑞典食品零售新闻）",
+"feedUrl": "https://foodmonitor.se/index.php?format=feed&type=rss",
+"perDay": 2.62
+},
+{
+"group": "N",
+"name": "Klimato Insights（瑞典餐饮碳标签）",
+"feedUrl": "https://klimato.com/klimato-insights/rss.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "SCB 统计新闻（瑞典统计局）",
+"feedUrl": "https://www.scb.se/feed/statistiknyheter",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "핀포인트뉴스（韩国 · 经济媒体）",
+"feedUrl": "https://www.pinpointnews.co.kr/rss/allArticle.xml",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "Casa BRUTUS（日本 · 设计生活杂志）",
+"feedUrl": "https://casabrutus.com/feed",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "BRUTUS（日本 · 生活杂志）",
+"feedUrl": "https://brutus.jp/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "GetNavi web（日本 · 商品资讯）",
+"feedUrl": "https://getnavi.jp/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "HRog（日本 · 人力资源业界媒体）",
+"feedUrl": "https://hrog.net/feed/",
+"perDay": 1.11
+},
+{
+"group": "N",
+"name": "FastGrow（日本 · 创业媒体）",
+"feedUrl": "https://www.fastgrow.jp/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "博報堂生活総研（日本 · 生活者研究）",
+"feedUrl": "https://seikatsusoken.jp/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "介護ニュースJoint（日本 · 养老产业媒体）",
+"feedUrl": "https://www.joint-kaigo.com/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "全日本菓子協会（日本 · 协会）",
+"feedUrl": "https://zenkaren.net/feed/",
+"perDay": 3.33
+},
+{
+"group": "N",
+"name": "秘鲁华人协会 APCH",
+"feedUrl": "https://apch.com.pe/feed/",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Jackson Lewis",
+"feedUrl": "https://www.jacksonlewis.com/rss.xml",
+"perDay": 0.67
+},
+{
+"group": "N",
+"name": "El Diario NY",
+"feedUrl": "https://eldiariony.com/feed/",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "La Raza Chicago",
+"feedUrl": "https://laraza.com/feed/",
+"perDay": 1.61
+},
+{
+"group": "N",
+"name": "La Opinión",
+"feedUrl": "https://laopinion.com/feed/",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "El Tiempo Latino",
+"feedUrl": "https://eltiempolatino.com/rss/",
+"perDay": 15.0
+},
+{
+"group": "N",
+"name": "USHCC 美国西语裔商会",
+"feedUrl": "https://www.ushcc.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "What Now · Restaurants",
+"feedUrl": "https://whatnow.com/category/restaurants/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Food Tank",
+"feedUrl": "https://foodtank.com/feed/",
+"perDay": 1.18
+},
+{
+"group": "N",
+"name": "Nosh",
+"feedUrl": "https://www.nosh.com/feed/",
+"perDay": 3.33
+},
+{
+"group": "N",
+"name": "Federal Reserve Board",
+"feedUrl": "https://www.federalreserve.gov/feeds/press_all.xml",
+"perDay": 0.57
+},
+{
+"group": "N",
+"name": "Rouxbe 博客",
+"feedUrl": "https://blog.rouxbe.com/rss/",
+"perDay": 0.38
+},
+{
+"group": "N",
+"name": "$1 is Not Enough",
+"feedUrl": "https://rss.buzzsprout.com/2634166.rss",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "亚洲时报（马来西亚沙巴 · 华文综合报）",
+"feedUrl": "https://www.asiatimes.com.my/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Khaosod 经济版（泰国 · 泰文报经济栏目）",
+"feedUrl": "https://www.khaosod.co.th/economics/feed",
+"perDay": 25.0
+},
+{
+"group": "N",
+"name": "The Thaiger 商业版（泰国 · 英文媒体）",
+"feedUrl": "https://thethaiger.com/news/business/feed",
+"perDay": 0.59
+},
+{
+"group": "N",
+"name": "Khaosod English（泰国 · 英文综合媒体）",
+"feedUrl": "https://www.khaosodenglish.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Techsauce（泰国 · 科技商业媒体）",
+"feedUrl": "https://techsauce.co/feed",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "The Story Thailand（泰国 · 商业故事媒体）",
+"feedUrl": "https://www.thestorythailand.com/feed/",
+"perDay": 11.0
+},
+{
+"group": "N",
+"name": "泰国头条新闻（泰国 · 华文媒体）",
+"feedUrl": "https://www.thaiheadlines.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Tạp chí Công Thương（越南 · 工贸部杂志）",
+"feedUrl": "https://tapchicongthuong.vn/rss/home.rss",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "Dân trí 商业版（越南 · 综合报经济栏目）",
+"feedUrl": "https://dantri.com.vn/rss/kinh-doanh.rss",
+"perDay": 33.33
+},
+{
+"group": "N",
+"name": "Salika（泰国 · 商业与数字媒体）",
+"feedUrl": "https://www.salika.co/feed/",
+"perDay": 0.5
+},
+{
+"group": "N",
+"name": "VietnamNet 商业版（越南 · 综合报经济栏目）",
+"feedUrl": "https://vietnamnet.vn/rss/kinh-doanh.rss",
+"perDay": 22.04
+},
+{
+"group": "N",
+"name": "Nhịp sống kinh doanh（越南 · 商业媒体）",
+"feedUrl": "https://nhipsongkinhdoanh.vn/rss/home.rss",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "NZIER（新西兰 · 协会）",
+"feedUrl": "https://www.nzier.org.nz/news/rss.xml",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "50 Shades of Hospitality（澳大利亚 · 播客）",
+"feedUrl": "https://rss.buzzsprout.com/2096231.rss",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "RaboResearch Food & Agribusiness AU/NZ（澳大利亚 · 播客）",
+"feedUrl": "https://rss.libsyn.com/shows/115180/destinations/653510.xml",
+"perDay": 0.2
+},
+{
+"group": "R",
+"name": "British Murders with Stuart Blues",
+"feedUrl": "https://feeds.acast.com/public/shows/67c198ecc003bff532f5476d",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "Guia do Profissional de Hotelaria, Turismo, Restaurante e Enologia（巴西 · 餐饮行业媒体）",
+"feedUrl": "https://guiagphr.com.br/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "脱サラおやじの 安くて旨い店 放浪記（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.yasuuma.work/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "ワインのひろば（日本 · 博客名录里的条目）",
+"feedUrl": "https://wine-hiroba.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "つくりて（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.tsucurite.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "シンガポール美容師RYU（日本 · 博客名录里的条目）",
+"feedUrl": "https://ryumarco.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "ニュージーランドのカフェ情報。地元人に愛され続ける店特集（日本 · 博客名录里的条目）",
+"feedUrl": "https://nz-lifestyle.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "おひとりさま情報館（日本 · 博客名录里的条目）",
+"feedUrl": "https://yoyoyow.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "okarie cafe *:.。･:* d'Oita（日本 · 博客名录里的条目）",
+"feedUrl": "https://okariecafe.com/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "ミナトとミライの横浜・みなとみらいスローライフ（日本 · 博客名录里的条目）",
+"feedUrl": "https://yokohama-minatomirai.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "R",
+"name": "ほのぼのカフェ（日本 · 博客名录里的条目）",
+"feedUrl": "https://honobono-cafe.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "オススメGoGoGo!（日本 · 博客名录里的条目）",
+"feedUrl": "https://osusume555.tokyo/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "カレーの穴 curry-no-ana.com（日本 · 博客名录里的条目）",
+"feedUrl": "https://curry-no-ana.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "福岡市鮮魚市場内の魚料理のお店の紹介（日本 · 博客名录里的条目）",
+"feedUrl": "http://fukuoka-fresh-fish-market.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "なまらうまいべさ（日本 · 博客名录里的条目）",
+"feedUrl": "https://sapporo-zakuro.net/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "福岡県那珂川市の飲食店（日本 · 博客名录里的条目）",
+"feedUrl": "http://fukuoka-nakagawa-shop.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.56
+},
+{
+"group": "R",
+"name": "こけもも（日本 · 博客名录里的条目）",
+"feedUrl": "https://kokemomo-life.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "おいしい蕎麦、中華そばを求めて彷徨うブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://fukui-soba.com/feed",
+"perDay": 0.33
+},
+{
+"group": "R",
+"name": "大阪キタじゃーなる（日本 · 博客名录里的条目）",
+"feedUrl": "https://osakakita-journal.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "フード＆ワインの日々（日本 · 博客名录里的条目）",
+"feedUrl": "https://webleysfbayarea.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.31
+},
+{
+"group": "R",
+"name": "キャノンデールのB級食べ歩記（日本 · 博客名录里的条目）",
+"feedUrl": "https://gourmet-cannondale.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.31
+},
+{
+"group": "R",
+"name": "伊達マイラー LiCo（りこ）（日本 · 博客名录里的条目）",
+"feedUrl": "https://date-miler-lico.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Peek into Japan（日本 · 博客名录里的条目）",
+"feedUrl": "https://peekintojapan.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "ライフ アウトサイド（Life Outside）（日本 · 博客名录里的条目）",
+"feedUrl": "https://lifeoutside.tokyo/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "日刊『水と蕎麦 研究図鑑』（日本 · 博客名录里的条目）",
+"feedUrl": "https://soba-aqua.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "週末酒プレ（WEEKEND SAKE PREVIEW）（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.sake-pre.net/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "呑んでー食べてー 人生好きに生きたらいいじゃん！（日本 · 博客名录里的条目）",
+"feedUrl": "https://nonde-tabete.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "Cafe Annin（日本 · 博客名录里的条目）",
+"feedUrl": "https://cafeannin.net/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "ヨモヨモ香川を食べ歩き（日本 · 博客名录里的条目）",
+"feedUrl": "https://yomoyomo-gourmet.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "和歌山ブログ | 和歌山の魅力を発信するサイト（日本 · 博客名录里的条目）",
+"feedUrl": "https://wakayama-blog.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "孤高の千葉グルメ 深夜版〜酒場放浪記（日本 · 博客名录里的条目）",
+"feedUrl": "https://chiba-sakaba.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "おてまえ拝見！〜美味しい旅の一期一会〜（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.natsume-ichigo.xyz/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "福岡ぐるぐる（日本 · 博客名录里的条目）",
+"feedUrl": "https://fukuoka-guruguru.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "よっしー@関西グルメの食べ歩き三昧（日本 · 博客名录里的条目）",
+"feedUrl": "https://gourmetyossy-blog.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "たけネコ旅ブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://take128.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "乾杯のポータルサイトSyupo（日本 · 博客名录里的条目）",
+"feedUrl": "https://syupo.com/feed",
+"perDay": 0.47
+},
+{
+"group": "R",
+"name": "のんべえトラベル | お酒と旅行が大好きな人（日本 · 博客名录里的条目）",
+"feedUrl": "https://travel-drink.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "酒場放浪記 居酒屋周路（いざかやしゅうじ）（日本 · 博客名录里的条目）",
+"feedUrl": "https://izakayashuji.com/feed",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "野郎飯：目分量の適当料理レシピとグルメレビュー（日本 · 博客名录里的条目）",
+"feedUrl": "https://yaromeshi.com/feed/",
+"perDay": 0.24
+},
+{
+"group": "R",
+"name": "蕎麦発見記 | 干しそばをメインにしたそばブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://soba-discovery.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "山口県に住んでる人 〜地域ブログ〜（日本 · 博客名录里的条目）",
+"feedUrl": "https://yamaguchijin.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "MAX CARTERの見聞（日本 · 博客名录里的条目）",
+"feedUrl": "https://maxcarter.aaa-plaza.net/feed",
+"perDay": 0.53
+},
+{
+"group": "R",
+"name": "富豪記者ブログ（日本 · 博客名录里的条目）",
+"feedUrl": "http://fugoh-kisya.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.33
+},
+{
+"group": "R",
+"name": "めおたろぐ | めおとでおたくなふたりのろぐ。（日本 · 博客名录里的条目）",
+"feedUrl": "https://meotalog.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "MBAホルダーが保有している株主優待銘柄（日本 · 博客名录里的条目）",
+"feedUrl": "https://mbakabunushiyutai.net/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "うなぎ愛好会〜美味しいもの探訪（日本 · 博客名录里的条目）",
+"feedUrl": "https://unatan.net/?feed=rss2",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "ちちねこ仙台さんぽ（日本 · 博客名录里的条目）",
+"feedUrl": "https://titineko.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "にぎり寿司スクール 慶（日本 · 博客名录里的条目）",
+"feedUrl": "https://sushiskoolk.jp/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "FUZZY（日本 · 博客名录里的条目）",
+"feedUrl": "https://e-xistent.co.jp/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "LABタイ語学校BLOG（日本 · 博客名录里的条目）",
+"feedUrl": "https://labsk331.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "すしログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://sushi-blog.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "陳腐男のチープ飯（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.sanukiudon-ranking.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "pochの日記 | お金と旅行と食事で最高の人生にする（日本 · 博客名录里的条目）",
+"feedUrl": "https://pedicyann.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "酒場ナビ（日本 · 博客名录里的条目）",
+"feedUrl": "https://saka-navi.com/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "えっちゃんブログ | 一条工務店で建てた感想や家具・家電紹介（日本 · 博客名录里的条目）",
+"feedUrl": "https://etchanblog.com/feed/",
+"perDay": 0.18
+},
+{
+"group": "R",
+"name": "おすすめ #おうちごはん（日本 · 博客名录里的条目）",
+"feedUrl": "http://taizotamakoshi.jp/blog2/?feed=rss2",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "年の差日韓夫婦のゆるブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://untanlog.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "東京カレーディクショナリー（日本 · 博客名录里的条目）",
+"feedUrl": "https://currydictionary.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "ジャガー中嶋のテキトー日記（日本 · 博客名录里的条目）",
+"feedUrl": "https://jaguar-nakajima.com/feed",
+"perDay": 0.29
+},
+{
+"group": "R",
+"name": "ブラジルまるかじり（日本 · 博客名录里的条目）",
+"feedUrl": "https://brasil-marukajiri.com/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "おもに湘南グルメ散歩（日本 · 博客名录里的条目）",
+"feedUrl": "https://gourmet.daysnote.jp/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "インド人シェフのブログ（日本 · 博客名录里的条目）",
+"feedUrl": "http://blog.chefhariom.com/?mode=rss",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "ひなたログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://hinata-log.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "はまっち.com（日本 · 博客名录里的条目）",
+"feedUrl": "https://hamatchnews.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "東区どさんこプレス（日本 · 博客名录里的条目）",
+"feedUrl": "https://sapporo-higashiku-press.hokkaido.jp/feed",
+"perDay": 0.67
+},
+{
+"group": "R",
+"name": "大人散策辞典 ”wiki stroll”（日本 · 博客名录里的条目）",
+"feedUrl": "https://tomoaki.tokyo/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "東京ラーメンツアーズ（日本 · 博客名录里的条目）",
+"feedUrl": "https://norman.jp/ramen/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "#ルーア・ブランカグルメ（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.lua-branca.com/rss.xml",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "鴨汁せいろ〜お蕎麦や 杉うら〜（日本 · 博客名录里的条目）",
+"feedUrl": "https://osobaya-sugiura.com/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Rak Thailand タイ旅行情報局（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.rak-thailand.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "I wanna eat MEALS.（日本 · 博客名录里的条目）",
+"feedUrl": "https://iwannaeatmeals.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "グルメハンターズ（日本 · 博客名录里的条目）",
+"feedUrl": "https://gourmethunters.net/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Living in Sydney. シドニー耳寄り情報（日本 · 博客名录里的条目）",
+"feedUrl": "https://livinginsydneys.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "20代共働きパワーカップルのブログ【総合商社男×大手IT女】（日本 · 博客名录里的条目）",
+"feedUrl": "https://pawatama.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "ぐうの日々もろもろ（日本 · 博客名录里的条目）",
+"feedUrl": "https://gu-taro.net/feed",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "ブラりゆりはま（日本 · 博客名录里的条目）",
+"feedUrl": "https://yurihamatown.jugem.jp/?mode=rss",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "とんかつむさし西神店のブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://seishin-musashi.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Yaffee's Whisky Blog（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.whiskymesi.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "もんきち的生活はつづく（日本 · 博客名录里的条目）",
+"feedUrl": "https://monkichilife.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "美味是口福―大人の彩りごはん帖―（日本 · 博客名录里的条目）",
+"feedUrl": "https://wakainkyo.com/eat-around/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "三重ナビ | 三重県を中心のグルメ・イベント・お出かけ情報（日本 · 博客名录里的条目）",
+"feedUrl": "https://mienabi.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "スペアリブ・パスタ・ピザのBistrocafe712（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.cafe712.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "さちの太宰府案内 | 福岡県太宰府市の観光やカフェを紹介（日本 · 博客名录里的条目）",
+"feedUrl": "https://dazaifu-sachi.website/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Hatrip(はとりっぷ) 格安国内グルメ&観光スポット紹介（日本 · 博客名录里的条目）",
+"feedUrl": "https://hatrip-blog.me/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "チーズケーキ通信 | チーズケーキを記録するブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://cheese-cake.net/feed/",
+"perDay": 0.4
+},
+{
+"group": "R",
+"name": "自家焙煎珈琲カフェ アインの公式サイト（日本 · 博客名录里的条目）",
+"feedUrl": "https://cafe.ein.jp/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "キッチン暮らし（日本 · 博客名录里的条目）",
+"feedUrl": "https://kitchen-kurashi.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "まんぷく金沢｜〜美味しい金沢グルメでお腹いっぱい！〜（日本 · 博客名录里的条目）",
+"feedUrl": "https://manpuku-kanazawa.com/feed/",
+"perDay": 0.18
+},
+{
+"group": "R",
+"name": "消臭・脱臭ブログ 共生エアテクノ スタッフ奮闘記（日本 · 博客名录里的条目）",
+"feedUrl": "https://kyosei-staff.com/feed",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "DDM Co., Ltd.（日本 · 博客名录里的条目）",
+"feedUrl": "https://ddm.in.net/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "店舗内装工事見積り比較.com（日本 · 博客名录里的条目）",
+"feedUrl": "https://tenpo-naisoh.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "海外レンタカーBlog｜初心者向け海外ドライブ専門メディア（日本 · 博客名录里的条目）",
+"feedUrl": "https://world-roadtrip.site/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "春日井市のリサイクルショップ買取天国（日本 · 博客名录里的条目）",
+"feedUrl": "https://kaitoritengoku.com/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "とある工房の裏側で（日本 · 博客名录里的条目）",
+"feedUrl": "https://nairesasuke.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.56
+},
+{
+"group": "R",
+"name": "川越観光・食べ歩きなら川越マガジン（日本 · 博客名录里的条目）",
+"feedUrl": "https://kawagoe.fun/magazine/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "32調｜阿蘇の地域ブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://32search.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "東京の自然食品店 穀s KOKUZU（日本 · 博客名录里的条目）",
+"feedUrl": "https://kokuzu.main.jp/wp/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "飲食店店長の好き勝手（日本 · 博客名录里的条目）",
+"feedUrl": "https://horumonyakiya.com/blog/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "クロアチアワインソムリエの令和見聞録to2020（日本 · 博客名录里的条目）",
+"feedUrl": "https://modric19.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "社長ブログ 溶射屋（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.murata-brg.co.jp/feed",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "私の存在目的を考える（日本 · 博客名录里的条目）",
+"feedUrl": "https://ten.holy.jp/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "株式会社グローニティ | webの自動集客からセールスまで（日本 · 博客名录里的条目）",
+"feedUrl": "https://grownity.co.jp/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "株主優待と配当と投資で海外生活を目指す（日本 · 博客名录里的条目）",
+"feedUrl": "https://kabu-yutai.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "吾輩は牛である（日本 · 博客名录里的条目）",
+"feedUrl": "https://wagahaiwaushi.com/?feed=rss2",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "とある社長の目指すぞFire〜（日本 · 博客名录里的条目）",
+"feedUrl": "https://shunpometa.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "ぼくらのサイト4（日本 · 博客名录里的条目）",
+"feedUrl": "https://bosshonma.jugem.jp/?mode=rss",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "株式会社ｉ 社長日記（日本 · 博客名录里的条目）",
+"feedUrl": "http://i-incz.com/blog/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "日本一店長が教える「売上アップの方法」【アイシープマガジン】（日本 · 博客名录里的条目）",
+"feedUrl": "https://i-sheep.jp/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "『CEOブログ』アットライズ 服部洋二（日本 · 博客名录里的条目）",
+"feedUrl": "https://attrise.blog/ceo/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "ローズメイ社長（三代目）の日記（日本 · 博客名录里的条目）",
+"feedUrl": "https://blog.rosemay.jp/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "小学生から起業した夢実現ITコンサル社長（日本 · 博客名录里的条目）",
+"feedUrl": "https://ichimura.me/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "シェアじゃんblog（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.bigkomorow.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "el music Blog.（日本 · 博客名录里的条目）",
+"feedUrl": "https://elmusic.tokyo/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "サラリーマン卒業ブログ｜個人事業主として自由に働く実践記（日本 · 博客名录里的条目）",
+"feedUrl": "https://independentworker.net/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Suite Success: Masters of Hospitality",
+"feedUrl": "https://feeds.megaphone.fm/SLICK8410555214",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "La Storia del Giorno",
+"feedUrl": "https://feeds.megaphone.fm/MNTHA9971059106",
+"perDay": 0.58
+},
+{
+"group": "R",
+"name": "Città by Future4Cities",
+"feedUrl": "https://feeds.megaphone.fm/ISM2272736373",
+"perDay": 0.2
+},
+{
+"group": "R",
+"name": "Vintage Wolfsburg",
+"feedUrl": "https://letscast.fm/podcasts/vintage-wolfsburg-50265282/feed",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Dish",
+"feedUrl": "https://feeds.megaphone.fm/dish",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "Gastropod",
+"feedUrl": "https://feeds.megaphone.fm/VMP6255701211",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Showing Off with Brian Newman & Angie Pontani",
+"feedUrl": "https://feeds.megaphone.fm/UYIIU3835943529",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Dudes Behind the Foods with Tim Chantarangsu and David So",
+"feedUrl": "https://rss.pdrl.fm/3bc7c6/feeds.megaphone.fm/dudesbehindthefoods",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Eat Drink D-FW",
+"feedUrl": "https://feeds.megaphone.fm/eat-drink",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "ER HIER & IHMSEN",
+"feedUrl": "https://letscast.fm/podcasts/er-hier-ihmsen-40958d71/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Re:Energise from ESB",
+"feedUrl": "https://feeds.megaphone.fm/reenergise-esb",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Dating Cafe",
+"feedUrl": "https://feeds.megaphone.fm/RADIO5327046206",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "Over A Glass with Shanteh Wale, a wine & drinks podcast",
+"feedUrl": "https://feeds.megaphone.fm/EIDWD2115716140",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "スタンドバー ゆうじ",
+"feedUrl": "https://feeds.megaphone.fm/TFM8880301425",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Built Different",
+"feedUrl": "https://feeds.megaphone.fm/PODAGEN4100134995",
+"perDay": 5.71
+},
+{
+"group": "R",
+"name": "UNRESERVED with TJ Callaway",
+"feedUrl": "https://feeds.megaphone.fm/unreserved",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Restaurant Hoppen",
+"feedUrl": "https://feeds.megaphone.fm/HURRD9576447268",
+"perDay": 0.36
+},
+{
+"group": "R",
+"name": "Louisiana's Playground",
+"feedUrl": "https://feeds.megaphone.fm/HSS9717575992",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Thyroid Healthy Bites",
+"feedUrl": "https://app.kajabi.com/podcasts/2147484104/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "YKK AP presents 皆藤愛子の窓café～窓辺でcafé time～",
+"feedUrl": "https://feeds.megaphone.fm/TFM4571100890",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Alte Hasen - ein auch technischer Podcast",
+"feedUrl": "https://letscast.fm/podcasts/alte-hasen-ein-auch-technischer-podcast-8bd4a0ae/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Chef's PSA",
+"feedUrl": "https://chefspsa.com/feed/podcast/chefs-psa/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Home - Interac Corp.（来源条目里的外链 · blog-eats365）",
+"feedUrl": "https://www.interac.ca/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "The Hospitality Breakroom: Certainty Served Weekly with Inhaven",
+"feedUrl": "https://feeds.megaphone.fm/SLICK4568928062",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Payment Processing &amp; Merchant Accounts | Clearly Payments（来源条目里的外链 · blog-eats365）",
+"feedUrl": "https://www.clearlypayments.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Customer Loyalty Program | WhatsApp Automation | Pixalink（来源条目里的外链 · blog-eats365）",
+"feedUrl": "https://pixalink.io/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Home | Fine dining Stellenbosch | MERTIA Restaurant（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://mertia.co.za/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Food Indaba &#8211; Events and Talks that focus on the local food system（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://foodindaba.org/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Home - RyanHoliday.net（来源条目里的外链 · pod-a-meal-and-two-mics）",
+"feedUrl": "https://ryanholiday.net/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "CRUSH Online | Start your gourmet journey here...（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://crushmag-online.com/feed/",
+"perDay": 0.4
+},
+{
+"group": "R",
+"name": "Sustainability Institute - Sustainability Institute（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://www.sustainabilityinstitute.net/feed/",
+"perDay": 0.18
+},
+{
+"group": "R",
+"name": "Home - Bootshaus（来源条目里的外链 · pod-at-das-erfolgsrezept）",
+"feedUrl": "https://www.dasbootshaus.at/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "1000things Magazine: Inspiration für deine Freizeit（来源条目里的外链 · pod-at-das-erfolgsrezept）",
+"feedUrl": "https://www.1000thingsmagazine.com/feed/",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "Heleen Meyer: Food consultant, cookbook author, radio &amp; TV personality（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://heleenmeyer.co.za/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Heinstirred | Recipe Blog by Hein van Tonder（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://heinstirred.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Home - Landtmann（来源条目里的外链 · pod-at-das-erfolgsrezept）",
+"feedUrl": "https://www.landtmann.at/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Cafe Hummel | Ihr zweites Wohnzimmer in 1080 Wien（来源条目里的外链 · pod-at-das-erfolgsrezept）",
+"feedUrl": "https://cafehummel.at/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Dry Cleaning &amp; Laundry | University Cleaners VA（来源条目里的外链 · pod-baker-and-farmer）",
+"feedUrl": "https://universitycleanersva.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Gasthaus Napoleon in Kagran（来源条目里的外链 · pod-at-das-erfolgsrezept）",
+"feedUrl": "https://www.napoleon.wien/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Home - Katelyn James | Online Educator for Photographers and Entrepreneurs（来源条目里的外链 · pod-baker-and-farmer）",
+"feedUrl": "https://katelynjames.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Curated wine for Hampton Roads, VA - Vino Culture（来源条目里的外链 · pod-burnt-hands-perspective）",
+"feedUrl": "https://vinoculturewineshop.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Therapy in Santa Cruz and Campbell, CA | Pacific Coast Therapy（来源条目里的外链 · pod-cat-and-cloud）",
+"feedUrl": "https://pacificcoasttherapy.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Behavioral Intelligence for the People Part of Work - The Predictive Index（来源条目里的外链 · pod-cat-and-cloud）",
+"feedUrl": "https://www.predictiveindex.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Hydroponic Indoor Grow Systems | Indoor Farming Company - Babylon Micro-Farms（来源条目里的外链 · pod-baker-and-farmer）",
+"feedUrl": "https://babylonmicrofarms.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "home - TalentSmartEQ - Emotional Intelligence Company（来源条目里的外链 · pod-cat-and-cloud）",
+"feedUrl": "https://www.talentsmarteq.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Tony DiSilvestro | Business Keynote Speaker and Author（来源条目里的外链 · pod-burnt-hands-perspective）",
+"feedUrl": "https://tonydisilvestro.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "KQED | News, Radio, Podcasts, TV | Public Media for Northern California（来源条目里的外链 · pod-cat-and-cloud）",
+"feedUrl": "https://ww2.kqed.org/news/feed/",
+"perDay": 0.67
+},
+{
+"group": "R",
+"name": "Guy Kawasaki（来源条目里的外链 · pod-cat-and-cloud）",
+"feedUrl": "https://guykawasaki.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "Restauracja Wrocław - Kuchnia Polska - Degustacja - Między Mostami（来源条目里的外链 · pod-de-kirsch-royal）",
+"feedUrl": "https://miedzy-mostami.pl/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home - Sydney Fish Market（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.sydneyfishmarket.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "lvmd.cooking &#8211; Aktiv für den Berufsnachwuchs（来源条目里的外链 · pod-de-kirsch-royal）",
+"feedUrl": "https://www.lvmd.cooking/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Home - Bennelong Restaurant &amp; Bar（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.bennelong.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Gaggia - Automatic and manual coffee machines for home use（来源条目里的外链 · pod-cat-and-cloud）",
+"feedUrl": "https://www.gaggia.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Home - Demeter Österreich（来源条目里的外链 · pod-de-kirsch-royal）",
+"feedUrl": "https://www.demeter.at/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Akti - SRG Hospitality（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://srghospitality.com.au/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home - LEADERSCLUB（来源条目里的外链 · pod-de-kirsch-royal）",
+"feedUrl": "https://leadersclub.de/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "The Australian Wine Research Institute（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.awri.com.au/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Great Trails Through Victora&#039;s Wimmera Mallee | Explore the Map（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://visitwimmeramallee.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Castle Rock Estate - Website（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://castlerockestate.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Winepilot - Australia&#039;s Leading Wine Authority（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://winepilot.com/feed/",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "Tuki Retreat – Accommodation, Restaurant &amp; Farm Regional Victoria（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://tuki.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Humpty Doo Barramundi | Australian Barramundi（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.humptydoobarramundi.com.au/feed/rss2",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "The Charles Brasserie &amp; Bar（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://thecharles.sydney/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Home - Give Where You Live（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.givewhereyoulive.com.au/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Lowe Wines | Zin Food + Wine House | Weddings &amp; Events（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://lowefamilywineco.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Patina Wines - Website（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://patinawines.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "The Crafty Pint - The Home of Australian Craft Beer（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://craftypint.com/news/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Renzaglia &#8211; Boutique wines that are full of life.（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://renzagliawines.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Freshie Clubhouse | Home of Freshwater Brewing Co, Brookvale（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://freshieclubhouse.com.au/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "Mount Horrocks Wines &#8211; Clare Valley, South Australia | Stephanie Toole（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.mounthorrocks.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Mount Pleasant Wines | Historic Hunter Valley Winery &amp; Cellar Door（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.mountpleasantwines.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Sydney Bistro &amp; Brewery - Frenchies in The Cannery, Rosebery（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://frenchiesbistroandbrewery.com.au/feed",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "loulou.sydney（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://loulou.sydney/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Catering Melbourne | Top Caterers | Edge Hospitality（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.edgehospitality.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Spring Restaurant | Skye Gyngell | London（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://springrestaurant.co.uk/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Ovolo: Award-Winning Luxury Boutique Hotels in Hong Kong &amp; Australia（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://ovolohotels.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "SDG2 Advocacy Hub | Bringing people together to achieve SDG2: Zero Hunger（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://sdg2advocacyhub.org/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home - Melbourne Food and Wine Festival（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.melbournefoodandwine.com.au/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home - Technical Chefs（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://www.technicalchef.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Foodbank Australia | Ending Hunger In Australia（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://www.foodbank.org.au/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home | Alice Zaslavsky（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://alicezaslavsky.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "R",
+"name": "Adelaide Showground Farmers&#039; Market（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://adelaidefarmersmarket.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Mental Health First Aid Australia - Mental Health First Aid Australia（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://www.mhfa.com.au/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Okami Japanese Restaurant | All You Can Eat, Excellence!（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://www.okamirestaurant.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Immigration Lawyers Melbourne | Ethos Migration Lawyers（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://ethosmigration.com.au/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Bluestone Lane | Australian Cafés and Coffee | Shop Subscriptions Online（来源条目里的外链 · pod-fnb-therapy）",
+"feedUrl": "https://bluestonelane.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Gotham Bagels | NY Bagels in Chicago, Madison &amp; Lake Geneva（来源条目里的外链 · pod-my-first-restaurant）",
+"feedUrl": "https://www.gothambagels.com/rss.xml",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "SHOUTOUT ATLANTA &#8211; Support Artists &amp; Small Businesses（来源条目里的外链 · pod-food-truck-scholar）",
+"feedUrl": "https://shoutoutatlanta.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "AlterFood - alternative consommation responsable（来源条目里的外链 · pod-fr-le-mot-de-la-faim）",
+"feedUrl": "https://www.alterfood.fr/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Commercial Bank of California | CBC（来源条目里的外链 · pod-my-first-restaurant）",
+"feedUrl": "https://cbcal.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Home - FSR magazine（来源条目里的外链 · pod-qsr-uncut）",
+"feedUrl": "https://www.fsrmagazine.com/feed/",
+"perDay": 0.56
+},
+{
+"group": "R",
+"name": "Home - Curion Insights（来源条目里的外链 · pod-qsr-uncut）",
+"feedUrl": "https://curioninsights.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home - Savory Fund（来源条目里的外链 · pod-qsr-uncut）",
+"feedUrl": "https://savoryfund.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Hair Removal Experts - Shobha is an industry leader in safe &amp; effective hair（来源条目里的外链 · pod-opening-soon）",
+"feedUrl": "https://myshobha.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Restaurant Technology Guys - Restaurant Technology Insights for Multi-Unit Opera（来源条目里的外链 · pod-restaurant-growth-accelerator）",
+"feedUrl": "https://restauranttechnologyguys.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "bartaco now available for curbside pick-up and delivery（来源条目里的外链 · pod-restaurant-leaders-unplugged）",
+"feedUrl": "https://bartaco.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Tales of the Cocktail Foundation（来源条目里的外链 · pod-the-bar-business-podcast-bar-pub-owner-p）",
+"feedUrl": "https://talesofthecocktail.org/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Geeks Who Drink - Pub Quizzes（来源条目里的外链 · pod-the-bar-business-podcast-bar-pub-owner-p）",
+"feedUrl": "https://www.geekswhodrink.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Home - A Bar Above（来源条目里的外链 · pod-the-bar-business-podcast-bar-pub-owner-p）",
+"feedUrl": "https://abarabove.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "Self-Ordering Systems &amp; Kiosk Software Solutions | GRUBBRR（来源条目里的外链 · pod-qsr-uncut）",
+"feedUrl": "https://grubbrr.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Dinheiro Vivo – Notícias de Economia, Negócios e Finanças | DN（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://dinheirovivo.dn.pt/stories.rss",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Diário de Notícias（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://www.dn.pt/stories.rss",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Ovation: AI-First Guest Experience Platform for Restaurants（来源条目里的外链 · pod-restaurant-leaders-unplugged）",
+"feedUrl": "https://ovationup.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Profit First for Restaurants | Free Tools & Templates（来源条目里的外链 · pod-the-bar-business-podcast-bar-pub-owner-p）",
+"feedUrl": "https://kaseyanton.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Mobile Catering in NYC for Weddings, Parties &amp; More | Bel-Fries（来源条目里的外链 · pod-the-bottom-line-restaurants）",
+"feedUrl": "https://bel-fries.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Pew Research Center | Nonpartisan, nonadvocacy, public opinion polling and data-（来源条目里的外链 · rss-barista-magazine）",
+"feedUrl": "https://www.pewresearch.org/feed/",
+"perDay": 2.22
+},
+{
+"group": "R",
+"name": "Magazine de Negócios AHRESP | Magazine de Negócios AHRESP（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://magazineahresp.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Açoriano Oriental – O jornal dos Açores com as notícias que marcam a atualidade（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://www.acorianooriental.pt/feed/rss.xml",
+"perDay": 0.56
+},
+{
+"group": "R",
+"name": "International Development News, Breaking News, Opinion and Analysis - Devdiscour（来源条目里的外链 · rss-barista-magazine）",
+"feedUrl": "https://www.devdiscourse.com/rss/website",
+"perDay": 0.44
+},
+{
+"group": "R",
+"name": "Canal S+, televisão líder em saúde（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://saudemais.tv/rss/?feed=nacional",
+"perDay": 0.53
+},
+{
+"group": "R",
+"name": "Portal do Comércio CNC, Federações, Sindicatos, Sesc e Senac（来源条目里的外链 · rss-fbha）",
+"feedUrl": "https://portaldocomercio.org.br/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Home - Inside Climate News（来源条目里的外链 · rss-glimpse）",
+"feedUrl": "https://insideclimatenews.org/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Jornal Económico: Economia, Negócios, Política e Mercados（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://jornaleconomico.sapo.pt/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Batters, Breadings &amp; Food Mixes UK | Middleton Foods（来源条目里的外链 · rss-frymagazine）",
+"feedUrl": "https://middletonfoods.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Executive Education | A Learning Experience in London（来源条目里的外链 · rss-genius-food-purchasing）",
+"feedUrl": "https://clfi.co.uk/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "Associazione Pizza Romana &#8211; A.P.R. si propone di promuovere, difendere e s（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://associazionepizzaromana.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Recognition, Reward &amp; Benefits Platform | Rippl（来源条目里的外链 · rss-glimpse）",
+"feedUrl": "https://rippl.work/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "AlertMedia - Unified Risk Intelligence &amp; Response（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.alertmedia.com/feed/",
+"perDay": 0.24
+},
+{
+"group": "R",
+"name": "Homepage - Waico Group（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.waicogroup.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Homepage - Di Marco（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.dimarco.it/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "The Community for Homebrewers | Homebrewers Association（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "http://feeds.feedburner.com/AmericanHomebrewersAssociation",
+"perDay": 0.67
+},
+{
+"group": "R",
+"name": "Home - AIC - Associazione Italiana Celiachia（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.celiachia.it/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Homepage - ASSOTURISMO（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://assoturismo.confesercenti.it/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "AIS - Associazione Italiana Sommelier（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://aisitalia.it/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Home - GPS Brasília - Portal de Notícias do DF（来源条目里的外链 · rss-sischef）",
+"feedUrl": "https://gpsbrasilia.com.br/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Αthens Coffee Festival Το μεγαλύτερο φεστιβάλ καφέ στην Ελλάδα（来源条目里的外链 · rss-barista-magazine）",
+"feedUrl": "https://athenscoffeefestival.gr/feed/",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Francesco Selicato | Beer Blogger（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.francescoselicato.it/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Consorzio Montasio &#8211; Formaggio DOP dal sapore unico（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.montasio.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "M.A.M. Forni - Forni professionali made in italy（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.mamforni.it/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "SouBH（来源条目里的外链 · rss-sischef）",
+"feedUrl": "https://soubh.uai.com.br/feed/",
+"perDay": 0.44
+},
+{
+"group": "R",
+"name": "The Official Guide to Edinburgh &#x2d; Forever Edinburgh（来源条目里的外链 · rss-sltn）",
+"feedUrl": "https://edinburgh.org/feed/",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "飲食店向けモバイルオーダー・タブレットオーダー・POSレジ | Okage DX Platform（来源条目里的外链 · rss-tenpo-biz-column）",
+"feedUrl": "https://okagekk.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "サカーナ・ジャパン / Circana Japan / NPD（来源条目里的外链 · rss-tenpo-biz-column）",
+"feedUrl": "https://www.npdjapan.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Sabores da Cidade（来源条目里的外链 · rss-sischef）",
+"feedUrl": "https://saboresdacidade.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "IT Brief UK - Technology news for CIOs &amp; IT decision-makers（来源条目里的外链 · rss-yumapos）",
+"feedUrl": "https://itbrief.co.uk/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "インバウンド担当者のためのインバウンドニュースサイト | 訪日ラボ（来源条目里的外链 · rss-yoshitencho）",
+"feedUrl": "https://honichi.com/feed/",
+"perDay": 0.24
+},
+{
+"group": "R",
+"name": "Easy Comfort Food Recipes | Mr. Make It Happen（来源条目里的外链 · pod-burnt-hands-perspective）",
+"feedUrl": "https://mrmakeithappen.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Blog Cielo | Conteúdos para impulsionar o seu negócio（来源条目里的外链 · rss-sischef）",
+"feedUrl": "https://blog.cielo.com.br/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "COY by Chef Ryan Cole - COY Restaurant, V&amp;A Waterfront（来源条目里的外链 · pod-a-table-in-the-corner）",
+"feedUrl": "https://coyrestaurant.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "Bosworth Wines McLaren Vale. Family Owned, Organically Grown.（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://bosworthwines.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Printhie Wines（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://printhiewines.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Home - Tyson Stelzer（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.tysonstelzer.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Home - The Lane Vineyard（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://www.thelane.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Home - Bright Brewery | MountainCrafted Beer | Bright（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://brightbrewery.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Lirah Australian Made Gourmet Vinegars（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://lirah.com.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Firedoor Sydney | Award-Winning Wood-Fired Restaurant（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://firedoor.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Restaurant in McLaren Vale, South Australia | The Salopian Inn（来源条目里的外链 · pod-deep-in-the-weeds）",
+"feedUrl": "https://salopian.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "tonis EATERY Öhringen – Streetfood auf Sterne-Niveau von Toni Tänzer（来源条目里的外链 · pod-de-kirsch-royal）",
+"feedUrl": "https://tonis-eatery.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "La Wilderie - Concept store, coffee shop &amp; plantes à Lille et Saint-André（来源条目里的外链 · pod-fr-passe-moi-le-sel）",
+"feedUrl": "https://www.lawilderie.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Graphiste culinaire spécialisée food &amp; restauration | Studio Pluton（来源条目里的外链 · pod-fr-passe-moi-le-sel）",
+"feedUrl": "https://pluton.co/feed",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "SurveyMonkey: The World’s Most Popular Survey Platform（来源条目里的外链 · pod-qsr-uncut）",
+"feedUrl": "https://www.surveymonkey.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Pizza Lovers of Florida &#8211; Exploring Florida, One Slice at a Time（来源条目里的外链 · pod-pizza-king）",
+"feedUrl": "https://pizzaloversofflorida.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "Observador &ndash; Notícias, Opinião, Especiais, Explicadores e Newsletters（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://observador.pt/feed/",
+"perDay": 1.13
+},
+{
+"group": "R",
+"name": "ECO &#8211; Economia Online（来源条目里的外链 · rss-ahresp）",
+"feedUrl": "https://eco.sapo.pt/feed/",
+"perDay": 0.49
+},
+{
+"group": "R",
+"name": "The Takeout | Food is delicious.（来源条目里的外链 · rss-glimpse）",
+"feedUrl": "https://www.thetakeout.com/category/news/feed/",
+"perDay": 0.44
+},
+{
+"group": "R",
+"name": "Homepage - Linkiesta.it（来源条目里的外链 · rss-fipe）",
+"feedUrl": "https://www.linkiesta.it/feed/",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "Cronache di Birra | La testata italiana sulla birra artigianale. Notizie, eventi（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://cronachedibirra.it/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Red Hill Brewery（来源条目里的外链 · pod-dirty-linen）",
+"feedUrl": "https://www.redhillbrewery.com.au/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Proactive Food And Beverage Intelligence | Tastewise（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://tastewise.io/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "PAR Technology 博客（美国 · 服务商）",
+"feedUrl": "https://partech.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Feed Me Emily Sundberg（美国 · newsletter）",
+"feedUrl": "https://www.readfeedme.com/feed",
+"perDay": 0.44
+},
+{
+"group": "R",
+"name": "YouGov: Data Analytics &amp; Market Research Services（来源条目里的外链 · rss-yumapos）",
+"feedUrl": "https://yougov.com/en/rss",
+"perDay": 2.13
+},
+{
+"group": "R",
+"name": "Marketing Brew（美国 · newsletter）",
+"feedUrl": "https://www.marketingbrew.com/feed.xml",
+"perDay": 0.89
+},
+{
+"group": "R",
+"name": "Vittles",
+"feedUrl": "https://www.vittlesmagazine.com/feed",
+"perDay": 0.36
+},
+{
+"group": "R",
+"name": "Poppleston Allen（英国 · 酒牌律所）",
+"feedUrl": "https://www.popall.co.uk/news-publications/category/news/feed/",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "Rubix Foods（美国 · 服务商）",
+"feedUrl": "https://rubixfoods.com/blog/feed/",
+"perDay": 0.02
+}
+]
+}

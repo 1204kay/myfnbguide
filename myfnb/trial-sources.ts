@@ -11,6 +11,7 @@
 //   --cap-usd 1    回执累计到这个数就停（默认 1）
 //   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
+// 同一条（同样的标题和正文）再判会直接用已有回执、不花钱，所以撞上限停下以后，第二天用同一条命令重开就是接着跑。
 // 结尾按订阅列出判了几条、过预筛几条、入选几条，用来挑命中高的那一档。
 //   --reserve 3000 模型调用熔断（budgets 表 llm，按过去 1 小时、24 小时滚动计数，和线上共用）离上限不到这么多次就停，
 //                  给线上留余量（默认 3000）。10-24 第一轮没有这道，撞了每小时上限，1,840 条没判，线上也跟着推迟。
@@ -75,9 +76,13 @@ let spentUsd = 0;
 // 回执的 cost 栏在 DeepSeek 上是空的（10-24 第一趟：292 张全空，上限因此没起作用），花费按用量乘价格表算（同 myfnb/check.ts 的 spent）。
 const usd = sql`coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0)`;
 const price = sql`LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true`;
+// 只数这一趟真发出去的调用（receipt_attempts 和 receipts 有同样的 service、model、cost、usage 栏）：同一条再跑一次会直接用
+// 已有的回执、不再收费，分几天跑的第二天重开时，前一天判过的不该再算进上限。
+const runStart = new Date();
 const costOf = async (ids: number[]) => {
   if (!ids.length) return 0;
-  const [r] = await sql<{ usd: string | null }[]>`SELECT sum(${usd})::text AS usd FROM receipts r ${price} WHERE r.id IN ${sql(ids)}`;
+  const [r] = await sql<{ usd: string | null }[]>`
+    SELECT sum(${usd})::text AS usd FROM receipt_attempts r ${price} WHERE r.receipt_id IN ${sql(ids)} AND r.started_at >= ${runStart}`;
   return Number(r?.usd ?? 0);
 };
 // 逐条结果同时写进容器里的文件：第一趟的 ssh 连线断了，终端里的输出全丢了。

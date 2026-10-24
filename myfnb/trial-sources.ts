@@ -9,6 +9,9 @@
 //   node myfnb/trial-sources.ts --apply        抓、判，打出逐条结果和汇总
 //   --per 3        每个订阅取最新几条（默认 3）
 //   --cap-usd 1    回执累计到这个数就停（默认 1）
+//   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
+// 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
+// 结尾按订阅列出判了几条、过预筛几条、入选几条，用来挑命中高的那一档。
 // 在服务器上：ops 门 `bg myfnb/trial-sources.ts --apply`，再 `tail <编号>`。
 import { appendFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -24,11 +27,15 @@ import { fetchRss } from "@aihot/backend/sources/rss";
 import { extractFromUrl, pageFetchable } from "@aihot/backend/content/extract";
 import type { SourceRow } from "@aihot/backend/sources/types";
 
-const { values } = parseArgs({ options: { apply: { type: "boolean", default: false }, per: { type: "string", default: "3" }, "cap-usd": { type: "string", default: "1" } } });
-type Feed = { group: "G" | "S" | "R"; name: string; feedUrl: string; perDay: number };
-const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing/trial-sample-2026-10-24.json"), "utf8")) as {
-  volume: Record<Feed["group"], { feeds: number; perDay: number }>; feeds: Feed[];
+const { values } = parseArgs({ options: {
+  apply: { type: "boolean", default: false }, per: { type: "string", default: "3" }, "cap-usd": { type: "string", default: "1" },
+  sample: { type: "string", default: "trial-sample-2026-10-24.json" }, jobs: { type: "string", default: "1" },
+} });
+type Feed = { group: string; name: string; feedUrl: string; perDay: number };
+const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.sample), "utf8")) as {
+  volume: Record<string, { feeds: number; perDay: number }>; feeds: Feed[];
 };
+const groups = Object.keys(sample.volume);
 const per = Number(values.per);
 const cap = Number(values["cap-usd"]);
 
@@ -53,7 +60,7 @@ const sourceOf = (f: Feed, i: number): SourceRow => ({
 });
 
 if (!values.apply) {
-  for (const g of ["G", "S", "R"] as const) console.log(`${g}: ${sample.feeds.filter((f) => f.group === g).length} 个订阅（全组 ${sample.volume[g].feeds} 个，每天约 ${sample.volume[g].perDay} 条）`);
+  for (const g of groups) console.log(`${g}: ${sample.feeds.filter((f) => f.group === g).length} 个订阅（全组 ${sample.volume[g].feeds} 个，每天约 ${sample.volume[g].perDay} 条）`);
   console.log(`每个订阅取最新 ${per} 条，最多 ${sample.feeds.length * per} 条；加 --apply 才抓和判。`);
   await closeDb();
   process.exit(0);
@@ -74,56 +81,63 @@ const costOf = async (ids: number[]) => {
 const outFile = path.join(tmpdir(), `trial-sources-${new Date().toISOString().replace(/[:.]/g, "")}.jsonl`);
 console.log(`# 逐条结果也写在 ${outFile}`);
 
-for (const [i, f] of sample.feeds.entries()) {
-  if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
-  let items;
-  try {
-    items = (await fetchRss(sourceOf(f, i), { force: true })).candidates
-      .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0)).slice(0, per);
-  } catch (e) {
-    console.log(`! ${f.name}：抓不到（${String(e).slice(0, 80)}）`);
-    appendFileSync(outFile, `${JSON.stringify({ group: f.group, feed: f.name, fetchError: String(e).slice(0, 200) })}\n`);
-    continue;
-  }
-  for (const c of items) {
-    if (spentUsd >= cap) break;
-    let body = c.bodyText ?? null;
-    if (!body && pageFetchable(c.url, "rss")) {
-      // 和站上一样先读文章页；不用付费的 Jina 兜底，读不到就按标题和摘要判（站上那种情况会等页面）。
-      body = (await extractFromUrl(c.url, `trial:${c.url}`, {}, { paidFallback: false }).catch(() => null))?.text ?? null;
-    }
-    const id = `trial-src-${createHash("sha256").update(c.url).digest("hex").slice(0, 16)}`;
-    const a: AnalyzeInputArticle = {
-      id, revision: 1, title: c.title, url: c.url, author: c.author ?? null, publishedAt: c.publishedAt ?? null, publicationTime: c.publicationTime ?? null,
-      bodyText: body, excerpt: c.excerpt ?? null, bodyStatus: body ? "ok" : "unconfirmed", xPost: null, media: [],
-      source: { name: f.name, kind: "rss", tier: "T2", firstParty: false },
-    };
-    const row: Row = { group: f.group, feed: f.name, title: c.title, url: c.url, code: passesCode(`${c.title} ${c.excerpt ?? ""} ${c.url}`), label: null, reason: "", scores: [], selected: false, cost: 0 };
-    const ids: number[] = [];
+let next = 0;
+const worker = async () => {
+  while (next < sample.feeds.length) {
+    const i = next++;
+    const f = sample.feeds[i]!;
+    if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
+    let items;
     try {
-      const pre = await runSelectionPrefilter(a, { attemptTag: "trial-sources-1024" }, (r) => ids.push(r));
-      row.label = pre.label;
-      row.reason = pre.reason;
-      if (pre.label !== "BLOCK") {
-        const s = await runSelectionScores(a, { attemptTag: "trial-sources-1024" }, (r) => ids.push(r));
-        row.scores = s?.values ?? [];
-        row.selected = scoresSelect(s);
-      }
+      items = (await fetchRss(sourceOf(f, i), { force: true })).candidates
+        .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0)).slice(0, per);
     } catch (e) {
-      row.err = String(e).slice(0, 100);
+      console.log(`! ${f.name}：抓不到（${String(e).slice(0, 80)}）`);
+      appendFileSync(outFile, `${JSON.stringify({ group: f.group, feed: f.name, fetchError: String(e).slice(0, 200) })}\n`);
+      continue;
     }
-    for (const r of ids) await completeReceipt(sql, r);
-    row.cost = await costOf(ids);
-    spentUsd += row.cost;
-    rows.push(row);
-    appendFileSync(outFile, `${JSON.stringify(row)}\n`);
-    console.log(`${row.group} | ${row.code ? "码过" : "码挡"} | ${row.label ?? "-"} | ${row.scores.join("+") || "-"}${row.selected ? " 入选" : ""} | ${row.title.slice(0, 50).replace(/\s+/g, " ")} | ${row.url}`);
+    for (const c of items) {
+      if (spentUsd >= cap) break;
+      let body = c.bodyText ?? null;
+      if (!body && pageFetchable(c.url, "rss")) {
+        // 和站上一样先读文章页；不用付费的 Jina 兜底，读不到就按标题和摘要判（站上那种情况会等页面）。
+        body = (await extractFromUrl(c.url, `trial:${c.url}`, {}, { paidFallback: false }).catch(() => null))?.text ?? null;
+      }
+      const id = `trial-src-${createHash("sha256").update(c.url).digest("hex").slice(0, 16)}`;
+      const a: AnalyzeInputArticle = {
+        id, revision: 1, title: c.title, url: c.url, author: c.author ?? null, publishedAt: c.publishedAt ?? null, publicationTime: c.publicationTime ?? null,
+        bodyText: body, excerpt: c.excerpt ?? null, bodyStatus: body ? "ok" : "unconfirmed", xPost: null, media: [],
+        source: { name: f.name, kind: "rss", tier: "T2", firstParty: false },
+      };
+      const row: Row = { group: f.group, feed: f.name, title: c.title, url: c.url, code: passesCode(`${c.title} ${c.excerpt ?? ""} ${c.url}`), label: null, reason: "", scores: [], selected: false, cost: 0 };
+      const ids: number[] = [];
+      try {
+        const pre = await runSelectionPrefilter(a, { attemptTag: "trial-sources-1024" }, (r) => ids.push(r));
+        row.label = pre.label;
+        row.reason = pre.reason;
+        if (pre.label !== "BLOCK") {
+          const s = await runSelectionScores(a, { attemptTag: "trial-sources-1024" }, (r) => ids.push(r));
+          row.scores = s?.values ?? [];
+          row.selected = scoresSelect(s);
+        }
+      } catch (e) {
+        row.err = String(e).slice(0, 100);
+      }
+      for (const r of ids) await completeReceipt(sql, r);
+      row.cost = await costOf(ids);
+      spentUsd += row.cost;
+      rows.push(row);
+      appendFileSync(outFile, `${JSON.stringify(row)}\n`);
+      console.log(`${row.group} | ${row.code ? "码过" : "码挡"} | ${row.label ?? "-"} | ${row.scores.join("+") || "-"}${row.selected ? " 入选" : ""} | ${row.title.slice(0, 50).replace(/\s+/g, " ")} | ${row.url}`);
+    }
   }
-}
+};
+// 同时跑几个订阅时，上限在每条判完后才看，最多多花 jobs 条的钱。
+await Promise.all(Array.from({ length: Number(values.jobs) }, worker));
 
 const pct = (n: number, d: number) => (d ? `${((n / d) * 100).toFixed(0)}%` : "-");
 console.log(`\n# 汇总：${rows.length} 条，回执合计 US$${spentUsd.toFixed(3)}`);
-for (const g of ["G", "S", "R", "全部"] as const) {
+for (const g of [...groups, "全部"]) {
   const set = g === "全部" ? rows : rows.filter((r) => r.group === g);
   const judged = set.filter((r) => r.label);
   const pass = judged.filter((r) => r.label !== "BLOCK");
@@ -135,11 +149,26 @@ for (const g of ["G", "S", "R", "全部"] as const) {
   console.log(`   代码过滤放过 ${code.length}（${pct(code.length, judged.length)}）· 挡掉的里面过预筛的 ${judged.filter((r) => !r.code && r.label !== "BLOCK").length} 条、入选的 ${judged.filter((r) => !r.code && r.selected).length} 条`);
 }
 
+// 按订阅：判了几条 / 过预筛 / 入选，入选多的排前面；每天产量用来算接这个订阅每月要花多少。
+const perFeed = new Map<string, { judged: number; pass: number; sel: number }>();
+for (const r of rows.filter((r) => r.label)) {
+  const s = perFeed.get(r.feed) ?? { judged: 0, pass: 0, sel: 0 };
+  s.judged++;
+  if (r.label !== "BLOCK") s.pass++;
+  if (r.selected) s.sel++;
+  perFeed.set(r.feed, s);
+}
+console.log("\n# 按订阅（入选 / 过预筛 / 判了 · 每天约几条 · 订阅名）");
+const perDayOf = new Map(sample.feeds.map((f) => [f.name, f.perDay]));
+for (const [feed, s] of [...perFeed].sort((a, b) => b[1].sel - a[1].sel || b[1].pass - a[1].pass)) {
+  console.log(`${s.sel}\t${s.pass}\t${s.judged}\t${perDayOf.get(feed) ?? "-"}\t${feed}`);
+}
+
 // 线上最近 7 天：每一步的花费和条数，和同期过预筛、入选的文章数（只读）。
 const steps = await sql<{ purpose: string; n: string; usd: string | null }[]>`
   SELECT r.purpose, count(*)::text AS n, sum(${usd})::text AS usd FROM receipts r ${price}
   WHERE r.created_at > now() - interval '7 days' AND r.status IN ('received', 'completed') AND coalesce(r.subject, '') NOT LIKE 'article:trial-%'
-  GROUP BY r.purpose ORDER BY 3 DESC NULLS LAST`;
+  GROUP BY r.purpose ORDER BY sum(${usd}) DESC NULLS LAST`;
 console.log("\n# 线上最近 7 天每一步（回执条数 / US$）");
 for (const s of steps) console.log(`${s.purpose}\t${s.n}\t${Number(s.usd ?? 0).toFixed(3)}`);
 const [counts] = await sql<{ judged: string; pass: string; selected: string }[]>`

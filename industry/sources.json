@@ -3366,6 +3366,77 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-bloom-intelligence",
+      "name": "Bloom Intelligence 博客（美国 · 餐厅营销和回头客数据公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://bloomintelligence.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "服务商"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-caterer-licensee",
+      "name": "Caterer & Licensee（英国 · 酒馆和餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://catererlicensee.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "id": "web-chowbus-zh",
+      "name": "Chowbus 中文博客（美国 · 北美亚洲餐馆收银服务商写给华人老板的博客）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.chowbus.com/zh/blog-all",
+        "itemSelector": "div.collection-item",
+        "linkSelector": "a.blog-link-wrap",
+        "titleSelector": "h1.cb-blog-link-wrap-section-title",
+        "publishedAtSelector": "div.div-block-39",
+        "publishedAtUtcOffset": "-06:00",
+        "detail": {
+          "maxFetches": 10
+        },
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tags": [
+        "美国",
+        "服务商"
+      ]
     }
   ]
 }

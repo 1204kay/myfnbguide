@@ -7,8 +7,8 @@
 # 可以逐条看判错的条目和模型的理由；最后 myfnb/eval-selection-compare.ts 把两边并排列出来。留出集（holdout）只用来最后检查。
 # 候选提示词放在分支 eval/score-candidate 的 industry/prompts/selection-score.md。要评测的讨论串把它推到那个分支；
 # 这里只下载这一份 .md，分支上的代码不执行。评测用 main 上的脚本，在一次性容器里跑；正在运行的服务和条目不动，
-# 库里只多这次调用的回执和两次 SelectBench 记录。约 175 条，每条预筛一次（两边共用）、每边打两次分，最多约 875 次 DeepSeek 调用，
-# 约 US$0.45；每个 PR 最多跑两次，第三次先报十一。
+# 库里只多这次调用的回执和两次 SelectBench 记录。约 215 条，每条预筛一次（两边共用）、每边打两次分，最多约 1,075 次 DeepSeek 调用，
+# 约 US$0.55；每个 PR 最多跑两次，第三次先报十一。
 set -euo pipefail
 cd "$(dirname "$0")/.."
 REPO=https://github.com/1204kay/myfnbguide

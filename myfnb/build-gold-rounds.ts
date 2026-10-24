@@ -10,6 +10,7 @@
 //   capital   myfnb/labels-2026-10-24-capital.tsv  可看 select · 不看 reject
 //   country   myfnb/labels-2026-10-24-country.tsv  可看 select · 不看 reject
 //   kay3      myfnb/labels-2026-10-25-kay3.tsv     40 site items of 10-18..25 near the line, Kay's 10-25 grades
+//   kay4      myfnb/labels-2026-10-25-kay4.tsv     40 site items of 10-18..25 scored 10–41, Kay's 10-25 grades
 //   real      myfnb/labels-2026-10-25-real.tsv     the source trial's two blind checks, Kay's 10-25 grades; not in the database
 // Holdout: myfnb/labels-2026-10-25-holdout.tsv, 30 the prompt was never tuned on, for the last check only.
 // Rows not in the database (real, holdout, feed-labelled r2-…) are read from their feed as myfnb/trial-sources.ts
@@ -49,6 +50,7 @@ const cases: Case[] = [
   ...capital,
   ...country,
   ...labelled("myfnb/labels-2026-10-25-kay3.tsv", "kay3", graded),
+  ...labelled("myfnb/labels-2026-10-25-kay4.tsv", "kay4", graded),
   ...lines("myfnb/labels-2026-10-25-real.tsv").map(([key, label, feed, feedUrl, url, title]) =>
     ({ key: key!, decision: graded(label!), stratum: "real", split: "development" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
   // thin: Kay saw no content for it (the original would not open, or only a one-line blurb), so its 不进 is not his taste.

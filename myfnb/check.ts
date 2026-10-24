@@ -1,10 +1,12 @@
 // 核对员（决定记录 2026-10-23）：一个模型拿原文逐句核一份中文稿，列出问题，每个问题带改好后的整个字段。
-// 试跑用（myfnb/trial-check.ts 考试、myfnb/trial-pipeline.ts 写—核—改），还没接进 worker。
+// 试跑用（myfnb/trial-check.ts 考试、myfnb/trial-pipeline.ts 写—核—改）；worker 里的是 packages/backend/src/editorial/check.ts。
 import { z } from "zod";
 import type { AnalyzeInputArticle } from "@aihot/backend/editorial/input";
+import { withBackup } from "@aihot/backend/editorial/check";
 import { promptText, promptVersion } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { sql } from "@aihot/backend/db";
+import { CHECK_BACKUP } from "@aihot/site/models";
 
 export const Problem = z.object({
   field: z.string(), point: z.coerce.number().catch(0), quote: z.string(), kind: z.coerce.number().catch(0),
@@ -19,13 +21,14 @@ export type Draft = { title: string; lead: string; points: string[] } | { title:
 const SYSTEM = promptText("check-item");
 const VERSION = promptVersion("check-item");
 
-export async function checkDraft(model: string, a: AnalyzeInputArticle, draft: Draft, tag: string): Promise<{ problems: Problem[]; receiptId: number }> {
-  const res = await chatJson({
+/** `backup`: the model that takes over an unusable answer, as in the worker (CHECK_BACKUP); the exam passes none, to grade the model alone. */
+export async function checkDraft(model: string, a: AnalyzeInputArticle, draft: Draft, tag: string, maxTokens = 8000, backup?: string): Promise<{ problems: Problem[]; receiptId: number }> {
+  const res = await withBackup(model, backup, (model) => chatJson({
     model, purpose: "trial_check_item", subject: `article:${a.id}`, promptVersion: VERSION, system: SYSTEM,
     user: [`来源：${a.source.name}`, `原题：${a.title}`, `原文：\n${a.bodyText ?? a.excerpt ?? ""}`, `中文稿：\n${JSON.stringify(draft, null, 1)}`].join("\n\n"),
     // The default 120 s cut one of 40 drafts in the 10-23 exam (DeepSeek thinking on a long original).
-    schema: Answer, maxTokens: 8000, attemptTag: tag, timeoutMs: 300_000,
-  });
+    schema: Answer, maxTokens, attemptTag: tag, timeoutMs: 300_000,
+  }));
   return { problems: res.data.problems, receiptId: res.receiptId };
 }
 

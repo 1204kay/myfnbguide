@@ -71,6 +71,8 @@ test('dry runs leave changes pending, corrections and disappeared URLs are submi
   const [story] = await sql<{ id: number }[]>`INSERT INTO stories (public_id,title,created_at,updated_at) VALUES (${publicId},'事件','2026-10-01','2026-10-01') RETURNING id`;
   const [fact] = await sql<{ id: number }[]>`INSERT INTO facts (public_id,story_id,title) VALUES (${randomUUID()},${story!.id},'事实') RETURNING id`;
   await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'changed-story-item','primary')`;
+  await material('changed-story-second');
+  await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'changed-story-second','report')`;
   config.indexNowSubmitEnabled = false;
   globalThis.fetch = async () => { throw new Error('dry run made a network request'); };
   assert.equal((await submitIndexNow()).status, 'disabled');
@@ -93,6 +95,18 @@ test('dry runs leave changes pending, corrections and disappeared URLs are submi
   assert.ok(batches[2]!.some(url => url.endsWith(`/story/${publicId}`)), 'an old merge URL needs a recrawl');
   assert.ok(batches[2]!.some(url => url.endsWith('/items/changed-story-item')), 'a withdrawn URL needs a recrawl');
   assert.equal((await submitIndexNow()).status, 'empty');
+});
+
+test('a story enters discovery only once a second report joins it (MYFNB)', async () => {
+  await material('lone-story-item');
+  const publicId = randomUUID();
+  const [story] = await sql<{ id: number }[]>`INSERT INTO stories (public_id,title,created_at,updated_at) VALUES (${publicId},'单篇事件','2026-10-01','2026-10-01') RETURNING id`;
+  const [fact] = await sql<{ id: number }[]>`INSERT INTO facts (public_id,story_id,title) VALUES (${randomUUID()},${story!.id},'事实') RETURNING id`;
+  await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'lone-story-item','primary')`;
+  assert.ok(!(await loadDiscoveryEntries(new Date('2026-10-09'))).some(e => e.loc === `/story/${publicId}`), 'one report repeats its item page');
+  await material('lone-story-second');
+  await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'lone-story-second','report')`;
+  assert.ok((await loadDiscoveryEntries(new Date('2026-10-09'))).some(e => e.loc === `/story/${publicId}`));
 });
 
 test('batches over the service limit make progress even when every change has the same timestamp', async () => {

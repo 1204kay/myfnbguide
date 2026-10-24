@@ -3,7 +3,9 @@
 // 有严重错、或者一条要点都不剩，这条不进精选。不让写稿模型重写，也不整篇反复重核（Kay 10-23：会一直改出新错）。
 import { z } from "zod";
 import { reasonLines } from "@aihot/site";
+import { CHECK_BACKUP } from "@aihot/site/models";
 import { chatJson } from "../providers/llm.ts";
+import { ModelOutputError } from "../providers/receipts.ts";
 import type { AnalyzeInputArticle } from "./input.ts";
 import { modelFor } from "./models.ts";
 import { promptText, promptVersion } from "./prompts.ts";
@@ -107,6 +109,21 @@ export async function checkAndFix(first: Draft, ask: (d: Partial<Draft>, step: s
   return { draft, held: held || draft.points.length === 0, copyWrong: held, receiptIds };
 }
 
+/**
+ * A check whose answer is unusable (flash thinking up to the output limit, or broken JSON) is asked again of
+ * `backup` (10-24 exam: 2 of 20 drafts never came back from flash, even with 32,000 tokens). Each call keeps its
+ * own receipt with its own model, so how often the backup takes over can be counted. Any other failure goes up
+ * as it was (an unknown outcome is not paid for twice), and a check already on the backup is not asked again.
+ */
+export async function withBackup<T>(model: string, backup: string | undefined, call: (model: string) => Promise<T>): Promise<T> {
+  try {
+    return await call(model);
+  } catch (error) {
+    if (!backup || backup === model || !(error instanceof ModelOutputError)) throw error;
+    return call(backup);
+  }
+}
+
 /** The checker on a selected item's copy (title = titleZh, lead = summaryZh, points = the lines of reasonZh). */
 export async function checkCopy(a: AnalyzeInputArticle, w: { titleZh: string; summaryZh: string; reasonZh: string | null }, subject: string, attemptTag?: string): Promise<CheckResult> {
   const model = await modelFor("check");
@@ -115,12 +132,12 @@ export async function checkCopy(a: AnalyzeInputArticle, w: { titleZh: string; su
   // the points can say nothing the reader could use, so it is not selected, and nothing is paid to check it.
   if (!a.xPost && PAYWALLED_HOSTS.test(a.url) && original.trim().length < MIN_ORIGINAL) return { draft: { title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }, held: true, copyWrong: true, receiptIds: [] };
   return checkAndFix({ title: w.titleZh, lead: w.summaryZh, points: reasonLines(w.reasonZh ?? "") }, async (d, step) => {
-    const res = await chatJson({
+    const res = await withBackup(model, CHECK_BACKUP, (model) => chatJson({
       model, purpose: "check_item", subject, promptVersion: VERSION, system: CHECK_SYSTEM,
       user: [`来源：${a.source.name}`, `原题：${a.title}`, `原文：\n${original}`, `中文稿：\n${JSON.stringify(d, null, 1)}`].join("\n\n"),
       // DeepSeek thinking on a long original ran past the default 120 s once in 40 (10-23 exam).
       schema: Answer, maxTokens: 8000, timeoutMs: 300_000, attemptTag: [attemptTag, step].filter(Boolean).join(":"),
-    });
+    }));
     return { problems: res.data.problems, receiptId: res.receiptId };
   });
 }

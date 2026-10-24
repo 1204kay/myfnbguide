@@ -2,7 +2,8 @@
 // again, and a title or lead still wrong, or no point left, keeps the item out of the selection.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { checkAndFix, type Draft, type Problem } from "@aihot/backend/editorial/check";
+import { checkAndFix, withBackup, type Draft, type Problem } from "@aihot/backend/editorial/check";
+import { ModelOutputError } from "@aihot/backend/providers/receipts";
 
 const draft: Draft = { title: "标题", lead: "导读。", points: ["要点一", "要点二", "要点三"] };
 const p = (x: Partial<Problem>): Problem => ({ field: "point", point: 0, quote: "", kind: 0, severity: "serious", why: "", fix: "", ...x });
@@ -53,4 +54,17 @@ test("a fix that drops a country the sentence named is not used (10-23 batch 3: 
   assert.deepEqual([point.draft.points, point.held], [["要点一"], false]);
   const title = await checkAndFix(d, asker([p({ field: "title", fix: "火锅连锁放缓扩张" })]).ask);
   assert.deepEqual([title.draft.title, title.held, title.copyWrong], ["中国火锅连锁放缓扩张", true, true]);
+});
+
+test("an unusable answer is checked again on the backup; other failures and the backup itself are not (10-24: flash thinking to the limit)", async () => {
+  const calls: string[] = [];
+  const call = (fail: (m: string) => Error | null) => async (m: string) => { calls.push(m); const e = fail(m); if (e) throw e; return m; };
+  assert.equal(await withBackup("flash", "pro", call((m) => (m === "flash" ? new ModelOutputError("length") : null))), "pro");
+  assert.deepEqual(calls, ["flash", "pro"]);
+  calls.length = 0;
+  await assert.rejects(withBackup("flash", "pro", call(() => new Error("timed out"))), /timed out/);
+  assert.deepEqual(calls, ["flash"], "an unknown outcome is not paid for twice");
+  calls.length = 0;
+  await assert.rejects(withBackup("pro", "pro", call(() => new ModelOutputError("bad json"))), ModelOutputError);
+  assert.deepEqual(calls, ["pro"]);
 });

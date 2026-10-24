@@ -4,6 +4,8 @@
 //   --model deepseek-v4-pro-llm   核对用哪个模型（site/models.ts 里的名字），可以写多个，各考一遍
 //   --no 18 --no 06               只考这几条（编号见考卷）；不写就考全部 20 条
 //   --out /out                    这一趟的文件夹放在哪
+//   --draft 06:site --draft 07:new  只考这几份稿（编号:site 或 new），补跑没有结果的那几份用
+//   --max-tokens 20000            答案部分的输出上限（模型的思考上限另算）；10-24 flash 在 8000 下有 2 份写满
 //   不写 --apply 只列出要考多少份稿，不调模型。
 // 在服务器上（一次性容器，挂上这个分支的提示词、模型表和脚本；正在跑的 worker 不动），见 myfnb/trial-understand-run.sh 的 check。
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -21,6 +23,8 @@ const all = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] 
 const apply = args.includes("--apply");
 const models = all("--model");
 const only = all("--no");
+const drafts = all("--draft");
+const maxTokens = Number(all("--max-tokens").at(-1) ?? 8000);
 const exam = JSON.parse(readFileSync(new URL("./check-exam-2026-10-23.json", import.meta.url), "utf8")) as Exam;
 const items = exam.items.filter((it) => !only.length || only.includes(it.no));
 
@@ -29,8 +33,9 @@ const draftOf = (it: Exam["items"][number], version: "site" | "new") => version 
   ? { title: it.site.title, summary: it.site.summary, reason: it.site.reason }
   : { title: it.new.title, lead: it.new.lead, points: it.new.points };
 
-const jobs = models.flatMap((model) => items.flatMap((it) => (["site", "new"] as const).map((version) => ({ model, it, version }))));
-console.log(`考 ${models.join("、") || "（没写 --model）"}：${items.length} 条 × 2 版 = 每个模型 ${items.length * 2} 份稿${apply ? "" : "（预览，不调模型）"}`);
+const jobs = models.flatMap((model) => items.flatMap((it) => (["site", "new"] as const).map((version) => ({ model, it, version }))))
+  .filter((j) => !drafts.length || drafts.includes(`${j.it.no}:${j.version}`));
+console.log(`考 ${models.join("、") || "（没写 --model）"}：每个模型 ${jobs.length / Math.max(models.length, 1)} 份稿${apply ? "" : "（预览，不调模型）"}`);
 if (!apply || !models.length) { await stopBoss(); await closeDb(); process.exit(0); }
 
 type Result = { model: string; no: string; version: "site" | "new"; key: Key; problems: Problem[] | null; error?: string; receiptId?: number };
@@ -42,7 +47,7 @@ for (let i = 0; i < jobs.length; i += 4) {
     const a = await loadAnalyzeInput(it.id);
     if (!a) { results.push({ model, no: it.no, version, key, problems: null, error: "读不到原文" }); return; }
     try {
-      const res = await checkDraft(model, a, draftOf(it, version), `check-${version}`);
+      const res = await checkDraft(model, a, draftOf(it, version), `check-${version}`, maxTokens);
       results.push({ model, no: it.no, version, key, problems: res.problems, receiptId: res.receiptId });
       console.log(`${model} ${it.no} ${version}：严重 ${res.problems.filter((p) => p.severity === "serious").length}，轻微 ${res.problems.filter((p) => p.severity !== "serious").length}`);
     } catch (error) {

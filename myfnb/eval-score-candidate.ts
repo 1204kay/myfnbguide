@@ -11,10 +11,13 @@
 //   results, 不看 where only the totals, the deal or the funding.
 //   myfnb/labels-2026-10-24-country.tsv (round "country"): one week's reports on one country's rules, government measures and
 //   lobbying, and service companies' how-tos, for the single-country rule and vendors' compliance guides (十一 10-24).
-//   node myfnb/eval-score-candidate.ts [--rounds five,new,old,capital,country] [--small] [--max-calls 1200] [--concurrency 6]
+//   myfnb/labels-2026-10-25-real.tsv (round "real"): the two blind checks of the source trial (十一 10-24), labelled by 十一's
+//   three rules (十一 10-25, Kay「你和十一讨论」). Not in the database: each is read from its feed as myfnb/trial-sources.ts
+//   reads it (same id, so the site's half reuses the trial's receipts), or from its page when the feed has moved on.
+//   node myfnb/eval-score-candidate.ts [--rounds five,new,old,capital,country,real] [--small] [--max-calls 1200] [--concurrency 6]
 //   On the server, the --small run on the branch eval/score-candidate is myfnb/eval-score-run.sh (allowed on Kay's PC as one fixed command).
 //   --small (十一 10-24, DeepSeek nearly spent): round five whole, the first 15 必看 of round new (10-16 has only one 不看) and
-//   the first 15 不看 of round old, rounds capital and country whole. Each side is scored twice and the two averaged, as the site's selection rule does
+//   the first 15 不看 of round old, rounds capital, country and real whole. Each side is scored twice and the two averaged, as the site's selection rule does
 //   (industry/selection.ts): one score a side swung across 46 where the site's two would not (打分稳不稳, 手册 2026-10-24).
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -27,9 +30,11 @@ import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
+import { fetchRss } from "@aihot/backend/sources/rss";
+import { extractFromUrl, pageFetchable } from "@aihot/backend/content/extract";
 
-const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old,capital,country" }, small: { type: "boolean", default: false }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
-const ROUNDS = ["five", "new", "old", "capital", "country"] as const;
+const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old,capital,country,real" }, small: { type: "boolean", default: false }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
+const ROUNDS = ["five", "new", "old", "capital", "country", "real"] as const;
 const rounds = new Set(values.rounds.split(","));
 
 type Row = { id: string; label: string; round: (typeof ROUNDS)[number]; url: string };
@@ -59,6 +64,28 @@ for (const r of rows) {
   const id = r.url ? byUrl.get(r.url) : r.id;
   const a = id ? await loadAnalyzeInput(id) : null;
   if (a) cases.push({ ...r, a }); else missing++;
+}
+// Round real: key, label, feed name, feed url, item url, title.
+const real = rounds.has("real") ? readFileSync(path.join(REPO_ROOT, "myfnb/labels-2026-10-25-real.tsv"), "utf8").split(/\r?\n/)
+  .filter((l) => l.trim() && !l.startsWith("#") && !l.startsWith("key\t")).map((l) => l.split("\t")) : [];
+const feeds = new Map<string, Awaited<ReturnType<typeof fetchRss>>["candidates"]>();
+for (const [key, label, feed, feedUrl, url, title] of real) {
+  if (!feeds.has(feedUrl!)) {
+    const source = { id: "trial-eval", name: feed!, kind: "rss", config: { feedUrl }, tier: "T2", participation_mode: "editorial",
+      first_party: false, interval_minutes: 720, enabled: true, cursor: null, fail_count: 0 } as const;
+    feeds.set(feedUrl!, await fetchRss(source as never, { force: true }).then((r) => r.candidates).catch(() => []));
+  }
+  const c = feeds.get(feedUrl!)!.find((x) => x.url === url);
+  let body = c?.bodyText ?? null;
+  if (!body && pageFetchable(url!, "rss")) body = (await extractFromUrl(url!, `trial:${url}`, {}, { paidFallback: false }).catch(() => null))?.text ?? null;
+  if (!c && !body) { missing++; continue; }
+  const a: AnalyzeInputArticle = {
+    id: `trial-src-${createHash("sha256").update(url!).digest("hex").slice(0, 16)}`, revision: 1, title: c?.title ?? title!, url: url!,
+    author: c?.author ?? null, publishedAt: c?.publishedAt ?? null, publicationTime: c?.publicationTime ?? null, bodyText: body,
+    excerpt: c?.excerpt ?? null, bodyStatus: body ? "ok" : "unconfirmed", xPost: null, media: [],
+    source: { name: feed!, kind: "rss", tier: "T2", firstParty: false },
+  };
+  cases.push({ id: key!, label: label!, round: "real", url: url!, a });
 }
 // myfnb/eval-only.json, when it is in the checkout, narrows the run to a few cases by title and scores each of them
 // `times` times a side, every score printed (#67 第 3 次评测, 十一 10-24: one case 1 point over the line, scored once a side).

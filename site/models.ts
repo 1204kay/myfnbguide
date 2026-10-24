@@ -86,3 +86,10 @@ export const DEFAULTS: Record<string, string> = {
   referenceIssue: "deepseek-v4-pro-llm",
   referenceIssueCheck: "claude-opus-5-5",
 };
+
+/**
+ * 核对员拿不出能用的结果（写满输出上限还在想、JSON 坏了）时，同一份稿改用这个模型再核一次（十一 10-24，为改用
+ * deepseek-flash 准备：考试里 20 份有 2 份它一直在想、写不出结果）。核对员本来就是它时不再重问。
+ * 和框架的 fallbackFor 不同：那个只管服务商不可用、而且要换一家；这里是同一家的另一个模型接手输出坏掉的那一次。
+ */
+export const CHECK_BACKUP = "deepseek-v4-pro-llm";

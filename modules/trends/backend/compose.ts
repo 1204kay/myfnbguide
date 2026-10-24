@@ -130,7 +130,7 @@ async function gather(found: Array<{ name: string; items: number[]; why: string 
 }
 
 /** Find, write and check one week's topics (paid calls, nothing kept: myfnb/trends-trial.ts reads it as it is). */
-export async function writeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: Topic[]; dropped: Dropped[]; receipts: number[]; pool: PoolItem[] }> {
+export async function writeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: Topic[]; dropped: Dropped[]; receipts: number[]; pool: PoolItem[]; found: Array<{ name: string; found: number; gathered: number }> }> {
   const pool = await weekPool(startDate, endDate);
   const receipts: number[] = [];
   const model = await modelFor(TRENDS_STEP);
@@ -166,7 +166,9 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
     const { topic, why } = finishTopic(res.data.heading.trim() || t.name, lines, pool);
     if (topic) topics.push(topic); else dropped.push({ name: t.name, ids: t.ids, why });
   }
-  return { topics, dropped, receipts, pool };
+  // What each call listed, for the trial (myfnb/trends-trial.ts): reports the find call named, and after gathering.
+  const listed = found.topics.map((t, i) => ({ name: t.name, found: new Set(t.items).size, gathered: new Set(gathered[i]!.items).size }));
+  return { topics, dropped, receipts, pool, found: listed };
 }
 
 /** One week's topics, kept (an empty week too). */

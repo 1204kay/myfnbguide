@@ -7,8 +7,8 @@ const MARK = { viewBox: "0 -2 508 102", aspect: 4.9804, accent: "M18.1 100L0 100
 
 export function Wordmark({ size = 24, className = "", title = SITE.name }: { size?: number; className?: string; title?: string }) {
   return (
-    // `size` was the type size of the name set in text; the capitals stand about 0.7 of it.
-    <svg viewBox={MARK.viewBox} height={Math.round(size * 0.7)} width={Math.round(size * 0.7 * MARK.aspect)} className={`inline-block ${className}`} role="img" aria-label={title}>
+    // `size` is the mark's box height, as on the original site, whose letters stand about 0.9 of it (measured 10/24).
+    <svg viewBox={MARK.viewBox} height={Math.round(size * 0.9)} width={Math.round(size * 0.9 * MARK.aspect)} className={`inline-block ${className}`} role="img" aria-label={title}>
       <path d={MARK.accent} style={{ fill: "var(--accent)" }} />
       <path d={MARK.ink} fill="currentColor" />
     </svg>

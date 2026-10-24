@@ -3759,6 +3759,69 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ladyironchef",
+      "name": "Ladyironchef（新加坡 · 美食新闻和新店消息）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ladyironchef.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "新加坡",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-r-tsushin",
+      "name": "料理通信（日本 · 厨师与饮食文化媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://r-tsushin.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-dantri-kinh-doanh",
+      "name": "Dân trí 商业版（越南 · 综合报经济栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://dantri.com.vn/rss/kinh-doanh.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "越南",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

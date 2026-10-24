@@ -98,7 +98,8 @@ for (const round of ROUNDS) {
   }
 }
 console.log("# label | site | candidate | title");
-for (const x of out.filter((x) => x.c.round !== "old").sort((p, q) => (q.cand ?? -1) - (p.cand ?? -1))) {
+// Round old is long, so only the ones the candidate would let in (34 and up) are listed.
+for (const x of out.filter((x) => x.c.round !== "old" || (x.cand ?? 0) >= 34).sort((p, q) => (q.cand ?? -1) - (p.cand ?? -1))) {
   console.log(`${x.c.round} ${x.c.label} | ${x.cur ?? "-"} | ${x.cand ?? "-"} | ${x.c.a.title.slice(0, 50).replace(/\s+/g, " ")}`);
 }
 await closeDb();

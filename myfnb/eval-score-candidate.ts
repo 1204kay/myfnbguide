@@ -6,10 +6,15 @@
 //   a case relabelled this round is taken from this round). Feed-labelled rows are found by url if collected since.
 //   myfnb/labels-2026-10-23.tsv (round "five"): items the 10-23 standard (五个理由, 决定记录 2026-10-23) takes in (可看)
 //   or still keeps out (不看), each checked against its original.
-//   node myfnb/eval-score-candidate.ts [--rounds five,new,old] [--small] [--max-calls 1200] [--concurrency 6]
+//   myfnb/labels-2026-10-24-capital.tsv (round "capital"): every report of one week on results, listings, funding, revenue
+//   goals and franchise deals, for the capital rule (十一 10-24): 可看 where it shows one shop's numbers or what carried the
+//   results, 不看 where only the totals, the deal or the funding.
+//   myfnb/labels-2026-10-24-country.tsv (round "country"): one week's reports on one country's rules, government measures and
+//   lobbying, and service companies' how-tos, for the single-country rule and vendors' compliance guides (十一 10-24).
+//   node myfnb/eval-score-candidate.ts [--rounds five,new,old,capital,country] [--small] [--max-calls 1200] [--concurrency 6]
 //   On the server, the --small run on the branch eval/score-candidate is myfnb/eval-score-run.sh (allowed on Kay's PC as one fixed command).
 //   --small (十一 10-24, DeepSeek nearly spent): round five whole, the first 15 必看 of round new (10-16 has only one 不看) and
-//   the first 15 不看 of round old. Each side is scored twice and the two averaged, as the site's selection rule does
+//   the first 15 不看 of round old, rounds capital and country whole. Each side is scored twice and the two averaged, as the site's selection rule does
 //   (industry/selection.ts): one score a side swung across 46 where the site's two would not (打分稳不稳, 手册 2026-10-24).
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -23,8 +28,8 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 
-const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old" }, small: { type: "boolean", default: false }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
-const ROUNDS = ["five", "new", "old"] as const;
+const { values } = parseArgs({ options: { rounds: { type: "string", default: "five,new,old,capital,country" }, small: { type: "boolean", default: false }, "max-calls": { type: "string", default: "1200" }, concurrency: { type: "string", default: "6" } } });
+const ROUNDS = ["five", "new", "old", "capital", "country"] as const;
 const rounds = new Set(values.rounds.split(","));
 
 type Row = { id: string; label: string; round: (typeof ROUNDS)[number]; url: string };
@@ -37,8 +42,12 @@ const five = readLabels("myfnb/labels-2026-10-23.tsv", "five");
 const firstOf = (rs: Row[], label: string) => rs.filter((r) => r.label === label).slice(0, 15);
 const all16 = readLabels("myfnb/labels-2026-10-16.tsv", "new");
 const seen = new Set(all16.map((r) => r.id));
+const capital = readLabels("myfnb/labels-2026-10-24-capital.tsv", "capital");
+const country = readLabels("myfnb/labels-2026-10-24-country.tsv", "country");
+// Three of Kay's 10-02 labels are in rounds capital and country too; they count there only.
+for (const r of [...capital, ...country]) seen.add(r.id);
 const gold = readLabels("myfnb/gold-labels.tsv", "old").filter((r) => !seen.has(r.id));
-const rows = (values.small ? [...five, ...firstOf(all16, "必看"), ...firstOf(gold, "不看")] : [...five, ...all16, ...gold]).filter((r) => rounds.has(r.round));
+const rows = (values.small ? [...five, ...firstOf(all16, "必看"), ...firstOf(gold, "不看"), ...capital, ...country] : [...five, ...all16, ...gold, ...capital, ...country]).filter((r) => rounds.has(r.round));
 
 // Feed-labelled cases (r2-…, r3-…) are articles only if the source has collected that url since.
 const urls = rows.filter((r) => r.url).map((r) => r.url);

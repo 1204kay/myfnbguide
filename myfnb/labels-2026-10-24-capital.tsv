@@ -1,0 +1,18 @@
+# 资本那条噪声规则（selection-score.md「大公司的财报与业绩……」，十一 10-24 定放开一部分，手册 食客向怎么挑.md「资本那条噪声规则」）的样本。
+# 全集：10-24 公开接口 /api/v1/items?mode=all&window=7d 的 316 条里，讲财报、上市、融资、营收目标、加盟签约的全部 11 条（按标题和导读里的这些词筛出 33 条，逐条看过；CoCo 那条讲怎样挑加盟商，不讲账和业绩，不算），加 Kay 10-02 标过的两条（r2-149、r2-279，照 Kay 的标注），和十一盲看判该收的 Domino's 一条（全面搜信源的试跑样本）。
+# 可看 = 写出了一家店的账或业绩靠哪种店型、做法撑起来，新规则该收；不看 = 只有总数、融资、签约、招商或几件事的摘要，仍然不收。标注是讨论串按规则对原文判的，可看的两条都打开原文核过。
+article_id	label	split	stratum	source_id	url	title
+d085v79ppphpztar5ou0ig9gx	可看	development	2026-10-24-capital			全聚德三季报：三十多家中小型门店进生活场景，环球城市大道店砍掉 60 多道菜、80% 菜单交门店按客群调（原文核过）
+bq2gum7rddpbb2g1lkyqhqad4	可看	development	2026-10-24-capital			中国 PET 原料半年涨 43%，餐饮供应链或受波及（现已入选；讲的是进货成本，财报数字只是出处，不该被新写法压下去）
+be1h6qvhuld0vcsqjwj7eejn9	不看	development	2026-10-24-capital			一鸣食品前三季度营收、门店净减 132 家（只有公司总数和渠道占比，没有一家店的账）
+v8ovnseve4eyw0jz843x5yds4	不看	development	2026-10-24-capital			Liv Up 开暗仓，目标营收 4.5 亿雷亚尔（营收目标和投入总额）
+wyk2pjfud02vo2kiauae3usmu	不看	development	2026-10-24-capital			Liv Up 开暗仓，目标营收 2.7 亿雷亚尔（同上，另一家来源）
+qcbmxi1ggdq1flxdhqhpw02qe	不看	development	2026-10-24-capital			流浪泡泡免加盟费、每店补贴 10 万元（加盟招商）
+cyuy100mt2kycyc01iwl107dp	不看	development	2026-10-24-capital			Caprinos Pizza 签约沙特 30 家门店加盟协议（远方连锁签加盟开发协议）
+kyu4pnms4yzneqiyp17hx3gdl	不看	development	2026-10-24-capital			Auntie Anne's 第三家集装箱门店（只说投入低于传统门店，没有数字；靠近界线）
+vszc3545v0997wodj9ap3ukho	不看	development	2026-10-24-capital			全球餐饮周报：肯德基换汽水供应商、达美乐母公司聚焦澳大利亚加盟商（几件事的摘要）
+ccznu1aeafud81m9945gbghbn	不看	development	2026-10-24-capital			肯德基换汽水供应商、达美乐母公司聚焦澳大利亚加盟商（同上，另一版）
+mi0sp77z9mxdrno2yh3lhcb3h	不看	development	2026-10-24-capital			全球快餐周报：Domino's Pizza Enterprise 或把市场交给新运营商（同上，另一版）
+r2-149	不看	development	2026-10-24-capital	web-canyin88-zhuanlan	https://www.canyin88.com/zhuanlan/touzijie/2026/0929/113783.html	中国最大饺子IPO来了（Kay 10-02 标不看）
+r2-279	不看	development	2026-10-24-capital	rss-hospitality-ireland	https://www.hospitalityireland.com/general-industry/mcdonalds-outlines-8-5bn-plan-to-support-franchisees-217411	McDonald's 85 亿美元支持加盟商的计划（Kay 10-02 标不看）
+cityam-dominos	可看	development	2026-10-24-capital	cityam-hospitality	https://www.cityam.com/dominos-pizza-loses-pace-after-world-cup-rush/	Domino's 增速放缓：业绩靠新推的炸鸡系列，CEO 说鸡肉是相邻品类、用现有系统就能做（原文核过；十一盲看判该收；全面搜信源的试跑样本，库里可能没有）

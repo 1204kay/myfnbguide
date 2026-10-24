@@ -1,0 +1,24 @@
+# 单一国家那条噪声规则（selection-score.md「只在一个国家适用的规定……」）和厂商写的合规说明（「加盟招商、课程推广……供应商软文」）的样本，十一 10-24 定：
+# 全国、专门针对整个餐饮业的政府措施放开（起因：巴西政府拟豁免酒吧和餐厅的债务，十一盲看判该收），只在一个省、一个城市的照旧压（阿尔巴塞特省餐饮业劳动协议）；
+# 卖的正是规定要店家买的东西的厂商写的合规说明，算供应商软文（意大利包装商讲欧盟包装新规，十一判不该收）。
+# 这三条起因都是全面搜信源的试跑样本，来源没接，库里没有，评测量不到；这里能量的是：10-24 公开接口一周 312 条里，讲一个国家的规定、政府措施和协会游说的条目，
+# 加上服务商写的做法，看新写法有没有把不该收的放进来、把已经入选的压下去。可看的条目核过公开接口的导读。r2-307 是 Kay 10-02 标的不看（日本拟把食品消费税降到 1%，适用所有食品，不是专门针对餐饮业）。
+article_id	label	split	stratum	source_id	url	title
+o5ybq5enhfq3mxbkkqzlstbi3	可看	development	2026-10-24-country			法国参议院通过乡村售酒执照简化法案（全国、专门针对餐饮和酒馆，原文有售酒场所从 20 万家降到 3.5 万家的数；新写法该收）
+ftjtt732zr9xcoyta7mnhrwsq	可看	development	2026-10-24-country			巴西餐券卡互通、3.6% 费率上限（现已入选；全国、专门针对餐饮，有具体应对）
+lyty4cgabqdvmetl4t5fq56b2	可看	development	2026-10-24-country			巴西宪法修正案：周工时降到 42 小时（现已入选；适用所有行业，靠原文写了怎么重排班表）
+px96mvv1r6ieht7egibw3tlil	可看	development	2026-10-24-country			Glimpse 讲发票核对的四类差异（现已入选；服务商写的做法，不卖规定要店家买的东西，不该被新写法压下去）
+b2xxcd3tpmq5ktow79v7mhoot	不看	development	2026-10-24-country			悉尼市拟设特别娱乐区（只在一个城市）
+xhyibqcwir6g1k4h46fw5o3b3	不看	development	2026-10-24-country			贵州省市场监管局公布执法案例（只在一个省）
+qi18hp3etz2kkvybretkaqwrn	不看	development	2026-10-24-country			法国骚乱后政府扶持受损商铺（只给受破坏的店，不是整个餐饮业）
+mzgs3oabiabek3v2f29fk2rj1	不看	development	2026-10-24-country			法国政府公布受损门店救助措施（同上，另一篇）
+vne7vsfrjvgf0p6hu61g9j1h6	不看	development	2026-10-24-country			巴西消费税改革对团餐的影响（适用所有行业的税制，只有分类细则）
+i0s4e5a52ytd6ukax17t9pqs0	不看	development	2026-10-24-country			英国政府削减繁琐手续（适用所有行业）
+mnr4csblkk1nf444lgp7r0x79	不看	development	2026-10-24-country			英国性骚扰防治义务生效（适用所有雇主）
+ifqeen6chbxwi0suc6xkzn5b9	不看	development	2026-10-24-country			巴西选举日门店营业规定（一个国家的日程）
+t111e3re2hd85hpjt98g9e1hn	不看	development	2026-10-24-country			法国酒店餐饮业培训报销标准（行业基金的细则，不是政府措施）
+s6ne3uf6bv5s5cmj6sl6c9prf	不看	development	2026-10-24-country			爱沙尼亚协会和旅游业讨论餐饮增值税（协会讨论，不是措施）
+wtv2ata8s72pz6bb0608q75yl	不看	development	2026-10-24-country			意大利餐饮协会呼吁政策围绕服务（协会游说）
+ifywr5pe71vck5rp15q2vcec9	不看	development	2026-10-24-country			Eats365 对比 Qashier（收银系统公司拿自己和对手比）
+xrkdthg2kwsbrdjoi6lcd9w54	不看	development	2026-10-24-country			波兰卫生证明怎么办（一个国家的手续，点餐软件公司写的）
+r2-307	不看	development	2026-10-24-country	pod-jp-inshoku-ai-radio	https://podcasters.spotify.com/pod/show/m8p49s14o6/episodes/110-e3p082r	日本拟把食品消费税降到 1%、店内用餐仍是 10%（Kay 10-02 标不看）

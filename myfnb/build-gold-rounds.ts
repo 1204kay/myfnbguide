@@ -49,8 +49,9 @@ const cases: Case[] = [
   ...country,
   ...lines("myfnb/labels-2026-10-25-real.tsv").map(([key, label, feed, feedUrl, url, title]) =>
     ({ key: key!, decision: graded(label!), stratum: "real", split: "development" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
-  ...lines("myfnb/labels-2026-10-25-holdout.tsv").map(([key, label, feed, feedUrl, url, title]) =>
-    ({ key: key!, decision: label as Decision, stratum: "holdout", split: "holdout" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
+  // thin: Kay saw no content for it (the original would not open, or only a one-line blurb), so its 不进 is not his taste.
+  ...lines("myfnb/labels-2026-10-25-holdout.tsv").map(([key, label, feed, feedUrl, url, title, thin]) =>
+    ({ key: key!, decision: label as Decision, stratum: thin ? "holdout-thin" : "holdout", split: "holdout" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
 ];
 
 const byUrl = new Map((await sql<{ id: string; url: string }[]>`SELECT id, url FROM articles WHERE url IN ${sql(cases.flatMap((c) => c.url ?? []))}`)

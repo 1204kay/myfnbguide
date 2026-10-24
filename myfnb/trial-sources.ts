@@ -11,7 +11,10 @@
 //   --cap-usd 1    回执累计到这个数就停（默认 1）
 //   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
+// 同一条（同样的标题和正文）再判会直接用已有回执、不花钱，所以撞上限停下以后，第二天用同一条命令重开就是接着跑。
 // 结尾按订阅列出判了几条、过预筛几条、入选几条，用来挑命中高的那一档。
+//   --reserve 3000 模型调用熔断（budgets 表 llm，按过去 1 小时、24 小时滚动计数，和线上共用）每天离上限不到这么多次就停，
+//                  这一小时离上限不到十分之一就等，给线上留余量（默认 3000）。10-24 第一轮没有这道，撞了每小时上限，1,840 条没判，线上也跟着推迟。
 // 在服务器上：ops 门 `bg myfnb/trial-sources.ts --apply`，再 `tail <编号>`。
 import { appendFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -30,6 +33,7 @@ import type { SourceRow } from "@aihot/backend/sources/types";
 const { values } = parseArgs({ options: {
   apply: { type: "boolean", default: false }, per: { type: "string", default: "3" }, "cap-usd": { type: "string", default: "1" },
   sample: { type: "string", default: "trial-sample-2026-10-24.json" }, jobs: { type: "string", default: "1" },
+  reserve: { type: "string", default: "3000" },
 } });
 type Feed = { group: string; name: string; feedUrl: string; perDay: number };
 const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.sample), "utf8")) as {
@@ -72,21 +76,45 @@ let spentUsd = 0;
 // 回执的 cost 栏在 DeepSeek 上是空的（10-24 第一趟：292 张全空，上限因此没起作用），花费按用量乘价格表算（同 myfnb/check.ts 的 spent）。
 const usd = sql`coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0)`;
 const price = sql`LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true`;
+// 只数这一趟真发出去的调用（receipt_attempts 和 receipts 有同样的 service、model、cost、usage 栏）：同一条再跑一次会直接用
+// 已有的回执、不再收费，分几天跑的第二天重开时，前一天判过的不该再算进上限。
+const runStart = new Date();
 const costOf = async (ids: number[]) => {
   if (!ids.length) return 0;
-  const [r] = await sql<{ usd: string | null }[]>`SELECT sum(${usd})::text AS usd FROM receipts r ${price} WHERE r.id IN ${sql(ids)}`;
+  const [r] = await sql<{ usd: string | null }[]>`
+    SELECT sum(${usd})::text AS usd FROM receipt_attempts r ${price} WHERE r.receipt_id IN ${sql(ids)} AND r.started_at >= ${runStart}`;
   return Number(r?.usd ?? 0);
 };
 // 逐条结果同时写进容器里的文件：第一趟的 ssh 连线断了，终端里的输出全丢了。
 const outFile = path.join(tmpdir(), `trial-sources-${new Date().toISOString().replace(/[:.]/g, "")}.jsonl`);
 console.log(`# 逐条结果也写在 ${outFile}`);
 
+// 和 providers/receipts.ts 的 checkBudget 同一个数法；每小时的余量取每天余量的十分之一。
+const reserve = Number(values.reserve);
+const budgetLeft = async () => {
+  const [b] = await sql<{ hour: number; day: number }[]>`
+    SELECT (SELECT per_hour FROM budgets WHERE service = 'llm') - count(*) FILTER (WHERE started_at > now() - interval '1 hour') AS hour,
+           (SELECT per_day FROM budgets WHERE service = 'llm') - count(*) AS day
+    FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'`;
+  return b!;
+};
+let stopped = "";
 let next = 0;
 const worker = async () => {
   while (next < sample.feeds.length) {
     const i = next++;
     const f = sample.feeds[i]!;
     if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
+    let left = await budgetLeft();
+    // 这一小时的余量不够就等（每分钟看一次，等前一小时的调用滚出窗口）；每天的余量不够才停。
+    while (left.day >= reserve && left.hour < reserve / 10) {
+      await new Promise((r) => setTimeout(r, 60_000));
+      left = await budgetLeft();
+    }
+    if (left.day < reserve) {
+      stopped ||= `# 模型调用熔断只剩每天 ${left.day} 次、这一小时 ${left.hour} 次，给线上留 ${reserve} 次，停在第 ${i + 1} 个订阅（${f.name}）`;
+      break;
+    }
     let items;
     try {
       items = (await fetchRss(sourceOf(f, i), { force: true })).candidates
@@ -134,6 +162,7 @@ const worker = async () => {
 };
 // 同时跑几个订阅时，上限在每条判完后才看，最多多花 jobs 条的钱。
 await Promise.all(Array.from({ length: Number(values.jobs) }, worker));
+if (stopped) console.log(stopped);
 
 const pct = (n: number, d: number) => (d ? `${((n / d) * 100).toFixed(0)}%` : "-");
 console.log(`\n# 汇总：${rows.length} 条，回执合计 US$${spentUsd.toFixed(3)}`);

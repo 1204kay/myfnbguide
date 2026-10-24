@@ -1,0 +1,2235 @@
+{
+"$comment": "2026-10-24 全量试吃第二轮：第一轮至少 1 条过预筛的订阅。十一定两轮：第一轮只淘汰过预筛为 0 的，第二轮每个看 25 条再挑命中高的。第一轮判过的那几条会直接用已有回执，不再收费。补判（trial-redo）里新过预筛的订阅另列一份再跑。",
+"volume": {
+"N": {
+"feeds": 298,
+"perDay": 1163
+},
+"R": {
+"feeds": 72,
+"perDay": 18
+}
+},
+"feeds": [
+{
+"group": "N",
+"name": "FREONE ideas（台湾 · 服务商·排班）",
+"feedUrl": "https://ideas.freone.com/feed/",
+"perDay": 0.18
+},
+{
+"group": "N",
+"name": "北美餐饮通 uscanyin（海外华人·美国 · 媒体/社区）",
+"feedUrl": "https://uscanyin.com/feed",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "餐饮家 Canyinjia（海外华人·美国 · 媒体）",
+"feedUrl": "https://canyinjia.us/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "微碧愛普 餐飲專欄（台湾 · 服务商）",
+"feedUrl": "https://blog.weiby.tw/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Lisa Knows（海外华人·英国 · 律所会计博客）",
+"feedUrl": "https://lisaknows.co.uk/feed/",
+"perDay": 1.11
+},
+{
+"group": "N",
+"name": "安博力 知識中心（台湾 · 服务商·在地商家行銷）",
+"feedUrl": "https://aabore.com/feed.xml",
+"perDay": 3.76
+},
+{
+"group": "N",
+"name": "元品設計 品牌設計顧問（台湾 · 服务商·店面設計）",
+"feedUrl": "https://ypdesign.com.tw/feed/",
+"perDay": 0.49
+},
+{
+"group": "N",
+"name": "專精聯合會計師事務所（台湾 · 服务商·會計）",
+"feedUrl": "https://specializedcpa.com.tw/feed",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Onlinepos blog（丹麦 · 服务商）",
+"feedUrl": "https://onlinepos.dk/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Onslip blogg（瑞典 · 服务商）",
+"feedUrl": "https://www.onslip.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Reelo blog（印度 · 服务商）",
+"feedUrl": "https://reelo.io/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "T.A.L.K. with Kunal Vasudeva（印度 · 播客）",
+"feedUrl": "https://rss.buzzsprout.com/2350718.rss",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Avecmedia（芬兰 · 媒体）",
+"feedUrl": "https://avecmedia.fi/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "City A.M. · Hospitality（英国 · 伦敦商业日报的餐饮/酒馆版块）",
+"feedUrl": "https://www.cityam.com/category/hospitality/feed/",
+"perDay": 1.15
+},
+{
+"group": "N",
+"name": "Dagens PS · krogar 标签（瑞典 · 媒体）",
+"feedUrl": "https://www.dagensps.se/tag/krogar/feed/",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "ホットペッパーグルメ外食総研",
+"feedUrl": "https://www.hotpepper.jp/ggs/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "クロス・マーケティング 調査レポート",
+"feedUrl": "https://www.cross-m.co.jp/report/rss.xml",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "ロケットニュース24",
+"feedUrl": "https://rocketnews24.com/feed/",
+"perDay": 20.0
+},
+{
+"group": "N",
+"name": "macaroni",
+"feedUrl": "https://macaro-ni.jp/rss/pickup.rss",
+"perDay": 0.47
+},
+{
+"group": "N",
+"name": "Food in Japan",
+"feedUrl": "https://www.foodinjapan.org/feed/",
+"perDay": 2.0
+},
+{
+"group": "N",
+"name": "Eatbook News",
+"feedUrl": "https://eatbook.sg/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Ladyironchef",
+"feedUrl": "https://www.ladyironchef.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Honeycombers Singapore",
+"feedUrl": "https://thehoneycombers.com/singapore/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "ieatishootipost",
+"feedUrl": "https://ieatishootipost.sg/feed/",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "Ordinary Patrons",
+"feedUrl": "https://ordinarypatrons.com/blog/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "EatDrinkKL",
+"feedUrl": "https://eatdrinkkl.blogspot.com/feeds/posts/default",
+"perDay": 1.56
+},
+{
+"group": "N",
+"name": "Johor Kaki",
+"feedUrl": "https://johorkaki.blogspot.com/feeds/posts/default",
+"perDay": 0.81
+},
+{
+"group": "N",
+"name": "Thanh Niên Ẩm thực",
+"feedUrl": "https://thanhnien.vn/rss/doi-song/am-thuc.rss",
+"perDay": 0.78
+},
+{
+"group": "N",
+"name": "Populix",
+"feedUrl": "https://populix.co/articles/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Inquirer Lifestyle Food",
+"feedUrl": "https://lifestyle.inquirer.net/category/food/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Mashed Restaurants",
+"feedUrl": "https://www.mashed.com/category/restaurants/feed/",
+"perDay": 3.33
+},
+{
+"group": "N",
+"name": "Food Republic Restaurants",
+"feedUrl": "https://www.foodrepublic.com/category/restaurants/feed/",
+"perDay": 1.82
+},
+{
+"group": "N",
+"name": "Chowhound News",
+"feedUrl": "https://www.chowhound.com/category/news/feed/",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "MTL Blog",
+"feedUrl": "https://www.mtlblog.com/feeds/feed.rss",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Foodbeast",
+"feedUrl": "https://www.foodbeast.com/feed/",
+"perDay": 2.25
+},
+{
+"group": "N",
+"name": "LA Taco",
+"feedUrl": "https://lataco.com/feed",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "tablehopper (SF)",
+"feedUrl": "https://www.tablehopper.com/rss/",
+"perDay": 0.18
+},
+{
+"group": "N",
+"name": "Tastet",
+"feedUrl": "https://tastet.ca/feed/",
+"perDay": 2.5
+},
+{
+"group": "N",
+"name": "Harden's",
+"feedUrl": "https://www.hardens.com/feed/",
+"perDay": 2.0
+},
+{
+"group": "N",
+"name": "Halal Food Guy",
+"feedUrl": "https://halalfoodguy.co.uk/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Der Feinschmecker",
+"feedUrl": "https://www.feinschmecker.de/feed",
+"perDay": 1.07
+},
+{
+"group": "N",
+"name": "SZENE Hamburg Essen & Trinken",
+"feedUrl": "https://szene-hamburg.com/category/essen-trinken/feed/",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Mit Vergnügen",
+"feedUrl": "https://mitvergnuegen.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Gambero Rosso",
+"feedUrl": "https://www.gamberorosso.it/feed/",
+"perDay": 10.78
+},
+{
+"group": "N",
+"name": "Gault&Millau France",
+"feedUrl": "https://fr.gaultmillau.com/fr/rss/news.xml?page=1&limit=20",
+"perDay": 2.22
+},
+{
+"group": "N",
+"name": "Scatti di Gusto",
+"feedUrl": "https://www.scattidigusto.it/feed",
+"perDay": 3.0
+},
+{
+"group": "N",
+"name": "Puntarella Rossa",
+"feedUrl": "https://www.puntarellarossa.it/feed/",
+"perDay": 0.42
+},
+{
+"group": "N",
+"name": "7 Caníbales",
+"feedUrl": "https://www.7canibales.com/feed/",
+"perDay": 2.2
+},
+{
+"group": "N",
+"name": "Tapas Magazine",
+"feedUrl": "https://www.tapasmagazine.es/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Concrete Playground Brisbane",
+"feedUrl": "https://concreteplayground.com/brisbane/feed",
+"perDay": 2.5
+},
+{
+"group": "N",
+"name": "What's On (UAE)",
+"feedUrl": "https://whatson.ae/feed/",
+"perDay": 12.0
+},
+{
+"group": "N",
+"name": "BBC Good Food Middle East",
+"feedUrl": "https://www.bbcgoodfoodme.com/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "Planeta Joy",
+"feedUrl": "https://www.planetajoy.com/feed/",
+"perDay": 0.18
+},
+{
+"group": "N",
+"name": "The Locavore",
+"feedUrl": "https://thelocavore.in/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "Goya Journal",
+"feedUrl": "https://www.goya.in/blog?format=rss",
+"perDay": 0.31
+},
+{
+"group": "N",
+"name": "Home - Good Food Gold Coast",
+"feedUrl": "https://foodgoldcoast.com.au/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Home - Canadian Food Focus",
+"feedUrl": "https://canadianfoodfocus.org/feed/",
+"perDay": 0.56
+},
+{
+"group": "N",
+"name": "SAIFood: Sustainable, Agricultural Innovations & Food",
+"feedUrl": "https://saifood.ca/feed/",
+"perDay": 0.27
+},
+{
+"group": "N",
+"name": "Real Food for Real Kids - Fuelling Healthy Futures",
+"feedUrl": "https://rfrk.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "Journal – Parlor Coffee",
+"feedUrl": "https://parlorcoffee.com/blogs/news.atom",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "PT's Coffee Blog",
+"feedUrl": "https://ptscoffee.com/blogs/news.atom",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "News | Five Senses Coffee",
+"feedUrl": "https://fivesenses.com.au/blogs/news.atom",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "The Blog - Dear Green",
+"feedUrl": "https://www.deargreencoffee.com/blogs/news.atom",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Journal – John Farrer & Co (Kendal) Ltd",
+"feedUrl": "https://farrerscoffee.co.uk/blogs/blog.atom",
+"perDay": 0.6
+},
+{
+"group": "N",
+"name": "Home - Indian Food Freak",
+"feedUrl": "https://www.indianfoodfreak.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Flavor of Italy (Wendy Holloway) - Italy Podcast, Recipes, Food, Travel",
+"feedUrl": "https://flavorofitaly.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "I LOVE ITALIAN FOOD | Born to promote the authentic Italian food. With Love",
+"feedUrl": "https://iloveitalianfood.it/en/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Foodmakers - Foodmakers.it - Le storie dei protagonisti del Food",
+"feedUrl": "https://www.foodmakers.it/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Blogs | Brasa Peruvian Kitchen - Brasa Peruvian Kitchen",
+"feedUrl": "https://brasaperuvian.com/blogs/news.atom",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "kevinEats",
+"feedUrl": "http://www.kevineats.com/feeds/posts/default",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Phoenix Restaurant Reviews and Dining Guides | PhoenixBites",
+"feedUrl": "https://phoenixbites.com/feed/",
+"perDay": 0.4
+},
+{
+"group": "N",
+"name": "St. Louis Restaurant Review - St. Louis Restaurant News",
+"feedUrl": "https://stlouisrestaurantreview.com/feed/",
+"perDay": 0.48
+},
+{
+"group": "N",
+"name": "Heavy Table – Minneapolis-St. Paul and Upper Midwest Food Magazine // Feasting o",
+"feedUrl": "https://heavytable.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Right at the Fork",
+"feedUrl": "http://rightatthefork.com/shows?format=rss",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "- Andrew Talks to Chefs",
+"feedUrl": "https://andrewtalkstochefs.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Chefs' Table Society of British Columbia – Your society of BC Chefs. Belong.",
+"feedUrl": "https://chefstablesociety.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Esquire Middle East",
+"feedUrl": "https://www.esquireme.com/feed",
+"perDay": 1.07
+},
+{
+"group": "N",
+"name": "UNITE HERE（美国 · 工会）",
+"feedUrl": "https://unitehere.org/feed/",
+"perDay": 0.29
+},
+{
+"group": "N",
+"name": "BFAWU（英国 · 工会）",
+"feedUrl": "https://www.bfawu.org/feed/",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "Unite Union NZ（新西兰 · 工会）",
+"feedUrl": "https://www.unite.org.nz/blog-feed.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Resolution Foundation（英国 · 研究机构）",
+"feedUrl": "https://www.resolutionfoundation.org/feed/",
+"perDay": 0.29
+},
+{
+"group": "N",
+"name": "Hosteleo（西班牙 · 服务商）",
+"feedUrl": "https://hosteleo.com/blog/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "EFFAT（欧盟 · 工会）",
+"feedUrl": "https://effat.org/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Undercurrent News（全球 · 媒体）",
+"feedUrl": "https://www.undercurrentnews.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Foodservice Packaging Institute（美国 · 协会）",
+"feedUrl": "https://fpi.org/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Packaging Europe（全球 · 媒体）",
+"feedUrl": "https://www.packagingeurope.com/latest/rss/",
+"perDay": 7.5
+},
+{
+"group": "N",
+"name": "食品新聞（日本 · 媒体）",
+"feedUrl": "https://shokuhin.net/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "한국농어민신문（韩国 · 媒体）",
+"feedUrl": "https://cdn.agrinet.co.kr/rss/gn_rss_allArticle.xml",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "giacaphe.com",
+"feedUrl": "https://giacaphe.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "MPOB（马来西亚 · 政府）",
+"feedUrl": "https://mpob.gov.my/feed/",
+"perDay": 1.11
+},
+{
+"group": "N",
+"name": "Valencia Fruits（西班牙 · 媒体）",
+"feedUrl": "https://valenciafruits.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Les Marchés (Réussir)（法国 · 媒体）",
+"feedUrl": "https://www.reussir.fr/rss.xml",
+"perDay": 20.0
+},
+{
+"group": "N",
+"name": "Eurofish（全球 · 媒体）",
+"feedUrl": "https://eurofish.dk/feed/",
+"perDay": 1.67
+},
+{
+"group": "N",
+"name": "Infocampo（阿根廷 · 媒体）",
+"feedUrl": "https://www.infocampo.com.ar/feed/",
+"perDay": 16.0
+},
+{
+"group": "N",
+"name": "Beef Central（澳大利亚 · 媒体）",
+"feedUrl": "https://www.beefcentral.com/feed/",
+"perDay": 2.5
+},
+{
+"group": "N",
+"name": "Bisnow retail（美国 · 媒体）",
+"feedUrl": "https://www.bisnow.com/rss/all",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Commercial Observer retail（美国 · 媒体）",
+"feedUrl": "https://commercialobserver.com/category/retail/feed/",
+"perDay": 1.89
+},
+{
+"group": "N",
+"name": "Shopping Center Business（美国 · 媒体）",
+"feedUrl": "https://shoppingcenterbusiness.com/feed/",
+"perDay": 3.57
+},
+{
+"group": "N",
+"name": "Retail Insider（加拿大 · 媒体）",
+"feedUrl": "https://retail-insider.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Cushman & Wakefield（美国 · 研究机构）",
+"feedUrl": "https://www.cushmanwakefield.com/en/united-states/content-feed.xml",
+"perDay": 12.5
+},
+{
+"group": "N",
+"name": "Shopping Centre Council of Australia（澳大利亚 · 协会）",
+"feedUrl": "https://scca.org.au/feed/",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "日本ショッピングセンター協会（日本 · 协会）",
+"feedUrl": "https://www.jcsc.or.jp/feed/",
+"perDay": 0.45
+},
+{
+"group": "N",
+"name": "テンポスバスターズ",
+"feedUrl": "https://tenposbusters.co.jp/news/feed",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Requadro（意大利 · 媒体）",
+"feedUrl": "https://requadro.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Bartender at Large（美国 · 播客）",
+"feedUrl": "https://rss.libsyn.com/shows/132797/destinations/812812.xml",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "BarNinja Podcast（美国 · 播客）",
+"feedUrl": "https://rss.buzzsprout.com/808892.rss",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "MKN Küchenschnack（德国 · 播客）",
+"feedUrl": "https://rss.buzzsprout.com/997606.rss",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "ADP Research（美国 · 研究机构）",
+"feedUrl": "https://www.adpresearch.com/research/feed.xml",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "UGT FeSMC（西班牙 · 工会）",
+"feedUrl": "https://www.fesmcugt.org/feed",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "食肉通信（日本 · 媒体）",
+"feedUrl": "https://www.shokuniku.co.jp/feed",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Interempresas Alimentaria（西班牙 · 媒体）",
+"feedUrl": "https://www.interempresas.net/rss",
+"perDay": 111.0
+},
+{
+"group": "N",
+"name": "Fleischerei.de（德国 · 媒体）",
+"feedUrl": "https://www.fleischerei.de/feed/",
+"perDay": 0.87
+},
+{
+"group": "N",
+"name": "Pesceinrete（意大利 · 媒体）",
+"feedUrl": "https://www.pesceinrete.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "The Poultry Site（全球 · 媒体）",
+"feedUrl": "https://www.thepoultrysite.com/all.rss",
+"perDay": 4.11
+},
+{
+"group": "N",
+"name": "Revista Cafeicultura（巴西 · 媒体）",
+"feedUrl": "https://revistacafeicultura.com.br/feed/",
+"perDay": 3.0
+},
+{
+"group": "N",
+"name": "The Pig Site（全球 · 媒体）",
+"feedUrl": "https://www.thepigsite.com/all.rss",
+"perDay": 3.84
+},
+{
+"group": "N",
+"name": "The Cattle Site（全球 · 媒体）",
+"feedUrl": "https://www.thecattlesite.com/all.rss",
+"perDay": 4.09
+},
+{
+"group": "N",
+"name": "Fish Farmer（全球 · 媒体）",
+"feedUrl": "https://fishfarmer.affino.com/Syndication/DF.cfm?f=8&ft=10&redirected=1",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Global Seafood Alliance Advocate（全球 · 媒体）",
+"feedUrl": "https://www.globalseafood.org/advocate/feed/",
+"perDay": 1.67
+},
+{
+"group": "N",
+"name": "Grocery Dive（美国 · 媒体）",
+"feedUrl": "https://www.grocerydive.com/feeds/news/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Supply Chain Dive (food)（美国 · 媒体）",
+"feedUrl": "https://www.supplychaindive.com/feeds/news/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Perishable News（美国 · 媒体）",
+"feedUrl": "https://perishablenews.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Grain Central（澳大利亚 · 媒体）",
+"feedUrl": "https://www.graincentral.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Sheep Central（澳大利亚 · 媒体）",
+"feedUrl": "https://www.sheepcentral.com/feed/",
+"perDay": 3.33
+},
+{
+"group": "N",
+"name": "Ten-X / RealPage CRE（美国 · 研究机构）",
+"feedUrl": "https://www.realpage.com/storage/files/blog/feed/analytics20261024.xml",
+"perDay": 0.84
+},
+{
+"group": "N",
+"name": "Escoffier blog（美国 · 研究机构）",
+"feedUrl": "https://www.escoffier.edu/blog/feed/",
+"perDay": 0.37
+},
+{
+"group": "N",
+"name": "Sifted（英国 · 欧洲创投媒体）",
+"feedUrl": "https://sifted.eu/feed",
+"perDay": 6.0
+},
+{
+"group": "N",
+"name": "LatamList（拉美 · 创投媒体）",
+"feedUrl": "https://latamlist.com/feed/",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "Franchise Business（澳大利亚 · 加盟媒体）",
+"feedUrl": "https://franchisebusiness.com.au/feed/",
+"perDay": 0.36
+},
+{
+"group": "N",
+"name": "36Kr Japan（日本 · 中国商业新闻日文版）",
+"feedUrl": "https://36kr.jp/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "PR Newswire APAC · Restaurants（亚太 · 新闻稿分类订阅）",
+"feedUrl": "https://www.prnewswire.com/apac/rss/consumer-products-retail-latest-news/restaurants-list.rss",
+"perDay": 1.33
+},
+{
+"group": "N",
+"name": "Franchise Marketing Radio（美国 · 加盟播客 · 自建 WordPress）",
+"feedUrl": "https://businessradiox.com/feed/podcast/franchisemarketingradio/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Zero to Profitable Franchise（美国 · 加盟播客 · Buzzsprout）",
+"feedUrl": "https://rss.buzzsprout.com/1939809.rss",
+"perDay": 0.31
+},
+{
+"group": "N",
+"name": "Franchise Secrets Podcast（美国 · 加盟播客 · Libsyn）",
+"feedUrl": "https://franchisesecrets.libsyn.com/rss",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "The Franchise Hot Seat（美国 · 加盟播客 · Buzzsprout）",
+"feedUrl": "https://rss.buzzsprout.com/2060902.rss",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Food Safety Tech（美国 · 食品安全行业媒体）",
+"feedUrl": "https://www.foodsafetytech.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "고용노동부 정책자료（韩国 · 雇佣劳动部）",
+"feedUrl": "https://www.moel.go.kr/rss/policy.do",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "Service-Public.fr · 专业人士新闻（法国 · 政府）",
+"feedUrl": "https://www.service-public.fr/abonnements/rss/actu-actu-pro.rss",
+"perDay": 0.47
+},
+{
+"group": "N",
+"name": "Food Law Latest（英国 · 食品法规博客）",
+"feedUrl": "https://www.foodlawlatest.com/feed",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Payments Dive（美国 · 支付行业媒体）",
+"feedUrl": "https://www.paymentsdive.com/feeds/news/",
+"perDay": 3.33
+},
+{
+"group": "N",
+"name": "Fintech News Singapore（新加坡 · 金融科技媒体）",
+"feedUrl": "https://fintechnews.sg/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Punchh（美国 · 餐饮会员系统 · PAR 旗下）",
+"feedUrl": "https://punchh.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "香港政府新聞網 · 財經（中国香港 · 政府）",
+"feedUrl": "https://www.news.gov.hk/tc/categories/finance/html/articlelist.rss.xml",
+"perDay": 2.22
+},
+{
+"group": "N",
+"name": "Daxue Consulting 博客（中国大陆 · 研究机构）",
+"feedUrl": "https://daxueconsulting.com/feed/",
+"perDay": 0.45
+},
+{
+"group": "N",
+"name": "PTT 星巴克板 Starbucks（中国台湾 · 社区）",
+"feedUrl": "https://www.ptt.cc/atom/Starbucks.xml",
+"perDay": 0.24
+},
+{
+"group": "N",
+"name": "about-drinks.com（德国饮料业新闻）",
+"feedUrl": "https://www.about-drinks.com/feed/",
+"perDay": 6.25
+},
+{
+"group": "N",
+"name": "Gourmet-Report（德国美食与餐饮新闻）",
+"feedUrl": "https://www.gourmet-report.de/feed/",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "Gault&Millau Schweiz",
+"feedUrl": "https://www.gaultmillau.ch/rss_feed",
+"perDay": 2.86
+},
+{
+"group": "N",
+"name": "Marmite（瑞士饮食文化杂志）",
+"feedUrl": "https://www.marmite.ch/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Verband der Köche Deutschlands（德国厨师协会）",
+"feedUrl": "https://www.vkd.com/feed/",
+"perDay": 0.18
+},
+{
+"group": "N",
+"name": "lina（原 amadeus360，德国收银系统）博客",
+"feedUrl": "https://www.lina.de/news/feed/",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Restaurant Ranglisten Podcast",
+"feedUrl": "https://www.restaurant-ranglisten.de/podcast.rss",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "KaffeeKOMPASS（Hommel Kaffeesysteme）",
+"feedUrl": "https://kaffeekompass.podigee.io/feed/mp3",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "omaneo — Kaffee & Handwerk",
+"feedUrl": "https://radio.omaneo.de/public/omaneo_radio/podcast/1f17cc8a-d70c-6f7a-a680-ed056a2e738d/feed",
+"perDay": 0.47
+},
+{
+"group": "N",
+"name": "Insider Interview（Windmann Food Service）",
+"feedUrl": "https://podcast7d096b.podigee.io/feed/mp3",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "FOODTALKER（Boris Rogosch）",
+"feedUrl": "https://foodtalker.podigee.io/feed/mp3",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "ANSES（法国食品环境职业卫生安全署）",
+"feedUrl": "https://www.anses.fr/rss.xml",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "华人街 huarenjie.com 论坛（法国华人）",
+"feedUrl": "https://huarenjie.com/forum.php?mod=rss",
+"perDay": 20.0
+},
+{
+"group": "N",
+"name": "RIA – Revue de l'Industrie Agroalimentaire",
+"feedUrl": "https://www.ria.fr/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "SUPERPOTION（饮料品牌营销）",
+"feedUrl": "https://feed.ausha.co/oddKqfjpNpkW",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Franchise Le Cap",
+"feedUrl": "https://feed.ausha.co/24EkvSLw0WL5",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Confesercenti（意大利商贸联合会）",
+"feedUrl": "https://www.confesercenti.it/feed/",
+"perDay": 5.56
+},
+{
+"group": "N",
+"name": "En Toute Franchise（L'Express Franchise）",
+"feedUrl": "https://feed.ausha.co/BNkjVeCqNPm6",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Il Fatto Alimentare",
+"feedUrl": "https://ilfattoalimentare.it/feed",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Il Podcast Interattivo di Franchise Brain",
+"feedUrl": "https://rss.buzzsprout.com/2430562.rss",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Wine Meridian",
+"feedUrl": "https://www.winemeridian.com/feed/",
+"perDay": 7.22
+},
+{
+"group": "N",
+"name": "NiT（葡萄牙生活方式，餐厅为主）",
+"feedUrl": "https://www.nit.pt/feed",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Revista de Vinhos",
+"feedUrl": "https://www.revistadevinhos.pt/feed/",
+"perDay": 1.11
+},
+{
+"group": "N",
+"name": "Livsmedelsföretagen（瑞典食品企业协会）",
+"feedUrl": "https://www.livsmedelsforetagen.se/feed/",
+"perDay": 0.3
+},
+{
+"group": "N",
+"name": "Livsmedelsnyheter（瑞典食品新闻）",
+"feedUrl": "https://livsmedelsnyheter.se/feed/",
+"perDay": 0.91
+},
+{
+"group": "N",
+"name": "Quinyx 博客（瑞典排班软件）",
+"feedUrl": "https://www.quinyx.com/blog/rss.xml",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "Taste of Prague（布拉格餐厅博客）",
+"feedUrl": "https://www.tasteofprague.com/pragueblog?format=rss",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "SZPI 捷克农业食品检查局",
+"feedUrl": "https://www.szpi.gov.cz/rss.aspx",
+"perDay": 0.22
+},
+{
+"group": "N",
+"name": "MeatNews.gr（希腊肉类业）",
+"feedUrl": "https://meatnews.gr/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "European Coffee Federation",
+"feedUrl": "https://www.ecf-coffee.org/feed/",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "商店建築（日本 · 店铺设计杂志）",
+"feedUrl": "https://shotenkenchiku.com/rss/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "マクロミル（日本 · 调查公司）",
+"feedUrl": "https://www.macromill.com/rss.xml",
+"perDay": 0.89
+},
+{
+"group": "N",
+"name": "料理通信（日本 · 厨师与饮食文化媒体）",
+"feedUrl": "https://r-tsushin.com/feed/",
+"perDay": 0.89
+},
+{
+"group": "N",
+"name": "高齢者住宅新聞（日本 · 养老产业报）",
+"feedUrl": "https://www.koureisha-jutaku.com/feed/",
+"perDay": 5.62
+},
+{
+"group": "N",
+"name": "物語コーポレーション（日本 · 上市公司）",
+"feedUrl": "https://www.monogatari.co.jp/feed/",
+"perDay": 0.45
+},
+{
+"group": "N",
+"name": "鳥貴族HD / エターナルホスピタリティ（日本 · 上市公司）",
+"feedUrl": "https://torikizoku.co.jp/rss.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "たべものラジオ（日本 · 饮食文化播客）",
+"feedUrl": "https://rss.listen.style/p/tabemonoradio/rss",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "JETRO ビジネス短信（日本 · 政府外贸机构）",
+"feedUrl": "https://www.jetro.go.jp/rss2/biznews.xml",
+"perDay": 20.0
+},
+{
+"group": "N",
+"name": "Food Diversity（日本 · 清真/素食/过敏餐饮媒体，英文）",
+"feedUrl": "https://fooddiversity.today/en/feed",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "日本バーテンダー協会（日本 · 协会）",
+"feedUrl": "https://www.bartender.or.jp/feed/",
+"perDay": 3.33
+},
+{
+"group": "N",
+"name": "Food Diversity 日本語版（日本 · 同上，日文）",
+"feedUrl": "https://fooddiversity.today/feed",
+"perDay": 1.11
+},
+{
+"group": "N",
+"name": "Tokyo Ramen Tours Blog（日本 · 拉面导览博客，英文）",
+"feedUrl": "https://www.tokyoramentours.com/blog-feed.xml",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "더피알（韩国 · 公关传播媒体）",
+"feedUrl": "https://cdn.the-pr.co.kr/rss/gn_rss_allArticle.xml",
+"perDay": 16.67
+},
+{
+"group": "N",
+"name": "플래텀（韩国 · 创业媒体）",
+"feedUrl": "https://platum.kr/feed",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Global Japanese Tea Association（日本 · 日本茶协会，英文）",
+"feedUrl": "https://gjtea.org/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "한국농정신문（韩国 · 农业政策报）",
+"feedUrl": "https://www.ikpnews.net/rss/gns_allArticle.xml",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "커피타임스 Coffee Times（韩国 · 咖啡媒体）",
+"feedUrl": "https://coffeetimes.co.kr/feed/",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "더스쿠프（韩国 · 经济深度媒体）",
+"feedUrl": "https://www.thescoop.co.kr/rss/allArticle.xml",
+"perDay": 1.04
+},
+{
+"group": "N",
+"name": "뉴스와이어 생활（韩国 · 新闻稿平台）",
+"feedUrl": "https://api.newswire.co.kr/rss/industry/900",
+"perDay": 15.0
+},
+{
+"group": "N",
+"name": "ABIA 巴西食品工业协会",
+"feedUrl": "https://abia.org.br/feed/",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "Revista Espresso",
+"feedUrl": "https://revistaespresso.com.br/feed/",
+"perDay": 0.77
+},
+{
+"group": "N",
+"name": "Revista Higiene Alimentar",
+"feedUrl": "https://higienealimentar.com.br/feed/",
+"perDay": 0.38
+},
+{
+"group": "N",
+"name": "Food Safety Brazil",
+"feedUrl": "https://foodsafetybrazil.org/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Brazil Journal",
+"feedUrl": "https://braziljournal.com/feed/",
+"perDay": 15.0
+},
+{
+"group": "N",
+"name": "Engarrafador Moderno",
+"feedUrl": "https://engarrafadormoderno.com.br/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "Guia da Cerveja",
+"feedUrl": "https://guiadacervejabr.com/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "Procon-SP",
+"feedUrl": "https://www.procon.sp.gov.br/feed/",
+"perDay": 0.67
+},
+{
+"group": "N",
+"name": "BSCA 巴西精品咖啡协会",
+"feedUrl": "https://www.bsca.com.br/feed/",
+"perDay": 0.37
+},
+{
+"group": "N",
+"name": "Nutrição em Pauta",
+"feedUrl": "https://www.nutricaoempauta.com/rss",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "FecomercioSP",
+"feedUrl": "https://fecomercio.com.br/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "CFN 联邦营养师委员会",
+"feedUrl": "https://cfn.org.br/feed/",
+"perDay": 0.42
+},
+{
+"group": "N",
+"name": "ABAD 批发分销协会",
+"feedUrl": "https://abad.com.br/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Agência Sebrae de Notícias",
+"feedUrl": "https://agenciasebrae.com.br/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Revista do Frio",
+"feedUrl": "https://revistadofrio.com.br/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "Câmara dos Deputados · Economia",
+"feedUrl": "https://www.camara.leg.br/noticias/rss/dinamico/ECONOMIA",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "InformaBTL",
+"feedUrl": "https://www.informabtl.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "Coolhuntermx",
+"feedUrl": "https://coolhuntermx.com/feed/",
+"perDay": 1.5
+},
+{
+"group": "N",
+"name": "Hablemos de Franquicias（播客）",
+"feedUrl": "https://rss.libsyn.com/shows/286934/destinations/2209229.xml",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "UTHGRA 阿根廷餐旅工会",
+"feedUrl": "https://www.uthgra.org.ar/feed/",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Infobae · Tendencias",
+"feedUrl": "https://www.infobae.com/arc/outboundfeeds/rss/category/tendencias/",
+"perDay": 33.33
+},
+{
+"group": "N",
+"name": "El Comercio · Economía",
+"feedUrl": "https://elcomercio.pe/arcio/rss/category/economia/",
+"perDay": 19.0
+},
+{
+"group": "N",
+"name": "Semana · Economía",
+"feedUrl": "https://www.semana.com/arc/outboundfeeds/rss/category/economia/?outputType=xml",
+"perDay": 44.0
+},
+{
+"group": "N",
+"name": "Expreso · Economía",
+"feedUrl": "https://www.expreso.ec/rss/economia.xml",
+"perDay": 20.0
+},
+{
+"group": "N",
+"name": "La República CR",
+"feedUrl": "https://www.larepublica.net/feeds/feed.rss",
+"perDay": 30.0
+},
+{
+"group": "N",
+"name": "El Nuevo Día · Negocios",
+"feedUrl": "https://www.elnuevodia.com/arc/outboundfeeds/rss/category/negocios/?outputType=xml",
+"perDay": 0.5
+},
+{
+"group": "N",
+"name": "LexLatin",
+"feedUrl": "https://lexlatin.com/rss.xml",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "Hotel & Hospitality Expo Saudi（沙特 · 展会）",
+"feedUrl": "https://www.thehotelshowsaudiarabia.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "N",
+"name": "أخبار الاقتصاد · مطاعم 搜索订阅（沙特 · 经济新闻）",
+"feedUrl": "https://www.aleqtsad.org/?s=%D9%85%D8%B7%D8%A7%D8%B9%D9%85&feed=rss2",
+"perDay": 0.43
+},
+{
+"group": "N",
+"name": "Egyptian Streets · Food（埃及 · 生活媒体栏目）",
+"feedUrl": "https://egyptianstreets.com/category/food/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "أموال الغد · مطاعم 搜索订阅（埃及 · 经济新闻）",
+"feedUrl": "https://amwalalghad.com/?s=%D9%85%D8%B7%D8%A7%D8%B9%D9%85&feed=rss2",
+"perDay": 0.56
+},
+{
+"group": "N",
+"name": "Punjab Food Authority（巴基斯坦 · 政府）",
+"feedUrl": "https://pfa.gop.pk/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Egypt Independent · restaurant 搜索订阅（埃及 · 新闻站）",
+"feedUrl": "https://www.egyptindependent.com/?s=restaurant&feed=rss2",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "Express Urdu · Food（巴基斯坦 · 乌尔都语媒体栏目）",
+"feedUrl": "https://www.express.pk/category/food/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "ProPakistani Business（巴基斯坦 · 商业新闻栏目）",
+"feedUrl": "https://propakistani.pk/category/business/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "YAMU（斯里兰卡 · 点评站）",
+"feedUrl": "https://www.yamu.lk/feed/",
+"perDay": 0.3
+},
+{
+"group": "N",
+"name": "Lanka Business Online（斯里兰卡 · 商业媒体）",
+"feedUrl": "https://www.lankabusinessonline.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Tourism Update（南非 · 旅游贸易媒体）",
+"feedUrl": "https://www.tourismupdate.com/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Sri Lanka Mirror · restaurant 搜索订阅（斯里兰卡 · 新闻站）",
+"feedUrl": "https://srilankamirror.com/?s=restaurant&feed=rss2",
+"perDay": 0.24
+},
+{
+"group": "N",
+"name": "Capital FM · Food & Drink（肯尼亚 · 媒体栏目）",
+"feedUrl": "https://capitalfm.africa/category/food-drink/feed/",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "Capital FM · hospitality 标签（肯尼亚 · 媒体栏目）",
+"feedUrl": "https://capitalfm.africa/tag/hospitality/feed/",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "HapaKenya · restaurant 搜索订阅（肯尼亚 · 商业媒体）",
+"feedUrl": "https://hapakenya.com/?s=restaurant&feed=rss2",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Agro Nigeria（尼日利亚 · 农业媒体）",
+"feedUrl": "https://agronigeria.ng/feed/",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "WeeTracker · restaurant 搜索订阅（尼日利亚 · 创投媒体）",
+"feedUrl": "https://weetracker.com/?s=restaurant&feed=rss2",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Vanguard · food 标签（尼日利亚 · 大报栏目）",
+"feedUrl": "https://www.vanguardngr.com/tag/food/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Technopak Knowledge Center tkc.in（印度 · 研究）",
+"feedUrl": "https://tkc.in/feed/",
+"perDay": 0.29
+},
+{
+"group": "N",
+"name": "Dairy News 7x7（印度 · 乳业媒体）",
+"feedUrl": "https://dairynews7x7.com/feed",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "CStore Decisions · Foodservice",
+"feedUrl": "https://cstoredecisions.com/category/foodservice/feed/",
+"perDay": 1.25
+},
+{
+"group": "N",
+"name": "AAFD 美国加盟商与经销商协会",
+"feedUrl": "https://www.aafd.org/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Culinary Institute of America",
+"feedUrl": "https://www.ciachef.edu/feed/",
+"perDay": 0.18
+},
+{
+"group": "N",
+"name": "Beer Canada",
+"feedUrl": "https://beercanada.com/feed/",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "Philadelphia Inquirer · Food",
+"feedUrl": "https://www.inquirer.com/arc/outboundfeeds/rss/category/food/?outputType=xml",
+"perDay": 3.0
+},
+{
+"group": "N",
+"name": "MenuTrinfo",
+"feedUrl": "https://menutrinfo.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Leanpath",
+"feedUrl": "https://blog.leanpath.com/rss.xml",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Miso Robotics",
+"feedUrl": "https://www.misorobotics.com/rss.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Ontario Newsroom",
+"feedUrl": "https://news.ontario.ca/newsroom/en/rss/allnews.rss",
+"perDay": 15.0
+},
+{
+"group": "N",
+"name": "Taproot Edmonton",
+"feedUrl": "https://edmonton.taproot.news/feed",
+"perDay": 0.88
+},
+{
+"group": "N",
+"name": "We Bought A Franchise!",
+"feedUrl": "https://rss.buzzsprout.com/2335438.rss",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "The Hot Slice（Pizza Today）",
+"feedUrl": "https://rss.buzzsprout.com/1860996.rss",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "FranchiseU!（Yum! Kathy Gosser）",
+"feedUrl": "https://feeds.blubrry.com/feeds/1474940.xml",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "The Ultimate Dish（Escoffier）",
+"feedUrl": "https://rss.buzzsprout.com/1776679.rss",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Convenience Matters（NACS）",
+"feedUrl": "https://rss.libsyn.com/shows/77175/destinations/346774.xml",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Powered by Franchising",
+"feedUrl": "https://prattpodcasting.com/shows/powered-by-franchising/feed",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "Through the Line（Packaging World）",
+"feedUrl": "https://rss.buzzsprout.com/2464494.rss",
+"perDay": 0.6
+},
+{
+"group": "N",
+"name": "Cheftimony",
+"feedUrl": "https://feeds.blubrry.com/feeds/cheftimony.xml",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Good Food（KCRW）",
+"feedUrl": "https://feed.cdnstream1.com/zjb/feed/download/4b/e5/cc/4be5cc7b-8528-4b9e-8981-08d89bcff381.xml",
+"perDay": 0.36
+},
+{
+"group": "N",
+"name": "The Rakyat Post（马来西亚 · 综合媒体）",
+"feedUrl": "https://www.therakyatpost.com/feed/",
+"perDay": 30.0
+},
+{
+"group": "N",
+"name": "Khaosod เส้นทางเศรษฐี（泰国 · 泰文报的 SME 致富栏目）",
+"feedUrl": "https://www.khaosod.co.th/sentangsedtee/feed",
+"perDay": 10.0
+},
+{
+"group": "N",
+"name": "Matichon 经济版（泰国 · 泰文综合报）",
+"feedUrl": "https://www.matichon.co.th/category/economy/feed",
+"perDay": 50.0
+},
+{
+"group": "N",
+"name": "Hungry Hub Blog（泰国 · 订位平台）",
+"feedUrl": "https://blog.hungryhub.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Vietstock 英文商业版（越南 · 财经媒体）",
+"feedUrl": "https://en.vietstock.vn/rss/business.rss",
+"perDay": 30.0
+},
+{
+"group": "N",
+"name": "JawaPos Bisnis（印尼 · 综合报商业版）",
+"feedUrl": "https://www.jawapos.com/rss/bisnis",
+"perDay": 1.07
+},
+{
+"group": "N",
+"name": "Kontainer Indonesia 博客（印尼 · 集装箱店面服务商）",
+"feedUrl": "https://kontainerindonesia.co.id/blog/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Daily Tribune（菲律宾 · 综合报）",
+"feedUrl": "https://tribune.net.ph/rss.xml",
+"perDay": 40.0
+},
+{
+"group": "N",
+"name": "SunStar（菲律宾 · 地方报）",
+"feedUrl": "https://www.sunstar.com.ph/feed",
+"perDay": 0.18
+},
+{
+"group": "N",
+"name": "柬华日报（柬埔寨 · 华文报）",
+"feedUrl": "https://jianhuadaily.com/feed",
+"perDay": 20.0
+},
+{
+"group": "N",
+"name": "Biz Brunei（文莱 · 商业媒体）",
+"feedUrl": "https://www.bizbrunei.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Food & Hotel Asia 文章（新加坡 · 展会主办方）",
+"feedUrl": "https://www.foodnhotelasia.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "N",
+"name": "Scottish Tourism Alliance（英国 · 协会）",
+"feedUrl": "https://scottishtourismalliance.co.uk/feed/",
+"perDay": 0.71
+},
+{
+"group": "N",
+"name": "Beer Today（英国 · 媒体）",
+"feedUrl": "https://beertoday.co.uk/feed/",
+"perDay": 5.0
+},
+{
+"group": "N",
+"name": "Scottish Grocer（英国 · 媒体）",
+"feedUrl": "https://scottishgrocer.co.uk/feed/",
+"perDay": 3.75
+},
+{
+"group": "N",
+"name": "Harpers Wine & Spirit（英国 · 媒体）",
+"feedUrl": "https://harpers.co.uk/news/rss.php/rss.xml",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Allergen: Natasha Allergy Research（英国 · 研究）",
+"feedUrl": "https://www.narf.org.uk/blog?format=rss",
+"perDay": 0.07
+},
+{
+"group": "N",
+"name": "CAMRA（英国 · 协会）",
+"feedUrl": "https://wb.camra.org.uk/feed",
+"perDay": 1.33
+},
+{
+"group": "N",
+"name": "Lynx Purchasing（英国 · 服务商）",
+"feedUrl": "https://lynxpurchasing.co.uk/feed/",
+"perDay": 0.16
+},
+{
+"group": "N",
+"name": "Irish Food Guide（爱尔兰 · 协会）",
+"feedUrl": "https://www.irishfoodguide.ie/feeds/posts/default",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Shopping Centre News（澳大利亚 · 媒体）",
+"feedUrl": "https://shoppingcentrenews.com.au/feed/",
+"perDay": 1.43
+},
+{
+"group": "N",
+"name": "Pallas Foods / Sysco Ireland（爱尔兰 · 服务商）",
+"feedUrl": "https://www.syscoireland.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Food Safety Information Council（澳大利亚 · 协会）",
+"feedUrl": "https://www.foodsafety.asn.au/feed/",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Australian Institute of Food Safety blog（澳大利亚 · 服务商）",
+"feedUrl": "https://blog.foodsafety.com.au/rss.xml",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "Bepoz（澳大利亚 · 服务商）",
+"feedUrl": "https://bepoz.com.au/blogs/rss.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Clubs NSW（澳大利亚 · 协会）",
+"feedUrl": "https://www.clubsnsw.com.au/feed/",
+"perDay": 0.89
+},
+{
+"group": "N",
+"name": "Bar & Drinksbiz NZ（新西兰 · 媒体）",
+"feedUrl": "https://www.drinksbiz.co.nz/news?format=rss",
+"perDay": 0.5
+},
+{
+"group": "N",
+"name": "Bidfood NZ（新西兰 · 服务商）",
+"feedUrl": "https://www.bidfood.co.nz/blog-feed.xml",
+"perDay": 0.22
+},
+{
+"group": "N",
+"name": "Love British Food（英国 · 播客）",
+"feedUrl": "https://feeds.captivate.fm/love-british-food/",
+"perDay": 0.22
+},
+{
+"group": "N",
+"name": "The Hospitality Connection（新西兰 · 播客）",
+"feedUrl": "https://rss.buzzsprout.com/2656284.rss",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "How To Grow A Food Business (Relish Marketing)（英国 · 播客）",
+"feedUrl": "https://podcast.relish-marketing.co.uk/feed.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Feed: a food systems podcast（英国 · 播客）",
+"feedUrl": "https://rss.buzzsprout.com/1660519.rss",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "The Ceres Podcast（英国 · 播客）",
+"feedUrl": "https://rss.libsyn.com/shows/124366/destinations/737174.xml",
+"perDay": 0.02
+},
+{
+"group": "N",
+"name": "Always In Season（英国 · 播客）",
+"feedUrl": "https://rss.libsyn.com/shows/348392/destinations/2846087.xml",
+"perDay": 0.04
+},
+{
+"group": "N",
+"name": "Boak & Bailey（英国 · 博客）",
+"feedUrl": "https://boakandbailey.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "N",
+"name": "The Food Foundation（英国 · 研究）",
+"feedUrl": "https://foodfoundation.org.uk/rss.xml",
+"perDay": 0.37
+},
+{
+"group": "N",
+"name": "gov.uk 新闻与通告检索订阅（keywords=restaurant）（英国 · 政府）",
+"feedUrl": "https://www.gov.uk/search/news-and-communications.atom?keywords=restaurant",
+"perDay": 0.18
+},
+{
+"group": "R",
+"name": "Bizcommunity",
+"feedUrl": "https://www.bizcommunity.com/rss/196/1.html",
+"perDay": 0.22
+},
+{
+"group": "N",
+"name": "John Gaunt & Partners (licensing law)（英国 · 律所）",
+"feedUrl": "https://www.john-gaunt.co.uk/news/index.rss",
+"perDay": 0.24
+},
+{
+"group": "R",
+"name": "The Restaurant Guys（播客）",
+"feedUrl": "https://rss.buzzsprout.com/2390435.rss",
+"perDay": 0.29
+},
+{
+"group": "R",
+"name": "Gastronomía & Cía",
+"feedUrl": "https://www.gastronomiaycia.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Metro Deutschland GmbH（presseportal）",
+"feedUrl": "https://www.presseportal.de/rss/pm_56930.rss2",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Satellite Gourmet Gastronomy Podcast",
+"feedUrl": "https://rss.buzzsprout.com/1748826.rss",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "Kirsch Royal – der prickelnde Gastropodcast",
+"feedUrl": "https://kirsch-royal.podigee.io/feed/mp3",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Gastro SER",
+"feedUrl": "https://fapi-top.prisasd.com/podcast/playser/play_gastro_3543/itunestfp/podcast.xml",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "Gastro Muppets",
+"feedUrl": "https://gastro-muppets.podigee.io/feed/mp3",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Gastronovi Release Radar powered by AI",
+"feedUrl": "https://gastronovi-release-radar.podigee.io/feed/mp3",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "It's Personal Stories, A Hospitality Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2111645.rss",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Schulering HUB Talking Hospitality Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2274648.rss",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "The Michelle Pascoe Hospitality Podcast",
+"feedUrl": "https://feeds.megaphone.fm/the-michelle-pascoe-hospitality-podcast",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "Terroir & Adiletten - Der Weinpodcast",
+"feedUrl": "https://terroirundadiletten.podigee.io/feed/mp3",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "The Trina Mara Podcast",
+"feedUrl": "https://rss.podplaystudio.com/2879.xml",
+"perDay": 0.6
+},
+{
+"group": "R",
+"name": "コムギコ：資本主義をハックしろ!!",
+"feedUrl": "https://feeds.megaphone.fm/TBS7609676437",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Podcast 森辺一樹のグローバル・マーケティング 〜すべてはアジアで売るために〜",
+"feedUrl": "http://153.120.77.39/gbm/podcast/index.xml",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "高須幹弥（高須クリニック）切り抜きポッドキャスト",
+"feedUrl": "https://api.robotstart.jp/api/v1/feeds/3579047c/get-feeds/podcast",
+"perDay": 1.0
+},
+{
+"group": "R",
+"name": "観光経済新聞",
+"feedUrl": "https://ad.robotstart.jp/api/v1/feeds/364e0490/get-feeds/podcast",
+"perDay": 0.67
+},
+{
+"group": "R",
+"name": "正木明の地球にいいこと",
+"feedUrl": "https://feeds.megaphone.fm/masaki",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "ダイヤモンド・チェーンストアオンライン",
+"feedUrl": "https://ad.robotstart.jp/api/v1/feeds/370c049a/get-feeds/podcast",
+"perDay": 0.67
+},
+{
+"group": "R",
+"name": "日経ビジネス　モーニングニュース",
+"feedUrl": "https://feeds.megaphone.fm/NBP3303775005",
+"perDay": 0.62
+},
+{
+"group": "R",
+"name": "La Gastadera Podcast",
+"feedUrl": "https://feeds.megaphone.fm/GENUINAPERSONASAPIDECV4297797775",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "DRIPLOG",
+"feedUrl": "https://hitorigoto-feed.lead01.workers.dev/driplog/feed.xml",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "Qué Pasa with Lucy Leyva",
+"feedUrl": "https://rss.buzzsprout.com/2606951.rss",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "FoodNavigator-USA Podcast",
+"feedUrl": "https://feeds.megaphone.fm/WRBM4424184742",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "Adventures in kakeland podcast: Cake business, Trends & Founder stories",
+"feedUrl": "https://rss.buzzsprout.com/2013744.rss",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "The Go To Food Podcast",
+"feedUrl": "https://feeds.megaphone.fm/AUDD5336095663",
+"perDay": 0.31
+},
+{
+"group": "R",
+"name": "金曜開店 砂鉄堂書店（KODANSHA presents）",
+"feedUrl": "https://feeds.megaphone.fm/TBS4359854697",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Wat Schaft de Podcast",
+"feedUrl": "https://feeds.acast.com/public/shows/6876157801becb6b317f44b7",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "The How of Business - How to start, run, grow and exit a small business.",
+"feedUrl": "https://rss.libsyn.com/shows/77073/destinations/346019.xml",
+"perDay": 0.13
+},
+{
+"group": "R",
+"name": "Pass The Gravy",
+"feedUrl": "https://rss.buzzsprout.com/11011.rss",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "The Business Ownership Show",
+"feedUrl": "https://investorfinancingpodcast.libsyn.com/rssfeed",
+"perDay": 0.56
+},
+{
+"group": "R",
+"name": "Roderick on the Line",
+"feedUrl": "https://merlinmann.github.io/rotl-feed/feed.xml",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "The Industry",
+"feedUrl": "https://pinecast.com/feed/the-industry",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "Trivia Friday",
+"feedUrl": "https://afr.net/api/v2/podcast/podcastsbyidrss/?id=51503",
+"perDay": 0.31
+},
+{
+"group": "R",
+"name": "LIMBECK. PODCAST. - Vertrieb ist Chefsache",
+"feedUrl": "https://rss.libsyn.com/shows/531992/destinations/4577807.xml",
+"perDay": 0.18
+},
+{
+"group": "R",
+"name": "hibana（ヒバナ）（日本 · 餐饮业网络媒体（新店与新闻稿为主））",
+"feedUrl": "https://biz-hibana.com/feed/",
+"perDay": 0.27
+},
+{
+"group": "R",
+"name": "SMART SME（泰国 · 中小企业综合媒体）",
+"feedUrl": "https://smartsme.co.th/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "detikFood（印度尼西亚 · 大型门户的美食频道（写给食客））",
+"feedUrl": "https://food.detik.com/rss",
+"perDay": 2.22
+},
+{
+"group": "R",
+"name": "gastro.news（奥地利 · 餐饮生活媒体（偏向食客））",
+"feedUrl": "https://gastro.news/feed/",
+"perDay": 2.2
+},
+{
+"group": "R",
+"name": "Cater + Event（原 Catersource）（美国 · 餐饮行业媒体）",
+"feedUrl": "https://www.cater-event.com/rss.xml",
+"perDay": 1.02
+},
+{
+"group": "R",
+"name": "Restaurant Industry Magazine（英国 · 餐饮行业媒体）",
+"feedUrl": "https://restaurantindustry.co.uk/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "greatkosherrestaurants.com（国家未记 · 行业媒体名录里的条目）",
+"feedUrl": "https://www.greatkosherrestaurants.com/category/blog/feed/",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "luxuryrestaurantguide.com（国家未记 · 行业媒体名录里的条目）",
+"feedUrl": "https://blog.luxuryrestaurantguide.com/feed/",
+"perDay": 0.16
+},
+{
+"group": "R",
+"name": "trianglefoodblog.com（国家未记 · 行业媒体名录里的条目）",
+"feedUrl": "https://trianglefoodblog.com/?feed=rss2",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "こーいち給食（日本 · 博客名录里的条目）",
+"feedUrl": "https://kouichikyu-syoku.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "R",
+"name": "さや香茶(さやこうちゃ)からのご案内（日本 · 博客名录里的条目）",
+"feedUrl": "https://simblo.net/u/QsSzeC/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "仙台フードビジネス専門塾のブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://kanesa-f.com/rss.xml",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "ブログ＆ホームページ 活用術（日本 · 博客名录里的条目）",
+"feedUrl": "https://ten-deza.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Atelier＆Live千樹音新着情報（日本 · 博客名录里的条目）",
+"feedUrl": "https://senju-on.jp/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "柏屋カフェでのんびりまったり（日本 · 博客名录里的条目）",
+"feedUrl": "https://www.onsen-cafe.com/feed",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "GIFU-WALKER（日本 · 博客名录里的条目）",
+"feedUrl": "https://gifuwalker.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "リリーのライダーズカフェ（日本 · 博客名录里的条目）",
+"feedUrl": "http://lily-riderscafe.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Bear's CAMP Cafe（日本 · 博客名录里的条目）",
+"feedUrl": "http://bears-camp-cafe.blogspot.com/feeds/posts/default?alt=rss",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "魔法使いの日記（日本 · 博客名录里的条目）",
+"feedUrl": "https://magiciansring.online/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "福岡県古賀市ディナー＆ショーの店 シオンの娘新着情報（日本 · 博客名录里的条目）",
+"feedUrl": "https://hakobune-sion.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "Q＆Q（日本 · 博客名录里的条目）",
+"feedUrl": "http://qqms.info/?feed=rss2",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "スナック「香」（日本 · 博客名录里的条目）",
+"feedUrl": "http://kamatasnack.com/feed",
+"perDay": 0.07
+},
+{
+"group": "R",
+"name": "ケーキ屋しんちゃんブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://sakurafuji3776.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "R",
+"name": "飲食店の現場改善ラボ（日本 · 博客名录里的条目）",
+"feedUrl": "https://inshoku-kaizen.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "坊’Sオフィシャル（日本 · 博客名录里的条目）",
+"feedUrl": "https://bou-zu.com/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "epulor blog（日本 · 博客名录里的条目）",
+"feedUrl": "https://epulor.jp/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "WorldBurger 世界のハンバーガー専門店（日本 · 博客名录里的条目）",
+"feedUrl": "https://worldburger.jp/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "うずうず本舗ブログ（日本 · 博客名录里的条目）",
+"feedUrl": "https://uzuuzu.shop/feed",
+"perDay": 0.04
+},
+{
+"group": "R",
+"name": "実店舗経営の教科書 - StorePro（日本 · 博客名录里的条目）",
+"feedUrl": "https://store.cloudil.jp/feed/",
+"perDay": 0.44
+},
+{
+"group": "R",
+"name": "フリーランス主夫のデザイン業と日々の生活（日本 · 博客名录里的条目）",
+"feedUrl": "http://atelier-coboshii.jp/feed/",
+"perDay": 0.09
+},
+{
+"group": "R",
+"name": "大阪トマト社長のサービスの時間（日本 · 博客名录里的条目）",
+"feedUrl": "https://gohan.click/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "日々 お客様の「ごちそうさま」を求めて（日本 · 博客名录里的条目）",
+"feedUrl": "https://gochi.biz/feed/",
+"perDay": 0.02
+},
+{
+"group": "R",
+"name": "masaの食べ歩き記録（日本 · 博客名录里的条目）",
+"feedUrl": "https://masa-tabearuki.com/?feed=rss2",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "CHEF:IN — Das Magazin（来源条目里的外链 · pod-de-kirsch-royal）",
+"feedUrl": "https://chefin.watch/rss.xml",
+"perDay": 0.2
+},
+{
+"group": "R",
+"name": "Restaurant Technologies | Cooking Oil Delivery &amp; Recycling（来源条目里的外链 · pod-qsr-uncut）",
+"feedUrl": "https://www.rti-inc.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "R",
+"name": "Stoviglie e prodotti compostabili | GreenGate Bio Packaging（来源条目里的外链 · rss-ristorazione-italiana）",
+"feedUrl": "https://www.biogreengate.it/feed/",
+"perDay": 0.13
+}
+]
+}

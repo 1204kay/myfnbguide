@@ -1,0 +1,469 @@
+{
+ "$comment": "2026-10-24 全面找信源的成本样本（十一同意 ≤US$1）。按每天产量加权抽的订阅：G=综合全站订阅，S=其余新候选，R=账本重开的。volume 是三组的订阅数和每天约多少条（按订阅时间跨度推算）。",
+ "volume": {
+  "G": {
+   "feeds": 90,
+   "perDay": 1602
+  },
+  "S": {
+   "feeds": 663,
+   "perDay": 2233
+  },
+  "R": {
+   "feeds": 478,
+   "perDay": 96
+  }
+ },
+ "feeds": [
+  {
+   "group": "G",
+   "name": "文春オンライン（日本 · 综合）",
+   "feedUrl": "https://bunshun.jp/list/feed/rss",
+   "perDay": 37.0
+  },
+  {
+   "group": "G",
+   "name": "华人街 huarenjie.com 论坛（法国华人）",
+   "feedUrl": "https://huarenjie.com/forum.php?mod=rss",
+   "perDay": 20.0
+  },
+  {
+   "group": "G",
+   "name": "시사저널（韩国 · 时事周刊）",
+   "feedUrl": "https://cdn.sisajournal.com/rss/gn_rss_allArticle.xml",
+   "perDay": 50.0
+  },
+  {
+   "group": "G",
+   "name": "Interempresas Alimentaria（西班牙 · 媒体）",
+   "feedUrl": "https://www.interempresas.net/rss",
+   "perDay": 111.0
+  },
+  {
+   "group": "G",
+   "name": "ウォーカープラス",
+   "feedUrl": "https://www.walkerplus.com/rss",
+   "perDay": 38.0
+  },
+  {
+   "group": "G",
+   "name": "Mumbrella（澳大利亚 · 媒体）",
+   "feedUrl": "https://mumbrella.com.au/feed/",
+   "perDay": 20.0
+  },
+  {
+   "group": "G",
+   "name": "Business Today Malaysia（马来西亚 · 商业媒体）",
+   "feedUrl": "https://www.businesstoday.com.my/feed/",
+   "perDay": 20.0
+  },
+  {
+   "group": "G",
+   "name": "Dân trí 商业版（越南 · 综合报经济栏目）",
+   "feedUrl": "https://dantri.com.vn/rss/kinh-doanh.rss",
+   "perDay": 33.33
+  },
+  {
+   "group": "G",
+   "name": "La Opinión",
+   "feedUrl": "https://laopinion.com/feed/",
+   "perDay": 50.0
+  },
+  {
+   "group": "G",
+   "name": "Daily Tribune（菲律宾 · 综合报）",
+   "feedUrl": "https://tribune.net.ph/rss.xml",
+   "perDay": 40.0
+  },
+  {
+   "group": "G",
+   "name": "컨슈머치（韩国 · 消费者媒体）",
+   "feedUrl": "https://cdn.consumuch.com/rss/gns_allArticle.xml",
+   "perDay": 7.14
+  },
+  {
+   "group": "G",
+   "name": "The Manila Times 商业版（菲律宾 · 综合报商业栏目）",
+   "feedUrl": "https://www.manilatimes.net/business/feed/",
+   "perDay": 50.0
+  },
+  {
+   "group": "G",
+   "name": "泰国头条新闻（泰国 · 华文媒体）",
+   "feedUrl": "https://www.thaiheadlines.com/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "G",
+   "name": "Matichon 经济版（泰国 · 泰文综合报）",
+   "feedUrl": "https://www.matichon.co.th/category/economy/feed",
+   "perDay": 50.0
+  },
+  {
+   "group": "G",
+   "name": "매일노동뉴스 RSS（韩国 · 媒体）",
+   "feedUrl": "https://www.labortoday.co.kr/rss/allArticle.xml",
+   "perDay": 50.0
+  },
+  {
+   "group": "S",
+   "name": "벤처스퀘어（韩国 · 创业媒体）",
+   "feedUrl": "https://www.venturesquare.net/feed/",
+   "perDay": 30.0
+  },
+  {
+   "group": "S",
+   "name": "澳門捷報 Click2Macao（中国澳门 · 媒体）",
+   "feedUrl": "https://www.click2macao.com/feed/",
+   "perDay": 12.0
+  },
+  {
+   "group": "S",
+   "name": "Your Little Black Book",
+   "feedUrl": "https://www.yourlittleblackbook.me/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Redagrícola",
+   "feedUrl": "https://redagricola.com/feed/",
+   "perDay": 1.43
+  },
+  {
+   "group": "S",
+   "name": "La Nación CR · Economía",
+   "feedUrl": "https://www.nacion.com/arc/outboundfeeds/rss/category/economia/?outputType=xml",
+   "perDay": 22.0
+  },
+  {
+   "group": "S",
+   "name": "El Comercio · Economía",
+   "feedUrl": "https://elcomercio.pe/arcio/rss/category/economia/",
+   "perDay": 19.0
+  },
+  {
+   "group": "S",
+   "name": "Property Industry Eye（英国 · 媒体）",
+   "feedUrl": "https://propertyindustryeye.com/feed/",
+   "perDay": 20.0
+  },
+  {
+   "group": "S",
+   "name": "Câmara dos Deputados · Economia",
+   "feedUrl": "https://www.camara.leg.br/noticias/rss/dinamico/ECONOMIA",
+   "perDay": 5.0
+  },
+  {
+   "group": "S",
+   "name": "Beer Today（英国 · 媒体）",
+   "feedUrl": "https://beertoday.co.uk/feed/",
+   "perDay": 5.0
+  },
+  {
+   "group": "S",
+   "name": "安博力 知識中心（台湾 · 服务商·在地商家行銷）",
+   "feedUrl": "https://aabore.com/feed.xml",
+   "perDay": 3.76
+  },
+  {
+   "group": "S",
+   "name": "グルメWatch",
+   "feedUrl": "https://gourmet.watch.impress.co.jp/data/rss/1.0/grw/feed.rdf",
+   "perDay": 30.0
+  },
+  {
+   "group": "S",
+   "name": "Kaffee-Netz 论坛（德国咖啡社区）",
+   "feedUrl": "https://www.kaffee-netz.de/forums/-/index.rss",
+   "perDay": 20.0
+  },
+  {
+   "group": "S",
+   "name": "Just Food（全球 · 媒体）",
+   "feedUrl": "https://www.just-food.com/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Infobae · Tendencias",
+   "feedUrl": "https://www.infobae.com/arc/outboundfeeds/rss/category/tendencias/",
+   "perDay": 33.33
+  },
+  {
+   "group": "S",
+   "name": "KÜCHENPLANER（德国商用厨房规划刊物）",
+   "feedUrl": "https://www.kuechenplaner-magazin.de/rss.xml",
+   "perDay": 1.67
+  },
+  {
+   "group": "S",
+   "name": "Tạp chí Công Thương（越南 · 工贸部杂志）",
+   "feedUrl": "https://tapchicongthuong.vn/rss/home.rss",
+   "perDay": 50.0
+  },
+  {
+   "group": "S",
+   "name": "REBusiness Online（美国 · 媒体）",
+   "feedUrl": "https://rebusinessonline.com/feed/",
+   "perDay": 20.0
+  },
+  {
+   "group": "S",
+   "name": "トラベルボイス（日本 · 旅游产业媒体）",
+   "feedUrl": "https://www.travelvoice.jp/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Food For Mzansi（南非 · 农业食品媒体）",
+   "feedUrl": "https://www.foodformzansi.co.za/feed/",
+   "perDay": 5.0
+  },
+  {
+   "group": "S",
+   "name": "佳礼论坛（马来西亚 · 华文论坛）",
+   "feedUrl": "https://cforum.cari.com.my/forum.php?mod=rss",
+   "perDay": 20.0
+  },
+  {
+   "group": "S",
+   "name": "El Inmobiliario（西班牙 · 媒体）",
+   "feedUrl": "https://elinmobiliariomesames.com/feed/",
+   "perDay": 15.0
+  },
+  {
+   "group": "S",
+   "name": "Infobae · Economía",
+   "feedUrl": "https://www.infobae.com/arc/outboundfeeds/rss/category/economia/",
+   "perDay": 50.0
+  },
+  {
+   "group": "S",
+   "name": "dancyu web",
+   "feedUrl": "https://dancyu.jp/rss",
+   "perDay": 2.33
+  },
+  {
+   "group": "S",
+   "name": "MTL Blog",
+   "feedUrl": "https://www.mtlblog.com/feeds/feed.rss",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "食品産業新聞社（日本 · 媒体）",
+   "feedUrl": "https://www.ssnp.co.jp/feed/",
+   "perDay": 30.0
+  },
+  {
+   "group": "S",
+   "name": "Retail Dive（美国 · 媒体）",
+   "feedUrl": "https://www.retaildive.com/feeds/news/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Restaurant Reviews Archives - Atlanta Magazine",
+   "feedUrl": "https://www.atlantamagazine.com/feed/",
+   "perDay": 5.0
+  },
+  {
+   "group": "S",
+   "name": "Vietstock 英文商业版（越南 · 财经媒体）",
+   "feedUrl": "https://en.vietstock.vn/rss/business.rss",
+   "perDay": 30.0
+  },
+  {
+   "group": "S",
+   "name": "香港政府新聞公報（中国香港 · 政府）",
+   "feedUrl": "https://www.info.gov.hk/gia/rss/general_zh.xml",
+   "perDay": 50.0
+  },
+  {
+   "group": "S",
+   "name": "ANSES（法国食品环境职业卫生安全署）",
+   "feedUrl": "https://www.anses.fr/rss.xml",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Eje Prime（西班牙 · 媒体）",
+   "feedUrl": "https://www.ejeprime.com/rss.xml",
+   "perDay": 20.0
+  },
+  {
+   "group": "S",
+   "name": "Directo al Paladar México",
+   "feedUrl": "https://www.directoalpaladar.com.mx/feedburner.xml",
+   "perDay": 8.0
+  },
+  {
+   "group": "S",
+   "name": "Fish Farmer（全球 · 媒体）",
+   "feedUrl": "https://fishfarmer.affino.com/Syndication/DF.cfm?f=8&ft=10&redirected=1",
+   "perDay": 0.2
+  },
+  {
+   "group": "S",
+   "name": "Infocampo（阿根廷 · 媒体）",
+   "feedUrl": "https://www.infocampo.com.ar/feed/",
+   "perDay": 16.0
+  },
+  {
+   "group": "S",
+   "name": "Hospibuz（印度 · 媒体）",
+   "feedUrl": "https://hospibuz.com/rss",
+   "perDay": 50.0
+  },
+  {
+   "group": "S",
+   "name": "플래텀（韩国 · 创业媒体）",
+   "feedUrl": "https://platum.kr/feed",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "日経不動産マーケット情報（日本 · 媒体）",
+   "feedUrl": "https://nrm.nikkei.co.jp/list/feed/rss.rdf",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "El Informador · Economía",
+   "feedUrl": "https://www.informador.mx/rss/economia.xml",
+   "perDay": 12.5
+  },
+  {
+   "group": "S",
+   "name": "Gault&Millau France",
+   "feedUrl": "https://fr.gaultmillau.com/fr/rss/news.xml?page=1&limit=20",
+   "perDay": 2.22
+  },
+  {
+   "group": "S",
+   "name": "와우테일（韩国 · 创业投资媒体）",
+   "feedUrl": "https://wowtale.net/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Pandaily（中国 · 英文科技媒体）",
+   "feedUrl": "https://pandaily.com/feed/",
+   "perDay": 20.0
+  },
+  {
+   "group": "S",
+   "name": "Tourism Today（希腊旅游业新闻）",
+   "feedUrl": "https://www.tourismtoday.gr/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "BRUTUS（日本 · 生活杂志）",
+   "feedUrl": "https://brutus.jp/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Bizna Kenya（肯尼亚 · 商业媒体）",
+   "feedUrl": "https://biznakenya.com/feed/",
+   "perDay": 10.0
+  },
+  {
+   "group": "S",
+   "name": "Wine Meridian",
+   "feedUrl": "https://www.winemeridian.com/feed/",
+   "perDay": 7.22
+  },
+  {
+   "group": "R",
+   "name": "TraRヘベレケ日報（日本 · 博客名录里的条目）",
+   "feedUrl": "https://heberekenippou.com/rss",
+   "perDay": 0.67
+  },
+  {
+   "group": "R",
+   "name": "Vintage Wolfsburg",
+   "feedUrl": "https://letscast.fm/podcasts/vintage-wolfsburg-50265282/feed",
+   "perDay": 0.09
+  },
+  {
+   "group": "R",
+   "name": "川越高階の隠居?(仮)福岡博多（日本 · 博客名录里的条目）",
+   "feedUrl": "https://kawagoeinkyo.com/feed",
+   "perDay": 0.22
+  },
+  {
+   "group": "R",
+   "name": "detikFood（印度尼西亚 · 大型门户的美食频道（写给食客））",
+   "feedUrl": "https://food.detik.com/rss",
+   "perDay": 2.22
+  },
+  {
+   "group": "R",
+   "name": "luxuryrestaurantguide.com（国家未记 · 行业媒体名录里的条目）",
+   "feedUrl": "https://blog.luxuryrestaurantguide.com/feed/",
+   "perDay": 0.16
+  },
+  {
+   "group": "R",
+   "name": "ぱくちゃんもぐちゃんの食いしん坊日記（日本 · 博客名录里的条目）",
+   "feedUrl": "https://pakumogu.rainbow-peak.com/rss",
+   "perDay": 0.64
+  },
+  {
+   "group": "R",
+   "name": "Recomendados de la semana en iVoox.com Semana del 28 de septiembre al 4 de octubre del 2026",
+   "feedUrl": "https://www.ivoox.com/recomendados-semana_fr.xml",
+   "perDay": 0.6
+  },
+  {
+   "group": "R",
+   "name": "Sydney Bistro &amp; Brewery - Frenchies in The Cannery, Rosebery（来源条目里的外链 · pod-deep-in-the-weeds）",
+   "feedUrl": "https://frenchiesbistroandbrewery.com.au/feed",
+   "perDay": 0.02
+  },
+  {
+   "group": "R",
+   "name": "たけネコ旅ブログ（日本 · 博客名录里的条目）",
+   "feedUrl": "https://take128.com/feed/",
+   "perDay": 0.09
+  },
+  {
+   "group": "R",
+   "name": "The Crafty Pint - The Home of Australian Craft Beer（来源条目里的外链 · pod-deep-in-the-weeds）",
+   "feedUrl": "https://craftypint.com/news/feed/",
+   "perDay": 0.22
+  },
+  {
+   "group": "R",
+   "name": "音・麺・酒（日本 · 博客名录里的条目）",
+   "feedUrl": "https://soba-udon-ramen.com/rss",
+   "perDay": 0.67
+  },
+  {
+   "group": "R",
+   "name": "さちの太宰府案内 | 福岡県太宰府市の観光やカフェを紹介（日本 · 博客名录里的条目）",
+   "feedUrl": "https://dazaifu-sachi.website/feed/",
+   "perDay": 0.13
+  },
+  {
+   "group": "R",
+   "name": "mafidoma（日本 · 博客名录里的条目）",
+   "feedUrl": "https://mafidoma.com/feed",
+   "perDay": 0.22
+  },
+  {
+   "group": "R",
+   "name": "Restaurant Technology Guys - Restaurant Technology Insights for Multi-Unit Opera（来源条目里的外链 · pod-restaurant-growth-accelerator）",
+   "feedUrl": "https://restauranttechnologyguys.com/feed/",
+   "perDay": 0.13
+  },
+  {
+   "group": "R",
+   "name": "AIS - Associazione Italiana Sommelier（来源条目里的外链 · rss-ristorazione-italiana）",
+   "feedUrl": "https://aisitalia.it/feed/",
+   "perDay": 0.13
+  }
+ ]
+}

@@ -1,0 +1,142 @@
+// 全面找信源的成本样本（2026-10-24，十一同意，上限 US$1）：新候选每天约 3,900 条，接之前先量出真实的数，给 Kay 定接多少。
+// 从 myfnb/sourcing/trial-sample-2026-10-24.json 的订阅里各取最新几条（按每天产量加权抽的：G 综合全站订阅、S 其余新候选、
+// R 账本重开的），走站上同样的预筛和两次评分（editorial/analyze.ts 的 runSelectionPrefilter、runSelectionScores），量出：
+//   过预筛的比例、评分过线（入选）的比例、预筛和评分每条实际花多少（回执的 cost）；
+//   一道不花钱的代码过滤（标题、摘要、网址里有没有餐饮词）会放过多少、漏掉多少预筛通过和入选的；
+//   线上最近 7 天每一步的花费和条数（只读），用来算过了预筛以后归类、写稿、核对每条要多花多少。
+// 站上什么都不变：不建信源、不写条目，库里只多模型回执。正文只在内存里用，不写进输出；输出是标题、网址和判定。
+//   node myfnb/trial-sources.ts                列出会抓哪些订阅，不调模型
+//   node myfnb/trial-sources.ts --apply        抓、判，打出逐条结果和汇总
+//   --per 3        每个订阅取最新几条（默认 3）
+//   --cap-usd 1    回执累计到这个数就停（默认 1）
+// 在服务器上：ops 门 `bg myfnb/trial-sources.ts --apply`，再 `tail <编号>`。
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { parseArgs } from "node:util";
+import { createHash } from "node:crypto";
+import { REPO_ROOT } from "@aihot/backend/config";
+import { closeDb, sql } from "@aihot/backend/db";
+import { stopBoss } from "@aihot/backend/jobs/queue";
+import { runSelectionPrefilter, runSelectionScores, scoresSelect, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
+import { completeReceipt } from "@aihot/backend/providers/receipts";
+import { fetchRss } from "@aihot/backend/sources/rss";
+import { extractFromUrl, pageFetchable } from "@aihot/backend/content/extract";
+import type { SourceRow } from "@aihot/backend/sources/types";
+
+const { values } = parseArgs({ options: { apply: { type: "boolean", default: false }, per: { type: "string", default: "3" }, "cap-usd": { type: "string", default: "1" } } });
+type Feed = { group: "G" | "S" | "R"; name: string; feedUrl: string; perDay: number };
+const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing/trial-sample-2026-10-24.json"), "utf8")) as {
+  volume: Record<Feed["group"], { feeds: number; perDay: number }>; feeds: Feed[];
+};
+const per = Number(values.per);
+const cap = Number(values["cap-usd"]);
+
+// 代码过滤：标题、摘要和网址里有没有一个餐饮词（多语言）。词表故意宽，宁可多放：它只替预筛挡掉明显不相干的。
+const FOOD = new RegExp([
+  "餐", "飲", "饮", "食", "菜", "吃", "店", "外卖", "外賣", "咖啡", "茶", "酒", "厨", "廚", "料理", "麵", "面馆", "火锅", "火鍋", "奶茶", "烘焙", "麵包", "面包",
+  "飲食", "外食", "レストラン", "居酒屋", "ラーメン", "グルメ", "カフェ", "メニュー", "フード",
+  "식당", "외식", "음식", "카페", "메뉴", "배달", "요리", "치킨", "프랜차이즈", "맛집",
+  "restaura", "food", "dining", "diner", "café", "cafe", "coffee", "menu", "chef", "kitchen", "\\bbar\\b", "\\bpub\\b", "brew", "beer", "wine", "cocktail",
+  "pizza", "burger", "takeaway", "takeout", "delivery", "franchis", "hospitality", "catering", "bakery", "\\beat", "meal", "drink", "\\btea\\b", "snack", "grocery",
+  "comida", "gastronom", "cocina", "cerveza", "vino", "bebida", "alimenta", "lanchonete", "padaria", "delivery", "hostel", "hotel",
+  "gastro", "essen", "küche", "imbiss", "bäcker", "ristorant", "cucina", "cibo", "trattoria", "boulang", "brasserie", "cuisine", "nourriture",
+  "\\bmat\\b", "kök", "ravintol", "horeca", "eten", "keuken",
+  "makan", "restoran", "kuliner", "minuman", "kopi", "ẩm thực", "nhà hàng", "quán", "món", "อาหาร", "ร้าน", "กาแฟ",
+  "مطعم", "مطاعم", "طعام", "قهوة", "مقهى", "מסעד", "אוכל",
+].join("|"), "i");
+const passesCode = (s: string) => FOOD.test(s);
+
+const sourceOf = (f: Feed, i: number): SourceRow => ({
+  id: `trial-${i}`, name: f.name, kind: "rss", config: { feedUrl: f.feedUrl }, tier: "T2", participation_mode: "editorial",
+  first_party: false, interval_minutes: 720, enabled: true, cursor: null, fail_count: 0,
+});
+
+if (!values.apply) {
+  for (const g of ["G", "S", "R"] as const) console.log(`${g}: ${sample.feeds.filter((f) => f.group === g).length} 个订阅（全组 ${sample.volume[g].feeds} 个，每天约 ${sample.volume[g].perDay} 条）`);
+  console.log(`每个订阅取最新 ${per} 条，最多 ${sample.feeds.length * per} 条；加 --apply 才抓和判。`);
+  await closeDb();
+  process.exit(0);
+}
+
+type Row = { group: Feed["group"]; feed: string; title: string; url: string; code: boolean; label: string | null; reason: string; scores: number[]; selected: boolean; cost: number; err?: string };
+const rows: Row[] = [];
+let spentUsd = 0;
+const costOf = async (ids: number[]) => {
+  if (!ids.length) return 0;
+  const [r] = await sql<{ usd: string | null }[]>`SELECT sum(cost)::text AS usd FROM receipts WHERE id IN ${sql(ids)}`;
+  return Number(r?.usd ?? 0);
+};
+
+for (const [i, f] of sample.feeds.entries()) {
+  if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
+  let items;
+  try {
+    items = (await fetchRss(sourceOf(f, i), { force: true })).candidates
+      .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0)).slice(0, per);
+  } catch (e) {
+    console.log(`! ${f.name}：抓不到（${String(e).slice(0, 80)}）`);
+    continue;
+  }
+  for (const c of items) {
+    if (spentUsd >= cap) break;
+    let body = c.bodyText ?? null;
+    if (!body && pageFetchable(c.url, "rss")) {
+      // 和站上一样先读文章页；不用付费的 Jina 兜底，读不到就按标题和摘要判（站上那种情况会等页面）。
+      body = (await extractFromUrl(c.url, `trial:${c.url}`, {}, { paidFallback: false }).catch(() => null))?.text ?? null;
+    }
+    const id = `trial-src-${createHash("sha256").update(c.url).digest("hex").slice(0, 16)}`;
+    const a: AnalyzeInputArticle = {
+      id, revision: 1, title: c.title, url: c.url, author: c.author ?? null, publishedAt: c.publishedAt ?? null, publicationTime: c.publicationTime ?? null,
+      bodyText: body, excerpt: c.excerpt ?? null, bodyStatus: body ? "ok" : "unconfirmed", xPost: null, media: [],
+      source: { name: f.name, kind: "rss", tier: "T2", firstParty: false },
+    };
+    const row: Row = { group: f.group, feed: f.name, title: c.title, url: c.url, code: passesCode(`${c.title} ${c.excerpt ?? ""} ${c.url}`), label: null, reason: "", scores: [], selected: false, cost: 0 };
+    const ids: number[] = [];
+    try {
+      const pre = await runSelectionPrefilter(a, { attemptTag: "trial-sources-1024" }, (r) => ids.push(r));
+      row.label = pre.label;
+      row.reason = pre.reason;
+      if (pre.label !== "BLOCK") {
+        const s = await runSelectionScores(a, { attemptTag: "trial-sources-1024" }, (r) => ids.push(r));
+        row.scores = s?.values ?? [];
+        row.selected = scoresSelect(s);
+      }
+    } catch (e) {
+      row.err = String(e).slice(0, 100);
+    }
+    for (const r of ids) await completeReceipt(sql, r);
+    row.cost = await costOf(ids);
+    spentUsd += row.cost;
+    rows.push(row);
+    console.log(`${row.group} | ${row.code ? "码过" : "码挡"} | ${row.label ?? "-"} | ${row.scores.join("+") || "-"}${row.selected ? " 入选" : ""} | ${row.title.slice(0, 50).replace(/\s+/g, " ")} | ${row.url}`);
+  }
+}
+
+const pct = (n: number, d: number) => (d ? `${((n / d) * 100).toFixed(0)}%` : "-");
+console.log(`\n# 汇总：${rows.length} 条，回执合计 US$${spentUsd.toFixed(3)}`);
+for (const g of ["G", "S", "R", "全部"] as const) {
+  const set = g === "全部" ? rows : rows.filter((r) => r.group === g);
+  const judged = set.filter((r) => r.label);
+  const pass = judged.filter((r) => r.label !== "BLOCK");
+  const sel = judged.filter((r) => r.selected);
+  const code = judged.filter((r) => r.code);
+  const avg = (rs: Row[]) => (rs.length ? rs.reduce((n, r) => n + r.cost, 0) / rs.length : 0);
+  console.log(`${g}: 判了 ${judged.length} 条 · 过预筛 ${pass.length}（${pct(pass.length, judged.length)}）· 入选 ${sel.length}（${pct(sel.length, judged.length)}）`
+    + ` · 每条预筛 US$${avg(judged.filter((r) => r.label === "BLOCK")).toFixed(5)}，过预筛的预筛加评分 US$${avg(pass).toFixed(5)}`);
+  console.log(`   代码过滤放过 ${code.length}（${pct(code.length, judged.length)}）· 挡掉的里面过预筛的 ${judged.filter((r) => !r.code && r.label !== "BLOCK").length} 条、入选的 ${judged.filter((r) => !r.code && r.selected).length} 条`);
+}
+
+// 线上最近 7 天：每一步的花费和条数，和同期过预筛、入选的文章数（只读）。
+const steps = await sql<{ purpose: string; n: string; usd: string | null }[]>`
+  SELECT purpose, count(*)::text AS n, sum(cost)::text AS usd FROM receipts
+  WHERE created_at > now() - interval '7 days' AND status IN ('received', 'completed') AND coalesce(subject, '') NOT LIKE 'article:trial-%'
+  GROUP BY purpose ORDER BY sum(cost) DESC NULLS LAST`;
+console.log("\n# 线上最近 7 天每一步（回执条数 / US$）");
+for (const s of steps) console.log(`${s.purpose}\t${s.n}\t${Number(s.usd ?? 0).toFixed(3)}`);
+const [counts] = await sql<{ judged: string; pass: string; selected: string }[]>`
+  SELECT count(*)::text AS judged, count(*) FILTER (WHERE relevance <> 'block')::text AS pass, count(*) FILTER (WHERE selected)::text AS selected
+  FROM (SELECT DISTINCT ON (article_id) relevance, selected FROM analyses WHERE created_at > now() - interval '7 days' ORDER BY article_id, id DESC) x`;
+console.log(`同期判过的文章 ${counts?.judged}，过预筛 ${counts?.pass}，入选 ${counts?.selected}`);
+
+await stopBoss().catch(() => {});
+await closeDb();

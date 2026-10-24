@@ -12,8 +12,7 @@ const steps: string[] = [];
 const provider = await stub((_hit, request) => {
   const step = analysisStep(request.body);
   steps.push(step);
-  const result = step === "check" ? { problems: [] }
-    : step === "prefilter" ? { label: "PASS", reason: "fixture" } : step === "score" ? { attentionScore: SELECTING_SCORE } : "invalid output";
+  const result = step === "prefilter" ? { label: "PASS", reason: "fixture" } : step === "score" ? { attentionScore: SELECTING_SCORE } : "invalid output";
   return { choices: [{ message: { content: typeof result === "string" ? result : JSON.stringify(result) } }] };
 });
 pointModels(provider.url);

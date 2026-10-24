@@ -1,0 +1,14 @@
+{
+  "name": "@aihot/checker",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": "./server.ts",
+    "./backend/*": "./backend/*.ts"
+  },
+  "dependencies": {
+    "@aihot/backend": "*",
+    "@aihot/site": "*",
+    "zod": "4.6.5"
+  }
+}

@@ -1,8 +1,8 @@
 // 核对员（决定记录 2026-10-23）：一个模型拿原文逐句核一份中文稿，列出问题，每个问题带改好后的整个字段。
-// 试跑用（myfnb/trial-check.ts 考试、myfnb/trial-pipeline.ts 写—核—改）；worker 里的是 packages/backend/src/editorial/check.ts。
+// 试跑用（myfnb/trial-check.ts 考试、myfnb/trial-pipeline.ts 写—核—改）；worker 里的是 modules/checker/backend/check.ts。
 import { z } from "zod";
 import type { AnalyzeInputArticle } from "@aihot/backend/editorial/input";
-import { withBackup } from "@aihot/backend/editorial/check";
+import { withBackup } from "@aihot/checker/backend/check";
 import { promptText, promptVersion } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { sql } from "@aihot/backend/db";

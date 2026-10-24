@@ -20,7 +20,7 @@ import { sql } from "../db.ts";
 import { chatJson, MODELS, type ContentPart } from "../providers/llm.ts";
 import { completeReceipt, failedReceiptId, failureKind } from "../providers/receipts.ts";
 import { collapseWhitespace } from "../lib/text.ts";
-import { checkCopy } from "./check.ts";
+import { moduleCopyCheck } from "../modules.ts";
 import { modelFor, modelRoute, modelSupportsVision } from "./models.ts";
 import { buildMaterial, firstImagePart, loadAnalyzeInput, type AnalyzeInputArticle } from "./input.ts";
 import { pageFetchable } from "../content/extract.ts";
@@ -205,7 +205,7 @@ export interface AnalysisRun {
     titleZh: string;
     summaryZh: string;
     reasonZh: string | null;
-    /** The checker found the copy still wrong, or the original too thin: not selected (check.ts). */
+    /** A module's check of the copy held it out of the selection (modules.ts copyCheck). */
     held?: boolean;
     itemType?: string;
     authorRole?: string;
@@ -499,10 +499,11 @@ export async function runAnalysis(a: AnalyzeInputArticle, opts: StepOpts = {}): 
       ? { kind: "verbatim", model: null, titleZh: original.title, summaryZh: original.summary ?? "", reasonZh: null, receiptIds: [], reused: true }
       : await mendWording(a, (near ? await runUnderstand(a, opts) : null) ?? (await runSummarize(a, opts)), opts);
     // Only copy that will be shown as selected is checked; a near miss is not paid for.
-    if (writing.kind === "understand" && scoresSelect(scores)) {
+    const check = moduleCopyCheck();
+    if (check && writing.kind === "understand" && scoresSelect(scores)) {
       checkAnalysisRunning();
-      const c = await checkCopy(a, writing, subjectOf(a), tagged(opts.attemptTag, "check"));
-      writing = { ...writing, titleZh: c.draft.title, summaryZh: c.draft.lead, reasonZh: c.draft.points.join("\n") || null, held: c.held, receiptIds: [...writing.receiptIds, ...c.receiptIds] };
+      const c = await check.run({ article: a, copy: writing, subject: subjectOf(a), attemptTag: tagged(opts.attemptTag, "check") });
+      writing = { ...writing, titleZh: c.titleZh, summaryZh: c.summaryZh, reasonZh: c.reasonZh, held: c.held, receiptIds: [...writing.receiptIds, ...c.receiptIds] };
     }
     return { prefilter, scores, writing, structure: s.value };
   } finally {

@@ -1,4 +1,4 @@
-// 2026-10-23：要点上线前已经入选的条目（约 1,340 条），用同一个核对员（packages/backend/src/editorial/check.ts）拿原文核一遍现有的
+// 2026-10-23：要点上线前已经入选的条目（约 1,340 条），用同一个核对员（modules/checker/backend/check.ts）拿原文核一遍现有的
 // 标题、摘要、收录理由：严重和误导照核对员的改法改，改过的再核一遍；标题或摘要还错的撤下（withdrawn，不删）；只有理由改不好的，去掉理由、条目留着
 // （10-23 第 1 批：刘帅那条标题摘要都对，只因理由被删空就整条撤下，太严）。
 // 只核对、不重写（十一 10-23；Kay 10-23「你和十一讨论决定」「今天做不到？」）。从新到旧，每批 20 条，每批抽样盲核过了再下一批。
@@ -9,7 +9,7 @@
 //   sudo docker compose run --rm -T -v <检出>/myfnb:/app/myfnb:ro worker node myfnb/check-old-items-2026-10-23.ts [--limit 20] [--apply]
 import { overrideFields, setVisibility } from "@aihot/backend/admin/content";
 import { closeDb, sql } from "@aihot/backend/db";
-import { checkCopy, dropsCountry } from "@aihot/backend/editorial/check";
+import { checkCopy, dropsCountry } from "@aihot/checker/backend/check";
 import { loadAnalyzeInput } from "@aihot/backend/editorial/input";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 

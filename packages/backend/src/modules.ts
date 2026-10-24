@@ -7,6 +7,7 @@ import type { WorkOptions } from "pg-boss";
 import type { z } from "zod";
 import type { Brand } from "@aihot/contracts/site";
 import type { Db } from "./db.ts";
+import type { AnalyzeInputArticle } from "./editorial/input.ts";
 import type { QueueOptions } from "./jobs/queue.ts";
 import type { Finding } from "./notify/feishu.ts";
 import type { Topic, TopicMember } from "./publication/topics.ts";
@@ -187,6 +188,24 @@ export interface DailyLead {
   href: string;
 }
 
+/** The copy a module's check is given (editorial/analyze.ts runAnalysis): understanding copy about to be selected. */
+export interface CopyCheckAsk {
+  article: AnalyzeInputArticle;
+  copy: { titleZh: string; summaryZh: string; reasonZh: string | null };
+  /** The receipts' subject, and the attempt tag a retry reuses them by. */
+  subject: string;
+  attemptTag?: string;
+}
+
+/** The copy after the check; `held` keeps the item out of the selection. */
+export interface CopyCheck {
+  titleZh: string;
+  summaryZh: string;
+  reasonZh: string | null;
+  held: boolean;
+  receiptIds: number[];
+}
+
 export interface ServerModule {
   /** Its folder under modules/. */
   name: string;
@@ -223,6 +242,13 @@ export interface ServerModule {
    * Null leaves the lead to the rule.
    */
   dailyLead?: (date: string) => Promise<DailyLead | null>;
+  /**
+   * A check of the copy an article will be selected with, before it is stored (editorial/analyze.ts): the first
+   * installed module with one may change the title, summary and reason, or hold the article out of the selection.
+   * `purposes` are its receipts' purposes: releasing one sends the article back to processing, as for the engine's
+   * own steps (jobs/content.ts resumeAfterRelease).
+   */
+  copyCheck?: { purposes: readonly string[]; run: (ask: CopyCheckAsk) => Promise<CopyCheck> };
   /** What is wrong now, for the owner's alerts (operations/alerts.ts), after the engine's problems. */
   alerts?: (now: number) => Promise<Finding[]>;
   /** Its share of the daily retention run (operations/retention.ts): what it deleted or aggregated. */
@@ -295,6 +321,11 @@ export async function moduleDailyLead(date: string): Promise<DailyLead | null> {
     if (lead) return lead;
   }
   return null;
+}
+
+/** The first installed module's check of selected copy, if any. */
+export function moduleCopyCheck(): ServerModule["copyCheck"] {
+  return installed.find((m) => m.copyCheck)?.copyCheck;
 }
 
 /** The first installed module's reminder for the person behind this request, at this exit. */

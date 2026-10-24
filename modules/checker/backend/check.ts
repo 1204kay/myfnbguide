@@ -4,11 +4,11 @@
 import { z } from "zod";
 import { reasonLines } from "@aihot/site";
 import { CHECK_BACKUP } from "@aihot/site/models";
-import { chatJson } from "../providers/llm.ts";
-import { ModelOutputError } from "../providers/receipts.ts";
-import type { AnalyzeInputArticle } from "./input.ts";
-import { modelFor } from "./models.ts";
-import { promptText, promptVersion } from "./prompts.ts";
+import { chatJson } from "@aihot/backend/providers/llm";
+import { ModelOutputError } from "@aihot/backend/providers/receipts";
+import type { AnalyzeInputArticle } from "@aihot/backend/editorial/input";
+import { modelFor } from "@aihot/backend/editorial/models";
+import { promptText, promptVersion } from "@aihot/backend/editorial/prompts";
 
 export const Problem = z.object({
   field: z.string(), point: z.coerce.number().catch(0), quote: z.string().catch(""), kind: z.coerce.number().catch(0),

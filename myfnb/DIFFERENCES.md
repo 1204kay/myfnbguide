@@ -28,7 +28,7 @@
 | 地方 | 和原版不同 | 理由（特殊需求） | 用户确认 |
 |---|---|---|---|
 | 参考库 | 框架没有的功能，做成模块 `modules/reference`，只用原版插口（侧栏、手机底栏），地址 `/reference`；首页仍是原版的精选 | 本站要验证的东西（§0、§2.1）；模块是原版给的扩展方式 | 10/4 |
-| 核对员 | 入选条目的标题、导读和要点写好后，另一个模型拿原文逐句核一遍：第 1–4 类（数字、谁说的、发生过没有、先后因果）和误导照它的改法改，改过的再核一遍只拦严重错；要点有严重错删掉那条，标题或导读有严重错、或一条要点都不剩，不进精选（`held`）；删了原句里的国家名的修改不采用。代码在框架里：`packages/backend/src/editorial/check.ts`（新文件）、`analyze.ts` 的挂钩和入选判断（`!held`）、`models.ts` 的 `check`、`jobs/content.ts` 的 `check_item` 一步；提示词 `industry/prompts/check-item.md` | 10-23 盲核里模型写的标题、导读、要点有事实错（数字、谁说的、举例写成真事），原版没有核对这一步 | 十一 10-23 定（决定记录「条目页定为三段」那几条）。**放在框架里不合理**（Kay 10-24 问「核对员为什么要改框架」）：框架在「写完」和「定入选」之间没有模块插口，当时直接写进了框架；十一 10-24 定改成框架加一个通用插口、核对员搬进模块，排在「读者为什么想点开」修完 check.ts 之后 |
+| 核对员 | 入选条目的标题、导读和要点写好后，另一个模型拿原文逐句核一遍：第 1–4 类（数字、谁说的、发生过没有、先后因果）和误导照它的改法改，改过的再核一遍只拦严重错；要点有严重错删掉那条，标题或导读有严重错、或一条要点都不剩，不进精选（`held`）；删了原句里的国家名的修改不采用。代码在模块 `modules/checker`（`backend/check.ts`；模型那一步仍叫 `check`，后台的切换和 `CHECK_MODEL` 照旧）；框架只加了一个通用插口 `copyCheck`（`packages/backend/src/modules.ts`，`analyze.ts` 在定入选前调用它、`!held` 不进精选，`jobs/content.ts` 放行它的回执后条目接着处理）；提示词 `industry/prompts/check-item.md` | 10-23 盲核里模型写的标题、导读、要点有事实错（数字、谁说的、举例写成真事），原版没有核对这一步 | 十一 10-23 定（决定记录「条目页定为三段」那几条）。Kay 10-24 问「核对员为什么要改框架」：框架在「写完」和「定入选」之间原来没有模块插口，当时直接写进了框架；十一 10-24 定改成框架加一个通用插口、核对员搬进模块，10-24 已搬。这个插口对所有站都成立，可以提给作者 |
 | 条目和卡片 | 读者看不到 AI 评分（`ITEM_COPY.showScore`）；理由叫「原文要点」（`reasonLabel`，10-23 起叫「要点」，同日晚改为「原文要点」，写明内容出自原文、和我们写的导读分开，十一定；之前叫「收录理由」，见下面「要点」一行）。都是原版选项 | §3.1「不打分」 | Claude 10/4 定，没有用户原话（用户 10/5 21:25 反而问过「左侧像AIHOT放日期时间右侧放AI评分？」；10/5 10:51 用户自己说的是「AI导读和推荐理由」，即原版的叫法）；10/6 清理时按清理授权保留。**10/10 复核后保留**（用户：「全部你思考 你决定」）：最近 30 天入选的 121 条中位数 60 分、26% 低于 50 分、70 分以上只有 12%（本站门槛 40，原版 60–76），显示出来时入选条目旁边的「41」读起来像不及格，原版 70 分以上的强调色近九成用不上；「推荐」是替内容担保，违反 §3 第 1 条，「收录理由」只说我们为什么收 |
 | 导航 | 不放热点榜和主题（`site.ts` 的 `NAV.hidden: ["/hot", "/topics"]`）。**10/10 起是原版的选项**（#120 作者 10/9 合并），隐藏后电脑侧栏、手机底栏、「我的」页都不放，页面照样能打开，事件页、主题页的返回和链接改回精选 | 热点榜 10/6 线上是空的：要几家来源同时讨论同一件事，本站的来源还凑不出来；主题页各主题只列最近的精选，多数是几天到几年前的旧条目。有内容了就删掉对应的一项 | 热点榜：10/3 用户「热点榜是不是可以改成攻略合集之类的？」；10/6 清理授权。主题：10/4 Claude 逐页检查时定（归档 HANDOFF-2026-10-04.md §9「线上网站逐页检查」写明「改法 Claude 定」）；用户 10/5 21:25 问过「我们是不是少了主题这个页面？」；10/9「再次确认」出自云端会话，原话未存 |
 | 手机筛选 | 一排左右滑动的选项（`FEED.phoneFilter: "row"`，框架加的选项，默认 `"sheet"` 不变） | 用户 10/6 直接提出 | 10/6 |
@@ -63,7 +63,7 @@
 
 | 文件 | 改了什么 | 清单哪一行 |
 |---|---|---|
-| `Dockerfile` | 装上本站的模块（参考库、存档） | 参考库、存档 |
+| `Dockerfile` | 装上本站的模块（参考库、存档、社媒、核对员） | 参考库、存档、核对员 |
 | `packages/backend/src/sources/dates.ts`、`sources/web-list.ts`、`tests/source-dates.standalone.test.ts` | `readRelativeDate`：日期元素只写相对时间时往回算 | 相对时间 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`、`docs/architecture.md`、`apps/web/tests/item-parts.test.ts` | 通用插口 `itemPart`：模块在条目页三段之后放一块（本站只放「收在 MYFNB 参考」的链接） | 条目页 |
 | `apps/web/app/routes/item.tsx` | 条目页的 # 标签去掉分类标签和主题已经表示的标签（`shownTags`）；要点放在主栏 | 条目页标签、要点 |
@@ -75,7 +75,7 @@
 | `apps/web/app/features/feed/FeedItem.tsx`、`packages/backend/src/publication/agent.ts`、`publication/detail.ts` | 理由字段按行显示要点（`reasonLines`），Agent 出口的说明改成「说明原文讲了什么」 | 要点 |
 | `packages/backend/src/modules.ts`、`reports/compose.ts`、`publication/reports.ts`、`packages/contracts/src/site.ts`、`features/report/ReportPaper.tsx` | 模块插口 `dailyLead`，日报头条的可选字段 `kicker`、`href` | 十一说 |
 | `packages/backend/src/publication/sitemap.ts`、`apps/web/app/routes/story.tsx`、`tests/discovery-updates.test.ts` | 一篇报道的事件页不进站点地图、加 `noindex`；作者的测试给事件多加一篇报道 | 事件页 |
-| `packages/backend/src/editorial/check.ts`、`analyze.ts`、`models.ts`、`jobs/content.ts`、`tests/check-item.standalone.test.ts`、`tests/analysis-steps.ts` 等 | 核对员（要搬进模块，见清单那一行） | 核对员 |
+| `packages/backend/src/modules.ts`、`editorial/analyze.ts`、`jobs/content.ts`、`tests/analyze.test.ts` | 模块插口 `copyCheck`（核对员用它，代码在 `modules/checker`） | 核对员 |
 | `packages/backend/src/media/og.ts` | 读 `assets/og-fonts/` 里另加的字体补字 | 分享图字体 |
 | `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |
 | `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑 | GitHub 检查里的网页测试 |

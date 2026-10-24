@@ -1,8 +1,8 @@
 // 2026-10-10：本站从上线第一天起按商业站运营（用户 10/10），同一天补查了全部来源的条款（节目方自己的和托管平台的）。
-// myfnb/dropped-sources-2026-10-10.tsv 里的来源停用（后台「信源」里可以恢复），它们已公开的条目下架（走后台同一个下架函数，
+// dropped-sources-2026-10-10.tsv（10-24 起在公司手册 业务线/myfnbguide/信源/，不再放公开仓库）里的来源停用（后台「信源」里可以恢复），它们已公开的条目下架（走后台同一个下架函数，
 // 可以恢复；节目方书面同意后恢复），还没分析的条目不再处理；故事有变动的情况随后重新归并。
-// 不带参数只数条数；--apply 执行，可以重复跑。
-//   sudo docker compose exec -T -u root worker node myfnb/drop-sources-2026-10-10.ts [--apply]
+// 不带 --apply 只数条数；--apply 执行，可以重复跑。名单从标准输入读。
+//   sudo docker compose exec -T -u root worker node myfnb/drop-sources-2026-10-10.ts [--apply] < dropped-sources-2026-10-10.tsv
 import { readFileSync } from "node:fs";
 import { setVisibility } from "@aihot/backend/admin/content";
 import { closeDb, sql } from "@aihot/backend/db";
@@ -15,7 +15,7 @@ import { SITUATIONS } from "../modules/reference/situations.ts";
 
 installModules(SERVER_MODULES);
 const apply = process.argv.includes("--apply");
-const rows = readFileSync(new URL("./dropped-sources-2026-10-10.tsv", import.meta.url), "utf8").split(/\r?\n/)
+const rows = readFileSync(0, "utf8").split(/\r?\n/)
   .filter((l) => l.trim() && !l.startsWith("#")).map((l) => l.split("\t") as [string, string, string]);
 const ids = rows.map((r) => r[0]);
 const reasonOf = new Map(rows.map((r) => [r[0], `${r[1]}：${r[2]}`.slice(0, 180)]));

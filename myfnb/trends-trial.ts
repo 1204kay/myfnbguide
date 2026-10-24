@@ -13,20 +13,21 @@ import { writeWeek } from "@aihot/trends/backend/compose";
 installModules(SERVER_MODULES);
 const { values } = parseArgs({ options: { start: { type: "string", default: "2026-10-18" }, end: { type: "string", default: "2026-10-24" } } });
 try {
-  const { topics, dropped, receipts, pool } = await writeWeek(`trial:${values.start}`, values.start!, values.end!);
+  const { topics, dropped, receipts, pool, found } = await writeWeek(`trial:${values.start}`, values.start!, values.end!);
   const byId = new Map(pool.map((p) => [p.id, p]));
   console.log(`${values.start} – ${values.end}：一周 ${pool.length} 条，发 ${topics.length} 题，不发 ${dropped.length} 题`);
   for (const t of topics) {
     console.log(`\n## ${t.heading}`);
     for (const l of t.lines) console.log(`- ${byId.get(l.id)?.sourceName}：${l.text}（${l.id}）`);
   }
+  for (const f of found) console.log(`找到：${f.name}（找话题列 ${f.found} 条，补齐后 ${f.gathered} 条）`);
   for (const d of dropped) console.log(`\n不发：${d.name}（${d.why}）${d.ids.map((id) => byId.get(id)?.sourceName).join("、")}`);
   // DeepSeek's receipts leave cost empty: usage times the price table, as myfnb/trial-sources.ts (#74).
   const [cost] = await sql<{ n: number; usd: string | null }[]>`
     SELECT count(*)::int AS n, sum(coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0))::text AS usd
     FROM receipts r LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true
     WHERE r.id = ANY(${receipts})`;
-  console.log(`\n调用 ${cost?.n ?? 0} 次，US$${cost?.usd ?? "?"}`);
+  console.log(`\n调用 ${cost?.n ?? 0} 次，US$${cost?.usd == null ? "?" : Number(cost.usd).toFixed(4)}`);
 } finally {
   await closeDb();
 }

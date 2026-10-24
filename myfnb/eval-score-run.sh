@@ -4,7 +4,7 @@
 #   ssh -i ~/.ssh/myfnb_server ubuntu@43.160.228.180 "cd /opt/myfnbguide && bash myfnb/eval-score-run.sh"
 # 候选提示词放在分支 eval/score-candidate 的 industry/prompts/selection-score.md。要评测的讨论串把它推到那个分支；
 # 这里只下载这一份 .md，分支上的代码不执行。评测用 main 上的脚本，在一次性容器里跑；正在运行的服务和正式库的内容不动，
-# 只多写这次调用的回执。每次最多 86 次 DeepSeek 调用，约 US$0.04；每个 PR 最多跑两次，第三次先报十一。
+# 只多写这次调用的回执。每次最多 172 次 DeepSeek 调用（每边打两次，和站上一样），约 US$0.08；每个 PR 最多跑两次，第三次先报十一。
 set -euo pipefail
 cd "$(dirname "$0")/.."
 REPO=https://github.com/1204kay/myfnbguide

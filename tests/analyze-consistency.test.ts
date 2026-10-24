@@ -19,8 +19,7 @@ const provider = await stub(async (_hit, request) => {
     waiting.entered.open();
     await waiting.release.promise;
   }
-  const content = step === "check" ? { problems: [] }
-    : step === "prefilter" ? { label: "PASS", reason: "local fixture" }
+  const content = step === "prefilter" ? { label: "PASS", reason: "local fixture" }
     : step === "score" ? { attentionScore: SELECTING_SCORE }
     : step === "structure" ? { category: CATEGORIES[0]!.key, tags: [], subjects: [], scope: "single", fact: null }
     : { itemType: ITEM_TYPES[0], authorRole: "principal", tags: [CATEGORY_TAGS[0]], editorialJudgment: "模型能力提升", titleZh: "实验室发布新模型", summaryZh: "实验室发布新模型，并公布了评测结果与价格。" };

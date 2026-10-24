@@ -1,5 +1,5 @@
 // 2026-10-23：note.com 的付费文章我们只拿到免费的开头（这 2 条 203、301 字，没有一个数字），要点写不出读者能用的东西。
-// 新入选的已经由核对员拦下（packages/backend/src/editorial/check.ts）；上线前已经入选、正文不足 400 字（和核对员的门槛一样）的这 2 条走后台的「撤下」（withdrawn），
+// 新入选的已经由核对员拦下（modules/checker/backend/check.ts）；上线前已经入选、正文不足 400 字（和核对员的门槛一样）的这 2 条走后台的「撤下」（withdrawn），
 // 不删数据，有审计记录，随时可以在后台改回公开。十一 10-23 定，Kay 10-23 16:51「你和十一讨论决定」。
 // 不带参数只预览；--apply 执行。可以重复跑：已经撤下的跳过。
 //   sudo docker compose run --rm -T -v <检出>/myfnb:/app/myfnb:ro worker node myfnb/hide-paywall-2026-10-23.ts [--apply]

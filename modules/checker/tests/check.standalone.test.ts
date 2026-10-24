@@ -2,7 +2,7 @@
 // again, and a title or lead still wrong, or no point left, keeps the item out of the selection.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { checkAndFix, withBackup, type Draft, type Problem } from "@aihot/backend/editorial/check";
+import { checkAndFix, withBackup, type Draft, type Problem } from "../backend/check.ts";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
 
 const draft: Draft = { title: "标题", lead: "导读。", points: ["要点一", "要点二", "要点三"] };

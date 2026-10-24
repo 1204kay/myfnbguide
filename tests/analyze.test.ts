@@ -10,6 +10,7 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { analyzeArticle, buildMaterial, loadAnalyzeInput, normalizeStructure, StructureSchema, tierThreshold, UNDERSTAND_FLOOR } from "@aihot/backend/editorial/analyze";
 import { queueProcessing } from "@aihot/backend/jobs/content";
+import { installModules, type CopyCheckAsk } from "@aihot/backend/modules";
 import { QUEUES, stopBoss } from "@aihot/backend/jobs/queue";
 import { compactAnswerFirstSummary, enforceIdentity, MAX_BODY_CHARS, parseTranslateOutput } from "@aihot/backend/editorial/writing";
 import { READER_WORDING } from "@aihot/industry/wording";
@@ -24,7 +25,7 @@ interface Req { step: AnalysisStep; marker: string; user: string }
 const requests: Req[] = [];
 // Long points: 10-23 a six-point answer of about 700 characters was dropped whole by a length cap.
 const point = (n: number) => `要点 ${n}：${"细节".repeat(50)}`;
-const MARKERS = ["CLEAR", "RESCUE", "LOW", "OFFTOPIC", "BARE", "VAGUE", "THIN", "SENSITIVE", "推文", "WORDY", "REFUSAL", "RENUMBER", "UNMENDED", "POINTS"];
+const MARKERS = ["CLEAR", "RESCUE", "LOW", "OFFTOPIC", "BARE", "VAGUE", "THIN", "SENSITIVE", "推文", "WORDY", "REFUSAL", "RENUMBER", "UNMENDED", "POINTS", "HELD", "PLAIN"];
 // The scores sit a few points around the pack's T1 threshold and understand floor, so each case means
 // the same after a site recalibrates them: selected when the two add up to 2 × T1, written like a
 // selected item when they add up to more than 2 × FLOOR, translated otherwise.
@@ -32,7 +33,7 @@ const T1 = tierThreshold("T1")!;
 const FLOOR = UNDERSTAND_FLOOR;
 const scoreAnswers: Record<string, number[]> = {
   CLEAR: [T1 + 3, T1 - 1], RESCUE: [FLOOR + 1, FLOOR], LOW: [FLOOR, FLOOR - 1], THIN: [T1, T1], SENSITIVE: [T1, T1], 推文: [FLOOR, FLOOR],
-  BARE: [FLOOR - 2, FLOOR - 4], VAGUE: [T1, T1 + 2], WORDY: [T1, T1], REFUSAL: [T1, T1], RENUMBER: [T1, T1], UNMENDED: [T1, T1], POINTS: [T1, T1],
+  BARE: [FLOOR - 2, FLOOR - 4], VAGUE: [T1, T1 + 2], WORDY: [T1, T1], REFUSAL: [T1, T1], RENUMBER: [T1, T1], UNMENDED: [T1, T1], POINTS: [T1, T1], HELD: [T1, T1], PLAIN: [FLOOR, FLOOR - 1],
 };
 
 const WORDY = ["WORDY", "REFUSAL", "RENUMBER", "UNMENDED"];
@@ -62,7 +63,6 @@ const provider = await stub((_hit, req) => {
     const judgment = marker === "POINTS" ? [1, 2, 3, 4, 5, 6, 7].map(point).join("\n") : `理由 ${marker}`;
     return answer({ itemType: "policy_change", authorRole: "principal", tags: ["政策/法规", "工资", "外劳", "不存在的标签"], editorialJudgment: judgment, titleZh: `理解标题 ${marker}`, summaryZh: `理解摘要 ${marker}。第二句补充一个关键数字。` });
   }
-  if (step === "check") return answer({ problems: [] });
   if (step === "structure") return answer({ category: "policy", tags: ["政策/法规", "税费"], subjects: ["mcdonalds", "unknown-co"], scope: "single", fact: { title: `事实 ${marker}`, subject: "某州政府", action: "上调", object: "最低工资", occurredAt: null, evidence: "the state raised the minimum wage", conditions: [] } });
   return answer(`title_zh: 翻译标题 ${marker}\nsummary_zh: 翻译摘要 ${marker}。第二句补充影响。`);
 });
@@ -96,9 +96,9 @@ test("a selected item: prefilter, two scores, the content understanding and the 
   const id = await article("CLEAR");
   const res = await analyzeArticle(id);
   assert.deepEqual([res!.output!.selected, res!.output!.score], [true, T1 + 1], `${T1 + 3} + ${T1 - 1} >= 2 × ${T1}; the mean is shown`);
-  assert.deepEqual(calls("CLEAR").sort(), ["check", "prefilter", "score", "score", "structure", "understand"]);
+  assert.deepEqual(calls("CLEAR").sort(), ["prefilter", "score", "score", "structure", "understand"]);
   const r = await row(id);
-  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "policy", 6]);
+  assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "policy", 5]);
   // Failure case: the writer's independent labels contradict the structural category.
   assert.deepEqual(r.tags, ["政策/法规", "税费", "麦当劳"], "category and tags come from the same structural judgement, plus the verified subject tag");
   assert.deepEqual(r.subjects, ["mcdonalds"]);
@@ -239,6 +239,24 @@ test("the points stop at five, however many and however long the model writes", 
   await analyzeArticle(id);
   const r = await row(id);
   assert.equal(r.reason_zh, [1, 2, 3, 4, 5].map(point).join("\n"));
+});
+
+test("a module's copy check sees only copy about to be selected, and may change it or hold the item", async () => {
+  const asked: CopyCheckAsk[] = [];
+  installModules([{ name: "copy-check-test", copyCheck: { purposes: ["check_test"], run: async (ask) => {
+    asked.push(ask);
+    return { ...ask.copy, titleZh: `核过 ${ask.copy.titleZh}`, held: ask.copy.titleZh.includes("HELD"), receiptIds: [] };
+  } } }]);
+  try {
+    const held = await article("HELD");
+    const plain = await article("PLAIN");
+    await analyzeArticle(held);
+    await analyzeArticle(plain);
+    assert.deepEqual(asked.map((a) => a.copy.titleZh), ["理解标题 HELD"], "a translated item is not checked");
+    assert.deepEqual([(await row(held)).selected, (await row(held)).title_zh], [false, "核过 理解标题 HELD"]);
+  } finally {
+    installModules([]);
+  }
 });
 
 test("guards: a company the input does not name is not written in; long summaries are cut at sentences", () => {

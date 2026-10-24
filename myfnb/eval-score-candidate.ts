@@ -9,7 +9,7 @@
 //   node myfnb/eval-score-candidate.ts [--rounds five,new,old] [--small] [--max-calls 1200] [--concurrency 6]
 //   --small (十一 10-24, DeepSeek nearly spent): round five whole, the first 15 必看 of round new (10-16 has only one 不看) and
 //   the first 15 不看 of round old, each side scored once.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { createHash } from "node:crypto";
@@ -49,7 +49,13 @@ for (const r of rows) {
   const a = id ? await loadAnalyzeInput(id) : null;
   if (a) cases.push({ ...r, a }); else missing++;
 }
-const times = values.small ? 1 : 2;
+// myfnb/eval-only.json, when it is in the checkout, narrows the run to a few cases by title and scores each of them
+// `times` times a side, every score printed (#67 第 3 次评测, 十一 10-24: one case 1 point over the line, scored once a side).
+// A file, not a flag, so the command allowed on Kay's computer stays word for word the same.
+const only = existsSync(path.join(REPO_ROOT, "myfnb/eval-only.json"))
+  ? JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/eval-only.json"), "utf8")) as { titles: string[]; times: number } : null;
+if (only) cases.splice(0, cases.length, ...cases.filter((c) => only.titles.some((t) => c.a.title.includes(t))));
+const times = only ? only.times : values.small ? 1 : 2;
 const most = cases.length * 2 * times;
 console.log(`# ${cases.length} cases (${ROUNDS.map((r) => `${r} ${cases.filter((c) => c.round === r).length}`).join(", ")}), ${missing} not in the database · at most ${most} calls`);
 if (most > Number(values["max-calls"])) throw new Error(`at most ${most} calls, over --max-calls ${values["max-calls"]}: none sent`);
@@ -70,6 +76,7 @@ async function score(a: AnalyzeInputArticle, system: string, version: string, ta
     });
     await completeReceipt(sql, res.receiptId);
     sum += res.data.attentionScore;
+    if (only) console.log(`  ${tag || "site:"} ${i} ${res.data.attentionScore} | ${a.title.slice(0, 40)}`);
   }
   return sum / times;
 }

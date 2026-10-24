@@ -18,22 +18,28 @@ const IconPause = ({ size = 18 }: P) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
 );
 
-/** 692 → 11 分钟 (rounded, at least 1). */
-export const minutes = (seconds: number) => `${Math.max(1, Math.round(seconds / 60))} 分钟`;
+/** 692 → 11 (rounded, at least 1). */
+const wholeMinutes = (seconds: number) => Math.max(1, Math.round(seconds / 60));
+/** 692 → 11 分钟 */
+export const minutes = (seconds: number) => `${wholeMinutes(seconds)} 分钟`;
 /** 134 → 2:14 */
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 const SPEEDS = [1, 1.25, 1.5, 0.75];
 
-/** The 听 button: the share pill's look, so it sits beside 分享 as one more action. */
+/** The 听 button: the share pill's look, so it sits beside 分享 as one more action. In the phone bar (`compact`) it
+ *  gets what is left beside the centred title, about 76px on a 360px phone and less once the issue number has two
+ *  digits; "听 · 18 分钟" folded onto two lines there (Kay's iPhone, 10-24), so it shows the headphones and "18 分"
+ *  on one line and says the whole label to screen readers. */
 export function ListenButton({ seconds, onClick, compact = false }: { seconds: number; onClick: () => void; compact?: boolean }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface px-3 font-medium text-accent transition-colors hover:border-ink-4 hover:text-accent-ink ${compact ? "text-[13px]" : "w-full text-[12.5px]"}`}
+      aria-label={compact ? `听 · ${minutes(seconds)}` : undefined}
+      className={`inline-flex h-8 items-center justify-center whitespace-nowrap rounded-full border border-line-strong bg-surface font-medium text-accent transition-colors hover:border-ink-4 hover:text-accent-ink ${compact ? "shrink-0 gap-1 px-2 text-[13px]" : "w-full gap-1.5 px-3 text-[12.5px]"}`}
     >
-      <IconHeadphones size={compact ? 15 : 14} /> 听 · {minutes(seconds)}
+      <IconHeadphones size={compact ? 15 : 14} /> {compact ? `${wholeMinutes(seconds)} 分` : `听 · ${minutes(seconds)}`}
     </button>
   );
 }

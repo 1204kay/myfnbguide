@@ -75,14 +75,31 @@ function spans(members: Member[], ties: Array<[string, string]>): number {
   return Math.max(...[...byRoot.values()].map((s) => s.size));
 }
 
+// Recall first, with no model call: if it does not bring 5 trends' members together, judging them is moot (十一 10-24).
+let recallPassed = 0;
+for (const g of loaded.filter((x) => x.kind === "trend")) {
+  console.log(`\n== 召回 ${g.name}`);
+  const links: Array<[string, string]> = [];
+  for (const m of g.members) {
+    const recalled = await recallFacts(m.id, reportText(m.title, m.summary), RECALL_MIN_COSINE, RECALL_TOP_FACTS);
+    const found = g.members.filter((o) => o !== m && recalled.some((r) => r.factId === o.factId));
+    for (const o of found) links.push([m.id, o.id]);
+    console.log(`  ${m.publisher} | ${m.title.slice(0, 40)} → ${found.length ? found.map((o) => o.title.slice(0, 16)).join(" / ") : "（一条都没召回）"}`);
+  }
+  const n = spans(g.members, links);
+  if (n >= 3) recallPassed++;
+  console.log(`  召回连到一起的最多 ${n} 家 → ${n >= 3 ? "过" : "不过"}`);
+}
+console.log(`\n# 召回：趋势 ${recallPassed}/${CASES.trends.length}`);
+if (recallPassed < 5) {
+  console.log("# 召回不到 5 个，提示词那半不跑（没有调用模型）");
+  await closeDb();
+  process.exit(0);
+}
+
 const tally = { site: { trends: 0, negatives: 0 }, cand: { trends: 0, negatives: 0 } };
 for (const g of loaded) {
   console.log(`\n== ${g.kind === "trend" ? "趋势" : "反例"} ${g.name}`);
-  for (const m of g.members) {
-    const recalled = await recallFacts(m.id, reportText(m.title, m.summary), RECALL_MIN_COSINE, RECALL_TOP_FACTS);
-    const found = g.members.filter((o) => o !== m && recalled.some((r) => r.factId === o.factId)).map((o) => o.title.slice(0, 16));
-    console.log(`  召回 ${m.publisher} | ${m.title.slice(0, 40)} → ${found.length ? found.join(" / ") : "（一条都没召回）"}`);
-  }
   const ties = { site: [] as Array<[string, string]>, cand: [] as Array<[string, string]> };
   for (let i = 1; i < g.members.length; i++) {
     const q = g.members[i]!, earlier = g.members.slice(0, i);

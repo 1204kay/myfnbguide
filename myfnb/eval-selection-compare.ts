@@ -30,20 +30,32 @@ for (const c of site) {
 }
 
 // Kay's whole-day picks (10-25) are the current standard. A day's report is built by rule (reports/edition.ts arrangeDaily,
-// dailyScope pool): only selected reports get full entries, one per event, ranked by importance (score, +5 first-hand; the
-// count of sources discussing it is taken as one here), at most two per source, twelve in all. What counts is how many of
-// those twelve Kay picked. Unlike a real daily the day here is the Malaysian calendar day, and the checker's holds are not seen.
+// dailyScope pool): only selected reports get full entries, one per event, ranked by importance (edition.ts importance: the
+// event's best selected score + 5·log2(1 + its sources) + 5 when a T1 source carries it), at most two per source (the
+// subscription), twelve in all. What counts is how many of those twelve Kay picked. Unlike a real daily: the day here is the
+// Malaysian calendar day, an event's sources are only the ones among the day's gold cases, follow-ups of events covered in
+// the last 7 days are not marked down or moved to the flashes, roundups are not folded under the event they mention, and
+// the checker's holds are not seen.
 const MAIN = 12, PER_SOURCE = 2;
 const dayIds = site.filter((c) => c.stratum?.startsWith("day")).map((c) => c.caseId.slice(c.stratum!.length + 1));
-const pubs = new Map((await sql<{ article_id: string; source_id: string; story_id: string | null; first_party: boolean }[]>`
-  SELECT article_id, source_id, story_id::text, first_party FROM publications WHERE article_id IN ${sql(dayIds.length ? dayIds : [""])}`)
+const pubs = new Map((await sql<{ article_id: string; source_id: string; story_id: string | null; t1: boolean }[]>`
+  SELECT p.article_id, p.source_id, p.story_id::text, s.tier = 'T1' AS t1 FROM publications p JOIN sources s ON s.id = p.source_id
+  WHERE p.article_id IN ${sql(dayIds.length ? dayIds : [""])}`)
   .map((p) => [p.article_id, p]));
 await closeDb();
 const daily = (cs: Case[]) => {
-  const ranked = cs.filter((c) => c.decision === "select").map((c) => {
+  const rows = cs.map((c) => {
     const id = c.caseId.slice(c.stratum!.length + 1), p = pubs.get(id);
-    return { c, source: p?.source_id ?? id, story: p?.story_id ?? id, importance: (c.score ?? 0) + (p?.first_party ? 5 : 0) };
-  }).sort((a, b) => b.importance - a.importance || a.c.caseId.localeCompare(b.c.caseId));
+    return { c, source: p?.source_id ?? id, story: p?.story_id ?? id, t1: !!p?.t1 };
+  });
+  const byStory = Map.groupBy(rows, (r) => r.story);
+  const importance = (story: string) => {
+    const rs = byStory.get(story)!;
+    return Math.max(...rs.filter((r) => r.c.decision === "select").map((r) => r.c.score ?? 0))
+      + 5 * Math.log2(1 + new Set(rs.map((r) => r.source)).size) + (rs.some((r) => r.t1) ? 5 : 0);
+  };
+  const ranked = rows.filter((r) => r.c.decision === "select").map((r) => ({ ...r, importance: importance(r.story) }))
+    .sort((a, b) => b.importance - a.importance || (b.c.score ?? 0) - (a.c.score ?? 0) || a.c.caseId.localeCompare(b.c.caseId));
   const stories = new Set<string>(), perSource = new Map<string, number>(), main: Case[] = [];
   for (const e of ranked) {
     if (main.length >= MAIN || stories.has(e.story) || (perSource.get(e.source) ?? 0) >= PER_SOURCE) continue;

@@ -3,6 +3,8 @@
 // 新闻站的餐饮栏目、日本博客目录、注册库和 Wikidata 的全部候选按 12 方向的宽口径词根筛过（程序做，不花钱），剩下的在这里逐个读名称、简介和最近几条标题，判题材。
 // 只判「这个来源常不常发 MYFNB 要的东西」，不判条款：条款、robots 在筛候选时已经按平台判过，接入前照常逐个查。
 // 输入：myfnb/sourcing/universe-2026-10-25.jsonl.gz（压缩，原文件 54MB），一行一个候选 {id, kind, url, title, desc, items[], lang}。
+//   第二批 universe2-2026-10-25.jsonl.gz（68,383 个，id 以 g2 开头）：按 12 方 × 27 类逐格补词根后重扫多出来的，用 --input 指定；
+//   十一 10-25 定两批合计不超过 US$10、判完余额至少留 US$5，所以第二批用 --cap-usd 10 --min-balance 5。
 //   node myfnb/judge-universe.ts            数候选、按 20 个一批估调用次数和花费，不调模型
 //   node myfnb/judge-universe.ts --apply    判全部候选，逐条结果写进容器里的文件（路径打在第一行）
 //   --cap-usd 6     回执累计到这个数就停（安全阀；估算在 US$5 以内才跑）

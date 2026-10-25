@@ -11,6 +11,18 @@
 # 约 US$0.85；每个 PR 最多跑两次，第三次先报十一。
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# 10-25 那次跑到一半 Kay 电脑的 ssh 断了，远端跟着停、输出全丢。所以先把自己放到服务器后台（ssh 断了也接着跑），输出写进
+# /var/log/myfnb-ops/<编号>.log（守门脚本 myfnb/ops/gate.sh 的 tail 能读），前台只是跟着这个文件打印，跑完一起退出。
+# 命令还是 Kay 电脑放行的那一条；断线以后看结果：ssh … "tail -n 400 /var/log/myfnb-ops/<编号>.log"。
+if [ -z "${EVAL_DETACHED:-}" ]; then
+  id=$(date -u +%Y%m%dT%H%M%SZ)
+  log=/var/log/myfnb-ops/$id.log
+  EVAL_DETACHED=1 setsid nohup bash "$0" > "$log" 2>&1 < /dev/null &
+  pid=$!
+  echo "评测在服务器后台跑，编号 $id，输出也在 $log"
+  tail -n +1 -f --pid="$pid" "$log"
+  exit 0
+fi
 REPO=https://github.com/1204kay/myfnbguide
 BRANCH=eval/score-candidate
 SHA=$(git ls-remote "$REPO" "refs/heads/$BRANCH" | cut -f1)

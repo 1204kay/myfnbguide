@@ -62,8 +62,10 @@ function untilOf(v: string): Date {
   const t = beijingAt(today, v);
   return t.getTime() > Date.now() ? t : beijingAt(addDays(today, 1), v);
 }
+// 按字符数截断会把表情符号这类代理对从中间切开，留下孤立的半个，DeepSeek 拒收整批（HTTP 400：请求体不是合法 JSON）。
+// 10-25 两批共 13 批 260 个候选每次都因此失败；toWellFormed() 把孤立的半个换成替换字符。
 const userOf = (b: Cand[]) => b.map((c) => [`id: ${c.id}`, `类型: ${c.kind}`, `名称: ${c.title.slice(0, 120)}`, `网址: ${c.url}`,
-  `简介: ${c.desc.slice(0, 400)}`, `最近标题: ${c.items.filter(Boolean).slice(0, 8).map((t) => t.slice(0, 90)).join(" ｜ ")}`].join("\n")).join("\n\n");
+  `简介: ${c.desc.slice(0, 400)}`, `最近标题: ${c.items.filter(Boolean).slice(0, 8).map((t) => t.slice(0, 90)).join(" ｜ ")}`].join("\n")).join("\n\n").toWellFormed();
 
 // 估算：DeepSeek flash 每百万 token 输入 US$0.15、输出 US$0.6，高峰乘 2（myfnb/price-deepseek-2026-10-24.ts）；字符数按 2.5 个字符一个 token 粗算。
 const inTok = batches.reduce((n, b) => n + (SYSTEM.length + userOf(b).length) / 2.5, 0);

@@ -9,7 +9,7 @@
 //   old       myfnb/gold-labels.tsv, the first 15 不看 (reject)
 //   capital   myfnb/labels-2026-10-24-capital.tsv  可看 select · 不看 reject
 //   country   myfnb/labels-2026-10-24-country.tsv  可看 select · 不看 reject
-//   kay3      myfnb/labels-2026-10-25-kay3.tsv     40 site items of 10-18..25 near the line, Kay's 10-25 grades
+//   kay3      myfnb/labels-2026-10-25-kay3.tsv     40 site items of 10-18..24 near the line, Kay's 10-25 grades
 //   kay4      myfnb/labels-2026-10-25-kay4.tsv     40 site items of 10-18..25 scored 10–41, Kay's 10-25 grades
 //   real      myfnb/labels-2026-10-25-real.tsv     the source trial's two blind checks, Kay's 10-25 grades; not in the database
 // Holdout: myfnb/labels-2026-10-25-holdout.tsv, 30 the prompt was never tuned on, for the last check only.

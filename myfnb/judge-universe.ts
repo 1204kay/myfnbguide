@@ -7,6 +7,8 @@
 //   node myfnb/judge-universe.ts --apply    判全部候选，逐条结果写进容器里的文件（路径打在第一行）
 //   --cap-usd 6     回执累计到这个数就停（安全阀；估算在 US$5 以内才跑）
 //   --min-balance 12  开跑前用同一把密钥读 DeepSeek 余额（只读），低于这个数不跑（十一 10-25：不足 US$12 先告诉十一）
+//   --until 04:55   到这个时刻（MYT 时:分，取下一次出现的；也可以写完整的 ISO 时间）不再领新批，手上的批做完就退出；
+//                   默认 04:55，避开 05:00–08:00
 //   --reserve 3000  给线上留的模型调用次数，算法同 trial-sources.ts（这一小时离上限不到十分之一就等，每天不够就停）
 // 同一批再判会直接用已有回执、不花钱，停下以后用同一条命令重开就是接着判。
 // 在服务器上：ops 门 `bg myfnb/judge-universe.ts --apply`，再 `tail <编号>`。
@@ -24,7 +26,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { modelFor } from "@aihot/backend/editorial/models";
 
 const { values } = parseArgs({ options: {
-  apply: { type: "boolean", default: false }, "cap-usd": { type: "string", default: "6" }, "min-balance": { type: "string", default: "12" }, reserve: { type: "string", default: "3000" },
+  apply: { type: "boolean", default: false }, "cap-usd": { type: "string", default: "6" }, "min-balance": { type: "string", default: "12" }, until: { type: "string", default: "04:55" }, reserve: { type: "string", default: "3000" },
   input: { type: "string", default: "universe-2026-10-25.jsonl.gz" }, batch: { type: "string", default: "20" }, jobs: { type: "string", default: "4" },
 } });
 type Cand = { id: string; kind: string; url: string; title: string; desc: string; items: string[]; lang?: string };
@@ -50,6 +52,15 @@ const SYSTEM = `你替一个餐饮行业资讯站判断候选信息源。这个�
 party 写它主要从谁的角度讲（上面 12 方之一，用中文简称，比如 经营者、食客、员工、平台、研究；N 的写 无）。why 用中文一句话，说凭哪几条标题判的。
 只输出 JSON：{"items":[{"id":"…","v":"Y|?|N","party":"…","why":"…"}]}，每个候选一项，id 照抄。`;
 const Schema = z.object({ items: z.array(z.object({ id: z.string(), v: z.enum(["Y", "?", "N"]), party: z.string(), why: z.string() })) });
+function untilOf(v: string): Date {
+  if (!/^\d{1,2}:\d{2}$/.test(v)) return new Date(v);
+  const [h, m] = v.split(":").map(Number);
+  const now = Date.now();
+  const myt = new Date(now + 8 * 3600_000);
+  let t = Date.UTC(myt.getUTCFullYear(), myt.getUTCMonth(), myt.getUTCDate(), h!, m!) - 8 * 3600_000;
+  if (t <= now) t += 86400_000;
+  return new Date(t);
+}
 const userOf = (b: Cand[]) => b.map((c) => [`id: ${c.id}`, `类型: ${c.kind}`, `名称: ${c.title.slice(0, 120)}`, `网址: ${c.url}`,
   `简介: ${c.desc.slice(0, 400)}`, `最近标题: ${c.items.filter(Boolean).slice(0, 8).map((t) => t.slice(0, 90)).join(" ｜ ")}`].join("\n")).join("\n\n");
 
@@ -70,22 +81,26 @@ if (!values.apply) {
 const usd = sql`coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0)`;
 const price = sql`LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true`;
 const runStart = new Date();
-const costOf = async (id: number) => {
-  const [r] = await sql<{ usd: string | null }[]>`SELECT sum(${usd})::text AS usd FROM receipt_attempts r ${price} WHERE r.receipt_id = ${id} AND r.started_at >= ${runStart}`;
+// 安全阀按这个用途的全部历史回执算：每晚用同一条命令重开，几晚加起来也不超过 --cap-usd。
+const spentSoFar = async () => {
+  const [r] = await sql<{ usd: string | null }[]>`
+    SELECT sum(${usd})::text AS usd FROM receipt_attempts r JOIN receipts rc ON rc.id = r.receipt_id ${price} WHERE rc.purpose = 'judge_source_candidate'`;
   return Number(r?.usd ?? 0);
 };
+const model = await modelFor("prefilter");
+const spec = MODELS[model];
+// 熔断按回执的 service 计数（receipts.ts 的 checkBudget）：用哪个模型就看哪一行 budgets。
+const service = spec?.service ?? "llm";
 const reserve = Number(values.reserve);
 const budgetLeft = async () => {
   const [b] = await sql<{ hour: number; day: number }[]>`
-    SELECT (SELECT per_hour FROM budgets WHERE service = 'llm') - count(*) FILTER (WHERE started_at > now() - interval '1 hour') AS hour,
-           (SELECT per_day FROM budgets WHERE service = 'llm') - count(*) AS day
-    FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'`;
+    SELECT (SELECT per_hour FROM budgets WHERE service = ${service}) - count(*) FILTER (WHERE started_at > now() - interval '1 hour') AS hour,
+           (SELECT per_day FROM budgets WHERE service = ${service}) - count(*) AS day
+    FROM receipt_attempts WHERE service = ${service} AND origin = 'live' AND started_at > now() - interval '1 day'`;
   return b!;
 };
 const outFile = path.join(tmpdir(), `judge-universe-${runStart.toISOString().replace(/[:.]/g, "")}.jsonl`);
 console.log(`# 逐条结果写在 ${outFile}`);
-const model = await modelFor("prefilter");
-const spec = MODELS[model];
 const base = spec?.baseUrlEnv ? credential("models", spec.baseUrlEnv) : null;
 if (base?.includes("deepseek.com")) {
   const r = await fetch(`${base.replace(/\/v1\/?$/, "")}/user/balance`, { headers: { Authorization: `Bearer ${credential("models", spec!.apiKeyEnv!)}` } });
@@ -99,19 +114,24 @@ if (base?.includes("deepseek.com")) {
   }
 }
 const cap = Number(values["cap-usd"]);
-let spent = 0;
+let spent = await spentSoFar();
+console.log(`# 这个用途的回执此前已累计 US$${spent.toFixed(3)}，安全阀 US$${cap}；熔断看 budgets 的 ${service} 一行`);
+const until = untilOf(values.until);
+console.log(`# 到 ${until.toISOString()}（MYT ${new Date(until.getTime() + 8 * 3600_000).toISOString().slice(0, 16).replace("T", " ")}）不再领新批`);
 let stopped = "";
 let next = 0;
 const tally = { Y: 0, "?": 0, N: 0, missing: 0, failed: 0 };
 const worker = async () => {
   while (next < batches.length && !stopped) {
     const i = next++;
+    if (Date.now() >= until.getTime()) { stopped = `# 到点停在第 ${i + 1} 批（手上的批已做完），下次用同一条命令接着判`; break; }
     if (spent >= cap) { stopped = `# 回执累计 US$${spent.toFixed(3)}，到安全阀 ${cap}，停在第 ${i + 1} 批`; break; }
     let left = await budgetLeft();
-    while (left.day >= reserve && left.hour < reserve / 10) {
+    while (left.day >= reserve && left.hour < reserve / 10 && Date.now() < until.getTime()) {
       await new Promise((r) => setTimeout(r, 60_000));
       left = await budgetLeft();
     }
+    if (Date.now() >= until.getTime()) { stopped = `# 等熔断时到点，停在第 ${i + 1} 批，下次用同一条命令接着判`; break; }
     if (left.day < reserve) { stopped = `# 模型调用熔断只剩每天 ${left.day} 次，给线上留 ${reserve} 次，停在第 ${i + 1} 批`; break; }
     const b = batches[i]!;
     try {
@@ -120,7 +140,7 @@ const worker = async () => {
         system: SYSTEM, user: userOf(b), schema: Schema, temperature: 0, maxTokens: 4000,
       });
       await completeReceipt(sql, res.receiptId);
-      spent += await costOf(res.receiptId);
+      spent = await spentSoFar();
       const got = new Map(res.data.items.map((x) => [x.id, x]));
       for (const c of b) {
         const x = got.get(c.id);

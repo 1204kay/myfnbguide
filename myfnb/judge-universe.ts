@@ -6,6 +6,7 @@
 //   node myfnb/judge-universe.ts            数候选、按 20 个一批估调用次数和花费，不调模型
 //   node myfnb/judge-universe.ts --apply    判全部候选，逐条结果写进容器里的文件（路径打在第一行）
 //   --cap-usd 6     回执累计到这个数就停（安全阀；估算在 US$5 以内才跑）
+//   --min-balance 12  开跑前用同一把密钥读 DeepSeek 余额（只读），低于这个数不跑（十一 10-25：不足 US$12 先告诉十一）
 //   --reserve 3000  给线上留的模型调用次数，算法同 trial-sources.ts（这一小时离上限不到十分之一就等，每天不够就停）
 // 同一批再判会直接用已有回执、不花钱，停下以后用同一条命令重开就是接着判。
 // 在服务器上：ops 门 `bg myfnb/judge-universe.ts --apply`，再 `tail <编号>`。
@@ -15,15 +16,15 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
-import { REPO_ROOT } from "@aihot/backend/config";
+import { credential, REPO_ROOT } from "@aihot/backend/config";
 import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
-import { chatJson } from "@aihot/backend/providers/llm";
+import { chatJson, MODELS } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { modelFor } from "@aihot/backend/editorial/models";
 
 const { values } = parseArgs({ options: {
-  apply: { type: "boolean", default: false }, "cap-usd": { type: "string", default: "6" }, reserve: { type: "string", default: "3000" },
+  apply: { type: "boolean", default: false }, "cap-usd": { type: "string", default: "6" }, "min-balance": { type: "string", default: "12" }, reserve: { type: "string", default: "3000" },
   input: { type: "string", default: "universe-2026-10-25.jsonl.gz" }, batch: { type: "string", default: "20" }, jobs: { type: "string", default: "4" },
 } });
 type Cand = { id: string; kind: string; url: string; title: string; desc: string; items: string[]; lang?: string };
@@ -84,6 +85,19 @@ const budgetLeft = async () => {
 const outFile = path.join(tmpdir(), `judge-universe-${runStart.toISOString().replace(/[:.]/g, "")}.jsonl`);
 console.log(`# 逐条结果写在 ${outFile}`);
 const model = await modelFor("prefilter");
+const spec = MODELS[model];
+const base = spec?.baseUrlEnv ? credential("models", spec.baseUrlEnv) : null;
+if (base?.includes("deepseek.com")) {
+  const r = await fetch(`${base.replace(/\/v1\/?$/, "")}/user/balance`, { headers: { Authorization: `Bearer ${credential("models", spec!.apiKeyEnv!)}` } });
+  const b = (await r.json()) as { balance_infos?: { currency: string; total_balance: string }[] };
+  const usdBal = Number(b.balance_infos?.find((x) => x.currency === "USD")?.total_balance ?? 0);
+  console.log(`# DeepSeek 余额 US$${usdBal.toFixed(2)}`);
+  if (usdBal < Number(values["min-balance"])) {
+    console.log(`# 余额低于 US$${values["min-balance"]}，不跑`);
+    await closeDb();
+    process.exit(0);
+  }
+}
 const cap = Number(values["cap-usd"]);
 let spent = 0;
 let stopped = "";

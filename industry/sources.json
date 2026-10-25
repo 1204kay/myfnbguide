@@ -3437,6 +3437,391 @@
         "美国",
         "服务商"
       ]
+    },
+    {
+      "id": "rss-uscanyin",
+      "name": "北美餐饮通 uscanyin（美国 · 北美华人餐饮招工转让平台的资讯栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://uscanyin.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-canyinjia",
+      "name": "餐饮家 Canyinjia（美国 · 北美华人餐饮媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://canyinjia.us/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-heavy-table",
+      "name": "Heavy Table（美国 · 明尼阿波利斯和中西部上游的餐饮杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://heavytable.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-mkn-kuechenschnack",
+      "name": "MKN Küchenschnack（德国 · 厨房设备商 MKN 访谈厨师和店主的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/997606.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "德国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-daxue-consulting",
+      "name": "Daxue Consulting 博客（中国 · 市场研究公司的消费和餐饮研究）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://daxueconsulting.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "中国",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-en-toute-franchise",
+      "name": "En Toute Franchise（法国 · L'Express Franchise 的加盟播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/BNkjVeCqNPm6",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "法国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-inquirer-food",
+      "name": "Philadelphia Inquirer · Food（美国 · 费城问询报餐饮版）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.inquirer.com/arc/outboundfeeds/rss/category/food/?outputType=xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-the-hot-slice",
+      "name": "The Hot Slice（美国 · Pizza Today 访谈披萨店主的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1860996.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-khaosod-sentangsedtee",
+      "name": "Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小生意致富栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.khaosod.co.th/sentangsedtee/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "泰国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-food-hotel-asia",
+      "name": "Food & Hotel Asia 文章（新加坡 · 餐饮展主办方的行业文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodnhotelasia.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "新加坡",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-the-ceres-podcast",
+      "name": "The Ceres Podcast（英国 · 餐饮和食品创业者访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.libsyn.com/shows/124366/destinations/737174.xml",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-the-restaurant-guys",
+      "name": "The Restaurant Guys（美国 · 两位餐厅老板访谈同业的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2390435.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-sakurafuji3776",
+      "name": "ケーキ屋しんちゃんブログ（日本 · 蛋糕店店主的经营博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sakurafuji3776.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-chefs-psa",
+      "name": "Chef's PSA（美国 · 厨师和店主访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://chefspsa.com/feed/podcast/chefs-psa/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-restaurant-technology-guys",
+      "name": "Restaurant Technology Guys（美国 · 连锁餐饮经营者访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://restauranttechnologyguys.com/feed/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-ladyironchef",
+      "name": "Ladyironchef（新加坡 · 美食新闻和新店消息）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ladyironchef.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "新加坡",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-r-tsushin",
+      "name": "料理通信（日本 · 厨师与饮食文化媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://r-tsushin.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-dantri-kinh-doanh",
+      "name": "Dân trí 商业版（越南 · 综合报经济栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://dantri.com.vn/rss/kinh-doanh.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 120,
+      "tags": [
+        "越南",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

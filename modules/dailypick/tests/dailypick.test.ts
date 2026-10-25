@@ -1,6 +1,7 @@
 // The daily's entries in full picked by the model (backend/pick.ts, through composeDaily's dailyPick socket): failure
 // cases are an entry of the two days before left out of the pool, the model's order lost, a number it made up kept,
-// a flash repeating a picked entry, and a broken answer that is not asked again or that leaves the daily unwritten.
+// a flash repeating a picked entry, a broken answer that is not asked again or that leaves the daily unwritten, and
+// a pick of nothing usable written as an empty issue.
 import { editionAt, pointModels, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
@@ -17,6 +18,7 @@ const T = tag();
 // Days no other test uses.
 const DAY = "2012-03-12";
 const BROKEN = "2012-04-12";
+const NONE = "2012-05-12";
 const SOURCES = ["甲报", "乙报", "丙报", "丁报", "戊报"].map((name, i) => ({ id: `dailypick-${T}-${i}`, name }));
 const asked: string[] = [];
 const answer = (content: string) => ({ id: "stub", model: "stub", choices: [{ message: { content } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } });
@@ -24,6 +26,7 @@ const model = await stub((_hit, req) => {
   const user = (JSON.parse(req.body) as { messages: Array<{ content: string }> }).messages.at(-1)!.content;
   asked.push(user);
   if (user.includes("坏稿")) return answer("{\"picks\": [");
+  if (user.includes("空挑")) return answer(JSON.stringify({ picks: [{ n: 99, why: "" }] }));
   const n = new Map([...user.matchAll(/^(\d+)\. 【[^】]+】(\S+)/gmu)].map((m) => [m[2]!, Number(m[1])]));
   return answer(JSON.stringify({ picks: [{ n: n.get("今丁"), why: "" }, { n: n.get("前天甲"), why: "" }, { n: 99, why: "" }] }));
 });
@@ -49,6 +52,8 @@ before(async () => {
   await report("今戊", 4, DAY, 60);
   await report("坏稿一", 0, BROKEN, 90);
   await report("坏稿二", 1, BROKEN, 50);
+  await report("空挑一", 2, NONE, 90);
+  await report("空挑二", 3, NONE, 50);
 });
 after(async () => {
   installModules([]); await model.close(); await stopBoss(); await closeDb();
@@ -74,4 +79,10 @@ test("a broken answer is asked again, and after the last try the daily is arrang
   assert.equal(asked.length - before, 3);
   assert.deepEqual(titles(await daily(BROKEN)).main, ["坏稿一", "坏稿二"]);
   assert.equal((await daily(BROKEN)).model, null);
+});
+
+test("a pick naming none of what it was given leaves the daily to the rule", async () => {
+  await composeDaily(NONE);
+  assert.deepEqual(titles(await daily(NONE)).main, ["空挑一", "空挑二"]);
+  assert.equal((await daily(NONE)).model, null);
 });

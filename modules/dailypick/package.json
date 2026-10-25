@@ -1,0 +1,13 @@
+{
+  "name": "@aihot/dailypick",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": "./server.ts",
+    "./backend/*": "./backend/*.ts"
+  },
+  "dependencies": {
+    "@aihot/backend": "*",
+    "zod": "4.6.5"
+  }
+}

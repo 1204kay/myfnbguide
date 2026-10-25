@@ -11,6 +11,7 @@ import type { AnalyzeInputArticle } from "./editorial/input.ts";
 import type { QueueOptions } from "./jobs/queue.ts";
 import type { Finding } from "./notify/feishu.ts";
 import type { Topic, TopicMember } from "./publication/topics.ts";
+import type { EditionEntry } from "./reports/edition.ts";
 
 /** A cron schedule (Asia/Shanghai), recorded in job_runs like the engine's (apps/worker/src/schedules.ts). */
 export interface Scheduled {
@@ -188,6 +189,23 @@ export interface DailyLead {
   href: string;
 }
 
+/** What a module picking a daily's entries in full is given (reports/compose.ts composeDaily). */
+export interface DailyPickAsk {
+  date: string;
+  /**
+   * The events it may pick from, most important first by the rule: those of the daily's window and of the
+   * `days - 1` windows before it, less what earlier issues carried and the events they covered within those days.
+   */
+  entries: readonly EditionEntry[];
+}
+
+/** A module's pick: the entries in full by item id, in order, and the paid calls behind it. */
+export interface DailyPick {
+  itemIds: string[];
+  model: string;
+  receiptIds: number[];
+}
+
 /** The copy a module's check is given (editorial/analyze.ts runAnalysis): understanding copy about to be selected. */
 export interface CopyCheckAsk {
   article: AnalyzeInputArticle;
@@ -242,6 +260,12 @@ export interface ServerModule {
    * Null leaves the lead to the rule.
    */
   dailyLead?: (date: string) => Promise<DailyLead | null>;
+  /**
+   * The daily's entries in full picked by a module instead of the rule (reports/compose.ts composeDaily), from
+   * `days` windows: the first installed module with one picks; the rest of the day's events are the flashes.
+   * Null, a failure or a pick of none leaves the issue to the rule.
+   */
+  dailyPick?: { days: number; run: (ask: DailyPickAsk) => Promise<DailyPick | null> };
   /**
    * A check of the copy an article will be selected with, before it is stored (editorial/analyze.ts): the first
    * installed module with one may change the title, summary and reason, or hold the article out of the selection.
@@ -321,6 +345,11 @@ export async function moduleDailyLead(date: string): Promise<DailyLead | null> {
     if (lead) return lead;
   }
   return null;
+}
+
+/** The first installed module's pick of the daily's entries in full, if any. */
+export function moduleDailyPick(): ServerModule["dailyPick"] {
+  return installed.find((m) => m.dailyPick)?.dailyPick;
 }
 
 /** The first installed module's check of selected copy, if any. */

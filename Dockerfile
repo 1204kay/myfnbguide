@@ -19,6 +19,7 @@ COPY industry/package.json industry/
 COPY site/package.json site/
 COPY modules/archive/package.json modules/archive/
 COPY modules/checker/package.json modules/checker/
+COPY modules/dailypick/package.json modules/dailypick/
 COPY modules/reference/package.json modules/reference/
 COPY modules/social/package.json modules/social/
 COPY modules/trends/package.json modules/trends/

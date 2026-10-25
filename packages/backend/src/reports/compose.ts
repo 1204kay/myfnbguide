@@ -1,6 +1,7 @@
 // Daily, weekly and monthly reports. Windows are Beijing calendar based and written into the report;
 // missed schedule points are caught up; regeneration creates a revision. What every issue carries is
-// decided by rule: a daily from edition.ts without a model; a weekly or monthly is compiled from its
+// decided by rule: a daily from edition.ts without a model, unless a module picks its entries in full
+// (moduleDailyPick); a weekly or monthly is compiled from its
 // dailies and a model only writes its overview and introductions, from the brief in the industry pack
 // (industry/prompts/report-period*.md).
 import { z } from "zod";
@@ -15,8 +16,8 @@ import { logError } from "../lib/log-error.ts";
 import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
-import { emit, moduleDailyLead } from "../modules.ts";
-import { arrangeDaily, candidates, dailyEdition, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
+import { emit, moduleDailyLead, moduleDailyPick } from "../modules.ts";
+import { arrangeDaily, candidates, dailyEdition, FLASH_ENTRIES, MAIN_ENTRIES, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
@@ -81,6 +82,44 @@ function windowPoint(at: Date): string {
 }
 
 /**
+ * A module's pick of the daily's entries in full (moduleDailyPick), from the events of this window and of the
+ * days before it that earlier issues left out; the rest of this window's events are the flashes, most important
+ * first. A module that fails, or picks none of what it was given, leaves the issue to the rule.
+ */
+async function pickedDaily(date: string, start: Date, end: Date, entries: EditionEntry[]) {
+  const pick = moduleDailyPick();
+  if (!pick || entries.length === 0) return null;
+  try {
+    const pool = pick.days > 1 ? (await dailyEdition(date, new Date(start.getTime() - (pick.days - 1) * 86400000), end)).entries : entries;
+    // An event an issue of these days covered is not offered again: the pick sees each of their events once.
+    const since = addDays(date, -(pick.days - 1));
+    const offered = pool.filter((e) => !e.previous || e.previous.key < since);
+    const chosen = await pick.run({ date, entries: offered });
+    if (!chosen) return null;
+    const byId = new Map(offered.map((e) => [e.entry.itemId, e]));
+    const main = [...new Set(chosen.itemIds)].map((id) => byId.get(id)).filter((e): e is EditionEntry => !!e).slice(0, MAIN_ENTRIES);
+    if (main.length === 0) {
+      console.error(JSON.stringify({ level: "warn", msg: "module pick named none of its entries; the daily is arranged by rule", report: `daily:${date}` }));
+      for (const id of chosen.receiptIds) await completeReceipt(sql, id);
+      return null;
+    }
+    const ids = new Set(main.map((e) => e.entry.itemId));
+    const stories = new Set(main.map((e) => e.storyId).filter((id): id is number => id !== null));
+    const rest = entries.filter((e) => !ids.has(e.entry.itemId) && (e.storyId === null || !stories.has(e.storyId)));
+    const flashes = rest.slice(0, FLASH_ENTRIES);
+    return {
+      main, flashes, model: chosen.model, receiptIds: chosen.receiptIds,
+      stats: { pickDays: pick.days, pickOffered: offered.length, picked: main.length, left: rest.length - flashes.length },
+    };
+  } catch (error) {
+    // Stopped while picking: the issue is written after the restart, with its pick, not by rule now.
+    if (shutdownSignal.signal.aborted) throw error;
+    console.error(JSON.stringify({ level: "warn", msg: "module pick failed; the daily is arranged by rule", report: `daily:${date}`, error: logError(error) }));
+    return null;
+  }
+}
+
+/**
  * Daily report for Beijing date D covers the 24 hours up to the site's edition time on D (EDITION_TIMES).
  * Its most important entry leads, in its own words, and the next three are today's highlights. A window
  * the editors judged with nothing new in it still has its issue: no entries, and a lead that says so
@@ -94,7 +133,9 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
   const edition = await dailyEdition(date, start, end);
   // Nothing judged in the window is a failure upstream, not a quiet day: the run fails and is caught up later.
   if (edition.entries.length === 0 && edition.stats.judgedReports === 0) throw new Error(`daily ${date}: nothing judged in its window`);
-  const issue = arrangeDaily(edition.entries);
+  // A module's pick (moduleDailyPick) takes the entries in full; without one, or when it fails, the rule arranges the issue.
+  const picked = await pickedDaily(date, start, end, edition.entries);
+  const issue = picked ?? arrangeDaily(edition.entries);
   const [lead, ...rest] = issue.main;
   // A module's own lead (moduleDailyLead) takes the front page; the top entry then stays in its section and highlights.
   // A module that fails leaves the lead to the rule: the daily goes out at its time all the same.
@@ -120,7 +161,7 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
     windowEnd: end.toISOString(),
     generator: { version: REPORT_VERSION, ...edition.stats, ...issue.stats },
   };
-  await saveReport("daily", date, start, end, content, reason, null, []);
+  await saveReport("daily", date, start, end, content, reason, picked?.model ?? null, picked?.receiptIds ?? []);
   return { key: date, entries: issue.main.length };
 }
 

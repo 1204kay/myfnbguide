@@ -19,6 +19,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
 import { credential, REPO_ROOT } from "@aihot/backend/config";
+import { addDays, beijingAt, beijingDate, beijingStamp } from "@aihot/contracts/time";
 import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { chatJson, MODELS } from "@aihot/backend/providers/llm";
@@ -52,14 +53,12 @@ const SYSTEM = `你替一个餐饮行业资讯站判断候选信息源。这个�
 party 写它主要从谁的角度讲（上面 12 方之一，用中文简称，比如 经营者、食客、员工、平台、研究；N 的写 无）。why 用中文一句话，说凭哪几条标题判的。
 只输出 JSON：{"items":[{"id":"…","v":"Y|?|N","party":"…","why":"…"}]}，每个候选一项，id 照抄。`;
 const Schema = z.object({ items: z.array(z.object({ id: z.string(), v: z.enum(["Y", "?", "N"]), party: z.string(), why: z.string() })) });
+// MYT 和北京时间同为 UTC+8，换算用 contracts/time.ts。
 function untilOf(v: string): Date {
-  if (!/^\d{1,2}:\d{2}$/.test(v)) return new Date(v);
-  const [h, m] = v.split(":").map(Number);
-  const now = Date.now();
-  const myt = new Date(now + 8 * 3600_000);
-  let t = Date.UTC(myt.getUTCFullYear(), myt.getUTCMonth(), myt.getUTCDate(), h!, m!) - 8 * 3600_000;
-  if (t <= now) t += 86400_000;
-  return new Date(t);
+  if (!/^\d{2}:\d{2}$/.test(v)) return new Date(v);
+  const today = beijingDate(Date.now());
+  const t = beijingAt(today, v);
+  return t.getTime() > Date.now() ? t : beijingAt(addDays(today, 1), v);
 }
 const userOf = (b: Cand[]) => b.map((c) => [`id: ${c.id}`, `类型: ${c.kind}`, `名称: ${c.title.slice(0, 120)}`, `网址: ${c.url}`,
   `简介: ${c.desc.slice(0, 400)}`, `最近标题: ${c.items.filter(Boolean).slice(0, 8).map((t) => t.slice(0, 90)).join(" ｜ ")}`].join("\n")).join("\n\n");
@@ -117,7 +116,7 @@ const cap = Number(values["cap-usd"]);
 let spent = await spentSoFar();
 console.log(`# 这个用途的回执此前已累计 US$${spent.toFixed(3)}，安全阀 US$${cap}；熔断看 budgets 的 ${service} 一行`);
 const until = untilOf(values.until);
-console.log(`# 到 ${until.toISOString()}（MYT ${new Date(until.getTime() + 8 * 3600_000).toISOString().slice(0, 16).replace("T", " ")}）不再领新批`);
+console.log(`# 到 ${until.toISOString()}（MYT ${beijingStamp(until)}）不再领新批`);
 let stopped = "";
 let next = 0;
 const tally = { Y: 0, "?": 0, N: 0, missing: 0, failed: 0 };

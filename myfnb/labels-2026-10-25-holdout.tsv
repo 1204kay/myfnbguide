@@ -1,0 +1,35 @@
+# 留出集（10-25，十一同意拆开发集和留出集）：信源那条串从「过了预筛、没入选」里随机抽的 30 条（项目文件 myfnbguide/信源核实-2026-10-24/试吃/盲看30-*.md）。
+# 标注是 Kay 10-25 07:21–07:27 MYT 的盲标（页面给标题、链接、来源和信源串读原文写的内容说明，不给分数和判断）：进精选 5、6、9、16，可进可不进 11、12、14、19、27、29（算 either），其余不进；
+# Kay：「这次一部分不进是因为没有内容」。原先信源串的判断（该收 5、19、27，拿不准 2、9、16）不用。改评分时没有看过这 30 条，只在最后检查用。
+# 第 7 列 thin：Kay 标的时候说明里没有内容（原文打不开、只有一句简介、空页或乱码），不进是因为看不到内容，不算口味判断；评测里单独算成 holdout-thin 一组，不和其余 19 条混在一起看。
+key	label	feed	feedUrl	url	title	thin
+holdout-01	reject	Trivia Friday	https://afr.net/api/v2/podcast/podcastsbyidrss/?id=51503	https://streamer1.afa.net/tracking/streamer1.afa.net/afr-aod/TriviaFriday/TI_20260904a.mp3	Trivia Friday Hour 1 - Happy Days	thin
+holdout-02	reject	実店舗経営の教科書 - StorePro（日本 · 博客名录里的条目）	https://store.cloudil.jp/feed/	https://store.cloudil.jp/duty-free-pos/	免税対応のPOSレジ6選｜リファンド方式と免税処理のやり方を解説	
+holdout-03	reject	高須幹弥（高須クリニック）切り抜きポッドキャスト	https://api.robotstart.jp/api/v1/feeds/3579047c/get-feeds/podcast	https://api.robotstart.jp/api/for-media/v1/articles/3579047c/permanent/with-advertise/podcast/7e8f8010b239d2a37bf2a3620c4005aeb5c89bb9114ed095165aeb907acb4c50.mp3	EP1132【コラボ】親友のヒカルの家に遊びに行ったので色々質問しました	
+holdout-04	reject	bartaco now available for curbside pick-up and delivery（来源条目里的外链 · pod-restaurant-leaders-unplugged）	https://bartaco.com/feed/	https://bartaco.com/bartaco-margs-now-available-to-go-in-nc/	bartaco margs now available to-go in NC	
+holdout-05	select	Dân trí 商业版（越南 · 综合报经济栏目）	https://dantri.com.vn/rss/kinh-doanh.rss	https://dantri.com.vn/kinh-doanh/mien-thue-suat-an-hoc-sinh-va-nguoi-benh-duoc-huong-gi-20261023171306305.htm	Miễn thuế suất ăn, học sinh và người bệnh được hưởng gì?	
+holdout-06	select	Bepoz（澳大利亚 · 服务商）	https://bepoz.com.au/blogs/rss.xml	https://bepoz.com.au/blogs/sydney-brewery-protects-margin-with-bepoz	How Sydney Brewery Protects Margin on Every Keg and Every Invoice	
+holdout-07	reject	JETRO ビジネス短信（日本 · 政府外贸机构）	https://www.jetro.go.jp/rss2/biznews.xml	https://www.jetro.go.jp/biznews/2026/10/f77ddeab3ba6126c	シンガポールとスウェーデン、エネルギー協力強化を確認(シンガポール、スウェーデン)	thin
+holdout-08	reject	Fish Farmer（全球 · 媒体）	https://fishfarmer.affino.com/Syndication/DF.cfm?f=8&ft=10&redirected=1	https://fishfarmer.affino.com/news/lacqua26-names-plenary-speaker	LACQUA26 names plenary speaker	
+holdout-09	select	giacaphe.com	https://giacaphe.com/feed/	https://giacaphe.com/90973/xuat-khau-ca-phe-viet-nam-lap-ky-luc-85-ty-usd-trong-nien-vu-2025-26/	Xuất khẩu cà phê Việt Nam lập kỷ lục 8,5 tỷ USD trong niên vụ 2025–26	
+holdout-10	reject	Bluestone Lane | Australian Cafés and Coffee | Shop Subscriptions Online（来源条目里的外链 · pod-fnb-therapy）	https://bluestonelane.com/feed/	https://bluestonelane.com/national-coffee-day-2024/	National Coffee Day 2024	
+holdout-11	either	hibana（ヒバナ）（日本 · 餐饮业网络媒体（新店与新闻稿为主））	https://biz-hibana.com/feed/	https://biz-hibana.com/rod-marketing-pr/	【飲食企業向け】集客から再来店までを仕組み化。ROD MARKETINGが提供する伴走型マーケティング・広報支援サービス	
+holdout-12	either	Pallas Foods / Sysco Ireland（爱尔兰 · 服务商）	https://www.syscoireland.com/feed/	https://syscoireland.com/sysco-ireland-relaunches-relish-rewards-loyalty-programme/	Sysco Ireland relaunches Relish Rewards loyalty programme	thin
+holdout-13	reject	MPOB（马来西亚 · 政府）	https://mpob.gov.my/feed/	https://mpob.gov.my/2026/10/program-pemimpin-bersama-warga-kampung-kemabong-lamatenom-sabah/	Program Pemimpin Bersama Warga Kampung Kemabong Lama,Tenom, Sabah	thin
+holdout-14	either	Love British Food（英国 · 播客）	https://feeds.captivate.fm/love-british-food/	https://love-british-food.captivate.fm/episode/get-seasonal-episode-3	Get Seasonal - Episode 3	
+holdout-15	reject	商店建築（日本 · 店铺设计杂志）	https://shotenkenchiku.com/rss/	https://shotenkenchiku.com/products/detail.php?product_id=494	『商店建築 2025年12月号』発売 ■新作特集/変わりゆくベイエリアに「新しい街」が生まれる ニュウマン高輪、ブルーフロント芝浦 ■業種特集/「最新オフィス&	
+holdout-16	select	Gastro Muppets	https://gastro-muppets.podigee.io/feed/mp3	https://gastro-muppets.podigee.io/82-power-plane-punktlandung	Power, Pläne, Punktlandung...	
+holdout-17	reject	YKK AP presents 皆藤愛子の窓café～窓辺でcafé time～	https://feeds.megaphone.fm/TFM4571100890	https://traffic.megaphone.fm/TFM3089245908.mp3	【窓cafeアフタートーク♪】最近のリラックス時間は・・・	
+holdout-18	reject	インド人シェフのブログ（日本 · 博客名录里的条目）	http://blog.chefhariom.com/?mode=rss	http://blog.chefhariom.com/?eid=1285893	チキンビリヤニ	thin
+holdout-19	either	Ladyironchef	https://www.ladyironchef.com/feed/	https://www.ladyironchef.com/2026/09/im-donut-singapore/	I’m donut? Singapore – Popular Japanese Donut Brand Is Opening In Singapore	
+holdout-20	reject	Food Indaba &#8211; Events and Talks that focus on the local food system（来源条目里的外链 · pod-a-table-in-the-corner）	https://foodindaba.org/feed/	https://foodindaba.org/fooddialogues/	Food Dialogues Johannesburg	thin
+holdout-21	reject	正木明の地球にいいこと	https://feeds.megaphone.fm/masaki	https://traffic.megaphone.fm/RKL6255952357.mp3	#375 猛暑の影の立役	thin
+holdout-22	reject	Roderick on the Line	https://merlinmann.github.io/rotl-feed/feed.xml	http://www.merlinmann.com/roderick/ep-623-local-tony.html	Ep. 623: "Local Tony"	thin
+holdout-23	reject	Foodservice Packaging Institute（美国 · 协会）	https://fpi.org/feed/	https://fpi.org/why-you-wont-want-to-miss-the-fpi-spring-2026-conference/	Why You Won’t Want to Miss the FPI Spring 2026 Conference	
+holdout-24	reject	Home - Technical Chefs（来源条目里的外链 · pod-dirty-linen）	https://www.technicalchef.com/feed/	https://www.technicalchef.com/change-that-helps-chefs-not-more-burden/	Change That Helps Chefs (Not More Burden)	thin
+holdout-25	reject	Homepage - Waico Group（来源条目里的外链 · rss-ristorazione-italiana）	https://www.waicogroup.com/feed/	https://www.waicogroup.com/blog/2026/06/30/rebranding-logo-logiudice-mecateck/	Rebranding logo LOGIUDICE + MECATECK	
+holdout-26	reject	Metro Deutschland GmbH（presseportal）	https://www.presseportal.de/rss/pm_56930.rss2	https://www.presseportal.de/pm/56930/5689083	METRO Preis für nachhaltige Gastronomie 2023 / Online-Voting für Vergabe der Pod	
+holdout-27	either	料理通信（日本 · 厨师与饮食文化媒体）	https://r-tsushin.com/feed/	https://r-tsushin.com/news/news_20261008/	スペインの食とワインを語る「Spain Food Nation Summit Japan 2026」開催レポート	
+holdout-28	reject	Sifted（英国 · 欧洲创投媒体）	https://sifted.eu/feed	https://sifted.eu/articles/palantir-louis-mosley-european-tech-sovereignty/	Palantir chief: Europe must ‘accept some dependency’ on US tech	thin
+holdout-29	either	MenuTrinfo	https://menutrinfo.com/feed/	https://menutrinfo.com/blog/spooky-but-not-scary-creating-food-allergy-safe-halloween-events/?utm_source=rss&utm_medium=rss&utm_campaign=spooky-but-not-scary-creating-food-allergy-safe-halloween-events	Spooky, But Not Scary: Creating Food-Allergy-Safe Halloween Events	
+holdout-30	reject	スナック「香」（日本 · 博客名录里的条目）	http://kamatasnack.com/feed	http://kamatasnack.com/diary/mai/mzhkgvjq6lrntln	mzhkgvjq6lrntln	thin

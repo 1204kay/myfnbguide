@@ -12,6 +12,10 @@
 //   kay3      myfnb/labels-2026-10-25-kay3.tsv     40 site items of 10-18..24 near the line, Kay's 10-25 grades
 //   kay4      myfnb/labels-2026-10-25-kay4.tsv     40 site items of 10-18..25 scored 10–41, Kay's 10-25 grades
 //   real      myfnb/labels-2026-10-25-real.tsv     the source trial's two blind checks, Kay's 10-25 grades; not in the database
+//   day1022   myfnb/labels-2026-10-25-day1022.tsv  every item of 10-22, Kay picked the ~12 he wants in that day's report
+//   day1023   myfnb/labels-2026-10-25-day1023.tsv  the same for 10-23
+// Kay 10-25: the newest labels are the current standard and outweigh the older ones. A picked item is select; one he
+// did not pick is either, since a day has room for about 12 (myfnb/eval-selection-compare.ts ranks each day instead).
 // Holdout: myfnb/labels-2026-10-25-holdout.tsv, 30 the prompt was never tuned on, for the last check only.
 // Rows not in the database (real, holdout, feed-labelled r2-…) are read from their feed as myfnb/trial-sources.ts
 // reads them, or from the page when the feed has moved on; one that can be read neither way is counted and left out.
@@ -51,6 +55,8 @@ const cases: Case[] = [
   ...country,
   ...labelled("myfnb/labels-2026-10-25-kay3.tsv", "kay3", graded),
   ...labelled("myfnb/labels-2026-10-25-kay4.tsv", "kay4", graded),
+  ...labelled("myfnb/labels-2026-10-25-day1022.tsv", "day1022", (l) => (l === "选进" ? "select" : "either")),
+  ...labelled("myfnb/labels-2026-10-25-day1023.tsv", "day1023", (l) => (l === "选进" ? "select" : "either")),
   ...lines("myfnb/labels-2026-10-25-real.tsv").map(([key, label, feed, feedUrl, url, title]) =>
     ({ key: key!, decision: graded(label!), stratum: "real", split: "development" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
   // thin: Kay saw no content for it (the original would not open, or only a one-line blurb), so its 不进 is not his taste.
@@ -95,6 +101,15 @@ for (const c of cases) {
     gold: { decision: c.decision },
   }));
 }
+// Were the two days' site scores given by the prompt of #55 (live 10-24 08:08 MYT) or the one before it? Read only.
+const dayIds = cases.filter((c) => c.stratum.startsWith("day")).map((c) => c.key);
+for (const r of await sql<{ prompt_version: string | null; n: number; first: Date; last: Date }[]>`
+  SELECT x.prompt_version, count(*)::int AS n, min(x.created_at) AS first, max(x.created_at) AS last
+  FROM articles a
+  JOIN LATERAL (SELECT prompt_version, created_at FROM analyses WHERE article_id = a.id ORDER BY id DESC LIMIT 1) x ON true
+  WHERE a.id IN ${sql(dayIds)}
+  GROUP BY 1 ORDER BY 3`)
+  console.log(`# day 两天站上最新一次分析：提示词 ${r.prompt_version ?? "-"} · ${r.n} 条 · ${r.first.toISOString()} 到 ${r.last.toISOString()}`);
 writeFileSync(out, `${rows.join("\n")}\n`);
 console.log(`# gold: ${rows.length} cases (${[...new Set(cases.map((c) => c.stratum))].map((s) => `${s} ${rows.filter((r) => r.includes(`"samplingStratum":"${s}"`)).length}`).join(", ")}), ${missing.length} not found${missing.length ? `: ${missing.join(", ")}` : ""}`);
 await closeDb();

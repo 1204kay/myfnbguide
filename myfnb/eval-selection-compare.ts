@@ -27,3 +27,18 @@ for (const c of site) {
   if (c.decision === k?.decision && !wrong(c) && !wrong(k)) continue;
   console.log(`${c.stratum} ${c.gold} | ${mark(c)} | ${mark(k)} | ${c.title.slice(0, 60).replace(/\s+/g, " ")}`);
 }
+
+// Kay's whole-day picks (10-25) are the current standard: a day's report has room for about 12, so what counts there is
+// how many of the ones he picked each prompt ranks in that day's top 12, not where the line falls.
+const TOP = 12;
+console.log(`\n# 一天挑 ${TOP} 条（Kay 10-25 挑的，最新标准）：按分数排前 ${TOP} 条里有几条是 Kay 挑的`);
+for (const s of strata.filter((x) => x.startsWith("day"))) {
+  const set = site.filter((c) => c.stratum === s);
+  const top = (pick: (c: Case) => Case | undefined) => set.map((c) => pick(c)).filter((c): c is Case => !!c)
+    .sort((a, b) => (b.score ?? -1) - (a.score ?? -1)).slice(0, TOP);
+  const hit = (cs: Case[]) => cs.filter((c) => c.gold === "select").length;
+  const siteTop = top((c) => c), candTop = top((c) => cand.get(c.caseId));
+  console.log(`${s}: ${set.length} 条，Kay 挑了 ${set.filter((c) => c.gold === "select").length} 条 · 现行前 ${TOP} 中 ${hit(siteTop)} · 候选前 ${TOP} 中 ${hit(candTop)}`);
+  for (const [name, cs] of [["现行", siteTop], ["候选", candTop]] as const)
+    for (const c of cs) console.log(`  ${name} ${c.score ?? "-"} ${c.gold === "select" ? "挑了" : "没挑"} | ${c.title.slice(0, 50).replace(/\s+/g, " ")}`);
+}

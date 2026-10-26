@@ -6,6 +6,7 @@
 //   第二批 universe2-2026-10-25.jsonl.gz（68,383 个，id 以 g2 开头）：按 12 方 × 27 类逐格补词根后重扫多出来的，用 --input 指定；
 //   第三批 universe3-2026-10-25.jsonl.gz（8,298 个，id 以 g3 开头）：中、韩、泰、阿、越、土、印地补全集时把 Common Crawl 43.9 万个订阅全部读过，
 //   加 Wikidata 七种语言媒体、中文独立博客名录、日本博客村排行、试用里服务器读不到的订阅、台账 robots 重查放行的行，去掉前两批已有的；同样用 --input。
+//   三批漏答的 13 个 universe-missed-2026-10-26.jsonl.gz（10-26 从三份里按 id 抽出）：同一批重判只会拿回已有回执里同样的空答，所以单独成文件、换批次大小（--batch 5）重判。
 //   十一 10-25 定两批合计不超过 US$10、判完余额至少留 US$5，所以第二批用 --cap-usd 10 --min-balance 5。
 //   node myfnb/judge-universe.ts            数候选、按 20 个一批估调用次数和花费，不调模型
 //   node myfnb/judge-universe.ts --apply    判全部候选，逐条结果写进容器里的文件（路径打在第一行）

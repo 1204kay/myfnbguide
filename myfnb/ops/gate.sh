@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # 云端会话经 GitHub Actions 登录服务器时唯一能跑的东西（authorized_keys 的 command= 指向本文件的副本
-# /usr/local/bin/myfnb-ops-gate，由 install.sh 复制、属 root；所以改了本文件要重跑 install.sh 才生效）。
+# /usr/local/bin/myfnb-ops-gate，由 install.sh 第一次复制、属 root；改了本文件要在服务器上
+# 合并部署后跑 sudo install -o root -g root -m 755 myfnb/ops/gate.sh /usr/local/bin/myfnb-ops-gate 才生效，
+# 不要为此重跑 install.sh，它会换掉 GitHub 那把钥匙）。
 # 只放行：看状态和日志、跑镜像里已有的 myfnb/ 脚本（即已合进 main 的）、用只读账号查库、放上十一说一期的音频。
 # 同一个守门也给 agent1 云电脑每天出十一说用（myfnb/ops/add-key.sh 装的钥匙，十一 10-30 定）。那把钥匙带名字进来
 # （command="… agent1"），只放行十一说用得到的：status、tail、audio、script、run myfnb/issue-now.ts 的取、核、放、上头条四样；

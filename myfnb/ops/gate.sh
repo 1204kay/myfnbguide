@@ -29,7 +29,7 @@ script_ok() { [[ ${1:-} =~ ^myfnb/[A-Za-z0-9._/-]+\.(ts|mjs)$ && $1 != *..* ]]; 
 
 case $verb in
   status)
-    git log -1 --format='线上版本 %h %cd %s' --date=iso
+    git -c safe.directory="$PWD" log -1 --format='线上版本 %h %cd %s' --date=iso
     sudo docker compose ps --format 'table {{.Service}}\t{{.Status}}'
     df -h / | tail -1; free -m | sed -n 2p ;;
   deploy-log)

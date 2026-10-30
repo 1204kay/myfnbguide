@@ -367,6 +367,10 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
   const kept: Problem[] = [];
   // A quote may run over several sentences, so a whole sentence inside it counts; a short one ("一") does not.
   const hits = (text: string, q: string) => { const t = bare(text); return t.includes(q) || (t.length >= 6 && q.includes(t)); };
+  // A title, a lead sentence or a news head is one line on its own: a quote longer than it is a quote of another part that
+  // happens to repeat it, and its fix is that part's (10-30, issue 6: the check mended the preview, which names every news
+  // item, and the third news head became the whole mended preview).
+  const owns = (line: string, q: string) => bare(line).includes(q);
   for (const p of problems) {
     const q = bare(p.quote);
     // A fix may carry the label it was shown under (10-20, 7466b97: the title went up as 「标题：意大利一家……」).
@@ -383,15 +387,15 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
       const cites = x.match(CITATIONS)?.[0];
       return [cites && !CITATION.test(r) ? `${r}${cites}${x.endsWith("\n") ? "\n" : ""}` : `${r}${x.endsWith("\n") && !r.endsWith("\n") ? "\n" : ""}`];
     }).join("").replace(/\n{3,}/gu, "\n\n").trim();
-    const lead = out.brief.findIndex((x) => hits(x, q));
+    const lead = out.brief.findIndex((x) => owns(x, q));
     if (lead >= 0) { changed.push(out.brief[lead]!); if (r) out.brief[lead] = r; else out.brief.splice(lead, 1); }
-    const head = out.news.findIndex((x) => hits(x.head, q));
+    const head = out.news.findIndex((x) => owns(x.head, q));
     if (head >= 0) {
       const x = out.news[head]!;
       changed.push(x.head);
       if (r) x.head = r; else { out.news.splice(head, 1); changed.push(x.text); }
     }
-    if (hits(out.title, q)) { changed.push(out.title); out.title = r; }
+    if (owns(out.title, q)) { changed.push(out.title); out.title = r; }
     out.preview = swap(out.preview);
     for (const x of out.news) x.text = swap(x.text);
     out.news = out.news.filter((x) => x.text);

@@ -2,6 +2,8 @@
 // The audio is made off the server (Qwen3-TTS, one fixed voice Kay picked; the server's 4 GB cannot hold the model) and
 // put in the data volume as <no>.mp3 with <no>.json beside it ({"seconds": n}) by myfnb/issue-audio.sh. An issue
 // without both files has no audio and its page shows no 听 button, so the page code can ship before any audio does.
+// <no>.txt, when there, is the listen script the voice read (Kay 10-31: a transcript to follow while listening, as
+// 樊登 and 小宇宙 have); it is not the page's text, which is written to be read (no "回到英国" between news items).
 import { createReadStream } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
@@ -11,11 +13,14 @@ import { config } from "@aihot/backend/config";
 const DIR = path.join(config.dataDir, "reference", "audio");
 
 /** The issue's audio as its page needs it, or null when it has none. */
-export async function issueAudio(no: number): Promise<{ url: string; seconds: number } | null> {
+export async function issueAudio(no: number): Promise<{ url: string; seconds: number; transcript: string[] | null } | null> {
   try {
     const [meta] = await Promise.all([readFile(path.join(DIR, `${no}.json`), "utf8"), stat(path.join(DIR, `${no}.mp3`))]);
     const seconds = Number((JSON.parse(meta) as { seconds?: unknown }).seconds);
-    return Number.isFinite(seconds) && seconds > 0 ? { url: `/api/reference/issues/${no}/audio.mp3`, seconds: Math.round(seconds) } : null;
+    if (!Number.isFinite(seconds) || seconds <= 0) return null;
+    const script = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
+    const lines = script.split(/\n+/u).map((l) => l.trim()).filter(Boolean);
+    return { url: `/api/reference/issues/${no}/audio.mp3`, seconds: Math.round(seconds), transcript: lines.length ? lines : null };
   } catch {
     return null;
   }

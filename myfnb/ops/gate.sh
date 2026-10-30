@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # 云端会话经 GitHub Actions 登录服务器时唯一能跑的东西（authorized_keys 的 command= 指向本文件的副本
-# /usr/local/bin/myfnb-ops-gate，由 install.sh 复制、属 root；所以改了本文件要重跑 install.sh 才生效）。
+# /usr/local/bin/myfnb-ops-gate，由 install.sh 第一次复制、属 root；改了本文件要在服务器上
+# 合并部署后跑 sudo install -o root -g root -m 755 myfnb/ops/gate.sh /usr/local/bin/myfnb-ops-gate 才生效，
+# 不要为此重跑 install.sh，它会换掉 GitHub 那把钥匙）。
 # 只放行：看状态和日志、跑镜像里已有的 myfnb/ 脚本（即已合进 main 的）、用只读账号查库、放上十一说一期的音频。
 # 同一个守门也给 agent1 云电脑每天出十一说用（myfnb/ops/add-key.sh 装的钥匙，十一 10-30 定）。那把钥匙带名字进来
-# （command="… agent1"），只放行十一说用得到的：status、tail、audio、run myfnb/issue-now.ts 的取、核、放、上头条四样；
+# （command="… agent1"），只放行十一说用得到的：status、tail、audio、script、run myfnb/issue-now.ts 的取、核、放、上头条四样；
 # 花钱的、写库的其他脚本，和十一说的开关（--from、--stop），都只有 GitHub 那把能跑。
 # 删数据、改防火墙、装补丁、重启不在这里，仍由 Kay 在 OrcaTerm 做（公司手册 公司/讨论/④全部搬上云端.md #2、#3）。
 set -uo pipefail
@@ -19,9 +21,9 @@ if [ "$caller" != github ]; then
   [[ ${#a[@]} -le 4 && ( -z ${a[3]:-} || ${a[3]} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ) ]] || a=(deny)
   [[ $verb != run || ${#a[@]} -le 2 || ${a[3]:-} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || a=(deny)
   case "${a[0]} ${a[1]:-} ${a[2]:-}" in
-    "status "*|"tail "*|"audio "*|"run myfnb/issue-now.ts "|"run myfnb/issue-now.ts --items"|"run myfnb/issue-now.ts --dump"|"run myfnb/issue-now.ts --put"|"run myfnb/issue-now.ts --lead") ;;
+    "status "*|"tail "*|"audio "*|"script "*|"run myfnb/issue-now.ts "|"run myfnb/issue-now.ts --items"|"run myfnb/issue-now.ts --dump"|"run myfnb/issue-now.ts --put"|"run myfnb/issue-now.ts --lead") ;;
     *) echo "$(date -Is) [$caller] 拒绝" >> "$LOG/audit.log"
-       echo "这把钥匙只能：status | tail [编号] | audio <期号> <秒数> < mp3 | run myfnb/issue-now.ts [--items|--dump|--put|--lead 日期]"; exit 2 ;;
+       echo "这把钥匙只能：status | tail [编号] | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt | run myfnb/issue-now.ts [--items|--dump|--put|--lead 日期]"; exit 2 ;;
   esac
 fi
 num() { [[ ${1:-} =~ ^[0-9]{1,5}$ ]] && echo "$1" || echo "$2"; }
@@ -55,9 +57,16 @@ case $verb in
     head -c 100000000 > "$tmp"
     sudo bash myfnb/issue-audio.sh "${a[1]}" "$tmp" "${a[2]}"; rc=$?
     rm -f "$tmp"; exit $rc ;;
+  script)
+    # 同一期的听稿（播放条的「文字稿」），一行一句，从标准输入进来；只能放上或换掉，撤下跟音频一起
+    [[ ${a[1]:-} =~ ^[1-9][0-9]{0,4}$ ]] || { echo "script <期号> < 听稿.txt"; exit 2; }
+    tmp=$(mktemp /tmp/issue-XXXXXX.txt)
+    head -c 1000000 > "$tmp"
+    sudo bash myfnb/issue-audio.sh "${a[1]}" --script "$tmp"; rc=$?
+    rm -f "$tmp"; exit $rc ;;
   sql)
     # 只读账号 myfnb_ro（install.sh 建的，只有 pg_read_all_data，默认只读事务），写不进任何东西
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -v ON_ERROR_STOP=1 -c "${CMD#sql }" ;;
   *)
-    echo "可用：status | deploy-log [行数] | logs <服务> [行数] | run myfnb/<脚本>.ts [参数] | bg myfnb/<脚本>.ts [参数] | tail [编号] [行数] | sql <只读查询> | audio <期号> <秒数> < mp3" ;;
+    echo "可用：status | deploy-log [行数] | logs <服务> [行数] | run myfnb/<脚本>.ts [参数] | bg myfnb/<脚本>.ts [参数] | tail [编号] [行数] | sql <只读查询> | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt" ;;
 esac

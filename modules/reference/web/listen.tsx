@@ -169,7 +169,19 @@ export function PlayerBar({ url, seconds, title, transcript, onClose }: { url: s
       </div>
       {transcript && (
         <Sheet open={reading} onClose={() => setReading(false)} title={`文字稿 · ${title}`}>
-          <div className="px-5 pb-2">
+          {/* The sheet covers the bar, so it carries play/pause and the time itself: one listens while reading. */}
+          <div className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-line-soft bg-surface px-5">
+            <button
+              type="button"
+              aria-label={playing ? "暂停" : "播放"}
+              onClick={toggle}
+              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-contrast transition-colors hover:bg-accent-ink"
+            >
+              {playing ? <IconPause size={16} /> : <IconPlay size={16} />}
+            </button>
+            <div className="font-mono text-[12px] text-ink-3">{clock(at)} / {clock(length)}</div>
+          </div>
+          <div className="px-5 pb-2 pt-3">
             {transcript.map((line, i) => <p key={i} className={`${i ? "mt-3" : "mt-1"} ${BODY}`}>{line}</p>)}
           </div>
         </Sheet>

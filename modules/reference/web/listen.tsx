@@ -3,8 +3,12 @@
 // the bottom of the page: progress, play/pause, the issue and the time, speed, close. The original has no audio, so
 // the parts are the module's own, drawn with the site's tokens and the bar's sizes (44px targets, the share pill's
 // look for the 听 button). The bar belongs to the page: leaving the page stops it.
+// With a transcript, the bar has a 文字稿 button that opens the listen script in the site's own bottom sheet
+// (components/ui/Sheet, as 筛选 and 这件事的其他报道 use it) while the audio goes on (Kay 10-31, as 樊登 and 小宇宙 do).
 import { useEffect, useRef, useState } from "react";
 import { IconClose } from "@aihot/web/components/icons";
+import { Sheet } from "@aihot/web/components/ui/Sheet";
+import { BODY } from "./ui";
 
 type P = { size?: number };
 
@@ -50,8 +54,9 @@ export function useListen() {
   return { open, start: () => setOpen(true), close: () => setOpen(false) };
 }
 
-export function PlayerBar({ url, seconds, title, onClose }: { url: string; seconds: number; title: string; onClose: () => void }) {
+export function PlayerBar({ url, seconds, title, transcript, onClose }: { url: string; seconds: number; title: string; transcript: string[] | null; onClose: () => void }) {
   const audio = useRef<HTMLAudioElement>(null);
+  const [reading, setReading] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [at, setAt] = useState(0);
   const [length, setLength] = useState(seconds);
@@ -135,6 +140,15 @@ export function PlayerBar({ url, seconds, title, onClose }: { url: string; secon
             <div className="truncate text-[14px] font-semibold text-ink">{title}</div>
             <div className="font-mono text-[12px] text-ink-3">{clock(at)} / {clock(length)}</div>
           </div>
+          {transcript && (
+            <button
+              type="button"
+              onClick={() => setReading(true)}
+              className="h-8 shrink-0 rounded-control border border-line-strong px-2 text-[13px] text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
+            >
+              文字稿
+            </button>
+          )}
           <button
             type="button"
             aria-label="播放速度"
@@ -153,6 +167,13 @@ export function PlayerBar({ url, seconds, title, onClose }: { url: string; secon
           </button>
         </div>
       </div>
+      {transcript && (
+        <Sheet open={reading} onClose={() => setReading(false)} title={`文字稿 · ${title}`}>
+          <div className="px-5 pb-2">
+            {transcript.map((line, i) => <p key={i} className={`${i ? "mt-3" : "mt-1"} ${BODY}`}>{line}</p>)}
+          </div>
+        </Sheet>
+      )}
     </>
   );
 }

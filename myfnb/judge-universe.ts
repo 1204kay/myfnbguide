@@ -7,6 +7,8 @@
 //   第三批 universe3-2026-10-25.jsonl.gz（8,298 个，id 以 g3 开头）：中、韩、泰、阿、越、土、印地补全集时把 Common Crawl 43.9 万个订阅全部读过，
 //   加 Wikidata 七种语言媒体、中文独立博客名录、日本博客村排行、试用里服务器读不到的订阅、台账 robots 重查放行的行，去掉前两批已有的；同样用 --input。
 //   三批漏答的 13 个 universe-missed-2026-10-26.jsonl.gz（10-26 从三份里按 id 抽出）：同一批重判只会拿回已有回执里同样的空答，所以单独成文件、换批次大小（--batch 5）重判。
+//   ? 重判（十一 10-30 定，决定记录 L1298）：条款没挡掉的 ? 14,910 个（前三批 14,665、第四批 245），云端重读订阅取最近至多 20 条标题（universe-q20-2026-10-30.jsonl.gz），
+//   加 --yn 只许答 Y 或 N；上限 US$1.5，--cap-usd 8.75。
 //   十一 10-25 定两批合计不超过 US$10、判完余额至少留 US$5，所以第二批用 --cap-usd 10 --min-balance 5。
 //   node myfnb/judge-universe.ts            数候选、按 20 个一批估调用次数和花费，不调模型
 //   node myfnb/judge-universe.ts --apply    判全部候选，逐条结果写进容器里的文件（路径打在第一行）
@@ -34,6 +36,7 @@ import { modelFor } from "@aihot/backend/editorial/models";
 const { values } = parseArgs({ options: {
   apply: { type: "boolean", default: false }, "cap-usd": { type: "string", default: "6" }, "min-balance": { type: "string", default: "12" }, until: { type: "string", default: "04:55" }, reserve: { type: "string", default: "3000" },
   input: { type: "string", default: "universe-2026-10-25.jsonl.gz" }, batch: { type: "string", default: "20" }, jobs: { type: "string", default: "4" },
+  yn: { type: "boolean", default: false },
 } });
 type Cand = { id: string; kind: string; url: string; title: string; desc: string; items: string[]; lang?: string };
 const raw = readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.input));
@@ -54,7 +57,8 @@ const SYSTEM = `你替一个餐饮行业资讯站判断候选信息源。这个�
 每个候选给你名称、简介和最近几条标题。判这个来源**常不常**发上面要的东西：
 - Y：多数或相当一部分内容是要的；
 - ?：偶尔有，或者看不出来；
-- N：基本没有。
+- N：基本没有。${values.yn ? `
+这一批是上一轮只看 8 条标题、判成 ? 的，这次给你最近 20 条：只能判 Y 或 N。20 条里有几条是要的、而且不是偶然一条，判 Y；否则判 N。只有标题、简介都读不出意思时才写 ?。` : ""}
 party 写它主要从谁的角度讲（上面 12 方之一，用中文简称，比如 经营者、食客、员工、平台、研究；N 的写 无）。why 用中文一句话，说凭哪几条标题判的。
 只输出 JSON：{"items":[{"id":"…","v":"Y|?|N","party":"…","why":"…"}]}，每个候选一项，id 照抄。`;
 const Schema = z.object({ items: z.array(z.object({ id: z.string(), v: z.enum(["Y", "?", "N"]), party: z.string(), why: z.string() })) });
@@ -68,7 +72,7 @@ function untilOf(v: string): Date {
 // 按字符数截断会把表情符号这类代理对从中间切开，留下孤立的半个，DeepSeek 拒收整批（HTTP 400：请求体不是合法 JSON）。
 // 10-25 两批共 13 批 260 个候选每次都因此失败；toWellFormed() 把孤立的半个换成替换字符。
 const userOf = (b: Cand[]) => b.map((c) => [`id: ${c.id}`, `类型: ${c.kind}`, `名称: ${c.title.slice(0, 120)}`, `网址: ${c.url}`,
-  `简介: ${c.desc.slice(0, 400)}`, `最近标题: ${c.items.filter(Boolean).slice(0, 8).map((t) => t.slice(0, 90)).join(" ｜ ")}`].join("\n")).join("\n\n").toWellFormed();
+  `简介: ${c.desc.slice(0, 400)}`, `最近标题: ${c.items.filter(Boolean).slice(0, values.yn ? 20 : 8).map((t) => t.slice(0, 90)).join(" ｜ ")}`].join("\n")).join("\n\n").toWellFormed();
 
 // 估算：DeepSeek flash 每百万 token 输入 US$0.15、输出 US$0.6，高峰乘 2（myfnb/price-deepseek-2026-10-24.ts）；字符数按 2.5 个字符一个 token 粗算。
 const inTok = batches.reduce((n, b) => n + (SYSTEM.length + userOf(b).length) / 2.5, 0);

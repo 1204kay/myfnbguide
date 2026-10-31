@@ -3,7 +3,7 @@
 # 清单 myfnb/sourcing/trial-noterms-2026-10-31.json：989 个找不到条款页的订阅里，robots 许可、没挡 AI 爬虫、8 月以后还在更新的 187 个（同名重复的去掉）。
 # 做法同 trial-y-2026-10-31-run.sh：第一轮每个看 6 条，第二轮对有过预筛的每个看 25 条。
 # 花费上限两轮合计 US$3：脚本每判完一条才查上限，--jobs 3 时最后会多花几条的钱，所以两轮设 1.28 + 1.58，留出余量（经验 C15）。
-# 按上午的实测单价估约 US$2.9，可能碰上限、少数订阅轮不到。llm 每天上限照旧临时调到 30,000、跑完调回 10,000；不在 05:00–08:00 MYT 跑；跑时不要合并 myfnbguide。
+# 按上午的实测单价估约 US$2.9，可能碰上限、少数订阅轮不到。llm 每天上限临时调到 30,000，跑完先数滚动 24 小时的调用，低于 7,000 才调回 10,000，否则留着并写出调回时间；不在 05:00–08:00 MYT 跑；跑时不要合并 myfnbguide。
 # 跑完先把两轮的逐条结果拷出容器：worker 一重启，容器 /tmp 就清空了（10-31 上午那趟就这样丢了）。
 #   cd /opt/myfnbguide && bash myfnb/trial-noterms-2026-10-31-run.sh start | status
 set -euo pipefail
@@ -25,7 +25,19 @@ case "${1:-}" in
     ;;
   run)
     cd /opt/myfnbguide
-    trap 'echo "# 调回：$(psql "UPDATE budgets SET per_day = 10000, updated_at = now() WHERE service = '"'llm'"' RETURNING service, per_day")"' EXIT
+    # 跑完不能直接调回 10000：熔断数的是滚动 24 小时里的调用，试吃调过的次数还要一天才过期。
+    # 10-31 上午两趟跑完就调回，滚动窗口里还有 12,369 次，网站的模型调用从 12:02 起全被日上限挡住。
+    # 所以先数窗口里的调用：低于 7000（给网站留 3000）才调回 10000；不然留着 30000，写出什么时候能调回。
+    restore() {
+      used=$(psql "SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'")
+      if [ "$used" -lt 7000 ]; then
+        echo "# 调回：滚动 24 小时 $used 次，$(psql "UPDATE budgets SET per_day = 10000, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
+      else
+        at=$(psql "SELECT to_char((started_at + interval '1 day') AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24:MI') FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' ORDER BY started_at OFFSET $((used - 7000)) LIMIT 1")
+        echo "# 没调回：滚动 24 小时还有 $used 次，per_day 留在 30000；$at MYT 以后窗口降到 7000 次以下，届时调回 10000（UPDATE budgets SET per_day = 10000 WHERE service = 'llm'）"
+      fi
+    }
+    trap restore EXIT
     echo "# 调高：$(psql "UPDATE budgets SET per_day = 30000, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
     trial() { sudo docker compose exec -T worker node myfnb/trial-sources.ts --apply --sample trial-noterms-2026-10-31.json --jobs 3 --reserve 3000 "$@"; }
     echo "# ① 第一轮 $(date -u +%FT%TZ)"
@@ -41,7 +53,7 @@ case "${1:-}" in
     ;;
   status)
     if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "还在跑"; else echo "没有在跑"; fi
-    cd /opt/myfnbguide && echo "llm 每天上限：$(psql "SELECT per_day FROM budgets WHERE service = 'llm'")"
+    cd /opt/myfnbguide && echo "llm 每天上限：$(psql "SELECT per_day FROM budgets WHERE service = 'llm'")；滚动 24 小时已用：$(psql "SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'")"
     grep '^# ' "$LOG" 2>/dev/null | tail -8 || true
     tail -3 "$LOG" 2>/dev/null || true
     ;;

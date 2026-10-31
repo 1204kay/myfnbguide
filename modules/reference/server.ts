@@ -174,7 +174,7 @@ export default defineServerModule({
       if (await issueAudio(row.no)) return { queued: 0, reason: "already read" };
       const report = await voiceReport(row.no);
       if (report && !["error", "check failed"].includes(report.status)) return { queued: 0, reason: report.status };
-      if ((report?.tries ?? 0) >= MAX_READS) return { queued: 0, reason: "no reads left today" };
+      if ((report?.tries ?? 0) >= MAX_READS && !report?.unheard) return { queued: 0, reason: "no reads left today" };
       await enqueueOn(VOICES, { no: row.no }, { singletonKey: String(row.no) });
       return { queued: 1, no: row.no };
     },

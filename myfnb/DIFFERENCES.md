@@ -64,7 +64,7 @@
 
 ## 3. 改了 `industry/`、`site/`、`modules/`、`myfnb/` 以外的文件
 
-快照 10-31（合并上游 `7432095` 以后）。重新生成：`git fetch upstream && git diff --stat upstream/main HEAD -- apps packages scripts docs database Dockerfile deploy .github package.json tests`。框架和作者上游的差别只有下面这些，每一处对应清单里的一行；对不上的就是清单漏了，或者是该改回原版的。合并上游时只有这些文件可能冲突。
+快照 11-01（合并上游 `877813d` 以后）。重新生成：`git fetch upstream && git diff --stat upstream/main HEAD -- apps packages scripts docs database Dockerfile deploy .github package.json tests`。框架和作者上游的差别只有下面这些，每一处对应清单里的一行；对不上的就是清单漏了，或者是该改回原版的。合并上游时只有这些文件可能冲突。
 
 | 文件 | 改了什么 | 清单哪一行 |
 |---|---|---|

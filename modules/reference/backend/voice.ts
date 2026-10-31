@@ -10,6 +10,7 @@
 import { spawn } from "node:child_process";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
+import { setTimeout as sleep } from "node:timers/promises";
 import os from "node:os";
 import path from "node:path";
 import { z } from "zod";
@@ -340,15 +341,25 @@ async function hear(samples: Int16Array, rate: number, subject: string): Promise
     async () => {
       const texts: string[] = [];
       for (let i = 1; i < cuts.length; i += 1) {
-        const form = new FormData();
-        form.set("model", HEAR.model);
-        form.set("file", new Blob([new Uint8Array(wavOf(samples.subarray(cuts[i - 1]!, cuts[i]!), rate))], { type: "audio/wav" }), "piece.wav");
-        form.set("response_format", "json");
-        form.set("language", "zh");
-        form.set("prompt", "以下是普通话的句子。");
-        const res = await fetch(`${HEAR.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(120_000) });
-        if (!res.ok) assertAccepted(HEAR.service, res.status, await res.text());
-        texts.push(((await res.json()) as { text?: string }).text ?? "");
+        // Groq allows whisper 20 requests a minute, shared with archive's transcription: a piece every 3.5 s keeps
+        // under it, and a 429 waits as long as Groq says (at most a minute, three times) rather than losing the reading.
+        if (i > 1) await sleep(3_500);
+        for (let wait = 0; ; wait += 1) {
+          const form = new FormData();
+          form.set("model", HEAR.model);
+          form.set("file", new Blob([new Uint8Array(wavOf(samples.subarray(cuts[i - 1]!, cuts[i]!), rate))], { type: "audio/wav" }), "piece.wav");
+          form.set("response_format", "json");
+          form.set("language", "zh");
+          form.set("prompt", "以下是普通话的句子。");
+          const res = await fetch(`${HEAR.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(120_000) });
+          if (res.status === 429 && wait < 3) {
+            await sleep(Math.min(60, Number(res.headers.get("retry-after")) || 20) * 1000);
+            continue;
+          }
+          if (!res.ok) assertAccepted(HEAR.service, res.status, await res.text());
+          texts.push(((await res.json()) as { text?: string }).text ?? "");
+          break;
+        }
       }
       return { response: { text: texts.join("") }, usage: { audio_seconds: Math.round(samples.length / rate) } };
     },
@@ -364,6 +375,8 @@ export interface VoiceReport {
   tries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
   reads?: Array<{ seconds: number; match: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[] }>;
+  /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
+  unheard?: boolean;
   error?: string;
 }
 
@@ -422,32 +435,51 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   const used = opts.dryRun ? 0 : before?.tries ?? 0;
   const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: used, reads: opts.dryRun ? [] : before?.reads ?? [] };
   const keep = async () => { if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); } return report; };
-  if (used >= MAX_READS) return { ...report, status: "no reads left" };
+  if (used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
   // Not kept: once the key or the row is there, the next half hour reads it.
   const missing = await voiceMissing();
   if (missing.length) return { ...report, status: "not ready", error: missing.join("；") };
+  // Kept under the data folder, not the container's /tmp: a reading not yet heard outlives a restart.
+  const work = opts.out ?? path.join(DIR, "work", String(no));
+  const saved = !opts.dryRun && before?.unheard
+    ? await Promise.all([readFile(path.join(work, `${no}.txt`), "utf8"), readFile(path.join(work, `${no}.wav`))]).catch(() => null)
+    : null;
+  report.unheard = Boolean(saved);
   try {
-    const written = await writeScript(row.issue, row.date, ask.write, ask.check);
-    report.scriptRounds = written.rounds;
-    if (!written.lines) { report.status = "script failed"; return keep(); }
-    const script = written.lines.join("\n");
-    report.chars = scriptChars(written.lines);
-    if (report.chars > MAX_CHARS) { report.status = "too long"; return keep(); }
-    const work = opts.out ?? path.join(os.tmpdir(), `issue-voice-${no}`);
-    await mkdir(work, { recursive: true });
-    await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
-    for (let attempt = used + 1; attempt <= MAX_READS; attempt += 1) {
-      report.tries = attempt;
-      await keep();
-      const wav = await read(script, `issue:${no}`, attempt).catch((error: unknown) => {
-        if (error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
-        throw error;
-      });
+    let script: string;
+    if (saved) {
+      script = saved[0].trimEnd();
+      report.chars = before!.chars;
+      report.scriptRounds = before!.scriptRounds;
+    } else {
+      const written = await writeScript(row.issue, row.date, ask.write, ask.check);
+      report.scriptRounds = written.rounds;
+      if (!written.lines) { report.status = "script failed"; return keep(); }
+      script = written.lines.join("\n");
+      report.chars = scriptChars(written.lines);
+      if (report.chars > MAX_CHARS) { report.status = "too long"; return keep(); }
+      await mkdir(work, { recursive: true });
+      await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
+    }
+    for (let attempt = saved ? used : used + 1; attempt <= MAX_READS; attempt += 1) {
+      let wav: Buffer;
+      if (saved && attempt === used) wav = saved[1];
+      else {
+        report.tries = attempt;
+        await keep();
+        wav = await read(script, `issue:${no}`, attempt).catch((error: unknown) => {
+          if (error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
+          throw error;
+        });
+        await writeFile(path.join(work, `${no}.wav`), wav);
+        report.unheard = true;
+        await keep();
+      }
       const { rate, samples } = wavSamples(wav);
       const seconds = Math.round(samples.length / rate);
-      await writeFile(path.join(work, `${no}.wav`), wav);
       await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
       const heard = await hear(samples, rate, `issue:${no}:${attempt}`);
+      report.unheard = false;
       const match = heardShare(script, heard);
       const gaps = silences(samples, rate, PASS.gap);
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);

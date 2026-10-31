@@ -3843,6 +3843,28 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-bar-espace-rassurants",
+      "name": "BAR エスパスラシュランのゆるり酒場の会話（日本 · 酒吧店主的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hashimoto.koelab.link/feed/podcast/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

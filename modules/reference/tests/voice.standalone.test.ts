@@ -33,7 +33,7 @@ test("the script opens and closes with the program's lines, and the check reads 
   assert.ok(!seen.some((s) => s.includes("〔")), "the 〔n〕 marks are the page's links, never said");
 });
 
-test("the check's fixes go in line by line; still wrong after two mends, there is no script", async () => {
+test("the check's fixes go in line by line; still wrong after three mends, there is no script", async () => {
   const wrong = { problems: [{ kind: "严重", line: "英国净少了一千家店。", fix: "英国净少了977家店。", why: "数字" }] };
   const ok = scripted({
     reference_issue_voice: [{ lines: ["英国净少了一千家店。"] }],
@@ -43,8 +43,16 @@ test("the check's fixes go in line by line; still wrong after two mends, there i
   assert.deepEqual(mended.lines?.slice(1, -1), ["英国净少了977家店。"]);
   assert.equal(mended.rounds[0]!.applied, 1);
 
+  // A different line each round, as issue 8 had: the third mend still goes in.
+  const line = (from: string, to: string) => ({ problems: [{ kind: "误导", line: from, fix: to, why: "出处" }] });
+  const late = scripted({
+    reference_issue_voice: [{ lines: ["甲说涨了。", "乙说跌了。", "丙说平了。"] }],
+    reference_issue_voice_check: [line("甲说涨了。", "报道说甲涨了。"), line("乙说跌了。", "报道说乙跌了。"), line("丙说平了。", "报道说丙平了。"), { problems: [] }],
+  });
+  assert.deepEqual((await writeScript(ISSUE, "2026-10-31", late, late)).lines?.slice(1, -1), ["报道说甲涨了。", "报道说乙跌了。", "报道说丙平了。"]);
+
   const stubborn = { problems: [{ kind: "漏讲", line: "没有这一行", fix: "补上", why: "漏了细说" }] };
-  const bad = scripted({ reference_issue_voice: [{ lines: ["英国净少了977家店。"] }], reference_issue_voice_check: [stubborn, stubborn, stubborn] });
+  const bad = scripted({ reference_issue_voice: [{ lines: ["英国净少了977家店。"] }], reference_issue_voice_check: [stubborn, stubborn, stubborn, stubborn] });
   assert.equal((await writeScript(ISSUE, "2026-10-31", bad, bad)).lines, null);
 });
 

@@ -107,16 +107,21 @@ export function applyFixes(lines: string[], problems: Problem[]): { lines: strin
   return { lines: out, applied };
 }
 
-/** Writes the script and has it checked, mending up to twice; null with the last problems when it is still wrong. */
+/**
+ * How many times the check's fixes go in. Three: issue 8 (11-01) was still one 误导 short after two, each round
+ * finding a different line the rewrite had lost a source on.
+ */
+export const MENDS = 3;
+/** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
 export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
   const first = await write("reference_issue_voice", prompt("issue-voice", { opening: opening(date), maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}`, Script);
   let lines = [opening(date), ...first.lines.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
-  for (let round = 0; round < 3; round += 1) {
+  for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
-    if (round === 2) { rounds.push({ problems, applied: 0 }); break; }
+    if (round === MENDS) { rounds.push({ problems, applied: 0 }); break; }
     const fixed = applyFixes(lines, problems);
     rounds.push({ problems, applied: fixed.applied });
     lines = fixed.lines;

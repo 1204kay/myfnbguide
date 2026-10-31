@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# 给一台我们自己的机器装一把只能跑守门脚本的钥匙（十一 10-30 定：agent1 云电脑每天出十一说，不再靠 Kay 的电脑）。
+# 给一台我们自己的机器装一把只能跑守门脚本的钥匙（十一 10-30 定：css-cloud 云电脑（原名 agent1）每天出十一说，不再靠 Kay 的电脑）。
 # 钥匙在那台机器上生成，私钥不离开它；这里只收公钥，并限定只能从那台机器的出口 IP 来、只能跑 /usr/local/bin/myfnb-ops-gate，
 # 而且带着名字跑：守门只放行十一说用得到的几样（gate.sh 文件头）。restrict 关掉转发、pty 和以后 OpenSSH 新加的能力。
 # 用法（守门脚本要先由 install.sh 装好）：
-#   sudo bash /opt/myfnbguide/myfnb/ops/add-key.sh <名字> <出口IP> < key.pub      例：add-key.sh agent1 43.160.236.58
+#   sudo bash /opt/myfnbguide/myfnb/ops/add-key.sh <名字> <出口IP> < key.pub      例：add-key.sh css-cloud 43.160.236.58
 # 重跑同一个名字会换掉旧的那把。收回：sudo sed -i '/myfnb-ops-<名字>$/d' /home/ubuntu/.ssh/authorized_keys
 set -euo pipefail
 [ "$(id -u)" -eq 0 ] || { echo "请用 sudo 执行：sudo bash $0 <名字> <出口IP> < key.pub"; exit 1; }

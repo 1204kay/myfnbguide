@@ -84,7 +84,7 @@ export default function CaseRoute() {
       >
         打开原文 <IconExternal size={13} />
       </a>
-      <StarButton item={item} size={32} />
+      <StarButton item={item} className="size-8 touch:size-11" />
       {moreMenu}
     </div>
   );

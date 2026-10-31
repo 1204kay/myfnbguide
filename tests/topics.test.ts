@@ -128,6 +128,18 @@ test("a company topic takes the articles about it, not the ones that only mentio
   assert.deepEqual(await topicsOf(agent), ["agent", "model-releases"]);
 });
 
+// A company topic of the pack that keeps an old full name as an alias (the AI example: 「Kimi / 月之暗面」 renamed 「月之暗面 / Kimi」).
+const RENAMED = TOPICS.find((t) => t.entityId && t.aliases.some((a) => a.includes(" / ") && a !== t.name));
+
+test("renaming a company topic keeps its old full name usable for search", { skip: RENAMED ? false : "行业包没有改过名的公司主题（MYFNB 主题不按公司分，见 myfnb/DIFFERENCES.md 第 3 节）" }, async () => {
+  const id = await report({at: hoursAgo(2), title: `${RENAMED!.slug} 新消息 ${T}`, subjects: [RENAMED!.entityId!], selected: false});
+  for (const query of [RENAMED!.name, ...RENAMED!.aliases.filter((a) => a.includes(" / ") && a !== RENAMED!.name)]) {
+    const res = await app.inject({method: 'GET', url: `/api/site/pool?q=${encodeURIComponent(query)}`});
+    assert.equal(res.statusCode, 200);
+    assert.ok(ids(JSON.parse(res.body).items).includes(id), 'full company names must still find subject-tagged reports');
+  }
+});
+
 test("a story page names the topics of its reports", async () => {
   const launch = await story(`智能体框架 V2 发布 ${T}`);
   await report({ source: OFFICIAL, at: hoursAgo(26), title: `智能体框架 V2 发布 ${T}`, tags: [STORY_TOPIC!.tags[0]!], fact: await fact(launch.id, "发布 V2") });

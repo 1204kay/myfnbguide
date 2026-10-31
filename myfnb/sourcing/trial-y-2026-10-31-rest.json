@@ -1,0 +1,475 @@
+{
+"$comment": "2026-10-31 Y 待定试吃补跑：trial-y-2026-10-31.json 的 517 个里，第一轮碰 US$4 上限没轮到的 54 个，加第一轮有过预筛、第二轮碰上限没轮到的 22 个（Kay 10-31 14:12「没跑完也不补？信息源很重要」）。",
+"volume": {
+"Y": {
+"feeds": 23,
+"perDay": 6.8
+},
+"Q": {
+"feeds": 53,
+"perDay": 7.4
+},
+"F": {
+"feeds": 0,
+"perDay": 0
+}
+},
+"feeds": [
+{
+"group": "Y",
+"name": "The Inside Dish",
+"feedUrl": "https://www.wdiy.org/podcast/the-inside-dish/rss.xml",
+"perDay": 0.04
+},
+{
+"group": "Y",
+"name": "Restaurants Archives - Orange County Business Journal",
+"feedUrl": "https://www.ocbj.com/category/food/restaurants/feed/",
+"perDay": 0.49
+},
+{
+"group": "Y",
+"name": "Eat – Coral Springs Talk",
+"feedUrl": "https://coralspringstalk.com/category/eat/feed",
+"perDay": 0.22
+},
+{
+"group": "Y",
+"name": "Food Archives - CU-CitizenAccess.org",
+"feedUrl": "https://cu-citizenaccess.org/category/food/feed/",
+"perDay": 0.01
+},
+{
+"group": "Y",
+"name": "Local Food | Rochester Now",
+"feedUrl": "https://rochesternow.net/category/food/feed/",
+"perDay": 0.42
+},
+{
+"group": "Y",
+"name": "BARTENDER.com",
+"feedUrl": "https://bartender.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Y",
+"name": "Kickfin",
+"feedUrl": "https://kickfin.com/feed/",
+"perDay": 0.021
+},
+{
+"group": "Y",
+"name": "RSS StoryEditor",
+"feedUrl": "https://lidermedia.hr/rss.xml",
+"perDay": 1.33
+},
+{
+"group": "Y",
+"name": "Act-Clean",
+"feedUrl": "https://act-clean.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "Y",
+"name": "HOSTELERÍA",
+"feedUrl": "https://www.ccooservicios.es/hosteleria/feed/",
+"perDay": 0.09
+},
+{
+"group": "Y",
+"name": "Tu blog de trabajo en hostelería y turismo",
+"feedUrl": "https://www.turijobs.com/es-es/blog/feed/",
+"perDay": 0.13
+},
+{
+"group": "Y",
+"name": "Australian Hotels Association Victoria",
+"feedUrl": "https://www.ahavic.com.au/feed/",
+"perDay": 0.16
+},
+{
+"group": "Q",
+"name": "El Podcast de Marifé Montes",
+"feedUrl": "https://marifemontes.com/feed/podcast/marife-montes/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Food | 106.9 KROC",
+"feedUrl": "https://kroc.com/category/food/feed/",
+"perDay": 0.73
+},
+{
+"group": "Q",
+"name": "Food & Drink - MIX 108",
+"feedUrl": "https://mix108.com/category/food/feed/",
+"perDay": 0.33
+},
+{
+"group": "Q",
+"name": "Wanted in Rome - Food in Rome",
+"feedUrl": "https://www.wantedinrome.com/news/food?format=rss",
+"perDay": 0.053
+},
+{
+"group": "Q",
+"name": "Corner Booth Blog | TundraFMP",
+"feedUrl": "https://blog.etundra.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "U.S. Equal Employment Opportunity Commission",
+"feedUrl": "https://www.eeoc.gov/rss/newsroom",
+"perDay": 0.44
+},
+{
+"group": "Q",
+"name": "Blog - www.eladex.com.pl",
+"feedUrl": "https://www.eladex.com.pl/main-pol.html?mode=RSSB",
+"perDay": 0.27
+},
+{
+"group": "Y",
+"name": "Quotidiano online d'informazione agricola ed agroalimentare. - AgroAlimentare News",
+"feedUrl": "https://www.agroalimentarenews.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Y",
+"name": "Food Poisoning Bulletin — Food Safety, Recalls & Outbreak News",
+"feedUrl": "https://foodpoisoningbulletin.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Y",
+"name": "cocktail Archives - Shin Communication",
+"feedUrl": "https://www.shincommunication.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "Y",
+"name": "franquicia archivos - El negocio - Guía Informativa para Autónomos y Pymes",
+"feedUrl": "https://elnegocio.es/feed/",
+"perDay": 2.22
+},
+{
+"group": "Y",
+"name": "Notizie su cibo - CorCom",
+"feedUrl": "https://www.corrierecomunicazioni.it/feed/",
+"perDay": 0.22
+},
+{
+"group": "Y",
+"name": "food safety Archives - Washington Hospitality Association",
+"feedUrl": "https://wahospitality.org/feed/",
+"perDay": 0.09
+},
+{
+"group": "Y",
+"name": "Alimentación archivos | Sigillum Knowledge Solutions",
+"feedUrl": "https://sigillumks.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "Y",
+"name": "franquicia Archivos - Pymes y Franquicias",
+"feedUrl": "https://www.pymesyfranquicias.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Y",
+"name": "Chefs Archivo",
+"feedUrl": "https://www.encocina.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "Stryker Food & Baverage",
+"feedUrl": "https://stryker-fb.com/tag/coffee/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "restaurant - Marie France, magazine féminin",
+"feedUrl": "https://www.mariefrance.fr/tag/restaurant/feed",
+"perDay": 0.035
+},
+{
+"group": "Q",
+"name": "bistro - ⋆ Gastry",
+"feedUrl": "https://gastry.cz/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Food Waste - Πως μπορεί να το αντιμετωπίσει κανείς; - F&B Magazine",
+"feedUrl": "https://fnb-pro.gr/feed/",
+"perDay": 0.16
+},
+{
+"group": "Q",
+"name": "Fighting Food Waste - Analisa Winther",
+"feedUrl": "https://nordicfoodtech.io/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Catering",
+"feedUrl": "https://www.workersofengland.co.uk/tag/catering?parent_id=1&amp;format=feed&amp;type=rss",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "franquias - ABF",
+"feedUrl": "https://abf.com.br/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "Franchise | Bisnis Simpel",
+"feedUrl": "https://bisnis.simplenews.me/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Opening a Bakery in the USA: A Comprehensive Cost Breakdown | Open Cost USA",
+"feedUrl": "https://opencostusa.com/feed/",
+"perDay": 0.67
+},
+{
+"group": "Q",
+"name": "Kuliner Archives - Global Informasi",
+"feedUrl": "https://globalinformasi.co.id/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "Commercial Kitchen Rental Los Angeles | Crafted Kitchen",
+"feedUrl": "https://www.craftedkitchenla.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Barbecue Blogs - Martin + Fitch",
+"feedUrl": "https://martinandfitch.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Menu",
+"feedUrl": "https://foodtruckr.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Archives des Food industry - VeryFoody",
+"feedUrl": "https://www.veryfoody.com/feed/",
+"perDay": 0.023
+},
+{
+"group": "Q",
+"name": "Horeca Archieven - Kanters Horeca",
+"feedUrl": "https://kantershorecaadvies.nl/feed/",
+"perDay": 0.16
+},
+{
+"group": "Q",
+"name": "Horeca – Global Frozen",
+"feedUrl": "https://www.globalfrozen.com/feed/",
+"perDay": 0.121
+},
+{
+"group": "Q",
+"name": "Franchise Advice Archives - Gartly Advisory Pty Ltd",
+"feedUrl": "https://www.gartlyadvisory.com.au/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "Kuliner – suaramerdekanews.com",
+"feedUrl": "https://suaramerdekanews.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "food policy Archives - Stop Marketing to Kids Coalition",
+"feedUrl": "https://stopmarketingtokids.ca/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Looking For Available Franchises? Check Here!",
+"feedUrl": "https://franchisematchmakers.com/feed/",
+"perDay": 0.132
+},
+{
+"group": "Q",
+"name": "Catering Archives - Source1",
+"feedUrl": "https://source1purchasing.com/feed/",
+"perDay": 0.023
+},
+{
+"group": "Q",
+"name": "HoReCa | GV-FUTURE",
+"feedUrl": "https://www.gv-future.de/feed/",
+"perDay": 0.2
+},
+{
+"group": "Q",
+"name": "Rosati's Pizza Franchise Opportunities | Open Your Rosati's Pizza",
+"feedUrl": "https://myrosatispizza.com/feed/",
+"perDay": 0.04
+},
+{
+"group": "Q",
+"name": "Horeca archivos - Eurobakeries",
+"feedUrl": "https://www.eurobakeries.com/feed/",
+"perDay": 0.09
+},
+{
+"group": "Q",
+"name": "franquicia archivos - Mexico Emprende",
+"feedUrl": "https://mexicoemprende.org.mx/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "Kursk.Drinkinfo.Ru/news: Новости",
+"feedUrl": "https://kursk.drinkinfo.ru/news/rss/feed/",
+"perDay": 0.44
+},
+{
+"group": "Y",
+"name": "Gastrolounge Archive - Plateauzeitung",
+"feedUrl": "https://plateauzeitung.at/category/gastro/feed/",
+"perDay": 0.012
+},
+{
+"group": "Y",
+"name": "chef Archivi - Energy cucine professionali",
+"feedUrl": "https://energycucineprofessionali.it/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Nutrition Archives - Medical Update Online",
+"feedUrl": "https://medicalupdateonline.com/tag/nutrition/feed/",
+"perDay": 0.152
+},
+{
+"group": "Q",
+"name": "Food Packaging ~ MEALeFOOD Consulting",
+"feedUrl": "https://www.mealefood.com/feed/",
+"perDay": 0.11
+},
+{
+"group": "Q",
+"name": "take-away Archives - Licensed & Catering News (LCN)",
+"feedUrl": "https://lcnonline.co.uk/feed/",
+"perDay": 0.11
+},
+{
+"group": "Q",
+"name": "food safety Archives - Express Clean",
+"feedUrl": "http://expresscleanco.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "Horeca Archieven - VMH Horecamakelaars",
+"feedUrl": "https://vmh-horeca.nl/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Food Tech - Future Startup",
+"feedUrl": "https://futurestartup.com/tag/food-tech/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "chef archivos - Vatel Magazine",
+"feedUrl": "https://vatelmagazine.com/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "barbecue Archives - Bidfood",
+"feedUrl": "https://www.bidfood.co.uk/feed/podcast",
+"perDay": 0.027
+},
+{
+"group": "Q",
+"name": "food industry - freshnfrozen.info",
+"feedUrl": "https://www.freshnfrozen.info/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "厨房 – オミセクラフト | 飲食店開業・経営に関するお役立ちコラム",
+"feedUrl": "https://column.omise-craft.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Food Trends Archives - Idasings",
+"feedUrl": "https://idasings.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "Hostelería | Transgourmet",
+"feedUrl": "https://www.transgourmet.es/feed/",
+"perDay": 0.09
+},
+{
+"group": "Q",
+"name": "Supermarkets - Ludwig & van Dam Advocaten",
+"feedUrl": "https://www.ludwigvandam.nl/en/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "franquicias archivos - Bistrosoft",
+"feedUrl": "https://bistrosoft.com/feed/",
+"perDay": 0.2
+},
+{
+"group": "Q",
+"name": "Franchising - FranConnect",
+"feedUrl": "https://www.franconnect.com/feed/",
+"perDay": 0.189
+},
+{
+"group": "Q",
+"name": "Hostelería archivos - Asociación de Hostelería de Gipuzkoa | Gipuzkoako Ostalaritza Elkartea",
+"feedUrl": "https://www.hosteleriagipuzkoa.com/feed/",
+"perDay": 0.13
+},
+{
+"group": "Q",
+"name": "HORECA archivos - LANAVE Centro de Formación",
+"feedUrl": "https://lanaveformacion.com/feed/",
+"perDay": 0
+},
+{
+"group": "Q",
+"name": "franchising Archives - Franchise Business",
+"feedUrl": "https://franchisebusiness.com.au/feed/",
+"perDay": 0.22
+},
+{
+"group": "Q",
+"name": "food business Archives - Hot Bread Kitchen",
+"feedUrl": "https://hotbreadkitchen.org/feed/",
+"perDay": 0.04
+},
+{
+"group": "Q",
+"name": "franquicias - Magazín Digital",
+"feedUrl": "https://magazindigital.com/feed/",
+"perDay": 0.49
+}
+]
+}

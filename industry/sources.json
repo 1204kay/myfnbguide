@@ -3907,6 +3907,117 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-go-to-food",
+      "name": "The Go To Food Podcast（英国 · 餐厅创办人和主厨访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/AUDD5336095663",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-fika-bakery",
+      "name": "FIKA BAKERY（法国 · 面包店主访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/Nd9zEFG7L1l5",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "法国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-perfect-rise-rba",
+      "name": "The Perfect Rise（美国 · 零售烘焙协会的店主访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2434175.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "播客",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-hospitality-builders",
+      "name": "The Hospitality Builders（英国 · 咖啡店和餐厅扩店访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/the-hospitality-builders/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-exit-plan",
+      "name": "The Exit Plan（美国 · 加盟店主的经营故事）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2610113.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

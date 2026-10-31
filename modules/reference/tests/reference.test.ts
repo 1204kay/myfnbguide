@@ -28,6 +28,7 @@ import { computeExample, ExampleInputSchema } from "../backend/examples.ts";
 import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNumber, MAX_CHARS, hasPicture, sourceAmounts, sourceNumbers, unfoundAmounts, unfoundNumbers, untranslated } from "../backend/checks.ts";
 import { articlesToWrite, drawPicture, groundProblems, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
+import { articlesToPlace, placeWaiting, readPlacing } from "../backend/place.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { LISTED, membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
 import { day, figureUnit, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
@@ -424,6 +425,7 @@ let styled = 0;
 let grouped = 0;
 const groupUsers: string[] = [];
 const bodies: string[] = [];
+const placeUsers: string[] = [];
 const model = await stub((_hit, req) => {
   const body = JSON.parse(req.body) as { messages: Array<{ role: string; content: string }> };
   const user = body.messages.at(-1)!.content;
@@ -463,6 +465,16 @@ const model = await stub((_hit, req) => {
     const out = marker === "LONG" ? { part: 1, block: change("每月逐行对比账单") } : marker !== "PLAIN" ? { none: "原文说不出这家店改了什么" } : { part: 1, block: change(user.includes("有以下问题") ? "每月逐行对比账单" : "每月省下 99,999 美元") };
     return { id: `stub-picture-${marker}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
   }
+  // Placing an item without a story (backend/place.ts): P1 names a group of another situation first, then right; P3 is
+  // an adviser's; any other item (P2, news) fits none.
+  if (body.messages.some((m) => m.role === "system" && m.content.includes("只决定它放进哪个情况"))) {
+    placeUsers.push(user);
+    const out = user.includes("本站标题：P1\n")
+      ? { speaker: "owner", placements: [{ situation: "hiring", fit: "店主在门口贴启事招人", group: user.includes("有问题") ? "where-to-find" : "food-over-recipe" }] }
+      : user.includes("本站标题：P3\n") ? { speaker: "adviser", placements: [{ situation: "hiring", fit: "顾问讲面试", group: "interview" }] }
+      : { speaker: "media", placements: [] };
+    return { id: `stub-place-${placeUsers.length}`, model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } };
+  }
   // The last pass over a story that passed: hands it back with one spoken word made written.
   if (body.messages.some((m) => m.role === "system" && m.content.includes("把口语词、方言词"))) {
     styled += 1;
@@ -482,6 +494,7 @@ pointModels(model.url, ["deepseek-flash"]);
 process.env.REFERENCE_CASE_MODEL = "deepseek-flash";
 process.env.REFERENCE_METHODS_MODEL = "deepseek-flash";
 process.env.REFERENCE_BODY_MODEL = "deepseek-flash";
+process.env.REFERENCE_PLACE_MODEL = "deepseek-flash";
 installModules([reference]);
 const app = await buildApp();
 const SRC = `reference-${T}`;
@@ -522,7 +535,8 @@ test("cases are written for selected items, once more when the checks find probl
   assert.deepEqual(recent.filter((r: { kind: string }) => r.kind === "story").map((r: { result: string; problems: string[] }) => [r.result, r.problems]).sort(),
     [["held", ["数字不在原文：人物", "数字不在原文：正文"]], ["thin", []], ["thin", []], ["written", []], ["written", []], ["written", []], ["written", []]].sort(), "the last written, newest first");
   assert.deepEqual(status,
-    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesHeld: {}, bodiesThinBySource: {}, bodiesWaiting: 3, toRewrite: { stories: 0, bodies: 3 } });
+    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesHeld: {}, bodiesThinBySource: {}, bodiesWaiting: 3, toRewrite: { stories: 0, bodies: 3 }, placing: { waiting: 3 } });
+  // The thin and the held ones are on no page: placed without a story (backend/place.ts), as the items no case was written for.
   await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
   assert.deepEqual(await articlesToWrite(50), [], "a changed prompt does not rewrite the old cases by itself");
   assert.deepEqual(await articlesToWrite(50, new Date(), { all: true }), [ids.THIN], "the rewrite script writes them again");
@@ -878,4 +892,35 @@ test("only a number not in the original, a broken answer or a wrong situation ke
   for (const p of ["第 2 段的小标题用了“讲”（“最讲时效”）：改成“说”", "全文 1337 字，太长：要在 800 字以内", "开头写成了问句（“出在哪里。”）：写成陈述句"]) assert.ok(!blocking(p), p);
   assert.ok(badness({}, ["全文太长", "用了“讲”"]) < badness({}, ["第 1 段的数字 7.5 在原文里找不到"]), "any number not in the original is worse than wording");
   assert.equal(badness(null, []), Infinity, "no answer is worst");
+});
+
+test("an item without a story is placed in one situation and group of the list, or none, and the pages list it as a folded story", async () => {
+  assert.deepEqual(readPlacing({ speaker: "owner", placements: [{ situation: "hiring", group: null, fit: "" }, { situation: "retention", group: null, fit: "" }] }).problems, ["只放一个最合适的情况"]);
+  assert.match(readPlacing({ speaker: "owner", placements: [{ situation: "nowhere", group: null }] }).problems[0]!, /不在清单里/);
+  assert.deepEqual(readPlacing({ speaker: "nobody", placements: [] }).placing, { speaker: "media", placements: [] }, "who tells it outside the list: a publication");
+
+  const id: Record<string, string> = {};
+  for (const marker of ["P1", "P2", "P3"]) id[marker] = await selectedItem(marker);
+  const waiting = (await articlesToPlace(50)).map((i) => i.id);
+  assert.ok(Object.values(id).every((v) => waiting.includes(v)) && !waiting.includes(ids.FIRST!), "the items without a case, not the stories");
+  const results = await placeWaiting(50);
+  const p1 = results.find((r) => r.id === id.P1)!;
+  assert.deepEqual([p1.placing.placements.map((p) => [p.situation, p.group]), p1.receiptIds.length], [[["hiring", "where-to-find"]], 2], "a group of another situation goes back once, named");
+  assert.ok(placeUsers.some((u) => u.includes("“food-over-recipe”不是“hiring”的组")));
+  assert.ok(!placeUsers.some((u) => u.includes(SOURCE)), "the item's own title, 导读 and 要点, not the original");
+  assert.equal((await articlesToPlace(50)).length, 0, "each placed once; one that fits none is kept, not asked again");
+
+  const page = await get("/api/reference/situations/hiring");
+  const cards = page.groups.flatMap((g: { key: string; cases: Array<{ id: string; title: string; folded: boolean }> }) => g.cases.map((c) => [g.key, c.id, c.title, c.folded]));
+  assert.deepEqual(cards.filter(([, cid]: string[]) => cid === id.P1 || cid === id.P3), [["where-to-find", id.P1, "P1", true], ["interview", id.P3, "P3", true]],
+    "listed by its group under its own title, as a folded story; its link is its item");
+  assert.equal(page.count.insiders, 1, "the adviser an insider, not a shop");
+  assert.equal((await get(`/api/reference/items/${id.P1}`)).situation.slug, "hiring", "its item leads to the situation");
+  assert.equal((await app.inject(`/api/reference/items/${id.P2}`)).statusCode, 404, "one placed nowhere shows nothing");
+  assert.equal((await app.inject(`/api/reference/cases/${id.P1}`)).statusCode, 404, "no story page");
+  const { placing } = await get("/api/reference/status");
+  assert.deepEqual(placing, { placed: 2, none: 5, waiting: 0 }, "P2 and the thin or held cases of the tests above, which fit none here");
+
+  await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${id.P1!}`;
+  assert.ok(!(await get("/api/reference/situations/hiring")).groups.some((g: { cases: Array<{ id: string }> }) => g.cases.some((c) => c.id === id.P1)), "a withdrawn item leaves the page");
 });

@@ -22,6 +22,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { issueLead, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
 import { issueAudio, sendIssueAudio } from "./backend/audio.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
+import { articlesToPlace, PLACE_STEP, placeWaiting, placingOn } from "./backend/place.ts";
 
 // 10-18: new stories are not written for now (十一). 30 live stories checked against their originals had 11 with
 // serious errors (myfnb/HANDOFF.md §3.1); until the prompt and checks are fixed and tried on 20 new ones, items keep
@@ -84,6 +85,16 @@ const VOICES = defineQueue<{ no: number }>({
   },
 });
 
+// Placing the items no story was written for (backend/place.ts): once a day, all waiting in one job, one short call each.
+const PLACES = defineQueue<{ date: string }>({
+  name: "reference.place",
+  options: { policy: "short", retryLimit: 1, retryDelay: 600, expireInSeconds: 3600 },
+  worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
+  run: async (jobs) => { for (const _ of jobs) await placeWaiting(PLACE_LIMIT); },
+});
+/** At most this many a day: a day selects about 10–20 (/api/site/stats); the rest of a backlog goes on the next days. */
+const PLACE_LIMIT = 300;
+
 const METHODS = defineQueue<{ slug: string }>({
   name: "reference.methods",
   options: { policy: "short", retryLimit: 2, retryDelay: 300, retryBackoff: true, expireInSeconds: 900 },
@@ -102,11 +113,12 @@ export default defineServerModule({
   models: {
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
     [BODY_STEP]: { label: "条目页的正文（不是参考库故事的条目，整理自原文，写在导读下面）", env: "REFERENCE_BODY_MODEL", purposes: ["reference_body"] },
+    [PLACE_STEP]: { label: "参考库的情况（没有故事的入选条目，只选放进哪个情况、哪一组）", env: "REFERENCE_PLACE_MODEL", purposes: ["reference_place"] },
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
     [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak", "reference_issue_voice"] },
     [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen", "reference_issue_voice_check"] },
   },
-  queues: [CASES, BODIES, METHODS, ISSUES, VOICES],
+  queues: [CASES, BODIES, PLACES, METHODS, ISSUES, VOICES],
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // llms.txt names the library beside the engine's pages.
@@ -123,6 +135,20 @@ export default defineServerModule({
       const ids = await articlesToWrite(30);
       for (const articleId of ids) await enqueueOn(CASES, { articleId }, { singletonKey: articleId });
       return { queued: ids.length };
+    },
+  }, {
+    // The day's selected items into their situations (backend/place.ts), in DeepSeek's off-peak hours (00:30–08:30
+    // Beijing), before 十一说 and the daily at 05:00, and apart from ops.retention at 03:30. Only once the settings row `reference.placing` is there.
+    name: "reference.place",
+    cron: "20 3 * * *",
+    missed: "once",
+    run: async () => {
+      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      if (!(await placingOn())) return { queued: 0, reason: "placing is not on (settings reference.placing)" };
+      if (!(await articlesToPlace(1)).length) return { queued: 0, reason: "nothing to place" };
+      const date = beijingDate(new Date());
+      await enqueueOn(PLACES, { date }, { singletonKey: date });
+      return { queued: 1, date };
     },
   }, {
     // Every listed item of the last days that is no story gets its write-up; older ones wait for the rewrite script.
@@ -185,6 +211,10 @@ export default defineServerModule({
     app.get("/api/reference/status", async (_req, reply) =>
       reply.header("Cache-Control", "no-store").send({
         ...(await readStatus()), waiting: (await articlesToWrite(1000)).length,
+        // The items no story was written for (backend/place.ts): placed in a situation, in none, and still to place.
+        placing: { ...Object.fromEntries((await sql<{ k: string; n: number }[]>`
+          SELECT CASE WHEN cardinality(situations) > 0 THEN 'placed' ELSE 'none' END AS k, count(*)::int AS n FROM reference_placements GROUP BY 1`)
+          .map((r) => [r.k, r.n])), waiting: (await articlesToPlace(5000)).length },
         // The item pages' write-ups: written, thin, held, and still to write.
         bodies: Object.fromEntries((await sql<{ status: string; n: number }[]>`SELECT status, count(*)::int AS n FROM reference_bodies GROUP BY 1`).map((r) => [r.status, r.n])),
         // How many held write-ups each kind of problem stopped, as for the cases.

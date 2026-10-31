@@ -2,7 +2,7 @@
 # 2026-10-31 找不到条款页的 187 个试吃补跑：第一轮碰 US$1.28 上限停（run.log 第 726、728、730 行），清单最后 54 个没轮到，
 # 第 133 个只判了 1 条，一起补，共 55 个，清单 myfnb/sourcing/trial-noterms-2026-10-31-rest.json。做法同 trial-noterms-2026-10-31-run.sh：
 # 第一轮每个看 6 条（已判过的那 1 条用已有回执，不收费），第二轮对有过预筛的每个看 25 条。
-# 花费上限两轮合计 US$1.5：脚本每判完一条才查上限，--jobs 3 时最后会多花几条的钱，所以两轮设 0.58 + 0.78，留出余量（经验 C15）。
+# 花费上限两轮合计 US$1.5：脚本每判完一条才查上限，--jobs 3 时最后会多花几条的钱，所以两轮设 0.70 + 0.70，留出余量（经验 C15）。第一轮按 187 个那趟每条 US$0.0018 算，330 条约 US$0.59，原来设的 0.58 会又碰上限，所以调成两轮各 0.70。
 # 按 187 个那趟的实测单价估约 US$1.3。llm 每天上限照旧临时调到 30,000，跑完先数滚动 24 小时，低于 7,000 才调回 10,000；
 # 不在 05:00–08:00 MYT 跑；跑时不要合并 myfnbguide。跑完先把两轮的逐条结果拷出容器。
 #   cd /opt/myfnbguide && bash myfnb/trial-noterms-2026-10-31-rest-run.sh start | status
@@ -41,11 +41,11 @@ case "${1:-}" in
     echo "# 调高：$(psql "UPDATE budgets SET per_day = 30000, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
     trial() { sudo docker compose exec -T worker node myfnb/trial-sources.ts --apply --sample trial-noterms-2026-10-31-rest.json --jobs 3 --reserve 3000 "$@"; }
     echo "# ① 第一轮 $(date -u +%FT%TZ)"
-    trial --per 6 --cap-usd 0.58
+    trial --per 6 --cap-usd 0.70
     first=$(sudo docker compose exec -T worker sh -c 'ls -t /tmp/trial-sources-*.jsonl | head -1' | tr -d '\r')
     echo "# 第一轮逐条结果：$first"
     echo "# ② 第二轮 $(date -u +%FT%TZ)"
-    trial --per 25 --cap-usd 0.78 --only-passed "$first"
+    trial --per 25 --cap-usd 0.70 --only-passed "$first"
     for f in $(sudo docker compose exec -T worker sh -c 'ls -t /tmp/trial-sources-*.jsonl | head -2' | tr -d '\r'); do
       sudo docker compose cp "worker:$f" "$OUT/" && echo "# 已拷出：$OUT/$(basename "$f")"
     done

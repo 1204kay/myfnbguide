@@ -72,7 +72,13 @@ function Following({ lines, starts, at, length, onPick }: { lines: string[]; sta
     // A reader who has just scrolled is reading somewhere else: leave the sheet where they put it for a while.
     if (Date.now() - touched.current < 5000) return;
     const el = box.current?.children[now] as HTMLElement | undefined;
-    el?.scrollIntoView({ block: "center", behavior: first.current ? "auto" : "smooth" });
+    // Scroll the sheet itself, not scrollIntoView: that also scrolls every ancestor, the page held still behind the sheet too.
+    let pane = el?.parentElement ?? null;
+    while (pane && !/(auto|scroll)/u.test(getComputedStyle(pane).overflowY)) pane = pane.parentElement;
+    if (el && pane) {
+      const r = el.getBoundingClientRect(), p = pane.getBoundingClientRect();
+      pane.scrollBy({ top: r.top - p.top - (pane.clientHeight - r.height) / 2, behavior: first.current ? "auto" : "smooth" });
+    }
     first.current = false;
   }, [now]);
   const mark = () => { touched.current = Date.now(); };

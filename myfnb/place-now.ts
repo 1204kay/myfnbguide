@@ -4,6 +4,7 @@
 //   sudo docker compose exec -T worker node myfnb/place-now.ts
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --try 20     最新的 20 条试放，打印结果和花费，不写库
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --run 300    放最多 300 条并存库（试过的那几条用回执里的答案，不再付钱）
+//   sudo docker compose exec -T worker node myfnb/place-now.ts --again <条目编号>   这一条重新放一次并存库（前一次没放成的）
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --on         打开每天 03:20 的任务
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --off        关掉：删掉那一行，已放好的照旧显示
 import { closeDb, sql } from "@aihot/backend/db";
@@ -70,9 +71,12 @@ if (process.argv.includes("--on")) {
 } else if (process.argv.includes("--off")) {
   await sql`DELETE FROM settings WHERE key = 'reference.placing'`;
   console.log("已关掉：每天的任务不再放；已放好的照旧显示");
-} else if (process.argv.includes("--try") || process.argv.includes("--run")) {
-  const store = process.argv.includes("--run");
-  const items = await articlesToPlace(count(store ? "--run" : "--try"));
+} else if (process.argv.includes("--try") || process.argv.includes("--run") || process.argv.includes("--again")) {
+  const again = arg("--again");
+  if (process.argv.includes("--again") && !again) throw new Error("--again 要一个条目编号，例如 --again v3kf0vz6hfc74qkfh9w8erxvz");
+  const store = !process.argv.includes("--try");
+  const items = again ? await articlesToPlace(1, new Date(), again) : await articlesToPlace(count(store ? "--run" : "--try"));
+  if (again && !items.length) throw new Error(`${again} 不是现在入选、没有故事的条目`);
   const results: PlaceResult[] = [];
   for (const item of items) {
     const result = await composePlacing(item);

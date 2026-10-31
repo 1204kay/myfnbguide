@@ -60,7 +60,14 @@ export function readPlacing(answer: unknown): { placing: Placing | null; problem
   if (p && main.includes("只是消息")) return { placing: null, problems: ["main 写了“只是消息”，placements 就要写 []；能帮到老板的，main 要写能帮哪一种难处"] };
   if (!p) return { placing: { main, speaker, placements: [] }, problems: [] };
   const situation = findSituation(p.situation);
-  if (!situation) return { placing: null, problems: [`情况“${p.situation}”不在清单里`] };
+  if (!situation) {
+    // A group key written as the situation (11-01 --run: "suppliers" twice): name where that group is, or the second
+    // answer, told only "not in the list", repeats the first.
+    const owners = SITUATIONS.filter((s) => s.groups.some((g) => g.key === p.situation)).map((s) => s.slug);
+    return { placing: null, problems: [owners.length
+      ? `“${p.situation}”是组 key，不是情况：它在情况 ${owners.join("、")} 里；situation 写情况的 slug，group 写组 key`
+      : `情况“${p.situation}”不在清单里`] };
+  }
   if (p.group !== null && !situation.groups.some((g) => g.key === p.group)) {
     return { placing: null, problems: [`“${p.group}”不是“${situation.slug}”的组，要写那个情况里的组 key 或 null`] };
   }
@@ -111,9 +118,10 @@ export async function composePlacing(item: Item): Promise<PlaceResult> {
 /**
  * The items to place: selected now, not shown as a story, and not placed at their revision. That is the ones no case
  * was written for (stories stopped 10-18), and the ones whose case came out thin or held before: the pages list only
- * shown stories, so those were on no page either (review of #122).
+ * shown stories, so those were on no page either (review of #122). `again` names one item to place once more even
+ * though it is placed at its revision (place-now --again).
  */
-export async function articlesToPlace(limit: number, now = new Date()): Promise<Item[]> {
+export async function articlesToPlace(limit: number, now = new Date(), again?: string): Promise<Item[]> {
   return sql<Item[]>`
     SELECT p.article_id AS id, a.revision, p.title, p.summary, p.reason, s.name AS source
     FROM publications p
@@ -122,7 +130,7 @@ export async function articlesToPlace(limit: number, now = new Date()): Promise<
     LEFT JOIN reference_cases c ON c.article_id = p.article_id
     LEFT JOIN reference_placements r ON r.article_id = p.article_id
     WHERE ${selectedCondition(now)} AND (c.article_id IS NULL OR c.status <> 'story')
-      AND (r.article_id IS NULL OR r.revision < a.revision)
+      AND ${again ? sql`p.article_id = ${again}` : sql`(r.article_id IS NULL OR r.revision < a.revision)`}
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
 }
 

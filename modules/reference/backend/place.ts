@@ -25,6 +25,7 @@ export const PLACE_VERSION = `reference-place@${createHash("sha256").update(PLAC
 
 const SPEAKERS = ["owner", "staff", "adviser", "vendor", "media"] as const satisfies readonly Speaker[];
 const AnswerSchema = z.object({
+  main: z.string().trim().default(""),
   speaker: z.enum(SPEAKERS).catch("media"),
   placements: z.array(z.object({
     situation: z.string().trim(),
@@ -41,6 +42,8 @@ export interface Placed {
 }
 
 export interface Placing {
+  /** Whose problem it helps with, in a sentence, written before the place is picked: not shown, for checking. */
+  main: string;
   speaker: Speaker;
   placements: Placed[];
 }
@@ -50,15 +53,18 @@ export function readPlacing(answer: unknown): { placing: Placing | null; problem
   const parsed = AnswerSchema.safeParse(answer);
   if (!parsed.success) return { placing: null, problems: ["格式不对"] };
   const { speaker, placements } = parsed.data;
+  const main = parsed.data.main.slice(0, 120);
   if (placements.length > 1) return { placing: null, problems: ["只放一个最合适的情况"] };
   const p = placements[0];
-  if (!p) return { placing: { speaker, placements: [] }, problems: [] };
+  // "Only news" helps no owner decide anything, so it has nowhere to go: an answer that still places it contradicts itself.
+  if (p && main.includes("只是消息")) return { placing: null, problems: ["main 写了“只是消息”，placements 就要写 []；能帮到老板的，main 要写能帮哪一种难处"] };
+  if (!p) return { placing: { main, speaker, placements: [] }, problems: [] };
   const situation = findSituation(p.situation);
   if (!situation) return { placing: null, problems: [`情况“${p.situation}”不在清单里`] };
   if (p.group !== null && !situation.groups.some((g) => g.key === p.group)) {
     return { placing: null, problems: [`“${p.group}”不是“${situation.slug}”的组，要写那个情况里的组 key 或 null`] };
   }
-  return { placing: { speaker, placements: [{ situation: situation.slug, group: p.group, fit: p.fit.slice(0, 120) }] }, problems: [] };
+  return { placing: { main, speaker, placements: [{ situation: situation.slug, group: p.group, fit: p.fit.slice(0, 120) }] }, problems: [] };
 }
 
 interface Item {
@@ -99,7 +105,7 @@ export async function composePlacing(item: Item): Promise<PlaceResult> {
     user = `${user}\n\n你上一次的回答有问题：${problems.join("；")}。照清单改正，只输出 JSON。`;
   }
   // Still wrong: stored with none, as an item that fits no situation is, so the schedule does not pay for it again.
-  return { id: item.id, title: item.title, placing: { speaker: "media", placements: [] }, problems, receiptIds };
+  return { id: item.id, title: item.title, placing: { main: "", speaker: "media", placements: [] }, problems, receiptIds };
 }
 
 /**

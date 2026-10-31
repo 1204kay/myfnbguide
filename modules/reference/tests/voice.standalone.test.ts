@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, CLOSING, heardShare, judge, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, CLOSING, endHeard, heardShare, judge, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -89,18 +89,28 @@ test("the audio goes to Whisper in pieces cut at the quietest moment near every 
 
 test("the machine check names each failed part", () => {
   assert.deepEqual(judge(494, 0.954, [], [210, 215, 205]), { pass: true, why: [] });
-  const failed = judge(494, 0.9, [{ from: 9, to: 14 }], [176, 219]);
+  assert.deepEqual(judge(487, 0.954, [], [182, 190, 194]), { pass: true, why: [] }, "a voice lower all through is steady");
+  const failed = judge(494, 0.9, [{ from: 9, to: 14 }], [176, 219], 0.2);
   assert.equal(failed.pass, false);
   assert.equal(failed.why.length, 4, failed.why.join("；"));
 });
 
-test("pitch a minute: a steady 210 Hz voice reads as 210", () => {
+test("a reading that stops before the closing line is caught", () => {
+  const script = `第一行。\n英国净少了977家店。\n${CLOSING}`;
+  assert.equal(endHeard(script, "第一行 英国净少了九百七十七家店 这就是今天的十一说 我们明天早上见"), 1);
+  assert.ok(endHeard(script, "第一行 英国净少了九百七十七家店") < 0.8);
+});
+
+test("pitch a minute: a voice at 210 Hz, then at 240, reads as 210 and 240", () => {
   const rate = 24_000;
-  const samples = new Int16Array(rate * 70);
-  for (let i = 0; i < samples.length; i += 1) samples[i] = Math.round(6000 * (Math.sin((2 * Math.PI * 210 * i) / rate) + 0.5 * Math.sin((2 * Math.PI * 420 * i) / rate)));
+  const samples = new Int16Array(rate * 140);
+  for (let i = 0; i < samples.length; i += 1) {
+    const f = i < rate * 60 ? 210 : 240;
+    samples[i] = Math.round(6000 * (Math.sin((2 * Math.PI * f * i) / rate) + 0.5 * Math.sin((2 * Math.PI * 2 * f * i) / rate)));
+  }
   const pitch = pitchByMinute(samples, rate);
   assert.equal(pitch.length, 2);
-  for (const p of pitch) assert.ok(Math.abs(p - 210) < 2, String(p));
+  assert.ok(Math.abs(pitch[0]! - 210) < 2 && Math.abs(pitch[1]! - 240) < 2, pitch.join(" "));
 });
 
 test("a WAV's samples are found wherever its data chunk sits", () => {

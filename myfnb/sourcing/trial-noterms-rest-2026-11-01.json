@@ -1,9 +1,9 @@
 {
- "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅。首页不是订阅的，用页面里声明的 RSS 或 /feed/。",
+ "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。",
  "volume": {
   "N": {
-   "feeds": 378,
-   "perDay": 66.333
+   "feeds": 376,
+   "perDay": 66.007
   }
  },
  "feeds": [
@@ -1953,12 +1953,6 @@
   },
   {
    "group": "N",
-   "name": "agri-food Archives - FoodSafetyTech",
-   "feedUrl": "https://www.foodsafetytech.com/feed/",
-   "perDay": 0.217
-  },
-  {
-   "group": "N",
    "name": "Food Packaging Archives - Direct Source Procurement",
    "feedUrl": "https://directsourceprocurement.com/feed/",
    "perDay": 0.109
@@ -2010,12 +2004,6 @@
    "name": "foodtech Archives - Club Pai",
    "feedUrl": "https://clubpai.com/feed/",
    "perDay": 0.098
-  },
-  {
-   "group": "N",
-   "name": "chef Archives - Tourism Today",
-   "feedUrl": "https://www.tourismtoday.gr/feed/",
-   "perDay": 0.109
   },
   {
    "group": "N",

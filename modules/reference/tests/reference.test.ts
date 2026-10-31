@@ -535,7 +535,8 @@ test("cases are written for selected items, once more when the checks find probl
   assert.deepEqual(recent.filter((r: { kind: string }) => r.kind === "story").map((r: { result: string; problems: string[] }) => [r.result, r.problems]).sort(),
     [["held", ["数字不在原文：人物", "数字不在原文：正文"]], ["thin", []], ["thin", []], ["written", []], ["written", []], ["written", []], ["written", []]].sort(), "the last written, newest first");
   assert.deepEqual(status,
-    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesHeld: {}, bodiesThinBySource: {}, bodiesWaiting: 3, toRewrite: { stories: 0, bodies: 3 }, placing: { waiting: 0 } });
+    { counts: { story: 4, thin: 2, held: 1 }, held: { "数字不在原文：人物": 1, "数字不在原文：正文": 1 }, grouped: {}, waiting: 0, bodies: {}, bodiesHeld: {}, bodiesThinBySource: {}, bodiesWaiting: 3, toRewrite: { stories: 0, bodies: 3 }, placing: { waiting: 3 } });
+  // The thin and the held ones are on no page: placed without a story (backend/place.ts), as the items no case was written for.
   await sql`UPDATE reference_cases SET prompt_version = 'reference-case@older' WHERE article_id = ${ids.THIN!}`;
   assert.deepEqual(await articlesToWrite(50), [], "a changed prompt does not rewrite the old cases by itself");
   assert.deepEqual(await articlesToWrite(50, new Date(), { all: true }), [ids.THIN], "the rewrite script writes them again");
@@ -918,7 +919,7 @@ test("an item without a story is placed in one situation and group of the list, 
   assert.equal((await app.inject(`/api/reference/items/${id.P2}`)).statusCode, 404, "one placed nowhere shows nothing");
   assert.equal((await app.inject(`/api/reference/cases/${id.P1}`)).statusCode, 404, "no story page");
   const { placing } = await get("/api/reference/status");
-  assert.deepEqual(placing, { placed: 2, none: 1, waiting: 0 });
+  assert.deepEqual(placing, { placed: 2, none: 5, waiting: 0 }, "P2 and the thin or held cases of the tests above, which fit none here");
 
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${id.P1!}`;
   assert.ok(!(await get("/api/reference/situations/hiring")).groups.some((g: { cases: Array<{ id: string }> }) => g.cases.some((c) => c.id === id.P1)), "a withdrawn item leaves the page");

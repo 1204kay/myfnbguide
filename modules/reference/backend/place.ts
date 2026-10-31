@@ -1,6 +1,6 @@
 // Placing a selected item in the library (待决 #19): since 10-24 no stories are written (决定记录 2026-10-24「参考库不再写
 // 故事」), and the situation pages list items, not stories. An item selected after the stories stopped (10-18) had no
-// case, so it sat on no situation page. One short model call now reads the item's own title, 导读 and 原文要点 (not the
+// case, so it sat on no situation page; nor did one whose case came out thin or held. One short model call now reads the item's own title, 导读 and 原文要点 (not the
 // original: the call only picks a place, and the three are what the page shows) and picks the situation and its group,
 // as the story writer did (prompts/case.md 六), with who tells it for the counts (read.ts tellerOf). No title or line is
 // written. An answer that names a situation or group not in the list goes back once with that named; one still wrong is
@@ -102,7 +102,11 @@ export async function composePlacing(item: Item): Promise<PlaceResult> {
   return { id: item.id, title: item.title, placing: { speaker: "media", placements: [] }, problems, receiptIds };
 }
 
-/** The items to place: selected now, no case written (stories stopped 10-18), and not placed at their revision. */
+/**
+ * The items to place: selected now, not shown as a story, and not placed at their revision. That is the ones no case
+ * was written for (stories stopped 10-18), and the ones whose case came out thin or held before: the pages list only
+ * shown stories, so those were on no page either (review of #122).
+ */
 export async function articlesToPlace(limit: number, now = new Date()): Promise<Item[]> {
   return sql<Item[]>`
     SELECT p.article_id AS id, a.revision, p.title, p.summary, p.reason, s.name AS source
@@ -111,7 +115,7 @@ export async function articlesToPlace(limit: number, now = new Date()): Promise<
     JOIN sources s ON s.id = p.source_id
     LEFT JOIN reference_cases c ON c.article_id = p.article_id
     LEFT JOIN reference_placements r ON r.article_id = p.article_id
-    WHERE ${selectedCondition(now)} AND c.article_id IS NULL
+    WHERE ${selectedCondition(now)} AND (c.article_id IS NULL OR c.status <> 'story')
       AND (r.article_id IS NULL OR r.revision < a.revision)
     ORDER BY p.sort_at DESC LIMIT ${limit}`;
 }

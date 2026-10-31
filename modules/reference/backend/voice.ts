@@ -7,6 +7,7 @@
 // the machine check of the handbook's step 10 runs (Groq's Whisper hears it back, gaps, pitch a minute); what passes
 // goes up as <no>.mp3, <no>.txt (the 文字稿) and <no>.json, the json last (backend/audio.ts). What fails stays down and
 // the issue goes out as text, as on any day without audio. Every step's outcome is kept in <no>.voice.json beside them.
+import { pyin } from "./pyin.ts";
 import { spawn } from "node:child_process";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
@@ -23,23 +24,29 @@ import { type Ask, fixedLines, type IssueText } from "./issue.ts";
 const DIR = path.join(config.dataDir, "reference", "audio");
 
 /**
- * Longest script sent in one request: 2,604 characters (issue 6) and about 3,030 (a part of issue 7) were read, 6,056
- * came back 400 (10-31); between them is untried. Issues are written to about 3,000 (decision record L1421) and the
- * script adds its signposts, so it is let up to 3,600; a 400 for its length ends the day's reading, not retried.
+ * Longest script sent in one request, counted as scriptChars counts. What was heard (10-31): issue 6, 2,605, read
+ * whole and steady in 494 s; issue 7 on the computer, 2,563, read whole in two of three; issue 7 here, 3,091, three
+ * readings of 583–644 s, the last stopping about 170 characters short of the end and climbing 63 Hz in its second half
+ * (pyin). Longer readings break at the end and drift. The script is asked for at most WRITE_CHARS, under what was heard
+ * whole; MAX_CHARS, where a script is refused, sits just above it, so a model that runs a few dozen over is still read.
  */
-export const MAX_CHARS = 3_600;
+export const MAX_CHARS = 2_650;
+const WRITE_CHARS = 2_450;
 /** Gemini's free tier: ten requests a day (its 429, 10-27); a day's issue gets at most this many, leaving the rest. */
 export const MAX_READS = 3;
 /** The voice and how it reads (Kay 10-26 picked Leda; the style as the computer's script sent it, mkjobs.py). */
 export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "早间节目主播，沉稳但有活力，语速中等偏快" };
 /**
- * The machine check (handbook step 10): transcript ≥95% of the script, no gap over 4 s, each minute's median pitch in
- * 195–225 Hz and within 25 Hz of the others. The spread was 20 by the computer's pyin (issue 6, which Kay heard and
- * passed: 15.9; issue 7 cut in two and read in two voices: 43). The server's YIN reads the same issue 6 MP3 at 20.1
- * (10-31, --hear 6) and no setting of it came within 4 Hz of pyin a minute, so the line moved with the ruler: 25. YIN
- * reads the issue 7 that was heard at 42.1 (pyin 43.1), well over it.
+ * The machine check (handbook step 10): transcript ≥95% of the script, its closing line heard (`end`), no gap over
+ * 4 s, and each minute's median pitch within 20 Hz of the others. No fixed range: 195–225 Hz was set on issue 6 alone,
+ * and on 10-31 the same voice read issue 7 whole and steady at 184–195 (pyin, within 11 Hz); what is heard is a voice
+ * changing within an issue, not one day's voice lower than another's. The line is 20 by the computer's pyin, which the
+ * server now reads with (pyin.ts; 10-31, the same Hz a minute on issue 6, a few Hz off at most elsewhere): issue 6, which
+ * Kay heard and passed, 15.9; issue 7 read whole on the computer 10.9; issue 7 cut in two and read in two voices 43.1;
+ * issue 7 read on the server at 3,091 characters, which slid up to 240 Hz and stopped short, 59.8. The YIN it read with
+ * before put that last one at 22.7, under the 25 it was given.
  */
-export const PASS = { match: 0.95, gap: 4, low: 195, high: 225, spread: 25 };
+export const PASS = { match: 0.95, gap: 4, spread: 20, end: 0.8 };
 /**
  * whisper-large-v3, not -turbo: on issue 6 turbo heard 92.3% where the computer's faster-whisper (asr6.py) heard 95.4%,
  * and the 95% line was set on the computer's. --hear 6 shows whether the full model comes back to it.
@@ -102,11 +109,11 @@ export function applyFixes(lines: string[], problems: Problem[]): { lines: strin
 /** Writes the script and has it checked, mending up to twice; null with the last problems when it is still wrong. */
 export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
-  const first = await write("reference_issue_voice", prompt("issue-voice", { opening: opening(date), maxChars: String(MAX_CHARS) }), `网站上的这一期：\n\n${page}`, Script);
+  const first = await write("reference_issue_voice", prompt("issue-voice", { opening: opening(date), maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}`, Script);
   let lines = [opening(date), ...first.lines.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
   for (let round = 0; round < 3; round += 1) {
-    const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", {}), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
+    const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
     if (round === 2) { rounds.push({ problems, applied: 0 }); break; }
     const fixed = applyFixes(lines, problems);
@@ -167,56 +174,53 @@ export function wavSamples(wav: Buffer): { rate: number; samples: Int16Array } {
 }
 
 /**
- * Each minute's median pitch, by YIN (de Cheveigné and Kawahara 2002) on the voice brought down to 8 kHz, 80–400 Hz as
- * the computer's pyin looked (cmp.py); a minute under five seconds long is left out, as there.
+ * Each minute's median pitch as the computer's machine check reads it (cmp.py): the voice at 16 kHz, each minute given
+ * to pyin on its own (pyin.ts), the median of its voiced frames; a minute under five seconds long is left out, as there.
  */
 export function pitchByMinute(samples: Int16Array, rate: number): number[] {
-  const step = Math.max(1, Math.round(rate / 8000));
-  const sr = rate / step;
-  const x = new Float32Array(Math.floor(samples.length / step));
-  for (let i = 0; i < x.length; i += 1) {
-    let s = 0;
-    for (let k = 0; k < step; k += 1) s += samples[i * step + k]!;
-    x[i] = s / step / 32768;
-  }
-  const minLag = Math.floor(sr / 400);
-  const maxLag = Math.ceil(sr / 80);
-  const W = Math.round(sr * 0.04);
-  const hop = Math.round(sr * 0.02);
-  const d = new Float64Array(maxLag + 1);
+  const x = to16k(samples, rate);
+  const sr = 16_000;
   const minutes: number[][] = [];
-  for (let at = 0; at + W + maxLag < x.length; at += hop) {
-    let energy = 0;
-    for (let j = 0; j < W; j += 1) energy += x[at + j]! * x[at + j]!;
-    if (Math.sqrt(energy / W) < 0.01) continue;
-    let running = 0;
-    d[0] = 1;
-    let tau = -1;
-    for (let lag = 1; lag <= maxLag; lag += 1) {
-      let s = 0;
-      for (let j = 0; j < W; j += 1) { const v = x[at + j]! - x[at + j + lag]!; s += v * v; }
-      running += s;
-      d[lag] = running ? (s * lag) / running : 1;
-    }
-    for (let lag = minLag; lag < maxLag; lag += 1) {
-      if (d[lag]! < YIN_THRESHOLD) { while (lag + 1 < maxLag && d[lag + 1]! < d[lag]!) lag += 1; tau = lag; break; }
-    }
-    if (tau < 0) continue;
-    const [a, b, c] = [d[tau - 1]!, d[tau]!, d[tau + 1]!];
-    const shift = a + c - 2 * b ? (a - c) / (2 * (a + c - 2 * b)) : 0;
-    const minute = Math.floor(at / sr / 60);
-    (minutes[minute] ??= []).push(sr / (tau + shift));
+  for (let at = 0, i = 0; at < x.length; at += 60 * sr, i += 1) {
+    const piece = x.subarray(at, at + 60 * sr);
+    if (piece.length >= 5 * sr) minutes[i] = pyin(piece, sr);
   }
+  // A last minute under 30 s goes in with the one before: on 10-31 the closing 7 s of issue 7 read 282 Hz alone.
   const total = x.length / sr;
-  return minutes.flatMap((m, i) => (m && Math.min(60, total - i * 60) >= 5 ? [median(m)] : []));
+  const last = minutes.length - 1;
+  if (last > 0 && total - last * 60 < 30) { minutes[last - 1] = [...(minutes[last - 1] ?? []), ...(minutes[last] ?? [])]; minutes.length = last; }
+  return minutes.flatMap((m) => (m?.length ? [median(m)] : []));
 }
 /**
- * YIN's threshold. The computer's pyin (cmp.py) put issue 6, which Kay heard and passed (10-30 21:23), at 218.6 211.1
- * 219.8 212.3 205.1 203.9 213.6 213.6 205.1 Hz a minute (spread 15.9); on the same MP3 YIN read 201.4–226.0 at its own
- * 0.1–0.15 (frames with breath and creak taken in) and at 0.3 222.1 211.5 219.2 213.6 205.7 203.5 212.8 209.2 204.3
- * (spread 18.6, each minute within 4.4 Hz of pyin), the nearest of 0.1–0.4 and windows of 40 and 64 ms (10-31).
+ * The voice at 16 kHz as floats, through a Kaiser-windowed sinc low-passed below the new Nyquist (librosa loads with
+ * soxr; on 10-31 this read issue 6 to the same Hz a minute). The taps repeat every rate/gcd outputs, so they are made once.
  */
-const YIN_THRESHOLD = 0.3;
+function to16k(samples: Int16Array, rate: number): Float32Array {
+  const out = new Float32Array(Math.floor((samples.length * 16_000) / rate));
+  if (rate === 16_000) { for (let i = 0; i < out.length; i += 1) out[i] = samples[i]! / 32768; return out; }
+  const gcd = (p: number, q: number): number => (q ? gcd(q, p % q) : p);
+  const phases = 16_000 / gcd(rate, 16_000);
+  const cut = Math.min(1, 16_000 / rate) * 0.95;
+  const half = 32;
+  const reach = Math.ceil(half / cut);
+  const i0 = (v: number) => { let s = 1, t = 1; for (let k = 1; k < 30; k += 1) { t *= (v / (2 * k)) ** 2; s += t; } return s; };
+  const taps = Array.from({ length: phases }, (_, n) => {
+    const frac = (n * rate) / 16_000 - Math.floor((n * rate) / 16_000);
+    return Float64Array.from({ length: 2 * reach + 1 }, (_, j) => {
+      const t = (j - reach - frac) * cut;
+      const sinc = t ? Math.sin(Math.PI * t) / (Math.PI * t) : 1;
+      return (cut * sinc * i0(8.6 * Math.sqrt(Math.max(0, 1 - (t / half) ** 2)))) / i0(8.6) / 32768;
+    });
+  });
+  for (let n = 0; n < out.length; n += 1) {
+    const base = Math.floor((n * rate) / 16_000) - reach;
+    const tap = taps[n % phases]!;
+    let s = 0;
+    for (let j = Math.max(0, -base); j < tap.length && base + j < samples.length; j += 1) s += samples[base + j]! * tap[j]!;
+    out[n] = s;
+  }
+  return out;
+}
 const median = (v: number[]) => { const s = [...v].sort((p, q) => p - q); const h = s.length >> 1; return s.length % 2 ? s[h]! : (s[h - 1]! + s[h]!) / 2; };
 
 const DIGITS = "零一二三四五六七八九";
@@ -262,6 +266,13 @@ export function heardShare(script: string, heard: string): number {
     [prev, cur] = [cur, prev];
   }
   return prev[b.length]! / a.length;
+}
+
+/** How much of the script's last line is in the last of what was heard: a reading that stops short ends elsewhere. */
+export function endHeard(script: string, heard: string): number {
+  const last = hanOnly(script.trim().split("\n").at(-1) ?? "");
+  const tail = hanOnly(heard).slice(-last.length * 2);
+  return last ? heardShare(last, tail) : 1;
 }
 
 /**
@@ -374,21 +385,20 @@ export interface VoiceReport {
   /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
   tries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
-  reads?: Array<{ seconds: number; match: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[] }>;
+  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[] }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
   error?: string;
 }
 
 /** Judges one reading by the machine check; `why` names each failed part. */
-export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[]) {
+export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[], end = 1) {
   const why: string[] = [];
   if (match < PASS.match) why.push(`转写对上 ${(match * 100).toFixed(1)}%，不到 ${PASS.match * 100}%`);
+  if (end < PASS.end) why.push("最后一句没念到");
   if (gaps.length) why.push(`有 ${gaps.length} 处空档超过 ${PASS.gap} 秒`);
   if (!pitch.length) why.push("量不出音高");
   else {
-    const out = pitch.filter((p) => p < PASS.low || p > PASS.high);
-    if (out.length) why.push(`有 ${out.length} 分钟音高不在 ${PASS.low}–${PASS.high} Hz`);
     const spread = Math.max(...pitch) - Math.min(...pitch);
     if (spread > PASS.spread) why.push(`音高前后差 ${spread.toFixed(1)} Hz，超过 ${PASS.spread}`);
   }
@@ -415,7 +425,8 @@ export async function hearIssue(no: number) {
   const match = heardShare(script, heard);
   const gaps = silences(samples, rate, PASS.gap);
   const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
-  return { no, seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...judge(seconds, match, gaps, pitch), heard };
+  const end = endHeard(script, heard);
+  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end), heard };
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
@@ -491,8 +502,9 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const match = heardShare(script, heard);
       const gaps = silences(samples, rate, PASS.gap);
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
-      const verdict = judge(seconds, match, gaps, pitch);
-      report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...verdict });
+      const end = endHeard(script, heard);
+      const verdict = judge(seconds, match, gaps, pitch, end);
+      report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict });
       if (!verdict.pass) { await keep(); continue; }
       if (opts.dryRun) { report.status = "tried"; return report; }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.

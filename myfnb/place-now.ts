@@ -33,7 +33,7 @@ async function costOf(results: PlaceResult[]): Promise<{ calls: number; usd: num
 function print(r: PlaceResult) {
   const p = r.placing.placements[0];
   const where = p ? `${p.situation} / ${p.group ?? "（其他）"}｜${p.fit}` : "（不放）";
-  console.log(`${r.id}\t${r.placing.speaker}\t${r.title}\n    → ${where}${r.problems.length ? `　问题：${r.problems.join("；")}` : ""}`);
+  console.log(`${r.id}\t${r.placing.speaker}\t${r.title}\n    main：${r.placing.main}\n    → ${where}${r.problems.length ? `　问题：${r.problems.join("；")}` : ""}`);
 }
 
 if (process.argv.includes("--on")) {

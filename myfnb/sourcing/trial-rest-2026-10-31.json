@@ -1,0 +1,3031 @@
+{
+"$comment": "2026-10-31 信源剩余几块的试吃（Kay 16:39「不要等了 都处理了吧」）：N = 找不到条款页、robots 许可、没挡 AI 读取、8 月以后还在更新的另 350 个（规则 L1502）；P = Y 待定里托管平台的节目 106 个（平台条款可用、订阅和音频主机 robots 放行、没挡 AI 读取、没套不可用的统计前缀、8 月以后还在更新；Megaphone、Podcastle、FeedBurner、Wistia 上的不在内）；R = 重试：517 个试吃里两趟都没读到条目的 35 个，加 187 个试吃里抓不到的 12 个。",
+"volume": {
+"N": {
+"feeds": 349,
+"perDay": 40.865
+},
+"P": {
+"feeds": 106,
+"perDay": 0
+},
+"R": {
+"feeds": 47,
+"perDay": 0.756
+}
+},
+"feeds": [
+{
+"group": "N",
+"name": "Cork Talk",
+"feedUrl": "http://ncwineguys.com/index.php/feed/podcast/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "اقتصاد – عاجل نيوز",
+"feedUrl": "https://aagilenews.net/category/%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "店舗経営者倶楽部 活動・開催報告サイト",
+"feedUrl": "https://tenpo01.jp/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Gastronews, www.jhsteuer.at",
+"feedUrl": "https://www.jhsteuer.at/atom_gastronews.xml",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Steuernews für Gastronomie/Hotellerie, www.stb-grotemeyer.de",
+"feedUrl": "https://www.stb-grotemeyer.de/atom_gastronews.xml",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "澱粉原料 | TRUST RIVER 名川企業 | 北投區",
+"feedUrl": "https://www.trustriver.com.tw/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Nông sản Đà Lạt, nông sản tươi ngon từ nhà vườn",
+"feedUrl": "https://nongsandalat.vn/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Culinary essence | recipe consultants",
+"feedUrl": "https://www.culinaryessence.com/blog-feed.xml",
+"perDay": 0.122
+},
+{
+"group": "N",
+"name": "Konsept Yemek Şirketi - Catering Hizmetleri",
+"feedUrl": "https://www.yemeksirketi.net/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Tulsa Health Department",
+"feedUrl": "https://tulsa-health.org/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "首页 - 消费市场网",
+"feedUrl": "https://consumermarket.net/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "V1周報 - v1paper.com - 屬於香港的多合一資訊平台",
+"feedUrl": "https://v1paper.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Sustainable Agrifood Systems in ASEAN",
+"feedUrl": "https://asean-agrifood.org/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Keos Cloud Kitchen",
+"feedUrl": "https://www.keoskitchen.com.vn/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "Tư vấn dây chuyền chế biến thực phẩm | Kim Nguyễn Corporation",
+"feedUrl": "https://kimnguyencorp.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "犀利微雜誌 SILLYNANOMAG | 澳門美食娛樂生活指南",
+"feedUrl": "https://www.sillynanomag.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "F5cafe | Drink & Foods | Cafe shop for Refreshing with coffee and eat for Best Life.",
+"feedUrl": "https://f5cafe.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "เดอะหนู – บันทึกของนายพงษ์ศักดิ์ หอมดี (อ.หนู)",
+"feedUrl": "https://www.homdee.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "หน้าแรก - โครงการปฏิบัติการอาหารแปรรูป",
+"feedUrl": "https://foodplant.dusit.ac.th/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Sineha Bangkok – Lifestyle News",
+"feedUrl": "https://sinehabangkok.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "เครื่องจักรบรรจุภัณฑ์อุตสาหกรรม คุณภาพดี คุ้มค่าคุ้มราคา | ทียูแพ็ค",
+"feedUrl": "https://www.tupack-packing.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Home - ESG Universe",
+"feedUrl": "https://esguniverse.com/feed/",
+"perDay": 0.133
+},
+{
+"group": "N",
+"name": "Sürdürülebilir Yaşam Trendleri - PlumeMag",
+"feedUrl": "https://www.plumemag.com/feed/",
+"perDay": 0.9
+},
+{
+"group": "N",
+"name": "หน้าหลัก - News about life development Exotic travel news Design and architecture circles",
+"feedUrl": "https://varietynewsnow.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "hongkongin.uk - For Hong Kong in UK",
+"feedUrl": "https://hongkongin.uk/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "餐廳油煙處理系統整合｜順清科技",
+"feedUrl": "https://soonching.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "AZTAX - Dịch Vụ Kế Toán Thuế - Thành Lập Doanh Nghiệp",
+"feedUrl": "https://aztax.com.vn/feed/",
+"perDay": 0.144
+},
+{
+"group": "N",
+"name": "台南廣告設計・廣告公司｜品牌・網站・印刷・創意堂 MENU522",
+"feedUrl": "https://menu522.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "ร้านรับพิมพ์วอลเปเปอร์ ใช้ผ้าแคนวาส สิ่งดีๆ ที่อยากบอกต่อ",
+"feedUrl": "https://gmwallpaper.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "รับจ้างผลิตอาหาร OEM และรับออกแบบบรรจุภัณฑ์ - M.I.W. Food",
+"feedUrl": "https://www.miwfood.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "長者就業 | 銀杏館 Gingkohouse | 香港",
+"feedUrl": "https://www.gingkohouse.hk/blog-feed.xml",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Bếp công nghiệp | Bếp Nhà hàng | Bếp nhà máy | Trường học",
+"feedUrl": "https://inoxhimalaya.vn/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "Innovation Center - HILLKOFF.COM",
+"feedUrl": "https://hillkoff.com/feed",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "Omni POS Sistemleri - Restoran Programı, POS Sistemi,",
+"feedUrl": "https://omni.com.tr/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Máy đóng gói tự động | máy đóng gói thực phẩm mới nhất 2026",
+"feedUrl": "https://maydonggoiop.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "食品・寵物食品・中藥・化粧品檢驗第一品牌｜ISO 17025 TAF/TFDA 認證｜振泰檢驗 JTS",
+"feedUrl": "https://www.stst.com.tw/feed",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "消费品牌增长研究 · 行业洞察 · 营销策略 - 增长黑盒Growthbox",
+"feedUrl": "https://growthbox.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Nguyên liệu pha chế được yêu thích trên toàn cầu",
+"feedUrl": "https://boduo.vn/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "เกาะติดสถานการณ์ ตีแผ่ทุกความเคลื่อนไหว มั่นใจทุกข่าวคือความจริง",
+"feedUrl": "https://korattimes.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "Trung tâm máy pha Rovina - Hotline 24/7 - 0901836837",
+"feedUrl": "https://maypha.com.vn/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "KEOS STORE - SIXTH FINGER LLC",
+"feedUrl": "https://www.keos.store/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "Vegilog - 비건·기후위기·동물권 뉴스",
+"feedUrl": "https://vegilog.com/feed/",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "كومودتي ماركت أسعار المحاصيل اليوم في مصر بورصة السلع",
+"feedUrl": "https://commoditymarkts.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "한화중고종합주방 | 중고 주방기기 매입/판매 및 식당 철거, 폐업 상담 전문",
+"feedUrl": "https://xn--299ax30agkjvnajd117fycq7g.kr/rss.xml",
+"perDay": 0.911
+},
+{
+"group": "N",
+"name": "Viggou - 一站式娱乐网站",
+"feedUrl": "https://www.viggou.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "威士忌 龍舌蘭 葡萄酒 利口酒 伏特加 RTD 六大基酒 | Winsense 英勝國際股份有限公司 | 台北市",
+"feedUrl": "https://www.win-sense.com.tw/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "เชียงใหม่ CM108 ข่าวเชียงใหม่ ข่าววันนี้ รีวิวร้านอาหาร ท่องเที่ยวเชียงใหม่",
+"feedUrl": "https://www.cm108.com/w/?feed=rss2",
+"perDay": 0.667
+},
+{
+"group": "N",
+"name": "Changwen Stainless Steel Commercial Kitchen Equipment Manufacturer",
+"feedUrl": "https://www.cwchangwen.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "香港製造OEM月餅烘焙及朱古力食品代工廠 | Couverture by Multizen",
+"feedUrl": "https://zh.couverture.com.hk/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "AVMDergi-Türkiye'nin AVM ve Perakende Haber Portalı | Türkiye'nin AVM ve Perakende Haber Portalı",
+"feedUrl": "https://www.avmdergi.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Obadan Food | Obadan Lezzetler, Obadan Bakery & Obadan Cafe",
+"feedUrl": "https://www.obadanfood.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Zumex Việt Nam – Nhà phân phối chính hãng máy vắt cam, máy ép trái cây Zumex",
+"feedUrl": "https://zumex.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "工事有料",
+"feedUrl": "https://www.laborfact.com/rss/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Ayla Kebab - Kebab Maker",
+"feedUrl": "https://aylakebab.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "六都春秋 - 台灣與國際的視界新聞,焦點趨勢討論",
+"feedUrl": "https://www.citynews.com.tw/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "艋舺夜市商圈 – Monga Night Market",
+"feedUrl": "https://monga-nightmark.tw/feed/?v=255a5cac7685",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "BM Café 商管咖啡廳",
+"feedUrl": "https://bmcafe.hazelnut-paradise.com/rss/",
+"perDay": 0.167
+},
+{
+"group": "N",
+"name": "Luật Hồng Bàng - Tư vấn Luật gọi 1900.6575",
+"feedUrl": "https://hongbanglaw.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "I-Born | ตัวแทนจำหน่าย Pentair Haffmans,Pentair Sudmo,Xylem Wedeco,FlavorActiv,KPA สินค้าประเภท Sanitary Valve เครื่องวัดต่างๆสำหรับเครื่องดื่มอัดแก๊ส เครื่องวัดO2,CO2,PU,UV,Ozone,Centrifugal pump",
+"feedUrl": "https://www.i-bornss.co.th/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Temizmekan.com",
+"feedUrl": "https://www.temizmekan.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "SRA - Trường Doanh nhân Bán lẻ và Nhượng quyền Việt Nam",
+"feedUrl": "https://www.sra.edu.vn/rss.xml",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "An Đại Dương – Cung cấp suất ăn công nghiệp",
+"feedUrl": "https://andaiduong.vn/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "บรรจุภัณฑ์ - หน้าแรก - Kitchenclass(1993) ครบเครื่องเรื่องบรรจุภัณฑ์",
+"feedUrl": "https://kitchenclass.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Bretinov : Conception, Fabrication de Machine Agroalimentaire",
+"feedUrl": "https://bretinov.bzh/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "Home - Furstoshop",
+"feedUrl": "https://furstoshop.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "十分好傳媒-美食聚落 -",
+"feedUrl": "https://tasty.goodinc.today/?feed=rss2",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "台灣國際美食創新交流協會 日本分會 -",
+"feedUrl": "https://www.tcct-jp.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "หน้าหลัก - News about culture and lifestyle Economic News Corner New era lifestyle",
+"feedUrl": "https://technewssphere.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "โรงงานผลิตบรรจุภัณฑ์อาหารและผลิตถุงลามิเนต | HOEI THAILAND",
+"feedUrl": "https://www.hoeithailand.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "PrimeCoffee | Cà Phê Nguyên Bản",
+"feedUrl": "https://primecoffea.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Cafe, Restoran, Market Programı ⋆ Lotus Pecas®",
+"feedUrl": "https://www.lotuspecas.com.tr/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "แป้งทำขนมตราปลาแฟนซีคาร์ฟ สนุกได้ทุกวันกับเมนูทำง่ายไม่ซ้ำแบบ",
+"feedUrl": "https://missflour.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Trang chủ - Vinahoreca.com.vn",
+"feedUrl": "https://vinahoreca.com.vn/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "FOODNK | Tin tức - Kiến thức | Cộng đồng Công nghệ thực phẩm",
+"feedUrl": "https://www.foodnk.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "DIN.ESSER",
+"feedUrl": "https://www.dinesser.com/rss/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "首頁 - 展鮮農產生技",
+"feedUrl": "https://zhan-shian.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "株式会社エスワイフード",
+"feedUrl": "https://syfood-japan.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "焼肉坂井ホールディングス",
+"feedUrl": "https://ys-holdings.co.jp/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "กูรูกูรุ ทุกด้านย่านบางนา - E13",
+"feedUrl": "https://gurugurubangna.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "juheng",
+"feedUrl": "https://www.juhengfoodmachinery.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Home - Go Aragón",
+"feedUrl": "https://www.goaragonarab.com/feed/",
+"perDay": 0.522
+},
+{
+"group": "N",
+"name": "Home - 蘭陽原潮",
+"feedUrl": "https://yilantravelstyle.com.tw/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "鍵盤五六 KB56｜外送、叫車、旅遊優惠入口",
+"feedUrl": "https://kb56.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "The PCM – Phát triển & Vận hành Bất động sản Thương mại",
+"feedUrl": "https://thepcm.com.vn/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "Khoe Quán - Chia sẻ phong cách thiết kế quán cà phê / nhà hàng",
+"feedUrl": "https://khoequan.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "ชาไต้หวัน ของแท้ คุณภาพดี รับผลิด OEM โรงคั่วชาไต้หวัน ใบชาไต้หวัน",
+"feedUrl": "https://thesixsaturday.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Cafe Adisyon Sistemi, Restoran otomasyon programı",
+"feedUrl": "https://cafeadisyonsistemi.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Restoran Kuruyorum | Restoran Kuruyorum",
+"feedUrl": "https://www.restorankuruyorum.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Giá Thủy Sản 2026",
+"feedUrl": "https://www.giathuysan.top/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "หน้าหลัก - News about sports development News about design developments News about new innovation developments",
+"feedUrl": "https://newsnetworkinsightnow.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "Mutfak Dergisi",
+"feedUrl": "https://www.mutfakdergisi.net/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "MaiFood大麥智能餐飲｜POS、LINE線上訂餐 全方位餐飲整合系統",
+"feedUrl": "https://www.maifood.com.tw/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Trang Chủ - fooddaily.vn",
+"feedUrl": "https://fooddaily.vn/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Tổng Hợp Các Món Ngon Dễ Nấu - Món Ngon Nhà Làm",
+"feedUrl": "https://monngonvn.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "TTTM The Emporium - Pau Jar Group",
+"feedUrl": "https://theemporium.com.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "นมตรานกเหยี่ยว Falcon คู่แท้มืออาชีพ | Falcon Professional",
+"feedUrl": "https://www.falconforprofessional.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Kral Çay Kazanları | Bakır & Krom Çay Kazanı Üreticisi",
+"feedUrl": "https://kralcaykazanlari.com.tr/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Suất Ăn Công Nghiệp Khang Võ - HCM Và Bình Dương 2026",
+"feedUrl": "https://khangvo.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ท่ามหาราช | ศูนย์การค้าริมแม่น้ำเจ้าพระยา กรุงเทพมหานคร | ท่ามหาราช Tha Maharaj",
+"feedUrl": "https://www.thamaharaj.com/blog-feed.xml",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "CafeWriter – Dịch vụ viết bài chuyên nghiệp",
+"feedUrl": "https://cafewriter.info/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "東海大學餐旅管理學系 | The Department of Hospitality Management, Tunghai University – 網站設計與建置",
+"feedUrl": "https://thotel.thu.edu.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "AI與會員數據趨勢觀點",
+"feedUrl": "https://blog.accuhit.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Thế giới ẩm thực và đồ uống",
+"feedUrl": "https://www.katinat.com/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "Interiorisme comercial Barcelona per a franquícies",
+"feedUrl": "https://www.girbaumateu.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "綠盾食護有限公司｜食品技師主持 ISO 22000／HACCP／FSSC／美國 FDA 查廠／Costco 稽核輔導／工廠登記／食品工廠建置",
+"feedUrl": "https://www.gsfg.com.tw/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "IstanbulTV – Doğru ve Tarafsız Habercilik",
+"feedUrl": "https://istanbultv.web.tr/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "GuntaOrg - Bilginin ve Yeniliğin Buluşma Noktası",
+"feedUrl": "https://gunta.org/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "GirlsMood 女生感覺 – 我們一起分享 一起成長 一起見証 關於女生的一切",
+"feedUrl": "https://girlsmood.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "Dining Media Asia",
+"feedUrl": "https://www.diningmediaasia.com/blog-feed.xml",
+"perDay": 0.156
+},
+{
+"group": "N",
+"name": "亞利桑那州壹週報 | Next weekly | Arizona Chinese Newspaper",
+"feedUrl": "https://www.nextweeklyaz.com/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "Ambitious Academy - Diploma Courses In Malaysia | No SPM Required",
+"feedUrl": "https://ambitious.my/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Nutritionsc - นำเข้าจำหน่ายสารปรุงแต่งอาหาร และ รับผลิต OEM",
+"feedUrl": "https://www.nutritionsc.co.th/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "เสริมโชคชีวิตด้วยศาสตร์จีน เลขนำโชค และเคล็ดลับเฮงทุกด้าน - เสริมโชคชีวิตด้วยศาสตร์จีน เลขนำโชค และเคล็ดลับเฮงทุกด้าน",
+"feedUrl": "https://delimarkcafes.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "좌담회꿀알바 - 좌담회,리서치,설문조사,품평회,맛테스트 등의 알바 정보 제공",
+"feedUrl": "https://fgdalba.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Lifestyle PR | JIN Communications | Hong Kong",
+"feedUrl": "https://www.jin-comm.com/blog-feed.xml",
+"perDay": 0.133
+},
+{
+"group": "N",
+"name": "Bàn Ghế Cafe Đủ Loại Giá Gốc Tận Xưởng Sản Xuất",
+"feedUrl": "https://banghebaophat.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Home - ทันข่าวธุรกิจ",
+"feedUrl": "https://businesstimely.co/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "KenDecor - Shopbanghe.vn - shop bàn ghế nhà hàng",
+"feedUrl": "https://shopbanghe.vn/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "51行业报告网-提供行业研究分析报告、市场调查调研分析报告",
+"feedUrl": "https://www.51baogao.cn/feed/",
+"perDay": 2.222
+},
+{
+"group": "N",
+"name": "หน้าหลัก | การตลาดจากต่างแดน Marketing Everywhere",
+"feedUrl": "https://www.marketingeverywhere.co/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Home - WiPoint WiFi powered by BlueTechX | Make Your Retail & FnB Business Better",
+"feedUrl": "https://wipoint.vn/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "العدسه | العدسة الإخباري",
+"feedUrl": "https://news.al3dsa.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "주점닷컴 - 다양한 분위기의 술집을 소개하는 블로그입니다. 트렌디한 바, 전통적인 주점, 인기 있는 칵테일과 안주 추천까지! 맛과 분위기를 모두 갖춘 술집 정보를 쉽게 확인하세요.",
+"feedUrl": "https://zoozum.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "mallbangkok.com #ชีวิตติดห้าง แผนผังทุกห้างในไทย, ไดเร็กทอรี่ร้านในทุกห้างสรรพสินค้า ศูนย์การค้า คอมมูนิตี้มอลล์ - Home",
+"feedUrl": "https://www.mallbangkok.com/feed/",
+"perDay": 0.556
+},
+{
+"group": "N",
+"name": "ANASAYFA - Seraf Restaurant",
+"feedUrl": "https://www.seraf.com.tr/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Thái Phát Triển",
+"feedUrl": "https://thai.nhachinhchu.org/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "أخبار الطب",
+"feedUrl": "https://www.med-syria.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ICUP - THẾ GIỚI DỤNG CỤ CÀ PHÊ - iCup",
+"feedUrl": "https://icup.vn/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "세상의 쓸모있는 정보",
+"feedUrl": "https://www.freegom.com/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "Cafe Adisyon Programı, Restoran Otomasyonu",
+"feedUrl": "https://www.cafeadisyonprogrami.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Gastronomía Esencial",
+"feedUrl": "https://gastronomiaesencial.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Coach Xây Thương Hiệu Cá Nhân – Nguyễn Anh Tùng",
+"feedUrl": "https://nguyenanhtung.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Kinh Tế & Tiêu Dùng %",
+"feedUrl": "https://kinhtetieudung.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "A1 Việt Nam | Cà Phê Malaysia, Thực Phẩm & OEM",
+"feedUrl": "https://a1vietnam.com.vn/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "IDAEO AI News｜用中文，讀懂全世界的真事實",
+"feedUrl": "https://ainews.idaeo.ai/feed.xml",
+"perDay": 0.667
+},
+{
+"group": "N",
+"name": "金属检测机_X光异物检测机_在线检重秤厂家_广东超强电子科技",
+"feedUrl": "https://www.dgcq88.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "紅新聞 | 紅新聞",
+"feedUrl": "https://www.master.idv.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "收銀機紙 廚房機紙 八達通紙 標籤貼紙 環保餐具 - 興創科技(香港)有限公司",
+"feedUrl": "https://posapp.hctc.com.hk/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "REVIEWNOWZ รีวิวโปรโมชั่นอาหาร โรงแรม ท่องเที่ยว – REVIEWNOWZ กินเที่ยวทั่วไทยและต่างประเทศ",
+"feedUrl": "https://www.reviewnowz.com/feed/",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "首頁 - 台灣水產加工聯盟",
+"feedUrl": "https://www.tfppa.tw/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "THREE O'CLOCK",
+"feedUrl": "https://threeoclock.vn/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "杜康|杜康代理|杜康加盟|杜康酒加盟|杜康总代理-杜康招商中心",
+"feedUrl": "https://www.dukang.site/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Hygienic Corporation | ก๊อกน้ำอัตโนมัติและนวัตกรรมไร้สัมผัส",
+"feedUrl": "https://www.hygienic.co.th/blog-feed.xml",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Tạp chí Nông nghiệp Hữu cơ Việt Nam",
+"feedUrl": "https://nongnghiephuuco.vn/rss_feed/",
+"perDay": 0.289
+},
+{
+"group": "N",
+"name": "한국 디지털마케팅 아카데미 – 현직 대표들의 마케팅 실전교육",
+"feedUrl": "https://www.the.ac/feed",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "專業居家裝潢實例分享 | 系統櫃展示中心 | 探索豐富的居家裝潢實例，探索如何利用系統櫃打造更美好的生活空間。專業指導，讓您的家居變得更加舒適和實用。",
+"feedUrl": "https://designhy6.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "OSO Mimarlık: İç Mimarlık Ofisi, Ofis ve Mağaza Tasarımları",
+"feedUrl": "https://osomimarlik.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "เรียนต่อปริญญาตรี ปริญญาโท เรียนเชฟ เรียนการโรงแรม ที่ วิทยาลัยดุสิตธานี",
+"feedUrl": "https://dtc.ac.th/feed/",
+"perDay": 0.133
+},
+{
+"group": "N",
+"name": "Mavişehir Dergisi | İzmir'in Şehir, Yaşam ve Kültür Platformu",
+"feedUrl": "https://www.mavisehirdergisi.com/feed",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Homepage - pause journal",
+"feedUrl": "https://pausejournal.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "大砌誠石空間設計 - 辦公室設計、診所設計、飯店會所、餐飲店面 - 商業空間設計",
+"feedUrl": "https://idesignforu.com.tw/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Dezpax",
+"feedUrl": "https://cms.dezpax.com/rss/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Feeding Hong Kong | Bridging the gap between hunger and food waste",
+"feedUrl": "https://feedinghk.org/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "株式会社SUU・SUU・CHAIYOO",
+"feedUrl": "https://www.sscy.co.jp/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "Diễn đàn doanh nhân, thời sự kinh tế chuyên sâu, kiến thức và tiện ích cho doanh nhân",
+"feedUrl": "https://doanhnhanmagazine.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "王森集团 | 源于西点教育，服务美食产业创新 - 王森集团",
+"feedUrl": "https://wsbake.cn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Bitebolt – Phần mềm quản lý nhà hàng, quán cafe, bida",
+"feedUrl": "https://bitebolt.app/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Rosta Tech Espresso | Yenilikçi Kahve Deneyimi ve Teknoloji ile Buluşma – Daha çok kahve … daha çok teknoloji",
+"feedUrl": "https://rostatechespresso.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "(주)신성하인스 – AI 조리기구 전문 기업",
+"feedUrl": "https://ssung.kr/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Ana Sayfa - TRABZON GASTRONOMİ DERNEĞİ",
+"feedUrl": "https://trabzongastronomi.com/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "Tư Vấn An Toàn Vệ Sinh Thực Phẩm - antoanvesinhthucpham.vn",
+"feedUrl": "https://antoanvesinhthucpham.vn/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "Fina All USA - Find All NY",
+"feedUrl": "https://findallny.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Anasayfa - KOLİSPAK | Oluklu Mukavva | Koli ve Kutu Üretimi",
+"feedUrl": "https://www.kolispak.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "En İyi Adisyon Yazılımı ve Restoran Otomasyonu | Yeppos",
+"feedUrl": "https://www.yeppos.com/feed/",
+"perDay": 0.133
+},
+{
+"group": "N",
+"name": "FITU บริษัทนวัตกรรมด้านอาหาร แบบครบวงจร - FITU",
+"feedUrl": "https://fitu.co.th/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Endüstriyel Mutfak Ekipmanları ve Yedek Parça | Yazıcı Grup Esen Yazıcı",
+"feedUrl": "https://www.yaziciendustriyelmutfak.com/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "Cino Printer | Latte Art Machine | Coffee Printer | Factory",
+"feedUrl": "https://www.cinoprinter.com/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "FOTEKCO - Tư vấn giấy phép ngành thực phẩm -",
+"feedUrl": "https://fotekco.vn/feed/",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "뉴욕앤뉴저지 NY&NJ — 뉴욕·뉴저지 한인 뉴스",
+"feedUrl": "https://www.nyandnj.com/feed.xml",
+"perDay": 0.444
+},
+{
+"group": "N",
+"name": "Anasayfa - QR Menü - Restoran Yönetimi Yazılımı - The Maestro",
+"feedUrl": "https://themaestro.com.tr/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "Horeca Mailing | Basılı ve Online Horeca Gazetesi",
+"feedUrl": "https://horecamailing.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Trang chủ - Nội Thất Phi Tuấn",
+"feedUrl": "https://noithatphituan.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Custom Food Packaging Film Manufacturer in China-KXPACK",
+"feedUrl": "https://kxpack.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "CBNT CHANNEL - Connecting the world for you, clearer than ever. Never miss the world's movement.",
+"feedUrl": "https://cbntchannel.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ทำที่บ้าน - ชุมชนและแหล่งความรู้สำหรับทายาทธุรกิจ",
+"feedUrl": "https://www.tamteebaan.com/rss/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Pannacci — ครัวอิตาเลียนที่เริ่มจากวัตถุดิบและจังหวะมือ",
+"feedUrl": "https://pannacci.com/feed/",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "Eco Packaging Products Ltd 丨 Shenzhen Yasitai Packaging Products Co., Ltd",
+"feedUrl": "https://ystpack.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "CHLB Group – Smart Food Packaging & Automation Solutions",
+"feedUrl": "https://chlbgroup.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Ẩm Thực Việt Nam | Kênh Tin Tức Mới Nhất Về ẩm Thực Việt Nam Và Thế Giới",
+"feedUrl": "https://amthucvietnam.com.vn/feed",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "หน้าหลัก - cultural news News about tourism News about education",
+"feedUrl": "https://dailynewsbeatnow.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Tin's Blog – you are coming a long way…",
+"feedUrl": "https://www.diamondtin.com/feed/",
+"perDay": 0.122
+},
+{
+"group": "N",
+"name": "Giấy phép kinh doanh rượu",
+"feedUrl": "https://giayphepkinhdoanhruou.com/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "中小型商家數位轉型 OP 開市網 提供最全面的解決方案",
+"feedUrl": "https://blog.opbiz.tw/rss/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "波士顿留学生网 | 最温暖的留学生服务平台",
+"feedUrl": "https://www.bostonstudents.org/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Anasayfa | Denizli Haber Denizli Güncel - Denizli Haber Denizli Güncel",
+"feedUrl": "https://yirmihaber.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "全球产品合规咨询服务 - 恩特科技 | 化妆品·医械·食品出海合规",
+"feedUrl": "https://www.enter-co.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "GastroHATAY - Hatay Mutfağı ve Gastronomi",
+"feedUrl": "https://www.gastrohatay.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "Trùm Food nguyên liệu bún đậu mắm tôm - Tư vấn mở quán bún đậu",
+"feedUrl": "https://trumfood.vn/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "thiết bị lạnh - thiết bị lạnh sapito",
+"feedUrl": "https://sapito.com.vn/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Anasayfa | Gurme MAG",
+"feedUrl": "https://www.gurmemag.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "หน้าหลัก - The world of sports science Health news network Interesting information about local stories",
+"feedUrl": "https://thenewstodaybeat.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "GEPAD | Grupo de Estudos e Pesquisas em Agricultura, Alimentação e Desenvolvimento",
+"feedUrl": "https://www.gepadagrifood.com.br/blog-feed.xml",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Go Media Agency Đà Nẵng | Giải Pháp Digital Marketing",
+"feedUrl": "https://gonetwork.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Gofood Market – Nhà phân phối thực phẩm nhập khẩu - Gofood Market",
+"feedUrl": "https://gofoodmarket.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "HOME -",
+"feedUrl": "https://imasinno.co.th/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Everbest Soya Bean Products - Yuba Sheet, Plant Based meat & Ring Roll",
+"feedUrl": "https://everbest.my/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Perakende Haberleri Odaklı Yeni Nesil Medya | Perakende Sektörü",
+"feedUrl": "https://perakendesektoru.com/rss.xml",
+"perDay": 0.133
+},
+{
+"group": "N",
+"name": "皇廚火鍋 | 火鍋餐廳中央廚房 - 皇廚火鍋",
+"feedUrl": "https://www.huangchu.com.tw/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "TAKA FOODS | Trang chủ | Nguyên liệu pha chế",
+"feedUrl": "https://takafoods.vn/feed/",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "Coffee News Việt Nam — Tin Tức Cà Phê - CoffeeNews.vn",
+"feedUrl": "https://coffeenews.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Ngành Du lịch – Nhà hàng Khách sạn – 360saasfee",
+"feedUrl": "https://www.threesixty-saasfee.com/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "Trang chủ - Công Ty TNHH Thực Phẩm Đồng Phú",
+"feedUrl": "https://hatdieudongphu.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "MA Hotels | أخبار الفنادق والضيافة وإدارة التشغيل",
+"feedUrl": "https://mahotels.net/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Ankara24.com - Türkiye ve Ankara Gerçek Zamanlı Son Dakika Haberler",
+"feedUrl": "https://ankara24.com/rss.xml",
+"perDay": 0.933
+},
+{
+"group": "N",
+"name": "Bàn Mát Inox Công Nghiệp – Xem Giá & Chọn Mẫu 2026 | BanMat.vn",
+"feedUrl": "https://banmat.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "VEKOWORLD.COM",
+"feedUrl": "https://www.vekoworld.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "LBSST — Smart Hygiene & IoT Solutions",
+"feedUrl": "https://blog.lbs-smarttech.com/rss/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "首頁 - 活力午餐 Luncheon Star",
+"feedUrl": "https://www.luncheonstar.com.hk/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Cà Phê Chất | Cà Phê Chất",
+"feedUrl": "https://caphechat.vn/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "蒙福食品 Mengfu S.H.L. – 做家人吃的食品 Fabricante de Platos Tradicionales Asiaticos",
+"feedUrl": "https://www.mengfu.es/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "商業時代杂志",
+"feedUrl": "https://businesscentury.com.my/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Anasayfa | GASTROKALE",
+"feedUrl": "https://www.gastrokale.org/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Trang chủ | Trung tâm Xúc tiến đầu tư & Thương mại tỉnh Ninh Bình",
+"feedUrl": "https://invest.ninhbinh.gov.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "消費紀錄 | 角度數據 | 台湾",
+"feedUrl": "https://www.9do.tw/blog-feed.xml",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "LİDAŞDER – Tarım Ürünleri Lisanslı Depo ve Yetkili Sınıflandırıcı Şirketleri Derneği",
+"feedUrl": "https://lidasder.org.tr/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "무인카페 창업의 새로운 기준, 무인음료플랫폼 카페온 (Cafe-on)",
+"feedUrl": "https://cafe-on.kr/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Coffee Roasting Machine | Sigma Coffee Roasters | İzmir",
+"feedUrl": "https://www.sigmaroaster.com/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "Storellet Business | 餐飲會員系統與營銷解決方案",
+"feedUrl": "https://www.storellet.hk/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "日日營養 DailyDietitian – 健身教練與營養師團隊攜手打造健康新生活",
+"feedUrl": "https://dailydietitian.com.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Kitdeenews - ข่าวที่คิดดี",
+"feedUrl": "https://kitdeenews.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "首頁 - 綠綠發芽希望工坊",
+"feedUrl": "https://luluheya.com/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "修咖啡 repaircoffee service | 高雄台南屏東咖啡設備維修保養",
+"feedUrl": "https://www.repaircoffee.tw/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Trang chủ - ASMART",
+"feedUrl": "https://asmart.com.vn/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "#Ana Sayfa ‣ Bi'nevi Gazete",
+"feedUrl": "https://binevigazete.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "條通商圈",
+"feedUrl": "https://www.tiaotong.org/feed/?v=255a5cac7685",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "VBM Việt Nam | Chuyên thiết kế - thi công chuỗi thương hiệu F&B",
+"feedUrl": "https://vbmvietnam.vn/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "파이낸셜데일리",
+"feedUrl": "https://fdaily.co.kr/data/rss/news.xml",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "Tủ cơm công nghiệp, Nồi cơm điện công nghiệp và thiết bị nhà hàng | Noicomcongnghiep.com",
+"feedUrl": "https://noicomcongnghiep.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ENGECON MATERIAL CO.,LTD. | พื้นโรงงานอุตสาหกรรม พื้นทนกรด ระบบระบายน้ำ",
+"feedUrl": "https://www.engeconspecial.com/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "ICOLUMNIST.CO – อัพเดทข่าวธุรกิจ การตลาด เจาะลึกเทรนด์ความเคลื่อนไหว จากคนวงการข่าว",
+"feedUrl": "https://icolumnist.co/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "病媒防治諮詢顧問 | 九鼎知識整合行銷有限公司 | 台北市",
+"feedUrl": "https://www.evertrust.pro/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "創市際 InsightXplorer｜市場調查、線上問卷與數位媒體量測",
+"feedUrl": "https://www.ixresearch.com/feed/",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "iSOGLASS Sản xuất cung cấp thuỷ tinh đạt chuẩn iSO tại Việt Nam",
+"feedUrl": "https://isoglass.com.vn/feed",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "โรงคั่วชาเชียงใหม่ ขายส่งใบชาราคาถูก ราคาส่ง ด้วยคุณภาพมายาวนาน",
+"feedUrl": "https://20kgtea.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "海外开店收银系统_中英文多币种_尚博思收银系统",
+"feedUrl": "https://www.jinsoftware.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "无尘服清洗_工作服清洗租赁_洁净服清洗灭菌_洗涤服务公司-林斯特龙|Lindstrom",
+"feedUrl": "https://www.lindstromgroup.cn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "วิทยาลัยเทคโนโลยีครัววันดี – Wandee Culinary Technological College",
+"feedUrl": "https://www.wandeecollege.com/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "หน้าหลัก - News about tourism Startup industry news Economic News Corner",
+"feedUrl": "https://thenewsupdatetoday.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Hệ thống lạnh công nghiệp: kho lạnh, cấp đông IQF, chiller | Tân Long",
+"feedUrl": "https://tanlongvn.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Trang chủ | Cơm gà Hội An",
+"feedUrl": "https://comgahoian.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ĐỨC THÀNH - Thiết Bị Bếp Công Nghiệp Đức Thành",
+"feedUrl": "https://thietbiducthanh.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "로즈우드 마케팅",
+"feedUrl": "https://test2.youngcheenergy.com/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "와이에스엠(YSM)경영컨설팅 - 화장품/농식품 규제, 화장품인사이트, 식품인사이트",
+"feedUrl": "https://www.jm.co.kr/rss",
+"perDay": 0.122
+},
+{
+"group": "N",
+"name": "首頁 - 翔鶴佳",
+"feedUrl": "https://www.xhjbio.com.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Thiết bị bếp công nghiệp, bếp nhà hàng Inox Thành Vinh",
+"feedUrl": "https://inoxthanhvinh.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "75s coffee",
+"feedUrl": "https://www.75scoffee.com/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "民生頭條",
+"feedUrl": "https://www.lifetoutiao.news/feed/",
+"perDay": 0.333
+},
+{
+"group": "N",
+"name": "湖南领高新材料有限公司 -竹纤维纸浆杯托蛋盒环保一次性食品包装厂家",
+"feedUrl": "https://www.hunanlinggao.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Barracks Row | Barracks Row Main Street | Washington",
+"feedUrl": "https://www.barracksrow.org/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "外籍看護、幫傭、製造、營造、農業外勞移工仲介服務｜21世紀人力仲介",
+"feedUrl": "https://www.21manpower.com.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ร้านขายเนื้อพรีเมียม เนื้อวากิว เนื้อสเต็ก นำเข้า สำหรับสายกินตัวจริง - Thagoon.co.th",
+"feedUrl": "https://thagoon.co.th/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "Buffet displayware | 商業陳列餐具 | Efay | e2",
+"feedUrl": "https://www.efaygroup.com/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "FB Agency Marketing FnB - Giải pháp cho doanh nghiệp SME",
+"feedUrl": "https://marketingfnb.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Cad+ Expert-comptable - Fiscaliste - David SANGLIER - Paris Ile de France",
+"feedUrl": "https://www.cadplus.fr/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "香港有機生活發展基金 SEED – 香港有機生活發展基金（Sustainable Ecological Ethical Development Foundation，簡稱「SEED」）於1999年成立，前身為香港有機農業協會，致力推動簡約的有機生活態度，在尊重本土價值的前提下，推動順應自然的生產方式與良知消費，達致一種生生不息、平衡的生活。",
+"feedUrl": "https://www.seed.org.hk/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "ConnectB2B - Kết Nối Doanh Nghiệp Và Nhượng Quyền Số 1 Việt Nam",
+"feedUrl": "https://connectb2b.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Gastronomi - Lezzet noktası - Mutfak Sırları - Mutfak Magazin",
+"feedUrl": "https://mutfakmagazin.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Spiral Freezer & IQF Manufacturer | Midwest Food Technology",
+"feedUrl": "https://www.midwestfoodtechnology.com/blog-feed.xml",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "高雄室內設計推薦 維度空間設計｜高雄室內設計：住宅商業空間規劃",
+"feedUrl": "https://did.com.tw/feed/",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "Trang chủ An Phát Catering Services",
+"feedUrl": "https://anphatcatering.com/feed",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "藝康臺灣| 衛生預防| 守護對生命至關重要的資源",
+"feedUrl": "https://portal.ecolab-taiwan.com.tw/blog-feed.xml",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "โรงงานผลิตชาเชียงใหม่ รับผลิตชา OEM ครบวงจร | Bluemocha",
+"feedUrl": "https://bluemochathailand.com/feed/",
+"perDay": 0.067
+},
+{
+"group": "N",
+"name": "Dude Table - Türkiye'nin Tek Gastronomi Pazarlama Ajansı",
+"feedUrl": "https://dudetable.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Biodegradable Tableware & Compostable Food Packaging Manufacturer | MANA ECO",
+"feedUrl": "https://www.mana-eco.com/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "Thai Trade London | Office of Commercial Affairs – Gateway for Thailand Import and Export",
+"feedUrl": "https://www.thaitradelondon.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Electric Coffee Roaster Machines | NIR Roasters – Rubasse",
+"feedUrl": "https://rubasseroasters.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "TIN TỨC NÔNG NGHIỆP",
+"feedUrl": "https://www.tintucnongnghiep.com/feeds/posts/default",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "르몽 | Agentic AI Company",
+"feedUrl": "https://lemong.team/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "鼎耀室內設計 – 室內設計首選 – 台中室內設計推薦 | 空間設計| 室內裝修",
+"feedUrl": "https://dingyao-design.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Best Platform for Baking New | Growing Baker",
+"feedUrl": "https://growingbaker.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Feel Culinary Sense Designer | Feel",
+"feedUrl": "https://feelculinary.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "สำนักส่งเสริมและจัดการสินค้าเกษตร",
+"feedUrl": "https://agriman.doae.go.th/feed/",
+"perDay": 0.167
+},
+{
+"group": "N",
+"name": "91 Marketing Service - บรรจุภัณฑ์ใช้แล้วทิ้งครบวงจร",
+"feedUrl": "https://nineone-marketing.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Sandalye Deposu | Sandalye ve Masalar Hakkında Her Şey",
+"feedUrl": "https://blog.sandalyedeposu.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "UCC Thailand - Coffee Service Solution",
+"feedUrl": "https://uccthailand.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Home - ฮอตสตาร์นิวส์ hotstarnews.com",
+"feedUrl": "https://www.hotstarnews.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "浦安ぽーたる｜浦安と周辺エリアのローカル情報メディア",
+"feedUrl": "https://urayasu-portal.com/index.xml",
+"perDay": 5.122
+},
+{
+"group": "N",
+"name": "หน้าหลัก - Today's online society",
+"feedUrl": "https://citypressnews.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Poultry & Chicken Slaughterhouse Equipment Manufacturer | Full Slaughter Line for Cattle, Pig, Goat – NPW",
+"feedUrl": "https://www.npwplastic.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "티엔티푸드(주) | tntfood",
+"feedUrl": "https://www.tntfood.net/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "N",
+"name": "PKP – ข่าวออนไลน์เพื่อคนกำแพงเพชร",
+"feedUrl": "https://phetkamphaengnews.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Bundau.com – Cung cấp nguyên liệu, tư vấn mở quán bún đậu",
+"feedUrl": "https://bundau.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Mạng lưới Ngân hàng thực phẩm Việt Nam | The Vietnam Foodbanking Network",
+"feedUrl": "https://foodbankvietnam.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Cashido臭氧水殺菌機｜餐飲食安與家庭廚房的臭氧水清洗",
+"feedUrl": "https://cashidolife.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Tesisat Dergisi - Mekanik Tesisat Sektörünün Dergisi",
+"feedUrl": "https://www.tesisat.com.tr/rss.xml",
+"perDay": 0.8
+},
+{
+"group": "N",
+"name": "Haber Ozan",
+"feedUrl": "https://www.haberozan.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Adisyon Takip Programi Cafe adisyon Sistemi - Restoran adisyon takip sistemi olması gereken bir diğer özellik ise mali olarak restorana ek külfet getirmemesidir.",
+"feedUrl": "https://adisyontakip.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Home - Bangkok Halal",
+"feedUrl": "https://bangkokhalal.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "工研醋｜大安工研食品工廠股份有限公司｜台灣百年釀醋世家",
+"feedUrl": "https://kongyen.com.tw/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "FISHER COFFEE – 啡舍咖啡 | 始于风味 忠于探索",
+"feedUrl": "https://www.fishercoffee.com.cn/feed",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "商圈產業的輔導者 - 臺北市商圈產業聯合會",
+"feedUrl": "https://www.ic.org.tw/backend.php",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "沐芯室內裝修｜商業空間 & 店面裝潢一站式服務",
+"feedUrl": "https://muxin.tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Tân Nhất Hương - Taste The Excellence, Feel The Passion",
+"feedUrl": "https://tannhathuong.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Rovina Coffee - Nhượng quyền thương hiệu Cà Phê",
+"feedUrl": "https://rovinacoffee.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "안성 플랜테리어·실내조경·조화나무 시공 | 윈썸플로라",
+"feedUrl": "https://www.winsomeflora.net/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Nước ép TropicSun 1L cho chuỗi F&B | Horeca Industry",
+"feedUrl": "https://horecaindustry.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "店铺设计|快闪店|新零售空间|体验空间|新消费空间|商业空间",
+"feedUrl": "https://www.hisheji.com/feed",
+"perDay": 0.133
+},
+{
+"group": "N",
+"name": "Dudo Catering | İstanbul Catering ve Tabldot Yemek Hizmetleri",
+"feedUrl": "https://dudocatering.com/blog/rss.xml",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "TRANG CHỦ - Dịch vụ giấy phép kinh doanh khách sạn",
+"feedUrl": "https://giayphepkinhdoanhkhachsan.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Coffee&Tea VN - Nhà cung cấp hàng đầu Việt Nam",
+"feedUrl": "https://coffeeteavn.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Mua Chuẩn Nấu Ngon - Các Loại Thịt Heo Sạch, Thịt Gà An Toàn",
+"feedUrl": "https://muachuannaungon.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Yazılım Çözüm ortağı - Yazılım Web",
+"feedUrl": "https://yazilimweb.com/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "首頁 | 銀色大門-老人送餐平台｜為長輩送愛與溫飽",
+"feedUrl": "https://www.silvergateforelders.com/blog-feed.xml",
+"perDay": 0.144
+},
+{
+"group": "N",
+"name": "Bruisend Chinatown Den Haag",
+"feedUrl": "https://chinatowndenhaag.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "호평동 프랜차이즈 창업 | 업종별 가맹 조건·정보공개서 검토 - 한준에프알",
+"feedUrl": "https://hanjunfr.co.kr/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "รับขอ ฆอ. (ใบอนุญาตโฆษณาอาหาร) ดูแลการยื่นขอใบอนุญาตโดยมืออาชีพ | ฆอ.com by ThaiFDA",
+"feedUrl": "https://xn--62c2f.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "牧食记AgriPost.CN - Your Second Brain in Agri-food Industry农牧企业的第二大脑 - 提供专业系统的公关传播，品牌营销和决策咨询服务",
+"feedUrl": "https://www.agripost.cn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Gündem Perakende",
+"feedUrl": "https://www.gundemperakende.com.tr/feed/",
+"perDay": 0.333
+},
+{
+"group": "N",
+"name": "ระบบคิวอัตโนมัติ ครบวงจร ตู้กดบัตรคิว-จอแสดงคิว | Q Natural",
+"feedUrl": "https://www.xn--42c7ba8ax4c5a.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "식은 커피 연구소",
+"feedUrl": "https://coldcoffeelab.ghost.io/rss/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Kahve Tarifleri, Makineleri ve Demleme Rehberi | CahveLand",
+"feedUrl": "https://cahveland.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Trang Chủ - QSR Việt Nam",
+"feedUrl": "https://qsrvietnam.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "น้ำปลาแท้ คุณภาพระดับพรีเมียม | น้ำปลาตราปลาหมึก",
+"feedUrl": "https://squidbrand.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Vip Yemek | catering | Namık Kemal, Vip yiyecek içecek ve yemek sanayi ticaret limited şirketi, Esenyurt/İstanbul, Türkiye",
+"feedUrl": "https://www.vipyemek.com.tr/blog-feed.xml",
+"perDay": 0.178
+},
+{
+"group": "N",
+"name": "Bếp Inox Việt Nam - Thiết Kế Thi Công Cung Cấp Thiết Bị Bếp Công Nghiệp",
+"feedUrl": "https://bepinoxvietnam.vn/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "國產潛力雜糧共同資訊平台 – 為發展具潛力之國產雜糧作物，行政院農業委員會臺中區農業改良場及臺南區農業改良場經盤點既有優質技術，並以具優良品種、栽培技術完善及功能性成分為篩選指標，擇定薏苡、蕎麥及胡麻具有極大發展潛力，故稱為潛力雜糧作物。然而薏苡、蕎麥及胡麻產銷之問題，包括原料生產、收購、理貨、加工、產品生產與行銷等面向皆有改善空間，期望能更精進產業之鏈結。",
+"feedUrl": "https://grains.likehelper.com/?feed=rss2",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "NCO Danışmanlık ve Organizasyon | Kurumsal Etkinlikler | Türkiye",
+"feedUrl": "https://www.nconorg.com/blog-feed.xml",
+"perDay": 0.156
+},
+{
+"group": "N",
+"name": "Organic Matcha Supplier | Premium Japanese Matcha | Azayaka",
+"feedUrl": "https://www.azmatcha.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "商用厨房自动灭火系统与动火离人报警设备配置 · 苏州尚安消防",
+"feedUrl": "https://www.0512c.com/feed",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "【商業裝修和室內設計】超過2000個成功配對案例 - Comdeco 商業裝修易",
+"feedUrl": "https://comdeco.hk/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ASIT 社團法人台灣服務業發展協會 – 商機媒合・國際發展・診斷輔導・課程培訓・連鎖加盟",
+"feedUrl": "https://www.asit.org.tw/feed/",
+"perDay": 0.044
+},
+{
+"group": "N",
+"name": "Nature Foods - Trang chủ",
+"feedUrl": "https://naturefoods.com.vn/feed/",
+"perDay": 0.089
+},
+{
+"group": "N",
+"name": "หน้าหลัก - Folk culture information archive Computer Science News Station New era business path",
+"feedUrl": "https://thenewswavetoday.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "专业中英文餐饮POS系统_一次购买，终身使用，无年费_适用于Windows",
+"feedUrl": "https://www.gicater.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Custom Food Trailers & Food Carts Manufacturer in China | Tiva Tech",
+"feedUrl": "https://tivasisters.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "โรงงานรับผลิตน้ำดื่ม Lifeplus Water | น้ำดื่ม oem | สามพราน Sam Phran District, Nakhon Pathom, Thailand",
+"feedUrl": "https://www.lifeplus-water.com/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "หน้าหลัก - Latest news in the film world News about development and innovation New era lifestyle",
+"feedUrl": "https://globalnewshubnow.com/feed/",
+"perDay": 0.078
+},
+{
+"group": "N",
+"name": "Gader",
+"feedUrl": "https://www.gader.com.tr/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "Trang chủ | Chuỗi Nhượng Quyền",
+"feedUrl": "https://chuoinhuongquyen.vn/feed/",
+"perDay": 0.056
+},
+{
+"group": "N",
+"name": "Bao Bì Nhôm & Khay Nhôm Thực Phẩm Cao Cấp TP.HCM | LEO Alu Pack",
+"feedUrl": "https://leoalupack.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Culinary School in the Philippines | Apicius Culinary Arts | Parañaque",
+"feedUrl": "https://www.apicius.edu.ph/blog-feed.xml",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Home (TH) - จำหน่ายผงปรุงรส เครื่องปรุงรส คุณภาพดี ราคาคุ้มค่า",
+"feedUrl": "https://welove-cooking.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ผู้ผลิตเครื่องจักรแปรรูปอาหารอันดับหนึ่งในประเทศไทย",
+"feedUrl": "https://www.eurobest.co.th/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "English - GoFlyer Blog",
+"feedUrl": "https://blog.goflyer.ca/en/rss/",
+"perDay": 0.167
+},
+{
+"group": "N",
+"name": "Hội khoa học kỹ thuật an toàn thực phẩm Việt Nam, VINAFOSA",
+"feedUrl": "https://vinafosa.org.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "Cung Cấp Suất Ăn Công Nghiệp Tại Biên Hòa, Đồng Nai - Good Food",
+"feedUrl": "https://goodfood.net.vn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "專營自動化立式包裝機製造，以及代客包裝",
+"feedUrl": "https://packmate.info/zh_tw/feed/",
+"perDay": 0.022
+},
+{
+"group": "N",
+"name": "Thịt Mát - Cung cấp thịt lợn sạch, thịt mát chất lượng cao",
+"feedUrl": "https://thitmat.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "المنصة",
+"feedUrl": "https://www.al-menasa.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "الرئيسية | سفر نيوز",
+"feedUrl": "https://safarnews.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "ADOR - TÂM HUYẾT NGƯỜI LÀM QUÁN VIỆT",
+"feedUrl": "https://ador.vn/feed/",
+"perDay": 0.011
+},
+{
+"group": "N",
+"name": "เครื่องครัวและอุปกรณ์ทำอาหาร | CHAMP",
+"feedUrl": "https://www.champ-online.store/blog-feed.xml",
+"perDay": 0.2
+},
+{
+"group": "N",
+"name": "首页 - 华工环源HGHY｜纸浆模塑成套设备与模具制造商",
+"feedUrl": "https://www.pulpmoldingchina.cn/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "มูลนิธิเกษตรกรรมยั่งยืน (ประเทศไทย) – @SAFTHAILAND",
+"feedUrl": "https://sathai.org/?feed=rss2",
+"perDay": 0.1
+},
+{
+"group": "N",
+"name": "restaurants Archives - The Business Journal",
+"feedUrl": "https://thebusinessjournal.com/restaurants/feed/",
+"perDay": 0.111
+},
+{
+"group": "N",
+"name": "e15.cz - Gastro a fine dining",
+"feedUrl": "https://www.e15.cz/rss/9767",
+"perDay": 0.033
+},
+{
+"group": "N",
+"name": "VinePair",
+"feedUrl": "https://vinepair.com/feed/",
+"perDay": 0.378
+},
+{
+"group": "N",
+"name": "CulinaryLore",
+"feedUrl": "https://culinarylore.com/feed/atom/",
+"perDay": 0.0
+},
+{
+"group": "N",
+"name": "Universul Alimentar",
+"feedUrl": "https://universulalimentar.ro/feed/",
+"perDay": 0.111
+},
+{
+"group": "P",
+"name": "Bar Stars Happy Hour",
+"feedUrl": "https://rss.buzzsprout.com/1025740.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Track & Food Podcast",
+"feedUrl": "https://rss.buzzsprout.com/168741.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Produce Industry Podcast w/ Patrick Kelly",
+"feedUrl": "https://feeds.captivate.fm/theproduceindustrypodcast/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Franchise Insiders \"Inside Scoop\" Podcast",
+"feedUrl": "https://rss.buzzsprout.com/1715853.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "DEHOGA TRESEN TALK",
+"feedUrl": "https://lsdhtu.podcaster.de/dehoga.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Craft Brewery Financial Training Podcast",
+"feedUrl": "https://rss.buzzsprout.com/979747.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Voice4Chefs Podcast",
+"feedUrl": "https://rss.buzzsprout.com/1432717.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Die Franchisejause",
+"feedUrl": "https://letscast.fm/podcasts/die-franchisejause-7356583d/feed",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Van blunders tot succesgeheimen",
+"feedUrl": "https://app.springcast.fm/podcast-xml/14503",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "FancyBreadMiami",
+"feedUrl": "https://rss.buzzsprout.com/1976751.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "the Pavle Milić show",
+"feedUrl": "https://rss.buzzsprout.com/2031900.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Franchise Scale Up Show with Guy Coffey",
+"feedUrl": "https://rss.buzzsprout.com/2089057.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Я У МАМЫ ФРАНЧАЙЗИ",
+"feedUrl": "https://cloud.mave.digital/44075",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Delivery Prophets",
+"feedUrl": "https://feeds.captivate.fm/the-delivery-prophets/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Transformationscoaches für das Gastgewerbe NRW",
+"feedUrl": "https://letscast.fm/podcasts/dehoga-nrw-digitale-kaffeepause-c3a6a9a2/feed",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Distinguished | Hospitality Leadership Podcast with Arun Upneja, dean emeritus",
+"feedUrl": "https://rss.buzzsprout.com/2204366.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Confessions Beyond the Food",
+"feedUrl": "https://rss.buzzsprout.com/2246816.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Franchise QB",
+"feedUrl": "https://rss.buzzsprout.com/2229671.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Check-In with Bryan",
+"feedUrl": "https://rss.buzzsprout.com/2377408.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Franchise Leaders Forum Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2369319.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Women Transforming Food",
+"feedUrl": "https://rss.buzzsprout.com/2372009.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "De la terre à l'assiette - tous artisans du bien manger !",
+"feedUrl": "https://feed.ausha.co/wNWV2f4x0Rv4",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Umami Talks",
+"feedUrl": "https://cloud.mave.digital/58797",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Say Grace",
+"feedUrl": "https://feeds.captivate.fm/say-grace/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "OG Spice Guy",
+"feedUrl": "https://feeds.captivate.fm/og-spice-guy/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Perfect Bite",
+"feedUrl": "https://feeds.cohostpodcasting.com/hiORgDxR",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Tiny Sidecar: A Coffee Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2497622.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Hungry Games",
+"feedUrl": "https://rss.buzzsprout.com/2507003.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "HACCP-Podcast",
+"feedUrl": "https://haccp-podcast.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Exit Plan with Alex Smereczniak",
+"feedUrl": "https://rss.buzzsprout.com/2610113.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "BOH/FOH",
+"feedUrl": "https://rss.buzzsprout.com/2531309.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Yo invito el postre",
+"feedUrl": "https://rss.buzzsprout.com/2534086.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Women Who Make It - A Females in Food Podcast with Angela Dodd",
+"feedUrl": "https://rss.buzzsprout.com/2534161.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Beverage Business Briefing",
+"feedUrl": "https://feeds.captivate.fm/beverage-business/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Jeff and Jamie Feed",
+"feedUrl": "https://feeds.cohostpodcasting.com/1UarI98f",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Franchise Marketer Podcast",
+"feedUrl": "https://rss.beehiiv.com/podcasts/019e1c3d-fa49-7466-9f14-464f3430efa7.xml",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Smart Franchising with Fransmart",
+"feedUrl": "https://feeds.captivate.fm/smart-franchising/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "GreenSign Talks",
+"feedUrl": "https://greensign-talks.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "COOLinarisch",
+"feedUrl": "https://gustelier-coolinarisch.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "FUTURE TALK by Patrizia Stitz_FOOD IDEAS_Rochus Winkler",
+"feedUrl": "https://podcast-future-talk.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Hospitalitarian Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2549729.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "FIKA BAKERY",
+"feedUrl": "https://feed.ausha.co/Nd9zEFG7L1l5",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Become A Personal Chef",
+"feedUrl": "https://rss.buzzsprout.com/2562973.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "FranSimple",
+"feedUrl": "https://rss.buzzsprout.com/2571919.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Franchise Whispering",
+"feedUrl": "https://rss.buzzsprout.com/2571332.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "American Dish",
+"feedUrl": "https://feeds.captivate.fm/american-dish/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Der ahgz Profitalk-Podcast",
+"feedUrl": "https://ahgz.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "AlcBev in Five",
+"feedUrl": "https://feeds.captivate.fm/alcbev-in-five/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Hospitality Builders",
+"feedUrl": "https://feeds.captivate.fm/the-hospitality-builders/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "GrocerTalk",
+"feedUrl": "https://feeds.captivate.fm/grocertalk/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Gratuity Included",
+"feedUrl": "https://rss.buzzsprout.com/2640859.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "THE PROTEIN PULSE PODCAST — ESPAÑOL",
+"feedUrl": "https://feeds.captivate.fm/the-protein-pulse-es/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "THE PROTEIN PULSE PODCAST — BRASIL",
+"feedUrl": "https://feeds.captivate.fm/the-protein-pulse-brasil/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "COFFEESTATE | ТЕРРИТОРИЯ КОФЕ",
+"feedUrl": "https://podster.fm/rss.xml?pid=96238",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "5komma1",
+"feedUrl": "https://5komma1.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Studio Gastro – Der Gastronomie Podcast mit Sebastian E. Merget & Friends",
+"feedUrl": "https://cdn.audiorella.com/podcasts/1709-fiete-gastro-der-auch-kulinarische-podcast/feed.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Chicago Sam's Franchise GPS",
+"feedUrl": "https://feeds.blubrry.com/feeds/3715690.xml",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Restaurant Coach Podcast",
+"feedUrl": "https://feeds.blubrry.com/feeds/therestaurantcoachpodcast.xml",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Extra Serving: A restaurant industry podcast",
+"feedUrl": "https://feeds.captivate.fm/extra-serving/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Kirsch Royal – der prickelnde Gastropodcast",
+"feedUrl": "https://kirsch-royal.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "MEINbusiness trifft dein Business",
+"feedUrl": "https://letscast.fm/podcasts/meinbusiness-trifft-dein-business-ce87ca62/feed",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "PREP.TALK",
+"feedUrl": "https://preptalk.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Ran an den Pott - Der Gastrotalk des Service-Bund",
+"feedUrl": "https://ranandenpott-gastrotalk.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Cleaning Processes with Jerry",
+"feedUrl": "https://rss.buzzsprout.com/1851071.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Satellite Gourmet Gastronomy Podcast",
+"feedUrl": "https://rss.buzzsprout.com/1748826.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Restaurant Misfits",
+"feedUrl": "https://rss.buzzsprout.com/1899299.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Food Safety Unwrapped Presented by Sani Professional",
+"feedUrl": "https://rss.buzzsprout.com/2112006.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Kitchen Notes: A Podcast by Bakery Business Academy",
+"feedUrl": "https://rss.buzzsprout.com/1992529.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Restaurant Leadership Podcast: The Show for Multi-Unit Operators Ready to Scale",
+"feedUrl": "https://rss.buzzsprout.com/2220802.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Restaurant Innovator",
+"feedUrl": "https://rss.buzzsprout.com/2158626.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Culinary 360 Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2261432.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Schulering HUB Talking Hospitality Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2274648.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "All in the Industry",
+"feedUrl": "https://rss.buzzsprout.com/2425160.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Perfect Rise: Conversations with RBA",
+"feedUrl": "https://rss.buzzsprout.com/2434175.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The DFY Restaurant Revolution",
+"feedUrl": "https://rss.buzzsprout.com/2440654.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "“Back to Basics” with Rachael Nemeth",
+"feedUrl": "https://rss.buzzsprout.com/2452242.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Shift Reset",
+"feedUrl": "https://rss.buzzsprout.com/2446591.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "It's All Gravy",
+"feedUrl": "https://rss.buzzsprout.com/2513556.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Desde la Cocina de ASORE",
+"feedUrl": "https://rss.buzzsprout.com/2470345.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Beyond The Counter Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2530132.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "It’s Not You—It’s Your Hospitality",
+"feedUrl": "https://rss.buzzsprout.com/2536703.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The OnTrade Show",
+"feedUrl": "https://rss.buzzsprout.com/2606589.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Cooked with Eric Reed",
+"feedUrl": "https://rss.buzzsprout.com/2609558.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "FEEDING THE (R)EVOLUTION",
+"feedUrl": "https://rss.buzzsprout.com/2613088.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Culinary Now Podcast",
+"feedUrl": "https://rss.buzzsprout.com/731372.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "SERVED.",
+"feedUrl": "https://served.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Poultry Network Podcast",
+"feedUrl": "https://feeds.captivate.fm/the-poultry-network/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Inside Dairy",
+"feedUrl": "https://feeds.captivate.fm/inside-dairy/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "One Bite is Everything",
+"feedUrl": "https://feeds.captivate.fm/one-bite-is-everything/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Franchise UNIVERSUM - Der Podcast für Systemzentralen",
+"feedUrl": "https://franchiseuniversum.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Business with Beers",
+"feedUrl": "https://rss.buzzsprout.com/1714648.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Hire Yourself Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2192731.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Schleswig-Holstein Gourmet Festival",
+"feedUrl": "https://7pwkth.podcaster.de/shgf.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Take A Bite Out Of South Florida",
+"feedUrl": "https://rss.buzzsprout.com/2177940.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Powered by Franchising",
+"feedUrl": "https://rss.buzzsprout.com/2316915.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "CHER BON!",
+"feedUrl": "https://feed.ausha.co/jnzgqh8lmL4r",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Duce Raymond Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2377683.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Toqué·es, le podcast qui écoute tous ceux qui nous nourrissent",
+"feedUrl": "https://feed.ausha.co/J2MD2C8LlRrj",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Frischfleisch & Natursekt",
+"feedUrl": "https://frischfleisch-podcast.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Disruptive Franchise Podcast",
+"feedUrl": "https://rss.buzzsprout.com/2527919.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Love What You Do",
+"feedUrl": "https://rss.buzzsprout.com/2524164.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Real Talk with Tia & Jill",
+"feedUrl": "https://app.kajabi.com/podcasts/2147495592/feed",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Pursuit of Profit: Franchise Strategies to Build Real Wealth Beyond the Corporate Grind",
+"feedUrl": "https://feeds.captivate.fm/pursuit-of-profit/",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Tapper trifft... Der Podcast mit Geschmack!",
+"feedUrl": "https://tapper-trifft.podigee.io/feed/mp3",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "FranCast by UFG",
+"feedUrl": "https://rss.buzzsprout.com/2510535.rss",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Filter Stories - Coffee Documentaries",
+"feedUrl": "https://feeds.captivate.fm/filter-stories/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "The Inside Dish",
+"feedUrl": "https://www.wdiy.org/podcast/the-inside-dish/rss.xml",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Eat – Coral Springs Talk",
+"feedUrl": "https://coralspringstalk.com/category/eat/feed",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Food Archives - CU-CitizenAccess.org",
+"feedUrl": "https://cu-citizenaccess.org/category/food/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Local Food | Rochester Now",
+"feedUrl": "https://rochesternow.net/category/food/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "BARTENDER.com",
+"feedUrl": "https://bartender.com/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Kickfin",
+"feedUrl": "https://kickfin.com/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "RSS StoryEditor",
+"feedUrl": "https://lidermedia.hr/rss.xml",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Act-Clean",
+"feedUrl": "https://act-clean.com/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "HOSTELERÍA",
+"feedUrl": "https://www.ccooservicios.es/hosteleria/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Tu blog de trabajo en hostelería y turismo",
+"feedUrl": "https://www.turijobs.com/es-es/blog/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Australian Hotels Association Victoria",
+"feedUrl": "https://www.ahavic.com.au/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "El Podcast de Marifé Montes",
+"feedUrl": "https://marifemontes.com/feed/podcast/marife-montes/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Food | 106.9 KROC",
+"feedUrl": "https://kroc.com/category/food/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Food & Drink - MIX 108",
+"feedUrl": "https://mix108.com/category/food/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Wanted in Rome - Food in Rome",
+"feedUrl": "https://www.wantedinrome.com/news/food?format=rss",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Corner Booth Blog | TundraFMP",
+"feedUrl": "https://blog.etundra.com/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "U.S. Equal Employment Opportunity Commission",
+"feedUrl": "https://www.eeoc.gov/rss/newsroom",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Blog - www.eladex.com.pl",
+"feedUrl": "https://www.eladex.com.pl/main-pol.html?mode=RSSB",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Quotidiano online d'informazione agricola ed agroalimentare. - AgroAlimentare News",
+"feedUrl": "https://www.agroalimentarenews.com/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Food Poisoning Bulletin — Food Safety, Recalls & Outbreak News",
+"feedUrl": "https://foodpoisoningbulletin.com/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "franquicia archivos - El negocio - Guía Informativa para Autónomos y Pymes",
+"feedUrl": "https://elnegocio.es/tag/franquicia/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Notizie su cibo - CorCom",
+"feedUrl": "https://www.corrierecomunicazioni.it/tag/cibo/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "food safety Archives - Washington Hospitality Association",
+"feedUrl": "https://wahospitality.org/tag/food-safety/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Alimentación archivos | Sigillum Knowledge Solutions",
+"feedUrl": "https://sigillumks.com/category/alimentacion/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "franquicia Archivos - Pymes y Franquicias",
+"feedUrl": "https://www.pymesyfranquicias.com/tag/franquicia/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Chefs Archivo",
+"feedUrl": "https://www.encocina.com/chefs/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Stryker Food & Baverage",
+"feedUrl": "https://stryker-fb.com/tag/coffee/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "restaurant - Marie France, magazine féminin",
+"feedUrl": "https://www.mariefrance.fr/tag/restaurant",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "bistro - ⋆ Gastry",
+"feedUrl": "https://gastry.cz/tag/bistro/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Food Waste - Πως μπορεί να το αντιμετωπίσει κανείς; - F&B Magazine",
+"feedUrl": "https://fnb-pro.gr/food-waste/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Fighting Food Waste - Analisa Winther",
+"feedUrl": "https://nordicfoodtech.io/food-waste/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Catering",
+"feedUrl": "https://www.workersofengland.co.uk/tag/catering",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "franquias - ABF",
+"feedUrl": "https://abf.com.br/tag/franquias/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Franchise | Bisnis Simpel",
+"feedUrl": "https://bisnis.simplenews.me/category/franchise/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Opening a Bakery in the USA: A Comprehensive Cost Breakdown | Open Cost USA",
+"feedUrl": "https://opencostusa.com/bakery/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Drinking on the Last Frontier",
+"feedUrl": "https://www.kdll.org/podcast/drinking-on-the-last-frontier/rss.xml",
+"perDay": 0.011
+},
+{
+"group": "R",
+"name": "Flyover Food",
+"feedUrl": "https://www.kmuw.org/podcast/flyover-food/rss.xml",
+"perDay": 0.067
+},
+{
+"group": "R",
+"name": "Oh For Food's Sake",
+"feedUrl": "https://fearlessfoodies.co.uk/feed/podcast/fearless-foodies-podcast/",
+"perDay": 0.1
+},
+{
+"group": "R",
+"name": "KPHRED - Pillars of Franchising",
+"feedUrl": "https://kphred.live/azuracast-feed/kphredpillarsoffranchising/",
+"perDay": 0.0
+},
+{
+"group": "R",
+"name": "Restaurants - The Business Press",
+"feedUrl": "https://fortworthbusiness.com/restaurants/feed/",
+"perDay": 0.022
+},
+{
+"group": "R",
+"name": "Kai Keepers",
+"feedUrl": "https://kaikeepers.org/feed/",
+"perDay": 0
+},
+{
+"group": "R",
+"name": "Deputy's pressreleases",
+"feedUrl": "https://news.deputy.com/feed",
+"perDay": 0.056
+},
+{
+"group": "R",
+"name": "外食 アーカイブ | 食品産業新聞社ニュースWEB",
+"feedUrl": "https://www.ssnp.co.jp/foodservice/feed/",
+"perDay": 0.333
+},
+{
+"group": "R",
+"name": "Italia a Tavola — Horeca",
+"feedUrl": "https://rss.italiaatavola.net/2023/horeca.xml",
+"perDay": 0.0
+},
+{
+"group": "R",
+"name": "Èze Congelados",
+"feedUrl": "https://ezecongelados.com.br/feed/",
+"perDay": 0.089
+},
+{
+"group": "R",
+"name": "飲食の戦士たち",
+"feedUrl": "https://in-shoku.info/foodfighters/rss20.xml",
+"perDay": 0.067
+},
+{
+"group": "R",
+"name": "IWCA Greece",
+"feedUrl": "https://iwcagreece.org/feed/",
+"perDay": 0.011
+}
+]
+}

@@ -3865,6 +3865,48 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-bizmind-univ",
+      "name": "ビジネスマインド大学（日本 · 两家面包店店主的经营博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://future-anxiolytic.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "店主"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-xcurating",
+      "name": "未來超商 x Curating（中国台湾 · 零售与便利店趋势分析）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.xcurating.tw/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "中国台湾",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

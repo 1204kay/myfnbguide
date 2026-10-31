@@ -35,8 +35,8 @@ export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "�
  * The machine check (handbook step 10): transcript ≥95% of the script, no gap over 4 s, each minute's median pitch in
  * 195–225 Hz and within 25 Hz of the others. The spread was 20 by the computer's pyin (issue 6, which Kay heard and
  * passed: 15.9; issue 7 cut in two and read in two voices: 43). The server's YIN reads the same issue 6 MP3 at 20.1
- * (10-31, --hear 6) and no setting of it came within 4 Hz of pyin a minute, so the line moved with the ruler: 25, still
- * well under the 43 that was heard.
+ * (10-31, --hear 6) and no setting of it came within 4 Hz of pyin a minute, so the line moved with the ruler: 25. YIN
+ * reads the issue 7 that was heard at 42.1 (pyin 43.1), well over it.
  */
 export const PASS = { match: 0.95, gap: 4, low: 195, high: 225, spread: 25 };
 /**
@@ -263,9 +263,61 @@ export function heardShare(script: string, heard: string): number {
   return prev[b.length]! / a.length;
 }
 
-/** The longest silences between what Whisper heard, as cmp.py measured them: from one segment's end to the next's start. */
-export const gapsOver = (segments: Array<{ start: number; end: number }>, seconds: number) =>
-  segments.slice(1).map((s, i) => ({ from: segments[i]!.end, to: s.start })).filter((g) => g.to - g.from > seconds);
+/**
+ * Silences longer than `seconds` in the audio itself: runs of 100 ms frames under -40 dBFS. Measured on the samples,
+ * not between Whisper's segments as cmp.py did: on issue 6 Whisper skipped 26 s of plain speech (4:33–5:00, every
+ * 2 s of it voiced) and that read as a gap.
+ */
+export function silences(samples: Int16Array, rate: number, seconds: number): Array<{ from: number; to: number }> {
+  const frame = Math.round(rate / 10);
+  const out: Array<{ from: number; to: number }> = [];
+  let start = -1;
+  for (let i = 0; i <= samples.length; i += frame) {
+    let quiet = false;
+    if (i + frame <= samples.length) {
+      let e = 0;
+      for (let j = i; j < i + frame; j += 1) e += (samples[j]! / 32768) ** 2;
+      quiet = Math.sqrt(e / frame) < 0.01;
+    }
+    if (quiet && start < 0) start = i;
+    if (!quiet && start >= 0) {
+      if ((i - start) / rate > seconds) out.push({ from: Math.round((start / rate) * 10) / 10, to: Math.round((i / rate) * 10) / 10 });
+      start = -1;
+    }
+  }
+  return out;
+}
+
+/**
+ * Where to cut the audio for Whisper: about every `every` seconds, at the quietest 100 ms within 5 s of it, so no
+ * word is cut. Whisper on a whole issue in one request skips stretches (issue 6: 26 s, 91.8% heard); a piece this
+ * long is one of its own 30 s windows.
+ */
+export function quietCuts(samples: Int16Array, rate: number, every = 28): number[] {
+  const frame = Math.round(rate / 10);
+  const cuts = [0];
+  for (let target = every * rate; target < samples.length - 10 * rate; target = cuts.at(-1)! + every * rate) {
+    let best = target, least = Infinity;
+    for (let i = Math.max(cuts.at(-1)! + rate, target - 5 * rate); i + frame <= Math.min(samples.length, target + 2 * rate); i += frame) {
+      let e = 0;
+      for (let j = i; j < i + frame; j += 1) e += samples[j]! * samples[j]!;
+      if (e < least) { least = e; best = i + (frame >> 1); }
+    }
+    cuts.push(best);
+  }
+  cuts.push(samples.length);
+  return cuts;
+}
+
+/** A 16-bit mono WAV of `samples`. */
+export function wavOf(samples: Int16Array, rate: number): Buffer {
+  const head = Buffer.alloc(44);
+  head.write("RIFF", 0, "ascii"); head.writeUInt32LE(36 + samples.length * 2, 4); head.write("WAVEfmt ", 8, "ascii");
+  head.writeUInt32LE(16, 16); head.writeUInt16LE(1, 20); head.writeUInt16LE(1, 22); head.writeUInt32LE(rate, 24);
+  head.writeUInt32LE(rate * 2, 28); head.writeUInt16LE(2, 32); head.writeUInt16LE(16, 34);
+  head.write("data", 36, "ascii"); head.writeUInt32LE(samples.length * 2, 40);
+  return Buffer.concat([head, Buffer.from(samples.buffer, samples.byteOffset, samples.length * 2)]);
+}
 
 /** Runs a command over a file; the encoder is the image's `lame` (Dockerfile). */
 function run(cmd: string, args: string[]): Promise<void> {
@@ -278,27 +330,31 @@ function run(cmd: string, args: string[]): Promise<void> {
   });
 }
 
-/** What Whisper hears in the MP3, with its segments' times (one request: an issue is under 25 MB at 64 kbit/s). */
-async function hear(mp3: Buffer, subject: string): Promise<{ text: string; segments: Array<{ start: number; end: number }> }> {
+/** What Whisper hears, piece by piece (quietCuts), under one receipt. */
+async function hear(samples: Int16Array, rate: number, subject: string): Promise<string> {
   const key = credential("models", "GROQ_API_KEY");
   if (!key) throw new Error("GROQ_API_KEY missing");
+  const cuts = quietCuts(samples, rate);
   const receipt = await paidRequest(
-    { service: HEAR.service, model: HEAR.model, purpose: "reference_issue_hear", subject, identity: { model: HEAR.model, bytes: mp3.length, at: Date.now() }, requestSummary: { bytes: mp3.length } },
+    { service: HEAR.service, model: HEAR.model, purpose: "reference_issue_hear", subject, identity: { model: HEAR.model, samples: samples.length, at: Date.now() }, requestSummary: { seconds: Math.round(samples.length / rate), pieces: cuts.length - 1 } },
     async () => {
-      const form = new FormData();
-      form.set("model", HEAR.model);
-      form.set("file", new Blob([new Uint8Array(mp3)], { type: "audio/mpeg" }), "issue.mp3");
-      form.set("response_format", "verbose_json");
-      form.set("language", "zh");
-      form.set("prompt", "以下是普通话的句子。");
-      const res = await fetch(`${HEAR.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(600_000) });
-      if (!res.ok) assertAccepted(HEAR.service, res.status, await res.text());
-      const out = (await res.json()) as { text?: string; duration?: number; segments?: Array<{ start: number; end: number; text: string }> };
-      return { response: { text: out.text ?? "", segments: (out.segments ?? []).map(({ start, end }) => ({ start, end })) }, usage: { audio_seconds: Math.round(out.duration ?? 0) } };
+      const texts: string[] = [];
+      for (let i = 1; i < cuts.length; i += 1) {
+        const form = new FormData();
+        form.set("model", HEAR.model);
+        form.set("file", new Blob([new Uint8Array(wavOf(samples.subarray(cuts[i - 1]!, cuts[i]!), rate))], { type: "audio/wav" }), "piece.wav");
+        form.set("response_format", "json");
+        form.set("language", "zh");
+        form.set("prompt", "以下是普通话的句子。");
+        const res = await fetch(`${HEAR.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(120_000) });
+        if (!res.ok) assertAccepted(HEAR.service, res.status, await res.text());
+        texts.push(((await res.json()) as { text?: string }).text ?? "");
+      }
+      return { response: { text: texts.join("") }, usage: { audio_seconds: Math.round(samples.length / rate) } };
     },
   );
   await sql.begin((tx) => completeReceipt(tx, receipt.receiptId));
-  return receipt.response as { text: string; segments: Array<{ start: number; end: number }> };
+  return (receipt.response as { text: string }).text;
 }
 
 export interface VoiceReport {
@@ -342,11 +398,11 @@ export async function hearIssue(no: number) {
   await run("lame", ["--quiet", "--decode", path.join(work, "in.mp3"), path.join(work, "out.wav")]);
   const { rate, samples } = wavSamples(await readFile(path.join(work, "out.wav")));
   const seconds = Math.round(samples.length / rate);
-  const heard = await hear(mp3, `issue:${no}:hear`);
-  const match = heardShare(script, heard.text);
-  const gaps = gapsOver(heard.segments, PASS.gap);
+  const heard = await hear(samples, rate, `issue:${no}:hear`);
+  const match = heardShare(script, heard);
+  const gaps = silences(samples, rate, PASS.gap);
   const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
-  return { no, seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...judge(seconds, match, gaps, pitch), heard: heard.text };
+  return { no, seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...judge(seconds, match, gaps, pitch), heard };
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
@@ -391,10 +447,9 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
       const seconds = Math.round(samples.length / rate);
       await writeFile(path.join(work, `${no}.wav`), wav);
       await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
-      const mp3 = await readFile(path.join(work, `${no}.mp3`));
-      const heard = await hear(mp3, `issue:${no}:${attempt}`);
-      const match = heardShare(script, heard.text);
-      const gaps = gapsOver(heard.segments, PASS.gap);
+      const heard = await hear(samples, rate, `issue:${no}:${attempt}`);
+      const match = heardShare(script, heard);
+      const gaps = silences(samples, rate, PASS.gap);
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
       const verdict = judge(seconds, match, gaps, pitch);
       report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...verdict });

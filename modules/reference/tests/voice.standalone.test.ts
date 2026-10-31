@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, CLOSING, gapsOver, heardShare, judge, numberWords, opening, pitchByMinute, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, CLOSING, heardShare, judge, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -63,8 +63,31 @@ test("numbers are compared as said, whether the transcript writes digits or char
   assert.ok(heardShare("今天先说两件事", "今天说两件事") < 1);
 });
 
-test("the machine check: gaps between what was heard, and each failed part named", () => {
-  assert.deepEqual(gapsOver([{ start: 0, end: 5 }, { start: 5.5, end: 9 }, { start: 14, end: 20 }], 4), [{ from: 9, to: 14 }]);
+/** Seconds of a 200 Hz tone, or of silence where `loud` is false. */
+const tone = (rate: number, seconds: number, loud = true) =>
+  Int16Array.from({ length: rate * seconds }, (_, i) => (loud ? Math.round(6000 * Math.sin((2 * Math.PI * 200 * i) / rate)) : 0));
+const join = (...parts: Int16Array[]) => { const out = new Int16Array(parts.reduce((n, p) => n + p.length, 0)); let at = 0; for (const p of parts) { out.set(p, at); at += p.length; } return out; };
+
+test("silences are measured in the audio, not between what Whisper heard", () => {
+  const rate = 8000;
+  const audio = join(tone(rate, 9), tone(rate, 5, false), tone(rate, 6), tone(rate, 2, false), tone(rate, 3));
+  assert.deepEqual(silences(audio, rate, 4), [{ from: 9, to: 14 }]);
+});
+
+test("the audio goes to Whisper in pieces cut at the quietest moment near every 28 s", () => {
+  const rate = 8000;
+  const audio = join(tone(rate, 26), tone(rate, 1, false), tone(rate, 25), tone(rate, 1, false), tone(rate, 20));
+  const cuts = quietCuts(audio, rate).map((c) => c / rate);
+  assert.equal(cuts.length, 4);
+  assert.deepEqual([cuts[0], cuts[3]], [0, 73]);
+  assert.ok(cuts[1]! > 26 && cuts[1]! < 27, `first cut at ${cuts[1]} s, not in the silence at 26–27 s`);
+  assert.ok(cuts[2]! > 52 && cuts[2]! < 53, `second cut at ${cuts[2]} s, not in the silence at 52–53 s`);
+  const { rate: r, samples } = wavSamples(wavOf(audio.subarray(0, 100), rate));
+  assert.equal(r, rate);
+  assert.deepEqual([...samples], [...audio.subarray(0, 100)]);
+});
+
+test("the machine check names each failed part", () => {
   assert.deepEqual(judge(494, 0.954, [], [210, 215, 205]), { pass: true, why: [] });
   const failed = judge(494, 0.9, [{ from: 9, to: 14 }], [176, 219]);
   assert.equal(failed.pass, false);

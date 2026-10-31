@@ -507,6 +507,37 @@ export async function timeIssue(no: number) {
   return heard.starts;
 }
 
+/** The pause added before each line of the script after the first, in seconds. */
+export const BREATH = 0.5;
+/**
+ * Room to breathe between the script's lines (Kay 10-31 22:30: listening to 十一说 felt like running out of breath).
+ * Leda reads the whole issue in one request and goes from one line to the next with hardly a pause: issue 7 had 12
+ * pauses over 0.8 s in 57 lines and about 8 over 0.5 s a minute, where the voice before it (Qwen, line by line with
+ * 0.45 s put between) had about 18. So BREATH of silence goes in at the quietest 20 ms in the 0.6 s before each line
+ * starts (not mid-word: the line's start is where Whisper heard it, a little late or early), and the line times move
+ * with it so the 文字稿 still follows the voice.
+ */
+export function breathe(samples: Int16Array, rate: number, starts: number[], seconds = BREATH): { samples: Int16Array; starts: number[] } {
+  const gap = Math.round(rate * seconds);
+  const step = Math.round(rate * 0.02);
+  const cuts: number[] = [];
+  for (const t of starts.slice(1)) {
+    const end = Math.min(samples.length, Math.round(t * rate));
+    let best = end, low = Infinity;
+    for (let i = Math.max(cuts.at(-1) ?? 0, end - Math.round(rate * 0.6)); i + step <= end; i += step) {
+      let e = 0;
+      for (let j = i; j < i + step; j += 1) e += samples[j]! * samples[j]!;
+      if (e < low) { low = e; best = i + (step >> 1); }
+    }
+    cuts.push(Math.max(best, cuts.at(-1) ?? 0));
+  }
+  const out = new Int16Array(samples.length + gap * cuts.length);
+  let from = 0, to = 0;
+  for (const c of cuts) { out.set(samples.subarray(from, c), to); to += c - from + gap; from = c; }
+  out.set(samples.subarray(from), to);
+  return { samples: out, starts: starts.map((t, i) => Math.round((t + i * seconds) * 10) / 10) };
+}
+
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
 export async function voiceReport(no: number): Promise<VoiceReport | null> {
   return readFile(reportFile(no), "utf8").then((t) => JSON.parse(t) as VoiceReport, () => null);
@@ -584,6 +615,16 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const verdict = judge(seconds, match, gaps, pitch, end);
       report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict });
       if (!verdict.pass) { await keep(); continue; }
+      // A breath between the script's lines (breathe): the reading is checked as Leda read it, then heard with room.
+      let starts = lineStarts(scriptLines(script), segments);
+      let length = seconds;
+      if (starts) {
+        const roomy = breathe(samples, rate, starts);
+        starts = roomy.starts;
+        length = Math.round(roomy.samples.length / rate);
+        await writeFile(path.join(work, `${no}.wav`), wavOf(roomy.samples, rate));
+        await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
+      }
       if (opts.dryRun) { report.status = "tried"; return report; }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.
       await mkdir(DIR, { recursive: true });
@@ -592,7 +633,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
         await rename(path.join(DIR, `${no}.${ext}.part`), path.join(DIR, `${no}.${ext}`));
       }
       // Where each line starts, for the 文字稿 to follow the voice; without it the 文字稿 is shown whole, as before.
-      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds, starts: lineStarts(scriptLines(script), segments) ?? undefined }));
+      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds: length, starts: starts ?? undefined }));
       report.status = "up";
       return keep();
     }

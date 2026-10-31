@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, CLOSING, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, breathe, CLOSING, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -85,6 +85,17 @@ test("the audio goes to Whisper in pieces cut at the quietest moment near every 
   const { rate: r, samples } = wavSamples(wavOf(audio.subarray(0, 100), rate));
   assert.equal(r, rate);
   assert.deepEqual([...samples], [...audio.subarray(0, 100)]);
+});
+
+test("half a second of silence goes in at the quiet spot before each line, and the line times move with it", () => {
+  const rate = 8000;
+  // Lines start at 0, 3.5 and 6.3 s; the speaker breathes at 3.1–3.3 and 6.0–6.1 s.
+  const audio = join(tone(rate, 3.1), tone(rate, 0.2, false), tone(rate, 2.7), tone(rate, 0.1, false), tone(rate, 2));
+  const { samples, starts } = breathe(audio, rate, [0, 3.5, 6.3]);
+  assert.equal(samples.length, audio.length + rate);
+  assert.deepEqual(starts, [0, 4, 7.3]);
+  const quiet = silences(samples, rate, 0.4).map((s) => [Math.round(s.from * 10) / 10, Math.round(s.to * 10) / 10]);
+  assert.deepEqual(quiet, [[3.1, 3.8], [6.5, 7.1]]);
 });
 
 test("the machine check names each failed part", () => {

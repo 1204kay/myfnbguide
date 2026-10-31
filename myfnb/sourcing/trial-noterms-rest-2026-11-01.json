@@ -1,13 +1,13 @@
 {
- "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。 另加 O 组：旧批次（10-05 至 10-30）停在待定、从没试吃过的来源，免费重查后 8 月以后还在更新、robots 许可、有订阅的 107 个。",
+ "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。 另加 O 组：旧批次（10-05 至 10-30）停在待定、从没试吃过的来源，免费重查后 8 月以后还在更新、robots 许可（含不挡 ChatGPT-User、Claude-User）、有订阅的。审阅后去掉 11 个台账里同一订阅最后一条已是不接或停用的（arc2020、phillymag、foodaffairs、canalhoreca、sindrio、chefspencil、mercasa、fcsi、simplecast 5xt2hr_c、foodbusinessmea、thespoon）；hotelandrestauranttimes 10-05 注明「按新标准再判」，有意留着。两组首页都查过没有 noai 标记（10 个首页打不开，没查到）。O 组的条款之前是关键词扫过没命中限制或没有条款页，和 N 组一样，接入前逐个读条款全文。",
  "volume": {
   "N": {
-   "feeds": 376,
-   "perDay": 66.007
+   "feeds": 366,
+   "perDay": 64.527
   },
   "O": {
-   "feeds": 107,
-   "perDay": 13.264
+   "feeds": 106,
+   "perDay": 13.199
   }
  },
  "feeds": [
@@ -235,12 +235,6 @@
   },
   {
    "group": "N",
-   "name": "Cafe – Canal Horeca",
-   "feedUrl": "https://canalhoreca.cl/feed/",
-   "perDay": 0.109
-  },
-  {
-   "group": "N",
    "name": "Food Archives - Samay News",
    "feedUrl": "https://samaynews.co.in/feed/",
    "perDay": 0.109
@@ -385,12 +379,6 @@
   },
   {
    "group": "N",
-   "name": "gastronomía – Mercasa",
-   "feedUrl": "https://www.mercasa.es/feed/atom/",
-   "perDay": 0.185
-  },
-  {
-   "group": "N",
    "name": "Hospitality Archives |",
    "feedUrl": "https://tbbwmag.com/feed/",
    "perDay": 0.109
@@ -459,12 +447,6 @@
    "group": "N",
    "name": "Restauración – suresteinfo.com",
    "feedUrl": "https://suresteinfo.com/feed/",
-   "perDay": 0.109
-  },
-  {
-   "group": "N",
-   "name": "food Archives - Foodservice Consultants Society International",
-   "feedUrl": "https://www.fcsi.org/feed/",
    "perDay": 0.109
   },
   {
@@ -555,12 +537,6 @@
    "group": "N",
    "name": "restaurant - Economica.net",
    "feedUrl": "https://www.economica.net/feed",
-   "perDay": 0.109
-  },
-  {
-   "group": "N",
-   "name": "Restaurants | Philly's Best Restaurants and Bars - Philadelphia Magazine",
-   "feedUrl": "https://www.phillymag.com/restaurants/feed/",
    "perDay": 0.109
   },
   {
@@ -706,12 +682,6 @@
    "name": "Home | Surgelati Magazine",
    "feedUrl": "https://www.surgelatimagazine.com/feed/",
    "perDay": 0.109
-  },
-  {
-   "group": "N",
-   "name": "Browse every Hospitality Hangout episode featuring conversations… | The Hospitality Hangout",
-   "feedUrl": "https://feeds.simplecast.com/5xt2Hr_C",
-   "perDay": 0.261
   },
   {
    "group": "N",
@@ -1447,12 +1417,6 @@
   },
   {
    "group": "N",
-   "name": "Arquivo de bar - SindRio",
-   "feedUrl": "https://www.sindrio.com.br/feed/",
-   "perDay": 0.109
-  },
-  {
-   "group": "N",
    "name": "comida Archives - Endeavor",
    "feedUrl": "https://www.endeavor.org.ar/feed/",
    "perDay": 0.109
@@ -1933,12 +1897,6 @@
   },
   {
    "group": "N",
-   "name": "agri-food Archives - Agricultural and Rural Convention",
-   "feedUrl": "https://www.arc2020.eu/feed/",
-   "perDay": 0.087
-  },
-  {
-   "group": "N",
    "name": "Архивы horeca - Hotel Present",
    "feedUrl": "https://hotelpresent.ru/feed/",
    "perDay": 0.109
@@ -2089,27 +2047,9 @@
   },
   {
    "group": "N",
-   "name": "Food Trends - Chef's Pencil",
-   "feedUrl": "https://www.chefspencil.com/feed/",
-   "perDay": 0.13
-  },
-  {
-   "group": "N",
-   "name": "Ristorazione Archivi - Food Affairs",
-   "feedUrl": "https://www.foodaffairs.it/feed/",
-   "perDay": 0.272
-  },
-  {
-   "group": "N",
    "name": "Restaurants, Openings & Food News | HKA Texas",
    "feedUrl": "https://www.hkatexas.com/feed.xml",
    "perDay": 0.152
-  },
-  {
-   "group": "N",
-   "name": "Tea | Food Business Middle East & Africa - No.1 Food & Beverage Formulation, Processing & Packaging Publ ...",
-   "feedUrl": "https://www.foodbusinessmea.com/feed/",
-   "perDay": 0.109
   },
   {
    "group": "N",
@@ -2632,12 +2572,6 @@
    "name": "Bars Archives - ACU Pay",
    "feedUrl": "https://acuthai.com/language/en/feed/",
    "perDay": 0.098
-  },
-  {
-   "group": "O",
-   "name": "beer – The Spoon",
-   "feedUrl": "https://thespoon.tech/feed/",
-   "perDay": 0.065
   },
   {
    "group": "O",

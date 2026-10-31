@@ -1,8 +1,8 @@
 // 精选的门槛。评分标准本身写在 prompts/selection-score.md；这里只决定“多少分算入选”。
 // 每篇资料由评分模型独立打两次分（0–100），两次之和 ≥ 2 × 门槛才成为精选候选；
 // 确认新闻身份与新增价值后，由发布规则决定展示（见 docs/selection.md），卡片上显示两次的平均分。
-// 门槛按信源分级区分：官方一手信源的门槛低一些，媒体和个人的高一些。改了门槛或评分提示词，
-// 用 scripts/eval-selection.ts 在你自己标注的样本上重跑一遍，再决定上线（见 docs/selection.md）。
+// 门槛按信源分级区分：官方一手信源的门槛低一些，媒体和个人的高一些；信源类别再把某些官方信源的门槛抬高。
+// 改了门槛或评分提示词，用 scripts/eval-selection.ts 在你自己标注的样本上重跑一遍，再决定上线（见 docs/selection.md）。
 
 export const SELECTION = {
   /**
@@ -17,10 +17,24 @@ export const SELECTION = {
   // （当时用 myfnb/eval-score-candidate.ts，10-25 起换成原版的 scripts/eval-selection.ts；myfnb/HANDOFF.md §9.2「10/16 下午：评分改成故事优先」）。退回旧版：git revert 这一次提交。
   thresholds: { T1: 46, T1_5: 46, T2: 46 } as Record<string, number>,
   /**
+   * 信源类别 → 门槛下限。分级只说明来源是不是官方、一手；有些官方信源的日常内容主要写给业内，
+   * 读者要看的只是其中的大事，就在后台“信源”里给它一个类别，门槛抬到不低于这里的数。
+   * 只抬不降：分级门槛本来就更高的不受影响。没有类别的信源只按分级。
+   */
+  // MYFNB 三级同一个门槛，目前没有信源类别（原版的 ecosystem、leaderboard 是 AI 行业的）。
+  classes: {} as Record<string, { label: string; threshold: number }>,
+  /**
    * 没入选、但平均分高于这个数的资料，也用精选的写法（内容理解：标题、摘要、推荐理由）来写，
    * 其余用更便宜的“标题摘要翻译”。
    */
   // 跟着门槛降到 30（作者是 T1 60 / 50，同样低 10 分）：30–40 分多是差一点入选的可看和必看，在「全部动态」里也带推荐理由；
   // 不看的中位数 15，大多仍走翻译。
   understandFloor: 30,
+  /**
+   * 浏览“全部动态”（网页列表、接口和 RSS 的全部模式）只出平均分不低于这个数的资料，没评上分的照常出；
+   * 搜索仍覆盖全部。
+   */
+  // MYFNB 先设 0，「全部动态」照旧列出全部：本站日报收「全部」里的每一条（site.ts REPORTS.dailyScope = "pool"，
+  // 日报按 eligible 取，不看这个数），设成 40 会让「全部」比日报少。要不要像原版一样只列 40 分以上另行决定（2026-10-31 合并原版时）。
+  browseFloor: 0,
 } as const;

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# 2026-11-01 补试吃：Y 待定里找不到条款页、10-31 没试吃到的 376 个订阅（myfnb/sourcing/trial-noterms-rest-2026-11-01.json）。
-# 10-31 报「信源收工」时漏了它们：只试吃过 187 个，另外 819 个台账一直待定；免费重查后 419 个还在更新、robots 许可、没拒绝 AI 代读，去重后 378 个订阅，再去掉 10-24 已试吃过的 2 个，剩 376 个。
-# 第一轮每个看 4 条、第二轮对有过预筛的看 15 条，和 rest-all 一样。按 rest-all 的单价（511 个两轮 US$7.50）估约 US$5.5；上限 2.40 + 4.00 = 6.40，
-# --jobs 3 收尾时会多花几条的钱，仍在 US$7 以内（经验 C15）。要 Kay 在云电脑串打同意句才跑。不在 05:00–08:00 MYT 跑；跑时不要合并 myfnbguide。
+# 2026-11-01 补试吃 483 个订阅（myfnb/sourcing/trial-noterms-rest-2026-11-01.json）：10-31 报「信源收工」时漏掉、从没试吃过的来源。
+# N 组 376 个：Y 待定里找不到条款页的 819 个，免费重查后还在更新、robots 许可、没拒绝 AI 代读、去重后剩的。O 组 107 个：10-05 至 10-30 旧批次停在待定的，同样免费重查后剩的。
+# 第一轮每个看 4 条、第二轮对有过预筛的看 15 条，和 rest-all 一样。按 rest-all 的单价（511 个两轮 US$7.50）估约 US$7.1；上限 3.10 + 5.10 = 8.20，
+# --jobs 3 收尾时会多花几条的钱，仍在 US$8.5 以内（经验 C15）。要 Kay 在云电脑串打同意句才跑。不在 05:00–08:00 MYT 跑（只在开跑时查，凌晨别开跑）；跑时不要合并 myfnbguide。
 # llm per_day 跑时临时 30,000，跑完滚动 24 小时低于 7,000 才调回 10,000。跑完先把逐条结果拷出容器。
 #   cd /opt/myfnbguide && bash myfnb/noterms-rest-2026-11-01-run.sh start | status
 set -euo pipefail
@@ -41,11 +41,11 @@ case "${1:-}" in
     # 试吃
     trial() { sudo docker compose exec -T worker node myfnb/trial-sources.ts --apply --sample trial-noterms-rest-2026-11-01.json --jobs 3 --reserve 3000 "$@"; }
     echo "# ① 第一轮 $(date -u +%FT%TZ)"
-    trial --per 4 --cap-usd 2.40
+    trial --per 4 --cap-usd 3.10
     first=$(sudo docker compose exec -T worker sh -c 'ls -t /tmp/trial-sources-*.jsonl | head -1' | tr -d '\r')
     echo "# 第一轮逐条结果：$first"
     echo "# ② 第二轮 $(date -u +%FT%TZ)"
-    trial --per 15 --cap-usd 4.00 --only-passed "$first"
+    trial --per 15 --cap-usd 5.10 --only-passed "$first"
     for f in $(sudo docker compose exec -T worker sh -c 'ls -t /tmp/trial-sources-*.jsonl | head -2' | tr -d '\r'); do
       sudo docker compose cp "worker:$f" "$OUT/" && echo "# 已拷出：$OUT/$(basename "$f")"
     done

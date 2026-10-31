@@ -1,9 +1,13 @@
 {
- "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。",
+ "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。 另加 O 组：旧批次（10-05 至 10-30）停在待定、从没试吃过的来源，免费重查后 8 月以后还在更新、robots 许可、有订阅的 107 个。",
  "volume": {
   "N": {
    "feeds": 376,
    "perDay": 66.007
+  },
+  "O": {
+   "feeds": 107,
+   "perDay": 13.264
   }
  },
  "feeds": [
@@ -2262,6 +2266,648 @@
    "name": "Ana Sayfa - Etit Mimarlık",
    "feedUrl": "https://pastanedekorasyon.net/feed/",
    "perDay": 0.098
+  },
+  {
+   "group": "O",
+   "name": "NHO Reiseliv（挪威 · 酒店餐饮协会）",
+   "feedUrl": "https://www.nhoreiseliv.no/rss",
+   "perDay": 0.261
+  },
+  {
+   "group": "O",
+   "name": "Wielandshöhe 店主日记（德国 · 餐厅老板 Vincent Klink）",
+   "feedUrl": "https://www.wielandshoehe.de/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Tracie - The Food Business Coach（爱尔兰 · 餐饮辅导师，次选类型）",
+   "feedUrl": "https://feeds.acast.com/public/shows/6314967abbd3420013fc2153",
+   "perDay": 0.033
+  },
+  {
+   "group": "O",
+   "name": "No Reservations: The Honest Guide to Restaurant Success（美国 · 前餐厅老板、现餐厅会计顾问 Kasey Anton，次选类型）",
+   "feedUrl": "https://feeds.async.com/ffdea787-1d25-44f8-8cdb-3efb4b8fe75f.rss",
+   "perDay": 0.043
+  },
+  {
+   "group": "O",
+   "name": "ANGEM（意大利 · 团餐协会）",
+   "feedUrl": "https://www.angem.it/feed/",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "ABLE BC（加拿大 · 酒吧协会）",
+   "feedUrl": "https://ablebc.ca/industry-updates?format=rss",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "Singapore Nightlife Business Association（新加坡 · 酒吧协会）",
+   "feedUrl": "https://snba.org.sg/feed/",
+   "perDay": 0.033
+  },
+  {
+   "group": "O",
+   "name": "Zonal（英国 · 收银系统公司）",
+   "feedUrl": "https://www.zonal.co.uk/resources/feed/",
+   "perDay": 0.076
+  },
+  {
+   "group": "O",
+   "name": "Prática（巴西 · 设备制造商）",
+   "feedUrl": "https://blog.praticabr.com/feed/rss2",
+   "perDay": 0.783
+  },
+  {
+   "group": "O",
+   "name": "Lightspeed（德国）（德国 · 收银系统公司）",
+   "feedUrl": "https://www.lightspeedhq.de/feed/",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "FoodNotify（奥地利 · 库存和成本软件公司）",
+   "feedUrl": "https://www.foodnotify.com/de/blog/rss.xml",
+   "perDay": 0.239
+  },
+  {
+   "group": "O",
+   "name": "TheFork Manager（法国 · 订位软件公司）",
+   "feedUrl": "https://www.theforkmanager.com/fr/blog/rss.xml",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "Dotykačka（捷克 · 收银系统公司）",
+   "feedUrl": "https://dotykacka.cz/feed/",
+   "perDay": 0.054
+  },
+  {
+   "group": "O",
+   "name": "BIM POS（黎巴嫩 · 收银系统公司）",
+   "feedUrl": "https://bimpos.com/rss.xml",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Craver（加拿大 · 收银系统公司）",
+   "feedUrl": "https://www.getcraver.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "OneHubPOS（美国 · 收银系统公司）",
+   "feedUrl": "https://onehubpos.com/blog/rss.xml",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "Reflection POS（美国 · 收银系统公司）",
+   "feedUrl": "https://www.nccusa.com/feed/",
+   "perDay": 0.043
+  },
+  {
+   "group": "O",
+   "name": "TPV BDP-NET（西班牙 · 收银系统公司）",
+   "feedUrl": "https://www.bdpcenter.com/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Tableo（马耳他 · 餐饮管理软件公司）",
+   "feedUrl": "https://tableo.com/feed/",
+   "perDay": 0.13
+  },
+  {
+   "group": "O",
+   "name": "Ressto（印度 · 餐饮管理软件公司）",
+   "feedUrl": "https://ressto.co/blog/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Aedan Rose（美国 · 餐饮管理软件公司）",
+   "feedUrl": "https://aedanrose.ai/rss.xml",
+   "perDay": 0.543
+  },
+  {
+   "group": "O",
+   "name": "Zuppler（美国 · 线上点餐软件公司）",
+   "feedUrl": "https://www.zuppler.com/blog?format=rss",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "FoxiFood 博客（美国 · 线上点餐软件公司的博客）",
+   "feedUrl": "https://www.foxifood.com/blog/feed.xml",
+   "perDay": 0.217
+  },
+  {
+   "group": "O",
+   "name": "Biyo POS（美国 · 收银系统公司）",
+   "feedUrl": "https://biyopos.com/feed/",
+   "perDay": 0.217
+  },
+  {
+   "group": "O",
+   "name": "Billzova 博客（印度 · 餐厅收银软件公司的博客）",
+   "feedUrl": "https://www.billzova.com/blog/rss.xml",
+   "perDay": 0.054
+  },
+  {
+   "group": "O",
+   "name": "CATERING MANAGEMENT（德国 · 餐饮行业媒体）",
+   "feedUrl": "https://catering.de/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "BÄKO-magazin（德国 · 餐饮行业媒体）",
+   "feedUrl": "https://baeko-magazin.de/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Honoré le Mag（法国 · 餐饮行业媒体）",
+   "feedUrl": "https://honorelemag.fr/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "grandes-cuisines.com（法国 · 餐饮行业媒体）",
+   "feedUrl": "https://www.grandes-cuisines.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "industrie-hoteliere.com（法国 · 餐饮行业媒体）",
+   "feedUrl": "https://www.industrie-hoteliere.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "brutarul.ro（罗马尼亚 · 餐饮行业媒体）",
+   "feedUrl": "https://brutarul.ro/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Pekar&Poslastičar（塞尔维亚 · 餐饮行业媒体）",
+   "feedUrl": "http://pekariposlasticar.rs/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "painetpatisserie.be（比利时 · 餐饮行业媒体）",
+   "feedUrl": "https://www.painetpatisserie.be/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Spotong（南非 · 餐饮行业媒体）",
+   "feedUrl": "https://www.spotongmag.co.za/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "食パン工房 fluffy店長ブログ（日本 · 博客名录里的条目）",
+   "feedUrl": "https://www.shounan-fluffy.jp/rss/blog",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "パン屋の心ここにあらず（日本 · 博客名录里的条目）",
+   "feedUrl": "https://bakeryowner-y.com/feed/",
+   "perDay": 0.033
+  },
+  {
+   "group": "O",
+   "name": "Transformationscoaches für das Gastgewerbe NRW（德国 · 北威州餐饮协会顾问谈数字化和减少浪费）",
+   "feedUrl": "https://letscast.fm/podcasts/transformationscoaches-fuer-das-gastgewerbe-nrw-a66241f4/feed",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "Smart Pizza Marketing（美国 · 播客/博客）",
+   "feedUrl": "https://www.smartpizzamarketing.com/rss/",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "Globes · מסעדנים 标签（以色列 · 媒体）",
+   "feedUrl": "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=585",
+   "perDay": 0.163
+  },
+  {
+   "group": "O",
+   "name": "Hot Dinners",
+   "feedUrl": "https://www.hot-dinners.com/gastro-blog/latest-restaurant-food-news?format=feed&amp;type=rss",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Table Manners with Jessie and Lennie Ware<!-- --> -        Hosted by Jessie Ware",
+   "feedUrl": "https://feeds.acast.com/public/shows/tablemanners",
+   "perDay": 0.12
+  },
+  {
+   "group": "O",
+   "name": "Food with Mark Bittman<!-- --> -        Hosted by Mark Bittman",
+   "feedUrl": "https://feeds.acast.com/public/shows/markbittmanfood",
+   "perDay": 0.141
+  },
+  {
+   "group": "O",
+   "name": "Business Punk – How to Gastro",
+   "feedUrl": "https://feeds.acast.com/public/shows/6ac8f843937a3c900f288684",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Le Calcul du Chef（餐厅盈利）",
+   "feedUrl": "https://podcasts.organizen.ai/le-calcul-du-chef-strategies-vegetales-pour-la-restauration-rentable/feed.xml",
+   "perDay": 0.391
+  },
+  {
+   "group": "O",
+   "name": "Rue des Chefs – La cuisine, de métier",
+   "feedUrl": "https://podcasts.organizen.ai/rue-des-chefs-la-cuisine-de-metier/feed.xml",
+   "perDay": 0.054
+  },
+  {
+   "group": "O",
+   "name": "Sur le grill d'Écotable（可持续餐厅）",
+   "feedUrl": "https://feeds.audiomeans.fr/feed/4761fccb-1786-4f4a-a699-8b19676a651d.xml",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Business of Bouffe",
+   "feedUrl": "https://feeds.acast.com/public/shows/633c24cdb8e4730011a3807c",
+   "perDay": 0.293
+  },
+  {
+   "group": "O",
+   "name": "Ministério da Saúde 新闻",
+   "feedUrl": "https://www.gov.br/saude/pt-br/assuntos/noticias/noticias/RSS",
+   "perDay": 0.163
+  },
+  {
+   "group": "O",
+   "name": "So You Wanna Get Fat?（Chef Brian Tsao）",
+   "feedUrl": "https://rss.art19.com/so-you-wann-get-fat",
+   "perDay": 0.12
+  },
+  {
+   "group": "O",
+   "name": "Feu Doux",
+   "feedUrl": "https://feeds.acast.com/public/shows/691b8630b9580981597cde49",
+   "perDay": 0.033
+  },
+  {
+   "group": "O",
+   "name": "The NACC Podcast（英国 · 播客）",
+   "feedUrl": "https://feeds.acast.com/public/shows/69c14ab962f6c66afea75b01",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "Serving Success: Only A Pavement Away（英国 · 播客）",
+   "feedUrl": "https://audioboom.com/channels/5114541.rss",
+   "perDay": 0.043
+  },
+  {
+   "group": "O",
+   "name": "Spooning with Mark Wogan（英国 · 播客）",
+   "feedUrl": "https://feeds.acast.com/public/shows/6565dd7277cca90012c298c8",
+   "perDay": 0.098
+  },
+  {
+   "group": "O",
+   "name": "Franchise New Zealand（新西兰 · 媒体）",
+   "feedUrl": "https://franchise.co.nz/news/rss",
+   "perDay": 0.12
+  },
+  {
+   "group": "O",
+   "name": "Market Lane Coffee Podcast（澳大利亚 · 播客）",
+   "feedUrl": "https://feeds.redcircle.com/e8fad960-1759-4b85-9892-4f1c3f24d23a",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Kian.WTF",
+   "feedUrl": "https://kian.wtf/index.xml",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "Franchise Association UK - Quality Franchise Association",
+   "feedUrl": "https://www.franchise-association.org.uk/feed/",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "St. Louis Magazine",
+   "feedUrl": "https://www.stlmag.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Eat & Drink | Barrie 360",
+   "feedUrl": "https://barrie360.com/category/lifestyle/eat-drink/feed/",
+   "perDay": 0.076
+  },
+  {
+   "group": "O",
+   "name": "ഫുഡ് വാർത്തകൾ | Jaihind News",
+   "feedUrl": "https://jaihindtv.in/feed",
+   "perDay": 0.543
+  },
+  {
+   "group": "O",
+   "name": "Bars Archives - ACU Pay",
+   "feedUrl": "https://acuthai.com/language/en/feed/",
+   "perDay": 0.098
+  },
+  {
+   "group": "O",
+   "name": "beer – The Spoon",
+   "feedUrl": "https://thespoon.tech/feed/",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "foodservice – Assespro",
+   "feedUrl": "https://www.assespro-mg.org.br/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "gourmet archivos - Almeja de Carril de los Parquistas de Carril",
+   "feedUrl": "https://parquistasdecarril.es/feed/",
+   "perDay": 0.054
+  },
+  {
+   "group": "O",
+   "name": "restaurant - Le blog de Stéphane Godet",
+   "feedUrl": "https://www.stephanegodet.com/rss",
+   "perDay": 0.272
+  },
+  {
+   "group": "O",
+   "name": "Café archivos – Economía Sustentable",
+   "feedUrl": "https://economiasustentable.com/feed/",
+   "perDay": 0.217
+  },
+  {
+   "group": "O",
+   "name": "dining Archives - WebProWorld",
+   "feedUrl": "https://www.webproworld.com/feed/",
+   "perDay": 0.087
+  },
+  {
+   "group": "O",
+   "name": "Hospitality Archives - TheStadiumBusiness Design & Development Summit",
+   "feedUrl": "https://www.stadiumdesignsummit.com/feed/",
+   "perDay": 0.152
+  },
+  {
+   "group": "O",
+   "name": "restauración - Veo Andalucia",
+   "feedUrl": "https://veoandalucia.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Food – Spark",
+   "feedUrl": "https://www.sparksunderland.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Hospitality Archives | GH-Hospitality Hub",
+   "feedUrl": "https://ghhospitality.net/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Restaurants Archives - Horizon Note",
+   "feedUrl": "https://horizonnote.com/feed/",
+   "perDay": 0.043
+  },
+  {
+   "group": "O",
+   "name": "Restaurants Archives - BookWerks™ | Cincinnati Based Bookkeeping Services",
+   "feedUrl": "https://bookwerks.io/feed/atom/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "図解■ スコッチウイスキーの販売量ランキング2025【世界】 | alcholog -アルコログ-",
+   "feedUrl": "https://www.alcholog.com/feed/",
+   "perDay": 0.054
+  },
+  {
+   "group": "O",
+   "name": "drink | EUFEMIA",
+   "feedUrl": "https://eufemia.periskop.it/feed/",
+   "perDay": 0.054
+  },
+  {
+   "group": "O",
+   "name": "Food Waste - IOI Journal",
+   "feedUrl": "https://ioijournal.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "alimentaire - Economie, Marketing, Commerce, Force de Vente, Ecologie",
+   "feedUrl": "https://www.emc-magazine.com/rss",
+   "perDay": 0.207
+  },
+  {
+   "group": "O",
+   "name": "Franchising - Welcome to the Middle East's Premier Franchise Powerhouse",
+   "feedUrl": "https://www.consultandexpand.com/rss.xml",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Supermarkets Archives - Squizify",
+   "feedUrl": "https://squizify.com/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "school meals – Children's Hunger Alliance",
+   "feedUrl": "https://childrenshungeralliance.org/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "agroalimentaire | Journal Métro",
+   "feedUrl": "https://journalmetro.com/feed/",
+   "perDay": 0.076
+  },
+  {
+   "group": "O",
+   "name": "FRANQUICIA – EscritosJuridicos.com",
+   "feedUrl": "https://www.escritosjuridicos.com/feed/",
+   "perDay": 0.076
+  },
+  {
+   "group": "O",
+   "name": "Food safety archivos | Andy | Intowin",
+   "feedUrl": "https://andyapp.io/en/feed/",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "restaurant news Archives - Estes Valley Voice",
+   "feedUrl": "https://estesvalleyvoice.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "food tech - StockPil",
+   "feedUrl": "https://stockpil.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Agribusiness Archives - Farm News Daily",
+   "feedUrl": "https://farmnewsdaily.com/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "HoReCa и Takeaway - Optipak",
+   "feedUrl": "https://optipak.com.ua/feed/",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "Post che parlano di supermarket — L'indiependente",
+   "feedUrl": "https://www.lindiependente.it/feed/",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Dripos Status - Incident History",
+   "feedUrl": "https://status.dripos.com/history.rss",
+   "perDay": 0.022
+  },
+  {
+   "group": "O",
+   "name": "Agriculture, alimentation, santé publique... soyons rationnels",
+   "feedUrl": "https://seppi.over-blog.com/rss",
+   "perDay": 0.272
+  },
+  {
+   "group": "O",
+   "name": "Lunchbox Status - Incident History",
+   "feedUrl": "https://status.lunchbox.io/history.atom",
+   "perDay": 0.163
+  },
+  {
+   "group": "O",
+   "name": "Lightspeed - Status Page Status - Incident History",
+   "feedUrl": "https://status.lightspeedhq.com/history.atom",
+   "perDay": 0.554
+  },
+  {
+   "group": "O",
+   "name": "ブロリリ",
+   "feedUrl": "https://japan-release.net/feed/",
+   "perDay": 0.13
+  },
+  {
+   "group": "O",
+   "name": "Cuboh Status - Incident History",
+   "feedUrl": "https://status.cuboh.com/history.atom",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "comogastro.de’s Blog",
+   "feedUrl": "https://comogastro.de/rss.xml",
+   "perDay": 0.043
+  },
+  {
+   "group": "O",
+   "name": "Mar.Foodretail.Ru/news: Новости",
+   "feedUrl": "https://mar.foodretail.ru/news/rss",
+   "perDay": 0.217
+  },
+  {
+   "group": "O",
+   "name": "Ryazan.Foodretail.Ru/news: Новости",
+   "feedUrl": "https://ryazan.foodretail.ru/news/rss",
+   "perDay": 0.217
+  },
+  {
+   "group": "O",
+   "name": "Saransk.Grainboard.Ru/news: Новости",
+   "feedUrl": "https://saransk.grainboard.ru/news/rss",
+   "perDay": 0.217
+  },
+  {
+   "group": "O",
+   "name": "Arquivos Feiras e Eventos - Sindal",
+   "feedUrl": "https://sindal.org.br/category/feiras-e-eventos/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Steuernews für Gastronomie/Hotellerie, www.bleicher-steuerberater.de",
+   "feedUrl": "https://www.bleicher-steuerberater.de/atom_gastronews.xml",
+   "perDay": 0.163
+  },
+  {
+   "group": "O",
+   "name": "Steuernews für Gastronomie/Hotellerie, https://www.kaufmann-steuerkanzlei.de",
+   "feedUrl": "https://www.kaufmann-steuerkanzlei.de/atom_gastronews.xml",
+   "perDay": 0.163
+  },
+  {
+   "group": "O",
+   "name": "Gastronews, www.msp.at",
+   "feedUrl": "https://www.msp.at/atom_gastronews.xml",
+   "perDay": 0.141
+  },
+  {
+   "group": "O",
+   "name": "Restaurant Ranglisten Podcast",
+   "feedUrl": "https://www.restaurant-ranglisten.ch/podcast.rss",
+   "perDay": 0.087
+  },
+  {
+   "group": "O",
+   "name": "Restaurant News Resource & Latest Posts",
+   "feedUrl": "https://www.restaurantnewsresource.com/rss/latest-posts",
+   "perDay": 0.543
+  },
+  {
+   "group": "O",
+   "name": "Snacking",
+   "feedUrl": "https://www.resto-today.com/taxonomy/term/34/feed",
+   "perDay": 0.109
+  },
+  {
+   "group": "O",
+   "name": "Gastronews, www.schwab-wt.at",
+   "feedUrl": "https://www.schwab-wt.at/atom_gastronews.xml",
+   "perDay": 0.141
+  },
+  {
+   "group": "O",
+   "name": "Steuernews für Gastronomie/Hotellerie, https://www.toeben-partner.de",
+   "feedUrl": "https://www.toeben-partner.de/atom_gastronews.xml",
+   "perDay": 0.163
   }
  ]
 }

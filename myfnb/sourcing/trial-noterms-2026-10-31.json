@@ -1,5 +1,5 @@
 {
-"$comment": "2026-10-31 找不到条款页的小批试吃：Y 待定 1,902 个读条款后「还是没找到条款页 / 条款页打不开」的 989 个里，robots.txt 许可（或没有 robots.txt）、没有全站禁止 AI 爬虫标记、首页没有 noai 标记、8 月 1 日以后还在更新的 189 个。B9 改成「robots 许可、没挡 AI 爬虫可以进试吃，接入前再找一次条款」（十一 10-31 定，Kay 14:39「找信息源的所有规则你们都可以讨论」）。组：Y=10-26 判 Y，Q=? 重判判 Y，F=第五批判 Y。",
+"$comment": "2026-10-31 找不到条款页的小批试吃：Y 待定 1,902 个读条款后「还是没找到条款页 / 条款页打不开」的 989 个里，robots.txt 许可（或没有 robots.txt）、没有全站禁止 AI 爬虫标记、首页没有 noai 标记、8 月 1 日以后还在更新的 189 个（同名的 2 个只留一个，共 187 个；--only-passed 按订阅名对）。B9 改成「robots 许可、没挡 AI 爬虫可以进试吃，接入前再找一次条款」（十一 10-31 定，Kay 14:39「找信息源的所有规则你们都可以讨论」）。组：Y=10-26 判 Y，Q=? 重判判 Y，F=第五批判 Y。",
 "volume": {
 "Y": {
 "feeds": 114,
@@ -10,8 +10,8 @@
 "perDay": 4.0
 },
 "F": {
-"feeds": 44,
-"perDay": 5.0
+"feeds": 42,
+"perDay": 4.9
 }
 },
 "feeds": [
@@ -1025,12 +1025,6 @@
 },
 {
 "group": "F",
-"name": "Oriental coffee กาแฟสดนอกสถานที่ สอนชงกาแฟ เมล็ดกาแฟคั่ว เครื่องชงกาแฟ",
-"feedUrl": "https://en.orientalcoffeeandtea.com/blog-feed.xml",
-"perDay": 0.044
-},
-{
-"group": "F",
 "name": "Gastronomi Dergisi | Gastronomi ve Endüstriyel Mutfak Haberleri",
 "feedUrl": "https://www.gastronomidergisi.com/rss",
 "perDay": 0.322
@@ -1112,12 +1106,6 @@
 "name": "Anasayfa - Pause Dergi",
 "feedUrl": "https://www.pausedergi.com/feed/",
 "perDay": 0.111
-},
-{
-"group": "F",
-"name": "Ana Sayfa - Etit Mimarlık",
-"feedUrl": "https://pastanedekorasyon.net/feed/",
-"perDay": 0.1
 },
 {
 "group": "F",

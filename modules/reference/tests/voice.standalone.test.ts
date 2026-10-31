@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, CLOSING, endHeard, heardShare, judge, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, CLOSING, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -99,6 +99,22 @@ test("a reading that stops before the closing line is caught", () => {
   const script = `第一行。\n英国净少了977家店。\n${CLOSING}`;
   assert.equal(endHeard(script, "第一行 英国净少了九百七十七家店 这就是今天的十一说 我们明天早上见"), 1);
   assert.ok(endHeard(script, "第一行 英国净少了九百七十七家店") < 0.8);
+});
+
+test("each line of the 文字稿 starts where Whisper heard its first words, whatever else it heard otherwise", () => {
+  const lines = ["大家早上好！我是十一。", "英国净少了977家店。", "（停一下）", "我们明天早上见。"];
+  const segments = [
+    { start: 0, end: 2, text: "大家早上好 我是十一" },
+    { start: 2.4, end: 6, text: "英国净少了九百七十七家点" },
+    { start: 9, end: 11, text: "我们明天早上见" },
+  ];
+  const starts = lineStarts(lines, segments)!;
+  assert.equal(starts.length, 4);
+  assert.equal(starts[0], 0);
+  assert.equal(starts[1], 2.4);
+  assert.ok(starts[2]! > starts[1]! && starts[2]! < starts[3]!, "a line with nothing to line up sits between its neighbours");
+  assert.equal(starts[3], 9);
+  assert.equal(lineStarts(lines, [{ start: 0, end: 3, text: "完全不相干的一段话" }]), null, "too little lines up to trust");
 });
 
 test("pitch a minute: a voice at 210 Hz, then at 240, reads as 210 and 240", () => {

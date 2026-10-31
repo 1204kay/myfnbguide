@@ -12,15 +12,23 @@ import { config } from "@aihot/backend/config";
 
 const DIR = path.join(config.dataDir, "reference", "audio");
 
-/** The issue's audio as its page needs it, or null when it has none. */
-export async function issueAudio(no: number): Promise<{ url: string; seconds: number; transcript: string[] | null } | null> {
+/** The listen script's lines as the 文字稿 shows them; `starts` in <no>.json counts the same lines. */
+export const scriptLines = (script: string) => script.split(/\n+/u).map((l) => l.trim()).filter(Boolean);
+
+/**
+ * The issue's audio as its page needs it, or null when it has none. `starts`, when <no>.json has them for each line
+ * of the 文字稿 (backend/voice.ts lineStarts), lets the 文字稿 follow the voice; otherwise it is shown whole.
+ */
+export async function issueAudio(no: number): Promise<{ url: string; seconds: number; transcript: string[] | null; starts?: number[] } | null> {
   try {
     const [meta] = await Promise.all([readFile(path.join(DIR, `${no}.json`), "utf8"), stat(path.join(DIR, `${no}.mp3`))]);
-    const seconds = Number((JSON.parse(meta) as { seconds?: unknown }).seconds);
+    const json = JSON.parse(meta) as { seconds?: unknown; starts?: unknown };
+    const seconds = Number(json.seconds);
     if (!Number.isFinite(seconds) || seconds <= 0) return null;
     const script = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
-    const lines = script.split(/\n+/u).map((l) => l.trim()).filter(Boolean);
-    return { url: `/api/reference/issues/${no}/audio.mp3`, seconds: Math.round(seconds), transcript: lines.length ? lines : null };
+    const lines = scriptLines(script);
+    const starts = Array.isArray(json.starts) && json.starts.length === lines.length && json.starts.every((t) => typeof t === "number") ? json.starts as number[] : undefined;
+    return { url: `/api/reference/issues/${no}/audio.mp3`, seconds: Math.round(seconds), transcript: lines.length ? lines : null, ...(starts && lines.length ? { starts } : {}) };
   } catch {
     return null;
   }

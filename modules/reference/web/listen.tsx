@@ -5,6 +5,9 @@
 // look for the 听 button). The bar belongs to the page: leaving the page stops it.
 // With a transcript, the bar has a 文字稿 button that opens the listen script in the site's own bottom sheet
 // (components/ui/Sheet, as 筛选 and 这件事的其他报道 use it) while the audio goes on (Kay 10-31, as 樊登 and 小宇宙 do).
+// When each line's start is known (`starts`), the 文字稿 follows the voice as 小宇宙's does (Kay 10-31 22:14, with a
+// photo of it): the line being read is lit up to where the voice has got, the others are dimmed, the sheet keeps it in
+// view unless the reader has just scrolled, and tapping a line plays from it.
 import { useEffect, useRef, useState } from "react";
 import { IconClose } from "@aihot/web/components/icons";
 import { Sheet } from "@aihot/web/components/ui/Sheet";
@@ -54,7 +57,40 @@ export function useListen() {
   return { open, start: () => setOpen(true), close: () => setOpen(false) };
 }
 
-export function PlayerBar({ url, seconds, title, transcript, onClose }: { url: string; seconds: number; title: string; transcript: string[] | null; onClose: () => void }) {
+/** The 文字稿 that follows the voice: `starts[i]` is when line i begins, in seconds. */
+function Following({ lines, starts, at, length, onPick }: { lines: string[]; starts: number[]; at: number; length: number; onPick: (t: number) => void }) {
+  let now = 0;
+  while (now + 1 < starts.length && starts[now + 1]! <= at) now += 1;
+  const from = starts[now]!;
+  const to = starts[now + 1] ?? length;
+  const line = [...lines[now]!];
+  const lit = at < from ? 0 : Math.min(line.length, Math.round(((at - from) / Math.max(0.1, to - from)) * line.length));
+  const box = useRef<HTMLDivElement>(null);
+  const touched = useRef(0);
+  const first = useRef(true);
+  useEffect(() => {
+    // A reader who has just scrolled is reading somewhere else: leave the sheet where they put it for a while.
+    if (Date.now() - touched.current < 5000) return;
+    const el = box.current?.children[now] as HTMLElement | undefined;
+    el?.scrollIntoView({ block: "center", behavior: first.current ? "auto" : "smooth" });
+    first.current = false;
+  }, [now]);
+  const mark = () => { touched.current = Date.now(); };
+  return (
+    <div ref={box} onWheel={mark} onTouchMove={mark} className="px-5 pb-2 pt-3">
+      {lines.map((text, i) => (
+        <p key={i} className={`${i ? "mt-3" : "mt-1"} text-[16px] leading-[1.85] transition-colors lg:text-[17px] ${i === now ? "text-ink-2" : "text-ink-3"}`}>
+          {/* The whole line is the button: tapping it plays from where it starts. */}
+          <button type="button" onClick={() => onPick(starts[i]!)} className="text-left">
+            {i === now ? <><span className="text-ink">{line.slice(0, lit).join("")}</span>{line.slice(lit).join("")}</> : text}
+          </button>
+        </p>
+      ))}
+    </div>
+  );
+}
+
+export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: { url: string; seconds: number; title: string; transcript: string[] | null; starts?: number[]; onClose: () => void }) {
   const audio = useRef<HTMLAudioElement>(null);
   const [reading, setReading] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -181,9 +217,25 @@ export function PlayerBar({ url, seconds, title, transcript, onClose }: { url: s
             </button>
             <div className="font-mono text-[12px] text-ink-3">{clock(at)} / {clock(length)}</div>
           </div>
-          <div className="px-5 pb-2 pt-3">
-            {transcript.map((line, i) => <p key={i} className={`${i ? "mt-3" : "mt-1"} ${BODY}`}>{line}</p>)}
-          </div>
+          {starts?.length === transcript.length ? (
+            <Following
+              lines={transcript}
+              starts={starts}
+              at={at}
+              length={length}
+              onPick={(t) => {
+                const a = audio.current;
+                if (!a) return;
+                a.currentTime = t;
+                setAt(t);
+                void a.play();
+              }}
+            />
+          ) : (
+            <div className="px-5 pb-2 pt-3">
+              {transcript.map((line, i) => <p key={i} className={`${i ? "mt-3" : "mt-1"} ${BODY}`}>{line}</p>)}
+            </div>
+          )}
         </Sheet>
       )}
     </>

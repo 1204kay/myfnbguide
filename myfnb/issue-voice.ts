@@ -9,6 +9,8 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对（连听出来的字一起打出来），
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
+//   sudo docker compose exec -T worker node myfnb/issue-voice.ts --times 7           给已放上的第 7 期补上每行的开始时间（文字稿跟着声音走），
+//                                                                                    只听一遍 mp3（Groq 免费档），不念，只改 7.json
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用 Gemini 免费档（每天 10 次，一期最多用 3 次）。
 import path from "node:path";
 import { closeDb, sql } from "@aihot/backend/db";
@@ -19,7 +21,7 @@ import { installModules } from "@aihot/backend/modules";
 import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "../modules/reference/backend/issue.ts";
 import { issueAudio } from "../modules/reference/backend/audio.ts";
-import { hearIssue, voiceIssue, voiceMissing, voiceReport } from "../modules/reference/backend/voice.ts";
+import { hearIssue, timeIssue, voiceIssue, voiceMissing, voiceReport } from "../modules/reference/backend/voice.ts";
 
 // modelFor knows a module's steps only once the modules are installed.
 installModules(SERVER_MODULES);
@@ -29,8 +31,9 @@ const from = arg("--from");
 const tryNo = arg("--try");
 const putNo = arg("--put");
 const hearNo = arg("--hear");
+const timesNo = arg("--times");
 if (from !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(from)) throw new Error("--from 要一个日期，例如 2026-11-01");
-for (const n of [tryNo, putNo, hearNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
+for (const n of [tryNo, putNo, hearNo, timesNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
 
 // Gemini's free tier reads 10 a day, at most 3 an issue: the breaker stops a runaway loop before the free tier does.
 // Only this module's own row; Groq's `transcribe` row is archive's, and an operator adds it in the admin.
@@ -63,6 +66,10 @@ if (no) {
 const missing = await voiceMissing();
 if (missing.length) console.log(`还缺：${missing.join("；")}（缺了不会念，也不花钱）`);
 if (hearNo) console.log(JSON.stringify(await hearIssue(Number(hearNo)), null, 1));
+if (timesNo) {
+  const starts = await timeIssue(Number(timesNo));
+  console.log(starts ? `第 ${timesNo} 期补上了 ${starts.length} 行的开始时间，最后一行 ${starts.at(-1)} 秒。` : `第 ${timesNo} 期对不上一半，没有写。`);
+}
 
 const [setting] = await sql<{ value: { from?: string } }[]>`SELECT value FROM settings WHERE key = 'reference.voice'`;
 console.log(`自动念：${setting?.value.from ? `从 ${setting.value.from} 起` : "关着"}`);

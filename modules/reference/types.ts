@@ -336,6 +336,7 @@ export interface IssuePage {
   prev: number | null;
   next: number | null;
   /** The issue read aloud (backend/audio.ts), or null: then the page has no 听 button. `transcript` is what the voice
-   *  reads, a line a sentence, or null for audio put up without it: then the player has no 文字稿 button. */
-  audio: { url: string; seconds: number; transcript: string[] | null } | null;
+   *  reads, a line a sentence, or null for audio put up without it: then the player has no 文字稿 button. `starts`,
+   *  when there, is when each of those lines begins in seconds, and the 文字稿 follows the voice. */
+  audio: { url: string; seconds: number; transcript: string[] | null; starts?: number[] } | null;
 }

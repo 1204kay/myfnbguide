@@ -7,7 +7,6 @@
 // the machine check of the handbook's step 10 runs (Groq's Whisper hears it back, gaps, pitch a minute); what passes
 // goes up as <no>.mp3, <no>.txt (the 文字稿) and <no>.json, the json last (backend/audio.ts). What fails stays down and
 // the issue goes out as text, as on any day without audio. Every step's outcome is kept in <no>.voice.json beside them.
-import { pyin } from "./pyin.ts";
 import { spawn } from "node:child_process";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
@@ -19,7 +18,9 @@ import { sql } from "@aihot/backend/db";
 import { config, credential } from "@aihot/backend/config";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { assertAccepted, completeReceipt, paidRequest, ProviderRejectedError } from "@aihot/backend/providers/receipts";
+import { scriptLines } from "./audio.ts";
 import { type Ask, fixedLines, type IssueText } from "./issue.ts";
+import { pyin } from "./pyin.ts";
 
 const DIR = path.join(config.dataDir, "reference", "audio");
 
@@ -342,8 +343,11 @@ function run(cmd: string, args: string[]): Promise<void> {
   });
 }
 
-/** What Whisper hears, piece by piece (quietCuts), under one receipt. */
-async function hear(samples: Int16Array, rate: number, subject: string): Promise<string> {
+/** A stretch of what Whisper heard, in seconds from the start of the whole reading. */
+export type Heard = { start: number; end: number; text: string };
+
+/** What Whisper hears, piece by piece (quietCuts), under one receipt: the text, and its segments timed in the whole. */
+async function hear(samples: Int16Array, rate: number, subject: string): Promise<{ text: string; segments: Heard[] }> {
   const key = credential("models", "GROQ_API_KEY");
   if (!key) throw new Error("GROQ_API_KEY missing");
   const cuts = quietCuts(samples, rate);
@@ -351,6 +355,7 @@ async function hear(samples: Int16Array, rate: number, subject: string): Promise
     { service: HEAR.service, model: HEAR.model, purpose: "reference_issue_hear", subject, identity: { model: HEAR.model, samples: samples.length, at: Date.now() }, requestSummary: { seconds: Math.round(samples.length / rate), pieces: cuts.length - 1 } },
     async () => {
       const texts: string[] = [];
+      const segments: Heard[] = [];
       for (let i = 1; i < cuts.length; i += 1) {
         // Groq allows whisper 20 requests a minute, shared with archive's transcription: a piece every 3.5 s keeps
         // under it, and a 429 waits as long as Groq says (at most a minute, three times) rather than losing the reading.
@@ -359,7 +364,7 @@ async function hear(samples: Int16Array, rate: number, subject: string): Promise
           const form = new FormData();
           form.set("model", HEAR.model);
           form.set("file", new Blob([new Uint8Array(wavOf(samples.subarray(cuts[i - 1]!, cuts[i]!), rate))], { type: "audio/wav" }), "piece.wav");
-          form.set("response_format", "json");
+          form.set("response_format", "verbose_json");
           form.set("language", "zh");
           form.set("prompt", "以下是普通话的句子。");
           const res = await fetch(`${HEAR.base}/audio/transcriptions`, { method: "POST", headers: { authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(120_000) });
@@ -368,15 +373,74 @@ async function hear(samples: Int16Array, rate: number, subject: string): Promise
             continue;
           }
           if (!res.ok) assertAccepted(HEAR.service, res.status, await res.text());
-          texts.push(((await res.json()) as { text?: string }).text ?? "");
+          const body = (await res.json()) as { text?: string; segments?: Array<{ start?: number; end?: number; text?: string }> };
+          texts.push(body.text ?? "");
+          const offset = cuts[i - 1]! / rate;
+          for (const g of body.segments ?? []) {
+            if (Number.isFinite(g.start) && Number.isFinite(g.end)) segments.push({ start: offset + g.start!, end: offset + g.end!, text: g.text ?? "" });
+          }
           break;
         }
       }
-      return { response: { text: texts.join("") }, usage: { audio_seconds: Math.round(samples.length / rate) } };
+      return { response: { text: texts.join(""), segments }, usage: { audio_seconds: Math.round(samples.length / rate) } };
     },
   );
   await sql.begin((tx) => completeReceipt(tx, receipt.receiptId));
-  return (receipt.response as { text: string }).text;
+  return receipt.response as { text: string; segments: Heard[] };
+}
+
+/**
+ * When each line of the script starts in the reading, in seconds, for the 文字稿 to follow the voice (Kay 10-31 22:14,
+ * as 小宇宙 does). Whisper times its segments, not the script's lines, and hears some words otherwise; so each heard
+ * character gets a time (spread evenly over its segment), the script's characters are lined up with the heard ones
+ * (the longest common subsequence, as heardShare), and a line starts where its first lined-up character was heard,
+ * less the characters before it at the reading's pace. A line with none lined up sits between its neighbours.
+ * Null when too little lines up to trust (under half: the times would point at the wrong lines).
+ */
+export function lineStarts(lines: string[], segments: Heard[]): number[] | null {
+  const heard: string[] = [];
+  const times: number[] = [];
+  for (const g of segments) {
+    const chars = [...hanOnly(g.text)];
+    chars.forEach((c, k) => { heard.push(c); times.push(g.start + ((g.end - g.start) * k) / chars.length); });
+  }
+  const script: string[] = [];
+  const lineOf: number[] = [];
+  lines.forEach((line, n) => { for (const c of hanOnly(line)) { script.push(c); lineOf.push(n); } });
+  const a = script.length, b = heard.length;
+  if (!a || !b) return null;
+  const w = b + 1;
+  const table = new Uint16Array((a + 1) * w);
+  for (let i = 1; i <= a; i += 1) {
+    for (let j = 1; j <= b; j += 1) {
+      table[i * w + j] = script[i - 1] === heard[j - 1] ? table[(i - 1) * w + j - 1]! + 1 : Math.max(table[(i - 1) * w + j]!, table[i * w + j - 1]!);
+    }
+  }
+  if (table[a * w + b]! < a / 2) return null;
+  const at = new Array<number | undefined>(a);
+  for (let i = a, j = b; i > 0 && j > 0;) {
+    if (script[i - 1] === heard[j - 1] && table[i * w + j] === table[(i - 1) * w + j - 1]! + 1) { at[i - 1] = times[j - 1]; i -= 1; j -= 1; }
+    else if (table[(i - 1) * w + j]! >= table[i * w + j - 1]!) i -= 1;
+    else j -= 1;
+  }
+  const pace = (times.at(-1)! - times[0]!) / Math.max(1, a - 1);
+  const starts = lines.map(() => NaN);
+  for (let i = 0; i < a; i += 1) {
+    const n = lineOf[i]!;
+    if (Number.isNaN(starts[n]!) && at[i] !== undefined) starts[n] = at[i]! - (i - lineOf.indexOf(n)) * pace;
+  }
+  // Lines with nothing lined up (or no characters at all) go between the lines around them.
+  for (let n = 0; n < starts.length; n += 1) {
+    if (!Number.isNaN(starts[n]!)) continue;
+    const before = n ? starts[n - 1]! : 0;
+    let k = n + 1;
+    while (k < starts.length && Number.isNaN(starts[k]!)) k += 1;
+    const after = k < starts.length ? starts[k]! : times.at(-1)!;
+    starts[n] = before + (after - before) / (k - n + 1);
+  }
+  starts[0] = 0;
+  for (let n = 1; n < starts.length; n += 1) starts[n] = Math.max(starts[n - 1]!, starts[n]!);
+  return starts.map((t) => Math.round(t * 10) / 10);
 }
 
 export interface VoiceReport {
@@ -421,12 +485,26 @@ export async function hearIssue(no: number) {
   await run("lame", ["--quiet", "--decode", path.join(work, "in.mp3"), path.join(work, "out.wav")]);
   const { rate, samples } = wavSamples(await readFile(path.join(work, "out.wav")));
   const seconds = Math.round(samples.length / rate);
-  const heard = await hear(samples, rate, `issue:${no}:hear`);
+  const { text: heard, segments } = await hear(samples, rate, `issue:${no}:hear`);
   const match = heardShare(script, heard);
   const gaps = silences(samples, rate, PASS.gap);
   const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
   const end = endHeard(script, heard);
-  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end), heard };
+  const starts = lineStarts(scriptLines(script), segments);
+  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end), heard, starts };
+}
+
+/**
+ * Times the 文字稿 of an issue already up (put up before lines were timed): hears its MP3 once (Groq, free tier) and
+ * adds `starts` to <no>.json, keeping its seconds. Null, and nothing written, when too little of it lines up.
+ */
+export async function timeIssue(no: number) {
+  const heard = await hearIssue(no);
+  if (!heard.starts) return null;
+  const meta = JSON.parse(await readFile(path.join(DIR, `${no}.json`), "utf8")) as Record<string, unknown>;
+  await writeFile(path.join(DIR, `${no}.json.part`), JSON.stringify({ ...meta, starts: heard.starts }));
+  await rename(path.join(DIR, `${no}.json.part`), path.join(DIR, `${no}.json`));
+  return heard.starts;
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
@@ -497,7 +575,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const { rate, samples } = wavSamples(wav);
       const seconds = Math.round(samples.length / rate);
       await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
-      const heard = await hear(samples, rate, `issue:${no}:${attempt}`);
+      const { text: heard, segments } = await hear(samples, rate, `issue:${no}:${attempt}`);
       report.unheard = false;
       const match = heardShare(script, heard);
       const gaps = silences(samples, rate, PASS.gap);
@@ -513,7 +591,8 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
         await writeFile(path.join(DIR, `${no}.${ext}.part`), await readFile(path.join(work, `${no}.${ext}`)));
         await rename(path.join(DIR, `${no}.${ext}.part`), path.join(DIR, `${no}.${ext}`));
       }
-      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds }));
+      // Where each line starts, for the 文字稿 to follow the voice; without it the 文字稿 is shown whole, as before.
+      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds, starts: lineStarts(scriptLines(script), segments) ?? undefined }));
       report.status = "up";
       return keep();
     }

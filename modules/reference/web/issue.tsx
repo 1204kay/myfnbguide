@@ -198,7 +198,7 @@ export default function IssueRoute() {
           </div>
         </article>
       </ArticleLayout>
-      {audio && listen.open && <PlayerBar url={audio.url} seconds={audio.seconds} title={kicker(p)} transcript={audio.transcript} onClose={listen.close} />}
+      {audio && listen.open && <PlayerBar url={audio.url} seconds={audio.seconds} title={kicker(p)} transcript={audio.transcript} starts={audio.starts} onClose={listen.close} />}
       {toast}
     </div>
   );

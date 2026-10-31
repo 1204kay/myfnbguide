@@ -86,7 +86,7 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.equal((await app.inject("/api/reference/issues/x")).statusCode, 404);
 });
 
-test("an issue has 听 only once its audio is in place, its 文字稿 once its listen script is, and the audio is served in byte ranges", async () => {
+test("an issue has 听 only once its audio is in place, its 文字稿 once its listen script is, its times when they count its lines, and the audio is served in byte ranges", async () => {
   const dir = path.join(config.dataDir, "reference", "audio");
   assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, null, "no audio, no 听 button");
   await mkdir(dir, { recursive: true });
@@ -96,6 +96,11 @@ test("an issue has 听 only once its audio is in place, its 文字稿 once its l
   assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, { url: "/api/reference/issues/1/audio.mp3", seconds: 687, transcript: null });
   await writeFile(path.join(dir, "1.txt"), "大家早上好！我是十一。\n\n第一条，牛肉。\n");
   assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio.transcript, ["大家早上好！我是十一。", "第一条，牛肉。"], "the listen script, a line a sentence, for 文字稿");
+  assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio.starts, undefined, "no times: the 文字稿 is shown whole");
+  await writeFile(path.join(dir, "1.json"), JSON.stringify({ seconds: 687.4, starts: [0, 3.6] }));
+  assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio.starts, [0, 3.6], "a time a line: the 文字稿 follows the voice");
+  await writeFile(path.join(dir, "1.json"), JSON.stringify({ seconds: 687.4, starts: [0] }));
+  assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio.starts, undefined, "times that do not count the lines are left out");
 
   const whole = await app.inject("/api/reference/issues/1/audio.mp3");
   assert.equal(whole.statusCode, 200);

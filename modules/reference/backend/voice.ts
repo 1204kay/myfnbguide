@@ -521,10 +521,12 @@ export function breathe(samples: Int16Array, rate: number, starts: number[], sec
   const gap = Math.round(rate * seconds);
   const step = Math.round(rate * 0.02);
   const cuts: number[] = [];
-  for (const t of starts.slice(1)) {
+  for (const [n, t] of starts.entries()) {
+    if (n === 0) continue;
     const end = Math.min(samples.length, Math.round(t * rate));
     let best = end, low = Infinity;
-    for (let i = Math.max(cuts.at(-1) ?? 0, end - Math.round(rate * 0.6)); i + step <= end; i += step) {
+    // Not before the previous line's start either, or that line would not move with its own silence.
+    for (let i = Math.max(cuts.at(-1) ?? 0, Math.round(starts[n - 1]! * rate), end - Math.round(rate * 0.6)); i + step <= end; i += step) {
       let e = 0;
       for (let j = i; j < i + step; j += 1) e += samples[j]! * samples[j]!;
       if (e < low) { low = e; best = i + (step >> 1); }

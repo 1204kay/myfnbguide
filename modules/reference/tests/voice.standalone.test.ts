@@ -96,6 +96,10 @@ test("half a second of silence goes in at the quiet spot before each line, and t
   assert.deepEqual(starts, [0, 4, 7.3]);
   const quiet = silences(samples, rate, 0.4).map((s) => [Math.round(s.from * 10) / 10, Math.round(s.to * 10) / 10]);
   assert.deepEqual(quiet, [[3.1, 3.8], [6.5, 7.1]]);
+  // Two lines 0.3 s apart: the cut for the second never falls before the first, so the first still starts where it said.
+  const close = breathe(join(tone(rate, 4.9), tone(rate, 0.1, false), tone(rate, 1)), rate, [0, 5, 5.3]);
+  const gaps = silences(close.samples, rate, 0.3).map((s) => Math.round(s.from * 10) / 10);
+  assert.ok(gaps[1]! >= 5.5 - 0.05, `second silence at ${gaps[1]} s, before the line that starts at 5.5 s`);
 });
 
 test("the machine check names each failed part", () => {

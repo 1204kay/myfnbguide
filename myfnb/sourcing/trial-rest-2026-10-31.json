@@ -1,12 +1,12 @@
 {
-"$comment": "2026-10-31 信源剩余几块的试吃（Kay 16:39「不要等了 都处理了吧」）：N = 找不到条款页、robots 许可、没挡 AI 读取、8 月以后还在更新的另 350 个（规则 L1502）；P = Y 待定里托管平台的节目 106 个（平台条款可用、订阅和音频主机 robots 放行、没挡 AI 读取、没套不可用的统计前缀、8 月以后还在更新；Megaphone、Podcastle、FeedBurner、Wistia 上的不在内）；R = 重试：517 个试吃里两趟都没读到条目的 35 个，加 187 个试吃里抓不到的 12 个。",
+"$comment": "2026-10-31 信源剩余几块的试吃（Kay 16:39「不要等了 都处理了吧」）：N = 找不到条款页、robots 许可、没挡 AI 读取、8 月以后还在更新的另 350 个（规则 L1502）；P = Y 待定里托管平台的节目 106 个（平台条款可用、订阅和音频主机 robots 放行、没挡 AI 读取、没套不可用的统计前缀、8 月以后还在更新；Podcastle、FeedBurner、Wistia 上的不在内；Megaphone 上的 9 个也放进来：它的音频主机只挡 GPTBot 这类训练爬虫，按 L1502 只挡训练的照接，而现在的转写用 Groq，写明不拿输入训练，10-10「拒绝训练的播客暂不接」的前提已经不在）；R = 重试：517 个试吃里两趟都没读到条目的 35 个，加 187 个试吃里抓不到的 12 个。",
 "volume": {
 "N": {
 "feeds": 349,
 "perDay": 40.865
 },
 "P": {
-"feeds": 106,
+"feeds": 115,
 "perDay": 0
 },
 "R": {
@@ -3026,6 +3026,60 @@
 "name": "IWCA Greece",
 "feedUrl": "https://iwcagreece.org/feed/",
 "perDay": 0.011
+},
+{
+"group": "P",
+"name": "The Nightcap",
+"feedUrl": "https://feeds.megaphone.fm/BBL4582148146",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Producers, a Food Podcast.",
+"feedUrl": "https://feeds.megaphone.fm/EIDWD9152723946",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Lab to Table",
+"feedUrl": "https://feeds.megaphone.fm/JXL8522269920",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "いっちゃんおいしいラジオ",
+"feedUrl": "https://feeds.megaphone.fm/HBCL5647916885",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "The Go To Food Podcast",
+"feedUrl": "https://feeds.megaphone.fm/AUDD5336095663",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Restauranttopia: A Show for Local Independent Restaurants",
+"feedUrl": "https://feeds.megaphone.fm/JXL3194447017",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Eat Local New York Podcast",
+"feedUrl": "https://feeds.megaphone.fm/eatlocalnewyorkpodcast",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "鳥羽周作のうまいはなし",
+"feedUrl": "https://feeds.megaphone.fm/GI8149338295",
+"perDay": 0
+},
+{
+"group": "P",
+"name": "Cuchara de palo",
+"feedUrl": "https://feeds.megaphone.fm/cuchara-palo",
+"perDay": 0
 }
 ]
 }

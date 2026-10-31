@@ -897,6 +897,7 @@ test("only a number not in the original, a broken answer or a wrong situation ke
 test("an item without a story is placed in one situation and group of the list, or none, and the pages list it as a folded story", async () => {
   assert.deepEqual(readPlacing({ speaker: "owner", placements: [{ situation: "hiring", group: null, fit: "" }, { situation: "retention", group: null, fit: "" }] }).problems, ["只放一个最合适的情况"]);
   assert.match(readPlacing({ speaker: "owner", placements: [{ situation: "nowhere", group: null }] }).problems[0]!, /不在清单里/);
+  assert.match(readPlacing({ main: "只是消息", speaker: "media", placements: [{ situation: "hiring", group: null, fit: "" }] }).problems[0]!, /只是消息/, "news placed anyway is asked again");
   assert.deepEqual(readPlacing({ speaker: "nobody", placements: [] }).placing, { main: "", speaker: "media", placements: [] }, "who tells it outside the list: a publication");
 
   const id: Record<string, string> = {};

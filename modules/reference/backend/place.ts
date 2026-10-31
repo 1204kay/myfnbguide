@@ -56,6 +56,8 @@ export function readPlacing(answer: unknown): { placing: Placing | null; problem
   const main = parsed.data.main.slice(0, 120);
   if (placements.length > 1) return { placing: null, problems: ["只放一个最合适的情况"] };
   const p = placements[0];
+  // "Only news" helps no owner decide anything, so it has nowhere to go: an answer that still places it contradicts itself.
+  if (p && main.includes("只是消息")) return { placing: null, problems: ["main 写了“只是消息”，placements 就要写 []；能帮到老板的，main 要写能帮哪一种难处"] };
   if (!p) return { placing: { main, speaker, placements: [] }, problems: [] };
   const situation = findSituation(p.situation);
   if (!situation) return { placing: null, problems: [`情况“${p.situation}”不在清单里`] };

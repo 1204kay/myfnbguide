@@ -24,25 +24,37 @@ const count = (name: string) => {
 
 /**
  * What the calls of these results cost: DeepSeek gives no price in its answer, so the receipts' cost is empty and the
- * cost is estimated from the tokens at the price table's rate, as the admin's 模型与评测 page does (admin/models.ts):
- * cached prompt tokens at the cache price, the rest at the input price. A reused answer is the receipt it reuses, counted once.
+ * cost is estimated from the tokens at the price table's rate, as the admin's 模型与评测 page does (admin/models.ts priced):
+ * the model's own row, else the service's default row (model ''); cached prompt tokens at the cache price, the rest at
+ * the input price. A model with no row or a missing price makes the total unknown rather than quietly lower.
+ * A reused answer is the receipt it reuses, counted once.
  */
-async function costOf(results: PlaceResult[]): Promise<{ calls: number; tokensIn: number; cached: number; tokensOut: number; usd: number | null }> {
+async function costOf(results: PlaceResult[]): Promise<{ calls: number; tokensIn: number; cached: number; tokensOut: number; cost: string }> {
   const ids = [...new Set(results.flatMap((r) => r.receiptIds))];
-  if (!ids.length) return { calls: 0, tokensIn: 0, cached: 0, tokensOut: 0, usd: 0 };
-  const [row] = await sql<{ tokens_in: string | null; cached: string | null; tokens_out: string | null; usd: string | null; unpriced: number }[]>`
-    WITH t AS (
-      SELECT a.model, (a.usage->>'prompt_tokens')::bigint AS tin, (a.usage->>'completion_tokens')::bigint AS tout,
-             coalesce((a.usage->'prompt_tokens_details'->>'cached_tokens')::bigint, (a.usage->>'prompt_cache_hit_tokens')::bigint, 0) AS tc
-      FROM receipt_attempts a WHERE a.receipt_id IN ${sql(ids)} AND a.usage IS NOT NULL)
-    SELECT sum(tin) AS tokens_in, sum(tc) AS cached, sum(tout) AS tokens_out,
-           sum(((tin - tc) * p.input_per_mtok + tc * coalesce(p.cached_per_mtok, p.input_per_mtok) + tout * p.output_per_mtok) / 1e6) AS usd,
-           count(*) FILTER (WHERE p.model IS NULL)::int AS unpriced
-    FROM t LEFT JOIN service_prices p ON p.service = 'deepseek' AND p.model = t.model`;
-  return {
-    calls: ids.length, tokensIn: Number(row?.tokens_in ?? 0), cached: Number(row?.cached ?? 0), tokensOut: Number(row?.tokens_out ?? 0),
-    usd: row && row.unpriced === 0 && row.usd !== null ? Number(row.usd) : null,
-  };
+  if (!ids.length) return { calls: 0, tokensIn: 0, cached: 0, tokensOut: 0, cost: "0" };
+  const usage = await sql<{ model: string; tin: string; tc: string; tout: string }[]>`
+    SELECT a.model, sum((a.usage->>'prompt_tokens')::bigint) AS tin, sum((a.usage->>'completion_tokens')::bigint) AS tout,
+           sum(coalesce((a.usage->'prompt_tokens_details'->>'cached_tokens')::bigint, (a.usage->>'prompt_cache_hit_tokens')::bigint, 0)) AS tc
+    FROM receipt_attempts a WHERE a.receipt_id IN ${sql(ids)} AND a.usage IS NOT NULL GROUP BY a.model`;
+  const prices = await sql<{ model: string; currency: string; input_per_mtok: string | null; cached_per_mtok: string | null; output_per_mtok: string | null }[]>`
+    SELECT model, currency, input_per_mtok, cached_per_mtok, output_per_mtok FROM service_prices WHERE service = 'deepseek'`;
+  let tokensIn = 0, cached = 0, tokensOut = 0;
+  const sums = new Map<string, number>();
+  let unknown = false;
+  for (const u of usage) {
+    const tin = Number(u.tin ?? 0), tc = Number(u.tc ?? 0), tout = Number(u.tout ?? 0);
+    tokensIn += tin; cached += tc; tokensOut += tout;
+    const p = prices.find((x) => x.model === u.model) ?? prices.find((x) => x.model === "");
+    const input = p?.input_per_mtok == null ? null : Number(p.input_per_mtok);
+    const cache = p?.cached_per_mtok == null ? input : Number(p.cached_per_mtok);
+    const output = p?.output_per_mtok == null ? null : Number(p.output_per_mtok);
+    if (!p || (tin - tc > 0 && input === null) || (tc > 0 && cache === null) || (tout > 0 && output === null)) { unknown = true; continue; }
+    const amount = ((tin - tc) * (input ?? 0) + tc * (cache ?? 0) + tout * (output ?? 0)) / 1e6;
+    sums.set(p.currency, (sums.get(p.currency) ?? 0) + amount);
+  }
+  const cost = unknown ? "（有模型不在价格表里或缺价格，算不出）"
+    : [...sums].map(([currency, amount]) => `${currency} ${amount.toFixed(4)}`).join(" + ") || "0";
+  return { calls: ids.length, tokensIn, cached, tokensOut, cost };
 }
 
 function print(r: PlaceResult) {
@@ -68,10 +80,10 @@ if (process.argv.includes("--on")) {
     results.push(result);
     print(result);
   }
-  const { calls, tokensIn, cached, tokensOut, usd } = await costOf(results);
+  const { calls, tokensIn, cached, tokensOut, cost } = await costOf(results);
   const placed = results.filter((r) => r.placing.placements.length).length;
   console.log(`\n${store ? "放好并存库" : "试放（没写库）"} ${results.length} 条：放进情况 ${placed}，不放 ${results.length - placed}；回执 ${calls} 张，`
-    + `输入 ${tokensIn} token（缓存命中 ${cached}），输出 ${tokensOut}；按价格表估 ${usd === null ? "（有模型不在价格表里，算不出）" : `US$${usd.toFixed(4)}（非高峰价，高峰两倍）`}`);
+    + `输入 ${tokensIn} token（缓存命中 ${cached}），输出 ${tokensOut}；按价格表估 ${cost}（价格表的价，DeepSeek 高峰时段另算）`);
 } else {
   const [row] = await sql<{ value: unknown }[]>`SELECT value FROM settings WHERE key = 'reference.placing'`;
   const [stored] = await sql<{ placed: number; none: number }[]>`

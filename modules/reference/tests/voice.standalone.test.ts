@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, breathe, CLOSING, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, breathe, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -100,6 +100,14 @@ test("half a second of silence goes in at the quiet spot before each line, and t
   const close = breathe(join(tone(rate, 4.9), tone(rate, 0.1, false), tone(rate, 1)), rate, [0, 5, 5.3]);
   const gaps = silences(close.samples, rate, 0.3).map((s) => Math.round(s.from * 10) / 10);
   assert.ok(gaps[1]! >= 5.5 - 0.05, `second silence at ${gaps[1]} s, before the line that starts at 5.5 s`);
+});
+
+test("卖 heard as 买 fails the check, however small a share of the script it is", () => {
+  assert.deepEqual(flipsHeard("英国有卖酒执照的店，净少了977家。", "英国有买酒执照的店，净少了977家。"), ["「卖」念成「买」"]);
+  assert.deepEqual(flipsHeard("他去买菜，再卖掉。", "他去买菜，再卖掉。"), []);
+  assert.deepEqual(flipsHeard("有卖酒执照的店。", "有酒执照的店。"), [], "a dropped 卖 is the share check's business, not a flip");
+  assert.deepEqual(flipsHeard("有卖酒执照的店，不满慢慢长大。", "有买酒执照的店，不卖慢慢长大。"), ["「卖」念成「买」"], "another 卖 misheard elsewhere does not hide it");
+  assert.equal(judge(480, 0.99, [], [200, 201], 1, ["「卖」念成「买」"]).pass, false);
 });
 
 test("the machine check names each failed part", () => {

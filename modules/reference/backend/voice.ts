@@ -456,8 +456,34 @@ export interface VoiceReport {
 }
 
 /** Judges one reading by the machine check; `why` names each failed part. */
-export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[], end = 1) {
-  const why: string[] = [];
+/**
+ * Characters the voice reads as their opposite: Leda read 卖酒执照 as 买酒执照 in issue 7 (Kay 10-31), and the share
+ * check let it through, one character in 2,265. Each pair: what the script says, what it was heard as.
+ */
+export const FLIPS: Array<[string, string]> = [["卖", "买"], ["买", "卖"]];
+
+/**
+ * The flips heard: a 卖 in the script whose neighbours turn up beside a 买 in the transcript, and beside no 卖. Counting
+ * is not enough: in issue 7 Whisper also heard 不满 as 不卖, which hid the flip in the totals.
+ */
+export function flipsHeard(script: string, heard: string): string[] {
+  const a = hanOnly(script);
+  const b = hanOnly(heard);
+  const out = new Set<string>();
+  for (const [said, as] of FLIPS) {
+    for (let i = a.indexOf(said); i >= 0; i = a.indexOf(said, i + 1)) {
+      const pairs: Array<[string, string]> = [];
+      // Two characters each side: one alone turns up by chance (外卖 酒院 reads 卖酒 once the gap is gone).
+      if (i >= 2) pairs.push([a.slice(i - 2, i) + said, a.slice(i - 2, i) + as]);
+      if (i + 2 < a.length) pairs.push([said + a.slice(i + 1, i + 3), as + a.slice(i + 1, i + 3)]);
+      if (pairs.some(([, wrong]) => b.includes(wrong)) && !pairs.some(([right]) => b.includes(right))) out.add(`「${said}」念成「${as}」`);
+    }
+  }
+  return [...out];
+}
+
+export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[], end = 1, flips: string[] = []) {
+  const why: string[] = [...flips];
   if (match < PASS.match) why.push(`转写对上 ${(match * 100).toFixed(1)}%，不到 ${PASS.match * 100}%`);
   if (end < PASS.end) why.push("最后一句没念到");
   if (gaps.length) why.push(`有 ${gaps.length} 处空档超过 ${PASS.gap} 秒`);
@@ -491,7 +517,7 @@ export async function hearIssue(no: number) {
   const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
   const end = endHeard(script, heard);
   const starts = lineStarts(scriptLines(script), segments);
-  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end), heard, starts };
+  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard)), heard, starts };
 }
 
 /**
@@ -614,7 +640,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const gaps = silences(samples, rate, PASS.gap);
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
-      const verdict = judge(seconds, match, gaps, pitch, end);
+      const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
       report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict });
       if (!verdict.pass) { await keep(); continue; }
       // A breath between the script's lines (breathe): the reading is checked as Leda read it, then heard with room.

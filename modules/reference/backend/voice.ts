@@ -27,9 +27,11 @@ const DIR = path.join(config.dataDir, "reference", "audio");
  * Longest script sent in one request, counted as scriptChars counts. What was heard (10-31): issue 6, 2,605, read
  * whole and steady in 494 s; issue 7 on the computer, 2,563, read whole in two of three; issue 7 here, 3,091, three
  * readings of 583–644 s, the last stopping about 170 characters short of the end and climbing 63 Hz in its second half
- * (pyin). Longer readings break at the end and drift, so the line is just above what was heard whole.
+ * (pyin). Longer readings break at the end and drift. The script is asked for at most WRITE_CHARS, under what was heard
+ * whole; MAX_CHARS, where a script is refused, sits just above it, so a model that runs a few dozen over is still read.
  */
-export const MAX_CHARS = 2_600;
+export const MAX_CHARS = 2_650;
+const WRITE_CHARS = 2_450;
 /** Gemini's free tier: ten requests a day (its 429, 10-27); a day's issue gets at most this many, leaving the rest. */
 export const MAX_READS = 3;
 /** The voice and how it reads (Kay 10-26 picked Leda; the style as the computer's script sent it, mkjobs.py). */
@@ -107,11 +109,11 @@ export function applyFixes(lines: string[], problems: Problem[]): { lines: strin
 /** Writes the script and has it checked, mending up to twice; null with the last problems when it is still wrong. */
 export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
-  const first = await write("reference_issue_voice", prompt("issue-voice", { opening: opening(date), maxChars: String(MAX_CHARS) }), `网站上的这一期：\n\n${page}`, Script);
+  const first = await write("reference_issue_voice", prompt("issue-voice", { opening: opening(date), maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}`, Script);
   let lines = [opening(date), ...first.lines.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
   for (let round = 0; round < 3; round += 1) {
-    const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { maxChars: String(MAX_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
+    const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
     if (round === 2) { rounds.push({ problems, applied: 0 }); break; }
     const fixed = applyFixes(lines, problems);

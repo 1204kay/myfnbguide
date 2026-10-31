@@ -30,7 +30,7 @@ export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
 export const ISSUE_CHECK_STEP = "referenceIssueCheck";
 /** Purposes the check model answers (the writer answers reference_issue_write). */
-export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review" || purpose === "reference_issue_listen";
+export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review" || purpose === "reference_issue_listen" || purpose === "reference_issue_voice_check";
 const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");

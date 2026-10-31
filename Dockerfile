@@ -3,8 +3,9 @@
 FROM node:24-trixie-slim AS base
 WORKDIR /app
 # pg_dump for the optional database backups (Debian's client matches the PostgreSQL 17 server in compose).
+# lame encodes 十一说 read aloud to MP3 (modules/reference/backend/voice.ts; Kay 10-31).
 RUN apt-get update \
- && apt-get install -y --no-install-recommends postgresql-client ca-certificates \
+ && apt-get install -y --no-install-recommends postgresql-client ca-certificates lame \
  && rm -rf /var/lib/apt/lists/*
 
 FROM base AS build

@@ -85,4 +85,5 @@
 | `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑 | GitHub 检查里的网页测试 |
 | `tests/wording.test.ts` | 本站的不用词清单 | 写作 |
 | `tests/` 里其余二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`web-server.ts`、`cache.test.ts` | 作者按 AI 示例行业写的类别、标签、公司改成从行业包取 | 不是产品差别：同步上游时照同一原则处理作者的新测试 |
+| `tests/watchdog.test.ts` | 告警 webhook 限速那条：原版逐个间隔要求 ≥ 590ms（只留 10ms，CI 上 10-31 红过一次），改成看整段时长 ≥ (条数−1)×590ms，逐个间隔 ≥ 500ms | 不是产品差别（原版测试计时太紧；作者改掉后取原版） |
 | `scripts/smoke.ts` | 注释里的例子名 `MyF&B` 改成 `A&B` | 不是产品差别（作者的注释用了本站旧名） |

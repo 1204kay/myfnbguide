@@ -118,5 +118,10 @@ test("the alert webhook keeps within the custom bot's limits: 20 KB a request, 1
   assert.ok(hookedBytes.every((n) => n <= 20 * 1024), `request sizes ${hookedBytes.join(", ")}`);
   assert.match(hooked.join(""), /^(【[^】]+】)?系统日报\n/);
   assert.ok(hooked.join("").endsWith(`系统日报\n${lines.join("\n")}`), "the pieces are the whole text, in order");
-  for (let i = 1; i < hookedAt.length; i++) assert.ok(hookedAt[i]! - hookedAt[i - 1]! >= 590, "at most 100 a minute");
+  // Timed where the requests arrive, so each gap carries its own delivery jitter (a first connection, a busy CI
+  // runner); over the whole run that jitter is only the two ends'. MYFNB (myfnb/DIFFERENCES.md 第 3 节): upstream
+  // checked each gap against 590 ms, 10 ms of room, and CI went red on one gap.
+  const n = hookedAt.length;
+  assert.ok(hookedAt[n - 1]! - hookedAt[0]! >= (n - 1) * 590, "at most 100 a minute");
+  for (let i = 1; i < n; i++) assert.ok(hookedAt[i]! - hookedAt[i - 1]! >= 500, "no burst between two requests");
 });

@@ -8,7 +8,7 @@
 // goes up as <no>.mp3, <no>.txt (the 文字稿) and <no>.json, the json last (backend/audio.ts). What fails stays down and
 // the issue goes out as text, as on any day without audio. Every step's outcome is kept in <no>.voice.json beside them.
 import { spawn } from "node:child_process";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 import os from "node:os";
@@ -428,6 +428,14 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * the script in `out` for a person to hear and keeps nothing on the site.
  */
 export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string } = {}): Promise<VoiceReport> {
+  const report = await readIssue(no, ask, opts);
+  // A reading heard is done with (about 29 MB a day): only one not yet heard is kept, for the next run to hear. Not when
+  // nothing ran ("not ready"): what an earlier run left unheard is still waiting.
+  if (!opts.dryRun && opts.out === undefined && !report.unheard && report.status !== "not ready") await rm(path.join(DIR, "work", String(no)), { recursive: true, force: true });
+  return report;
+}
+
+async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string }): Promise<VoiceReport> {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);

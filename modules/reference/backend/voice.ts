@@ -455,7 +455,6 @@ export interface VoiceReport {
   error?: string;
 }
 
-/** Judges one reading by the machine check; `why` names each failed part. */
 /**
  * Characters the voice reads as their opposite: Leda read 卖酒执照 as 买酒执照 in issue 7 (Kay 10-31), and the share
  * check let it through, one character in 2,265. Each pair: what the script says, what it was heard as.
@@ -482,6 +481,7 @@ export function flipsHeard(script: string, heard: string): string[] {
   return [...out];
 }
 
+/** Judges one reading by the machine check; `why` names each failed part. */
 export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[], end = 1, flips: string[] = []) {
   const why: string[] = [...flips];
   if (match < PASS.match) why.push(`转写对上 ${(match * 100).toFixed(1)}%，不到 ${PASS.match * 100}%`);

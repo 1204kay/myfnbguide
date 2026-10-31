@@ -36,6 +36,20 @@ export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "�
 export const PASS = { match: 0.95, gap: 4, low: 195, high: 225, spread: 20 };
 const HEAR = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3-turbo", service: "transcribe" };
 
+/**
+ * What reading an issue needs before anything is spent: both keys, and a budget row for both paid services (a service
+ * with no row would have no circuit breaker; archive/backend/transcribe.ts skips on the same). myfnb/issue-voice.ts adds
+ * the `speech` row; `transcribe` is archive's. Empty when ready.
+ * Checked first, so a missing Groq key is found before the day's free readings are used up.
+ */
+export async function voiceMissing(): Promise<string[]> {
+  const missing = ["GEMINI_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
+  const services = ["speech", HEAR.service];
+  const rows = await sql<{ service: string }[]>`SELECT service FROM budgets WHERE service IN ${sql(services)}`;
+  for (const service of services) if (!rows.some((r) => r.service === service)) missing.push(`budgets 里没有 ${service}`);
+  return missing;
+}
+
 const prompt = (name: string, values: Record<string, string>) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), values);
 
@@ -280,7 +294,7 @@ async function hear(mp3: Buffer, subject: string): Promise<{ text: string; segme
 
 export interface VoiceReport {
   no: number; date: string; at: string;
-  status: "up" | "tried" | "script failed" | "too long" | "check failed" | "no reads left" | "error";
+  status: "up" | "tried" | "not ready" | "script failed" | "too long" | "check failed" | "no reads left" | "error";
   /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
   tries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
@@ -304,6 +318,28 @@ export function judge(seconds: number, match: number, gaps: Array<{ from: number
   return { pass: !why.length, why };
 }
 
+/**
+ * The machine check on an issue already up, its MP3 against its script: for setting the thresholds on audio a person
+ * has heard, before reading is turned on. Pays one transcription; no voice.
+ */
+export async function hearIssue(no: number) {
+  const missing = (await voiceMissing()).filter((m) => !m.includes("GEMINI") && !m.includes("speech"));
+  if (missing.length) throw new Error(`还缺：${missing.join("；")}`);
+  const script = await readFile(path.join(DIR, `${no}.txt`), "utf8");
+  const mp3 = await readFile(path.join(DIR, `${no}.mp3`));
+  const work = path.join(os.tmpdir(), `issue-hear-${no}`);
+  await mkdir(work, { recursive: true });
+  await writeFile(path.join(work, "in.mp3"), mp3);
+  await run("lame", ["--quiet", "--decode", path.join(work, "in.mp3"), path.join(work, "out.wav")]);
+  const { rate, samples } = wavSamples(await readFile(path.join(work, "out.wav")));
+  const seconds = Math.round(samples.length / rate);
+  const heard = await hear(mp3, `issue:${no}:hear`);
+  const match = heardShare(script, heard.text);
+  const gaps = gapsOver(heard.segments, PASS.gap);
+  const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
+  return { no, seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...judge(seconds, match, gaps, pitch) };
+}
+
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
 export async function voiceReport(no: number): Promise<VoiceReport | null> {
   return readFile(reportFile(no), "utf8").then((t) => JSON.parse(t) as VoiceReport, () => null);
@@ -322,6 +358,9 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: used, reads: opts.dryRun ? [] : before?.reads ?? [] };
   const keep = async () => { if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); } return report; };
   if (used >= MAX_READS) return { ...report, status: "no reads left" };
+  // Not kept: once the key or the row is there, the next half hour reads it.
+  const missing = await voiceMissing();
+  if (missing.length) return { ...report, status: "not ready", error: missing.join("；") };
   try {
     const written = await writeScript(row.issue, row.date, ask.write, ask.check);
     report.scriptRounds = written.rounds;

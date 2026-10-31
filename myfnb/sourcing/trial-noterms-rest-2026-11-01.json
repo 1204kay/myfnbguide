@@ -1,13 +1,13 @@
 {
- "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。 另加 O 组：旧批次（10-05 至 10-30）停在待定、从没试吃过的来源，免费重查后 8 月以后还在更新、robots 许可（含不挡 ChatGPT-User、Claude-User）、有订阅的。审阅后去掉 11 个台账里同一订阅最后一条已是不接或停用的（arc2020、phillymag、foodaffairs、canalhoreca、sindrio、chefspencil、mercasa、fcsi、simplecast 5xt2hr_c、foodbusinessmea、thespoon）；hotelandrestauranttimes 10-05 注明「按新标准再判」，有意留着。两组首页都查过没有 noai 标记（10 个首页打不开，没查到）。O 组的条款之前是关键词扫过没命中限制或没有条款页，和 N 组一样，接入前逐个读条款全文。",
+ "$comment": "2026-11-01 Y 待定里找不到条款页、10-31 没试吃到的来源（10-31 收工时漏了：只试吃了 187 个，另外 819 个台账一直待定）。云端不花钱重查：8 月以后还在更新、robots 许可、没拒绝 AI 代读的 419 个（规则 L1502）；按订阅去重、去掉已在线上的，剩 378 个订阅；其中 FoodSafetyTech、Tourism Today 两个 10-24 已试吃过（trial-full），去掉，剩 376 个。首页不是订阅的，用页面里声明的 RSS 或 /feed/。 另加 O 组：旧批次（10-05 至 10-30）停在待定、从没试吃过的来源，免费重查后 8 月以后还在更新、robots 许可（含不挡 ChatGPT-User、Claude-User）、有订阅的。审阅后去掉 11 个台账里同一订阅最后一条已是不接或停用的（arc2020、phillymag、foodaffairs、canalhoreca、sindrio、chefspencil、mercasa、fcsi、simplecast 5xt2hr_c、foodbusinessmea、thespoon）；hotelandrestauranttimes 10-05 注明「按新标准再判」，有意留着。两组首页都查过没有 noai 标记（按网站查，订阅分布在约 470 个网站上，10 个首页打不开，没查到）。手册审阅后又放回 6 个分类订阅（同站另一订阅的结论不能套到它们），加进 O 组。O 组的条款之前是关键词扫过没命中限制或没有条款页，和 N 组一样，接入前逐个读条款全文。",
  "volume": {
   "N": {
    "feeds": 366,
    "perDay": 64.527
   },
   "O": {
-   "feeds": 106,
-   "perDay": 13.199
+   "feeds": 112,
+   "perDay": 13.601
   }
  },
  "feeds": [
@@ -2842,6 +2842,42 @@
    "name": "Steuernews für Gastronomie/Hotellerie, https://www.toeben-partner.de",
    "feedUrl": "https://www.toeben-partner.de/atom_gastronews.xml",
    "perDay": 0.163
+  },
+  {
+   "group": "O",
+   "name": "Hospitality Ireland",
+   "feedUrl": "https://www.hospitalityireland.com/restaurant/feed",
+   "perDay": 0.098
+  },
+  {
+   "group": "O",
+   "name": "food safety - Alimenti&Salute",
+   "feedUrl": "https://alimentiesalute.emilia-romagna.it/tag/food-safety/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Food | Business & Marchés",
+   "feedUrl": "http://www.businessmarches.com/tag/food-business/feed/",
+   "perDay": 0.087
+  },
+  {
+   "group": "O",
+   "name": "Pizza Archives - All County Gazette",
+   "feedUrl": "https://allcountygazette.com/tag/pizza/feed/",
+   "perDay": 0.011
+  },
+  {
+   "group": "O",
+   "name": "Franchise Archieven - RetailDetail EU",
+   "feedUrl": "https://www.retaildetail.eu/topic/franchise/feed/",
+   "perDay": 0.065
+  },
+  {
+   "group": "O",
+   "name": "Chefs Pencil kitchen news（英国 · 媒体）",
+   "feedUrl": "https://www.chefspencil.com/kitchen-news/feed/",
+   "perDay": 0.13
   }
  ]
 }

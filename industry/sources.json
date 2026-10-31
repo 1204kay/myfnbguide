@@ -3822,6 +3822,27 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-banc",
+      "name": "BANC（英国 · 酒吧餐饮酒店业的行业杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://bancm.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

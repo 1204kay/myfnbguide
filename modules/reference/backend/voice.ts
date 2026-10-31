@@ -31,10 +31,19 @@ export const MAX_CHARS = 3_600;
 export const MAX_READS = 3;
 /** The voice and how it reads (Kay 10-26 picked Leda; the style as the computer's script sent it, mkjobs.py). */
 export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "早间节目主播，沉稳但有活力，语速中等偏快" };
-/** The machine check (handbook step 10): transcript ≥95% of the script, no gap over 4 s, each minute's median pitch in
- * 195–225 Hz and within 20 Hz of the others (issue 6 measured 203.9–219.8; issue 7 cut in two, 176–219, was heard). */
-export const PASS = { match: 0.95, gap: 4, low: 195, high: 225, spread: 20 };
-const HEAR = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3-turbo", service: "transcribe" };
+/**
+ * The machine check (handbook step 10): transcript ≥95% of the script, no gap over 4 s, each minute's median pitch in
+ * 195–225 Hz and within 25 Hz of the others. The spread was 20 by the computer's pyin (issue 6, which Kay heard and
+ * passed: 15.9; issue 7 cut in two and read in two voices: 43). The server's YIN reads the same issue 6 MP3 at 20.1
+ * (10-31, --hear 6) and no setting of it came within 4 Hz of pyin a minute, so the line moved with the ruler: 25, still
+ * well under the 43 that was heard.
+ */
+export const PASS = { match: 0.95, gap: 4, low: 195, high: 225, spread: 25 };
+/**
+ * whisper-large-v3, not -turbo: on issue 6 turbo heard 92.3% where the computer's faster-whisper (asr6.py) heard 95.4%,
+ * and the 95% line was set on the computer's. --hear 6 shows whether the full model comes back to it.
+ */
+const HEAR = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3", service: "transcribe" };
 
 /**
  * What reading an issue needs before anything is spent: both keys, and a budget row for both paid services (a service
@@ -337,7 +346,7 @@ export async function hearIssue(no: number) {
   const match = heardShare(script, heard.text);
   const gaps = gapsOver(heard.segments, PASS.gap);
   const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
-  return { no, seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...judge(seconds, match, gaps, pitch) };
+  return { no, seconds, match: Math.round(match * 1000) / 1000, gaps, pitch, ...judge(seconds, match, gaps, pitch), heard: heard.text };
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);

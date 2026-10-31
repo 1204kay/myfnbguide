@@ -6,7 +6,7 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --stop              停：删掉那一行，已放上的音频照旧
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --try 8             试念第 8 期：写听稿、核、念、机器核对，
 //                                                                                    不放上网站；听稿和 mp3 留在 /data/reference/audio/tries/8/
-//   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对，
+//   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对（连听出来的字一起打出来），
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用 Gemini 免费档（每天 10 次，一期最多用 3 次）。

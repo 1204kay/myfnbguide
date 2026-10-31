@@ -5,6 +5,7 @@
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --try 20     最新的 20 条试放，打印结果和花费，不写库
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --run 300    放最多 300 条并存库（试过的那几条用回执里的答案，不再付钱）
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --again <条目编号>   这一条重新放一次并存库（前一次没放成的）
+//     回执按问题全文复用：提示词和重问的话都没改时，两次都拿回上次的答案，结果不变、也不花钱；先改了提示再用它
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --on         打开每天 03:20 的任务
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --off        关掉：删掉那一行，已放好的照旧显示
 import { closeDb, sql } from "@aihot/backend/db";

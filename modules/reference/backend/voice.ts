@@ -455,9 +455,35 @@ export interface VoiceReport {
   error?: string;
 }
 
+/**
+ * Characters the voice reads as their opposite: Leda read 卖酒执照 as 买酒执照 in issue 7 (Kay 10-31), and the share
+ * check let it through, one character in 2,265. Each pair: what the script says, what it was heard as.
+ */
+export const FLIPS: Array<[string, string]> = [["卖", "买"], ["买", "卖"]];
+
+/**
+ * The flips heard: a 卖 in the script whose neighbours turn up beside a 买 in the transcript, and beside no 卖. Counting
+ * is not enough: in issue 7 Whisper also heard 不满 as 不卖, which hid the flip in the totals.
+ */
+export function flipsHeard(script: string, heard: string): string[] {
+  const a = hanOnly(script);
+  const b = hanOnly(heard);
+  const out = new Set<string>();
+  for (const [said, as] of FLIPS) {
+    for (let i = a.indexOf(said); i >= 0; i = a.indexOf(said, i + 1)) {
+      const pairs: Array<[string, string]> = [];
+      // Two characters each side: one alone turns up by chance (外卖 酒院 reads 卖酒 once the gap is gone).
+      if (i >= 2) pairs.push([a.slice(i - 2, i) + said, a.slice(i - 2, i) + as]);
+      if (i + 2 < a.length) pairs.push([said + a.slice(i + 1, i + 3), as + a.slice(i + 1, i + 3)]);
+      if (pairs.some(([, wrong]) => b.includes(wrong)) && !pairs.some(([right]) => b.includes(right))) out.add(`「${said}」念成「${as}」`);
+    }
+  }
+  return [...out];
+}
+
 /** Judges one reading by the machine check; `why` names each failed part. */
-export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[], end = 1) {
-  const why: string[] = [];
+export function judge(seconds: number, match: number, gaps: Array<{ from: number; to: number }>, pitch: number[], end = 1, flips: string[] = []) {
+  const why: string[] = [...flips];
   if (match < PASS.match) why.push(`转写对上 ${(match * 100).toFixed(1)}%，不到 ${PASS.match * 100}%`);
   if (end < PASS.end) why.push("最后一句没念到");
   if (gaps.length) why.push(`有 ${gaps.length} 处空档超过 ${PASS.gap} 秒`);
@@ -491,7 +517,7 @@ export async function hearIssue(no: number) {
   const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
   const end = endHeard(script, heard);
   const starts = lineStarts(scriptLines(script), segments);
-  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end), heard, starts };
+  return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard)), heard, starts };
 }
 
 /**
@@ -505,6 +531,39 @@ export async function timeIssue(no: number) {
   await writeFile(path.join(DIR, `${no}.json.part`), JSON.stringify({ ...meta, starts: heard.starts }));
   await rename(path.join(DIR, `${no}.json.part`), path.join(DIR, `${no}.json`));
   return heard.starts;
+}
+
+/** The pause added before each line of the script after the first, in seconds. */
+export const BREATH = 0.5;
+/**
+ * Room to breathe between the script's lines (Kay 10-31 22:30: listening to 十一说 felt like running out of breath).
+ * Leda reads the whole issue in one request and goes from one line to the next with hardly a pause: issue 7 had 12
+ * pauses over 0.8 s in 57 lines and about 8 over 0.5 s a minute, where the voice before it (Qwen, line by line with
+ * 0.45 s put between) had about 18. So BREATH of silence goes in at the quietest 20 ms in the 0.6 s before each line
+ * starts (not mid-word: the line's start is where Whisper heard it, a little late or early), and the line times move
+ * with it so the 文字稿 still follows the voice.
+ */
+export function breathe(samples: Int16Array, rate: number, starts: number[], seconds = BREATH): { samples: Int16Array; starts: number[] } {
+  const gap = Math.round(rate * seconds);
+  const step = Math.round(rate * 0.02);
+  const cuts: number[] = [];
+  for (const [n, t] of starts.entries()) {
+    if (n === 0) continue;
+    const end = Math.min(samples.length, Math.round(t * rate));
+    let best = end, low = Infinity;
+    // Not before the previous line's start either, or that line would not move with its own silence.
+    for (let i = Math.max(cuts.at(-1) ?? 0, Math.round(starts[n - 1]! * rate), end - Math.round(rate * 0.6)); i + step <= end; i += step) {
+      let e = 0;
+      for (let j = i; j < i + step; j += 1) e += samples[j]! * samples[j]!;
+      if (e < low) { low = e; best = i + (step >> 1); }
+    }
+    cuts.push(Math.max(best, cuts.at(-1) ?? 0));
+  }
+  const out = new Int16Array(samples.length + gap * cuts.length);
+  let from = 0, to = 0;
+  for (const c of cuts) { out.set(samples.subarray(from, c), to); to += c - from + gap; from = c; }
+  out.set(samples.subarray(from), to);
+  return { samples: out, starts: starts.map((t, i) => Math.round((t + i * seconds) * 10) / 10) };
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
@@ -581,9 +640,19 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const gaps = silences(samples, rate, PASS.gap);
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
-      const verdict = judge(seconds, match, gaps, pitch, end);
+      const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
       report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict });
       if (!verdict.pass) { await keep(); continue; }
+      // A breath between the script's lines (breathe): the reading is checked as Leda read it, then heard with room.
+      let starts = lineStarts(scriptLines(script), segments);
+      let length = seconds;
+      if (starts) {
+        const roomy = breathe(samples, rate, starts);
+        starts = roomy.starts;
+        length = Math.round(roomy.samples.length / rate);
+        await writeFile(path.join(work, `${no}.wav`), wavOf(roomy.samples, rate));
+        await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
+      }
       if (opts.dryRun) { report.status = "tried"; return report; }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.
       await mkdir(DIR, { recursive: true });
@@ -592,7 +661,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
         await rename(path.join(DIR, `${no}.${ext}.part`), path.join(DIR, `${no}.${ext}`));
       }
       // Where each line starts, for the 文字稿 to follow the voice; without it the 文字稿 is shown whole, as before.
-      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds, starts: lineStarts(scriptLines(script), segments) ?? undefined }));
+      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds: length, starts: starts ?? undefined }));
       report.status = "up";
       return keep();
     }

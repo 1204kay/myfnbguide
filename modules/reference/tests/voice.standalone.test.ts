@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, CLOSING, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, breathe, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -85,6 +85,29 @@ test("the audio goes to Whisper in pieces cut at the quietest moment near every 
   const { rate: r, samples } = wavSamples(wavOf(audio.subarray(0, 100), rate));
   assert.equal(r, rate);
   assert.deepEqual([...samples], [...audio.subarray(0, 100)]);
+});
+
+test("half a second of silence goes in at the quiet spot before each line, and the line times move with it", () => {
+  const rate = 8000;
+  // Lines start at 0, 3.5 and 6.3 s; the speaker breathes at 3.1–3.3 and 6.0–6.1 s.
+  const audio = join(tone(rate, 3.1), tone(rate, 0.2, false), tone(rate, 2.7), tone(rate, 0.1, false), tone(rate, 2));
+  const { samples, starts } = breathe(audio, rate, [0, 3.5, 6.3]);
+  assert.equal(samples.length, audio.length + rate);
+  assert.deepEqual(starts, [0, 4, 7.3]);
+  const quiet = silences(samples, rate, 0.4).map((s) => [Math.round(s.from * 10) / 10, Math.round(s.to * 10) / 10]);
+  assert.deepEqual(quiet, [[3.1, 3.8], [6.5, 7.1]]);
+  // Two lines 0.3 s apart: the cut for the second never falls before the first, so the first still starts where it said.
+  const close = breathe(join(tone(rate, 4.9), tone(rate, 0.1, false), tone(rate, 1)), rate, [0, 5, 5.3]);
+  const gaps = silences(close.samples, rate, 0.3).map((s) => Math.round(s.from * 10) / 10);
+  assert.ok(gaps[1]! >= 5.5 - 0.05, `second silence at ${gaps[1]} s, before the line that starts at 5.5 s`);
+});
+
+test("卖 heard as 买 fails the check, however small a share of the script it is", () => {
+  assert.deepEqual(flipsHeard("英国有卖酒执照的店，净少了977家。", "英国有买酒执照的店，净少了977家。"), ["「卖」念成「买」"]);
+  assert.deepEqual(flipsHeard("他去买菜，再卖掉。", "他去买菜，再卖掉。"), []);
+  assert.deepEqual(flipsHeard("有卖酒执照的店。", "有酒执照的店。"), [], "a dropped 卖 is the share check's business, not a flip");
+  assert.deepEqual(flipsHeard("有卖酒执照的店，不满慢慢长大。", "有买酒执照的店，不卖慢慢长大。"), ["「卖」念成「买」"], "another 卖 misheard elsewhere does not hide it");
+  assert.equal(judge(480, 0.99, [], [200, 201], 1, ["「卖」念成「买」"]).pass, false);
 });
 
 test("the machine check names each failed part", () => {

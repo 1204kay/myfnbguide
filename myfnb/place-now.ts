@@ -7,7 +7,12 @@
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --on         打开每天 03:20 的任务
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --off        关掉：删掉那一行，已放好的照旧显示
 import { closeDb, sql } from "@aihot/backend/db";
+import { installModules } from "@aihot/backend/modules";
+import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { articlesToPlace, composePlacing, storePlacing, type PlaceResult } from "../modules/reference/backend/place.ts";
+
+// modelFor knows a module's steps (referencePlace) only once the modules are installed, as the worker installs them.
+installModules(SERVER_MODULES);
 
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
 const count = (name: string) => {

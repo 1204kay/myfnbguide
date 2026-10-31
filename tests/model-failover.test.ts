@@ -94,8 +94,9 @@ test("a failed recovery probe opens the circuit again without a new batch of pri
 });
 
 test("a timed-out primary keeps its unknown receipt after the backup succeeds, and nothing asks anyone to release it", async () => {
-  primaryAnswer = async () => { await new Promise(resolve => setTimeout(resolve, 100)); return answer("too-late"); };
-  const result = await chatJson({ ...request("timeout"), timeoutMs: 30 });
+  // The timeout is the backup's too: 30 ms left a busy CI runner's backup timing out as well (myfnbguide #123).
+  primaryAnswer = async () => { await new Promise(resolve => setTimeout(resolve, 600)); return answer("too-late"); };
+  const result = await chatJson({ ...request("timeout"), timeoutMs: 300 });
   assert.equal(result.model, "qwen3.8-flash");
   const [original] = await sql`SELECT id, status, request, cost FROM receipts WHERE subject = ${request("timeout").subject} AND service = 'deepseek'`;
   assert.equal(original!.status, "unknown"); assert.equal(original!.cost, null);

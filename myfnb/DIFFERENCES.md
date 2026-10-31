@@ -88,3 +88,4 @@
 | `tests/` 里其余二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`web-server.ts`、`cache.test.ts` | 作者按 AI 示例行业写的类别、标签、公司改成从行业包取 | 不是产品差别：同步上游时照同一原则处理作者的新测试 |
 | `tests/analyze.test.ts`、`tests/topics.test.ts` | 信源类别的两条测试在行业包没有「门槛在官方与媒体之间」的类别时跳过（MYFNB 三级同一个门槛 46，`classes` 为空）；公司主题改名后旧全名仍能搜到的那条，在行业包没有改过名的公司主题时跳过（MYFNB 主题不按公司分） | 不是产品差别（原版测试要求行业包有这种类别） |
 | `scripts/smoke.ts` | 注释里的例子名 `MyF&B` 改成 `A&B` | 不是产品差别（作者的注释用了本站旧名） |
+| `tests/model-failover.test.ts` | 「主模型超时、备用接手」那条的超时从 30 ms 放到 300 ms，主模型从 100 ms 改成 600 ms 才答：这个超时备用模型也要守，忙的 CI 机器上备用答一次就超过 30 ms（10-31 myfnbguide #123 红过一次，没有会话能重跑） | 不是产品差别：作者改掉后取原版 |

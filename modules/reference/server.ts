@@ -15,9 +15,12 @@ import { renderShare, shareCard, shareEtag } from "./backend/share.ts";
 import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
 import { blocking, problemKind } from "./backend/checks.ts";
 import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
-import { ISSUE_CHECK_STEP, ISSUE_STEP } from "./backend/issue.ts";
+import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "./backend/issue.ts";
+import { MAX_READS, voiceIssue, voiceReport } from "./backend/voice.ts";
+import { modelFor } from "@aihot/backend/editorial/models";
+import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { issueLead, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
-import { sendIssueAudio } from "./backend/audio.ts";
+import { issueAudio, sendIssueAudio } from "./backend/audio.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 
 // 10-18: new stories are not written for now (十一). 30 live stories checked against their originals had 11 with
@@ -59,6 +62,28 @@ const ISSUES = defineQueue<{ date: string }>({
   run: async (jobs) => { for (const { date } of jobs) await writeIssue(date); },
 });
 
+// 十一说 read aloud (backend/voice.ts) once the day's issue is up, from the day the settings row `reference.voice` names
+// ({"from": "2026-11-01"}); with no row it is not. A reading that fails its check is read again at the next run, up to
+// MAX_READS a day of Gemini's ten free ones; what still fails leaves the issue as text.
+async function voiceFrom(): Promise<string | null> {
+  const [row] = await sql<{ value: { from?: unknown } }[]>`SELECT value FROM settings WHERE key = 'reference.voice'`;
+  return typeof row?.value.from === "string" ? row.value.from : null;
+}
+
+const VOICES = defineQueue<{ no: number }>({
+  name: "reference.voice",
+  options: { policy: "short", retryLimit: 0, expireInSeconds: 3600 },
+  worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
+  run: async (jobs) => {
+    for (const { no } of jobs) {
+      const [writer, checker] = await Promise.all([modelFor(ISSUE_STEP), modelFor(ISSUE_CHECK_STEP)]);
+      const receipts: number[] = [];
+      await voiceIssue(no, { write: modelAsk(writer, `voice:${no}`, receipts), check: modelAsk(checker, `voice:${no}`, receipts) });
+      if (receipts.length) await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
+    }
+  },
+});
+
 const METHODS = defineQueue<{ slug: string }>({
   name: "reference.methods",
   options: { policy: "short", retryLimit: 2, retryDelay: 300, retryBackoff: true, expireInSeconds: 900 },
@@ -78,10 +103,10 @@ export default defineServerModule({
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
     [BODY_STEP]: { label: "条目页的正文（不是参考库故事的条目，整理自原文，写在导读下面）", env: "REFERENCE_BODY_MODEL", purposes: ["reference_body"] },
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
-    [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak"] },
-    [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen"] },
+    [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak", "reference_issue_voice"] },
+    [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen", "reference_issue_voice_check"] },
   },
-  queues: [CASES, BODIES, METHODS, ISSUES],
+  queues: [CASES, BODIES, METHODS, ISSUES, VOICES],
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // llms.txt names the library beside the engine's pages.
@@ -134,6 +159,24 @@ export default defineServerModule({
       if (!from || date < from) return { queued: 0, reason: "十一说 is not on (settings reference.issues)" };
       await enqueueOn(ISSUES, { date }, { singletonKey: date });
       return { queued: 1, date };
+    },
+  }, {
+    // 十一说 read aloud: every half hour of the morning, the day's issue once it is written and has no audio yet.
+    name: "reference.voice",
+    cron: "20,50 5-9 * * *",
+    run: async () => {
+      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      const date = beijingDate(new Date());
+      const from = await voiceFrom();
+      if (!from || date < from) return { queued: 0, reason: "十一说 read aloud is not on (settings reference.voice)" };
+      const [row] = await sql<{ no: number }[]>`SELECT no FROM reference_issues WHERE date = ${date} AND status = 'issue'`;
+      if (!row) return { queued: 0, reason: "no issue yet" };
+      if (await issueAudio(row.no)) return { queued: 0, reason: "already read" };
+      const report = await voiceReport(row.no);
+      if (report && !["error", "check failed"].includes(report.status)) return { queued: 0, reason: report.status };
+      if ((report?.tries ?? 0) >= MAX_READS) return { queued: 0, reason: "no reads left today" };
+      await enqueueOn(VOICES, { no: row.no }, { singletonKey: String(row.no) });
+      return { queued: 1, no: row.no };
     },
   }],
   http: (app) => {

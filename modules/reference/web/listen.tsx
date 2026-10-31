@@ -90,7 +90,7 @@ function Following({ lines, starts, at, length, onPick }: { lines: string[]; sta
       {lines.map((text, i) => (
         <p
           key={i}
-          className={`${i ? "mt-3" : "mt-1"} text-[16px] leading-[1.85] transition-colors lg:text-[17px] ${i === now ? "-mx-3 rounded-r-[10px] border-l-[3px] border-accent bg-accent-soft py-2.5 pl-[11px] pr-3 text-ink-2" : "text-ink-4 opacity-80"}`}
+          className={`${i ? "mt-3" : "mt-1"} text-[16px] leading-[1.85] transition-colors lg:text-[17px] ${i === now ? "-mx-3 rounded-r-tile border-l-[3px] border-accent bg-accent-soft py-2.5 pl-[11px] pr-3 text-ink-2" : "text-ink-4 opacity-80"}`}
         >
           {/* The whole line is the button: tapping it plays from where it starts. */}
           <button type="button" onClick={() => onPick(starts[i]!)} className="text-left">

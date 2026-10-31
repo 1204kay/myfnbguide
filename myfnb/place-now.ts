@@ -1,10 +1,10 @@
 // 没有故事的入选条目放进参考库的情况（待决 #19，modules/reference/backend/place.ts）：每条一次很短的模型调用，只选情况和组。
-// 每天 03:30 的任务只在 settings 有 reference.placing 一行时跑；这个脚本先小量试、看过再补完、再打开每天的任务。
+// 每天 03:20 的任务只在 settings 有 reference.placing 一行时跑；这个脚本先小量试、看过再补完、再打开每天的任务。
 // 不带参数：只看还有多少条等着放，不调模型、不写库。
 //   sudo docker compose exec -T worker node myfnb/place-now.ts
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --try 20     最新的 20 条试放，打印结果和花费，不写库
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --run 300    放最多 300 条并存库（试过的那几条用回执里的答案，不再付钱）
-//   sudo docker compose exec -T worker node myfnb/place-now.ts --on         打开每天 03:30 的任务
+//   sudo docker compose exec -T worker node myfnb/place-now.ts --on         打开每天 03:20 的任务
 //   sudo docker compose exec -T worker node myfnb/place-now.ts --off        关掉：删掉那一行，已放好的照旧显示
 import { closeDb, sql } from "@aihot/backend/db";
 import { articlesToPlace, composePlacing, storePlacing, type PlaceResult } from "../modules/reference/backend/place.ts";
@@ -34,7 +34,7 @@ function print(r: PlaceResult) {
 if (process.argv.includes("--on")) {
   await sql`INSERT INTO settings (key, value, updated_by) VALUES ('reference.placing', ${sql.json({ on: true })}, 'myfnb/place-now.ts')
             ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_by = EXCLUDED.updated_by, updated_at = now()`;
-  console.log("已打开：每天 03:30 放前一天入选的条目");
+  console.log("已打开：每天 03:20 放前一天入选的条目");
 } else if (process.argv.includes("--off")) {
   await sql`DELETE FROM settings WHERE key = 'reference.placing'`;
   console.log("已关掉：每天的任务不再放；已放好的照旧显示");

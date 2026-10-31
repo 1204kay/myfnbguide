@@ -138,9 +138,9 @@ export default defineServerModule({
     },
   }, {
     // The day's selected items into their situations (backend/place.ts), in DeepSeek's off-peak hours (00:30–08:30
-    // Beijing), before 十一说 and the daily at 05:00. Only once the settings row `reference.placing` is there.
+    // Beijing), before 十一说 and the daily at 05:00, and apart from ops.retention at 03:30. Only once the settings row `reference.placing` is there.
     name: "reference.place",
-    cron: "30 3 * * *",
+    cron: "20 3 * * *",
     missed: "once",
     run: async () => {
       if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };

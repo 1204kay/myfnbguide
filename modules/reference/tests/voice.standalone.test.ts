@@ -70,6 +70,11 @@ test("a script too long goes back to the writer with its length, then is checked
   assert.ok(again.includes(long[0]!), "the writer sees the script it gave");
 });
 
+test("a name the transcript spells with other characters of the same sound counts as heard; a different word does not", () => {
+  assert.equal(heardShare("日本店主大久保翔平这样写", "日本店主大久保祥平这样写"), 1);
+  assert.ok(heardShare("日本店主大久保翔平这样写", "日本店主小林这样写") < 0.8);
+});
+
 test("a failed reading names the script's stretches the transcript lacks, longest first", () => {
   assert.deepEqual(missedRuns("今天先说美团。再说巴西的工时新规。最后说英国。", "今天先说美团。最后说英国。"), ["再说巴西的工时新规"]);
   assert.deepEqual(missedRuns("今天先说美团。", "今天先说美团。"), []);

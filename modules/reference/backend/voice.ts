@@ -512,7 +512,7 @@ export interface VoiceReport {
   /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
   tries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
-  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[] }>;
+  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
   error?: string;
@@ -704,7 +704,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
-      report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
+      report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
       if (!verdict.pass) { await keep(); continue; }
       // A breath between the script's lines (breathe): the reading is checked as Leda read it, then heard with room.
       let starts = lineStarts(scriptLines(script), segments);

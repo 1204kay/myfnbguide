@@ -1,0 +1,147 @@
+{
+ "$comment": "2026-11-01 信源「找全」补缺口的小批试吃：T 组 19 个是 note 话题页补批（第二批）挑出的作者，R 组 3 个是英澳慈善名册和 ROR 里在更新、近稿是行业内容的（大阪外食産業協会 ORA、德国食品工业联合会、Australian Grape & Wine）。台账批次「2026-11-01·note 话题页补批（第二批）」「2026-11-01·英澳慈善名册和 ROR（免费筛）」里写的待定；手册 业务线/myfnbguide/记录/2026-11-01/信源-找全补缺口.md。R 组每天条数没量，按 0.1 填，只用于汇总显示。",
+ "volume": {
+  "T": {
+   "feeds": 19,
+   "perDay": 6.591
+  },
+  "R": {
+   "feeds": 3,
+   "perDay": 0.3
+  }
+ },
+ "feeds": [
+  {
+   "group": "T",
+   "name": "note 飲食店経営のリアル｜元エリア本部長",
+   "feedUrl": "https://note.com/inshoku_saiken/rss",
+   "perDay": 0.714
+  },
+  {
+   "group": "T",
+   "name": "note ゆうま｜飲食店開業と経営のリアル",
+   "feedUrl": "https://note.com/tesou2541/rss",
+   "perDay": 0.4
+  },
+  {
+   "group": "T",
+   "name": "note fujii_cafestory",
+   "feedUrl": "https://note.com/cozy_sedum5262/rss",
+   "perDay": 0.113
+  },
+  {
+   "group": "T",
+   "name": "note 神戸の経営者｜30年分の失敗を、明日の経営に",
+   "feedUrl": "https://note.com/kazuki_morikawa/rss",
+   "perDay": 0.278
+  },
+  {
+   "group": "T",
+   "name": "note 飲食店経営 | ワンゼミ",
+   "feedUrl": "https://note.com/one_zemi/rss",
+   "perDay": 0.284
+  },
+  {
+   "group": "T",
+   "name": "note ある飲食店主",
+   "feedUrl": "https://note.com/famous_alpaca565/rss",
+   "perDay": 0.346
+  },
+  {
+   "group": "T",
+   "name": "note あだかつ | ワインバー経営",
+   "feedUrl": "https://note.com/quirky_acacia992/rss",
+   "perDay": 0.185
+  },
+  {
+   "group": "T",
+   "name": "note クラフトカフェビックフォレスト",
+   "feedUrl": "https://note.com/cute_hare809/rss",
+   "perDay": 0.034
+  },
+  {
+   "group": "T",
+   "name": "note 漁師社長｜小さな商売のリアル",
+   "feedUrl": "https://note.com/fisherman_ceo/rss",
+   "perDay": 1.0
+  },
+  {
+   "group": "T",
+   "name": "note エイト専務｜カフェと建物が好きな宅建士",
+   "feedUrl": "https://note.com/leight888/rss",
+   "perDay": 0.479
+  },
+  {
+   "group": "T",
+   "name": "note 近代食堂プラス",
+   "feedUrl": "https://note.com/kinshoku_plus/rss",
+   "perDay": 0.926
+  },
+  {
+   "group": "T",
+   "name": "note まる｜飲食店の裏側をつくる人",
+   "feedUrl": "https://note.com/zukantokyo/rss",
+   "perDay": 0.116
+  },
+  {
+   "group": "T",
+   "name": "note 尾高宏幸（おだちゃん）",
+   "feedUrl": "https://note.com/odachan22/rss",
+   "perDay": 0.008
+  },
+  {
+   "group": "T",
+   "name": "note PPON-飲食バカ一代-",
+   "feedUrl": "https://note.com/insyokubaka/rss",
+   "perDay": 0.253
+  },
+  {
+   "group": "T",
+   "name": "note パン屋の店長｜失敗から学ぶ飲食店経営",
+   "feedUrl": "https://note.com/bakerysweets_ten/rss",
+   "perDay": 0.375
+  },
+  {
+   "group": "T",
+   "name": "note 現代和食料理人（修行中）",
+   "feedUrl": "https://note.com/oubu_touda6991/rss",
+   "perDay": 0.175
+  },
+  {
+   "group": "T",
+   "name": "note 和香子居酒屋ワンオペ店長",
+   "feedUrl": "https://note.com/kanpewakawaka91/rss",
+   "perDay": 0.125
+  },
+  {
+   "group": "T",
+   "name": "note 「酒と食と、旅の途中」",
+   "feedUrl": "https://note.com/nice_daisy77/rss",
+   "perDay": 0.09
+  },
+  {
+   "group": "T",
+   "name": "note coffret",
+   "feedUrl": "https://note.com/coffret0906/rss",
+   "perDay": 0.69
+  },
+  {
+   "group": "R",
+   "name": "大阪外食産業協会 ORA",
+   "feedUrl": "https://www.ora.or.jp/feed",
+   "perDay": 0.1
+  },
+  {
+   "group": "R",
+   "name": "Bundesvereinigung der Deutschen Ernährungsindustrie",
+   "feedUrl": "https://www.ernaehrungsindustrie.de/feed/",
+   "perDay": 0.1
+  },
+  {
+   "group": "R",
+   "name": "Australian Grape & Wine",
+   "feedUrl": "https://www.agw.org.au/feed/",
+   "perDay": 0.1
+  }
+ ]
+}

@@ -4269,7 +4269,9 @@
         "linkSelector": "a.widget__content",
         "titleSelector": "a.widget__content p.h2",
         "detail": {
-          "maxFetches": 6
+          "maxFetches": 6,
+          "publishedAtRegex": "\"@type\":\"(?:News)?Article\"[^{}]*?\"datePublished\":\"([^\"]+)\"",
+          "publishedAtAuthoritative": true
         },
         "_aihot": {
           "initialBackfillLimit": 6

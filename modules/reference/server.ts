@@ -65,7 +65,7 @@ const ISSUES = defineQueue<{ date: string }>({
 
 // 十一说 read aloud (backend/voice.ts) once the day's issue is up, from the day the settings row `reference.voice` names
 // ({"from": "2026-11-01"}); with no row it is not. A reading that fails its check is read again at the next run, up to
-// MAX_READS a day of Gemini's ten free ones; what still fails leaves the issue as text.
+// MAX_READS in all; what still fails leaves the issue as text.
 async function voiceFrom(): Promise<string | null> {
   const [row] = await sql<{ value: { from?: unknown } }[]>`SELECT value FROM settings WHERE key = 'reference.voice'`;
   return typeof row?.value.from === "string" ? row.value.from : null;

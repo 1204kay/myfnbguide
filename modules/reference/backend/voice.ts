@@ -13,6 +13,7 @@ import { readFileSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 import os from "node:os";
 import path from "node:path";
+import { pinyin } from "pinyin-pro";
 import { z } from "zod";
 import { sql } from "@aihot/backend/db";
 import { config, credential } from "@aihot/backend/config";
@@ -330,18 +331,38 @@ export function numberWords(n: string): string {
 export const hanOnly = (s: string) => s.replace(/(\d+(?:\.\d+)?)\s*%/gu, (_m, n: string) => `百分之${numberWords(n)}`)
   .replace(/\d+(?:\.\d+)?/gu, (n) => numberWords(n)).replace(/[^一-鿿]/gu, "");
 
-/** How much of the script the transcript has, in order: the longest common subsequence over the script's length. */
-export function heardShare(script: string, heard: string): number {
-  const a = hanOnly(script);
-  const b = hanOnly(heard);
-  if (!a.length) return 0;
-  let prev = new Uint16Array(b.length + 1);
-  let cur = new Uint16Array(b.length + 1);
+/**
+ * The text as it sounds: one toneless syllable a Chinese character (hanOnly first), each character read in its
+ * context. The match is taken on these, not on the characters. Issue 8 (11-01) failed nine readings on the match,
+ * 0.891–0.949, and what the transcript lacked (missedRuns, #150) was mostly names spelled another way: 大久保翔平
+ * every time, 霸王茶姬, 千禧世代, 墨茉点心局, 佛卡夏. A listener hears the sound, not the spelling, so a name written
+ * with other characters of the same sound is not a misreading. Tones are left out, as Whisper's characters do not
+ * carry them reliably either; the one misreading a tone makes (卖 for 买) flipsHeard checks on its own.
+ */
+export const sounds = (s: string): string[] => {
+  const han = hanOnly(s);
+  return han ? pinyin(han, { toneType: "none", type: "array", v: true }) : [];
+};
+
+/** The longest common subsequence of two sequences, as a table: row i, column j is the length for a[..i] and b[..j]. */
+function common(a: string[], b: string[]): { table: Uint16Array; width: number } {
+  const width = b.length + 1;
+  const table = new Uint16Array((a.length + 1) * width);
   for (let i = 1; i <= a.length; i += 1) {
-    for (let j = 1; j <= b.length; j += 1) cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1]! + 1 : Math.max(prev[j]!, cur[j - 1]!);
-    [prev, cur] = [cur, prev];
+    for (let j = 1; j <= b.length; j += 1) {
+      table[i * width + j] = a[i - 1] === b[j - 1] ? table[(i - 1) * width + j - 1]! + 1 : Math.max(table[(i - 1) * width + j]!, table[i * width + j - 1]!);
+    }
   }
-  return prev[b.length]! / a.length;
+  return { table, width };
+}
+
+/** How much of the script the transcript has, in order, by sound: the longest common subsequence over the script's length. */
+export function heardShare(script: string, heard: string): number {
+  const a = sounds(script);
+  const b = sounds(heard);
+  if (!a.length) return 0;
+  const { table, width } = common(a, b);
+  return table[a.length * width + b.length]! / a.length;
 }
 
 /**
@@ -353,17 +374,14 @@ export function heardShare(script: string, heard: string): number {
 const MISSED_RUN = 3;
 const MISSED_KEEP = 12;
 export function missedRuns(script: string, heard: string): string[] {
-  const a = hanOnly(script);
-  const b = hanOnly(heard);
-  const w = b.length + 1;
-  const t = new Uint16Array((a.length + 1) * w);
-  for (let i = 1; i <= a.length; i += 1) {
-    for (let j = 1; j <= b.length; j += 1) t[i * w + j] = a[i - 1] === b[j - 1] ? t[(i - 1) * w + j - 1]! + 1 : Math.max(t[(i - 1) * w + j]!, t[i * w + j - 1]!);
-  }
+  const chars = [...hanOnly(script)];
+  const a = sounds(script);
+  const b = sounds(heard);
+  const { table, width } = common(a, b);
   const lost: boolean[] = Array.from({ length: a.length }, () => false);
   for (let i = a.length, j = b.length; i > 0;) {
     if (j > 0 && a[i - 1] === b[j - 1]) { i -= 1; j -= 1; }
-    else if (j > 0 && t[i * w + j - 1]! >= t[(i - 1) * w + j]!) j -= 1;
+    else if (j > 0 && table[i * width + j - 1]! >= table[(i - 1) * width + j]!) j -= 1;
     else { lost[i - 1] = true; i -= 1; }
   }
   const runs: string[] = [];
@@ -371,7 +389,7 @@ export function missedRuns(script: string, heard: string): string[] {
     if (!lost[i]) { i += 1; continue; }
     let k = i;
     while (k < a.length && lost[k]) k += 1;
-    if (k - i >= MISSED_RUN) runs.push(a.slice(i, k));
+    if (k - i >= MISSED_RUN) runs.push(chars.slice(i, k).join(""));
     i = k;
   }
   return runs.sort((x, y) => y.length - x.length).slice(0, MISSED_KEEP);
@@ -380,7 +398,7 @@ export function missedRuns(script: string, heard: string): string[] {
 /** How much of the script's last line is in the last of what was heard: a reading that stops short ends elsewhere. */
 export function endHeard(script: string, heard: string): number {
   const last = hanOnly(script.trim().split("\n").at(-1) ?? "");
-  const tail = hanOnly(heard).slice(-last.length * 2);
+  const tail = [...hanOnly(heard)].slice(-[...last].length * 2).join("");
   return last ? heardShare(last, tail) : 1;
 }
 

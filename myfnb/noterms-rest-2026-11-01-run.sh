@@ -10,7 +10,7 @@ set -euo pipefail
 OUT=/tmp/myfnb-noterms-rest-2026-11-01
 LOG=$OUT/run.log
 PID=$OUT/run.pid
-# 每天上限跑时调到多少：默认 30,000。11-01 Kay 问能不能不等窗口，可以用 PER_DAY=40000 bash ... start（最多 40,000，要 Kay 同意这个数）。
+# 每天上限跑时调到多少：默认 30,000。11-01 Kay 问能不能不等窗口，可以用 PER_DAY=40000 bash ... start（最多 40,000，要 Kay 同意这个数；前面不要加 sudo，sudo 会清掉环境变量）。
 PER_DAY=${PER_DAY:-30000}
 case "$PER_DAY" in ''|*[!0-9]*) echo "PER_DAY 要是数字"; exit 1 ;; esac
 if [ "$PER_DAY" -gt 40000 ]; then echo "PER_DAY 最多 40000"; exit 1; fi
@@ -49,7 +49,7 @@ case "${1:-}" in
         echo "# 调回：滚动 24 小时 $used 次，$(psql "UPDATE budgets SET per_day = 10000, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
       else
         at=$(psql "SELECT to_char((started_at + interval '1 day') AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24:MI') FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' ORDER BY started_at OFFSET $((used - 7000)) LIMIT 1")
-        # 调到 40,000 跑的，跑完不留在 40,000：降到「窗口 + 给线上的 3,000」，最少 30,000（开跑前的值）。
+        # 调到 40,000 跑的，跑完通常不留在 40,000（窗口超过 37,000 时才会留）：降到「窗口 + 给线上的 3,000」，最少 30,000（开跑前的值）。
         keep=$(( used + 3000 > 30000 ? used + 3000 : 30000 )); [ "$keep" -gt "$PER_DAY" ] && keep=$PER_DAY
         psql "UPDATE budgets SET per_day = $keep, updated_at = now() WHERE service = 'llm'" > /dev/null
         echo "# 没调回：滚动 24 小时还有 $used 次，per_day 改为 $keep；$at MYT 以后窗口降到 7000 次以下，届时调回 10000（UPDATE budgets SET per_day = 10000 WHERE service = 'llm'）"

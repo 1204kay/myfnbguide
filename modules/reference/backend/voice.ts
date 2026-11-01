@@ -715,9 +715,9 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       report.chars = before!.chars;
       report.scriptRounds = before!.scriptRounds;
     } else if (opts.script !== undefined) {
-      // A script written and checked elsewhere with the same prompts (11-01 redo of issues 1–8 checked in a session,
-      // Kay 22:18「一个月只有100美金」): read as given. No length limit here: Kay 11-01 22:37 had issues 1–7 read from the
-      // texts already up, 「原稿超过上限的照原长念」 (issues 2–5 run 4,651–5,852 characters).
+      // A script already checked and up, such as an issue's own N.txt (11-01: issues 1–7 read again in 龙安欢's voice from
+      // their texts as they are, not rewritten). No length limit here: Kay 11-01 22:37 「原稿超过上限的照原长念」
+      // (issues 2–5 run 4,651–5,852 characters).
       const lines = scriptLines(opts.script);
       script = lines.join("\n");
       report.chars = scriptChars(lines);

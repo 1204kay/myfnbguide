@@ -9,7 +9,7 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对（连听出来的字一起打出来），
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
-//   --try 和 --put 后面可加：--script <听稿 txt>：用会话里照同一套提示词核好的听稿，不再写、不再核、不查字数上限（不花 Claude API；11-01 旧集照线上原稿重念，Kay 22:37「原稿超过上限的照原长念」）；
+//   --try 和 --put 后面可加：--script <听稿 txt>：念已经核过、上过线的听稿（例如这一期自己的 N.txt），不再写、不再核、不查字数上限（不花 Claude API；11-01 第 1–7 期照线上原稿重念、不重写，Kay 22:37「原稿超过上限的照原长念」）；
 //   --voice <声音>、--model <模型> 换一个声音或模型（默认 voice.ts 的 VOICE 一行）、--style "……" 加一句语气。
 //   新加坡区能用的普通话女声：longanhuan_v3.1、longanlingxin_v3.1、longanfengyue_v3.1
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --times 7           给已放上的第 7 期补上每行的开始时间（文字稿跟着声音走），

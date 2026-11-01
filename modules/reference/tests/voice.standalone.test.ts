@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, breathe, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, breathe, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -68,6 +68,12 @@ test("a script too long goes back to the writer with its length, then is checked
   const again = seen.filter((s) => s.startsWith("reference_issue_voice\n"))[1]!;
   assert.match(again, /上一份听稿 \d+ 字/u);
   assert.ok(again.includes(long[0]!), "the writer sees the script it gave");
+});
+
+test("a failed reading names the script's stretches the transcript lacks, longest first", () => {
+  assert.deepEqual(missedRuns("今天先说美团。再说巴西的工时新规。最后说英国。", "今天先说美团。最后说英国。"), ["再说巴西的工时新规"]);
+  assert.deepEqual(missedRuns("今天先说美团。", "今天先说美团。"), []);
+  assert.deepEqual(missedRuns("甲乙丙丁戊己庚辛", "甲乙丁戊己庚辛"), [], "a single character dropped is not a stretch");
 });
 
 test("a fix naming no line of the script changes nothing", () => {

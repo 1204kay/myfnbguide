@@ -4,12 +4,18 @@
 # 第一轮每个看 4 条、第二轮对有过预筛的看 15 条，和 rest-all 一样。按 rest-all 的单价（511 个两轮 US$7.50）估约 US$7.0；上限 3.10 + 5.10 = 8.20，
 # --jobs 3 收尾时会多花几条的钱，仍在 US$8.5 以内（经验 C15）。要 Kay 在云电脑串打同意句才跑。不在 05:00–08:00 MYT 跑（只在开跑时查，凌晨别开跑）；跑时不要合并 myfnbguide。
 # 11-01 09:13 第一次开跑 5 分钟就撞熔断停（第一轮判到第 134 个订阅，花 US$0.501）。再开跑用同一条命令：判过的条目直接用已有回执、不花钱；第一轮上限从 3.10 降到 2.60，加上已花的 0.50，合计仍在 Kay 同意的 US$8.5 以内。
-# llm per_day 跑时临时 30,000，跑完滚动 24 小时低于 7,000 才调回 10,000。跑完先把逐条结果拷出容器。
+# llm per_day 跑时临时调到 PER_DAY（默认 30,000），跑完滚动 24 小时低于 7,000 才调回 10,000。跑完先把逐条结果拷出容器。
 #   cd /opt/myfnbguide && bash myfnb/noterms-rest-2026-11-01-run.sh start | status
 set -euo pipefail
 OUT=/tmp/myfnb-noterms-rest-2026-11-01
 LOG=$OUT/run.log
 PID=$OUT/run.pid
+# 每天上限跑时调到多少：默认 30,000。11-01 Kay 问能不能不等窗口，可以用 PER_DAY=40000 bash ... start（最多 40,000，要 Kay 同意这个数；前面不要加 sudo，sudo 会清掉环境变量）。
+PER_DAY=${PER_DAY:-30000}
+case "$PER_DAY" in ''|*[!0-9]*) echo "PER_DAY 要是数字"; exit 1 ;; esac
+if [ "$PER_DAY" -gt 40000 ]; then echo "PER_DAY 最多 40000"; exit 1; fi
+# 开跑时窗口要留出：给线上 3,000 次 + 这一趟约 5,000 次（11-01 第一次实测每条约 1.3 次，剩约 3,600 条）+ 余量，共 10,000。
+LIMIT=$((PER_DAY - 10000))
 psql() { sudo docker compose exec -T db psql -U aihot -d aihot -At -c "$1"; }
 
 case "${1:-}" in
@@ -19,12 +25,12 @@ case "${1:-}" in
     if [ -f "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then echo "上一趟还在跑"; exit 1; fi
     # 11-01 09:13 第一次开跑时，滚动 24 小时里已有约 2.6 万次调用（10-31 几趟试吃留下的），5 分钟就撞熔断停了（经验 C3）。
     # 剩下第一轮约 340 个订阅（约 1,300 条）、第二轮约 150 个（约 2,250 条），每条约 1.6 次调用（预筛 1 次，过预筛的约三成再评分两次），约 5,700 次；
-    # 上限 30,000 减去给线上留的 3,000，窗口要降到约 21,000 以下，取 20,000 留点余量；不够就写出几点够。
+    # 门槛是 PER_DAY 减 10,000（默认 30,000 时是 20,000，40,000 时是 30,000）；不够就写出几点够。
     cd /opt/myfnbguide
     used=$(psql "SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'")
-    if [ "$used" -gt 20000 ]; then
-      at=$(psql "SELECT to_char((started_at + interval '1 day') AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24:MI') FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' ORDER BY started_at OFFSET $((used - 20000)) LIMIT 1")
-      echo "滚动 24 小时已有 $used 次调用，要降到 20,000 以下才开跑：最早约 $at MYT 以后再 start（期间线上还会新增调用，到时 start 会再数一次）"; exit 1
+    if [ "$used" -gt "$LIMIT" ]; then
+      at=$(psql "SELECT to_char((started_at + interval '1 day') AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24:MI') FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' ORDER BY started_at OFFSET $((used - LIMIT)) LIMIT 1")
+      echo "滚动 24 小时已有 $used 次调用，要降到 $LIMIT 以下才开跑（PER_DAY=$PER_DAY）：最早约 $at MYT 以后再 start（期间线上还会新增调用，到时 start 会再数一次）"; exit 1
     fi
     mkdir -p "$OUT"
     cd /opt/myfnbguide
@@ -43,11 +49,14 @@ case "${1:-}" in
         echo "# 调回：滚动 24 小时 $used 次，$(psql "UPDATE budgets SET per_day = 10000, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
       else
         at=$(psql "SELECT to_char((started_at + interval '1 day') AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24:MI') FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' ORDER BY started_at OFFSET $((used - 7000)) LIMIT 1")
-        echo "# 没调回：滚动 24 小时还有 $used 次，per_day 留在 30000；$at MYT 以后窗口降到 7000 次以下，届时调回 10000（UPDATE budgets SET per_day = 10000 WHERE service = 'llm'）"
+        # 调到 40,000 跑的，跑完通常不留在 40,000（窗口超过 37,000 时才会留）：降到「窗口 + 给线上的 3,000」，最少 30,000（开跑前的值）。
+        keep=$(( used + 3000 > 30000 ? used + 3000 : 30000 )); [ "$keep" -gt "$PER_DAY" ] && keep=$PER_DAY
+        psql "UPDATE budgets SET per_day = $keep, updated_at = now() WHERE service = 'llm'" > /dev/null
+        echo "# 没调回：滚动 24 小时还有 $used 次，per_day 改为 $keep；$at MYT 以后窗口降到 7000 次以下，届时调回 10000（UPDATE budgets SET per_day = 10000 WHERE service = 'llm'）"
       fi
     }
     trap restore EXIT
-    echo "# 调高：$(psql "UPDATE budgets SET per_day = 30000, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
+    echo "# 调高：$(psql "UPDATE budgets SET per_day = $PER_DAY, updated_at = now() WHERE service = 'llm' RETURNING service, per_day")"
     # 试吃
     trial() { sudo docker compose exec -T worker node myfnb/trial-sources.ts --apply --sample trial-noterms-rest-2026-11-01.json --jobs 3 --reserve 3000 "$@"; }
     echo "# ① 第一轮 $(date -u +%FT%TZ)"

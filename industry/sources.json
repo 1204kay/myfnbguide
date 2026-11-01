@@ -4236,6 +4236,55 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-vendo-cast",
+      "name": "Vendo Cast | وندوکست（伊朗 · 波斯语，餐厅和连锁经营者访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.blubrry.com/feeds/3739204.xml",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "伊朗",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "web-ain-ua-restaurants",
+      "name": "AIN.UA · Заклади（乌克兰 · 商业媒体的餐饮栏目）",
+      "kind": "web_list",
+      "config": {
+        "url": "https://ain.ua/business/restaurants/",
+        "itemSelector": "article.widget",
+        "linkSelector": "a.widget__content",
+        "titleSelector": "a.widget__content p.h2",
+        "detail": {
+          "maxFetches": 6
+        },
+        "_aihot": {
+          "initialBackfillLimit": 6
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "乌克兰",
+        "媒体"
+      ]
     }
   ]
 }

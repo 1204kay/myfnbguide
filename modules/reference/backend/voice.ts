@@ -299,6 +299,39 @@ export function heardShare(script: string, heard: string): number {
   return prev[b.length]! / a.length;
 }
 
+/**
+ * Where the transcript and the script part, for a person to see why a reading failed: the script's stretches of
+ * MISSED_RUN or more characters the transcript does not have (the same alignment as heardShare), longest first, at
+ * most MISSED_KEEP. Issue 8 (11-01) failed six readings on the match alone, 0.891–0.949, and the report kept only the
+ * share: whether the voice dropped words, misread them, or Whisper skipped a stretch (issue 6, 26 s) could not be told.
+ */
+const MISSED_RUN = 3;
+const MISSED_KEEP = 12;
+export function missedRuns(script: string, heard: string): string[] {
+  const a = hanOnly(script);
+  const b = hanOnly(heard);
+  const w = b.length + 1;
+  const t = new Uint16Array((a.length + 1) * w);
+  for (let i = 1; i <= a.length; i += 1) {
+    for (let j = 1; j <= b.length; j += 1) t[i * w + j] = a[i - 1] === b[j - 1] ? t[(i - 1) * w + j - 1]! + 1 : Math.max(t[(i - 1) * w + j]!, t[i * w + j - 1]!);
+  }
+  const lost: boolean[] = Array.from({ length: a.length }, () => false);
+  for (let i = a.length, j = b.length; i > 0;) {
+    if (j > 0 && a[i - 1] === b[j - 1]) { i -= 1; j -= 1; }
+    else if (j > 0 && t[i * w + j - 1]! >= t[(i - 1) * w + j]!) j -= 1;
+    else { lost[i - 1] = true; i -= 1; }
+  }
+  const runs: string[] = [];
+  for (let i = 0; i < a.length;) {
+    if (!lost[i]) { i += 1; continue; }
+    let k = i;
+    while (k < a.length && lost[k]) k += 1;
+    if (k - i >= MISSED_RUN) runs.push(a.slice(i, k));
+    i = k;
+  }
+  return runs.sort((x, y) => y.length - x.length).slice(0, MISSED_KEEP);
+}
+
 /** How much of the script's last line is in the last of what was heard: a reading that stops short ends elsewhere. */
 export function endHeard(script: string, heard: string): number {
   const last = hanOnly(script.trim().split("\n").at(-1) ?? "");
@@ -479,7 +512,7 @@ export interface VoiceReport {
   /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
   tries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
-  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[] }>;
+  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[] }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
   error?: string;
@@ -671,7 +704,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
-      report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict });
+      report.reads!.push({ seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
       if (!verdict.pass) { await keep(); continue; }
       // A breath between the script's lines (breathe): the reading is checked as Leda read it, then heard with room.
       let starts = lineStarts(scriptLines(script), segments);

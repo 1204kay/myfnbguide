@@ -37,8 +37,12 @@ if (restore) {
 } else if (apply) {
   await sql`CREATE TABLE IF NOT EXISTS backup_stale_20261101_pub AS SELECT * FROM publications WITH NO DATA`;
   await sql`CREATE TABLE IF NOT EXISTS backup_stale_20261101_override AS SELECT * FROM editorial_overrides WITH NO DATA`;
-  await sql`INSERT INTO backup_stale_20261101_pub SELECT * FROM publications WHERE article_id IN ${sql(ids)}`;
-  await sql`INSERT INTO backup_stale_20261101_override SELECT * FROM editorial_overrides WHERE article_id IN ${sql(ids)}`;
+  // 只在第一次 --apply 时备份：重跑时线上已是 withdrawn，再备份一次会让 RESTORE 读到撤下后的状态。
+  const [{ n }] = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM backup_stale_20261101_pub WHERE article_id IN ${sql(ids)}`;
+  if (n === 0) {
+    await sql`INSERT INTO backup_stale_20261101_pub SELECT * FROM publications WHERE article_id IN ${sql(ids)}`;
+    await sql`INSERT INTO backup_stale_20261101_override SELECT * FROM editorial_overrides WHERE article_id IN ${sql(ids)}`;
+  } else console.log("备份已经有了（之前跑过 --apply），不再备份");
   for (const id of ids) {
     const ov = await overrides(id);
     if (ov?.visibility === "withdrawn") { console.log(`${id} 已经撤下，跳过`); continue; }

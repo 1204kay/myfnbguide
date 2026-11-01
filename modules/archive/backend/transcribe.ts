@@ -137,6 +137,29 @@ export function transcriptText(raw: string): string {
   return out.join("\n").trim();
 }
 
+/**
+ * A transcript without the loops a speech model falls into, where one sentence or a few come back hundreds of times:
+ * a sentence is dropped when it is the same as one of the few kept just before it. On 11/01, 134 of the 1,237
+ * transcripts on the site had under half of their sentences unique (the worst 2–7%, 200,000–300,000 characters for
+ * an hour's talk), and the writers are sent only the first 60,000 characters (MAX_BODY_CHARS), so a loop hid the rest
+ * of the talk. Short sentences ("Yeah.") may come back on their own and are kept.
+ */
+export function withoutLoops(text: string): string {
+  const pieces = text.match(/[^.!?。！？\n]+[.!?。！？]*[ \t]*|\n+/g) ?? [];
+  const recent: string[] = [];
+  let out = "";
+  for (const piece of pieces) {
+    const said = piece.trim().toLowerCase();
+    if (said.length >= 8) {
+      if (recent.includes(said)) continue;
+      recent.push(said);
+      if (recent.length > 8) recent.shift();
+    }
+    out += piece;
+  }
+  return out.replace(/\n{3,}/g, "\n\n").trim();
+}
+
 export interface TranscribeResult {
   status: "transcribed" | "failed" | "skipped";
   chars?: number;
@@ -150,7 +173,8 @@ type EpisodeRow = { source_id: string; url: string; identity_key: string; title:
  * Shared by the host's transcript, the speech model's, and transcripts made elsewhere with the same model
  * (import-transcripts.ts), so each enters the same way.
  */
-export async function storeTranscript(articleId: string, row: EpisodeRow, text: string, receiptId: number | null = null): Promise<void> {
+export async function storeTranscript(articleId: string, row: EpisodeRow, spoken: string, receiptId: number | null = null): Promise<void> {
+  const text = withoutLoops(spoken);
   await sql.begin(async (tx) => {
     await upsertMaterial({ sourceId: row.source_id, url: row.url, identityKey: row.identity_key, title: row.title, bodyText: text, bodyStatus: "ok", via: "archive" }, tx);
     await tx`UPDATE archive_episodes SET status = 'transcribed', transcript_chars = ${text.length}, receipt_id = ${receiptId}, error = NULL, updated_at = now() WHERE article_id = ${articleId}`;

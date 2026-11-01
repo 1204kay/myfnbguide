@@ -16,7 +16,7 @@ const { stopBoss } = await import("@aihot/backend/jobs/queue");
 const { audioByTitle, importSource, noteNewEpisodes, PACE, plansDue, REREAD } = await import("../backend/importer.ts");
 const { upsertMaterial } = await import("@aihot/backend/content/materials");
 PACE.pageMs = 0;
-const { episodesToTranscribe, PART_BYTES, PICKED, restoreTranscripts, SERVICE, SPEECH, storeTranscript, transcribeEpisode, transcriptText } = await import("../backend/transcribe.ts");
+const { episodesToTranscribe, PART_BYTES, PICKED, restoreTranscripts, SERVICE, SPEECH, storeTranscript, transcribeEpisode, transcriptText, withoutLoops } = await import("../backend/transcribe.ts");
 
 const T = tag();
 const SOURCE = `archive-${T}`;
@@ -91,6 +91,13 @@ test("each episode's audio is found by its title", () => {
   assert.equal(transcriptText("WEBVTT\n\n1\n00:00:01.000 --> 00:00:04.000\n<v Ana>We open at six.\n\n2\n00:00:04.000 --> 00:00:06.000\nThen the rush.\nThen the rush."), "Ana：We open at six.\nThen the rush.");
   assert.equal(transcriptText(JSON.stringify({ segments: [{ speaker: "Ana", body: "We open at six." }, { speaker: "Ana", body: "Then the rush." }, { speaker: "Ben", body: "How many staff?" }] })), "Ana：We open at six. Then the rush. \nBen：How many staff?");
   assert.equal(transcriptText("<html><body><p>We open at six.</p><p>Then the rush &amp; the line.</p></body></html>"), "We open at six.\nThen the rush & the line.");
+});
+
+test("a transcript keeps each sentence once where the speech model looped, and short replies where they were said", () => {
+  const loop = "So the question is how you price it. ".repeat(300) + "We raised prices twice that year. Yeah. Right. Yeah.";
+  assert.equal(withoutLoops(loop), "So the question is how you price it. We raised prices twice that year. Yeah. Right. Yeah.");
+  assert.equal(withoutLoops("我们早上六点开门。然后中午就是最忙的时候。我们早上六点开门。然后中午就是最忙的时候。\n第二年开了分店。"), "我们早上六点开门。然后中午就是最忙的时候。\n第二年开了分店。");
+  assert.equal(withoutLoops("We open at six.\nThen the rush.\nWe open at six again later."), "We open at six.\nThen the rush.\nWe open at six again later.");
 });
 
 test("an opened archive comes in as history, and episodes whose notes were scored are transcribed, highest first", async () => {

@@ -45,7 +45,7 @@ export const MAX_READS = 6;
  * 听起来很好 也完全没有窒息感」; 18:36: 「Gemini 不要了 以后都用阿里云 免费额度完了就付费 这个值得」; 18:37: 「确定用阿里云 但是
  * 还没选好声音」). longanhuan_v3.1 reads until Kay picks one; picking is this line, the model too (Kay was comparing
  * qwen-audio-3.1-tts-next, -plus and -flash at 18:43; --model to try one). qwen-audio-3.1-tts-flash: free 1M
- * characters to 2027-01-31, then paid, about US$0.03 an issue; of its Mandarin voices only the 多语种与方言 group answers in
+ * characters to 2027-01-31, then paid, US$0.07–0.1 a reading (6–7K characters billed, 11-01 18:40); of its Mandarin voices only the 多语种与方言 group answers in
  * Singapore (longanhuan_v3.1, longanlingxin_v3.1, longanfengyue_v3.1), the 精品中文 ones (xuyuyuan_v3.1 and the rest)
  * return Engine error 411 (11-01). This model, not qwen3-tts-flash (Cherry and others; free there only 10K characters):
  * Kay 18:39 「那就用新的」. Read line by line (each under 110 characters, the writer's limit), each line its own receipt.

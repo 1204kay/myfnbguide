@@ -13,7 +13,7 @@
 //   新加坡区能用的普通话女声：longanhuan_v3.1、longanlingxin_v3.1、longanfengyue_v3.1
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --times 7           给已放上的第 7 期补上每行的开始时间（文字稿跟着声音走），
 //                                                                                    只听一遍 mp3（Groq 免费档），不念，只改 7.json
-// 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用阿里云（免费额度用完后约每期 US$0.03），一期最多念 6 次。
+// 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用阿里云（免费额度用完后每念一次约 US$0.07–0.1），一期最多念 6 次。
 import path from "node:path";
 import { closeDb, sql } from "@aihot/backend/db";
 import { config } from "@aihot/backend/config";

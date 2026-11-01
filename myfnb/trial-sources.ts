@@ -8,7 +8,7 @@
 //   node myfnb/trial-sources.ts                列出会抓哪些订阅，不调模型
 //   node myfnb/trial-sources.ts --apply        抓、判，打出逐条结果和汇总
 //   --per 3        每个订阅取最新几条（默认 3）
-//   --cap-usd 1    回执累计到这个数就停（默认 1）
+//   --cap-usd 1    花费上限（默认 1）：开判每一条前先算「已花 + 在途和这一条按每条最多花多少」，会过线就停，不会超
 //   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
 //   --only-passed <文件> 只跑上一轮逐条结果里至少 1 条过预筛的订阅
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
@@ -108,11 +108,17 @@ const budgetLeft = async () => {
 };
 let stopped = "";
 let next = 0;
+// 上限要把在途的也算进去：--jobs 3 时，原来每条判完才看上限，到线时另外两条已经发出去了，11-01 fill-gaps 两轮 0.50 跑成 0.512（经验 C15）。
+// 现在开判一条之前，先按「已花 + (在途 + 这一条) × 每条最多花多少」看会不会过线；每条最多花多少取这一趟实测的最大值，
+// 还没实测到时先按 US$0.005（11-01 实测过预筛的一条连评分约 0.0031）。宁可早停几条，也不超过 Kay 同意的数。
+let inflight = 0;
+let maxItemUsd = 0.005;
+const room = () => spentUsd + (inflight + 1) * maxItemUsd <= cap;
 const worker = async () => {
   while (next < sample.feeds.length) {
     const i = next++;
     const f = sample.feeds[i]!;
-    if (spentUsd >= cap) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，到上限 ${cap}，停`); break; }
+    if (!room()) { console.log(`# 回执累计 US$${spentUsd.toFixed(3)}，在途 ${inflight} 条，再判会过上限 ${cap}，停`); break; }
     let left = await budgetLeft();
     // 这一小时的余量不够就等（每分钟看一次，等前一小时的调用滚出窗口）；每天的余量不够才停。
     while (left.day >= reserve && left.hour < reserve / 10) {
@@ -133,7 +139,8 @@ const worker = async () => {
       continue;
     }
     for (const c of items) {
-      if (spentUsd >= cap) break;
+      if (!room()) break;
+      inflight++;
       let body = c.bodyText ?? null;
       if (!body && pageFetchable(c.url, "rss")) {
         // 和站上一样先读文章页；不用付费的 Jina 兜底，读不到就按标题和摘要判（站上那种情况会等页面）。
@@ -162,13 +169,14 @@ const worker = async () => {
       for (const r of ids) await completeReceipt(sql, r);
       row.cost = await costOf(ids);
       spentUsd += row.cost;
+      maxItemUsd = Math.max(maxItemUsd, row.cost);
+      inflight--;
       rows.push(row);
       appendFileSync(outFile, `${JSON.stringify(row)}\n`);
       console.log(`${row.group} | ${row.code ? "码过" : "码挡"} | ${row.label ?? "-"} | ${row.scores.join("+") || "-"}${row.selected ? " 入选" : ""} | ${row.title.slice(0, 50).replace(/\s+/g, " ")} | ${row.url}`);
     }
   }
 };
-// 同时跑几个订阅时，上限在每条判完后才看，最多多花 jobs 条的钱。
 await Promise.all(Array.from({ length: Number(values.jobs) }, worker));
 if (stopped) console.log(stopped);
 

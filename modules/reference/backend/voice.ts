@@ -171,6 +171,9 @@ async function read(script: string, subject: string, attempt: number, voice = VO
   let rate = 0;
   const parts: Int16Array[] = [];
   for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
+    // A line every 1.1 s keeps under the `speech-qwen` row's 60 a minute: 11-01 23:09 issue 2 read its first 60 lines in
+    // 45 s and the 61st was refused (Budget for speech-qwen exhausted (minute)), and a 3,350-character issue runs past 60.
+    if (n > 0) await sleep(1_100);
     let url: string | undefined;
     const receipt = await paidRequest(
       { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },

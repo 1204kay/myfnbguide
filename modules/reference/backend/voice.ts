@@ -26,16 +26,16 @@ import { pyin } from "./pyin.ts";
 const DIR = path.join(config.dataDir, "reference", "audio");
 
 /**
- * Longest script read, counted as scriptChars counts: about twelve or thirteen minutes. Until 11-01 it was 2,450/2,650,
- * about ten minutes, because Gemini's Leda read the issue in one request and longer readings broke at the end and drifted
- * (issue 7, 10-31: 3,091 characters, stopping short and climbing 63 Hz). Qwen reads line by line, so the bound is the
- * listening length only: Kay 11-01 19:02 「这样的话 是不是可以长一点了？之前是因为一直错 对吧？」, 19:04 「你和协调者十一
- * 讨论长度」; set at 3,700 with the coordinator, to go back to about 3,500 if issues 10 and 11 read or check worse. The
- * script is asked for at most WRITE_CHARS; MAX_CHARS, where a script is refused, sits just above it, so a model that runs
- * a few dozen over is still read.
+ * The script's length. WRITE_CHARS is the aim, about twelve minutes at 龙安欢's pace (issue 8: 2,452 characters in 526 s,
+ * about 280 a minute): Kay 11-01 22:33 「我觉得12分钟 不会太长也不会太短 也省一点api额度」, 22:35 「是 12分钟左右 不是上限」,
+ * 22:36 「要求写约 3,350 字，超过 3,900 才不念，提示词写约 12 分钟、不硬凑」. SHORTEN_ABOVE and MAX_CHARS are only guards
+ * against a script that runs long, never an aim, and MAX_CHARS appears in no prompt. Before: 2,450/2,650 until 11-01, when
+ * Gemini's Leda read the issue in one request and longer readings broke at the end and drifted (issue 7, 10-31: 3,091
+ * characters, stopping short and climbing 63 Hz); then 3,700 (about thirteen minutes) once Qwen read line by line
+ * (Kay 11-01 19:02 「是不是可以长一点了」).
  */
 export const MAX_CHARS = 3_900;
-const WRITE_CHARS = 3_700;
+const WRITE_CHARS = 3_350;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
  * 09:39); set for Gemini's ten free a day and kept for Qwen: a run reads again until one passes, so six readings from
@@ -144,7 +144,7 @@ const SHORTEN_ABOVE = WRITE_CHARS + (MAX_CHARS - WRITE_CHARS) / 2;
 /** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
 export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
-  const system = prompt("issue-voice", { opening: opening(date), maxChars: String(WRITE_CHARS) });
+  const system = prompt("issue-voice", { opening: opening(date), writeChars: String(WRITE_CHARS) });
   const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
   let lines = framed((await write("reference_issue_voice", system, `网站上的这一期：\n\n${page}`, Script)).lines);
   for (let n = 1; n <= SHORTENS && scriptChars(lines) > SHORTEN_ABOVE; n += 1) {
@@ -153,7 +153,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
   }
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
   for (let round = 0; round <= MENDS; round += 1) {
-    const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
+    const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { writeChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
     if (round === MENDS) { rounds.push({ problems, applied: 0 }); break; }
     const fixed = applyFixes(lines, problems);

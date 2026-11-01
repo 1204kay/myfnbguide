@@ -3997,6 +3997,47 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-smart-pizza-marketing",
+      "name": "Smart Pizza Marketing（美国 · 披萨店老板访谈和经营实例）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.smartpizzamarketing.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-kuypers-creative",
+      "name": "Kuypers Creative（餐饮策略顾问 Robert Kuypers 的行业长文）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kuyperscreative.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

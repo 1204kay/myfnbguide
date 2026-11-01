@@ -716,13 +716,13 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       report.scriptRounds = before!.scriptRounds;
     } else if (opts.script !== undefined) {
       // A script written and checked elsewhere with the same prompts (11-01 redo of issues 1–8 checked in a session,
-      // Kay 22:18「一个月只有100美金」): read as given, under the same length limit.
+      // Kay 22:18「一个月只有100美金」): read as given. No length limit here: Kay 11-01 22:37 had issues 1–7 read from the
+      // texts already up, 「原稿超过上限的照原长念」 (issues 2–5 run 4,651–5,852 characters).
       const lines = scriptLines(opts.script);
       script = lines.join("\n");
       report.chars = scriptChars(lines);
       report.scriptRounds = [];
       if (!lines.length) { report.status = "script failed"; return keep(); }
-      if (report.chars > MAX_CHARS) { report.status = "too long"; return keep(); }
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     } else {

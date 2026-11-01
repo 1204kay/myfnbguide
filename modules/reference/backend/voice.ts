@@ -574,6 +574,8 @@ export interface VoiceReport {
   status: "up" | "tried" | "not ready" | "script failed" | "too long" | "check failed" | "no reads left" | "error";
   /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
   tries?: number;
+  /** Qwen's readings by hand, counted apart: they spend none of Leda's free reads. */
+  qwenTries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
   reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
@@ -714,8 +716,8 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
   const before = await voiceReport(no);
-  const used = opts.dryRun ? 0 : before?.tries ?? 0;
-  const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: used, reads: opts.dryRun ? [] : before?.reads ?? [] };
+  const used = opts.dryRun ? 0 : (opts.qwen ? before?.qwenTries : before?.tries) ?? 0;
+  const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: opts.qwen ? before?.tries ?? 0 : used, ...(opts.qwen || before?.qwenTries ? { qwenTries: opts.qwen ? used : before?.qwenTries } : {}), reads: opts.dryRun ? [] : before?.reads ?? [] };
   const keep = async () => { if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); } return report; };
   // Leda's count only: a Qwen reading by hand has its own QWEN.reads.
   if (!opts.qwen && used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
@@ -724,7 +726,8 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
   if (missing.length) return { ...report, status: "not ready", error: missing.join("；") };
   // Kept under the data folder, not the container's /tmp: a reading not yet heard outlives a restart.
   const work = opts.out ?? path.join(DIR, "work", String(no));
-  const saved = !opts.dryRun && before?.unheard
+  // A Leda reading left unheard waits for Leda's next run, not Qwen's.
+  const saved = !opts.dryRun && !opts.qwen && before?.unheard
     ? await Promise.all([readFile(path.join(work, `${no}.txt`), "utf8"), readFile(path.join(work, `${no}.wav`))]).catch(() => null)
     : null;
   report.unheard = Boolean(saved);
@@ -749,7 +752,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       let wav: Buffer;
       if (saved && attempt === used) wav = saved[1];
       else {
-        report.tries = attempt;
+        if (opts.qwen) report.qwenTries = attempt; else report.tries = attempt;
         await keep();
         wav = await (opts.qwen ? readQwen(script, opts.qwen, `issue:${no}`, attempt) : read(script, `issue:${no}`, attempt)).catch((error: unknown) => {
           if (error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";

@@ -26,14 +26,16 @@ import { pyin } from "./pyin.ts";
 const DIR = path.join(config.dataDir, "reference", "audio");
 
 /**
- * Longest script read, counted as scriptChars counts: about ten minutes (handbook 决定记录 10-31, 「十分钟左右、全稿约
- * 3,000 字」). Set when Gemini's Leda read the issue in one request and longer readings broke at the end and drifted
- * (issue 7, 10-31: 3,091 characters, stopping short and climbing 63 Hz); Qwen reads line by line, so the bound is now the
- * listening length only. The script is asked for at most WRITE_CHARS; MAX_CHARS, where a script is refused, sits just
- * above it, so a model that runs a few dozen over is still read.
+ * Longest script read, counted as scriptChars counts: about twelve or thirteen minutes. Until 11-01 it was 2,450/2,650,
+ * about ten minutes, because Gemini's Leda read the issue in one request and longer readings broke at the end and drifted
+ * (issue 7, 10-31: 3,091 characters, stopping short and climbing 63 Hz). Qwen reads line by line, so the bound is the
+ * listening length only: Kay 11-01 19:02 「这样的话 是不是可以长一点了？之前是因为一直错 对吧？」, 19:04 「你和协调者十一
+ * 讨论长度」; set at 3,700 with the coordinator, to go back to about 3,500 if issues 10 and 11 read or check worse. The
+ * script is asked for at most WRITE_CHARS; MAX_CHARS, where a script is refused, sits just above it, so a model that runs
+ * a few dozen over is still read.
  */
-export const MAX_CHARS = 2_650;
-const WRITE_CHARS = 2_450;
+export const MAX_CHARS = 3_900;
+const WRITE_CHARS = 3_700;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
  * 09:39); set for Gemini's ten free a day and kept for Qwen: a run reads again until one passes, so six readings from
@@ -43,8 +45,8 @@ export const MAX_READS = 6;
 /**
  * The voice: Alibaba Cloud Model Studio, Singapore (Kay 11-01 18:35 on the first Qwen reading, longanhuan_v3.1: 「很不错
  * 听起来很好 也完全没有窒息感」; 18:36: 「Gemini 不要了 以后都用阿里云 免费额度完了就付费 这个值得」; 18:37: 「确定用阿里云 但是
- * 还没选好声音」). longanhuan_v3.1 reads until Kay picks one; picking is this line, the model too (Kay was comparing
- * qwen-audio-3.1-tts-next, -plus and -flash at 18:43; --model to try one). qwen-audio-3.1-tts-flash: free 1M
+ * 还没选好声音」; 18:59, after comparing qwen-audio-3.1-tts-next, -plus and -flash: 「好 就定龙安欢 flash」). A change of voice
+ * or model is this line (--voice, --model to try one). qwen-audio-3.1-tts-flash: free 1M
  * characters to 2027-01-31, then paid, US$0.07–0.1 a reading (6–7K characters billed, 11-01 18:40); of its Mandarin voices only the 多语种与方言 group answers in
  * Singapore (longanhuan_v3.1, longanlingxin_v3.1, longanfengyue_v3.1), the 精品中文 ones (xuyuyuan_v3.1 and the rest)
  * return Engine error 411 (11-01). This model, not qwen3-tts-flash (Cherry and others; free there only 10K characters):

@@ -58,7 +58,7 @@ test("the check's fixes go in line by line; still wrong after three mends, there
 
 test("a script too long goes back to the writer with its length, then is checked", async () => {
   const seen: string[] = [];
-  const long = Array.from({ length: 30 }, (_, i) => `${"长".repeat(99)}${i}`);
+  const long = Array.from({ length: 45 }, (_, i) => `${"长".repeat(99)}${i}`);
   const ask = scripted({
     reference_issue_voice: [{ lines: long }, { lines: ["英国净少了977家店。"] }],
     reference_issue_voice_check: [{ problems: [] }],

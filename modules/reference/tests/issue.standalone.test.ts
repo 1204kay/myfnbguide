@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
+import { creditFinding, monthSpend } from "../backend/credit.ts";
 import { amendIssue, type Ask, citedItems, composeIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
@@ -47,14 +48,47 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.equal(c.status, "issue");
   assert.equal(c.chosen?.issue.title, "好听的一稿");
-  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_write", "reference_issue_speak", "reference_issue_check", "reference_issue_listen", "reference_issue_review"]);
+  assert.deepEqual(calls.map((x) => x.purpose), ["reference_issue_write", "reference_issue_speak", "reference_issue_write", "reference_issue_speak", "reference_issue_listen", "reference_issue_check", "reference_issue_check", "reference_issue_review"], "the listener scored neither, so both are checked to pick");
   assert.ok(!calls[0]!.user.includes("另一稿细说"));
-  assert.ok(calls[3]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
+  assert.ok(calls[2]!.user.includes("另一稿细说的是「平淡的一稿」"), "the second draft is told the first one's subject, to tell another");
   assert.ok(calls[1]!.user.includes("平淡的一稿"), "each draft is gone over for the ear before its check");
-  const check = calls[5]!.user;
+  const check = calls[6]!.user;
   assert.ok(check.includes("〔3〕来源 3《第 3 条》（可以引原句）") && check.includes(ITEMS[2]!.text));
   assert.ok(!check.includes(ITEMS[0]!.text), "an item the draft does not cite is not sent to the check");
   assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
+});
+
+test("when the listener ranks the drafts, only the pick is checked; the other is checked only if the pick cannot go up whole", async () => {
+  const { ask, calls } = scripted({
+    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("平淡的一稿", "说了〔1〕。") : issue("好听的一稿", "说了〔3〕。")),
+    reference_issue_listen: () => ({ scores: [{ draft: 1, score: 6, why: "" }, { draft: 2, score: 8, why: "" }] }),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-16", ask);
+  const checks = calls.filter((x) => x.purpose === "reference_issue_check");
+  assert.equal(checks.length, 1);
+  assert.ok(checks[0]!.user.includes("好听的一稿"));
+  assert.equal(c.chosen?.issue.title, "好听的一稿");
+  assert.equal(c.drafts[0]!.unchecked, true);
+  assert.ok(issueMarkdown(c, 9).includes("没核（听众选了另一稿）"));
+
+  const tied = scripted({
+    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("平淡的一稿", "说了〔1〕。") : issue("好听的一稿", "说了〔3〕。")),
+    reference_issue_listen: () => ({ scores: [{ draft: 1, score: 7, why: "" }, { draft: 2, score: 7, why: "" }] }),
+    reference_issue_check: (user) => ({ lively: user.includes("好听") ? 8 : 5, problems: [] }),
+  });
+  const t = await composeIssue(ITEMS, "2026-10-16", tied.ask);
+  assert.equal(tied.calls.filter((x) => x.purpose === "reference_issue_check").length, 2, "a tie is broken by the check's score, so both are checked");
+  assert.equal(t.chosen?.issue.title, "好听的一稿");
+
+  const wrong = scripted({
+    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("稿 a", "说了〔1〕。") : issue("稿 b", "说了一句原文没有的话〔3〕。")),
+    reference_issue_listen: () => ({ scores: [{ draft: 1, score: 6, why: "" }, { draft: 2, score: 8, why: "" }] }),
+    reference_issue_check: (user) => ({ lively: 7, problems: user.includes("没有的话") ? [{ rule: 1, quote: "说了一句原文没有的话〔3〕。", why: "", fix: "说了一句原文没有的话〔3〕。" }] : [] }),
+  });
+  const w = await composeIssue(ITEMS, "2026-10-16", wrong.ask);
+  assert.ok(wrong.calls.filter((x) => x.purpose === "reference_issue_check").some((x) => x.user.includes("稿 a")), "the pick could not be mended, so the other is checked and mended");
+  assert.equal(w.chosen?.issue.title, "稿 a");
 });
 
 test("when neither passes, the check's own fixes go into the pick and a fresh check reads it; a pick still wrong after the last round leaves the other mended too, and what is still wrong is cut", async () => {
@@ -357,4 +391,16 @@ test("a fix to the preview stays in the preview, though the preview repeats a ne
   const { issue: out } = amendIssue(draft, [{ rule: 1, quote: draft.preview, why: "", fix: "今天先说几条快讯：快乐蜂在菲律宾圈出1500个潜在商圈；喜茶重新开放加盟。" }], (p) => p.fix);
   assert.equal(out.news[0]!.head, "快乐蜂在本土圈出1500个潜在商圈");
   assert.equal(out.preview, "今天先说几条快讯：快乐蜂在菲律宾圈出1500个潜在商圈；喜茶重新开放加盟。");
+});
+
+test("the Claude credit warns at 80% spent, or once the month's pace would go over it, and not before", () => {
+  const nov = (d: number) => new Date(Date.UTC(2026, 10, d, 2));
+  assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000 }]), 6);
+  assert.equal(creditFinding(20, nov(2)), null, "two days say too little about the month");
+  assert.equal(creditFinding(20, nov(10)), null, "US$20 nine days in is about US$66 for the month");
+  const pace = creditFinding(40, nov(10));
+  assert.equal(pace?.level, "today");
+  assert.ok(pace?.impact?.includes("整月约 US$132"), String(pace?.impact));
+  assert.equal(creditFinding(81, nov(28))?.level, "today");
+  assert.equal(creditFinding(96, nov(28))?.level, "now");
 });

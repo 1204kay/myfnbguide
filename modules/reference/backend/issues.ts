@@ -39,7 +39,7 @@ function stored(c: ComposedIssue) {
   return {
     issue: c.chosen?.issue ?? null, lively: c.chosen?.lively ?? 0, edited: c.chosen?.edited ?? false,
     cut: c.chosen?.cut ?? [], problems: c.chosen?.problems ?? [], note: c.note ?? null,
-    drafts: c.drafts.map((d) => ({ issue: d.issue, lively: d.lively, problems: d.problems, edited: d.edited })),
+    drafts: c.drafts.map((d) => ({ issue: d.issue, lively: d.lively, problems: d.problems, edited: d.edited, ...(d.unchecked ? { unchecked: true } : {}) })),
     items: c.items.map(({ text: _text, ...item }) => item),
   };
 }

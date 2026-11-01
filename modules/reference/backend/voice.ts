@@ -41,8 +41,13 @@ const WRITE_CHARS = 2_450;
  * again until one passes, so six readings from 05:20 are over well before readers wake.
  */
 export const MAX_READS = 6;
-/** The voice and how it reads (Kay 10-26 picked Leda; the style as the computer's script sent it, mkjobs.py). */
-export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "早间节目主播，沉稳但有活力，语速中等偏快" };
+/**
+ * The voice and how it reads (Kay 10-26 picked Leda). The style was 「语速中等偏快」 as the computer's script sent it
+ * (mkjobs.py); Kay 10-31 22:30 heard the issues as breathless: Leda read about 280 characters a minute against the old
+ * voice's 247, with a pause of half a second only 8–11 times a minute against 18. The sample read 「语速适中，句与句之间
+ * 留出自然换气的停顿」 came closest to the old voice of the three (11-01), so that is the style now.
+ */
+export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "早间节目主播，沉稳但有活力，语速适中，句与句之间留出自然换气的停顿" };
 /**
  * The machine check (handbook step 10): transcript ≥95% of the script, its closing line heard (`end`), no gap over
  * 4 s, and each minute's median pitch within 20 Hz of the others. No fixed range: 195–225 Hz was set on issue 6 alone,

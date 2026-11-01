@@ -195,7 +195,11 @@ async function read(script: string, subject: string, attempt: number): Promise<B
  * (providers/embeddings.ts) and offers the dashscope models (site/models.ts).
  */
 export const QWEN = { model: "qwen-audio-3.1-tts-flash", service: "speech-qwen", reads: 2 };
-async function readQwen(script: string, voice: string, subject: string, attempt: number): Promise<Buffer> {
+/**
+ * `style` goes as the request's instruction (Qwen-Audio's own way to set how a line is said; in Chinese, as the text
+ * is). By default Leda's SPEECH.style, so the two voices are compared reading the same way; "" sends none.
+ */
+async function readQwen(script: string, voice: string, subject: string, attempt: number, style = SPEECH.style): Promise<Buffer> {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
@@ -204,12 +208,12 @@ async function readQwen(script: string, voice: string, subject: string, attempt:
   for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: QWEN.service, model: QWEN.model, purpose: "reference_issue_read", subject, identity: { model: QWEN.model, voice, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
+      { service: QWEN.service, model: QWEN.model, purpose: "reference_issue_read", subject, identity: { model: QWEN.model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
         const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
-          body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, format: "wav", sample_rate: 24_000 } }),
+          body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
         });
         // Which line, for the error: 11-01 the first line failed with only the engine's words to go by.
         if (!res.ok) {
@@ -715,7 +719,7 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * Reads issue `no` aloud and, unless `dryRun`, puts it up when the machine check passes. A dry run leaves the MP3 and
  * the script in `out` for a person to hear and keeps nothing on the site.
  */
-export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string } = {}): Promise<VoiceReport> {
+export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string; style?: string } = {}): Promise<VoiceReport> {
   const report = await readIssue(no, ask, opts);
   // A reading heard is done with (about 29 MB a day): only one not yet heard is kept, for the next run to hear. Not when
   // nothing ran ("not ready"): what an earlier run left unheard is still waiting.
@@ -723,7 +727,7 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   return report;
 }
 
-async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string }): Promise<VoiceReport> {
+async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string; style?: string }): Promise<VoiceReport> {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
@@ -766,7 +770,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       else {
         if (opts.qwen) report.qwenTries = attempt; else report.tries = attempt;
         await keep();
-        wav = await (opts.qwen ? readQwen(script, opts.qwen, `issue:${no}`, attempt) : read(script, `issue:${no}`, attempt)).catch((error: unknown) => {
+        wav = await (opts.qwen ? readQwen(script, opts.qwen, `issue:${no}`, attempt, opts.style) : read(script, `issue:${no}`, attempt)).catch((error: unknown) => {
           // Gemini answers a request too long for it with 400 (H16); Qwen reads a line a request, so its 400 is something else.
           if (!opts.qwen && error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
           throw error;

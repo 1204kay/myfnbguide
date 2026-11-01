@@ -26,14 +26,16 @@ import { pyin } from "./pyin.ts";
 const DIR = path.join(config.dataDir, "reference", "audio");
 
 /**
- * Longest script read, counted as scriptChars counts: about ten minutes (handbook 决定记录 10-31, 「十分钟左右、全稿约
- * 3,000 字」). Set when Gemini's Leda read the issue in one request and longer readings broke at the end and drifted
- * (issue 7, 10-31: 3,091 characters, stopping short and climbing 63 Hz); Qwen reads line by line, so the bound is now the
- * listening length only. The script is asked for at most WRITE_CHARS; MAX_CHARS, where a script is refused, sits just
- * above it, so a model that runs a few dozen over is still read.
+ * Longest script read, counted as scriptChars counts: about twelve or thirteen minutes. Until 11-01 it was 2,450/2,650,
+ * about ten minutes, because Gemini's Leda read the issue in one request and longer readings broke at the end and drifted
+ * (issue 7, 10-31: 3,091 characters, stopping short and climbing 63 Hz). Qwen reads line by line, so the bound is the
+ * listening length only: Kay 11-01 19:02 「这样的话 是不是可以长一点了？之前是因为一直错 对吧？」, 19:04 「你和协调者十一
+ * 讨论长度」; set at 3,700 with the coordinator, to go back to about 3,500 if issues 10 and 11 read or check worse. The
+ * script is asked for at most WRITE_CHARS; MAX_CHARS, where a script is refused, sits just above it, so a model that runs
+ * a few dozen over is still read.
  */
-export const MAX_CHARS = 2_650;
-const WRITE_CHARS = 2_450;
+export const MAX_CHARS = 3_900;
+const WRITE_CHARS = 3_700;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
  * 09:39); set for Gemini's ten free a day and kept for Qwen: a run reads again until one passes, so six readings from

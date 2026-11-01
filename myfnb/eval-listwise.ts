@@ -9,13 +9,20 @@
 //   --models a,b   默认「站上评分用的模型」和 deepseek-v4-pro-llm；--reps 2；--cap-usd 2（回执累计到这个数就停）
 //   --pools 1,3    候选池几天（Kay 10-25「一天挑不出 可以两三天都行」，十一定一起比）：1 = 每天只看当天；3 = 当天加前两天里还没上过日报的，
 //                  按日期顺序一天天往下排，上过的稿和它那件事不再出现。六天是连着的 10-19 到 10-24，10-19 的前两天没有标注，只看当天。
+//   --shadow 2026-10-06,2026-10-07   影子（2026-10-25，Kay「你和十一决定」，十一定）：不读标注，给哪几天就挑哪几天，和那天实际的日报正文并排，
+//                  给 Kay 不标名字地挑。池子 = 那天日报窗口（前一天 08:00 到当天 08:00，取 reports 里存的）里进了列表的稿，取法和日报一样
+//                  （edition.ts periodReports，dailyScope = pool：eligible，按到达和放出里晚的那个归天）；3 天池把窗口往前延两天，去掉更早几天已经上过日报的稿和那件事
+//                  （跑过影子的天按影子自己挑的算，没跑的天按实际日报算）。只用 deepseek-v4-pro-llm，每天每池 1 次，安全阀默认 US$0.5（这个用途的全部历史回执，调用前查，最后一次可能略超）。
+//                  不加 --apply 只列每天池子多大、估花费；加了才调用，并排结果写进容器里的 JSON（路径打在最后一行）。
 // 在服务器上：ops 门 `bg myfnb/eval-listwise.ts --apply`，再 `tail <编号>`。
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { z } from "zod";
 import { REPO_ROOT } from "@aihot/backend/config";
+import { addDays } from "@aihot/contracts/time";
 import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { chatJson } from "@aihot/backend/providers/llm";
@@ -24,6 +31,7 @@ import { modelFor } from "@aihot/backend/editorial/models";
 
 const { values } = parseArgs({ options: {
   apply: { type: "boolean", default: false }, models: { type: "string" }, reps: { type: "string", default: "2" }, "cap-usd": { type: "string", default: "2" }, pools: { type: "string", default: "1,3" },
+  shadow: { type: "string" },
 } });
 const DAYS = ["1019", "1020", "1021", "1022", "1023", "1024"];
 const HOLDOUT = new Set(["1019", "1020", "1021", "1024"]);
@@ -59,6 +67,92 @@ const SYSTEM = `你在替 MYFNB 编每天的日报。MYFNB 给全世界说中文
 - 同一件事有几家在报，只放写得最全的一条。
 只输出 JSON：{"picks":[{"n":编号,"why":"一句话"}]}`;
 const Schema = z.object({ picks: z.array(z.object({ n: z.number().int(), why: z.string() })) });
+
+// 影子：见文件头 --shadow。和上面的标注评测共用提示词，只换池子和输出。
+if (values.shadow) {
+  const SHADOW = "eval_listwise_shadow", SHADOW_MODEL = "deepseek-v4-pro-llm";
+  const dates = values.shadow.split(",").sort();
+  const shadowCap = process.argv.some((a) => a.startsWith("--cap-usd")) ? Number(values["cap-usd"]) : 0.5;
+  const pools = values.pools.split(",").map(Number);
+  type Daily = { key: string; window_start: Date; window_end: Date; items: { itemId: string; title: string; sourceName: string; summary: string }[] };
+  const dailies = new Map((await sql<Daily[]>`
+    SELECT key, window_start, window_end,
+      coalesce((SELECT jsonb_agg(i) FROM jsonb_array_elements(content->'sections') sec, jsonb_array_elements(sec->'items') i), '[]'::jsonb) AS items
+    FROM reports WHERE kind = 'daily' AND key >= ${addDays(dates[0]!, -2)} AND key <= ${dates.at(-1)!}`).map((d) => [d.key, d]));
+  type Cand = { article_id: string; title: string; summary: string | null; source: string; story: string };
+  const poolOfShadow = async (d: string, pool: number, used: Set<string>, usedStories: Set<string>) => {
+    const daily = dailies.get(d);
+    if (!daily) return null;
+    const start = new Date(daily.window_start.getTime() - (pool - 1) * 86400_000);
+    const rows = await sql<Cand[]>`
+      SELECT p.article_id, p.title, p.summary, s.name AS source, coalesce(p.story_id::text, p.article_id) AS story
+      FROM publications p JOIN sources s ON s.id = p.source_id
+      -- 和日报取稿同一条件（packages/backend/src/reports/edition.ts periodReports，dailyScope = pool）：按到达和放出两者里晚的那个归天。
+      WHERE p.visibility = 'public' AND p.eligible AND NOT p.backfill
+        AND (
+          ((p.visible_after IS NULL OR p.visible_after <= p.timeline_at) AND p.timeline_at >= ${start} AND p.timeline_at < ${daily.window_end})
+          OR (p.visible_after > p.timeline_at AND p.visible_after >= ${start} AND p.visible_after < ${daily.window_end})
+        )
+        AND p.timeline_at >= ${start}::timestamptz - interval '24 hours'`;
+    return rows.filter((r) => !used.has(r.article_id) && !usedStories.has(r.story)).sort((a, b) => hash(a.article_id).localeCompare(hash(b.article_id)));
+  };
+  const listOf = (rows: Cand[]) => rows.map((r, i) => `${i + 1}. 【${r.source}】${r.title}\n   ${(r.summary ?? "").replace(/\s+/g, " ")}`).join("\n");
+  const shadowSpent = async () => Number((await sql<{ usd: string | null }[]>`
+    SELECT sum(coalesce(r.cost, (r.usage->>'prompt_tokens')::numeric / 1e6 * p.input_per_mtok + (r.usage->>'completion_tokens')::numeric / 1e6 * p.output_per_mtok, 0))::text AS usd
+    FROM receipt_attempts r JOIN receipts rc ON rc.id = r.receipt_id
+    LEFT JOIN LATERAL (SELECT input_per_mtok, output_per_mtok FROM service_prices sp WHERE sp.service = r.service AND sp.model IN (r.model, '') ORDER BY sp.model = '' LIMIT 1) p ON true
+    WHERE rc.purpose = ${SHADOW}`)[0]?.usd ?? 0);
+  // 3 天池里，没跑影子的前两天按实际日报算「已上过」。
+  const usedByDaily = (d: string, used: Set<string>, usedStories: Set<string>, storyOf: Map<string, string>) => {
+    for (const it of dailies.get(d)?.items ?? []) { used.add(it.itemId); usedStories.add(storyOf.get(it.itemId) ?? it.itemId); }
+  };
+  const storyOf = new Map((await sql<{ article_id: string; story: string }[]>`
+    SELECT article_id, coalesce(story_id::text, article_id) AS story FROM publications
+    WHERE article_id IN ${sql([...dailies.values()].flatMap((d) => d.items.map((i) => i.itemId)).concat(["-"]))}`).map((r) => [r.article_id, r.story]));
+  const out: Record<string, unknown> = {};
+  console.log(`# 影子：${dates.join("、")}；模型 ${SHADOW_MODEL}，池 ${pools.join("、")} 天，每天每池 1 次；安全阀 US$${shadowCap}（只算 ${SHADOW} 的回执，现在 US$${(await shadowSpent()).toFixed(3)}）`);
+  for (const pool of pools) {
+    const used = new Set<string>(), usedStories = new Set<string>();
+    for (const d of dates) {
+      if (pool > 1) for (let k = pool - 1; k >= 1; k--) { const prev = addDays(d, -k); if (!dates.includes(prev)) usedByDaily(prev, used, usedStories, storyOf); }
+      const list = await poolOfShadow(d, pool, used, usedStories);
+      const day = (out[d] ??= { actual: dailies.get(d)?.items.map((i) => ({ title: i.title, source: i.sourceName, summary: i.summary })) ?? null }) as Record<string, unknown>;
+      // 这天没挑成（没有日报、到了安全阀、调用失败），3 天池里后面几天按实际日报算它上过的稿，免得重复出现。
+      if (!list) { console.log(`${d} 池${pool}天：库里没有这天的日报，跳过`); usedByDaily(d, used, usedStories, storyOf); continue; }
+      const chars = SYSTEM.length + listOf(list).length;
+      if (!values.apply) { console.log(`${d} 池${pool}天：${list.length} 条，输入约 ${Math.round(chars / 1.5 / 1000)}k token；实际日报正文 ${dailies.get(d)!.items.length} 条`); continue; }
+      if (await shadowSpent() >= shadowCap) { console.log(`# 回执累计到安全阀 US$${shadowCap}，停`); usedByDaily(d, used, usedStories, storyOf); break; }
+      try {
+        const res = await chatJson({
+          model: SHADOW_MODEL, purpose: SHADOW, subject: `${VERSION}:shadow:p${pool}:${d}`, promptVersion: VERSION,
+          system: SYSTEM, user: listOf(list), schema: Schema, temperature: 0, maxTokens: 16000, timeoutMs: 300_000,
+        });
+        await completeReceipt(sql, res.receiptId);
+        const picks: { title: string; source: string; summary: string; why: string }[] = [];
+        for (const x of res.data.picks) {
+          const r = list[x.n - 1];
+          if (!r || used.has(r.article_id) || usedStories.has(r.story) || picks.length >= MAIN) continue;
+          used.add(r.article_id); usedStories.add(r.story);
+          picks.push({ title: r.title, source: r.source, summary: r.summary ?? "", why: x.why });
+        }
+        day[`pool${pool}`] = picks;
+        console.log(`${d} 池${pool}天：池 ${list.length} 条 · 挑 ${picks.length}${res.reused ? "（用已有回执）" : ""}`);
+      } catch (e) {
+        console.log(`${d} 池${pool}天：调用失败 ${String(e).slice(0, 160)}`);
+        usedByDaily(d, used, usedStories, storyOf);
+      }
+    }
+  }
+  if (values.apply) {
+    const file = path.join(tmpdir(), `listwise-shadow-${dates[0]}-${dates.at(-1)}.json`);
+    writeFileSync(file, JSON.stringify(out, null, 1));
+    console.log(`# 影子回执合计 US$${(await shadowSpent()).toFixed(3)}\n# 并排结果：${file}`);
+  }
+  await stopBoss().catch(() => {});
+  await closeDb();
+  process.exit(0);
+}
+
 type Row = { id: string; kay: boolean };
 const userOf = (list: Row[]) => list.map((r, i) => {
   const p = pubs.get(r.id)!;

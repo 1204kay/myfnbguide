@@ -13,10 +13,11 @@ import { month, spaced } from "../format.ts";
 import { CATEGORIES, categoryTitle, findSituation, OWNERS, SITUATIONS, type Situation } from "../situations.ts";
 import type {
   CaseCard, CasePage, CaseStory, Count, ItemText, PracticeCard, PracticeList, ReferenceHome, ShopPage, ShopPractices,
-  SituationPage, SituationRow, StarItem,
+  SituationPage, SituationRow, Speaker, StarItem,
 } from "../types.ts";
 import { problemKind } from "./checks.ts";
 import { PROMPT_VERSION, type Member, type Method } from "./methods.ts";
+import type { Placed } from "./place.ts";
 
 interface Row {
   id: string;
@@ -64,6 +65,37 @@ export async function foldedStories(): Promise<Folded> {
 async function shownCases(where: ReturnType<typeof sql>, now: Date): Promise<Row[]> {
   const [rows, folded] = await Promise.all([casesShown(where, now), foldedStories()]);
   return rows.map((r) => ({ ...r, folded: folded.all || folded.ids.has(r.id) }));
+}
+
+/**
+ * The stories and the items placed without one (backend/place.ts), newest first: what the situation pages, the lists
+ * and the item pages' "收在 …" read. A placed item is read as a folded story with no text, its own title, its source's
+ * country and its one placement, so the pages list it as they list a folded story. `where` reads `c.` as a case does:
+ * the placements are read under the same alias, with the same `article_id` and `situations`.
+ */
+async function shownWithPlaced(where: ReturnType<typeof sql>, now: Date): Promise<Row[]> {
+  const [stories, placed] = await Promise.all([shownCases(where, now), placedShown(where, now)]);
+  return [...stories, ...placed].sort((a, b) => b.timeline_at.getTime() - a.timeline_at.getTime() || (a.id < b.id ? -1 : 1));
+}
+
+async function placedShown(where: ReturnType<typeof sql>, now: Date): Promise<Row[]> {
+  const rows = await sql<Array<Omit<Row, "folded" | "story" | "shop_key"> & { placements: Placed[]; speaker: Speaker }>>`
+    SELECT c.article_id AS id, c.situations, c.placements, c.speaker, c.created_at, c.updated_at, p.url, p.published_at, p.timeline_at, p.title,
+           p.summary, p.reason, p.score, s.id AS source_id, s.name AS source_name, s.icon_url AS source_icon
+    FROM reference_placements c
+    JOIN publications p ON p.article_id = c.article_id
+    JOIN sources s ON s.id = p.source_id
+    WHERE cardinality(c.situations) > 0 AND ${selectedCondition(now)} AND ${where}
+      AND NOT EXISTS (SELECT 1 FROM reference_cases k WHERE k.article_id = c.article_id AND k.status = 'story')
+    ORDER BY p.timeline_at DESC, c.article_id`;
+  return rows.map(({ placements, speaker, ...r }) => ({
+    ...r, shop_key: null, folded: true,
+    story: {
+      title: r.title, lead: "", who: "", parts: [], open: null,
+      shop: { name: null, label: "", country: sourceCountry(r.source_name) ?? "", city: null, kind: null, size: null, speaker },
+      placements: placements.map((pl) => ({ situation: pl.situation, group: pl.group, card: "" })),
+    },
+  }));
 }
 
 async function casesShown(where: ReturnType<typeof sql>, now: Date): Promise<Array<Omit<Row, "folded">>> {
@@ -119,17 +151,26 @@ const isListed = (rows: Row[] | undefined) => countOf(rows ?? [], false).shops >
 
 /** How many situations the lists show: tellerOf's shops, counted in SQL (a page of one story does not read every story). */
 async function situationsShown(now: Date): Promise<number> {
+  // The placed items (backend/place.ts) count as a folded story does: no shop key, their source by who tells it.
   const [row] = await sql<{ n: number }[]>`
     SELECT count(*)::int AS n FROM (
-      SELECT u.slug FROM reference_cases c
-      JOIN publications p ON p.article_id = c.article_id
-      CROSS JOIN LATERAL unnest(c.situations) AS u(slug)
-      WHERE c.status = 'story' AND ${selectedCondition(now)} GROUP BY u.slug
-      HAVING count(DISTINCT CASE
-        WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
-        WHEN c.shop_key IS NOT NULL THEN 'shop:' || c.shop_key
-        WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor', 'media') THEN NULL
-        ELSE 'source:' || p.source_id END) >= ${LISTED.fromShops}) shown`;
+      SELECT u.slug FROM (
+        SELECT c.situations, CASE
+          WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
+          WHEN c.shop_key IS NOT NULL THEN 'shop:' || c.shop_key
+          WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor', 'media') THEN NULL
+          ELSE 'source:' || p.source_id END AS teller
+        FROM reference_cases c JOIN publications p ON p.article_id = c.article_id
+        WHERE c.status = 'story' AND ${selectedCondition(now)}
+        UNION ALL
+        SELECT c.situations, CASE
+          WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
+          WHEN c.speaker IN ('adviser', 'vendor', 'media') THEN NULL
+          ELSE 'source:' || p.source_id END
+        FROM reference_placements c JOIN publications p ON p.article_id = c.article_id
+        WHERE ${selectedCondition(now)} AND NOT EXISTS (SELECT 1 FROM reference_cases k WHERE k.article_id = c.article_id AND k.status = 'story')
+      ) t CROSS JOIN LATERAL unnest(t.situations) AS u(slug)
+      GROUP BY u.slug HAVING count(DISTINCT t.teller) >= ${LISTED.fromShops}) shown`;
   return row!.n;
 }
 
@@ -354,7 +395,7 @@ const byShops = (a: SituationRow, b: SituationRow) => b.count.shops - a.count.sh
 export const rankSituations = (rows: SituationRow[]): SituationRow[] => [...rows].sort(byShops).slice(0, RANKED);
 
 export async function readHome(now = new Date()): Promise<ReferenceHome> {
-  const [rows, stored, shops] = await Promise.all([shownCases(sql`true`, now), groupings(), shopsShown(now)]);
+  const [rows, stored, shops] = await Promise.all([shownWithPlaced(sql`true`, now), groupings(), shopsShown(now)]);
   const placed = bySituation(rows);
   const shown = SITUATIONS.filter((s) => isListed(placed.get(s.slug)));
   const listed = new Map(shown.map((s) => [s.slug, situationRow(s, placed.get(s.slug)!, stored.get(s.slug))]));
@@ -384,7 +425,7 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
 export async function readSituation(slug: string, now = new Date()): Promise<SituationPage | null> {
   const situation = findSituation(slug);
   if (!situation) return null;
-  const [rows, stored, shops] = await Promise.all([shownCases(sql`${slug} = ANY (c.situations)`, now), groupings(slug), shopsShown(now)]);
+  const [rows, stored, shops] = await Promise.all([shownWithPlaced(sql`${slug} = ANY (c.situations)`, now), groupings(slug), shopsShown(now)]);
   const grouping = stored.get(slug);
   // Folded (foldedStories): the practices' titles go too, as their summaries do. 5 situations checked 10-24 had about
   // a row in four under a practice it does not tell (myfnb 情况页做法组核对-5页-2026-10-24.md); the page lists the
@@ -424,7 +465,7 @@ export async function readSituation(slug: string, now = new Date()): Promise<Sit
 async function placeOf(r: Row, now: Date): Promise<{ slug: string; title: string; practice: string | null; count: Count } | null> {
   const situation = r.story.placements[0] ? findSituation(r.story.placements[0].situation) : undefined;
   if (!situation) return null;
-  const [rows, stored] = await Promise.all([shownCases(sql`${situation.slug} = ANY (c.situations)`, now), groupings(situation.slug)]);
+  const [rows, stored] = await Promise.all([shownWithPlaced(sql`${situation.slug} = ANY (c.situations)`, now), groupings(situation.slug)]);
   const grouping = stored.get(situation.slug);
   const built = grouping ? practices(rows, grouping.methods, situation, new Map()).built : null;
   return {
@@ -460,6 +501,12 @@ export async function readShare(id: string, now = new Date()): Promise<{ story: 
 /** What an item's page shows under its three parts (web/item-part.tsx): the way to its story when the library shows one. */
 export async function readItemText(id: string, now = new Date()): Promise<ItemText | null> {
   const page = await readCase(id, now);
+  // An item placed without a story (backend/place.ts): the way to its situation, as a folded story's.
+  if (!page) {
+    const [r] = await placedShown(sql`c.article_id = ${id}`, now);
+    const situation = r && await placeOf(r, now);
+    return situation ? { id, title: r.title, situation: { slug: situation.slug, title: situation.title, count: situation.count } } : null;
+  }
   // A folded story is left out of its item's page but for its situation: its own page leads back to the item.
   if (!page || (page.folded && !page.situation)) return null;
   return { id: page.id, title: page.story.title, situation: page.situation && { slug: page.situation.slug, title: page.situation.title, count: page.situation.count } };
@@ -481,7 +528,7 @@ export async function readShop(key: string, now = new Date()): Promise<ShopPage 
 
 /** The library's pages for the sitemap: situations the lists show, every story, shops with a page of several. */
 export async function sitemapEntries(now = new Date()): Promise<SitemapEntry[]> {
-  const rows = await shownCases(sql`true`, now);
+  const rows = await shownWithPlaced(sql`true`, now);
   const placed = bySituation(rows);
   const newest = (list: Row[]) => list.reduce((at, r) => (r.updated_at > at ? r.updated_at : at), list[0]!.updated_at);
   const shops = new Map<string, Row[]>();

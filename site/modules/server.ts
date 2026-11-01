@@ -2,8 +2,9 @@
 import type { ServerModule } from "@aihot/backend/modules";
 import archive from "@aihot/archive/server";
 import checker from "@aihot/checker/server";
+import dailypick from "@aihot/dailypick/server";
 import reference from "@aihot/reference/server";
 import social from "@aihot/social/server";
 import trends from "@aihot/trends/server";
 
-export const SERVER_MODULES: readonly ServerModule[] = [reference, archive, social, checker, trends];
+export const SERVER_MODULES: readonly ServerModule[] = [reference, archive, social, checker, trends, dailypick];

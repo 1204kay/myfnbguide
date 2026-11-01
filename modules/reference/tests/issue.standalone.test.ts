@@ -350,3 +350,11 @@ test("a fix that carries the label of its part goes in without it", () => {
   const { issue: out } = amendIssue(issue("说重了的标题", "说了〔1〕。"), [{ rule: 1, quote: "说重了的标题", why: "", fix: "标题：改准的标题" }], (p) => p.fix);
   assert.equal(out.title, "改准的标题");
 });
+
+test("a fix to the preview stays in the preview, though the preview repeats a news head", () => {
+  const draft = { ...issue("标题", "说了〔1〕。"), preview: "今天先说几条快讯：快乐蜂在本土圈出1500个潜在商圈；喜茶重新开放加盟。" };
+  draft.news[0]!.head = "快乐蜂在本土圈出1500个潜在商圈";
+  const { issue: out } = amendIssue(draft, [{ rule: 1, quote: draft.preview, why: "", fix: "今天先说几条快讯：快乐蜂在菲律宾圈出1500个潜在商圈；喜茶重新开放加盟。" }], (p) => p.fix);
+  assert.equal(out.news[0]!.head, "快乐蜂在本土圈出1500个潜在商圈");
+  assert.equal(out.preview, "今天先说几条快讯：快乐蜂在菲律宾圈出1500个潜在商圈；喜茶重新开放加盟。");
+});

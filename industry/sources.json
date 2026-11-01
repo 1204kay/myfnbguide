@@ -3803,11 +3803,11 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-dantri-kinh-doanh",
-      "name": "Dân trí 商业版（越南 · 综合报经济栏目）",
+      "id": "rss-banc",
+      "name": "BANC（英国 · 酒吧餐饮酒店业的行业杂志）",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://dantri.com.vn/rss/kinh-doanh.rss",
+        "feedUrl": "https://bancm.com/feed",
         "_aihot": {
           "initialBackfillLimit": 3
         }
@@ -3815,10 +3815,226 @@
       "tier": "T2",
       "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 120,
+      "interval_minutes": 720,
       "tags": [
-        "越南",
+        "英国",
         "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-bar-espace-rassurants",
+      "name": "BAR エスパスラシュランのゆるり酒場の会話（日本 · 酒吧店主的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hashimoto.koelab.link/feed/podcast/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-bizmind-univ",
+      "name": "ビジネスマインド大学（日本 · 两家面包店店主的经营博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://future-anxiolytic.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "日本",
+        "店主"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-xcurating",
+      "name": "未來超商 x Curating（中国台湾 · 零售与便利店趋势分析）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.xcurating.tw/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "中国台湾",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-go-to-food",
+      "name": "The Go To Food Podcast（英国 · 餐厅创办人和主厨访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.megaphone.fm/AUDD5336095663",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-fika-bakery",
+      "name": "FIKA BAKERY（法国 · 面包店主访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/Nd9zEFG7L1l5",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "法国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-perfect-rise-rba",
+      "name": "The Perfect Rise（美国 · 零售烘焙协会的店主访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2434175.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "播客",
+        "协会"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-hospitality-builders",
+      "name": "The Hospitality Builders（英国 · 咖啡店和餐厅扩店访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/the-hospitality-builders/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "英国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "pod-exit-plan",
+      "name": "The Exit Plan（美国 · 加盟店主的经营故事）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2610113.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "播客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-smart-pizza-marketing",
+      "name": "Smart Pizza Marketing（美国 · 披萨店老板访谈和经营实例）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.smartpizzamarketing.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "美国",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "rss-kuypers-creative",
+      "name": "Kuypers Creative（餐饮策略顾问 Robert Kuypers 的行业长文）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kuyperscreative.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 720,
+      "tags": [
+        "博客"
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false

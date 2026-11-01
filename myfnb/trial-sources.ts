@@ -10,6 +10,7 @@
 //   --per 3        每个订阅取最新几条（默认 3）
 //   --cap-usd 1    回执累计到这个数就停（默认 1）
 //   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
+//   --only-passed <文件> 只跑上一轮逐条结果里至少 1 条过预筛的订阅
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
 // 同一条（同样的标题和正文）再判会直接用已有回执、不花钱，所以撞上限停下以后，第二天用同一条命令重开就是接着跑。
 // 结尾按订阅列出判了几条、过预筛几条、入选几条，用来挑命中高的那一档。
@@ -33,13 +34,20 @@ import type { SourceRow } from "@aihot/backend/sources/types";
 const { values } = parseArgs({ options: {
   apply: { type: "boolean", default: false }, per: { type: "string", default: "3" }, "cap-usd": { type: "string", default: "1" },
   sample: { type: "string", default: "trial-sample-2026-10-24.json" }, jobs: { type: "string", default: "1" },
-  reserve: { type: "string", default: "3000" },
+  reserve: { type: "string", default: "3000" }, "only-passed": { type: "string" },
 } });
 type Feed = { group: string; name: string; feedUrl: string; perDay: number };
 const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.sample), "utf8")) as {
   volume: Record<string, { feeds: number; perDay: number }>; feeds: Feed[];
 };
 const groups = Object.keys(sample.volume);
+// --only-passed <上一轮的逐条结果文件>：只留上一轮至少 1 条过预筛的订阅（第二轮用，不用先把名单提交进仓库再部署）。
+if (values["only-passed"]) {
+  const passed = new Set(readFileSync(values["only-passed"], "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as { feed: string; label?: string | null })
+    .filter((r) => r.label && r.label !== "BLOCK").map((r) => r.feed));
+  sample.feeds = sample.feeds.filter((f) => passed.has(f.name));
+  console.log(`# 只留上一轮过预筛的订阅：${sample.feeds.length} 个`);
+}
 const per = Number(values.per);
 const cap = Number(values["cap-usd"]);
 

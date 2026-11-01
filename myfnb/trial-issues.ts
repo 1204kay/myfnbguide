@@ -107,6 +107,9 @@ for (const [k, date] of days.entries()) {
     const name = String(no).padStart(2, "0");
     writeFileSync(join(dir, `${name}.md`), issueMarkdown(c, no));
     writeFileSync(join(dir, `${name}.json`), JSON.stringify(c, null, 2));
+    // What the check found in each draft, in the order written, without the day's originals: ${name}.json carries those
+    // and is deleted after the blind check (工作约定 §12), and with it why a day took ten drafts (10-30, issue 6).
+    writeFileSync(join(dir, `${name}-轮次.json`), JSON.stringify(c.drafts.map((d, i) => ({ draft: i + 1, edited: d.edited, lively: d.lively, cut: d.cut, problems: d.problems })), null, 2));
     // Every item of the day in full, for the blind check (and nothing else: they stay off the site).
     writeFileSync(join(dir, `${name}-原文.md`), items.map((i) => [`# 〔${i.n}〕${i.sourceName}《${i.title}》（${i.sourceId}）`, i.url, "", i.text].join("\n")).join("\n\n"));
     results.push({ no, date, c, cost: usd() - before, note: "" });

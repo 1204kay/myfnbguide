@@ -15,6 +15,7 @@
   "dependencies": {
     "@aihot/archive": "*",
     "@aihot/checker": "*",
+    "@aihot/dailypick": "*",
     "@aihot/reference": "*",
     "@aihot/social": "*",
     "@aihot/trends": "*"

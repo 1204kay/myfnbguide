@@ -85,6 +85,8 @@ export const DEFAULTS: Record<string, string> = {
   // 十一说 (modules/reference): DeepSeek's strongest writes, Opus checks and mends (Kay 10-19; trial round 3, 10-13 to 10-15).
   referenceIssue: "deepseek-v4-pro-llm",
   referenceIssueCheck: "claude-opus-5-5",
+  // 日报正文整天一起挑 (modules/dailypick)：影子里用的就是它（手册 评分标准 §4）。
+  dailyPick: "deepseek-v4-pro-llm",
 };
 
 /**

@@ -11,6 +11,7 @@ import type { AnalyzeInputArticle } from "./editorial/input.ts";
 import type { QueueOptions } from "./jobs/queue.ts";
 import type { Finding } from "./notify/feishu.ts";
 import type { Topic, TopicMember } from "./publication/topics.ts";
+import type { EditionEntry } from "./reports/edition.ts";
 
 /** A cron schedule (Asia/Shanghai), recorded in job_runs like the engine's (apps/worker/src/schedules.ts). */
 export interface Scheduled {
@@ -130,6 +131,14 @@ export interface EngineHooks {
   exitServed: (exit: string, req: FastifyRequest) => void;
 }
 
+/** A use of sources a module declares (ServerModule.sourceUses). */
+export interface SourceUse {
+  /** Its name in the admin's source list. */
+  label: string;
+  /** The longest it lets its sources wait between reads, in minutes; a faster pace of their own stays. */
+  minutes?: number;
+}
+
 /** What a topic page asks a module's part of it (publication/topics.ts loadTopicPage). */
 export interface TopicPageAsk {
   topic: Topic;
@@ -149,35 +158,9 @@ export interface JsonNotice {
   private?: boolean;
 }
 
-/** A reminder over MCP: after the server's instructions, after every tool's text and as `notice` in its structured content. */
-export interface McpNotice {
-  instructions: string;
-  text: string;
-  notice: object;
-}
-
-/** A reminder in a feed: an item ahead of the feed's own. `description` is HTML. */
-export interface FeedNotice {
-  guid: string;
-  title: string;
-  link: string;
-  description: string;
-  at: Date;
-}
-
-/**
- * A reminder for the person behind a request, which their Agent or reader passes on (it is not content),
- * asked at each exit; the first module with one gives it (requestNotice).
- */
+/** A reminder for the person behind a JSON request; the first module with one gives it. */
 export interface RequestNotices {
-  /** v1 JSON (routes/v1.ts). */
   json: (req: FastifyRequest) => JsonNotice | null;
-  /** The Agent's Markdown answers (routes/agent.ts): Markdown after the answer. */
-  agent: (req: FastifyRequest) => string | null;
-  /** MCP (routes/mcp.ts). Each distinct reminder gets a server of its own. */
-  mcp: (req: FastifyRequest) => McpNotice | null;
-  /** RSS (routes/feeds.ts), for the feed at `feedPath`. */
-  feed: (req: FastifyRequest, feedPath: string) => FeedNotice | null;
 }
 
 /** A daily's lead written by a module: its label over the headline, and where the headline goes to be read in full. */
@@ -186,6 +169,23 @@ export interface DailyLead {
   title: string;
   leadParagraph: string;
   href: string;
+}
+
+/** What a module picking a daily's entries in full is given (reports/compose.ts composeDaily). */
+export interface DailyPickAsk {
+  date: string;
+  /**
+   * The events it may pick from, most important first by the rule: those of the daily's window and of the
+   * `days - 1` windows before it, less what earlier issues carried and the events they covered within those days.
+   */
+  entries: readonly EditionEntry[];
+}
+
+/** A module's pick: the entries in full by item id, in order, and the paid calls behind it. */
+export interface DailyPick {
+  itemIds: string[];
+  model: string;
+  receiptIds: number[];
 }
 
 /** The copy a module's check is given (editorial/analyze.ts runAnalysis): understanding copy about to be selected. */
@@ -225,14 +225,6 @@ export interface ServerModule {
     /** After the stories. */
     entries?: () => Promise<SitemapEntry[]>;
   };
-  admin?: {
-    /** Current jobs scheduled outside the worker, by their job_runs name (admin/runs.ts). */
-    currentJobs?: () => Promise<readonly string[]>;
-    /** Badges on the admin navigation, by the key its web items name (admin/navigation.ts). */
-    counts?: Record<string, () => Promise<number>>;
-    /** Its part of the admin's runs page, under its name (admin/runs.ts); its web module draws it. */
-    runs?: () => Promise<unknown>;
-  };
   models?: Record<string, ModelStep>;
   /** Cron schedules (the worker). */
   schedules?: Scheduled[];
@@ -242,6 +234,12 @@ export interface ServerModule {
    * Null leaves the lead to the rule.
    */
   dailyLead?: (date: string) => Promise<DailyLead | null>;
+  /**
+   * The daily's entries in full picked by a module instead of the rule (reports/compose.ts composeDaily), from
+   * `days` windows: the first installed module with one picks; the rest of the day's events are the flashes.
+   * Null, a failure or a pick of none leaves the issue to the rule.
+   */
+  dailyPick?: { days: number; run: (ask: DailyPickAsk) => Promise<DailyPick | null> };
   /**
    * A check of the copy an article will be selected with, before it is stored (editorial/analyze.ts): the first
    * installed module with one may change the title, summary and reason, or hold the article out of the selection.
@@ -283,18 +281,19 @@ export interface ServerModule {
     resumed?: (sourceId: string, tx: Db) => Promise<void>;
     fetchNow?: (source: { id: string; config: Record<string, unknown> }) => Promise<Record<string, unknown>>;
   }>;
+  /**
+   * Uses of sources besides the news pipeline, by name (sources.uses, sources/uses.ts): the module reads the
+   * articles of the sources that name one itself, so nothing is collected twice.
+   */
+  sourceUses?: Record<string, SourceUse>;
   /** Lines of the Monday source-health report (operations/reports.ts), after the source counts. */
   sourceHealth?: (now: number) => Promise<string[]>;
   /** Job queues of its own (jobs/queue.ts). */
   queues?: ModuleQueue[];
   /** Follow-ups (level later), after the engine's (operations/alerts.ts). */
   followUps?: (now: number) => Promise<Finding[]>;
-  /** Further hosts the site answers on, over https: MCP accepts them as Host and as a browser's Origin (routes/mcp.ts). */
-  hosts?: string[];
-  /** Reminders for the person behind a request, by exit (RequestNotices). */
+  /** Reminders for the person behind a JSON request (RequestNotices). */
   notices?: Partial<RequestNotices>;
-  /** The origin v1 links stories at while it returns one, instead of the site's (publication/links.ts: hot topics' links.story, related stories' links.api). */
-  storyOrigin?: () => string | null;
   /** More keys a feedback sender is known by; a ban under any of them holds (operations/feedback.ts). */
   feedbackKeys?: (ip: string) => string[];
 }
@@ -321,6 +320,11 @@ export async function moduleDailyLead(date: string): Promise<DailyLead | null> {
     if (lead) return lead;
   }
   return null;
+}
+
+/** The first installed module's pick of the daily's entries in full, if any. */
+export function moduleDailyPick(): ServerModule["dailyPick"] {
+  return installed.find((m) => m.dailyPick)?.dailyPick;
 }
 
 /** The first installed module's check of selected copy, if any. */

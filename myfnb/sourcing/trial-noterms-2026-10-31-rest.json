@@ -1,0 +1,345 @@
+{
+"$comment": "2026-10-31 找不到条款页的 187 个试吃补跑：第一轮碰 US$1.28 上限停，清单第 134–187 个（Q 组最后 12 个、F 组全部 42 个）没轮到，第 133 个「食品表示ブログ」只判了 1 条，一起补，共 55 个（run.log 第 726、728、730 行，云电脑串核对）。",
+"volume": {
+"Q": {
+"feeds": 13,
+"perDay": 1.51
+},
+"F": {
+"feeds": 42,
+"perDay": 4.874
+}
+},
+"feeds": [
+{
+"group": "Q",
+"name": "食品表示ブログ",
+"feedUrl": "https://www.label-bank.co.jp/blog/feed",
+"perDay": 0.067
+},
+{
+"group": "Q",
+"name": "Consumers Council of Canada",
+"feedUrl": "https://consumerscouncil.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "Q",
+"name": "manamina［マナミナ］まなべるみんなのデータマーケティング・マガジン",
+"feedUrl": "https://manamina.valuesccg.com/articles/newest.rss",
+"perDay": 0.222
+},
+{
+"group": "Q",
+"name": "ビジネスマインド大学",
+"feedUrl": "https://future-anxiolytic.com/feed/",
+"perDay": 0.6
+},
+{
+"group": "Q",
+"name": "MAFFEO DRINKS | Podcast Insights & Advisory",
+"feedUrl": "https://www.maffeodrinks.com/rss/",
+"perDay": 0.044
+},
+{
+"group": "Q",
+"name": "一般社団法人キャッシュレス推進協議会",
+"feedUrl": "https://paymentsjapan.or.jp/feed/",
+"perDay": 0.022
+},
+{
+"group": "Q",
+"name": "Brandtenders News",
+"feedUrl": "https://brandtenders.news/feed/",
+"perDay": 0.111
+},
+{
+"group": "Q",
+"name": "Club Industry",
+"feedUrl": "https://cmacontario.com/rssfeed/blog/category/5/rss.xml",
+"perDay": 0.044
+},
+{
+"group": "Q",
+"name": "居酒屋応援隊｜北陸の珍味・干物・魚介類の仕入れ・卸売",
+"feedUrl": "https://izakayaouentai.co.jp/feed/",
+"perDay": 0.033
+},
+{
+"group": "Q",
+"name": "Drupal - Noticias de Gastronomía",
+"feedUrl": "https://static.excelenciasgourmet.com/es/rss.xml",
+"perDay": 0.178
+},
+{
+"group": "Q",
+"name": "raimannconcepts",
+"feedUrl": "https://www.raimannconcepts.de/share/news-gastronomieberatung.xml",
+"perDay": 0.056
+},
+{
+"group": "Q",
+"name": "Επιχειρήσεις",
+"feedUrl": "https://www.sofokleousin.gr/taxonomy/term/10/feed",
+"perDay": 0.111
+},
+{
+"group": "Q",
+"name": "WBA - Wisconsin Bakers Association News",
+"feedUrl": "https://www.wibakers.com/news/RSS",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "Ana Sayfa - Etit Mimarlık",
+"feedUrl": "https://restorandekorasyon.com/feed/",
+"perDay": 0.1
+},
+{
+"group": "F",
+"name": "咖啡豆 | samova德國茶 | 寬谷有限公司 | 台北市",
+"feedUrl": "https://www.port.com.tw/blog-feed.xml",
+"perDay": 0.033
+},
+{
+"group": "F",
+"name": "Restoran – Cafe Sipariş programı",
+"feedUrl": "https://restoransiparis.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "Thai Kitchen | Crafted FoodTech Accelerator Program โดย NIA",
+"feedUrl": "https://thaikitchen.nia.or.th/feed/",
+"perDay": 0.022
+},
+{
+"group": "F",
+"name": "飲食業職工總會 EEEGU | 香港 | 飲食工會",
+"feedUrl": "https://www.eeegu.org.hk/blog-feed.xml",
+"perDay": 0.022
+},
+{
+"group": "F",
+"name": "香港蔬菜批發｜餐飲冷鏈配送｜ISO認證食材供應商｜進和集團",
+"feedUrl": "https://cwv.com.hk/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "Oriental coffee กาแฟสดนอกสถานที่ สอนชงกาแฟ เมล็ดกาแฟคั่ว เครื่องชงกาแฟ",
+"feedUrl": "https://www.orientalcoffeeandtea.com/blog-feed.xml",
+"perDay": 0.044
+},
+{
+"group": "F",
+"name": "- 《食代誌 FoodMedia》餐飲的時代，我們的世代。一家獨立運營的媒體，一份專屬於台灣餐飲的食代日誌。",
+"feedUrl": "https://foodmedia.com.tw/?feed=rss2",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "SuitableYEMEK Blog",
+"feedUrl": "https://blog.suitableyemek.com/feeds/posts/default",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "Arta Alba - Ideea e să fii informat!",
+"feedUrl": "https://artaalba.ro/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "프리헷 인사이트 — 무인카페 창업·운영 지식",
+"feedUrl": "https://insight.cafefrihet.com/rss.xml",
+"perDay": 0.333
+},
+{
+"group": "F",
+"name": "Bayilik Veren Firmalar - İş Kurmak",
+"feedUrl": "https://www.bayilikverenfirmalar.biz/feed",
+"perDay": 0.044
+},
+{
+"group": "F",
+"name": "Gıda Bülteni",
+"feedUrl": "https://www.gidabulteni.com/rss/news",
+"perDay": 0.556
+},
+{
+"group": "F",
+"name": "雲端 iPad POS 系統｜香港、澳門餐飲零售服務業方案｜eMenu by ROKA",
+"feedUrl": "https://www.roka.com.hk/blog-feed.xml",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "餐飲業ERP系統 | 餐廳ERP推薦 | 500+餐廳選用 - FOODIVAL",
+"feedUrl": "https://www.foodival-procurement.com/feed/",
+"perDay": 0.056
+},
+{
+"group": "F",
+"name": "未來超商 x Curating｜日本零售、便利商店與全球商業趨勢分析",
+"feedUrl": "https://www.xcurating.tw/rss/",
+"perDay": 0.167
+},
+{
+"group": "F",
+"name": "Website Nhà Hàng",
+"feedUrl": "https://websitenhahang.vn/feed/",
+"perDay": 0.1
+},
+{
+"group": "F",
+"name": "3 Cores Coffee & Roastery | Taze Kaliteli Kahve | Kahve Siparişi I Nitelikli Kahve I Danışmanlık",
+"feedUrl": "https://www.3coresroastery.com/blog-feed.xml",
+"perDay": 0.033
+},
+{
+"group": "F",
+"name": "餐饮收银系统｜扫码点餐、会员管理与智能收银设备-曙源科技",
+"feedUrl": "https://www.cjhxzx.com/feed",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "Restoran Adisyon Programı, Cafe Sipariş Sistemi",
+"feedUrl": "https://restoranadisyon.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "智能販賣機 | 天翼產業鏈科技股份有限公司",
+"feedUrl": "https://www.mountup.com.tw/blog-feed.xml",
+"perDay": 0
+},
+{
+"group": "F",
+"name": "döner.tv - döner.tv",
+"feedUrl": "https://xn--dner-5qa.tv/feed/",
+"perDay": 0.089
+},
+{
+"group": "F",
+"name": "Trang Chủ - Visual Merchandising",
+"feedUrl": "https://vmd.com.vn/feed/",
+"perDay": 0.078
+},
+{
+"group": "F",
+"name": "Gastronomi Dergisi | Gastronomi ve Endüstriyel Mutfak Haberleri",
+"feedUrl": "https://www.gastronomidergisi.com/rss",
+"perDay": 0.322
+},
+{
+"group": "F",
+"name": "雲品國際酒店",
+"feedUrl": "https://www.fdc-i.com/feed/",
+"perDay": 0.022
+},
+{
+"group": "F",
+"name": "My Menu | Restaurant QR Menu | Tablet Menu | Digital Menu | e Menu",
+"feedUrl": "https://www.mydigimenu.com/blog-feed.xml",
+"perDay": 0.222
+},
+{
+"group": "F",
+"name": "Gastrofill: Gastronomi Haberleri",
+"feedUrl": "https://www.gastrofill.com/rss/news",
+"perDay": 0.556
+},
+{
+"group": "F",
+"name": "Lokanta Adisyon Programı, Restoran Otomasyonu",
+"feedUrl": "https://lokantaadisyon.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "TastyTrip - 精緻餐飲媒體平台",
+"feedUrl": "https://www.tastytrip.com/zh_tw/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "Ana Sayfa - Gastro Magazin",
+"feedUrl": "https://gastromagazin.com.tr/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "รับผลิตชา OEM โรงงานผลิตชาไทย ชาเขียว ชาไต้หวัน ราคาส่ง",
+"feedUrl": "https://www.bluemochatea.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "嘉義縣餐飲業職業工會",
+"feedUrl": "https://cy-food.org.tw/feed/",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "ᕼᗩ ᗪIᑎIᑎG",
+"feedUrl": "https://www.hadining.com/feeds/posts/default",
+"perDay": 0.567
+},
+{
+"group": "F",
+"name": "Trang chủ - CÔNG TY TNHH XNK KIẾN AN",
+"feedUrl": "https://lonuongbanhmi.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "김밥 · 분식 전문 프랜차이즈, 얌샘김밥",
+"feedUrl": "https://yumsem.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "THỊ TRƯỜNG CÀ PHÊ – Tin tức thị trường cà phê được cập nhật hàng ngày",
+"feedUrl": "https://thitruongcaphe.net/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "Anasayfa - Pause Dergi",
+"feedUrl": "https://www.pausedergi.com/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "아우에 매거진 – 자영업자와 예비창업자를 위한 성공 깃발",
+"feedUrl": "https://aueaue.com/feed/",
+"perDay": 0.033
+},
+{
+"group": "F",
+"name": "Phở Khô Minh – Ngon trên từng sợi phở",
+"feedUrl": "https://phokhominh.com/feed/",
+"perDay": 0.044
+},
+{
+"group": "F",
+"name": "holdpos Cafe Restoran Otomasyon Programı, Paket Servis Programı - HoldPOS Cafe Restoran Otomasyon Programı Hakında Tüm Detaylı Bilgiler",
+"feedUrl": "https://holdpos.com/feed/",
+"perDay": 0.011
+},
+{
+"group": "F",
+"name": "中国食品工业协会特种食品工作委员会 – Special Food Committee of China National Food Industry Association",
+"feedUrl": "https://www.sfoods.cn/feed/",
+"perDay": 0.111
+},
+{
+"group": "F",
+"name": "捷特威科技｜自助點餐機推薦・KIOSK設備・博弈機製造",
+"feedUrl": "https://www.jetwayco.com/feed/",
+"perDay": 0.022
+}
+]
+}

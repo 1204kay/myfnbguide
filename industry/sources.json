@@ -4038,6 +4038,160 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "note-one-zemi",
+      "name": "ワンゼミ（日本 · 飲食店経営：205 个经营施策逐个打分，最低工资、年收之壁等政策算到店里的账）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/one_zemi/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-leight888",
+      "name": "エイト専務（日本 · 做咖啡店和店铺物业的宅建士：政策对店的影响、关店怎么退、居抜设备归谁）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/leight888/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-kinshoku-plus",
+      "name": "近代食堂プラス（日本 · 餐饮业界杂志《近代食堂》的 note：繁盛店案例和经营手法）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/kinshoku_plus/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "媒体"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-inshoku-saiken",
+      "name": "飲食店経営のリアル（日本 · 拉面连锁前区域本部长：月商 350 万掉到 150 万再回来的全记录）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/inshoku_saiken/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-tesou2541",
+      "name": "ゆうま（日本 · 东京板橋饺子酒场店主：立地、居抜、计划和实际月商、一人经营的账）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/tesou2541/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-fisherman-ceo",
+      "name": "漁師社長（日本 · 渔夫出身的小店老板：自己用 AI 做原价表、打卡系统，省下多少钱）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/fisherman_ceo/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-odachan22",
+      "name": "尾高宏幸（日本 · 餐饮集资：数 Makuake 1,809 件看哪种业态集资最多、平台逐件对比）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/odachan22/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

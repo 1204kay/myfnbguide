@@ -4192,6 +4192,50 @@
       ],
       "site_fulltext": false,
       "syndicate_fulltext": false
+    },
+    {
+      "id": "note-bakerysweets-ten",
+      "name": "パン屋の店長（日本 · 面包点心店店长：1200 万开店一年倒闭再用 400 万重开，日商、资金、设备、物件的账）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/bakerysweets_ten/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "note-coffret0906",
+      "name": "coffret（日本 · 小店店主：菜单怎么写、怎么删，开业后才知道的停车场等教训）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://note.com/coffret0906/rss",
+        "fetchPublicContent": true,
+        "_aihot": {
+          "initialBackfillLimit": 25
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "tags": [
+        "日本",
+        "博客"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
     }
   ]
 }

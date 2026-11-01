@@ -77,6 +77,7 @@ if (showDate) {
 }
 
 // <no>.voice.json is the reading's report (backend/voice.ts): its count of tries belongs to the old text.
+const missingOk = (error: unknown) => { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; };
 const audioFiles = (no: number) => [`${no}.mp3`, `${no}.json`, `${no}.txt`, `${no}.voice.json`];
 
 if (putDate) {
@@ -89,7 +90,8 @@ if (putDate) {
   const had = await stat(path.join(backupDir, "row.json")).then(() => true, () => false);
   if (!had) {
     await writeFile(path.join(backupDir, "row.json"), JSON.stringify(row, null, 1));
-    for (const f of audioFiles(row.no)) await copyFile(path.join(AUDIO, f), path.join(backupDir, f)).catch(() => undefined);
+    // A file the issue never had (no audio yet) is fine; any other failure stops here, before the old audio is removed.
+    for (const f of audioFiles(row.no)) await copyFile(path.join(AUDIO, f), path.join(backupDir, f)).catch(missingOk);
   }
   await sql`UPDATE reference_issues SET content = ${sql.json(saved.content as never)}, version = ${saved.version}, models = ${sql.json(saved.models as never)}
     WHERE date = ${date} AND no = ${row.no}`;
@@ -110,7 +112,9 @@ if (backDate) {
   const lead = await issueLead(date);
   if (lead) await sql`UPDATE reports SET content = jsonb_set(content, '{lead}', ${sql.json(lead as never)})
     WHERE kind = 'daily' AND key = ${date} AND content->'lead'->>'kicker' LIKE '十一说%'`;
-  for (const f of audioFiles(old.no)) await copyFile(path.join(backupDir, f), path.join(AUDIO, f)).catch(() => undefined);
+  // The redone reading's files go first, so no new 文字稿 is left beside the old mp3.
+  for (const f of audioFiles(old.no)) await rm(path.join(AUDIO, f), { force: true });
+  for (const f of audioFiles(old.no)) await copyFile(path.join(backupDir, f), path.join(AUDIO, f)).catch(missingOk);
   console.log(`${date} 第 ${old.no} 期还原成备份的那份，音频也放回去了`);
 }
 

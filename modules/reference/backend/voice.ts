@@ -33,8 +33,14 @@ const DIR = path.join(config.dataDir, "reference", "audio");
  */
 export const MAX_CHARS = 2_650;
 const WRITE_CHARS = 2_450;
-/** Gemini's free tier: ten requests a day (its 429, 10-27); a day's issue gets at most this many, leaving the rest. */
-export const MAX_READS = 3;
+/**
+ * Gemini's free tier: ten requests a day (its 429, 10-27), counted per model and renewed about 15:00 MYT; a day's issue
+ * gets at most this many, leaving the rest of the window for a reading by hand. Six, not three (11-01): of the three
+ * issues Leda read whole, only issue 6 passed on its first reading, and issue 8 used all three on near misses (94.9% and
+ * 94.5% heard against 95%, then a 34 Hz drift); readers wait for the morning's audio (Kay 11-01 09:39). A run reads
+ * again until one passes, so six readings from 05:20 are over well before readers wake.
+ */
+export const MAX_READS = 6;
 /** The voice and how it reads (Kay 10-26 picked Leda; the style as the computer's script sent it, mkjobs.py). */
 export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "早间节目主播，沉稳但有活力，语速中等偏快" };
 /**

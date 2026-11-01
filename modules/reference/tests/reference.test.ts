@@ -897,6 +897,7 @@ test("only a number not in the original, a broken answer or a wrong situation ke
 test("an item without a story is placed in one situation and group of the list, or none, and the pages list it as a folded story", async () => {
   assert.deepEqual(readPlacing({ speaker: "owner", placements: [{ situation: "hiring", group: null, fit: "" }, { situation: "retention", group: null, fit: "" }] }).problems, ["只放一个最合适的情况"]);
   assert.match(readPlacing({ speaker: "owner", placements: [{ situation: "nowhere", group: null }] }).problems[0]!, /不在清单里/);
+  assert.match(readPlacing({ speaker: "owner", placements: [{ situation: "suppliers", group: null, fit: "" }] }).problems[0]!, /组 key.*ingredient-prices-up/, "a group key as the situation names its situation");
   assert.match(readPlacing({ main: "只是消息", speaker: "media", placements: [{ situation: "hiring", group: null, fit: "" }] }).problems[0]!, /只是消息/, "news placed anyway is asked again");
   assert.deepEqual(readPlacing({ speaker: "nobody", placements: [] }).placing, { main: "", speaker: "media", placements: [] }, "who tells it outside the list: a publication");
 
@@ -910,6 +911,8 @@ test("an item without a story is placed in one situation and group of the list, 
   assert.ok(placeUsers.some((u) => u.includes("“food-over-recipe”不是“hiring”的组")));
   assert.ok(!placeUsers.some((u) => u.includes(SOURCE)), "the item's own title, 导读 and 要点, not the original");
   assert.equal((await articlesToPlace(50)).length, 0, "each placed once; one that fits none is kept, not asked again");
+  assert.deepEqual((await articlesToPlace(50, new Date(), id.P3!)).map((i) => i.id), [id.P3], "--again: a placed item once more, by its id");
+  assert.equal((await articlesToPlace(50, new Date(), ids.FIRST!)).length, 0, "--again never places a shown story");
 
   const page = await get("/api/reference/situations/hiring");
   const cards = page.groups.flatMap((g: { key: string; cases: Array<{ id: string; title: string; folded: boolean }> }) => g.cases.map((c) => [g.key, c.id, c.title, c.folded]));

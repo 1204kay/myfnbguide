@@ -1,0 +1,74 @@
+# MYFNB：盯我们开在别人仓库的 PR（例如提给原版 AIHOT 的）。作者回复、审核、合并或关闭时，
+# 在本仓库的「外部 PR 收件箱」草稿 PR（分支 claude/external-pr-inbox）上留一条短评论，
+# 订阅了那个 PR 的讨论串会被叫醒，当天跟进。状态存在收件箱 PR 正文的注释里，不提交文件。
+# 起因：作者当天回复，我们一周后才看到（Kay 2026-11-01）。只用 gh CLI，不引第三方 action。
+name: External PRs
+
+on:
+  schedule:
+    - cron: "13 1,5,11 * * *" # 09:13、13:13、19:13 MYT
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write # 只为在收件箱 PR 上评论和更新正文；外部 PR 是公开的，只读
+
+concurrency:
+  group: external-prs
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      AUTHOR: 1204kay
+    steps:
+      - name: Compare external PRs with the last run
+        run: |
+          set -euo pipefail
+          inbox=$(gh pr list --repo "$REPO" --head claude/external-pr-inbox --state open --json number --jq '.[0].number // empty')
+          [ -n "$inbox" ] || { echo "::error::收件箱 PR 不在（分支 claude/external-pr-inbox）"; exit 1; }
+          body=$(gh pr view "$inbox" --repo "$REPO" --json body --jq .body)
+          old=$(printf '%s\n' "$body" | sed -n 's/^<!-- state: \(.*\) -->$/\1/p' | tail -1)
+          [ -n "$old" ] || old='{}'
+
+          # 开着的外部 PR，加上上次记着的（刚合并或关闭的会从搜索里消失，还要再报一次）
+          urls=$( { gh api -X GET search/issues -f q="is:pr is:open author:$AUTHOR -user:$AUTHOR" -f per_page=100 --jq '.items[].pull_request.url'
+                    printf '%s' "$old" | jq -r 'keys[]'; } | sed 's#^https://api.github.com/##' | sort -u | grep . || true)
+
+          new='{}'; lines=''
+          for u in $urls; do
+            pr=$(gh api "$u")
+            reviews=$(gh api "$u/reviews?per_page=100" --jq 'length')
+            snap=$(jq -c --argjson r "$reviews" '{state, merged, comments, review_comments, reviews: $r, head: .head.sha}' <<<"$pr")
+            name=$(jq -r '"\(.base.repo.full_name)#\(.number)"' <<<"$pr"); link=$(jq -r .html_url <<<"$pr")
+            prev=$(jq -c --arg u "$u" '.[$u] // empty' <<<"$old")
+            if [ "$snap" != "$prev" ]; then
+              pa=${prev:-}; [ -n "$pa" ] || pa='{}'
+              what=$(jq -rn --argjson a "$pa" --argjson b "$snap" '[
+                (if ($a|length)==0 then "开始盯" else empty end),
+                (if ($b.comments-($a.comments//$b.comments))>0 then "新评论 \($b.comments-$a.comments)" else empty end),
+                (if ($b.review_comments-($a.review_comments//$b.review_comments))>0 then "新行内评论 \($b.review_comments-$a.review_comments)" else empty end),
+                (if ($b.reviews-($a.reviews//$b.reviews))>0 then "新审核 \($b.reviews-$a.reviews)" else empty end),
+                (if $b.merged and ($a.merged|not) then "已合并" elif $b.state=="closed" and $a.state!="closed" and ($b.merged|not) then "已关闭（未合并）" else empty end),
+                (if ($a.head//$b.head)!=$b.head then "有新提交" else empty end)
+              ] | if length==0 then "有变化" else join("，") end')
+              lines+="- [$name]($link)：$what"$'\n'
+            fi
+            # 合并或关闭的报过一次就不再记
+            [ "$(jq -r .state <<<"$snap")" = open ] && new=$(jq -c --arg u "$u" --argjson s "$snap" '.[$u]=$s' <<<"$new")
+          done
+
+          if [ -n "$lines" ]; then
+            gh pr comment "$inbox" --repo "$REPO" --body "外部 PR 有变化，请当天跟进：
+          $lines"
+          fi
+          if [ "$new" != "$old" ]; then
+            keep=$(printf '%s\n' "$body" | grep -v '^<!-- state: ' || true)
+            gh pr edit "$inbox" --repo "$REPO" --body "$keep
+          <!-- state: $new -->"
+          fi
+          echo "盯着：$(jq -r 'keys|join(" ")' <<<"$new")"

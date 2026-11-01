@@ -64,8 +64,9 @@ export function useListen() {
  * How far the 文字稿 runs ahead of the voice, in seconds of listening. Kay 11-01 09:19 asked that each character turn
  * teal just before it is said. Someone reading along keeps their eyes a little ahead of the voice: about 2.5 characters
  * in Chinese and Japanese (the eye-voice span, Kondo and Mazuka 1996), and 十一说 is read at about 4.5 characters a
- * second, so about half a second. Every line also starts after a half-second pause (`breathe` in voice.ts), so the next
- * line lights up inside that pause, not over the end of the one being said.
+ * second, so about half a second. From issue 9 on every line also starts after a half-second pause (`breathe` in
+ * voice.ts), so the next line lights up inside that pause; issues 1–7 were read without those pauses, and there the next
+ * line lights up over the last syllables of the one being said.
  */
 const LEAD = 0.5;
 
@@ -177,9 +178,9 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
     setAt(t);
   };
   // timeupdate comes only about four times a second, so the lit characters would trail and jump; while the 文字稿 is
-  // open and playing, read the time every frame instead.
+  // open and playing and following the voice (`starts`), read the time every frame instead.
   useEffect(() => {
-    if (!reading || !playing) return;
+    if (!reading || !playing || !starts) return;
     let frame = 0;
     const tick = () => {
       if (audio.current) setAt(audio.current.currentTime);
@@ -187,7 +188,7 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [reading, playing]);
+  }, [reading, playing, starts]);
   const nextSpeed = () => {
     const s = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]!;
     setSpeed(s);

@@ -9,6 +9,8 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对（连听出来的字一起打出来），
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
+//   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8 --qwen xuyuyuan_v3.1  用阿里云 Qwen-Audio 的声音念第 8 期，
+//                                                                                    最多 2 次，过了就放上；--try 同样可加。要 QWEN_TTS_API_KEY（只用免费额度；不能叫 DASHSCOPE_API_KEY）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --times 7           给已放上的第 7 期补上每行的开始时间（文字稿跟着声音走），
 //                                                                                    只听一遍 mp3（Groq 免费档），不念，只改 7.json
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用 Gemini 免费档（每天 10 次，一期最多用 3 次）。
@@ -32,6 +34,8 @@ const tryNo = arg("--try");
 const putNo = arg("--put");
 const hearNo = arg("--hear");
 const timesNo = arg("--times");
+const qwen = arg("--qwen");
+if (qwen !== undefined && !/^[A-Za-z0-9_.]+$/u.test(qwen)) throw new Error("--qwen 要一个声音名，例如 xuyuyuan_v3.1");
 if (from !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(from)) throw new Error("--from 要一个日期，例如 2026-11-01");
 for (const n of [tryNo, putNo, hearNo, timesNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
 
@@ -40,6 +44,8 @@ for (const n of [tryNo, putNo, hearNo, timesNo]) if (n !== undefined && !/^[1-9]
 if (from || tryNo || putNo) {
   await sql`INSERT INTO budgets (service, per_minute, per_hour, per_day, note)
     VALUES ('speech', 2, 6, 9, '十一说念稿（Gemini 免费档每天 10 次）') ON CONFLICT (service) DO NOTHING`;
+  if (qwen) await sql`INSERT INTO budgets (service, per_minute, per_hour, per_day, note)
+    VALUES ('speech-qwen', 60, 200, 400, '十一说念稿（阿里云 Qwen，一行一次，一期约 30 行）') ON CONFLICT (service) DO NOTHING`;
 }
 
 if (from) {
@@ -57,7 +63,7 @@ if (no) {
   const receipts: number[] = [];
   const ask = { write: modelAsk(writer, `voice:${no}`, receipts), check: modelAsk(checker, `voice:${no}`, receipts) };
   const out = tryNo ? path.join(config.dataDir, "reference", "audio", "tries", String(no)) : undefined;
-  const report = await voiceIssue(no, ask, { dryRun: Boolean(tryNo), out });
+  const report = await voiceIssue(no, ask, { dryRun: Boolean(tryNo), out, qwen });
   if (receipts.length) await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
   console.log(JSON.stringify(report, null, 1));
   if (out) console.log(`听稿和 mp3：${out}`);

@@ -72,9 +72,9 @@ const HEAR = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3"
  * the `speech` row; `transcribe` is archive's. Empty when ready.
  * Checked first, so a missing Groq key is found before the day's free readings are used up.
  */
-export async function voiceMissing(): Promise<string[]> {
-  const missing = ["GEMINI_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
-  const services = ["speech", HEAR.service];
+export async function voiceMissing(qwen?: string): Promise<string[]> {
+  const missing = [qwen ? "QWEN_TTS_API_KEY" : "GEMINI_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
+  const services = [qwen ? QWEN.service : "speech", HEAR.service];
   const rows = await sql<{ service: string }[]>`SELECT service FROM budgets WHERE service IN ${sql(services)}`;
   for (const service of services) if (!rows.some((r) => r.service === service)) missing.push(`budgets 里没有 ${service}`);
   return missing;
@@ -182,6 +182,56 @@ async function read(script: string, subject: string, attempt: number): Promise<B
   await sql.begin((tx) => completeReceipt(tx, receipt.receiptId));
   if (!audio) throw new Error("speech: this reading was already made and its audio not kept (a repeated request)");
   return Buffer.from(audio, "base64");
+}
+
+/**
+ * Alibaba Cloud's Qwen-Audio voice (Model Studio, Singapore; its free quota there is 1M characters to 2027-01-31,
+ * qwen3-tts-flash's only 10K), tried beside Leda (Kay 11-01 09:44: 阿里云 before any paid
+ * Gemini; 15:56 「今天的不要浪费」). Issue 8 failed nine of Leda's readings, the last three on pitch as well: one request
+ * for the whole issue drifts. Qwen reads line by line (qwen3-tts-flash takes at most 600 characters a request; the old voice, also Qwen, was read so) (each under 110,
+ * the writer's limit) and the lines are joined; each line is its own receipt. Only by hand (`--qwen <voice>`), the
+ * daily reading stays Leda's. Free quota only, as Kay set the key; about US$0.03 an issue past it (US$0.10 a 10,000).
+ * Its key is QWEN_TTS_API_KEY, not DASHSCOPE_API_KEY: that name alone turns on the paid Bailian embeddings for grouping
+ * (providers/embeddings.ts) and offers the dashscope models (site/models.ts).
+ */
+export const QWEN = { model: "qwen-audio-3.1-tts-flash", service: "speech-qwen", reads: 2 };
+async function readQwen(script: string, voice: string, subject: string, attempt: number): Promise<Buffer> {
+  const key = credential("models", "QWEN_TTS_API_KEY");
+  if (!key) throw new Error("QWEN_TTS_API_KEY missing");
+  const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
+  let rate = 0;
+  const parts: Int16Array[] = [];
+  for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
+    let url: string | undefined;
+    const receipt = await paidRequest(
+      { service: QWEN.service, model: QWEN.model, purpose: "reference_issue_read", subject, identity: { model: QWEN.model, voice, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
+      async () => {
+        // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
+        const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
+          method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
+          body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, format: "wav", sample_rate: 24_000 } }),
+        });
+        if (!res.ok) assertAccepted(QWEN.service, res.status, (await res.text()).slice(0, 1000));
+        const body = (await res.json()) as { output?: { audio?: { url?: string } }; usage?: Record<string, unknown> };
+        url = body.output?.audio?.url;
+        if (!url) throw new ProviderRejectedError("speech-qwen: no audio in the answer", null, false);
+        return { response: { url }, usage: body.usage ?? null };
+      },
+    );
+    await sql.begin((tx) => completeReceipt(tx, receipt.receiptId));
+    url ??= (receipt.response as { url?: string } | null)?.url;
+    if (!url) throw new Error(`speech-qwen: line ${n + 1} has no audio`);
+    const got = await fetch(url, { signal: AbortSignal.timeout(120_000) });
+    if (!got.ok) throw new Error(`speech-qwen: line ${n + 1} audio ${got.status} (the link lasts 24 h)`);
+    const wav = wavSamples(Buffer.from(await got.arrayBuffer()));
+    if (rate && wav.rate !== rate) throw new Error(`speech-qwen: line ${n + 1} at ${wav.rate} Hz, the others ${rate}`);
+    rate = wav.rate;
+    parts.push(wav.samples);
+  }
+  const all = new Int16Array(parts.reduce((sum, p) => sum + p.length, 0));
+  let at = 0;
+  for (const p of parts) { all.set(p, at); at += p.length; }
+  return wavOf(all, rate);
 }
 
 /** The samples of a 16-bit PCM WAV, wherever its data chunk sits. */
@@ -529,6 +579,8 @@ export interface VoiceReport {
   status: "up" | "tried" | "not ready" | "script failed" | "too long" | "check failed" | "no reads left" | "error";
   /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
   tries?: number;
+  /** Qwen's readings by hand, counted apart: they spend none of Leda's free reads. */
+  qwenTries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
   reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
@@ -656,7 +708,7 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * Reads issue `no` aloud and, unless `dryRun`, puts it up when the machine check passes. A dry run leaves the MP3 and
  * the script in `out` for a person to hear and keeps nothing on the site.
  */
-export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string } = {}): Promise<VoiceReport> {
+export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string } = {}): Promise<VoiceReport> {
   const report = await readIssue(no, ask, opts);
   // A reading heard is done with (about 29 MB a day): only one not yet heard is kept, for the next run to hear. Not when
   // nothing ran ("not ready"): what an earlier run left unheard is still waiting.
@@ -664,21 +716,23 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   return report;
 }
 
-async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string }): Promise<VoiceReport> {
+async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string }): Promise<VoiceReport> {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
   const before = await voiceReport(no);
-  const used = opts.dryRun ? 0 : before?.tries ?? 0;
-  const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: used, reads: opts.dryRun ? [] : before?.reads ?? [] };
+  const used = opts.dryRun ? 0 : (opts.qwen ? before?.qwenTries : before?.tries) ?? 0;
+  const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: opts.qwen ? before?.tries ?? 0 : used, ...(opts.qwen || before?.qwenTries ? { qwenTries: opts.qwen ? used : before?.qwenTries } : {}), reads: opts.dryRun ? [] : before?.reads ?? [] };
   const keep = async () => { if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); } return report; };
-  if (used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
+  // Leda's count only: a Qwen reading by hand has its own QWEN.reads.
+  if (!opts.qwen && used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
   // Not kept: once the key or the row is there, the next half hour reads it.
-  const missing = await voiceMissing();
+  const missing = await voiceMissing(opts.qwen);
   if (missing.length) return { ...report, status: "not ready", error: missing.join("；") };
   // Kept under the data folder, not the container's /tmp: a reading not yet heard outlives a restart.
   const work = opts.out ?? path.join(DIR, "work", String(no));
-  const saved = !opts.dryRun && before?.unheard
+  // A Leda reading left unheard waits for Leda's next run, not Qwen's.
+  const saved = !opts.dryRun && !opts.qwen && before?.unheard
     ? await Promise.all([readFile(path.join(work, `${no}.txt`), "utf8"), readFile(path.join(work, `${no}.wav`))]).catch(() => null)
     : null;
   report.unheard = Boolean(saved);
@@ -698,13 +752,14 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     }
-    for (let attempt = saved ? used : used + 1; attempt <= MAX_READS; attempt += 1) {
+    const last = opts.qwen ? used + QWEN.reads : MAX_READS;
+    for (let attempt = saved ? used : used + 1; attempt <= last; attempt += 1) {
       let wav: Buffer;
       if (saved && attempt === used) wav = saved[1];
       else {
-        report.tries = attempt;
+        if (opts.qwen) report.qwenTries = attempt; else report.tries = attempt;
         await keep();
-        wav = await read(script, `issue:${no}`, attempt).catch((error: unknown) => {
+        wav = await (opts.qwen ? readQwen(script, opts.qwen, `issue:${no}`, attempt) : read(script, `issue:${no}`, attempt)).catch((error: unknown) => {
           if (error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
           throw error;
         });

@@ -1,0 +1,63 @@
+{
+ "$comment": "2026-11-01 fill-gaps 小批试吃第一轮花到上限 0.15 就停，这 8 个一条都没判到（这批 98% 过预筛，每条约 US$0.003，比估算贵）。补跑这 8 个，名单同 trial-fill-gaps-2026-11-01.json。",
+ "volume": {
+  "T": {
+   "feeds": 5,
+   "perDay": 1.455
+  },
+  "R": {
+   "feeds": 3,
+   "perDay": 0.3
+  }
+ },
+ "feeds": [
+  {
+   "group": "T",
+   "name": "note パン屋の店長｜失敗から学ぶ飲食店経営",
+   "feedUrl": "https://note.com/bakerysweets_ten/rss",
+   "perDay": 0.375
+  },
+  {
+   "group": "T",
+   "name": "note 現代和食料理人（修行中）",
+   "feedUrl": "https://note.com/oubu_touda6991/rss",
+   "perDay": 0.175
+  },
+  {
+   "group": "T",
+   "name": "note 和香子居酒屋ワンオペ店長",
+   "feedUrl": "https://note.com/kanpewakawaka91/rss",
+   "perDay": 0.125
+  },
+  {
+   "group": "T",
+   "name": "note 「酒と食と、旅の途中」",
+   "feedUrl": "https://note.com/nice_daisy77/rss",
+   "perDay": 0.09
+  },
+  {
+   "group": "T",
+   "name": "note coffret",
+   "feedUrl": "https://note.com/coffret0906/rss",
+   "perDay": 0.69
+  },
+  {
+   "group": "R",
+   "name": "大阪外食産業協会 ORA",
+   "feedUrl": "https://www.ora.or.jp/feed",
+   "perDay": 0.1
+  },
+  {
+   "group": "R",
+   "name": "Bundesvereinigung der Deutschen Ernährungsindustrie",
+   "feedUrl": "https://www.ernaehrungsindustrie.de/feed/",
+   "perDay": 0.1
+  },
+  {
+   "group": "R",
+   "name": "Australian Grape & Wine",
+   "feedUrl": "https://www.agw.org.au/feed/",
+   "perDay": 0.1
+  }
+ ]
+}

@@ -292,10 +292,16 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
   return out;
 }
 
+/** What the program finds in a draft by itself, without a model: citations no item has, and shapeProblems. */
+function ownProblems(issue: IssueText, items: DayItem[]): Problem[] {
+  const { cited, unknown } = citedItems(issue, items);
+  return [...unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" })), ...shapeProblems(issue, items, cited)];
+}
+
 /** Reads one draft for the three rules against the full text of what it cites; problems the program finds come first. */
 export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<{ lively: number; problems: Problem[] }> {
-  const { cited, unknown } = citedItems(issue, items);
-  const own: Problem[] = [...unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" })), ...shapeProblems(issue, items, cited)];
+  const { cited } = citedItems(issue, items);
+  const own = ownProblems(issue, items);
   const user = [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n");
   const answer = await ask("reference_issue_check", CHECK, user, CheckAnswer);
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
@@ -324,6 +330,8 @@ export interface Draft {
   /** What the listener gave it, 1 to 10, as gone over for the ear and before the check's fixes, and why. */
   heard?: number;
   heardWhy?: string;
+  /** Not read by the check model: the listener put the other first and that one went up (problems are the program's own). */
+  unchecked?: boolean;
 }
 export interface ComposedIssue {
   date: string;
@@ -475,7 +483,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     });
     if (issue) {
       const spoken = await speak(issue, ask, attempt);
-      drafts.push({ issue: spoken, written: issue, ...await checkIssue(spoken, items, ask), edited: false });
+      drafts.push({ issue: spoken, written: issue, lively: 0, problems: ownProblems(spoken, items), edited: false, unchecked: true });
     }
   }
   if (!drafts.length) {
@@ -493,10 +501,22 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   // US$4.53). A pick that cites nothing, or is still wrong after mending, leaves the other to be mended too (十一 10-23: 不出空期).
   const heard = await listen(drafts, ask);
   drafts.forEach((d, i) => { d.heard = heard[i]?.score; d.heardWhy = heard[i]?.why; });
+  // The check reads a draft only when it is to be mended (Kay 11-01 22:43 「要改做法现在就改」: a month of issues ran
+  // over the US$100 of Claude credit, most of it the check): a draft is checked once the order reaches it. When the
+  // listener gave no usable scores, or the same score to both, the check's own score still breaks the tie, so both are
+  // checked first, as before.
+  const check = async (d: Draft) => {
+    if (!d.unchecked) return;
+    Object.assign(d, await checkIssue(d.issue, items, ask));
+    delete d.unchecked;
+  };
+  const ranked = drafts.length > 1 && drafts.every((d) => d.heard !== undefined) && new Set(drafts.map((d) => d.heard)).size === drafts.length;
+  if (!ranked) for (const d of drafts) await check(d);
   const order = [...drafts].sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (y.heard ?? 0) - (x.heard ?? 0) || y.lively - x.lively);
   const finals: Draft[] = [];
   for (const d of order) {
     const k = drafts.indexOf(d);
+    await check(d);
     const m = await mend(d, items, ask, drafts, "ab"[k]!);
     finals.push({ ...m, heard: d.heard, heardWhy: d.heardWhy });
     if (!uncited(m) && !m.cut?.length && !m.problems.length) break;
@@ -530,7 +550,7 @@ function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {
     ...(d.issue.deep ? [f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, ""] : []), ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
     `> 关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。`, "",
-    `核对：${d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.lively}/10${d.heard !== undefined ? `　听众 ${d.heard}/10（${d.heardWhy}）` : ""}　字数 ${issueChars(d.issue)}${d.written ? `（为念出来改之前 ${issueChars(d.written)}）` : ""}${d.edited ? "　（编辑按问题改过）" : ""}`,
+    `核对：${d.unchecked ? `没核（听众选了另一稿）${d.problems.length ? `，程序查出 ${d.problems.length} 处` : ""}` : d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.unchecked ? "—" : `${d.lively}/10`}${d.heard !== undefined ? `　听众 ${d.heard}/10（${d.heardWhy}）` : ""}　字数 ${issueChars(d.issue)}${d.written ? `（为念出来改之前 ${issueChars(d.written)}）` : ""}${d.edited ? "　（编辑按问题改过）" : ""}`,
     ...(d.cut ?? []).map((x) => `- 删掉：${x}`),
     ...d.problems.map((p) => `- ${d.cut ? "没能删掉，" : ""}第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",
   ];

@@ -908,6 +908,7 @@ test("an item without a story is placed in one situation and group of the list, 
   const results = await placeWaiting(50);
   const p1 = results.find((r) => r.id === id.P1)!;
   assert.deepEqual([p1.placing.placements.map((p) => [p.situation, p.group]), p1.receiptIds.length], [[["hiring", "where-to-find"]], 2], "a group of another situation goes back once, named");
+  assert.equal(p1.gaveUp, false, "fixed on the second answer: placed, its first answer's problem kept only to show");
   assert.ok(placeUsers.some((u) => u.includes("“food-over-recipe”不是“hiring”的组")));
   assert.ok(!placeUsers.some((u) => u.includes(SOURCE)), "the item's own title, 导读 and 要点, not the original");
   assert.equal((await articlesToPlace(50)).length, 0, "each placed once; one that fits none is kept, not asked again");

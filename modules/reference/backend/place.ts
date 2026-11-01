@@ -87,7 +87,10 @@ export interface PlaceResult {
   id: string;
   title: string;
   placing: Placing;
+  /** The last answer's problems; when the item is placed, those of the first answer, which the second one fixed. */
   problems: string[];
+  /** Both answers were wrong, so it is stored as fitting no situation. */
+  gaveUp: boolean;
   receiptIds: number[];
 }
 
@@ -107,12 +110,12 @@ export async function composePlacing(item: Item): Promise<PlaceResult> {
     });
     receiptIds.push(res.receiptId);
     const read = readPlacing(res.data);
-    if (read.placing) return { id: item.id, title: item.title, placing: read.placing, problems, receiptIds };
+    if (read.placing) return { id: item.id, title: item.title, placing: read.placing, problems, gaveUp: false, receiptIds };
     problems = read.problems;
     user = `${user}\n\n你上一次的回答有问题：${problems.join("；")}。照清单改正，只输出 JSON。`;
   }
   // Still wrong: stored with none, as an item that fits no situation is, so the schedule does not pay for it again.
-  return { id: item.id, title: item.title, placing: { main: "", speaker: "media", placements: [] }, problems, receiptIds };
+  return { id: item.id, title: item.title, placing: { main: "", speaker: "media", placements: [] }, problems, gaveUp: true, receiptIds };
 }
 
 /**

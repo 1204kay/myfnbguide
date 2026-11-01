@@ -42,6 +42,7 @@
 | 访问计数 | 反向代理 Caddy 多记一份访问日志（`deploy/Caddyfile`，框架的文件）：只记时间、路径、状态码、“是不是机器人”和来源网址的域名（10-24 起，只留 google.com 这一段，不记路径和查询串），不记 IP、其余请求头、查询串；`myfnb/visits.sh` 按天按类统计。不装脚本、不改网页 | §2.4 要看哪些情况被查得多；原版没有；不识别个人。原文链接被点几次没做（外链直接跳出，要数就得在网页里加脚本，偏离原版；搜索点击和国家用 Search Console） | 十一 10/13 按 Kay 授权（决定记录 L366）加，Kay 未逐项确认；来源域名 Kay 10-24「你觉得值得记就记录吧」，为的是分清读者从搜索、社媒还是站内点进来 |
 | 域名转址 | `deploy/Caddyfile` 把站点块写死成 `www.myfnbguide.com`，`new.myfnbguide.com` 原路 301 到 www，加根域 `myfnbguide.com` 转到 www 首页的块，和旧站路径名单（`/handbook`、`/map`、`/appendix` 等旧站独有的几组）301 到首页 | 上线切换（§10 第 1 步，`go-live-checklist.md` 第 2 步）；名单取自旧站 sitemap（10/17，155 个地址），`/about`、`/sources` 新站有同名页，不转 | Kay 在 §10 定了旧网址要转到新站；10/17 Kay「开始」换正式网址 |
 | GitHub 检查里的网页测试 | `.github/workflows/check.yml` 把网页测试从 `check` 搬到单独的 `web`，在 Playwright 官方镜像里跑（镜像版本从锁文件读，跟着 `@playwright/test` 走），不再在 runner 上 `playwright install --with-deps` | 那一步要从 runner 的 apt 镜像下 142 MB 系统库，10-23 好几次只有几十 KB/s，`check` 到 25 分钟被取消（#46、#47、#48、main），服务器的 `update.sh` 把取消当失败、不部署 | 十一 10-23 定 |
+| GitHub 检查下载重试 | `.github/workflows/check.yml` 的「PostgreSQL backup tools」一步，下 postgresql.org 公钥的 curl 加 `--retry 5 --retry-all-errors`，apt-get 加 `Acquire::Retries=5` | 11-01 main 上连续两次在下公钥时断线（curl 55、35），测试一项都没跑就红，服务器只拉检查绿的 main，#125、#130、#129 都卡着没部署；本仓库这边没有权限重跑 | 照 10-23 网页测试那行的先例，十一定 |
 | 云端运维 | 服务器多一把只给 GitHub 用的密钥，限死只能跑守门脚本 `myfnb/ops/gate.sh`（看状态和日志、跑已合进 main 的 `myfnb/` 脚本、只读账号 `myfnb_ro` 查库）；Kay 跑一次 `myfnb/ops/install.sh` 装上。发命令的工作流在私有仓库 coresystemstudio 的 `.github/workflows/myfnb-ops.yml`（本仓库公开，日志谁都看得见）。框架代码不动 | 云端会话连不了 SSH（出站只走 HTTPS 代理），服务器上的活原来只能在 Kay 电脑上做；Kay 要「全部搬上云端」 | Kay 10-16「你决定吧」，十一定（公司手册决定记录 L457） |
 | 分享图字体 | 框架的 `packages/backend/src/media/og.ts` 读 `assets/og-fonts/` 里另加的 `<名字>-400/700.ttf`，Noto Sans SC 缺的字由它们补；本站加了两组（`noto-sans-cjk-extra`：繁体、日文汉字和假名、拉丁扩展；`noto-sans-kr-hangul`：韩文），约 12MB。没有另加文件时和原版完全一样（缓存键也不变） | 原版字体只有 GB2312 加基本拉丁：10/16 线上故事和来源名里有 154 个字画不出来（营業、飲、Ç、ü、韩文），日本、港台、欧洲来源的分享图缺字。原版没有现成做法；代价是框架多 10 行，可以提给作者 | Claude 定（Kay 10/16「你决定」，十一知会） |
 | 情况页做法卡 | 一张做法卡先列 4 家，其余收在「另有 N 家的做法」后面，开关照原版 ReadingGroup 的样子（12.5px、灰、带下箭头）；电脑上摘要限宽 34em | 各家的做法正是这一页的内容；原版收起来的是同一条新闻的重复报道，没有现成的「同一件事的多家做法」，只借它的开关样子 | Kay 10/17 选方向 A（决定记录 4557a43，十一转达） |
@@ -83,7 +84,7 @@
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/report-detail.tsx`、`routes/report-latest.tsx`、`features/report/ReportPaper.tsx`、`packages/backend/src/publication/reports.ts`、`apps/web/tests/report-parts.test.ts` | 通用插口 `reportPart`：模块在报告页最后放一块；`Story` 和 `citationsOf` 导出给模块用 | 每周趋势 |
 | `packages/backend/src/media/og.ts` | 读 `assets/og-fonts/` 里另加的字体补字 | 分享图字体 |
 | `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |
-| `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑 | GitHub 检查里的网页测试 |
+| `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑；下载公钥和 apt 加重试 | GitHub 检查里的网页测试；GitHub 检查下载重试 |
 | `tests/wording.test.ts` | 本站的不用词清单 | 写作 |
 | `tests/` 里其余二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`web-server.ts`、`cache.test.ts` | 作者按 AI 示例行业写的类别、标签、公司改成从行业包取 | 不是产品差别：同步上游时照同一原则处理作者的新测试 |
 | `tests/analyze.test.ts`、`tests/topics.test.ts` | 信源类别的两条测试在行业包没有「门槛在官方与媒体之间」的类别时跳过（MYFNB 三级同一个门槛 46，`classes` 为空）；公司主题改名后旧全名仍能搜到的那条，在行业包没有改过名的公司主题时跳过（MYFNB 主题不按公司分） | 不是产品差别（原版测试要求行业包有这种类别） |

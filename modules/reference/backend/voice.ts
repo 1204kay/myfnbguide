@@ -211,7 +211,14 @@ async function readQwen(script: string, voice: string, subject: string, attempt:
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
           body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, format: "wav", sample_rate: 24_000 } }),
         });
-        if (!res.ok) assertAccepted(QWEN.service, res.status, (await res.text()).slice(0, 1000));
+        // Which line, for the error: 11-01 the first line failed with only the engine's words to go by.
+        if (!res.ok) {
+          const text = (await res.text()).slice(0, 1000);
+          try { assertAccepted(QWEN.service, res.status, text); } catch (error) {
+            if (error instanceof Error) error.message = `第 ${n + 1} 行（${line.length} 字，声音 ${voice}）：${error.message}`;
+            throw error;
+          }
+        }
         const body = (await res.json()) as { output?: { audio?: { url?: string } }; usage?: Record<string, unknown> };
         url = body.output?.audio?.url;
         if (!url) throw new ProviderRejectedError("speech-qwen: no audio in the answer", null, false);
@@ -760,7 +767,8 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
         if (opts.qwen) report.qwenTries = attempt; else report.tries = attempt;
         await keep();
         wav = await (opts.qwen ? readQwen(script, opts.qwen, `issue:${no}`, attempt) : read(script, `issue:${no}`, attempt)).catch((error: unknown) => {
-          if (error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
+          // Gemini answers a request too long for it with 400 (H16); Qwen reads a line a request, so its 400 is something else.
+          if (!opts.qwen && error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
           throw error;
         });
         await writeFile(path.join(work, `${no}.wav`), wav);

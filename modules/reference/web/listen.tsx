@@ -7,7 +7,10 @@
 // (components/ui/Sheet, as 筛选 and 这件事的其他报道 use it) while the audio goes on (Kay 10-31, as 樊登 and 小宇宙 do).
 // When each line's start is known (`starts`), the 文字稿 follows the voice as 小宇宙's does (Kay 10-31 22:14, with a
 // photo of it): the line being read is lit up to where the voice has got, the others are dimmed, the sheet keeps it in
-// view unless the reader has just scrolled, and tapping a line plays from it.
+// view unless the reader has just scrolled, and tapping a line plays from it. The look is E on the canvas
+// https://claude.ai/artifact/5nXJi6nFcbn7124d4CsT3B (Kay 11-01 07:20): the line being read has a teal rule on its left
+// and a teal wash, the words read so far turn teal, so a reader who scrolled away finds it again at a glance; the
+// sheet's foot carries a player one can seek with (B was turned down for having none).
 import { useEffect, useRef, useState } from "react";
 import { IconClose } from "@aihot/web/components/icons";
 import { Sheet } from "@aihot/web/components/ui/Sheet";
@@ -85,13 +88,47 @@ function Following({ lines, starts, at, length, onPick }: { lines: string[]; sta
   return (
     <div ref={box} onWheel={mark} onTouchMove={mark} className="px-5 pb-2 pt-3">
       {lines.map((text, i) => (
-        <p key={i} className={`${i ? "mt-3" : "mt-1"} text-[16px] leading-[1.85] transition-colors lg:text-[17px] ${i === now ? "text-ink-2" : "text-ink-3"}`}>
+        <p
+          key={i}
+          className={`${i ? "mt-3" : "mt-1"} text-[16px] leading-[1.85] transition-colors lg:text-[17px] ${i === now ? "-mx-3 rounded-r-tile border-l-[3px] border-accent bg-accent-soft py-2.5 pl-[11px] pr-3 text-ink-2" : "text-ink-4 opacity-80"}`}
+        >
           {/* The whole line is the button: tapping it plays from where it starts. */}
           <button type="button" onClick={() => onPick(starts[i]!)} className="text-left">
-            {i === now ? <><span className="text-ink">{line.slice(0, lit).join("")}</span>{line.slice(lit).join("")}</> : text}
+            {i === now ? <><span className="font-semibold text-accent">{line.slice(0, lit).join("")}</span>{line.slice(lit).join("")}</> : text}
           </button>
         </p>
       ))}
+    </div>
+  );
+}
+
+const IconSkip = ({ back = false }: { back?: boolean }) => (
+  <span className="relative flex items-center justify-center">
+    <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {back ? <><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></> : <><path d="M21 12a9 9 0 1 1-3-6.7" /><path d="M21 4v5h-5" /></>}
+    </svg>
+    <span aria-hidden="true" className="absolute text-[9px] font-bold">15</span>
+  </span>
+);
+
+/** The progress line doubles as the seek control: a range input over it, taller than it looks. In the 文字稿 (`thumb`)
+ *  it is thicker and shows a knob, so it reads as something to drag. */
+function Seek({ at, length, onSeek, thumb = false }: { at: number; length: number; onSeek: (t: number) => void; thumb?: boolean }) {
+  const share = length ? Math.min(100, (at / length) * 100) : 0;
+  return (
+    <div className={`relative ${thumb ? "h-1 rounded-full" : "h-[3px]"} bg-line-soft`}>
+      <div className={`h-full bg-accent ${thumb ? "rounded-full" : ""}`} style={{ width: `${share}%` }} />
+      {thumb && <div aria-hidden="true" className="absolute top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-[var(--shadow-pop)]" style={{ left: `${share}%` }} />}
+      <input
+        type="range"
+        aria-label="播放进度"
+        min={0}
+        max={Math.round(length)}
+        step={1}
+        value={Math.round(at)}
+        onChange={(e) => onSeek(Number(e.currentTarget.value))}
+        className="absolute inset-x-0 -top-2 h-5 w-full cursor-pointer opacity-0"
+      />
     </div>
   );
 }
@@ -126,6 +163,10 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
     if (a.paused) void a.play();
     else a.pause();
   };
+  const seek = (t: number) => {
+    if (audio.current) audio.current.currentTime = t;
+    setAt(t);
+  };
   const nextSpeed = () => {
     const s = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]!;
     setSpeed(s);
@@ -151,24 +192,7 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
           onTimeUpdate={(e) => setAt(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => Number.isFinite(e.currentTarget.duration) && setLength(e.currentTarget.duration)}
         />
-        {/* The progress line doubles as the seek control: a range input over it, taller than it looks. */}
-        <div className="relative h-[3px] bg-line-soft">
-          <div className="h-full bg-accent" style={{ width: `${length ? Math.min(100, (at / length) * 100) : 0}%` }} />
-          <input
-            type="range"
-            aria-label="播放进度"
-            min={0}
-            max={Math.round(length)}
-            step={1}
-            value={Math.round(at)}
-            onChange={(e) => {
-              const t = Number(e.currentTarget.value);
-              if (audio.current) audio.current.currentTime = t;
-              setAt(t);
-            }}
-            className="absolute inset-x-0 -top-2 h-5 w-full cursor-pointer opacity-0"
-          />
-        </div>
+        <Seek at={at} length={length} onSeek={seek} />
         <div className="flex h-[60px] items-center gap-3 pl-3 pr-2">
           <button
             type="button"
@@ -211,18 +235,6 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
       </div>
       {transcript && (
         <Sheet open={reading} onClose={() => setReading(false)} title={`文字稿 · ${title}`}>
-          {/* The sheet covers the bar, so it carries play/pause and the time itself: one listens while reading. */}
-          <div className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-line-soft bg-surface px-5">
-            <button
-              type="button"
-              aria-label={playing ? "暂停" : "播放"}
-              onClick={toggle}
-              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-contrast transition-colors hover:bg-accent-ink"
-            >
-              {playing ? <IconPause size={16} /> : <IconPlay size={16} />}
-            </button>
-            <div className="font-mono text-[12px] text-ink-3">{clock(at)} / {clock(length)}</div>
-          </div>
           {starts?.length === transcript.length ? (
             <Following
               lines={transcript}
@@ -242,6 +254,42 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
               {transcript.map((line, i) => <p key={i} className={`${i ? "mt-3" : "mt-1"} ${BODY}`}>{line}</p>)}
             </div>
           )}
+          {/* The sheet covers the bar, so its foot is a player of its own: seek, 15 s back and on, play/pause, speed. */}
+          {/* Down to the sheet's very foot: the content's bottom padding would otherwise show text under it. */}
+          <div className="sticky bottom-[calc(-1*max(16px,env(safe-area-inset-bottom)))] z-10 border-t border-line-soft bg-surface px-5 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">
+            <Seek at={at} length={length} onSeek={seek} thumb />
+            <div className="mt-1 flex justify-between font-mono text-[11px] text-ink-3">
+              <span>{clock(at)}</span>
+              <span>-{clock(Math.max(0, length - at))}</span>
+            </div>
+            <div className="mt-1.5 flex items-center justify-between">
+              <button
+                type="button"
+                aria-label="播放速度"
+                onClick={nextSpeed}
+                className="h-8 min-w-13 rounded-control border border-line-strong px-1.5 text-[13px] text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
+              >
+                {speed === 1 ? "1.0" : speed}×
+              </button>
+              <div className="flex items-center gap-4">
+                <button type="button" aria-label="后退 15 秒" onClick={() => seek(Math.max(0, at - 15))} className="flex size-11 items-center justify-center text-ink-2 transition-colors hover:text-ink">
+                  <IconSkip back />
+                </button>
+                <button
+                  type="button"
+                  aria-label={playing ? "暂停" : "播放"}
+                  onClick={toggle}
+                  className="flex size-14 items-center justify-center rounded-full bg-accent text-accent-contrast transition-colors hover:bg-accent-ink"
+                >
+                  {playing ? <IconPause size={22} /> : <IconPlay size={22} />}
+                </button>
+                <button type="button" aria-label="前进 15 秒" onClick={() => seek(Math.min(length, at + 15))} className="flex size-11 items-center justify-center text-ink-2 transition-colors hover:text-ink">
+                  <IconSkip />
+                </button>
+              </div>
+              <div aria-hidden="true" className="min-w-13" />
+            </div>
+          </div>
         </Sheet>
       )}
     </>

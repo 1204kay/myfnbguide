@@ -43,7 +43,8 @@ export const MAX_READS = 6;
 /**
  * The voice: Alibaba Cloud Model Studio, Singapore (Kay 11-01 18:35 on the first Qwen reading, longanhuan_v3.1: 「很不错
  * 听起来很好 也完全没有窒息感」; 18:36: 「Gemini 不要了 以后都用阿里云 免费额度完了就付费 这个值得」; 18:37: 「确定用阿里云 但是
- * 还没选好声音」). longanhuan_v3.1 reads until Kay picks one; picking is this line. qwen-audio-3.1-tts-flash: free 1M
+ * 还没选好声音」). longanhuan_v3.1 reads until Kay picks one; picking is this line, the model too (Kay was comparing
+ * qwen-audio-3.1-tts-next, -plus and -flash at 18:43; --model to try one). qwen-audio-3.1-tts-flash: free 1M
  * characters to 2027-01-31, then paid, about US$0.03 an issue; of its Mandarin voices only the 多语种与方言 group answers in
  * Singapore (longanhuan_v3.1, longanlingxin_v3.1, longanfengyue_v3.1), the 精品中文 ones (xuyuyuan_v3.1 and the rest)
  * return Engine error 411 (11-01). This model, not qwen3-tts-flash (Cherry and others; free there only 10K characters):
@@ -161,7 +162,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
 }
 
 /** The script read aloud, line by line, the lines joined: a WAV (16-bit, one channel). */
-async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style): Promise<Buffer> {
+async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<Buffer> {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
@@ -170,12 +171,12 @@ async function read(script: string, subject: string, attempt: number, voice = VO
   for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: VOICE.service, model: VOICE.model, purpose: "reference_issue_read", subject, identity: { model: VOICE.model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
+      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
         const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
-          body: JSON.stringify({ model: VOICE.model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
+          body: JSON.stringify({ model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
         });
         // Which line, for the error: 11-01 the first line failed with only the engine's words to go by.
         if (!res.ok) {
@@ -679,7 +680,7 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * Reads issue `no` aloud and, unless `dryRun`, puts it up when the machine check passes. A dry run leaves the MP3 and
  * the script in `out` for a person to hear and keeps nothing on the site.
  */
-export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string } = {}): Promise<VoiceReport> {
+export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string; model?: string } = {}): Promise<VoiceReport> {
   const report = await readIssue(no, ask, opts);
   // A reading heard is done with (about 29 MB a day): only one not yet heard is kept, for the next run to hear. Not when
   // nothing ran ("not ready"): what an earlier run left unheard is still waiting.
@@ -687,7 +688,7 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   return report;
 }
 
-async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string }): Promise<VoiceReport> {
+async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string; model?: string }): Promise<VoiceReport> {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
@@ -727,7 +728,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       else {
         report.tries = attempt;
         await keep();
-        wav = await read(script, `issue:${no}`, attempt, opts.voice, opts.style);
+        wav = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model);
         await writeFile(path.join(work, `${no}.wav`), wav);
         report.unheard = true;
         await keep();

@@ -69,6 +69,17 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "anthropic", model: "claude-opus-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
     extra: { temperature: undefined }, reasoningTokens: 12000, jsonMode: false,
   },
+  // 阿里云百炼（新加坡区）上的两个，2026-11-01 拿来和直连 DeepSeek 比判题材（myfnb/aliyun-compare-2026-11-01-run.sh）。
+  // 免费额度按条款只能用来评测模型、不能用在对外的内容上，所以只给比较脚本用，不设成任何一步的默认。
+  // 钥匙借十一说念稿那把（同一个阿里云账号）；不用 DASHSCOPE_API_KEY 这个名字：它会顺带打开收费的百炼向量（providers/embeddings.ts）。
+  "aliyun-deepseek-v4.1-flash": {
+    service: "aliyun", model: "deepseek-v4.1-flash", baseUrlEnv: "ALIYUN_LLM_BASE_URL", apiKeyEnv: "QWEN_TTS_API_KEY",
+    extra: { enable_thinking: false }, jsonMode: true,
+  },
+  "aliyun-qwen3.8-flash": {
+    service: "aliyun", model: "qwen3.8-flash", baseUrlEnv: "ALIYUN_LLM_BASE_URL", apiKeyEnv: "QWEN_TTS_API_KEY",
+    extra: { enable_thinking: false }, jsonMode: true,
+  },
   "qwen3-vl-flash": {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",
     extra: { enable_thinking: false }, jsonMode: false, vision: true,

@@ -22,6 +22,11 @@
 //   --reserve 3000  给线上留的模型调用次数，算法同 trial-sources.ts（这一小时离上限不到十分之一就等，每天不够就停）
 // 同一批再判会直接用已有回执、不花钱，停下以后用同一条命令重开就是接着判。
 // 在服务器上：ops 门 `bg myfnb/judge-universe.ts --apply`，再 `tail <编号>`。
+// 比模型（2026-11-01，阿里云免费额度能不能替 DeepSeek 判）：
+//   --model aliyun-deepseek-v4.1-flash   换用 site/models.ts 里的这个模型判（默认是预筛那一步的模型）
+//   --limit 200                          只判前这么多个候选（批次和全量时一样切，同一批的 subject 相同，好逐批对照）
+//   --tag noise1                         同一个模型再判一次（回执另起一张，量噪声用；不加就直接用已有回执）
+//   阿里云免费额度按条款只能拿来评测模型（myfnb/aliyun-compare-2026-11-01-run.sh 文件头），这样判出来的结果只用来对照，不进台账。
 import { appendFileSync, readFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import { tmpdir } from "node:os";
@@ -39,11 +44,12 @@ import { modelFor } from "@aihot/backend/editorial/models";
 const { values } = parseArgs({ options: {
   apply: { type: "boolean", default: false }, "cap-usd": { type: "string", default: "6" }, "min-balance": { type: "string", default: "12" }, until: { type: "string", default: "04:55" }, reserve: { type: "string", default: "3000" },
   input: { type: "string", default: "universe-2026-10-25.jsonl.gz" }, batch: { type: "string", default: "20" }, jobs: { type: "string", default: "4" },
-  yn: { type: "boolean", default: false },
+  yn: { type: "boolean", default: false }, model: { type: "string" }, limit: { type: "string" }, tag: { type: "string" },
 } });
 type Cand = { id: string; kind: string; url: string; title: string; desc: string; items: string[]; lang?: string };
 const raw = readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.input));
-const cands = (values.input.endsWith(".gz") ? gunzipSync(raw) : raw).toString("utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as Cand);
+const cands = (values.input.endsWith(".gz") ? gunzipSync(raw) : raw).toString("utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as Cand)
+  .slice(0, values.limit ? Number(values.limit) : undefined);
 const size = Number(values.batch);
 const batches: Cand[][] = [];
 for (let i = 0; i < cands.length; i += size) batches.push(cands.slice(i, i + size));
@@ -100,19 +106,23 @@ const spentSoFar = async () => {
     SELECT sum(${usd})::text AS usd FROM receipt_attempts r JOIN receipts rc ON rc.id = r.receipt_id ${price} WHERE rc.purpose = 'judge_source_candidate'`;
   return Number(r?.usd ?? 0);
 };
-const model = await modelFor("prefilter");
+const model = values.model ?? await modelFor("prefilter");
 const spec = MODELS[model];
+if (!spec) throw new Error(`site/models.ts 里没有模型 ${model}`);
+// 阿里云的预设借用十一说念稿那把钥匙（同一个账号），地址没配就用新加坡区的 OpenAI 兼容地址。
+if (spec.baseUrlEnv === "ALIYUN_LLM_BASE_URL") process.env.ALIYUN_LLM_BASE_URL ??= "https://dashscope-intl.aliyuncs.com/compatible-mode/v1";
 // 熔断按回执的 service 计数（receipts.ts 的 checkBudget）：用哪个模型就看哪一行 budgets。
 const service = spec?.service ?? "llm";
 const reserve = Number(values.reserve);
+// budgets 里没有这一行（例如阿里云）就不限，和 receipts.ts 的 checkBudget 一样；那时只靠 --limit 和账号的「用完即停」。
 const budgetLeft = async () => {
-  const [b] = await sql<{ hour: number; day: number }[]>`
+  const [b] = await sql<{ hour: number | null; day: number | null }[]>`
     SELECT (SELECT per_hour FROM budgets WHERE service = ${service}) - count(*) FILTER (WHERE started_at > now() - interval '1 hour') AS hour,
            (SELECT per_day FROM budgets WHERE service = ${service}) - count(*) AS day
     FROM receipt_attempts WHERE service = ${service} AND origin = 'live' AND started_at > now() - interval '1 day'`;
-  return b!;
+  return { hour: b!.hour ?? Infinity, day: b!.day ?? Infinity };
 };
-const outFile = path.join(tmpdir(), `judge-universe-${runStart.toISOString().replace(/[:.]/g, "")}.jsonl`);
+const outFile = path.join(tmpdir(), `judge-universe-${values.model ? `${model}-` : ""}${values.tag ? `${values.tag}-` : ""}${runStart.toISOString().replace(/[:.]/g, "")}.jsonl`);
 console.log(`# 逐条结果写在 ${outFile}`);
 const base = spec?.baseUrlEnv ? credential("models", spec.baseUrlEnv) : null;
 if (base?.includes("deepseek.com")) {
@@ -128,7 +138,7 @@ if (base?.includes("deepseek.com")) {
 }
 const cap = Number(values["cap-usd"]);
 let spent = await spentSoFar();
-console.log(`# 这个用途的回执此前已累计 US$${spent.toFixed(3)}，安全阀 US$${cap}；熔断看 budgets 的 ${service} 一行`);
+console.log(`# 这个用途的回执此前已累计 US$${spent.toFixed(3)}，安全阀 US$${cap}；熔断看 budgets 的 ${service} 一行；模型 ${model}（${spec.model}）`);
 const until = untilOf(values.until);
 console.log(`# 到 ${until.toISOString()}（MYT ${beijingStamp(until)}）不再领新批`);
 let stopped = "";
@@ -150,7 +160,7 @@ const worker = async () => {
     try {
       const res = await chatJson({
         model, purpose: "judge_source_candidate", subject: `universe:${b[0]!.id}..${b.at(-1)!.id}`, promptVersion: "judge-universe-2026-10-25",
-        system: SYSTEM, user: userOf(b), schema: Schema, temperature: 0, maxTokens: 4000,
+        system: SYSTEM, user: userOf(b), schema: Schema, temperature: 0, maxTokens: 4000, attemptTag: values.tag,
       });
       await completeReceipt(sql, res.receiptId);
       spent = await spentSoFar();
@@ -161,6 +171,8 @@ const worker = async () => {
         appendFileSync(outFile, `${JSON.stringify({ id: c.id, kind: c.kind, url: c.url, title: c.title, v: x?.v ?? null, party: x?.party ?? "", why: x?.why ?? "" })}\n`);
       }
     } catch (e) {
+      // 阿里云免费额度用完、账号开着「用完即停」：403 AllocationQuota.FreeTierOnly，后面的批也一样会被拒，停下。
+      if (String(e).includes("AllocationQuota.FreeTierOnly")) stopped = `# 阿里云这个模型的免费额度用完了，停在第 ${i + 1} 批`;
       tally.failed += b.length;
       for (const c of b) appendFileSync(outFile, `${JSON.stringify({ id: c.id, kind: c.kind, url: c.url, title: c.title, v: null, err: String(e).slice(0, 120) })}\n`);
     }

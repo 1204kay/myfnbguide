@@ -2,6 +2,8 @@
 // 和每天 05:00 的写法一样（backend/issue.ts composeIssue：DeepSeek 写两稿，Opus 核对、修、补漏，修不好的剪掉），
 // 只是用那一天日报窗口里的收录，写好先放在数据卷，不动网站；看过再换上。期号不变，换上之前先备份旧的。
 //   sudo docker compose exec -T worker node myfnb/issue-redo.ts --try 2026-10-23   写一份，存 /data/reference/redo/2026-10-23.json，网站不动
+//   sudo docker compose exec -T worker node myfnb/issue-redo.ts --save 2026-10-23 < 定稿.json  不走 API 时：云电脑会话照同一套提示词核好的一期
+//                                                                                   （{"issue": {...}}，草稿用 issue-now.ts --drafts 写）存成同一个文件，不调模型
 //   sudo docker compose exec -T worker node myfnb/issue-redo.ts --show 2026-10-23  打出写好的那份（定稿、核对剩下的问题、剪掉的），不调模型
 //   sudo docker compose exec -T worker node myfnb/issue-redo.ts --put 2026-10-23   换上：旧的一期和它的音频先备份到 /data/reference/redo/backup/，
 //                                                                                   再换内容、改那天日报头条的标题和三句，撤下旧音频（音频另用 issue-voice.ts --put 念）
@@ -17,6 +19,7 @@ import { installModules } from "@aihot/backend/modules";
 import { beijingAt } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
 import { SERVER_MODULES } from "@aihot/site/modules/server";
+import { DEFAULTS } from "@aihot/site/models";
 import { composeIssue, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, ISSUE_VERSION, modelAsk } from "../modules/reference/backend/issue.ts";
 import { dayItems, issueLead } from "../modules/reference/backend/issues.ts";
 
@@ -26,10 +29,11 @@ installModules(SERVER_MODULES);
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
 const tryDate = arg("--try");
 const showDate = arg("--show");
+const saveDate = arg("--save");
 const putDate = arg("--put");
 const backDate = arg("--back");
-const date = tryDate ?? showDate ?? putDate ?? backDate;
-if (!date || !/^\d{4}-\d{2}-\d{2}$/u.test(date)) throw new Error("要 --try、--show、--put 或 --back 加一个日期，例如 2026-10-23");
+const date = tryDate ?? saveDate ?? showDate ?? putDate ?? backDate;
+if (!date || !/^\d{4}-\d{2}-\d{2}$/u.test(date)) throw new Error("要 --try、--save、--show、--put 或 --back 加一个日期，例如 2026-10-23");
 
 const REDO = path.join(config.dataDir, "reference", "redo");
 const AUDIO = path.join(config.dataDir, "reference", "audio");
@@ -69,6 +73,18 @@ if (tryDate) {
   await mkdir(REDO, { recursive: true });
   await writeFile(redoFile, JSON.stringify({ content: kept, version: ISSUE_VERSION, models: { writer, checker }, receipts: receiptIds }, null, 1));
   console.log(JSON.stringify({ ...summary(kept), status: c.status, receipts: receiptIds.length, file: redoFile }, null, 1));
+}
+
+if (saveDate) {
+  // Kay 11-01 22:18「一个月只有100美金」: the check done in a session costs no API, as issues 1–5 were checked.
+  const given = JSON.parse(await new Response(process.stdin as unknown as ReadableStream).text()) as { issue: Redone["issue"] & { brief?: string[] } };
+  const i = given.issue;
+  if (!i?.title || !i.brief?.length || !i.preview || !i.news?.length || !i.deep || !i.close) throw new Error("定稿要有 title、brief、preview、news、deep、close");
+  const items = (await dayItems(beijingAt(date, EDITION_TIMES.daily))).map(({ text: _text, ...item }) => item);
+  const kept: Redone = { issue: i, lively: 0, edited: true, cut: [], problems: [], note: "核对在云电脑会话里做（11-01 重做，不用 Claude API）", drafts: [], items };
+  await mkdir(REDO, { recursive: true });
+  await writeFile(redoFile, JSON.stringify({ content: kept, version: "session", models: { writer: DEFAULTS[ISSUE_STEP], checker: "session" } }, null, 1));
+  console.log(JSON.stringify({ ...summary(kept), file: redoFile }, null, 1));
 }
 
 if (showDate) {

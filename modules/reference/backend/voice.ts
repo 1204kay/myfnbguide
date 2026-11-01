@@ -1,10 +1,10 @@
-// 十一说 read aloud on the server (Kay 10-31 07:53: 「Gemini钥匙直接上云」; until then a session on Kay's computer did
+// 十一说 read aloud on the server (since 10-31; until then a session on Kay's computer did
 // each step by hand: Core System Studio handbook 业务线/myfnbguide/十一说-每天怎么出.md step 10). Each morning after the
 // issue is written: DeepSeek turns the published issue into a listen script (prompts/issue-voice.md: the spoken
 // signposts the page leaves to its headings, since 10-31 the page has none, myfnbguide #100), the check model reads the
-// script against the page (prompts/issue-voice-check.md) and its fixes go in line by line; Gemini's Leda reads the whole
-// script in one request (cut into parts, each part had its own pitch and the joins could be heard: issue 6, 10-30);
-// the machine check of the handbook's step 10 runs (Groq's Whisper hears it back, gaps, pitch a minute); what passes
+// script against the page (prompts/issue-voice-check.md) and its fixes go in line by line; Alibaba Cloud's Qwen voice
+// reads it line by line (VOICE; Gemini's Leda read it whole until 11-01) and the lines are joined; the machine check
+// of the handbook's step 10 runs (Groq's Whisper hears it back, gaps, pitch a minute); what passes
 // goes up as <no>.mp3, <no>.txt (the 文字稿) and <no>.json, the json last (backend/audio.ts). What fails stays down and
 // the issue goes out as text, as on any day without audio. Every step's outcome is kept in <no>.voice.json beside them.
 import { spawn } from "node:child_process";
@@ -26,29 +26,34 @@ import { pyin } from "./pyin.ts";
 const DIR = path.join(config.dataDir, "reference", "audio");
 
 /**
- * Longest script sent in one request, counted as scriptChars counts. What was heard (10-31): issue 6, 2,605, read
- * whole and steady in 494 s; issue 7 on the computer, 2,563, read whole in two of three; issue 7 here, 3,091, three
- * readings of 583–644 s, the last stopping about 170 characters short of the end and climbing 63 Hz in its second half
- * (pyin). Longer readings break at the end and drift. The script is asked for at most WRITE_CHARS, under what was heard
- * whole; MAX_CHARS, where a script is refused, sits just above it, so a model that runs a few dozen over is still read.
+ * Longest script read, counted as scriptChars counts: about ten minutes (handbook 决定记录 10-31, 「十分钟左右、全稿约
+ * 3,000 字」). Set when Gemini's Leda read the issue in one request and longer readings broke at the end and drifted
+ * (issue 7, 10-31: 3,091 characters, stopping short and climbing 63 Hz); Qwen reads line by line, so the bound is now the
+ * listening length only. The script is asked for at most WRITE_CHARS; MAX_CHARS, where a script is refused, sits just
+ * above it, so a model that runs a few dozen over is still read.
  */
 export const MAX_CHARS = 2_650;
 const WRITE_CHARS = 2_450;
 /**
- * Gemini's free tier: ten requests a day (its 429, 10-27), counted per model and renewed about 15:00 MYT; a day's issue
- * gets at most this many, leaving the rest of the window for a reading by hand. Six, not three (11-01): of the three
- * issues Leda read whole, only issue 6 passed on its first reading, and issue 8 used all three on near misses (94.9% and
- * 94.5% heard against 95%, then a 34 Hz drift); readers wait for the morning's audio (Kay 11-01 09:39). A run reads
- * again until one passes, so six readings from 05:20 are over well before readers wake.
+ * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
+ * 09:39); set for Gemini's ten free a day and kept for Qwen: a run reads again until one passes, so six readings from
+ * 05:20 are over well before readers wake.
  */
 export const MAX_READS = 6;
 /**
- * The voice and how it reads (Kay 10-26 picked Leda). The style was 「语速中等偏快」 as the computer's script sent it
- * (mkjobs.py); Kay 10-31 22:30 heard the issues as breathless: Leda read about 280 characters a minute against the old
- * voice's 247, with a pause of half a second only 8–11 times a minute against 18. The sample read 「语速适中，句与句之间
- * 留出自然换气的停顿」 came closest to the old voice of the three (11-01), so that is the style now.
+ * The voice: Alibaba Cloud Model Studio, Singapore (Kay 11-01 18:35 on the first Qwen reading, longanhuan_v3.1: 「很不错
+ * 听起来很好 也完全没有窒息感」; 18:36: 「Gemini 不要了 以后都用阿里云 免费额度完了就付费 这个值得」; 18:37: 「确定用阿里云 但是
+ * 还没选好声音」). longanhuan_v3.1 reads until Kay picks one; picking is this line. qwen-audio-3.1-tts-flash: free 1M
+ * characters to 2027-01-31, then paid, about US$0.03 an issue; of its Mandarin voices only the 多语种与方言 group answers in
+ * Singapore (longanhuan_v3.1, longanlingxin_v3.1, longanfengyue_v3.1), the 精品中文 ones (xuyuyuan_v3.1 and the rest)
+ * return Engine error 411 (11-01). This model, not qwen3-tts-flash (Cherry and others; free there only 10K characters):
+ * Kay 18:39 「那就用新的」. Read line by line (each under 110 characters, the writer's limit), each line its own receipt.
+ * `style` goes as the request's instruction, in Chinese as the text is; none, as Kay heard it. Leda's was 「早间节目主播，沉稳但有活力，语速适中，
+ * 句与句之间留出自然换气的停顿」 (--style to try one).
+ * Its key is QWEN_TTS_API_KEY, not DASHSCOPE_API_KEY: that name alone turns on the paid Bailian embeddings for grouping
+ * (providers/embeddings.ts) and offers the dashscope models (site/models.ts).
  */
-export const SPEECH = { model: "gemini-3.8-flash-tts", voice: "Leda", style: "早间节目主播，沉稳但有活力，语速适中，句与句之间留出自然换气的停顿" };
+export const VOICE = { model: "qwen-audio-3.1-tts-flash", voice: "longanhuan_v3.1", style: "", service: "speech-qwen" };
 /**
  * The machine check (handbook step 10): transcript ≥95% of the script, its closing line heard (`end`), no gap over
  * 4 s, and each minute's median pitch within 20 Hz of the others. No fixed range: 195–225 Hz was set on issue 6 alone,
@@ -69,12 +74,12 @@ const HEAR = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3"
 /**
  * What reading an issue needs before anything is spent: both keys, and a budget row for both paid services (a service
  * with no row would have no circuit breaker; archive/backend/transcribe.ts skips on the same). myfnb/issue-voice.ts adds
- * the `speech` row; `transcribe` is archive's. Empty when ready.
+ * the `speech-qwen` row; `transcribe` is archive's. Empty when ready.
  * Checked first, so a missing Groq key is found before the day's free readings are used up.
  */
-export async function voiceMissing(qwen?: string): Promise<string[]> {
-  const missing = [qwen ? "QWEN_TTS_API_KEY" : "GEMINI_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
-  const services = [qwen ? QWEN.service : "speech", HEAR.service];
+export async function voiceMissing(): Promise<string[]> {
+  const missing = ["QWEN_TTS_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
+  const services = [VOICE.service, HEAR.service];
   const rows = await sql<{ service: string }[]>`SELECT service FROM budgets WHERE service IN ${sql(services)}`;
   for (const service of services) if (!rows.some((r) => r.service === service)) missing.push(`budgets 里没有 ${service}`);
   return missing;
@@ -155,51 +160,8 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
   return { lines: null, rounds };
 }
 
-/** The script read by Leda: a WAV (24 kHz, 16-bit, one channel), through the engine's receipts. */
-async function read(script: string, subject: string, attempt: number): Promise<Buffer> {
-  const key = credential("models", "GEMINI_API_KEY");
-  if (!key) throw new Error("GEMINI_API_KEY missing");
-  // The audio is kept as a file, not in the receipt (about 10 MB of base64).
-  let audio: string | undefined;
-  const receipt = await paidRequest(
-    { service: "speech", model: SPEECH.model, purpose: "reference_issue_read", subject, identity: { model: SPEECH.model, voice: SPEECH.voice, script, attempt, at: Date.now() }, requestSummary: { chars: script.length, attempt } },
-    async () => {
-      const res = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
-        method: "POST", headers: { "x-goog-api-key": key, "content-type": "application/json" }, signal: AbortSignal.timeout(900_000),
-        body: JSON.stringify({
-          model: SPEECH.model, response_format: { type: "audio" }, generation_config: { speech_config: [{ voice: SPEECH.voice }] },
-          input: [{ type: "user_input", content: [{ type: "text", text: script, annotations: [{ type: "speech_metadata", style: SPEECH.style }] }] }],
-        }),
-      });
-      if (!res.ok) assertAccepted("speech", res.status, (await res.text()).slice(0, 1000));
-      const body = (await res.json()) as { steps?: Array<{ content?: Array<{ type?: string; data?: string }> }>; usage?: Record<string, unknown> };
-      const data = body.steps?.flatMap((s) => s.content ?? []).find((c) => c.type === "audio" && c.data)?.data;
-      if (!data) throw new ProviderRejectedError("speech: no audio in the answer", null, false);
-      audio = data;
-      return { response: { bytes: Math.round((data.length * 3) / 4) }, usage: body.usage ?? null };
-    },
-  );
-  await sql.begin((tx) => completeReceipt(tx, receipt.receiptId));
-  if (!audio) throw new Error("speech: this reading was already made and its audio not kept (a repeated request)");
-  return Buffer.from(audio, "base64");
-}
-
-/**
- * Alibaba Cloud's Qwen-Audio voice (Model Studio, Singapore; its free quota there is 1M characters to 2027-01-31,
- * qwen3-tts-flash's only 10K), tried beside Leda (Kay 11-01 09:44: 阿里云 before any paid
- * Gemini; 15:56 「今天的不要浪费」). Issue 8 failed nine of Leda's readings, the last three on pitch as well: one request
- * for the whole issue drifts. Qwen reads line by line (qwen3-tts-flash takes at most 600 characters a request; the old voice, also Qwen, was read so) (each under 110,
- * the writer's limit) and the lines are joined; each line is its own receipt. Only by hand (`--qwen <voice>`), the
- * daily reading stays Leda's. Free quota only, as Kay set the key; about US$0.03 an issue past it (US$0.10 a 10,000).
- * Its key is QWEN_TTS_API_KEY, not DASHSCOPE_API_KEY: that name alone turns on the paid Bailian embeddings for grouping
- * (providers/embeddings.ts) and offers the dashscope models (site/models.ts).
- */
-export const QWEN = { model: "qwen-audio-3.1-tts-flash", service: "speech-qwen", reads: 2 };
-/**
- * `style` goes as the request's instruction (Qwen-Audio's own way to set how a line is said; in Chinese, as the text
- * is). By default Leda's SPEECH.style, so the two voices are compared reading the same way; "" sends none.
- */
-async function readQwen(script: string, voice: string, subject: string, attempt: number, style = SPEECH.style): Promise<Buffer> {
+/** The script read aloud, line by line, the lines joined: a WAV (16-bit, one channel). */
+async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style): Promise<Buffer> {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
@@ -208,17 +170,17 @@ async function readQwen(script: string, voice: string, subject: string, attempt:
   for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: QWEN.service, model: QWEN.model, purpose: "reference_issue_read", subject, identity: { model: QWEN.model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
+      { service: VOICE.service, model: VOICE.model, purpose: "reference_issue_read", subject, identity: { model: VOICE.model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
         const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
-          body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
+          body: JSON.stringify({ model: VOICE.model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
         });
         // Which line, for the error: 11-01 the first line failed with only the engine's words to go by.
         if (!res.ok) {
           const text = (await res.text()).slice(0, 1000);
-          try { assertAccepted(QWEN.service, res.status, text); } catch (error) {
+          try { assertAccepted(VOICE.service, res.status, text); } catch (error) {
             if (error instanceof Error) error.message = `第 ${n + 1} 行（${line.length} 字，声音 ${voice}）：${error.message}`;
             throw error;
           }
@@ -588,10 +550,8 @@ export function lineStarts(lines: string[], segments: Heard[]): number[] | null 
 export interface VoiceReport {
   no: number; date: string; at: string;
   status: "up" | "tried" | "not ready" | "script failed" | "too long" | "check failed" | "no reads left" | "error";
-  /** Requests sent to the voice for this issue, whatever came of them (Gemini's free ones are counted per request). */
+  /** Readings of this issue begun, whatever came of them. */
   tries?: number;
-  /** Qwen's readings by hand, counted apart: they spend none of Leda's free reads. */
-  qwenTries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
   reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
@@ -600,7 +560,7 @@ export interface VoiceReport {
 }
 
 /**
- * Characters the voice reads as their opposite: Leda read 卖酒执照 as 买酒执照 in issue 7 (Kay 10-31), and the share
+ * Characters a voice reads as their opposite: Leda read 卖酒执照 as 买酒执照 in issue 7 (Kay 10-31), and the share
  * check let it through, one character in 2,265. Each pair: what the script says, what it was heard as.
  */
 export const FLIPS: Array<[string, string]> = [["卖", "买"], ["买", "卖"]];
@@ -645,7 +605,7 @@ export function judge(seconds: number, match: number, gaps: Array<{ from: number
  * has heard, before reading is turned on. Pays one transcription; no voice.
  */
 export async function hearIssue(no: number) {
-  const missing = (await voiceMissing()).filter((m) => !m.includes("GEMINI") && !m.includes("speech"));
+  const missing = (await voiceMissing()).filter((m) => !m.includes("QWEN") && !m.includes(VOICE.service));
   if (missing.length) throw new Error(`还缺：${missing.join("；")}`);
   const script = await readFile(path.join(DIR, `${no}.txt`), "utf8");
   const mp3 = await readFile(path.join(DIR, `${no}.mp3`));
@@ -681,7 +641,7 @@ export async function timeIssue(no: number) {
 export const BREATH = 0.5;
 /**
  * Room to breathe between the script's lines (Kay 10-31 22:30: listening to 十一说 felt like running out of breath).
- * Leda reads the whole issue in one request and goes from one line to the next with hardly a pause: issue 7 had 12
+ * Leda read the whole issue in one request and went from one line to the next with hardly a pause: issue 7 had 12
  * pauses over 0.8 s in 57 lines and about 8 over 0.5 s a minute, where the voice before it (Qwen, line by line with
  * 0.45 s put between) had about 18. So BREATH of silence goes in at the quietest 20 ms in the 0.6 s before each line
  * starts (not mid-word: the line's start is where Whisper heard it, a little late or early), and the line times move
@@ -719,7 +679,7 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * Reads issue `no` aloud and, unless `dryRun`, puts it up when the machine check passes. A dry run leaves the MP3 and
  * the script in `out` for a person to hear and keeps nothing on the site.
  */
-export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string; style?: string } = {}): Promise<VoiceReport> {
+export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string } = {}): Promise<VoiceReport> {
   const report = await readIssue(no, ask, opts);
   // A reading heard is done with (about 29 MB a day): only one not yet heard is kept, for the next run to hear. Not when
   // nothing ran ("not ready"): what an earlier run left unheard is still waiting.
@@ -727,23 +687,21 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   return report;
 }
 
-async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; qwen?: string; style?: string }): Promise<VoiceReport> {
+async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string }): Promise<VoiceReport> {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
   const before = await voiceReport(no);
-  const used = opts.dryRun ? 0 : (opts.qwen ? before?.qwenTries : before?.tries) ?? 0;
-  const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: opts.qwen ? before?.tries ?? 0 : used, ...(opts.qwen || before?.qwenTries ? { qwenTries: opts.qwen ? used : before?.qwenTries } : {}), reads: opts.dryRun ? [] : before?.reads ?? [] };
+  const used = opts.dryRun ? 0 : before?.tries ?? 0;
+  const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: used, reads: opts.dryRun ? [] : before?.reads ?? [] };
   const keep = async () => { if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); } return report; };
-  // Leda's count only: a Qwen reading by hand has its own QWEN.reads.
-  if (!opts.qwen && used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
+  if (used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
   // Not kept: once the key or the row is there, the next half hour reads it.
-  const missing = await voiceMissing(opts.qwen);
+  const missing = await voiceMissing();
   if (missing.length) return { ...report, status: "not ready", error: missing.join("；") };
   // Kept under the data folder, not the container's /tmp: a reading not yet heard outlives a restart.
   const work = opts.out ?? path.join(DIR, "work", String(no));
-  // A Leda reading left unheard waits for Leda's next run, not Qwen's.
-  const saved = !opts.dryRun && !opts.qwen && before?.unheard
+  const saved = !opts.dryRun && before?.unheard
     ? await Promise.all([readFile(path.join(work, `${no}.txt`), "utf8"), readFile(path.join(work, `${no}.wav`))]).catch(() => null)
     : null;
   report.unheard = Boolean(saved);
@@ -763,18 +721,13 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     }
-    const last = opts.qwen ? used + QWEN.reads : MAX_READS;
-    for (let attempt = saved ? used : used + 1; attempt <= last; attempt += 1) {
+    for (let attempt = saved ? used : used + 1; attempt <= MAX_READS; attempt += 1) {
       let wav: Buffer;
       if (saved && attempt === used) wav = saved[1];
       else {
-        if (opts.qwen) report.qwenTries = attempt; else report.tries = attempt;
+        report.tries = attempt;
         await keep();
-        wav = await (opts.qwen ? readQwen(script, opts.qwen, `issue:${no}`, attempt, opts.style) : read(script, `issue:${no}`, attempt)).catch((error: unknown) => {
-          // Gemini answers a request too long for it with 400 (H16); Qwen reads a line a request, so its 400 is something else.
-          if (!opts.qwen && error instanceof ProviderRejectedError && error.status === 400) report.status = "too long";
-          throw error;
-        });
+        wav = await read(script, `issue:${no}`, attempt, opts.voice, opts.style);
         await writeFile(path.join(work, `${no}.wav`), wav);
         report.unheard = true;
         await keep();
@@ -791,7 +744,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
       report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
       if (!verdict.pass) { await keep(); continue; }
-      // A breath between the script's lines (breathe): the reading is checked as Leda read it, then heard with room.
+      // A breath between the script's lines (breathe): the reading is checked as it was read, then heard with room.
       let starts = lineStarts(scriptLines(script), segments);
       let length = seconds;
       if (starts) {

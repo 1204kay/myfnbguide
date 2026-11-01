@@ -73,7 +73,7 @@ const HEAR = { base: "https://api.groq.com/openai/v1", model: "whisper-large-v3"
  * Checked first, so a missing Groq key is found before the day's free readings are used up.
  */
 export async function voiceMissing(qwen?: string): Promise<string[]> {
-  const missing = [qwen ? "DASHSCOPE_API_KEY" : "GEMINI_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
+  const missing = [qwen ? "QWEN_TTS_API_KEY" : "GEMINI_API_KEY", "GROQ_API_KEY"].filter((name) => !credential("models", name));
   const services = [qwen ? QWEN.service : "speech", HEAR.service];
   const rows = await sql<{ service: string }[]>`SELECT service FROM budgets WHERE service IN ${sql(services)}`;
   for (const service of services) if (!rows.some((r) => r.service === service)) missing.push(`budgets 里没有 ${service}`);
@@ -190,11 +190,14 @@ async function read(script: string, subject: string, attempt: number): Promise<B
  * for the whole issue drifts. Qwen takes at most 600 characters a request, so it reads line by line (each under 110,
  * the writer's limit) and the lines are joined; each line is its own receipt. Only by hand (`--qwen <voice>`), the
  * daily reading stays Leda's. Free quota only, as Kay set the key; about US$0.03 an issue past it (US$0.10 a 10,000).
+ * Its key is QWEN_TTS_API_KEY, not DASHSCOPE_API_KEY: that name alone turns on the paid Bailian embeddings for grouping
+ * (providers/embeddings.ts) and offers the dashscope models (site/models.ts).
  */
 export const QWEN = { model: "qwen3-tts-flash", service: "speech-qwen", reads: 2 };
 async function readQwen(script: string, voice: string, subject: string, attempt: number): Promise<Buffer> {
-  const key = credential("models", "DASHSCOPE_API_KEY");
-  if (!key) throw new Error("DASHSCOPE_API_KEY missing");
+  const key = credential("models", "QWEN_TTS_API_KEY");
+  if (!key) throw new Error("QWEN_TTS_API_KEY missing");
+  const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
   let rate = 0;
   const parts: Int16Array[] = [];
   for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
@@ -202,7 +205,7 @@ async function readQwen(script: string, voice: string, subject: string, attempt:
     const receipt = await paidRequest(
       { service: QWEN.service, model: QWEN.model, purpose: "reference_issue_read", subject, identity: { model: QWEN.model, voice, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
       async () => {
-        const res = await fetch("https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation", {
+        const res = await fetch(`${base}/services/aigc/multimodal-generation/generation`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
           body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, language_type: "Chinese" } }),
         });

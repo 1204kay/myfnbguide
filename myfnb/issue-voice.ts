@@ -10,7 +10,7 @@
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8 --qwen Cherry  用阿里云的 Qwen 声音（这里是 Cherry）念第 8 期，
-//                                                                                    最多 2 次，过了就放上；--try 同样可加。要 DASHSCOPE_API_KEY（只用免费额度）
+//                                                                                    最多 2 次，过了就放上；--try 同样可加。要 QWEN_TTS_API_KEY（只用免费额度；不能叫 DASHSCOPE_API_KEY）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --times 7           给已放上的第 7 期补上每行的开始时间（文字稿跟着声音走），
 //                                                                                    只听一遍 mp3（Groq 免费档），不念，只改 7.json
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用 Gemini 免费档（每天 10 次，一期最多用 3 次）。

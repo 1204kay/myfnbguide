@@ -9,11 +9,13 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对（连听出来的字一起打出来），
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
-//   --try 和 --put 后面可加：--voice <声音>、--model <模型> 换一个声音或模型（默认 voice.ts 的 VOICE 一行）、--style "……" 加一句语气。
+//   --try 和 --put 后面可加：--script <听稿 txt>：用会话里照同一套提示词核好的听稿，不再写、不再核、不查字数上限（不花 Claude API；11-01 旧集照线上原稿重念，Kay 22:37「原稿超过上限的照原长念」）；
+//   --voice <声音>、--model <模型> 换一个声音或模型（默认 voice.ts 的 VOICE 一行）、--style "……" 加一句语气。
 //   新加坡区能用的普通话女声：longanhuan_v3.1、longanlingxin_v3.1、longanfengyue_v3.1
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --times 7           给已放上的第 7 期补上每行的开始时间（文字稿跟着声音走），
 //                                                                                    只听一遍 mp3（Groq 免费档），不念，只改 7.json
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用阿里云（免费额度用完后每念一次约 US$0.07–0.1），一期最多念 6 次。
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { closeDb, sql } from "@aihot/backend/db";
 import { config } from "@aihot/backend/config";
@@ -39,6 +41,7 @@ if (voice !== undefined && !/^[A-Za-z0-9_.]+$/u.test(voice)) throw new Error("--
 const model = arg("--model");
 if (model !== undefined && !/^[a-z0-9.-]+$/u.test(model)) throw new Error("--model 要一个模型名，例如 qwen-audio-3.1-tts-plus");
 const style = arg("--style");
+const scriptFile = arg("--script");
 if (from !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(from)) throw new Error("--from 要一个日期，例如 2026-11-01");
 for (const n of [tryNo, putNo, hearNo, timesNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
 
@@ -64,7 +67,8 @@ if (no) {
   const receipts: number[] = [];
   const ask = { write: modelAsk(writer, `voice:${no}`, receipts), check: modelAsk(checker, `voice:${no}`, receipts) };
   const out = tryNo ? path.join(config.dataDir, "reference", "audio", "tries", String(no)) : undefined;
-  const report = await voiceIssue(no, ask, { dryRun: Boolean(tryNo), out, voice, style, model });
+  const script = scriptFile ? await readFile(scriptFile, "utf8") : undefined;
+  const report = await voiceIssue(no, ask, { dryRun: Boolean(tryNo), out, voice, style, model, script });
   if (receipts.length) await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
   console.log(JSON.stringify(report, null, 1));
   if (out) console.log(`听稿和 mp3：${out}`);

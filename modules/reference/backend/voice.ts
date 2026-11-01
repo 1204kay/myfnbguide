@@ -682,7 +682,7 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * Reads issue `no` aloud and, unless `dryRun`, puts it up when the machine check passes. A dry run leaves the MP3 and
  * the script in `out` for a person to hear and keeps nothing on the site.
  */
-export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string; model?: string } = {}): Promise<VoiceReport> {
+export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string; model?: string; script?: string } = {}): Promise<VoiceReport> {
   const report = await readIssue(no, ask, opts);
   // A reading heard is done with (about 29 MB a day): only one not yet heard is kept, for the next run to hear. Not when
   // nothing ran ("not ready"): what an earlier run left unheard is still waiting.
@@ -690,7 +690,7 @@ export async function voiceIssue(no: number, ask: { write: Ask; check: Ask }, op
   return report;
 }
 
-async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string; model?: string }): Promise<VoiceReport> {
+async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dryRun?: boolean; out?: string; voice?: string; style?: string; model?: string; script?: string }): Promise<VoiceReport> {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
@@ -714,6 +714,17 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       script = saved[0].trimEnd();
       report.chars = before!.chars;
       report.scriptRounds = before!.scriptRounds;
+    } else if (opts.script !== undefined) {
+      // A script written and checked elsewhere with the same prompts (11-01 redo of issues 1–8 checked in a session,
+      // Kay 22:18「一个月只有100美金」): read as given. No length limit here: Kay 11-01 22:37 had issues 1–7 read from the
+      // texts already up, 「原稿超过上限的照原长念」 (issues 2–5 run 4,651–5,852 characters).
+      const lines = scriptLines(opts.script);
+      script = lines.join("\n");
+      report.chars = scriptChars(lines);
+      report.scriptRounds = [];
+      if (!lines.length) { report.status = "script failed"; return keep(); }
+      await mkdir(work, { recursive: true });
+      await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     } else {
       const written = await writeScript(row.issue, row.date, ask.write, ask.check);
       report.scriptRounds = written.rounds;

@@ -1,0 +1,75 @@
+{
+ "$comment": "2026-11-01 补词根重扫（新语言）小批试吃：Podcast Index 2 个、Common Crawl 4 个、GDELT 新闻站餐饮栏目 4 个。筛选经过见手册 /mnt/project-files/myfnb/lang-gap-2026-11-01/ 的 pi-extra-初筛.md、cc-extra-85条-初筛.md、gdelt-sections-初筛.md。伊朗 3 个从云端连不上，服务器读不到就按读不到处理。",
+ "volume": {
+  "T": {
+   "feeds": 5,
+   "perDay": 0.46
+  },
+  "M": {
+   "feeds": 5,
+   "perDay": 2.11
+  }
+ },
+ "feeds": [
+  {
+   "group": "T",
+   "name": "Vendo Cast | وندوکست（波斯语，餐厅经营访谈）",
+   "feedUrl": "https://feeds.blubrry.com/feeds/3739204.xml",
+   "perDay": 0.05
+  },
+  {
+   "group": "T",
+   "name": "From Turku with love（芬兰语，美食博主和主厨）",
+   "feedUrl": "https://feed.pod.space/fromturkuwithlove",
+   "perDay": 0.14
+  },
+  {
+   "group": "T",
+   "name": "گروه سرو Sarv Group（伊朗烘焙原料）",
+   "feedUrl": "https://www.sarvgroup.co/Rss",
+   "perDay": 0.07
+  },
+  {
+   "group": "M",
+   "name": "Maaseudun Tulevaisuus · Ruoka（芬兰农业报美食版）",
+   "feedUrl": "https://www.maaseuduntulevaisuus.fi/feeds/mt-ruoka",
+   "perDay": 1.0
+  },
+  {
+   "group": "M",
+   "name": "AIN.UA · Restaurants（乌克兰商业媒体餐厅栏目）",
+   "feedUrl": "https://ain.ua/business/restaurants/feed/",
+   "perDay": 0.05
+  },
+  {
+   "group": "M",
+   "name": "AIN.UA · Franchises（乌克兰商业媒体加盟栏目）",
+   "feedUrl": "https://ain.ua/business/franchises/feed/",
+   "perDay": 0.03
+  },
+  {
+   "group": "M",
+   "name": "Forbes România · Gastronomie",
+   "feedUrl": "https://www.forbes.ro/forbeslife/gastronomie/feed",
+   "perDay": 0.03
+  },
+  {
+   "group": "M",
+   "name": "FoodPress（伊朗食品业新闻）",
+   "feedUrl": "https://www.foodpress.ir/rss",
+   "perDay": 1.0
+  },
+  {
+   "group": "T",
+   "name": "TasteBank 調味料博客（伊朗）",
+   "feedUrl": "https://tastebank.net/blog/flavorings-1/feed",
+   "perDay": 0.1
+  },
+  {
+   "group": "T",
+   "name": "Ansoo Cafe（伊朗）",
+   "feedUrl": "https://ansoocafe.com/rss.cfm",
+   "perDay": 0.1
+  }
+ ]
+}

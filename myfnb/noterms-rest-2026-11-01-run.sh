@@ -24,7 +24,7 @@ case "${1:-}" in
     used=$(psql "SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'")
     if [ "$used" -gt 20000 ]; then
       at=$(psql "SELECT to_char((started_at + interval '1 day') AT TIME ZONE 'Asia/Kuala_Lumpur', 'MM-DD HH24:MI') FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day' ORDER BY started_at OFFSET $((used - 20000)) LIMIT 1")
-      echo "滚动 24 小时已有 $used 次调用，要降到 20,000 以下才开跑：$at MYT 以后再 start"; exit 1
+      echo "滚动 24 小时已有 $used 次调用，要降到 20,000 以下才开跑：最早约 $at MYT 以后再 start（期间线上还会新增调用，到时 start 会再数一次）"; exit 1
     fi
     mkdir -p "$OUT"
     cd /opt/myfnbguide

@@ -185,15 +185,16 @@ async function read(script: string, subject: string, attempt: number): Promise<B
 }
 
 /**
- * Alibaba Cloud's Qwen voice (Model Studio, Singapore), tried beside Leda (Kay 11-01 09:44: 阿里云 before any paid
+ * Alibaba Cloud's Qwen-Audio voice (Model Studio, Singapore; its free quota there is 1M characters to 2027-01-31,
+ * qwen3-tts-flash's only 10K), tried beside Leda (Kay 11-01 09:44: 阿里云 before any paid
  * Gemini; 15:56 「今天的不要浪费」). Issue 8 failed nine of Leda's readings, the last three on pitch as well: one request
- * for the whole issue drifts. Qwen takes at most 600 characters a request, so it reads line by line (each under 110,
+ * for the whole issue drifts. Qwen reads line by line (qwen3-tts-flash takes at most 600 characters a request; the old voice, also Qwen, was read so) (each under 110,
  * the writer's limit) and the lines are joined; each line is its own receipt. Only by hand (`--qwen <voice>`), the
  * daily reading stays Leda's. Free quota only, as Kay set the key; about US$0.03 an issue past it (US$0.10 a 10,000).
  * Its key is QWEN_TTS_API_KEY, not DASHSCOPE_API_KEY: that name alone turns on the paid Bailian embeddings for grouping
  * (providers/embeddings.ts) and offers the dashscope models (site/models.ts).
  */
-export const QWEN = { model: "qwen3-tts-flash", service: "speech-qwen", reads: 2 };
+export const QWEN = { model: "qwen-audio-3.1-tts-flash", service: "speech-qwen", reads: 2 };
 async function readQwen(script: string, voice: string, subject: string, attempt: number): Promise<Buffer> {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
@@ -205,9 +206,10 @@ async function readQwen(script: string, voice: string, subject: string, attempt:
     const receipt = await paidRequest(
       { service: QWEN.service, model: QWEN.model, purpose: "reference_issue_read", subject, identity: { model: QWEN.model, voice, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
       async () => {
-        const res = await fetch(`${base}/services/aigc/multimodal-generation/generation`, {
+        // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
+        const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
-          body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, language_type: "Chinese" } }),
+          body: JSON.stringify({ model: QWEN.model, input: { text: line, voice, format: "wav", sample_rate: 24_000 } }),
         });
         if (!res.ok) assertAccepted(QWEN.service, res.status, (await res.text()).slice(0, 1000));
         const body = (await res.json()) as { output?: { audio?: { url?: string } }; usage?: Record<string, unknown> };

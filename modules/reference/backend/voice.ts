@@ -123,11 +123,25 @@ export function applyFixes(lines: string[], problems: Problem[]): { lines: strin
  * finding a different line the rewrite had lost a source on.
  */
 export const MENDS = 3;
+/**
+ * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS after
+ * the check is refused as before. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
+ * read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
+ * second ask shows the writer the length it gave. SHORTEN_ABOVE sits halfway to MAX_CHARS, leaving the check's fixes
+ * room: issue 8's three put in about 40 characters.
+ */
+export const SHORTENS = 2;
+const SHORTEN_ABOVE = WRITE_CHARS + (MAX_CHARS - WRITE_CHARS) / 2;
 /** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
 export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
-  const first = await write("reference_issue_voice", prompt("issue-voice", { opening: opening(date), maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}`, Script);
-  let lines = [opening(date), ...first.lines.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
+  const system = prompt("issue-voice", { opening: opening(date), maxChars: String(WRITE_CHARS) });
+  const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
+  let lines = framed((await write("reference_issue_voice", system, `网站上的这一期：\n\n${page}`, Script)).lines);
+  for (let n = 1; n <= SHORTENS && scriptChars(lines) > SHORTEN_ABOVE; n += 1) {
+    const user = `网站上的这一期：\n\n${page}\n\n上一份听稿 ${scriptChars(lines)} 字，超过了 ${WRITE_CHARS} 字。请照上面的要求重写，每件事说得更简短，全稿不超过 ${WRITE_CHARS} 字：\n\n${lines.join("\n")}`;
+    lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
+  }
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
   for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { maxChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);

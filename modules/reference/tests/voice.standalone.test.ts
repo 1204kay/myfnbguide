@@ -56,6 +56,20 @@ test("the check's fixes go in line by line; still wrong after three mends, there
   assert.equal((await writeScript(ISSUE, "2026-10-31", bad, bad)).lines, null);
 });
 
+test("a script too long goes back to the writer with its length, then is checked", async () => {
+  const seen: string[] = [];
+  const long = Array.from({ length: 30 }, (_, i) => `${"长".repeat(99)}${i}`);
+  const ask = scripted({
+    reference_issue_voice: [{ lines: long }, { lines: ["英国净少了977家店。"] }],
+    reference_issue_voice_check: [{ problems: [] }],
+  }, seen);
+  const { lines } = await writeScript(ISSUE, "2026-10-31", ask, ask);
+  assert.deepEqual(lines?.slice(1, -1), ["英国净少了977家店。"]);
+  const again = seen.filter((s) => s.startsWith("reference_issue_voice\n"))[1]!;
+  assert.match(again, /上一份听稿 \d+ 字/u);
+  assert.ok(again.includes(long[0]!), "the writer sees the script it gave");
+});
+
 test("a fix naming no line of the script changes nothing", () => {
   assert.deepEqual(applyFixes(["甲", "乙"], [{ kind: "", line: "丙", fix: "丁", why: "" }]), { lines: ["甲", "乙"], applied: 0 });
   assert.deepEqual(applyFixes(["甲", "乙"], [{ kind: "", line: "乙", fix: "乙一\n乙二", why: "" }]).lines, ["甲", "乙一", "乙二"]);

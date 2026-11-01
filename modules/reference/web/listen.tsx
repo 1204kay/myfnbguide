@@ -64,7 +64,7 @@ export function useListen() {
  * How far the 文字稿 runs ahead of the voice, in seconds of listening. Kay 11-01 09:19 asked that each character turn
  * teal just before it is said. Someone reading along keeps their eyes a little ahead of the voice: about 2.5 characters
  * in Chinese and Japanese (the eye-voice span, Kondo and Mazuka 1996), and 十一说 is read at about 4.5 characters a
- * second, so about half a second. From issue 9 on every line also starts after a half-second pause (`breathe` in
+ * second, so about half a second. From issue 8 on every line also starts after a half-second pause (`breathe` in
  * voice.ts), so the next line lights up inside that pause; issues 1–7 were read without those pauses, and there the next
  * line lights up over the last syllables of the one being said.
  */

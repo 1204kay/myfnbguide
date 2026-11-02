@@ -321,6 +321,11 @@ export interface ItemBody {
 export interface ItemText { id: string; title: string; situation: { slug: string; title: string; count: Count } | null }
 
 /** One 十一说 as its page reads it (backend/issues.ts readIssue, web/issue.tsx). */
+/** All issues, newest first: what the list of them (web/issues.tsx) reads. */
+export interface IssueIndex {
+  issues: Array<{ no: number; date: string; title: string }>;
+}
+
 export interface IssuePage {
   no: number;
   /** The daily it leads, a Beijing date. */

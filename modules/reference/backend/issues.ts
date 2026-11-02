@@ -10,7 +10,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
 import { beijingAt } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
-import type { IssuePage } from "../types.ts";
+import type { IssueIndex, IssuePage } from "../types.ts";
 import { issueAudio } from "./audio.ts";
 import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, leadParagraph, ISSUE_VERSION, modelAsk } from "./issue.ts";
 
@@ -95,8 +95,17 @@ export async function readIssue(no: number): Promise<IssuePage | null> {
   };
 }
 
-/** Issue pages for the sitemap, newest first. */
+/** Every issue, newest first, for the list of all issues (web/issues.tsx). */
+export async function listIssues(): Promise<IssueIndex> {
+  const issues = await sql<IssueIndex["issues"]>`
+    SELECT no, to_char(date, 'YYYY-MM-DD') AS date, content->'issue'->>'title' AS title
+    FROM reference_issues WHERE status = 'issue' ORDER BY no DESC`;
+  return { issues };
+}
+
+/** Issue pages for the sitemap, newest first, and the list of them. */
 export async function issueSitemap(): Promise<SitemapEntry[]> {
   const rows = await sql<{ no: number; created_at: Date }[]>`SELECT no, created_at FROM reference_issues WHERE status = 'issue' ORDER BY no DESC`;
-  return rows.map((r) => ({ loc: issuePath(r.no), lastmod: r.created_at, changefreq: "monthly", priority: 0.6 }));
+  const pages = rows.map((r): SitemapEntry => ({ loc: issuePath(r.no), lastmod: r.created_at, changefreq: "monthly", priority: 0.6 }));
+  return rows[0] ? [{ loc: "/reference/issues", lastmod: rows[0].created_at, changefreq: "daily", priority: 0.6 }, ...pages] : pages;
 }

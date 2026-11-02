@@ -21,7 +21,7 @@ import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "./backend/issue.ts";
 import { MAX_READS, voiceIssue, voiceReport } from "./backend/voice.ts";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
-import { issueLead, issuePath, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
+import { issueLead, issuePath, issueSitemap, listIssues, readIssue, writeIssue } from "./backend/issues.ts";
 import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
 import { AGENT_ABILITIES } from "./backend/agent.ts";
@@ -271,6 +271,7 @@ export default defineServerModule({
       }
       return reply.header("Cache-Control", "no-store").send({ run, cases: [...cases.values()] });
     });
+    app.get("/api/reference/issues", async (_req, reply) => reply.header("Cache-Control", CACHE).send(await listIssues()));
     app.get("/api/reference/issues/:no", async (req, reply) => {
       const no = Number((req.params as { no: string }).no);
       const page = Number.isSafeInteger(no) && no > 0 ? await readIssue(no) : null;

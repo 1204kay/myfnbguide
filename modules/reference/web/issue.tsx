@@ -138,6 +138,7 @@ export default function IssueRoute() {
       {p.prev && <Link viewTransition to={`/reference/issues/${p.prev}`} className="flex min-h-9 items-center text-[13px] text-ink-2 hover:text-accent">第 {p.prev} 期</Link>}
       {p.next && <Link viewTransition to={`/reference/issues/${p.next}`} className="flex min-h-9 items-center text-[13px] text-ink-2 hover:text-accent">第 {p.next} 期</Link>}
       {!p.prev && !p.next && <div className="text-[13px] text-ink-4">这是第一期</div>}
+      <Link viewTransition to="/reference/issues" className="mt-2 flex min-h-9 items-center text-[13px] text-accent hover:text-accent-ink">全部往期 ›</Link>
     </RailSection>
   );
   return (
@@ -222,6 +223,7 @@ export default function IssueRoute() {
           <div className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[13px] lg:hidden">
             {p.prev && <Link viewTransition to={`/reference/issues/${p.prev}`} className="inline-flex min-h-11 items-center gap-1 text-ink-3 hover:text-accent"><IconArrowLeft size={13} /> 第 {p.prev} 期</Link>}
             {p.next && <Link viewTransition to={`/reference/issues/${p.next}`} className="inline-flex min-h-11 items-center gap-1 text-ink-3 hover:text-accent">第 {p.next} 期 <IconArrowRight size={13} /></Link>}
+            <Link viewTransition to="/reference/issues" className="inline-flex min-h-11 items-center gap-1 text-accent hover:text-accent-ink">全部往期 ›</Link>
           </div>
         </article>
       </ArticleLayout>

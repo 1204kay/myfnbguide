@@ -81,7 +81,8 @@ test('the sitemap lists stories of several reports; notifications keep every sto
   const several = await add(['story-two-a', 'story-two-b']);
   const at = new Date('2026-10-09');
   const all = await loadDiscoveryEntries(at);
-  assert.ok(all.some(e => e.loc === `/story/${single}`), 'notifications read the whole inventory');
+  // MYFNB：一篇报道的事件页是 noindex，通知也不送（myfnb/DIFFERENCES.md「事件页」）；原版这里断言通知会带上它。
+  assert.ok(!all.some(e => e.loc === `/story/${single}`), 'MYFNB leaves single-report stories out of notifications too');
   const listed = await loadDiscoveryEntries(at, { urls: 100 });
   const [report] = await sql<{ at: Date }[]>`SELECT discovered_at AS at FROM publications WHERE article_id = 'story-two-a'`;
   assert.equal(listed.find(e => e.loc === `/story/${several}`)?.lastmod?.toISOString(), report!.at.toISOString(),

@@ -80,7 +80,7 @@
 | `apps/web/app/features/feed/FeedItem.tsx`、`packages/backend/src/publication/agent.ts`、`publication/detail.ts` | 理由字段按行显示要点（`reasonLines`），Agent 出口的说明改成「说明原文讲了什么」 | 要点 |
 | `packages/backend/src/modules.ts`、`reports/compose.ts`、`publication/reports.ts`、`packages/contracts/src/site.ts`、`features/report/ReportPaper.tsx` | 模块插口 `dailyLead`，日报头条的可选字段 `kicker`、`href` | 十一说 |
 | `packages/backend/src/modules.ts`、`reports/compose.ts` | 模块插口 `dailyPick`（日报正文用它，代码在 `modules/dailypick`） | 日报正文 |
-| `packages/backend/src/publication/sitemap.ts`、`apps/web/app/routes/story.tsx`、`tests/discovery-updates.test.ts` | 一篇报道的事件页不进站点地图、加 `noindex`；作者的测试给事件多加一篇报道 | 事件页 |
+| `packages/backend/src/publication/sitemap.ts`、`apps/web/app/routes/story.tsx`、`tests/discovery-updates.test.ts` | 一篇报道的事件页不进站点地图和通知、加 `noindex`；作者的测试给事件多加一篇报道，「通知带上全部事件」那条改成不带一篇报道的 | 事件页 |
 | `packages/backend/src/modules.ts`、`editorial/analyze.ts`、`jobs/content.ts`、`tests/analyze.test.ts` | 模块插口 `copyCheck`（核对员用它，代码在 `modules/checker`） | 核对员 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/report-detail.tsx`、`routes/report-latest.tsx`、`features/report/ReportPaper.tsx`、`packages/backend/src/publication/reports.ts`、`apps/web/tests/report-parts.test.ts` | 通用插口 `reportPart`：模块在报告页最后放一块；`Story` 和 `citationsOf` 导出给模块用 | 每周趋势 |
 | `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |

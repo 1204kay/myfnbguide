@@ -1,4 +1,4 @@
-// The Claude API credit (US$200 a month on Ultra since 11-02, renewing on the 4th; settings 'reference.claude-credit'), runs 十一说's check and the module's other Claude steps.
+// The Claude API credit (planned at US$100 a month, renewing on the 4th; settings 'reference.claude-credit'), runs 十一说's check and the module's other Claude steps.
 // The server has no budget row for it, and when it runs out Anthropic refuses: that morning's issue then fails whole,
 // no text and no audio (Kay 11-01 22:43 asked for a warning before that day comes). The receipts carry no cost for
 // Claude, so the month's spend is counted from their tokens at list price; a cached read, if one is ever sent, counts
@@ -8,12 +8,12 @@ import type { Finding } from "@aihot/backend/notify/feishu";
 
 /**
  * The credit and the day of the month it renews, unless settings 'reference.claude-credit' says otherwise
- * ({"monthly": 200, "renewsOn": 4}): a plan change is then one row, not a deploy. Not the 1st: on 11-02 the credit ran
+ * ({"monthly": 100, "renewsOn": 4}): a plan change is then one row, not a deploy. Not the 1st: on 11-02 the credit ran
  * out while the receipts counted from 11-01 showed about US$2.7, so the warning never went off; Kay's bill (11-02 19:28)
- * shows Ultra, US$200 a month, next on 12-04.
+ * renews on the 4th (next 12-04). Ultra gives US$200, but Kay 11-02 19:31 set US$100 a month as the standard to plan by.
  */
 export type CreditPlan = { monthly: number; renewsOn: number };
-export const DEFAULT_PLAN: CreditPlan = { monthly: 200, renewsOn: 4 };
+export const DEFAULT_PLAN: CreditPlan = { monthly: 100, renewsOn: 4 };
 /** US$ per million tokens, input and output (platform.claude.com pricing, 11-01). */
 const PRICES: Record<string, [number, number]> = {
   "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10], "claude-haiku-5-5": [0.1, 0.5],

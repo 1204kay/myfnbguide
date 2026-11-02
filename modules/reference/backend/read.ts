@@ -141,36 +141,28 @@ async function shopsShown(now: Date): Promise<Map<string, ShopSeen>> {
 }
 
 /**
- * A situation is in the lists (home, sitemap, 看全部 N 种情况) once this many shops tell it, counted as every count is
- * (tellerOf; an adviser, a vendor or a publication is no shop): a thinner one reads as a page of one or two shops (HANDOFF §9.2,
- * 只展示够厚的情况). Its page opens before that, from its stories.
+ * A situation is in the lists (home, sitemap, 看全部 N 种情况) once this many items are placed in it: a thinner one
+ * reads as a page of a few items. Its page opens before that. Counted by shops until 11-03 (HANDOFF §9.2), which the
+ * stories told; since they are folded the items come mostly from media and advisers, and 订货和库存 with 13 items sat
+ * hidden while 用 AI 处理店里的事 with 10 was listed (全面整理 11-03, 块 A).
  */
-export const LISTED = { fromShops: 5 };
+export const LISTED = { fromCases: 8 };
 
-const isListed = (rows: Row[] | undefined) => countOf(rows ?? [], false).shops >= LISTED.fromShops;
+const isListed = (rows: Row[] | undefined) => (rows?.length ?? 0) >= LISTED.fromCases;
 
-/** How many situations the lists show: tellerOf's shops, counted in SQL (a page of one story does not read every story). */
+/** How many situations the lists show, counted in SQL as isListed counts (a page of one story does not read every story). */
 async function situationsShown(now: Date): Promise<number> {
-  // The placed items (backend/place.ts) count as a folded story does: no shop key, their source by who tells it.
   const [row] = await sql<{ n: number }[]>`
     SELECT count(*)::int AS n FROM (
       SELECT u.slug FROM (
-        SELECT c.situations, CASE
-          WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
-          WHEN c.shop_key IS NOT NULL THEN 'shop:' || c.shop_key
-          WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor', 'media') THEN NULL
-          ELSE 'source:' || p.source_id END AS teller
-        FROM reference_cases c JOIN publications p ON p.article_id = c.article_id
+        SELECT c.situations FROM reference_cases c JOIN publications p ON p.article_id = c.article_id
         WHERE c.status = 'story' AND ${selectedCondition(now)}
         UNION ALL
-        SELECT c.situations, CASE
-          WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
-          WHEN c.speaker IN ('adviser', 'vendor', 'media') THEN NULL
-          ELSE 'source:' || p.source_id END
-        FROM reference_placements c JOIN publications p ON p.article_id = c.article_id
+        SELECT c.situations FROM reference_placements c JOIN publications p ON p.article_id = c.article_id
         WHERE ${selectedCondition(now)} AND NOT EXISTS (SELECT 1 FROM reference_cases k WHERE k.article_id = c.article_id AND k.status = 'story')
       ) t CROSS JOIN LATERAL unnest(t.situations) AS u(slug)
-      GROUP BY u.slug HAVING count(DISTINCT t.teller) >= ${LISTED.fromShops}) shown`;
+      WHERE u.slug IN ${sql(SITUATIONS.map((s) => s.slug))}
+      GROUP BY u.slug HAVING count(*) >= ${LISTED.fromCases}) shown`;
   return row!.n;
 }
 
@@ -413,7 +405,8 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
     })).filter((c) => c.situations.length),
     ranking,
     recent: recent ? { id: recent.id, at: recent.created_at.toISOString(), who: who(recent) } : null,
-    totals: { situations: shown.length, cases: rows.length },
+    // The items in no situation (moved out of the library 11-03, 块 A) are on no page: not counted.
+    totals: { situations: shown.length, cases: rows.filter((r) => r.situations.length).length },
     updatedAt: latest([...rows.map((r) => r.updated_at), ...[...stored.values()].map((g) => g.updated_at)]),
   };
 }

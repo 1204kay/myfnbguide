@@ -26,7 +26,7 @@ import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { moduleCopyCheck } from "@aihot/backend/modules";
 import { chatJson } from "@aihot/backend/providers/llm";
-import { completeReceipt } from "@aihot/backend/providers/receipts";
+import { completeReceipt, ModelOutputError } from "@aihot/backend/providers/receipts";
 import { grounded } from "@aihot/backend/reports/compose";
 import { listedCondition } from "@aihot/backend/publication/scope";
 import { addDays, beijingAt } from "@aihot/contracts/time";
@@ -157,7 +157,7 @@ async function gather(found: Array<{ name: string; items: number[]; why: string 
   const topics = found.map((t, i) => `(${i + 1}) ${t.name}：${t.why}`).join("\n");
   const res = await chatJson({
     model, purpose: "trends_gather", subject, promptVersion: TRENDS_VERSION, system: GATHER,
-    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
+    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: 8000, timeoutMs: 300_000,
   });
   receipts.push(res.receiptId);
   await completeReceipt(sql, res.receiptId);
@@ -183,15 +183,26 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
   const subject = `trends:${key}`;
   const found: { topics: Array<{ name: string; items: number[]; why: string }> } = { topics: [] };
   // Each part numbers its reports from 1; the numbers are turned back into the week's (1-based) before gathering.
-  for (const part of pool.length < MIN_PUBLISHERS ? [] : findParts(pool.length)) {
-    const res = await chatJson({
-      model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
-      user: part.map((at, i) => itemLine(pool[at]!, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
-    });
-    receipts.push(res.receiptId);
-    await completeReceipt(sql, res.receiptId);
-    for (const t of res.data.topics) found.topics.push({ ...t, items: t.items.filter((n) => part[n - 1] !== undefined).map((n) => part[n - 1]! + 1) });
+  // A part whose answer cannot be used (W44 replay: a part's topics ran past 4,000 tokens) is left out, the other
+  // parts kept; when none can be used the week fails, so a failure is never kept as an empty week.
+  const parts = pool.length < MIN_PUBLISHERS ? [] : findParts(pool.length);
+  let failed: unknown = null;
+  for (const part of parts) {
+    try {
+      const res = await chatJson({
+        model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
+        user: part.map((at, i) => itemLine(pool[at]!, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: 16000, timeoutMs: 300_000,
+      });
+      receipts.push(res.receiptId);
+      await completeReceipt(sql, res.receiptId);
+      for (const t of res.data.topics) found.topics.push({ ...t, items: t.items.filter((n) => part[n - 1] !== undefined).map((n) => part[n - 1]! + 1) });
+    } catch (error) {
+      if (!(error instanceof ModelOutputError) || parts.length === 1) throw error;
+      if (error.receiptId != null) receipts.push(error.receiptId);
+      failed = error;
+    }
   }
+  if (failed && !found.topics.length) throw failed;
   found.topics = mergeTopics(found.topics);
   const gathered = await gather(found.topics, pool, model, subject, receipts);
   const { kept, dropped } = countTopics(gathered, pool);

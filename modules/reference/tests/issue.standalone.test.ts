@@ -394,16 +394,17 @@ test("a fix to the preview stays in the preview, though the preview repeats a ne
 });
 
 test("the Claude credit warns at 80% spent, or once the period's pace would go over it, and not before", () => {
-  // The credit renews on the 5th: 11-02 still counts from 10-05.
+  // Ultra: US$200, renewing on the 4th, so 11-02 still counts from 10-04.
   const nov = (d: number) => new Date(Date.UTC(2026, 10, d, 2));
-  assert.equal(creditPeriod(nov(2)).start, Date.UTC(2026, 9, 5));
-  assert.equal(creditPeriod(nov(5)).start, Date.UTC(2026, 10, 5));
+  assert.equal(creditPeriod(nov(2)).start, Date.UTC(2026, 9, 4));
+  assert.equal(creditPeriod(nov(4)).start, Date.UTC(2026, 10, 4));
   assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000 }]), 6);
-  assert.equal(creditFinding(20, nov(7)), null, "two days say too little about the period");
-  assert.equal(creditFinding(20, nov(14)), null, "US$20 nine days in is about US$66 for the period");
-  const pace = creditFinding(40, nov(14));
+  assert.equal(creditFinding(40, nov(6)), null, "two days say too little about the period");
+  assert.equal(creditFinding(40, nov(13)), null, "US$40 nine days in is about US$132 for the period");
+  const pace = creditFinding(80, nov(13));
   assert.equal(pace?.level, "today");
-  assert.ok(pace?.impact?.includes("整月约 US$132"), String(pace?.impact));
-  assert.equal(creditFinding(81, nov(2))?.level, "today", "late in the period that began 10-05");
-  assert.equal(creditFinding(96, nov(2))?.level, "now");
+  assert.ok(pace?.impact?.includes("整月约 US$264"), String(pace?.impact));
+  assert.equal(creditFinding(161, nov(2))?.level, "today", "late in the period that began 10-04");
+  assert.equal(creditFinding(191, nov(2))?.level, "now");
+  assert.equal(creditFinding(81, nov(2), { monthly: 100, renewsOn: 4 })?.level, "today", "the setting's credit");
 });

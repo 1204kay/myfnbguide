@@ -25,6 +25,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { EDITION_TIMES } from "@aihot/site";
 import { amendIssue, checkIssue, type ComposedIssue, composeIssue, type DayItem, isCheckPurpose, issueChars, issueMarkdown, ISSUE_VERSION, modelAsk, reviewIssue, type Usage } from "../modules/reference/backend/issue.ts";
+import { joined } from "../modules/reference/backend/claude.ts";
 import { dayItems } from "../modules/reference/backend/issues.ts";
 
 const args = process.argv.slice(2);
@@ -101,7 +102,7 @@ for (const [k, date] of days.entries()) {
     const write = modelAsk(model!, `issue:${date}`, receiptIds, count(model!));
     const check = modelAsk(checkModel!, `issue:${date}`, receiptIds, count(checkModel!));
     const c = await composeIssue(items, date, (purpose, system, user, schema, attempt) => {
-      if (usd() + callUsd(isCheckPurpose(purpose) ? checkPrice : writePrice, system.length + user.length) > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
+      if (usd() + callUsd(isCheckPurpose(purpose) ? checkPrice : writePrice, system.length + joined(user).length) > cap) throw new Error(`停：再调用可能超过上限 US$${cap}`);
       return (isCheckPurpose(purpose) ? check : write)(purpose, system, user, schema, attempt);
     });
     const name = String(no).padStart(2, "0");

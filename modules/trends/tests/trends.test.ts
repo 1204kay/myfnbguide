@@ -12,7 +12,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import checker from "@aihot/checker/server";
 import trends from "../server.ts";
-import { composeWeek, countTopics, lineGrounded, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
+import { composeWeek, countTopics, findParts, FIND_PART_ABOVE, lineGrounded, mergeTopics, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
 import { publisherOf } from "../backend/publishers.ts";
 
 const T = tag();
@@ -44,7 +44,9 @@ const model = await stub((_hit, req) => {
   }
   if (system.includes("把它们摆在一起")) {
     asked.push("write");
-    const lines = [...n.keys()].map((t, i) => ({ n: i + 1, text: t === "门店丁" ? "门店丁说 Acme 开了 845 家。" : `${t.replace(/-.*/, "")}说了这件事。` }));
+    // 门店丁's sentence names what its report does not; written again from that report alone, it is right.
+    const alone = n.size === 1;
+    const lines = [...n.keys()].map((t, i) => ({ n: i + 1, text: t === "门店丁" && !alone ? "门店丁说 Acme 开了 845 家。" : `${t.replace(/-.*/, "")}说了这件事。` }));
     return answer({ heading: user.includes("门店") ? "店面越开越小" : "小店在涨价", lines });
   }
   asked.push("find");
@@ -99,6 +101,17 @@ test("the gather call adds to a topic's reports, never takes any away, and skips
   assert.deepEqual(withGathered(found, [{ n: 1, items: [2, 3] }, { n: 9, items: [4] }]), [{ name: "a", items: [1, 2, 3] }, { name: "b", items: [5] }]);
 });
 
+test("a big week is found in parts where any two reports sit together, and one thing found twice is one topic", () => {
+  assert.deepEqual(findParts(5), [[0, 1, 2, 3, 4]]);
+  const size = FIND_PART_ABOVE + 284;
+  const parts = findParts(size);
+  assert.ok(parts.every((p) => p.length < size * 0.7), "each part is shorter than the week");
+  // W44's three reports on waste: 21, 167 and 239 of 434.
+  for (const [x, y] of [[20, 166], [20, 238], [166, 238], [0, size - 1]]) assert.ok(parts.some((p) => p.includes(x!) && p.includes(y!)), `${x} and ${y} share a part`);
+  assert.deepEqual(mergeTopics([{ name: "a", items: [1, 2] }, { name: "b", items: [7] }, { name: "a", items: [3] }, { name: "a2", items: [2, 1, 9] }]),
+    [{ name: "a", items: [1, 2, 3, 9] }, { name: "b", items: [7] }]);
+});
+
 test("a sentence names only what its report names, and keeps to its length", () => {
   const item: PoolItem = { id: "1", title: "门店甲开了 845 家", summary: "Acme 的新店", sourceId: "", sourceName: "", publisher: "" };
   assert.ok(lineGrounded("门店甲说 Acme 开了 845 家。", item));
@@ -109,9 +122,9 @@ test("a sentence names only what its report names, and keeps to its length", () 
 
 test("a week's topics are found, written, checked, kept once, and shown under its weekly", async () => {
   assert.deepEqual(await composeWeek(KEY, START, END), { topics: 1, dropped: 2, pool: 10 });
-  assert.deepEqual(asked.filter((a) => a !== "check"), ["find", "gather", "write", "write"], "the topic two publishers told is not written");
+  assert.deepEqual(asked.filter((a) => a !== "check"), ["find", "gather", "write", "write", "write", "write"], "the topic two publishers told is not written; each dropped line is written once more");
   const [row] = await sql<{ topics: Array<{ heading: string; lines: Array<{ text: string }> }>; dropped: Array<{ name: string; why: string }> }[]>`SELECT topics, dropped FROM trends_issues WHERE key = ${KEY}`;
-  assert.deepEqual(row!.topics.map((t) => [t.heading, t.lines.map((l) => l.text)]), [["店面越开越小", ["门店甲说了这件事。", "门店乙把店面缩小了一半。", "门店丙说了这件事。"]]], "门店丁's sentence names what its report does not; 门店乙's is mended");
+  assert.deepEqual(row!.topics.map((t) => [t.heading, t.lines.map((l) => l.text)]), [["店面越开越小", ["门店甲说了这件事。", "门店乙把店面缩小了一半。", "门店丙说了这件事。", "门店丁说了这件事。"]]], "门店丁's sentence, wrong at first, is written again; 门店乙's is mended");
   assert.deepEqual(row!.dropped.map((d) => [d.name, d.why]), [["两家讲的", "只有 2 家来源"], ["小店涨价", "核对后只剩 2 家来源"]]);
 
   const page = JSON.parse((await app.inject(`/api/trends/${KEY}`)).body);

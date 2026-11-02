@@ -4,7 +4,7 @@
 // signposts the page leaves to its headings, since 10-31 the page has none, myfnbguide #100), the check model reads the
 // script against the page (prompts/issue-voice-check.md) and its fixes go in line by line; Alibaba Cloud's Qwen voice
 // reads it line by line (VOICE; Gemini's Leda read it whole until 11-01) and the lines are joined; the machine check
-// of the handbook's step 10 runs (Groq's Whisper hears it back, gaps, pitch a minute); what passes
+// of the handbook's step 10 runs (Groq's Whisper hears it back, gaps, pitch over three minutes at a time); what passes
 // goes up as <no>.mp3, <no>.txt (the 文字稿) and <no>.json, the json last (backend/audio.ts). What fails stays down and
 // the issue goes out as text, as on any day without audio. Every step's outcome is kept in <no>.voice.json beside them.
 import { spawn } from "node:child_process";
@@ -59,15 +59,19 @@ export const MAX_READS = 6;
 export const VOICE = { model: "qwen-audio-3.1-tts-flash", voice: "longanhuan_v3.1", style: "", service: "speech-qwen" };
 /**
  * The machine check (handbook step 10): transcript ≥95% of the script, its closing line heard (`end`), no gap over
- * 4 s, and each minute's median pitch within 20 Hz of the others. No fixed range: 195–225 Hz was set on issue 6 alone,
- * and on 10-31 the same voice read issue 7 whole and steady at 184–195 (pyin, within 11 Hz); what is heard is a voice
- * changing within an issue, not one day's voice lower than another's. The line is 20 by the computer's pyin, which the
- * server now reads with (pyin.ts; 10-31, the same Hz a minute on issue 6, a few Hz off at most elsewhere): issue 6, which
- * Kay heard and passed, 15.9; issue 7 read whole on the computer 10.9; issue 7 cut in two and read in two voices 43.1;
- * issue 7 read on the server at 3,091 characters, which slid up to 240 Hz and stopped short, 59.8. The YIN it read with
- * before put that last one at 22.7, under the 25 it was given.
+ * 4 s, and the voice's pitch over any three minutes within 1.5 semitones of any other three minutes (pitchWindows).
+ * No fixed range: 195–225 Hz was set on issue 6 alone, and on 10-31 the same voice read issue 7 whole and steady at
+ * 184–195; what is heard is a voice changing within an issue, not one day's voice lower than another's.
+ * Until 11-02 the line was 20 Hz between whole minutes, and it did not hold for 龙安欢 read line by line: the same
+ * issue 8 audio read 16.1 or 32.7 by where the minutes were cut, and issues 1, 3, 4 and 6, whole at 99.4%+, read
+ * 21.7–34.6 and were kept off. A minute holds too few lines for their ups and downs to even out, and 20 Hz is less of
+ * a voice at 254 Hz (龙安欢) than at 190 (Leda). Measured 11-02 by three minutes moved on 15 s at a time, in semitones:
+ * issues 2, 5, 7 and 8 as up (龙安欢) 0.6–1.0, issues 1, 3, 4 and 6 as up (older voices, Kay heard and passed) 0.6–0.8,
+ * issue 7 read whole on the computer 0.4; the known bad ones, issue 7 cut in two and read in two voices 2.8, issue 7
+ * read on the server at 3,091 characters, sliding up to 240 Hz and stopping short, 3.6. The same audio started 5 or
+ * 10 s later moves it at most 0.4. 1.5 sits half again over the highest good one and well under the lowest bad one.
  */
-export const PASS = { match: 0.95, gap: 4, spread: 20, end: 0.8 };
+export const PASS = { match: 0.95, gap: 4, semitones: 1.5, end: 0.8 };
 /**
  * whisper-large-v3, not -turbo: on issue 6 turbo heard 92.3% where the computer's faster-whisper (asr6.py) heard 95.4%,
  * and the 95% line was set on the computer's. --hear 6 shows whether the full model comes back to it.
@@ -235,22 +239,31 @@ export function wavSamples(wav: Buffer): { rate: number; samples: Int16Array } {
 }
 
 /**
- * Each minute's median pitch as the computer's machine check reads it (cmp.py): the voice at 16 kHz, each minute given
- * to pyin on its own (pyin.ts), the median of its voiced frames; a minute under five seconds long is left out, as there.
+ * The voice's pitch over three minutes at a time, moved on 15 s at a time: each 15 s given to pyin on its own (pyin.ts,
+ * at 16 kHz), and the median of the voiced frames of every twelve in a row. A reading of three minutes or less is one
+ * window. Medians over three minutes even out one line read higher than the next; moving on 15 s rather than cutting
+ * whole minutes keeps the answer from turning on where the cuts fall (see PASS).
  */
-export function pitchByMinute(samples: Int16Array, rate: number): number[] {
+export function pitchWindows(samples: Int16Array, rate: number): number[] {
   const x = to16k(samples, rate);
   const sr = 16_000;
-  const minutes: number[][] = [];
-  for (let at = 0, i = 0; at < x.length; at += 60 * sr, i += 1) {
-    const piece = x.subarray(at, at + 60 * sr);
-    if (piece.length >= 5 * sr) minutes[i] = pyin(piece, sr);
+  const step = 15 * sr;
+  const chunks: number[][] = [];
+  for (let at = 0; at < x.length; at += step) {
+    const piece = x.subarray(at, at + step);
+    chunks.push(piece.length >= sr ? pyin(piece, sr) : []);
   }
-  // A last minute under 30 s goes in with the one before: on 10-31 the closing 7 s of issue 7 read 282 Hz alone.
-  const total = x.length / sr;
-  const last = minutes.length - 1;
-  if (last > 0 && total - last * 60 < 30) { minutes[last - 1] = [...(minutes[last - 1] ?? []), ...(minutes[last] ?? [])]; minutes.length = last; }
-  return minutes.flatMap((m) => (m?.length ? [median(m)] : []));
+  const width = 12;
+  const out: number[] = [];
+  for (let i = 0; i === 0 || i + width <= chunks.length; i += 1) {
+    const frames = chunks.slice(i, i + width).flat();
+    if (frames.length) out.push(median(frames));
+  }
+  return out;
+}
+/** How far apart the highest and lowest of `pitch` are, in semitones. */
+export function semitones(pitch: number[]): number {
+  return 12 * Math.log2(Math.max(...pitch) / Math.min(...pitch));
 }
 /**
  * The voice at 16 kHz as floats, through a Kaiser-windowed sinc low-passed below the new Nyquist (librosa loads with
@@ -599,8 +612,8 @@ export function judge(seconds: number, match: number, gaps: Array<{ from: number
   if (gaps.length) why.push(`有 ${gaps.length} 处空档超过 ${PASS.gap} 秒`);
   if (!pitch.length) why.push("量不出音高");
   else {
-    const spread = Math.max(...pitch) - Math.min(...pitch);
-    if (spread > PASS.spread) why.push(`音高前后差 ${spread.toFixed(1)} Hz，超过 ${PASS.spread}`);
+    const apart = semitones(pitch);
+    if (apart > PASS.semitones) why.push(`音高前后差 ${apart.toFixed(1)} 个半音，超过 ${PASS.semitones}`);
   }
   if (seconds < 60) why.push(`只有 ${seconds} 秒`);
   return { pass: !why.length, why };
@@ -624,7 +637,7 @@ export async function hearIssue(no: number) {
   const { text: heard, segments } = await hear(samples, rate, `issue:${no}:hear`);
   const match = heardShare(script, heard);
   const gaps = silences(samples, rate, PASS.gap);
-  const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
+  const pitch = pitchWindows(samples, rate).map((p) => Math.round(p * 10) / 10);
   const end = endHeard(script, heard);
   const starts = lineStarts(scriptLines(script), segments);
   return { no, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard)), heard, starts };
@@ -756,7 +769,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       report.unheard = false;
       const match = heardShare(script, heard);
       const gaps = silences(samples, rate, PASS.gap);
-      const pitch = pitchByMinute(samples, rate).map((p) => Math.round(p * 10) / 10);
+      const pitch = pitchWindows(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
       report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });

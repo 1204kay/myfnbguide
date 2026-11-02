@@ -25,6 +25,8 @@ import { z } from "zod";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
+import { MODELS } from "@aihot/backend/providers/llm";
+import { claudeJson, joined, type Parts } from "./claude.ts";
 
 export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
@@ -74,12 +76,18 @@ export interface DayItem {
 }
 
 export interface Usage { input: number; output: number }
-export type Ask = <S extends z.ZodType>(purpose: string, system: string, user: string, schema: S, attempt?: string) => Promise<z.infer<S>>;
+/** `user` in Parts puts what several calls send the same first, for Claude's prompt cache (backend/claude.ts); other models read it joined. */
+export type Ask = <S extends z.ZodType>(purpose: string, system: string, user: string | Parts, schema: S, attempt?: string) => Promise<z.infer<S>>;
 
-/** Asks the named model through the engine's receipts and budget; receipts go to `receiptIds`, paid tokens to `onUsage`. */
+/**
+ * Asks the named model through the engine's receipts and budget; receipts go to `receiptIds`, paid tokens to `onUsage`.
+ * Claude goes through Anthropic's own API (backend/claude.ts), the only one with prompt caching; the rest through chatJson.
+ */
 export function modelAsk(model: string, subject: string, receiptIds: number[], onUsage: (u: Usage) => void = () => {}): Ask {
   return async (purpose, system, user, schema, attempt) => {
-    const once = (tag?: string) => chatJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, temperature: 0, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag });
+    const once = (tag?: string) => MODELS[model]?.service === "anthropic"
+      ? claudeJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag })
+      : chatJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag });
     // Unusable output once is asked again once (first trial: 2 of 20 of Claude's issues, broken JSON); a second is the answer.
     const res = await once(attempt).catch((error: unknown) => {
       if (error instanceof ModelOutputError) return once(`${attempt ?? ""}retry`);
@@ -302,8 +310,11 @@ function ownProblems(issue: IssueText, items: DayItem[]): Problem[] {
 export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<{ lively: number; problems: Problem[] }> {
   const { cited } = citedItems(issue, items);
   const own = ownProblems(issue, items);
-  const user = [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n");
-  const answer = await ask("reference_issue_check", CHECK, user, CheckAnswer);
+  // The originals first and in number order, the draft after: a draft is checked again after every mend (issue 6,
+  // 10-30: ten checks of one day), and with what it cites first and the same, each check after the first reads them
+  // from the cache. Anthropic's long-context advice puts long documents above the question as well.
+  const sources = `这一期点名的收录（全文）：\n\n${citedText([...cited].sort((a, b) => a.n - b.n))}`;
+  const answer = await ask("reference_issue_check", CHECK, { cached: sources, rest: `这一期：\n${issueText(issue)}` }, CheckAnswer);
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
 }
 

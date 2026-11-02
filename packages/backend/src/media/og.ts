@@ -26,22 +26,29 @@ export interface OgCard {
 
 let fontsPromise: Promise<Array<{ name: string; data: Buffer; weight: 400 | 700; style: "normal" }>> | null = null;
 
+const FONT_DIR = path.join(REPO_ROOT, "assets/og-fonts");
+
 /**
- * Fonts a site adds beside Noto Sans SC (assets/og-fonts/<name>-400.ttf and -700.ttf), for the characters it lacks:
- * satori takes a glyph the first font has no outline for from the next one. None by default.
+ * Fonts a site adds beside Noto Sans SC for the characters its subset lacks (traditional and Japanese
+ * kanji, kana, Hangul, accented Latin): `<name>-400.ttf` and `<name>-700.ttf` in assets/og-fonts. satori
+ * takes a glyph the first font has no outline for from the next one, so they come after Noto Sans SC.
  */
-const FALLBACK_FONTS = readdirSync(path.join(REPO_ROOT, "assets/og-fonts"))
-  .filter((f) => /-(400|700)\.ttf$/.test(f) && !f.startsWith("noto-sans-sc-")).sort();
+export function fallbackFontFiles(files: string[]): string[] {
+  return files.filter((f) => /^.+-(400|700)\.ttf$/.test(f) && !f.startsWith("noto-sans-sc-")).sort();
+}
+
+/** None by default: the share images and their cache keys are then what they were without this. */
+export const FALLBACK_FONTS = fallbackFontFiles(readdirSync(FONT_DIR));
 
 function fonts() {
   fontsPromise ??= Promise.all([
-    readFile(path.join(REPO_ROOT, "assets/og-fonts/noto-sans-sc-400.ttf")),
-    readFile(path.join(REPO_ROOT, "assets/og-fonts/noto-sans-sc-700.ttf")),
-    ...FALLBACK_FONTS.map((f) => readFile(path.join(REPO_ROOT, "assets/og-fonts", f))),
+    readFile(path.join(FONT_DIR, "noto-sans-sc-400.ttf")),
+    readFile(path.join(FONT_DIR, "noto-sans-sc-700.ttf")),
+    ...FALLBACK_FONTS.map((f) => readFile(path.join(FONT_DIR, f))),
   ]).then(([regular, bold, ...more]) => [
-    { name: "Noto Sans SC", data: regular, weight: 400, style: "normal" },
-    { name: "Noto Sans SC", data: bold, weight: 700, style: "normal" },
-    ...more.map((data, i) => ({ name: FALLBACK_FONTS[i].replace(/-(400|700)\.ttf$/, ""), data, weight: (FALLBACK_FONTS[i].endsWith("-700.ttf") ? 700 : 400) as 400 | 700, style: "normal" as const })),
+    { name: "Noto Sans SC", data: regular!, weight: 400, style: "normal" },
+    { name: "Noto Sans SC", data: bold!, weight: 700, style: "normal" },
+    ...more.map((data, i) => ({ name: FALLBACK_FONTS[i]!.replace(/-(400|700)\.ttf$/, ""), data, weight: (FALLBACK_FONTS[i]!.endsWith("-700.ttf") ? 700 : 400) as 400 | 700, style: "normal" as const })),
   ]);
   return fontsPromise;
 }
@@ -177,6 +184,7 @@ async function render(file: string, size: { width: number; height: number }, tre
 }
 
 export function ogEtag(card: OgCard): string {
+  // Added font names go into the key, so an image drawn before a font was added is drawn again; with none the key is unchanged.
   return createHash("sha256").update(OG_TEMPLATE_VERSION).update(FALLBACK_FONTS.join()).update(JSON.stringify(card)).digest("hex").slice(0, 24);
 }
 

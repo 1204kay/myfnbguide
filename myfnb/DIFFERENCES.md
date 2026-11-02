@@ -45,7 +45,7 @@
 | GitHub 检查下载重试 | `.github/workflows/check.yml` 的「PostgreSQL backup tools」一步，下 postgresql.org 公钥的 curl 加 `--retry 5 --retry-all-errors`，apt-get 加 `Acquire::Retries=5` | 11-01 main 上连续两次在下公钥时断线（curl 55、35），测试一项都没跑就红，服务器只拉检查绿的 main，#125、#130、#129 都卡着没部署；本仓库这边没有权限重跑 | 照 10-23 网页测试那行的先例，十一定 |
 | 盯外部 PR | `.github/workflows/external-prs.yml`：每天 09:13、13:13、19:13 MYT 查清单 `myfnb/ops/external-prs.txt` 里我们开在别人仓库的 PR（例如提给原版的；用 GITHUB_TOKEN 搜不到 1204kay 的 PR，所以靠清单，新开外部 PR 要加一行），有新评论、审核、合并或关闭，就在本仓库的草稿 PR「外部 PR 收件箱」（分支 `claude/external-pr-inbox`）留一条短评论，订阅它的讨论串当天跟进。只多一个工作流文件，框架代码和站点行为不动 | 原版作者当天回复我们的 PR，我们一周后才看到（Kay 11-01「提pr也要多关注」）；本仓库公开，Actions 不占额度、不占 Max，也不用在服务器上装常驻任务 | 十一 11-01 定 |
 | 云端运维 | 服务器多一把只给 GitHub 用的密钥，限死只能跑守门脚本 `myfnb/ops/gate.sh`（看状态和日志、跑已合进 main 的 `myfnb/` 脚本、只读账号 `myfnb_ro` 查库）；Kay 跑一次 `myfnb/ops/install.sh` 装上。发命令的工作流在私有仓库 coresystemstudio 的 `.github/workflows/myfnb-ops.yml`（本仓库公开，日志谁都看得见）。框架代码不动 | 云端会话连不了 SSH（出站只走 HTTPS 代理），服务器上的活原来只能在 Kay 电脑上做；Kay 要「全部搬上云端」 | Kay 10-16「你决定吧」，十一定（公司手册决定记录 L457） |
-| 分享图字体 | 框架的 `packages/backend/src/media/og.ts` 读 `assets/og-fonts/` 里另加的 `<名字>-400/700.ttf`，Noto Sans SC 缺的字由它们补；本站加了两组（`noto-sans-cjk-extra`：繁体、日文汉字和假名、拉丁扩展；`noto-sans-kr-hangul`：韩文），约 12MB。没有另加文件时和原版完全一样（缓存键也不变） | 原版字体只有 GB2312 加基本拉丁：10/16 线上故事和来源名里有 154 个字画不出来（营業、飲、Ç、ü、韩文），日本、港台、欧洲来源的分享图缺字。原版没有现成做法；代价是框架多 10 行，可以提给作者 | Claude 定（Kay 10/16「你决定」，十一知会） |
+| 分享图字体 | 本站在 `assets/og-fonts/` 另加两组字体（`noto-sans-cjk-extra`：繁体、日文汉字和假名、拉丁扩展；`noto-sans-kr-hangul`：韩文），约 12MB，补 Noto Sans SC 缺的字。读这些字体的做法 **11-01 起是原版的**（我们提的 AIHOT #291，作者加了海报缓存键一起合并），框架代码和原版一样 | 原版字体只有 GB2312 加基本拉丁：10/16 线上故事和来源名里有 154 个字画不出来（营業、飲、Ç、ü、韩文），日本、港台、欧洲来源的分享图缺字 | Claude 定（Kay 10/16「你决定」，十一知会） |
 | 情况页做法卡 | 一张做法卡先列 4 家，其余收在「另有 N 家的做法」后面，开关照原版 ReadingGroup 的样子（12.5px、灰、带下箭头）；电脑上摘要限宽 34em | 各家的做法正是这一页的内容；原版收起来的是同一条新闻的重复报道，没有现成的「同一件事的多家做法」，只借它的开关样子 | Kay 10/17 选方向 A（决定记录 4557a43，十一转达） |
 | 要点 | 原版的推荐理由换成 2–5 条要点：用自己的话写原文说了什么（具体做法、数字、结果），观点写明是谁说的，有争议两边都写；导读照原版摘要规则写 2–3 句（`rules-answer-first-summary.md`），本站只加三条：导读不把标题再说一遍，要点不把导读再说一遍（10-23 21:14 起；之前缩成一句，Kay：「标题和AI导读重复了……AI导读应该完整点 有头有尾」）；原文教读者办手续、照规定或费率做的，导读写明原文是哪一年的说法（11-01 起，`rules-lead.md`；原版的稿都是当天新闻，用不着，本站有大量几年前的播客和博客，规定后来改了读者看不出，手册 业务线/myfnbguide/记录/2026-11-01/原文过期和参考库小问题.md；Kay 11-01 12:35「你和十一讨论吧」，十一定）。要点按行存在原来的理由字段里（`\n` 分隔，上限 600 字），条目页、卡片、Markdown、推送、Agent 出口按行显示（`site/site.ts` 的 `reasonLines`）；条目页把要点放在主栏、所有宽度都显示，右栏只留判断。提示词：`content-understanding.md` 的「要点」一节、新的 `rules-lead.md` | 原版的推荐理由是「指向原文」的，能这样写是因为原版同页就有全文译文；本站全部来源都不放全文（`site_fulltext` 关），照抄等于叫读者点出去才知道说了什么。目的是读者看完本页就知道原文讲了什么、和自己有什么关系（决定记录 2026-10-23 一条） | Kay 10-21 提出（「收录理由换成要点」「标题没有吸引力」），10-23「你们决定」；十一和讨论串 10-23 定，样本两轮对原文核过；上线前模型试写 20 条盲核，严重 ≤1 |
 | 十一说 | 每天 05:00（北京时间）读前 24 小时列进「全部」的每一条，写一期十一说（`modules/reference/backend/issues.ts`，存 `reference_issues`）；08:00 日报的头条位放它：原版的「头条」小标题换成「十一说 · 第 N 期」，标题链到这一期的页面，摘要下面一行「读全文」，原本的头条照常留在看点和分区里。细说的那一件就是头条，写稿提示（`modules/reference/prompts/issue-write.md`）要它按读者打开的理由（走向、工具或做法、谈资、新奇、「原来还能这样做」）挑，原文要说得出门道，三句话里说出为什么值得听；原版按公式（分数、热度、一手来源）挑，十一说没写成的那天照原版。框架加一个模块插口 `dailyLead`（`packages/backend/src/modules.ts`，没有模块提供时日报照原版）和头条的两个可选字段 `kicker`、`href`（`ReportPaper.tsx`）。一期的页面 `/reference/issues/:no` 照参考库故事页的框架（返回、标题区、侧栏、正文标签、来源行），正文是念出来的样子，〔n〕链到「原文出处」；从 11-01 那期起正文是给人读的，快讯有小标题，正文不写「换到葡萄牙」「回到英国」这类转场，转场只在听稿里（Kay 10-31 06:30「回到哪里这种说法」，旧期不动）。现状（10-24）：自动写的开关（settings `reference.issues` 那一行）关着；11-01 前每天在 Kay 电脑上写，文字过了盲核、音频过了机器核对就直接放上网站和日报头条（手册决定记录「2026-10-24 十一说核对过就直接上线」） | 原版日报只有规则挑的头条，没有一篇读完当天全部收录的综述；Kay 10-18 13:22 定「每天放在 08:00 日报最上面」，10-20 定「直接公开上线」 | Kay 10-18、10-20（十一 10-23 照这两条接上，见手册决定记录 L779、L786）；头条怎么挑由十一和讨论串定（Kay 10-23「你们决定」，决定记录「2026-10-23 MYFNB 挑稿标准、头条、推荐理由」），原因是我们的来源很少撞题，公式里的热度不起作用 |
@@ -66,26 +66,25 @@
 
 ## 3. 改了 `industry/`、`site/`、`modules/`、`myfnb/` 以外的文件
 
-快照 11-01（合并上游 `edfa18f` 以后）。重新生成：`git fetch upstream && git diff --stat upstream/main HEAD -- apps packages scripts docs database Dockerfile deploy .github package.json tests`。框架和作者上游的差别只有下面这些，每一处对应清单里的一行；对不上的就是清单漏了，或者是该改回原版的。合并上游时只有这些文件可能冲突。
+快照 11-02（合并上游 `38d130f` 以后）。重新生成：`git fetch upstream && git diff --stat upstream/main HEAD -- apps packages scripts docs database Dockerfile deploy .github package.json tests`。框架和作者上游的差别只有下面这些，每一处对应清单里的一行；对不上的就是清单漏了，或者是该改回原版的。合并上游时只有这些文件可能冲突。
 
 | 文件 | 改了什么 | 清单哪一行 |
 |---|---|---|
 | `Dockerfile` | 装上本站的模块（参考库、存档、社媒、核对员、每周趋势、日报正文） | 参考库、存档、核对员、每周趋势、日报正文 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/item.tsx`、`docs/architecture.md`、`apps/web/tests/item-parts.test.ts` | 通用插口 `itemPart`：模块在条目页三段之后放一块（本站只放「收在 MYFNB 参考」的链接） | 条目页 |
 | `apps/web/app/routes/item.tsx` | 条目页的 # 标签去掉分类标签和主题已经表示的标签（`shownTags`）；要点放在主栏 | 条目页标签、要点 |
-| `apps/web/app/features/feed/Filters.tsx`、`docs/customize.md` | `FEED.firstPartyFilter = false` 选项 | 一手 |
+| `apps/web/app/features/feed/Filters.tsx` | `FEED.firstPartyFilter = false` 选项 | 一手 |
 | `apps/web/app/features/report/format.ts` | `REPORTS.metricUnits` 里写 null 的数不在报头显示 | 一手 |
 | `packages/backend/src/reports/edition.ts`、`tests/report-pool.test.ts` | `REPORTS.dailyScope = "pool"`：日报收「全部」里的每一条 | 日报 |
 | `apps/web/app/features/feed/ReadingGroup.tsx`、`features/report/ReportPaper.tsx`、`apps/web/tests/page-width.test.ts`、`timeline-unread.test.ts` | 「另有 N 家…报道」用 `ITEM_COPY.sourceWord`；两个测试按本站的说法找按钮 | 来源的叫法 |
 | `apps/web/app/features/feed/FeedItem.tsx`、`packages/backend/src/publication/agent.ts`、`publication/detail.ts` | 理由字段按行显示要点（`reasonLines`），Agent 出口的说明改成「说明原文讲了什么」 | 要点 |
 | `packages/backend/src/modules.ts`、`reports/compose.ts`、`publication/reports.ts`、`packages/contracts/src/site.ts`、`features/report/ReportPaper.tsx` | 模块插口 `dailyLead`，日报头条的可选字段 `kicker`、`href` | 十一说 |
 | `packages/backend/src/modules.ts`、`reports/compose.ts` | 模块插口 `dailyPick`（日报正文用它，代码在 `modules/dailypick`） | 日报正文 |
-| `packages/backend/src/publication/sitemap.ts`、`apps/web/app/routes/story.tsx`、`tests/discovery-updates.test.ts` | 一篇报道的事件页不进站点地图、加 `noindex`；作者的测试给事件多加一篇报道 | 事件页 |
+| `packages/backend/src/publication/sitemap.ts`、`apps/web/app/routes/story.tsx`、`tests/discovery-updates.test.ts` | 一篇报道的事件页不进站点地图和通知、加 `noindex`；作者的测试给事件多加一篇报道，「通知带上全部事件」那条改成不带一篇报道的 | 事件页 |
 | `packages/backend/src/modules.ts`、`editorial/analyze.ts`、`jobs/content.ts`、`tests/analyze.test.ts` | 模块插口 `copyCheck`（核对员用它，代码在 `modules/checker`） | 核对员 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/report-detail.tsx`、`routes/report-latest.tsx`、`features/report/ReportPaper.tsx`、`packages/backend/src/publication/reports.ts`、`apps/web/tests/report-parts.test.ts` | 通用插口 `reportPart`：模块在报告页最后放一块；`Story` 和 `citationsOf` 导出给模块用 | 每周趋势 |
-| `packages/backend/src/media/og.ts` | 读 `assets/og-fonts/` 里另加的字体补字 | 分享图字体 |
 | `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |
-| `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑；下载公钥和 apt 加重试 | GitHub 检查里的网页测试；GitHub 检查下载重试 |
+| `.github/workflows/check.yml` | 网页测试（`npm run test:web`）放进 Playwright 官方镜像里跑；下载公钥和 apt 加重试 | GitHub 检查里的网页测试；GitHub 检查下载重试 |
 | `.github/workflows/external-prs.yml` | 新加：盯外部 PR，有变化在收件箱 PR 上评论 | 盯外部 PR |
 | `tests/wording.test.ts` | 本站的不用词清单 | 写作 |
 | `tests/` 里其余二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`web-server.ts`、`cache.test.ts` | 作者按 AI 示例行业写的类别、标签、公司改成从行业包取 | 不是产品差别：同步上游时照同一原则处理作者的新测试 |

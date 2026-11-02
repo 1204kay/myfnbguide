@@ -124,7 +124,7 @@ jobs:
       - name: Build web
         run: npm run build -w @aihot/web
       - name: Web tests
-        run: node --test apps/web/tests/*.test.ts
+        run: npm run test:web
 
   docker:
     runs-on: ubuntu-latest

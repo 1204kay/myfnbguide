@@ -1,11 +1,12 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Await, isRouteErrorResponse, Link, useAsyncError, useLoaderData, useNavigate, useRevalidator, type ClientLoaderFunctionArgs } from "react-router";
 import type { Route } from "./+types/item";
-import type { FeedItemSummary, SiteItemDetail } from "@aihot/contracts/site";
+import type { FeedItemSummary, SiteItemDetail, StoryFollowupsResponse } from "@aihot/contracts/site";
 import { ITEM_COPY, SITE, reasonLines } from "@aihot/site";
 import { CATEGORY_TAGS } from "@aihot/industry/taxonomy";
 import topicFile from "@aihot/industry/topics.json";
 import { apiGet, cachedPage, loadOr404 } from "../lib/api.server";
+import { loadFollowups } from "../features/item/followups.server";
 import { pageReuse } from "../lib/page-reuse";
 import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "../lib/seo";
 import { fullDateTime, relativeTime } from "../lib/format";
@@ -66,10 +67,10 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { signal: request.signal }),
     readParts(PARTS, params.id, (path) => apiGet(path, { signal: request.signal })),
   ]);
-  return cachedPage(600, { item, parts });
+  return cachedPage(600, { item, parts, followups: await loadFollowups(item, request.signal) });
 }
 
-type Loaded = { item: SiteItemDetail; parts?: Record<string, unknown> };
+type Loaded = { item: SiteItemDetail; parts?: Record<string, unknown>; followups: StoryFollowupsResponse | null };
 type Preview = { item: null; preview: FeedItemSummary; detail: Promise<Loaded> };
 
 /**
@@ -221,11 +222,11 @@ function Toast({ text }: { text: string | null }) {
 
 export default function ItemPage() {
   const data = useLoaderData<typeof clientLoader>() as Loaded | Preview;
-  if (data.item) return <ItemView key={`${data.item.id}:${data.item.bodyLanguage}`} item={data.item} parts={data.parts} />;
+  if (data.item) return <ItemView key={`${data.item.id}:${data.item.bodyLanguage}`} item={data.item} parts={data.parts} followups={data.followups} />;
   return (
     <Suspense fallback={<ItemPreview preview={data.preview} />}>
       <Await resolve={data.detail} errorElement={<ItemGone />}>
-        {(loaded) => <ItemView key={`${loaded.item.id}:${loaded.item.bodyLanguage}`} item={loaded.item} parts={loaded.parts} />}
+        {(loaded) => <ItemView key={`${loaded.item.id}:${loaded.item.bodyLanguage}`} item={loaded.item} parts={loaded.parts} followups={loaded.followups} />}
       </Await>
     </Suspense>
   );
@@ -306,7 +307,7 @@ function ItemGone() {
   );
 }
 
-function ItemView({ item, parts = {} }: Loaded) {
+function ItemView({ item, parts = {}, followups }: Loaded) {
   const navigate = useNavigate();
   const hasTranslation = item.hasTranslation;
   const lang = item.bodyLanguage;
@@ -620,7 +621,7 @@ function ItemView({ item, parts = {} }: Loaded) {
             </div>
           )}
 
-          {item.story && <StoryFollowups story={item.story} currentId={item.id} />}
+          {item.story && <StoryFollowups followups={followups} story={item.story} currentId={item.id} />}
 
           {related.length > 0 && (
             <section className="mt-8">

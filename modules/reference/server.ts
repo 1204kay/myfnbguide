@@ -20,7 +20,7 @@ import { MAX_READS, voiceIssue, voiceReport } from "./backend/voice.ts";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { issueLead, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
-import { issueAudio, sendIssueAudio } from "./backend/audio.ts";
+import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 import { articlesToPlace, PLACE_STEP, placeWaiting, placingOn } from "./backend/place.ts";
@@ -123,7 +123,7 @@ export default defineServerModule({
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // A warning before the Claude credit runs out and the morning's issue with it (backend/credit.ts).
-  alerts: (now) => creditAlerts(now),
+  alerts: async (now) => [...await creditAlerts(now), ...await untimedAlerts()],
   // llms.txt names the library beside the engine's pages.
   llms: () => ({
     pages: [`- [参考](${config.siteUrl}/reference): 按遇到的事，查各地店家的做法和经验；说同一种做法的各家店归在一起，每个故事附原文出处`],

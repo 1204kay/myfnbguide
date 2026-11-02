@@ -5,10 +5,11 @@
 // <no>.txt, when there, is the listen script the voice read (Kay 10-31: a transcript to follow while listening, as
 // 樊登 and 小宇宙 have); it is not the page's text, which is written to be read (no "回到英国" between news items).
 import { createReadStream } from "node:fs";
-import { readFile, stat } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { config } from "@aihot/backend/config";
+import type { Finding } from "@aihot/backend/notify/feishu";
 
 const DIR = path.join(config.dataDir, "reference", "audio");
 
@@ -51,4 +52,32 @@ export async function sendIssueAudio(req: FastifyRequest, reply: FastifyReply, n
   if (start >= size || start > end) return reply.code(416).header("Content-Range", `bytes */${size}`).send();
   return reply.code(206).header("Content-Range", `bytes ${start}-${end}/${size}`).header("Content-Length", end - start + 1)
     .send(createReadStream(file, { start, end }));
+}
+
+/**
+ * Issues whose audio is up with a 文字稿 that does not follow the voice (no `starts`, or starts for other lines).
+ * Issue 8 went up so on 11-01: its 龙安欢 reading was copied over by hand from a --try and <no>.json written by hand,
+ * so the 文字稿 stood still until Kay saw it (11-02 07:08). `issue-voice.ts --times <no>` fixes one (Groq, free).
+ */
+export async function untimedAlerts(): Promise<Finding[]> {
+  const files = await readdir(DIR).catch(() => [] as string[]);
+  const nos = files.map((f) => /^(\d+)\.mp3$/u.exec(f)?.[1]).filter((n): n is string => !!n).map(Number).sort((a, b) => a - b);
+  const untimed: number[] = [];
+  for (const no of nos) {
+    const audio = await issueAudio(no);
+    if (audio?.transcript && !audio.starts) untimed.push(no);
+  }
+  return untimed.length ? [untimedFinding(untimed)] : [];
+}
+
+export function untimedFinding(nos: number[]): Finding {
+  return {
+    key: "reference.untimed-transcript",
+    level: "today",
+    title: "十一说文字稿不跟着声音走",
+    impact: `第 ${nos.join("、")} 期的文字稿没有每行开始时间，听的时候文字不亮也不滚`,
+    heals: "不会自己好",
+    action: nos.map((n) => `node myfnb/issue-voice.ts --times ${n}`).join("；"),
+    detail: "<no>.json 没有 starts，或 starts 的行数和 <no>.txt 对不上；换音频只走 issue-voice.ts --put，不要手工拷文件",
+  };
 }

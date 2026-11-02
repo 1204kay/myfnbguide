@@ -29,7 +29,7 @@ test("llms and sitemap build from current topic scope rather than a cached direc
   assert.equal((await topicPageCounts()).find((topic) => topic.slug === TOPIC.slug)!.indexable, true);
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE source_id = ${source}`;
   assert.ok(!(await loadLlmsAvailability()).topics.some((topic) => topic.slug === TOPIC.slug));
-  const sitemap = await app.inject("/sitemap.xml");
+  const sitemap = await app.inject("/sitemaps/topics.xml");
   assert.equal(sitemap.statusCode, 200);
   assert.ok(!sitemap.body.includes(`/topics/${TOPIC.slug}</loc>`));
 });

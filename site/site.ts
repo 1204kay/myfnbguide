@@ -96,12 +96,16 @@ export const POLICY = {
      * 讲清哪些用途要先取得授权的话（选填）：llms 接在 llms.txt“使用说明”的版权说明后面，
      * agent 写在给 Agent 的使用说明“使用规则”一节的开头。
      */
-    license: null as null | { llms: string; agent: string },
+    license: {
+      llms: "AI 助手和搜索引擎在回答里引用少量内容并附上链接，可以直接用；注明出处写「来源：MYFNB（myfnbguide.com）；原文：〈来源名〉〈原文链接〉」。批量转载、再分发、用于商业产品或训练模型，请先取得书面同意。",
+      agent: "在回答里引用少量内容并附上链接，可以直接用；注明出处写「来源：MYFNB（myfnbguide.com）；原文：〈来源名〉〈原文链接〉」。批量转载、再分发、用于商业产品或训练模型，请先取得书面同意。",
+    } as null | { llms: string; agent: string },
     /**
      * 公开 API、RSS 和 OpenAPI 文件声明使用规则的响应头（选填）：原样附上，再加一个指向这一页的
      * Link 头（rel="terms-of-service"）；浏览器里的调用方也读得到它们。
      */
-    headers: null as null | Record<string, string>,
+    /** Content-Usage 照 IETF aipref 草案（draft-ietf-aipref-attach）的写法：不同意训练模型。 */
+    headers: { "Content-Usage": "train-ai=n" } as null | Record<string, string>,
   },
   privacy: {
     description: "本站如何处理浏览器本地数据、反馈资料与访问日志。",

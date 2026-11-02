@@ -84,7 +84,7 @@
 | `packages/backend/src/modules.ts`、`editorial/analyze.ts`、`jobs/content.ts`、`tests/analyze.test.ts` | 模块插口 `copyCheck`（核对员用它，代码在 `modules/checker`） | 核对员 |
 | `apps/web/app/modules.ts`、`site-modules.ts`、`routes/report-detail.tsx`、`routes/report-latest.tsx`、`features/report/ReportPaper.tsx`、`packages/backend/src/publication/reports.ts`、`apps/web/tests/report-parts.test.ts` | 通用插口 `reportPart`：模块在报告页最后放一块；`Story` 和 `citationsOf` 导出给模块用 | 每周趋势 |
 | `deploy/Caddyfile` | 访问日志；站点块写死 www、根域和旧站路径转址 | 访问计数、域名转址 |
-| `.github/workflows/check.yml` | 网页测试放进 Playwright 官方镜像里跑；下载公钥和 apt 加重试 | GitHub 检查里的网页测试；GitHub 检查下载重试 |
+| `.github/workflows/check.yml` | 网页测试（`npm run test:web`）放进 Playwright 官方镜像里跑；下载公钥和 apt 加重试 | GitHub 检查里的网页测试；GitHub 检查下载重试 |
 | `.github/workflows/external-prs.yml` | 新加：盯外部 PR，有变化在收件箱 PR 上评论 | 盯外部 PR |
 | `tests/wording.test.ts` | 本站的不用词清单 | 写作 |
 | `tests/` 里其余二十几个文件、`apps/web/tests/navigation-performance.test.ts`、`web-server.ts`、`cache.test.ts` | 作者按 AI 示例行业写的类别、标签、公司改成从行业包取 | 不是产品差别：同步上游时照同一原则处理作者的新测试 |

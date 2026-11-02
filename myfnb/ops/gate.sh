@@ -6,7 +6,7 @@
 # 只放行：看状态和日志、跑镜像里已有的 myfnb/ 脚本（即已合进 main 的）、用只读账号查库、放上十一说一期的音频。
 # 同一个守门也给 css-cloud 云电脑（原名 agent1）每天出十一说用（myfnb/ops/add-key.sh 装的钥匙，十一 10-30 定）。那把钥匙带名字进来
 # （command="… css-cloud"），只放行十一说用得到的：status、tail、audio、script、run myfnb/issue-now.ts 的取、核、放、上头条四样，
-# 以及 css-cloud 断线监控读模型用量的 budget（只读，只输出三个数）；
+# 以及 css-cloud 断线监控读模型用量的 budget（只读，只输出三个数）、读网站自己开着的告警的 alerts（只读）；
 # 花钱的、写库的其他脚本，和十一说的开关（--from、--stop），都只有 GitHub 那把能跑。
 # 删数据、改防火墙、装补丁、重启不在这里，仍由 Kay 在 OrcaTerm 做（公司手册 公司/讨论/④全部搬上云端.md #2、#3）。
 set -uo pipefail
@@ -22,9 +22,9 @@ if [ "$caller" != github ]; then
   [[ ${#a[@]} -le 4 && ( -z ${a[3]:-} || ${a[3]} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ) ]] || a=(deny)
   [[ $verb != run || ${#a[@]} -le 2 || ${a[3]:-} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || a=(deny)
   case "${a[0]} ${a[1]:-} ${a[2]:-}" in
-    "status "*|"budget "*|"tail "*|"audio "*|"script "*|"run myfnb/issue-now.ts "|"run myfnb/issue-now.ts --items"|"run myfnb/issue-now.ts --dump"|"run myfnb/issue-now.ts --put"|"run myfnb/issue-now.ts --lead") ;;
+    "status "*|"budget "*|"alerts "*|"tail "*|"audio "*|"script "*|"run myfnb/issue-now.ts "|"run myfnb/issue-now.ts --items"|"run myfnb/issue-now.ts --dump"|"run myfnb/issue-now.ts --put"|"run myfnb/issue-now.ts --lead") ;;
     *) echo "$(date -Is) [$caller] 拒绝" >> "$LOG/audit.log"
-       echo "这把钥匙只能：status | budget | tail [编号] | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt | run myfnb/issue-now.ts [--items|--dump|--put|--lead 日期]"; exit 2 ;;
+       echo "这把钥匙只能：status | budget | alerts [test] | tail [编号] | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt | run myfnb/issue-now.ts [--items|--dump|--put|--lead 日期]"; exit 2 ;;
   esac
 fi
 num() { [[ ${1:-} =~ ^[0-9]{1,5}$ ]] && echo "$1" || echo "$2"; }
@@ -39,6 +39,13 @@ case $verb in
     # 网站本身回 200、模型却被日上限挡住时外面看不出来（10-31 12:02 起近三小时），监控靠这个看：
     # llm 过去 24 小时的 live 调用、per_day、过去 2 小时的调用，空格隔开，口径同 providers/receipts.ts 的 checkBudget
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -F ' ' -v ON_ERROR_STOP=1 -c "SELECT (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '1 day'), (SELECT per_day FROM budgets WHERE service = 'llm'), (SELECT count(*) FROM receipt_attempts WHERE service = 'llm' AND origin = 'live' AND started_at > now() - interval '2 hours')" ;;
+  alerts)
+    # 网站自己的告警（operations/alerts.ts 每 10 分钟查一次，开着的记在 settings 'alerts.state'）原本只发飞书，
+    # 而服务器没开飞书（FEISHU_INTERNAL_ENABLED=false），Kay 也不看飞书：11-02 Claude 额度用完、第 8 期文字稿没时间都没人收到。
+    # css-cloud 的 site-watch 每 15 分钟读这里，有新的一行就照断线那条路叫醒 Claude、报给 Kay。
+    # 一行一个：键<TAB>开始时间<TAB>标题；没有告警就什么都不输出。alerts test 只输出一行固定的假告警，不碰库，给 site-watch 试整条路用。
+    if [ "${a[1]:-}" = test ]; then printf 'test.alert\t%s\t测试告警：这是 alerts test 输出的假告警，不用处理\n' "$(date -Is)"; exit 0; fi
+    sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -F $'\t' -v ON_ERROR_STOP=1 -c "SELECT e.key, e.value->>'since', e.value->>'title' FROM settings s, jsonb_each(s.value) AS e(key, value) WHERE s.key = 'alerts.state' ORDER BY e.value->>'since'" ;;
   deploy-log)
     sudo journalctl -u myfnb-update -n "$(num "${a[1]:-}" 100)" --no-pager ;;
   logs)
@@ -73,5 +80,5 @@ case $verb in
     # 只读账号 myfnb_ro（install.sh 建的，只有 pg_read_all_data，默认只读事务），写不进任何东西
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -v ON_ERROR_STOP=1 -c "${CMD#sql }" ;;
   *)
-    echo "可用：status | budget | deploy-log [行数] | logs <服务> [行数] | run myfnb/<脚本>.ts [参数] | bg myfnb/<脚本>.ts [参数] | tail [编号] [行数] | sql <只读查询> | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt" ;;
+    echo "可用：status | budget | alerts [test] | deploy-log [行数] | logs <服务> [行数] | run myfnb/<脚本>.ts [参数] | bg myfnb/<脚本>.ts [参数] | tail [编号] [行数] | sql <只读查询> | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt" ;;
 esac

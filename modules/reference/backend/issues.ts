@@ -79,9 +79,11 @@ export async function issueLead(date: string): Promise<{ kicker: string; title: 
 
 /** One issue as its page reads it: the program's lines around what 十一 wrote, and the originals it names. */
 export async function readIssue(no: number): Promise<IssuePage | null> {
-  const [row] = await sql<{ no: number; date: string; content: ReturnType<typeof stored>; prev: number | null; next: number | null }[]>`
+  // The issue is up at about 05:20, its daily at 08:00: until then the page does not lead to a daily not there yet.
+  const [row] = await sql<{ no: number; date: string; content: ReturnType<typeof stored>; prev: number | null; next: number | null; daily: boolean }[]>`
     SELECT no, to_char(date, 'YYYY-MM-DD') AS date, content,
-      (SELECT max(no) FROM reference_issues WHERE no < r.no) AS prev, (SELECT min(no) FROM reference_issues WHERE no > r.no) AS next
+      (SELECT max(no) FROM reference_issues WHERE no < r.no) AS prev, (SELECT min(no) FROM reference_issues WHERE no > r.no) AS next,
+      EXISTS (SELECT 1 FROM reports WHERE kind = 'daily' AND key = to_char(r.date, 'YYYY-MM-DD')) AS daily
     FROM reference_issues r WHERE no = ${no} AND status = 'issue'`;
   const issue = row?.content.issue;
   if (!row || !issue) return null;
@@ -89,7 +91,7 @@ export async function readIssue(no: number): Promise<IssuePage | null> {
   return {
     no: row.no, date: row.date, issue, lines: fixedLines(row.date),
     sources: citedItems(issue, items).cited.map(({ n, sourceName, title, url }) => ({ n, sourceName, title, url })),
-    count: items.length, prev: row.prev, next: row.next, audio: await issueAudio(row.no),
+    count: items.length, prev: row.prev, next: row.next, daily: row.daily, audio: await issueAudio(row.no),
   };
 }
 

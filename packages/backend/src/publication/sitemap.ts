@@ -81,8 +81,6 @@ export async function loadDiscoveryEntries(at = new Date(), limits?: { urls: num
   }
   // A story needs listed evidence of its own. Its identity follows current readable reports as well
   // as the digest, so a correction or regrouping is visible even when latest_at does not advance.
-  // MYFNB: only stories with two or more reports; a single-report story repeats its item page and is
-  // noindex on the story page too (myfnb/DIFFERENCES.md 「事件页」).
   const stories = await sql<{ id: number; public_id: string; revision: string }[]>`
     SELECT st.id, st.public_id::text, md5(concat_ws('|', st.title, st.summary, st.digest, st.digest_updated_at::text,
       st.version::text, members.revision)) AS revision
@@ -93,7 +91,7 @@ export async function loadDiscoveryEntries(at = new Date(), limits?: { urls: num
       JOIN sources s ON s.id = p.source_id
       WHERE f.story_id = st.id AND ${storyReportCondition(at)}
     ) members ON true
-    WHERE st.merged_into IS NULL AND members.reports >= 2 AND EXISTS (
+    WHERE st.merged_into IS NULL AND EXISTS (
       SELECT 1 FROM facts f JOIN fact_articles fa ON fa.fact_id = f.id JOIN publications p ON p.article_id = fa.article_id
       WHERE f.story_id = st.id AND ${evidenceCondition()} AND ${listedCondition(at)})
       ${limits ? sql`AND members.reports >= ${MIN_SITEMAP_STORY_REPORTS}` : sql``}

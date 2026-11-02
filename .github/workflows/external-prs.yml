@@ -36,8 +36,14 @@ jobs:
           [ -n "$old" ] || old='{}'
 
           # 开着的外部 PR，加上上次记着的（刚合并或关闭的会从搜索里消失，还要再报一次）
-          urls=$( { gh api -X GET search/issues -f q="is:pr is:open author:$AUTHOR -user:$AUTHOR" -f per_page=100 --jq '.items[].pull_request.url'
-                    printf '%s' "$old" | jq -r 'keys[]'; } | sed 's#^https://api.github.com/##' | sort -u | grep . || true)
+          # 要盯的 PR 先读清单 myfnb/ops/external-prs.txt（每行「owner/repo#号」）。11-01 第一次跑，用 GITHUB_TOKEN
+          # 搜 author:1204kay 一个都没搜到（#291 明明开着），搜索靠不住，所以以清单为准，搜索只做补充。
+          listed=$(gh api "repos/$REPO/contents/myfnb/ops/external-prs.txt" --jq .content | base64 -d \
+            | grep -oE '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+#[0-9]+' | sed -E 's|^(.+)#([0-9]+)$|repos/\1/pulls/\2|' || true)
+          found=$(gh api -X GET search/issues -f q="is:pr is:open author:$AUTHOR -user:$AUTHOR" -f per_page=100 \
+            --jq '.items[].pull_request.url' 2>/dev/null | sed 's#^https://api.github.com/##' || true)
+          urls=$( { printf '%s\n' "$listed" "$found"; printf '%s' "$old" | jq -r 'keys[]'; } | sort -u | grep . || true)
+          echo "清单 $(grep -c . <<<"$listed" || true) 个，搜索 $(grep -c . <<<"$found" || true) 个"
 
           new='{}'; lines=''
           for u in $urls; do
@@ -58,8 +64,10 @@ jobs:
               ] | if length==0 then "有变化" else join("，") end')
               lines+="- [$name]($link)：$what"$'\n'
             fi
-            # 合并或关闭的报过一次就不再记
-            [ "$(jq -r .state <<<"$snap")" = open ] && new=$(jq -c --arg u "$u" --argjson s "$snap" '.[$u]=$s' <<<"$new")
+            # 开着的、或还在清单里的照记；不在清单里的，合并或关闭报过一次就不再记
+            if [ "$(jq -r .state <<<"$snap")" = open ] || grep -qxF "$u" <<<"$listed"; then
+              new=$(jq -c --arg u "$u" --argjson s "$snap" '.[$u]=$s' <<<"$new")
+            fi
           done
 
           if [ -n "$lines" ]; then

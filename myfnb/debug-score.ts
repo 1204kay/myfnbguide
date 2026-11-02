@@ -5,7 +5,7 @@
 // in myfnb/gold-labels.tsv.
 // Without case ids it takes the 必看 cases of the newest SelectBench run (scripts/eval-selection.ts imports every run)
 // that scored below --below. Needs .data/gold.jsonl, so build it in the same container first:
-//   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts > /dev/null && node myfnb/debug-score.ts"
+//   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold-rounds.ts .data/gold.jsonl > /dev/null && node myfnb/debug-score.ts"
 //   node myfnb/debug-score.ts [--below 40] [--max 20] [case ids...]
 //   --must (十一 10-24, 打分稳不稳: three 必看 under 46 in every one of ten scores): instead, every 必看 the user has
 //   labelled, as the score eval gathered them before 10-25 (10-16's labels, then the earlier gold rounds a 10-16 relabel
@@ -113,7 +113,7 @@ const one = (s: string) => s.replace(/\s+/g, " ").trim();
 const model = await modelFor("score");
 const cases = values.must ? await mustCases() : ids.flatMap((id) => {
   const r = gold.get(id);
-  if (!r) { console.log(`${id} 不在 gold 里（先跑 build-gold.ts）`); return []; }
+  if (!r) { console.log(`${id} 不在 gold 里（先跑 build-gold-rounds.ts）`); return []; }
   return [{ id, input: toInput(r) }];
 });
 if (values.must) console.log(`# --must · ${cases.length} 条必看`);

@@ -2,12 +2,13 @@
 // ten situations the most shops shared a practice in, after AIHOT's 热点榜 (the first as a large card with its
 // picture, the next two as small cards beside it, the rest as rows); then each category's situations as rows, most
 // shops first. Neither countries nor shop kinds are ways in or counts (layout J0).
-import { Link, useLoaderData, type LoaderFunctionArgs } from "react-router";
+import { Link, useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
 import { EmptyState } from "@aihot/web/components/ui/Page";
 import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
-import { pageMeta } from "@aihot/web/lib/seo";
+import { archiveLd, pageMeta } from "@aihot/web/lib/seo";
+import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { day, num } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
@@ -26,8 +27,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return loadOr404<ReferenceHome>("/api/reference", { signal: request.signal });
 }
 
-export function meta() {
-  return pageMeta({ title: "参考", description: LEAD, path: "/reference" });
+export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
+  // Its situations are pages of their own, as an archive's issues are (routes/daily-archive.tsx archiveLd).
+  const entries = (data?.categories ?? []).flatMap((c) => c.situations.map((s) => ({ path: `/reference/${s.slug}`, name: s.title })));
+  return pageMeta({ title: "参考", description: LEAD, path: "/reference", jsonLd: entries.length ? archiveLd("/reference", `${SITE.name} 参考`, entries) : undefined });
 }
 
 /**

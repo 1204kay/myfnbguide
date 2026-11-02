@@ -7,6 +7,8 @@ import { sql } from "@aihot/backend/db";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { beijingDate } from "@aihot/contracts/time";
+import { mcpToolName } from "@aihot/contracts/mcp";
+import { SITE } from "@aihot/site";
 import { SITUATIONS } from "./situations.ts";
 import {
   membersBySituation, readCase, readHome, readItemText, readShare, readShop, readSituation, readStatus, sitemapEntries,
@@ -19,9 +21,10 @@ import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "./backend/issue.ts";
 import { MAX_READS, voiceIssue, voiceReport } from "./backend/voice.ts";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
-import { issueLead, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
+import { issueLead, issuePath, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
 import { issueAudio, sendIssueAudio } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
+import { AGENT_ABILITIES } from "./backend/agent.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
 import { articlesToPlace, PLACE_STEP, placeWaiting, placingOn } from "./backend/place.ts";
 
@@ -124,10 +127,19 @@ export default defineServerModule({
   dailyLead: (date) => issueLead(date),
   // A warning before the Claude credit runs out and the morning's issue with it (backend/credit.ts).
   alerts: (now) => creditAlerts(now),
-  // llms.txt names the library beside the engine's pages.
-  llms: () => ({
-    pages: [`- [参考](${config.siteUrl}/reference): 按遇到的事，查各地店家的做法和经验；说同一种做法的各家店归在一起，每个故事附原文出处`],
-  }),
+  // The library and 十一说 for agents (backend/agent.ts): addresses under /api/v1/agent and MCP tools, named in the guide.
+  agent: { abilities: AGENT_ABILITIES },
+  // llms.txt names the library and 十一说 beside the engine's pages. Since 10-24 the library lists items by cause, not
+  // stories by practice (backend/read.ts foldedStories), and says so.
+  llms: async () => {
+    const [latest] = await sql<{ no: number }[]>`SELECT max(no) AS no FROM reference_issues WHERE status = 'issue'`;
+    return {
+      pages: [
+        `- [参考](${config.siteUrl}/reference): 按遇到的事（定价、招人、房租、差评……），查各地店家的做法和经验；收录从开站到现在，不只最近 7 天，每条附原文出处；也可用给 Agent 的 /api/v1/agent/reference、MCP 工具 ${mcpToolName("get_reference")} 读取`,
+        ...(latest?.no ? [`- [十一说](${config.siteUrl}${issuePath(latest.no)}): ${SITE.name} 自己的每日节目，放在日报头条：AI 十一读完当天的全部收录，写几条快讯、细说一件，点名原文；链接是最新一期，往期在 /reference/issues/{期数}；也可用给 Agent 的 /api/v1/agent/shiyi、MCP 工具 ${mcpToolName("get_shiyi")} 读取`] : []),
+      ],
+    };
+  },
   sitemap: { entries: async () => [...await issueSitemap(), ...await sitemapEntries()] },
   schedules: [{
     name: "reference.cases",

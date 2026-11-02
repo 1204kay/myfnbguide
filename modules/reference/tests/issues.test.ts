@@ -17,6 +17,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { issueLead, writeIssue } from "../backend/issues.ts";
+import { AGENT_ABILITIES } from "../backend/agent.ts";
 
 const T = tag();
 const DAY = "2020-03-10";
@@ -84,6 +85,18 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.deepEqual(page.sources.map((s: { n: number; title: string }) => [s.n, s.title]), [[1, "标题 1"], [2, "标题 2"], [3, "标题 3"]], "only the originals it names");
   assert.equal((await app.inject("/api/reference/issues/2")).statusCode, 404);
   assert.equal((await app.inject("/api/reference/issues/x")).statusCode, 404);
+
+  // Agents read it too (backend/agent.ts): the latest in full with the originals it names, named in the guide and llms.txt.
+  const agent = await app.inject("/api/v1/agent/shiyi");
+  assert.equal(agent.headers["content-type"], "text/markdown; charset=utf-8");
+  assert.match(agent.body, /^# 十一说 · 第 1 期：店里该不该涨价？/);
+  assert.ok(agent.body.includes("甲店的老板说，涨价前先算了账〔1〕。") && agent.body.includes(`1. 餐饮报：《标题 1》 https://example.com/issue-${T}-1`), "the issue's words and its originals");
+  assert.ok(!agent.body.includes("标题 4"), "only the originals it names");
+  assert.ok((await app.inject("/api/v1/agent")).body.includes("/api/v1/agent/shiyi"), "the guide names it");
+  assert.ok((await app.inject("/llms.txt")).body.includes("/reference/issues/1"), "llms.txt leads to the latest");
+  const shiyi = AGENT_ABILITIES.find((a) => a.path === "/shiyi")!;
+  assert.match((await shiyi.mcp.run({ no: 1 })).text, /^# 十一说 · 第 1 期/);
+  assert.match((await shiyi.mcp.run({ no: 2 })).text, /没有第 2 期十一说/, "a missing issue is said, not another put in its place");
 });
 
 test("an issue has 听 only once its audio is in place, its 文字稿 once its listen script is, its times when they count its lines, and the audio is served in byte ranges", async () => {

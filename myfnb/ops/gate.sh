@@ -50,7 +50,7 @@ case $verb in
   board)
     # 公司流水线看板（dino-valley company-view/board，css-cloud 每 10 分钟读一次）：从今天 08:00（马来西亚时间，即 UTC 0 点，
     # 和日报同一个分界）起收了几篇、打了分的几篇和分数分布、进精选几条，以及近 3 天跑过的每个任务最近一次的结果、
-    # 过去 24 小时失败几次（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss）。只读账号，输出一行 JSON。
+    # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss）。只读账号，输出一行 JSON。
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -v ON_ERROR_STOP=1 <<'SQL'
 WITH a AS (SELECT id FROM articles WHERE discovered_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),
 p AS (SELECT p.score, p.selected FROM publications p JOIN a ON a.id = p.article_id WHERE p.visibility <> 'withdrawn'),
@@ -63,9 +63,11 @@ SELECT json_build_object(
   'scores', (SELECT json_build_object('60+', count(*) FILTER (WHERE score >= 60), '50-59', count(*) FILTER (WHERE score >= 50 AND score < 60), '40-49', count(*) FILTER (WHERE score >= 40 AND score < 50), '<40', count(*) FILTER (WHERE score < 40), 'max', max(score)) FROM p),
   'selected', (SELECT count(*) FROM p WHERE selected),
   'jobs', (SELECT coalesce(json_agg(x ORDER BY x.job), '[]') FROM (
-     SELECT j.job, l.started_at, l.finished_at, l.status, left(l.error, 200) AS error, c.failed_24h, c.runs_24h
+     SELECT j.job, l.started_at, l.finished_at, l.status, left(l.error, 200) AS error, c.failed_24h, c.runs_24h, r.recent
      FROM j CROSS JOIN LATERAL (SELECT started_at, finished_at, status, error FROM job_runs WHERE job = j.job ORDER BY started_at DESC, id DESC LIMIT 1) l
-     CROSS JOIN LATERAL (SELECT count(*) FILTER (WHERE status = 'failed')::int AS failed_24h, count(*)::int AS runs_24h FROM job_runs WHERE job = j.job AND started_at > now() - interval '24 hours') c) x)
+     CROSS JOIN LATERAL (SELECT count(*) FILTER (WHERE status = 'failed')::int AS failed_24h, count(*)::int AS runs_24h FROM job_runs WHERE job = j.job AND started_at > now() - interval '24 hours') c
+     CROSS JOIN LATERAL (SELECT json_agg(json_build_object('at', started_at, 'status', status) ORDER BY started_at DESC) AS recent
+       FROM (SELECT started_at, status FROM job_runs WHERE job = j.job ORDER BY started_at DESC, id DESC LIMIT 20) t) r) x)
 );
 SQL
     ;;

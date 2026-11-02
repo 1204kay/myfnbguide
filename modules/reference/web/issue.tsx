@@ -10,7 +10,8 @@ import { IconArrowLeft, IconArrowRight, IconCopy, IconMenu, IconShare } from "@a
 import { Menu, MenuItem } from "@aihot/web/components/ui/Menu";
 import { ArticleLayout, RailSection } from "@aihot/web/components/ui/Page";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
-import { pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
+import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
+import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { IssuePage } from "../types.ts";
 import { BODY, BODY_LABEL, MEASURE, useShare } from "./ui";
@@ -30,7 +31,17 @@ const kicker = (p: IssuePage) => `十一说 · 第 ${p.no} 期`;
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
   if (!data) return [{ title: titled("没有这一期") }, { name: "robots", content: "noindex" }];
-  return pageMeta({ title: `${kicker(data)}：${data.issue.title}`, description: data.issue.brief.join(""), path: `/reference/issues/${data.no}`, type: "article" });
+  const path = `/reference/issues/${data.no}`;
+  const title = `${kicker(data)}：${data.issue.title}`;
+  const description = data.issue.brief.join("");
+  // As the engine's item page describes itself (routes/item.tsx articleLd, breadcrumbLd); the site, not a person, is its author.
+  return pageMeta({
+    title, description, path, type: "article",
+    jsonLd: [
+      articleLd({ path, headline: title, description, publishedAt: data.date }),
+      breadcrumbLd([{ name: SITE.name, path: "/" }, { name: "日报", path: `/daily/${data.date}` }, { name: title, path }]),
+    ],
+  });
 }
 
 /** 2026-10-23 → 10 月 23 日 */

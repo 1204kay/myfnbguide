@@ -29,6 +29,7 @@ import { badness, blocking, checkStory, repeatedNumbers, summaryFigures, kanjiNu
 import { articlesToWrite, drawPicture, groundProblems, readOutput, shopNameKey, spaceStory, splitLong, writeCase } from "../backend/write.ts";
 import { articlesToBody, writeBody } from "../backend/body.ts";
 import { articlesToPlace, placeWaiting, readPlacing } from "../backend/place.ts";
+import { AGENT_ABILITIES } from "../backend/agent.ts";
 import { groupSituation, PROMPT_VERSION, readGrouping, situationsToGroup, textOnly, type Member } from "../backend/methods.ts";
 import { LISTED, membersBySituation, rankSituations, repeats, sourceKind, tellerOf, withoutCountry } from "../backend/read.ts";
 import { day, figureUnit, fullCountText, listCountText, restCountText, spaced, tellersText } from "../format.ts";
@@ -925,6 +926,15 @@ test("an item without a story is placed in one situation and group of the list, 
   assert.equal((await app.inject(`/api/reference/cases/${id.P1}`)).statusCode, 404, "no story page");
   const { placing } = await get("/api/reference/status");
   assert.deepEqual(placing, { placed: 2, none: 5, waiting: 0 }, "P2 and the thin or held cases of the tests above, which fit none here");
+
+  // Agents read the library by situation (backend/agent.ts): its items with their links to the item and the original.
+  const library = AGENT_ABILITIES.find((a) => a.path === "/reference")!;
+  assert.ok((await app.inject("/api/v1/agent/reference")).body.includes("situation=hiring"), "the list names the situation by its slug");
+  const hiring = (await library.mcp.run({ situation: "hiring" })).text;
+  const [url] = await sql<{ url: string }[]>`SELECT url FROM publications WHERE article_id = ${id.P1!}`;
+  assert.ok(hiring.includes(`/items/${id.P1}`) && hiring.includes(`原文：${url!.url}`), "an item with its page and its original");
+  assert.ok(!hiring.includes(`/items/${id.P2}`), "not one placed nowhere");
+  assert.match((await library.mcp.run({ situation: "nowhere" })).text, /没有 nowhere 这种情况/);
 
   await sql`UPDATE publications SET visibility = 'withdrawn' WHERE article_id = ${id.P1!}`;
   assert.ok(!(await get("/api/reference/situations/hiring")).groups.some((g: { cases: Array<{ id: string }> }) => g.cases.some((c) => c.id === id.P1)), "a withdrawn item leaves the page");

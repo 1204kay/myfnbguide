@@ -10,7 +10,8 @@ import { AsideCard, ReadingLayout } from "@aihot/web/components/ui/Page";
 import { IconCopy, IconMore, IconShare } from "@aihot/web/components/icons";
 import { ActionsSheet } from "@aihot/web/features/item/ReaderTools";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
-import { pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
+import { breadcrumbLd, itemListLd, pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
+import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { PracticeList, SituationPage } from "../types.ts";
 import { SituationFigure } from "./figures";
@@ -29,7 +30,16 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
   if (!data) return [{ title: titled("没有这个情况") }, { name: "robots", content: "noindex" }];
-  return pageMeta({ title: data.title, description: data.dek, path: `/reference/${data.slug}` });
+  const path = `/reference/${data.slug}`;
+  // Machine description as the engine's list pages give it (routes/all.tsx itemListLd, routes/topic.tsx breadcrumbLd).
+  const titles = [...data.groups.flatMap((g) => g.cases), ...data.rest.cases].map((c) => c.title);
+  return pageMeta({
+    title: data.title, description: data.dek, path,
+    jsonLd: [
+      itemListLd(path, `参考 · ${data.title}`, titles),
+      breadcrumbLd([{ name: SITE.name, path: "/" }, { name: "参考", path: "/reference" }, { name: data.title, path }]),
+    ],
+  });
 }
 
 export default function SituationRoute() {

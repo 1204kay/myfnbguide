@@ -239,17 +239,16 @@ async function listen(drafts: Draft[], ask: Ask): Promise<Array<{ score: number;
 }
 
 /** Mends only the sentences the check named, against the originals the draft cites and those of an event it left out. */
-async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string): Promise<IssueText> {
+export async function edit(draft: Draft, items: DayItem[], ask: Ask, attempt: string, layout: Layout = "split"): Promise<IssueText> {
   const missed = new Set(draft.problems.filter((p) => p.rule === 4).flatMap((p) => [...p.quote.matchAll(/〔(\d+)〕/gu)].map((m) => Number(m[1]))));
   const given = [...citedItems(draft.issue, items).cited, ...items.filter((i) => missed.has(i.n))];
-  const user = [
-    // As JSON, the shape it answers in: shown as issueText it copied the list numbers into heads and 「合起来：」 into the close (10-13, 10-14).
-    `十一的稿子：\n${JSON.stringify(draft.issue, null, 1)}`,
-    `核对员挑出的问题：\n${draft.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`,
-    `稿子点名的收录（全文）：\n\n${citedText([...new Set(given)])}`,
-    // Without the day's list an editor asked to add a source has no number to add (10-21, ff56959: six rounds, none added).
-    ...(uncited(draft) ? [`这一天的全部收录（编号、来源、标题），补出处时照这里的编号标：\n${items.map((i) => `〔${i.n}〕${i.sourceName}《${i.title}》`).join("\n")}`] : []),
-  ].join("\n\n");
+  // As JSON, the shape it answers in: shown as issueText it copied the list numbers into heads and 「合起来：」 into the close (10-13, 10-14).
+  const draftPart = `十一的稿子：\n${JSON.stringify(draft.issue, null, 1)}`;
+  const problemPart = `核对员挑出的问题：\n${draft.problems.map((p) => `- 第 ${p.rule} 条：「${p.quote}」${p.why}`).join("\n")}`;
+  // Without the day's list an editor asked to add a source has no number to add (10-21, ff56959: six rounds, none added).
+  const dayList = uncited(draft) ? [`这一天的全部收录（编号、来源、标题），补出处时照这里的编号标：\n${items.map((i) => `〔${i.n}〕${i.sourceName}《${i.title}》`).join("\n")}`] : [];
+  if (layout === "shared") return ask("reference_issue_edit", "", shared(EDIT, [...new Set(given)], [draftPart, problemPart, ...dayList].join("\n\n")), IssueAnswer, attempt);
+  const user = [draftPart, problemPart, `稿子点名的收录（全文）：\n\n${citedText([...new Set(given)])}`, ...dayList].join("\n\n");
   return ask("reference_issue_edit", EDIT, user, IssueAnswer, attempt);
 }
 
@@ -306,15 +305,29 @@ function ownProblems(issue: IssueText, items: DayItem[]): Problem[] {
   return [...unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" })), ...shapeProblems(issue, items, cited)];
 }
 
+/** The originals a draft cites, in number order, as the cached part of a call. */
+const sourcesText = (cited: DayItem[]) => `这一期点名的收录（全文）：\n\n${citedText([...cited].sort((a, b) => a.n - b.n))}`;
+
+/**
+ * How the check, the editor and the last read for omissions lay out a call. "split" (in use): each step's prompt is the
+ * system prompt, so only the check's rounds share a cache (a hit needs the whole prefix the same, system prompt first).
+ * "shared" (on trial, myfnb/trial-cache-layout.ts, 11-02): no system prompt, the originals first and the step's prompt
+ * after them, so the editor and the last read read the check's cache too. It changes where the instructions stand, so
+ * it goes in only if a before/after on an old issue finds no worse check (Kay 11-01 20:38: 质量优先).
+ */
+export type Layout = "split" | "shared";
+const shared = (prompt: string, cited: DayItem[], rest: string): Parts => ({ cached: sourcesText(cited), rest: `${prompt}\n\n${rest}` });
+
 /** Reads one draft for the three rules against the full text of what it cites; problems the program finds come first. */
-export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<{ lively: number; problems: Problem[] }> {
+export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask, layout: Layout = "split"): Promise<{ lively: number; problems: Problem[] }> {
   const { cited } = citedItems(issue, items);
   const own = ownProblems(issue, items);
   // The originals first and in number order, the draft after: a draft is checked again after every mend (issue 6,
   // 10-30: ten checks of one day), and with what it cites first and the same, each check after the first reads them
   // from the cache. Anthropic's long-context advice puts long documents above the question as well.
-  const sources = `这一期点名的收录（全文）：\n\n${citedText([...cited].sort((a, b) => a.n - b.n))}`;
-  const answer = await ask("reference_issue_check", CHECK, { cached: sources, rest: `这一期：\n${issueText(issue)}` }, CheckAnswer);
+  const draftPart = `这一期：\n${issueText(issue)}`;
+  const answer = await ask("reference_issue_check", layout === "shared" ? "" : CHECK,
+    layout === "shared" ? shared(CHECK, cited, draftPart) : { cached: sourcesText(cited), rest: draftPart }, CheckAnswer);
   return { lively: answer.lively, problems: [...own, ...answer.problems] };
 }
 
@@ -323,10 +336,11 @@ export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): 
  * found what a draft said wrong, but a blind check still found the other side, the owner's caveat or 十一's own guess
  * passed off as the report's, 3 and 1 times). Its fixes only add, so they go in without another check.
  */
-export async function reviewIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<Problem[]> {
+export async function reviewIssue(issue: IssueText, items: DayItem[], ask: Ask, layout: Layout = "split"): Promise<Problem[]> {
   const { cited } = citedItems(issue, items);
-  const user = [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n");
-  const answer = await ask("reference_issue_review", REVIEW, user, CheckAnswer);
+  const answer = layout === "shared"
+    ? await ask("reference_issue_review", "", shared(REVIEW, cited, `这一期：\n${issueText(issue)}`), CheckAnswer)
+    : await ask("reference_issue_review", REVIEW, [`这一期：\n${issueText(issue)}`, `这一期点名的收录（全文）：\n\n${citedText(cited)}`].join("\n\n"), CheckAnswer);
   return answer.problems.filter((p) => p.fix);
 }
 

@@ -306,35 +306,10 @@ export function categoryTitle(key: string): string | undefined {
 }
 
 /**
- * 店型: the kind of shop a case is about, after the taxonomy's 业态 tags (industry/taxonomy.ts) in standard
- * written words ("/" written 和). Settled 10/5 from 40 classification tables (myfnb/research-2026-10-05-shop-types.md):
- * most say what a shop mainly sells; 摊位和餐车 is the form and 团餐和宴会承办 who the customer is, and those two
- * are judged first (prompts/case.md). The writer picks one or none. The shop page names it; no page lists or
- * counts by it until the library is thick enough in most kinds (layout J0, J5).
- */
-export const SHOP_KINDS = [
-  { slug: "stalls", title: "摊位和餐车", dek: "在摊位或餐车上做生意的，不论卖什么：路边摊、夜市摊、小贩中心和美食广场里的摊位、咖啡店里租的摊位、餐车。" },
-  { slug: "snacks", title: "小吃", dek: "有门面、专做面、粉、饺子、煎饼、卤味这类一两样传统食物的小店。" },
-  { slug: "fast-food", title: "快餐", dek: "柜台点餐、先付款、出餐快的店：汉堡炸鸡、米饭快餐、便当和经济饭。" },
-  { slug: "dining", title: "正餐", dek: "服务员点菜上菜、吃完再付款的餐馆，从社区小馆到高级餐厅。" },
-  { slug: "hotpot", title: "火锅", dek: "顾客在桌上自己涮煮食材的店。" },
-  { slug: "coffee", title: "咖啡", dek: "主要卖咖啡的店，包括马来西亚、新加坡的传统咖啡店。" },
-  { slug: "tea", title: "茶饮", dek: "主要卖现做的茶和其他饮料的店：奶茶、果茶、现泡茶、凉茶、果汁。" },
-  { slug: "bakery", title: "烘焙和甜品", dek: "卖面包、蛋糕、西点和各种甜品的店，包括糖水和冰品。" },
-  { slug: "bar", title: "酒吧和酒馆", dek: "主要卖酒的店：酒吧、小酒馆、餐酒吧、居酒屋。" },
-  { slug: "catering", title: "团餐和宴会承办", dek: "不靠散客上门，按合同为公司、学校、医院供餐，或上门承办宴会和活动餐饮。" },
-] as const;
-
-export type ShopKind = (typeof SHOP_KINDS)[number]["slug"];
-
-export function findShopKind(slug: string | null | undefined) {
-  return SHOP_KINDS.find((k) => k.slug === slug);
-}
-
-/**
- * The sources that are one owner's own blog or podcast, and how every page names that owner's shop (without the
- * country, which the line writes before it). The writer names the shop afresh in each story: 10/10 one owner's blog
- * read as four shops under ten names, and 「12 家店」 stood on six. So the source says who speaks. Entered with the
+ * The sources that are one owner's own blog or podcast, with that owner's shop (pages named it this way until the
+ * shop lines went, 11-03). The story writer named the shop afresh in each story: 10/10 one owner's blog read as four
+ * shops under ten names, and 「12 家店」 stood on six. So the source says who speaks: every story from it counts as
+ * one shop (backend/read.ts tellerOf). Entered with the
  * source, from its profile (HANDOFF §5.4); a show whose host interviews other owners is not one of these.
  */
 export const OWNERS: Record<string, string> = {

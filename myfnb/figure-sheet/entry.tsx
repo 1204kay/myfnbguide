@@ -3,9 +3,7 @@
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { figureKind, hasSectionFigure, SectionFigure, SituationDrawing, SituationFigure } from "../../modules/reference/web/figures";
-import { StoryBlock } from "../../modules/reference/web/ui";
 import { SITUATIONS } from "../../modules/reference/situations.ts";
-import type { Block } from "../../modules/reference/types.ts";
 
 const html = (node: ReactNode) => renderToStaticMarkup(<>{node}</>);
 
@@ -60,9 +58,4 @@ export function homeColumn(slug: string): string {
 /** 情况页一节自己的图（situation.tsx：节标题下面一张图卡，和情况页图卡同一个框）。 */
 export function sectionFigure(slug: string, key: string): string {
   return html(<SectionFigure slug={slug} group={key} />);
-}
-
-/** 故事里程序画的图（原文数据图、举例算例），用故事页实际的组件。 */
-export function storyFigure(block: Block): string {
-  return html(<StoryBlock block={block} />);
 }

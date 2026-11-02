@@ -54,8 +54,8 @@ export async function draftToday(now = new Date()): Promise<number[]> {
   const pick = await storyToPost(now);
   if (!pick) return [];
   const link = `${config.siteUrl}/reference/cases/${pick.id}`;
-  // The story's own share image (modules/reference backend/share.ts: its title over its strongest figure), the one
-  // its page gives as og:image; every post is drafted from a story, so there is always one.
+  // The story's share image was drawn by modules/reference until 11-03; it and the story pages are gone (the page now
+  // 308s to the item), so before posting is turned on both change to the item's (手册待决 #20).
   const image = `${config.siteUrl}/og/reference/cases/${encodeURIComponent(pick.id)}.png`;
   const ids: number[] = [];
   for (const platform of PLATFORMS) {

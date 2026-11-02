@@ -1,44 +1,11 @@
-// One shop (layout B5): who it is in Chinese, its original name and where it is, and all its stories, newest first.
-import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
-import { PhoneBar } from "@aihot/web/components/shell/PhoneBar";
-import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
-import { pageMeta, titled } from "@aihot/web/lib/seo";
-import type { Screen } from "@aihot/web/components/shell/screens";
-import { findShopKind } from "../situations.ts";
-import type { ShopPage } from "../types.ts";
-import { Page, PageHeader, StoryCards, BackLink } from "./ui";
+// A shop's old address (/reference/shops/:key). Its page listed its stories, which went on 11-03 (backend/read.ts):
+// the address goes to the library. Nothing is read.
+import { redirect } from "react-router";
 
-export const handle: Screen = { home: "reference" };
-
-export function headers() {
-  return edgeTtl(60);
-}
-
-export async function loader({ params, request }: LoaderFunctionArgs) {
-  // A shop whose stories are all folded goes to the library (backend/read.ts foldedStories).
-  return loadOr404<ShopPage>(`/api/reference/shops/${encodeURIComponent(params.key!)}`, { signal: request.signal, merged: () => "/reference" });
-}
-
-/** The page's title: who the shop is in Chinese, or its own name in stories written before that was asked. */
-const nameOf = (data: ShopPage) => data.shop.label || data.shop.name || "店家";
-
-export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
-  if (!data) return [{ title: titled("没有这家店") }, { name: "robots", content: "noindex" }];
-  return pageMeta({ title: nameOf(data), description: data.cases[0]?.title ?? null, path: `/reference/shops/${data.key}` });
+export function loader() {
+  throw redirect("/reference", 308);
 }
 
 export default function ShopRoute() {
-  const data = useLoaderData<typeof loader>();
-  const { shop, cases } = data;
-  const original = shop.label && shop.name ? `原名「${shop.name}」` : null;
-  return (
-    <Page>
-      <PhoneBar back={{ to: "/reference", label: "参考" }} title={nameOf(data)} />
-      {/* As the topic page: 返回, then the header with the count and the date. */}
-      <BackLink to="/reference" label="参考" />
-      <PageHeader kicker="店家" title={nameOf(data)} counts={[[cases.length, "条原文"]]} updatedAt={data.updatedAt}
-        dek={<span className="[overflow-wrap:anywhere]">{[original, shop.country, shop.city, findShopKind(shop.kind)?.title, shop.size].filter(Boolean).join(" · ")}</span>} />
-      <StoryCards cards={cases} />
-    </Page>
-  );
+  return null;
 }

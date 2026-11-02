@@ -12,7 +12,7 @@ import { mcpToolName } from "@aihot/contracts/mcp";
 import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { SITUATIONS } from "../situations.ts";
 import { fullCountText } from "../format.ts";
-import type { CaseCard, IssuePage, PracticeList, ReferenceHome, SituationPage } from "../types.ts";
+import type { CaseCard, IssuePage, ReferenceHome, SituationPage } from "../types.ts";
 import { readHome, readSituation } from "./read.ts";
 import { issuePath, readIssue } from "./issues.ts";
 
@@ -45,9 +45,8 @@ export function referenceIndexAnswer(home: ReferenceHome): string {
 function caseLines(cards: CaseCard[], originals: Map<string, string>): string[] {
   return cards.flatMap((c, i) => {
     const reason = c.reason ? reasonLines(c.reason) : [];
-    const page = c.folded ? `/items/${c.item.id}` : `/reference/cases/${c.id}`;
     return [
-      `${i + 1}. [${linkText(c.title)}](${siteUrl(page)})`,
+      `${i + 1}. [${linkText(c.title)}](${siteUrl(`/items/${c.item.id}`)})`,
       `   ${[c.src, c.item.source.name].filter(Boolean).join(" · ")}`,
       ...(reason.length ? [`   ${ITEM_COPY.reasonLabel}：${reason.join("；")}`] : c.item.summary ? [`   摘要：${c.item.summary}`] : []),
       ...(originals.has(c.item.id) ? [`   原文：${originals.get(c.item.id)}`] : []),
@@ -56,30 +55,11 @@ function caseLines(cards: CaseCard[], originals: Map<string, string>): string[] 
   });
 }
 
-function listLines(list: PracticeList, originals: Map<string, string>): string[] {
-  return [
-    ...list.practices.flatMap((p) => [
-      `### 做法：${p.title}（${fullCountText(p.count)}）`,
-      ...(p.summary ? [p.summary] : []),
-      ...p.lines.map((l) => `- ${l.country} · ${l.name} · ${l.line}：${siteUrl(l.folded ? `/items/${l.caseId}` : `/reference/cases/${l.caseId}`)}`),
-      "",
-    ]),
-    ...list.shops.flatMap((s) => [
-      `### ${s.country} · ${s.name}`,
-      ...s.practices.map((p) => `- ${p.title}${p.line ? `：${p.line}` : ""}：${siteUrl(p.folded ? `/items/${p.caseId}` : `/reference/cases/${p.caseId}`)}`),
-      "",
-    ]),
-    ...caseLines(list.cases, originals),
-  ];
-}
-
-const cardsOf = (list: PracticeList) => list.cases;
-
 export function situationAnswer(page: SituationPage, originals: Map<string, string>): string {
   const data = [
-    ...page.groups.flatMap((g, i) => [`## ${i + 1}. ${g.title}：${g.line}`, "", ...listLines(g, originals)]),
-    ...(page.groups.length && (page.rest.practices.length || page.rest.shops.length || page.rest.cases.length) ? ["## 其他", ""] : []),
-    ...listLines(page.rest, originals),
+    ...page.groups.flatMap((g, i) => [`## ${i + 1}. ${g.title}：${g.line}`, "", ...caseLines(g.cases, originals)]),
+    ...(page.groups.length && page.rest.length ? ["## 其他", ""] : []),
+    ...caseLines(page.rest, originals),
   ];
   return answer([
     `# ${SITE.name} 参考库 · ${page.title}`,
@@ -87,7 +67,6 @@ export function situationAnswer(page: SituationPage, originals: Map<string, stri
     `${page.category.title} · ${fullCountText(page.count)}${page.updatedAt ? ` · ${stamp(page.updatedAt)} 更新（北京时间）` : ""}`,
     "",
     page.dek,
-    ...(page.overview ? ["", page.overview] : []),
     "",
     `网页：${siteUrl(`/reference/${page.slug}`)}`,
   ], data, [
@@ -100,7 +79,7 @@ export function situationAnswer(page: SituationPage, originals: Map<string, stri
 
 /** The originals of the items the cards are, from the publications the library reads. */
 async function originalsOf(page: SituationPage): Promise<Map<string, string>> {
-  const ids = [...page.groups.flatMap(cardsOf), ...cardsOf(page.rest)].map((c) => c.item.id);
+  const ids = [...page.groups.flatMap((g) => g.cases), ...page.rest].map((c) => c.item.id);
   if (!ids.length) return new Map();
   const rows = await sql<{ id: string; url: string }[]>`SELECT article_id AS id, url FROM publications WHERE article_id = ANY(${ids}::text[])`;
   return new Map(rows.map((r) => [r.id, r.url]));

@@ -1,6 +1,6 @@
 // 读者看得到的文字里不用的词（myfnb/HANDOFF.md §3 的五条），每项是要找的写法和改法。写作那一步写完中文标题、
-// 摘要和收录理由后逐个查，用了就让模型只改这些地方一次（packages/backend/src/editorial/wording.ts）；参考库核对
-// 故事时也读这份清单（modules/reference/backend/checks.ts）。只列一眼就能判断的写法：拿不准的不列，否则会误挡书面词。
+// 摘要和收录理由后逐个查，用了就让模型只改这些地方一次（packages/backend/src/editorial/wording.ts）。只列一眼就能
+// 判断的写法：拿不准的不列，否则会误挡书面词。
 
 export const READER_WORDING: ReadonlyArray<readonly [RegExp, string]> = [
   // 演讲、主讲、讲座、讲究、讲话（名词）这类书面词不算；对讲机、特讲、讲堂、讲坛、讲授也不算（10/10：线上被误认的几条）。

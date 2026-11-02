@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, breathe, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchByMinute, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, breathe, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -146,6 +146,7 @@ test("卖 heard as 买 fails the check, however small a share of the script it i
 test("the machine check names each failed part", () => {
   assert.deepEqual(judge(494, 0.954, [], [210, 215, 205]), { pass: true, why: [] });
   assert.deepEqual(judge(487, 0.954, [], [182, 190, 194]), { pass: true, why: [] }, "a voice lower all through is steady");
+  assert.deepEqual(judge(526, 0.99, [], [250, 262, 248]), { pass: true, why: [] }, "under 1.5 semitones at 254 Hz");
   const failed = judge(494, 0.9, [{ from: 9, to: 14 }], [176, 219], 0.2);
   assert.equal(failed.pass, false);
   assert.equal(failed.why.length, 4, failed.why.join("；"));
@@ -173,16 +174,18 @@ test("each line of the 文字稿 starts where Whisper heard its first words, wha
   assert.equal(lineStarts(lines, [{ start: 0, end: 3, text: "完全不相干的一段话" }]), null, "too little lines up to trust");
 });
 
-test("pitch a minute: a voice at 210 Hz, then at 240, reads as 210 and 240", () => {
-  const rate = 24_000;
-  const samples = new Int16Array(rate * 140);
+test("pitch over three minutes at a time: a voice at 210 Hz for two minutes, then at 240, reads from 210 to 240", () => {
+  const rate = 16_000;
+  const samples = new Int16Array(rate * 240);
   for (let i = 0; i < samples.length; i += 1) {
-    const f = i < rate * 60 ? 210 : 240;
+    const f = i < rate * 120 ? 210 : 240;
     samples[i] = Math.round(6000 * (Math.sin((2 * Math.PI * f * i) / rate) + 0.5 * Math.sin((2 * Math.PI * 2 * f * i) / rate)));
   }
-  const pitch = pitchByMinute(samples, rate);
-  assert.equal(pitch.length, 2);
-  assert.ok(Math.abs(pitch[0]! - 210) < 2 && Math.abs(pitch[1]! - 240) < 2, pitch.join(" "));
+  const pitch = pitchWindows(samples, rate);
+  assert.equal(pitch.length, 5);
+  assert.ok(Math.abs(pitch[0]! - 210) < 2 && Math.abs(pitch.at(-1)! - 240) < 2, pitch.join(" "));
+  assert.ok(Math.abs(semitones(pitch) - 12 * Math.log2(240 / 210)) < 0.1);
+  assert.equal(pitchWindows(samples.subarray(0, rate * 100), rate).length, 1, "under three minutes is one window");
 });
 
 test("a WAV's samples are found wherever its data chunk sits", () => {

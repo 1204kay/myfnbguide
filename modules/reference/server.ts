@@ -22,7 +22,7 @@ import { MAX_READS, voiceIssue, voiceReport } from "./backend/voice.ts";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { issueLead, issuePath, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
-import { issueAudio, sendIssueAudio } from "./backend/audio.ts";
+import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
 import { AGENT_ABILITIES } from "./backend/agent.ts";
 import { articlesToWrite, MODEL_STEP, writeCase } from "./backend/write.ts";
@@ -126,7 +126,7 @@ export default defineServerModule({
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // A warning before the Claude credit runs out and the morning's issue with it (backend/credit.ts).
-  alerts: (now) => creditAlerts(now),
+  alerts: async (now) => [...await creditAlerts(now), ...await untimedAlerts()],
   // The library and 十一说 for agents (backend/agent.ts): addresses under /api/v1/agent and MCP tools, named in the guide.
   agent: { abilities: AGENT_ABILITIES },
   // llms.txt names the library and 十一说 beside the engine's pages. Since 10-24 the library lists items by cause, not

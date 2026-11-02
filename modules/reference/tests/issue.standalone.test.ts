@@ -4,8 +4,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
-import { creditFinding, monthSpend } from "../backend/credit.ts";
-import { amendIssue, type Ask, citedItems, composeIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
+import { MODELS } from "@aihot/backend/providers/llm";
+import { answerText, CACHE_TTL, joined, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
+import { amendIssue, type Ask, checkIssue, citedItems, composeIssue, edit, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -21,7 +23,8 @@ const issue = (title: string, news: string): IssueText => ({
 /** A model that answers each purpose from a script and records what it was asked. */
 function scripted(answers: Partial<Record<string, (user: string, attempt?: string) => unknown>>) {
   const calls: Array<{ purpose: string; user: string; attempt?: string }> = [];
-  const ask: Ask = async (purpose, _system, user, schema, attempt) => {
+  const ask: Ask = async (purpose, _system, parts, schema, attempt) => {
+    const user = joined(parts);
     calls.push({ purpose, user, attempt });
     // The read for the ear leaves a draft as written, the listener scores none, and the last read for omissions finds nothing, unless a test scripts them.
     const answer = answers[purpose] ?? (purpose === "reference_issue_review" ? () => ({ problems: [] }) : purpose === "reference_issue_listen" ? () => ({ scores: [] })
@@ -393,14 +396,69 @@ test("a fix to the preview stays in the preview, though the preview repeats a ne
   assert.equal(out.preview, "今天先说几条快讯：快乐蜂在菲律宾圈出1500个潜在商圈；喜茶重新开放加盟。");
 });
 
-test("the Claude credit warns at 80% spent, or once the month's pace would go over it, and not before", () => {
+test("the Claude credit warns at 80% spent, or once the period's pace would go over it, and not before", () => {
+  // US$100 a month as the standard (Kay 11-02 19:31), renewing on the 4th, so 11-02 still counts from 10-04.
   const nov = (d: number) => new Date(Date.UTC(2026, 10, d, 2));
+  assert.equal(creditPeriod(nov(2)).start, Date.UTC(2026, 9, 4));
+  assert.equal(creditPeriod(nov(4)).start, Date.UTC(2026, 10, 4));
   assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000 }]), 6);
-  assert.equal(creditFinding(20, nov(2)), null, "two days say too little about the month");
-  assert.equal(creditFinding(20, nov(10)), null, "US$20 nine days in is about US$66 for the month");
-  const pace = creditFinding(40, nov(10));
+  // Of a million read in: 100k written for an hour (2 × $4), 800k read from the cache ($0.20), 100k plain.
+  assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000, cacheRead: 800_000, write1h: 100_000 }]).toFixed(2), "3.36", "0.4 plain + 0.16 read + 0.8 written + 2 output");
+  assert.equal(creditFinding(20, nov(6)), null, "two days say too little about the period");
+  assert.equal(creditFinding(20, nov(13)), null, "US$20 nine days in is about US$66 for the period");
+  const pace = creditFinding(40, nov(13));
   assert.equal(pace?.level, "today");
   assert.ok(pace?.impact?.includes("整月约 US$132"), String(pace?.impact));
-  assert.equal(creditFinding(81, nov(28))?.level, "today");
-  assert.equal(creditFinding(96, nov(28))?.level, "now");
+  assert.equal(creditFinding(81, nov(2))?.level, "today", "late in the period that began 10-04");
+  assert.equal(creditFinding(96, nov(2))?.level, "now");
+  assert.equal(creditFinding(161, nov(2), { monthly: 200, renewsOn: 4 })?.level, "today", "the setting's credit");
+});
+
+test("the check sends the originals first, in number order, as the part Claude caches; the draft comes after", async () => {
+  const sent: Array<string | Parts> = [];
+  const ask: Ask = async (_purpose, _system, user, schema) => { sent.push(user); return schema.parse({ lively: 7, problems: [] }); };
+  await checkIssue({ ...issue("t", "先说〔3〕，再说〔1〕。"), deep: "细说〔4〕" }, ITEMS, ask);
+  await checkIssue({ ...issue("t", "改过了，先说〔1〕，再说〔3〕。"), deep: "细说〔4〕" }, ITEMS, ask);
+  const [first, second] = sent as Parts[];
+  assert.equal(typeof first, "object");
+  assert.ok(first!.cached.indexOf("〔1〕") < first!.cached.indexOf("〔3〕") && first!.cached.indexOf("〔3〕") < first!.cached.indexOf("〔4〕"), "in number order, not the order the draft cites them");
+  assert.equal(second!.cached, first!.cached, "a mended draft citing the same originals sends them byte for byte the same, so the second check reads the cache");
+  assert.ok(first!.rest.startsWith("这一期：") && !first!.cached.includes("先说"), "the draft, which changes every round, is not in the cached part");
+});
+
+test("the Messages request marks only the cached part, for an hour, and leaves thinking and sampling to the model's defaults", () => {
+  const opus = MODELS["claude-opus-5-5"]!;
+  const body = messagesBody(opus, "核对员", { cached: "原文", rest: "稿子" }, 8000) as { max_tokens: number; system: string; messages: Array<{ content: Array<Record<string, unknown>> }> } & Record<string, unknown>;
+  assert.deepEqual(body.messages[0]!.content, [
+    { type: "text", text: "原文", cache_control: { type: "ephemeral", ttl: CACHE_TTL } },
+    { type: "text", text: "稿子" },
+  ]);
+  assert.equal(body.max_tokens, 8000 + 12000, "the same room as before: the answer and the preset's thinking");
+  assert.equal(body.system, "核对员");
+  assert.ok(!("thinking" in body) && !("temperature" in body), "Opus 5.5 thinks adaptively at its default effort, as it did through the compatible endpoint");
+  assert.deepEqual((messagesBody(opus, "s", "一段", 8000) as { messages: Array<{ content: unknown }> }).messages[0]!.content, [{ type: "text", text: "一段" }], "a plain string is not cached");
+  assert.deepEqual((messagesBody(MODELS["claude-haiku-5-5"]!, "s", "一段", 8000) as { thinking?: unknown }).thinking, { type: "disabled" }, "a preset's own thinking goes through");
+  assert.deepEqual(usageOf({ input_tokens: 100, cache_creation_input_tokens: 30_000, cache_read_input_tokens: 0, output_tokens: 9000 }),
+    { input_tokens: 100, cache_creation_input_tokens: 30_000, cache_read_input_tokens: 0, output_tokens: 9000, prompt_tokens: 30_100, completion_tokens: 9000 });
+  assert.equal(answerText({ content: [{ type: "thinking", text: "" }, { type: "text", text: "{\"a\":" }, { type: "text", text: "1}" }] }), "{\"a\":1}");
+});
+
+test("on the shared layout the check, the last read and the editor send the same cached originals and no system prompt", async () => {
+  const sent: Array<{ system: string; user: string | Parts }> = [];
+  const ask: Ask = async (purpose, system, user, schema) => {
+    sent.push({ system, user });
+    return schema.parse(purpose === "reference_issue_edit" ? issue("t", "说了〔1〕。") : { lively: 7, problems: [] });
+  };
+  const draft = issue("t", "先说〔3〕，再说〔1〕。");
+  await checkIssue(draft, ITEMS, ask, "shared");
+  await reviewIssue(draft, ITEMS, ask, "shared");
+  await edit({ issue: draft, lively: 7, problems: [{ rule: 1, quote: "先说〔3〕，再说〔1〕。", why: "不对" }], edited: false }, ITEMS, ask, "e", "shared");
+  const parts = sent.map((x) => x.user as Parts);
+  assert.ok(sent.every((x) => x.system === ""), "no system prompt, so nothing ahead of the originals differs");
+  assert.ok(parts.every((p) => p.cached === parts[0]!.cached), "one cached part for all three");
+  assert.ok(parts[0]!.rest.startsWith("你是「十一说」的核对员") && parts[2]!.rest.includes("核对员挑出的问题"), "each step's prompt comes after the originals");
+  // The layout in use is unchanged: the step's prompt is the system prompt.
+  sent.length = 0;
+  await reviewIssue(draft, ITEMS, ask);
+  assert.ok(sent[0]!.system.startsWith("你是") && typeof sent[0]!.user === "string");
 });

@@ -28,13 +28,13 @@ function TwoAsks() {
     </g>
   );
   return (
-    <svg viewBox="0 0 320 136" role="img" aria-label="示意图：服务员泛泛地问客人还要不要别的，和具体推荐一样菜并说明为什么合适" className="block w-full">
+    <svg viewBox="0 0 320 136" role="img" aria-label="示意图：服务员泛泛地询问客人是否还需要别的，和具体推荐一道菜并说明为什么合适" className="block w-full">
       {person(26)}
       <text x="26" y="110" textAnchor="middle" style={text}>服务员</text>
       <text x="64" y="16" style={text}>泛泛地问</text>
       <path d="M64 24 H316 V56 H76 L64 64 Z" style={box} />
       <text x="78" y="46" style={{ ...text, fill: "var(--ink-2)" }}>「还要点别的吗？」</text>
-      <text x="64" y="84" style={{ ...strong, fill: accent, fontSize: 14 }}>具体推荐一样</text>
+      <text x="64" y="84" style={{ ...strong, fill: accent, fontSize: 14 }}>具体推荐一道菜</text>
       <path d="M64 92 H316 V124 H76 L64 132 Z" style={soft} />
       <text x="78" y="114" style={{ ...strong, fill: accent, fontSize: 14 }}>「这道菜配冰茶，解辣」</text>
     </svg>
@@ -64,6 +64,6 @@ function SetMeal() {
 
 export const sections: Record<string, Section> = {
   "menu-design": { kind: "示意", caption: "客人看菜单，先看到的是最显眼的那一块。想多卖的菜放在那里，其余的菜排在下面。", draw: () => <FirstSeen /> },
-  "staff-suggest": { kind: "示意", caption: "同一句推荐，可以泛泛地问客人还要不要别的，也可以具体推荐一样菜，并说清楚为什么合适。图中的话只是示意。", draw: () => <TwoAsks /> },
+  "staff-suggest": { kind: "示意", caption: "同样是推荐，可以泛泛地询问客人是否还需要别的，也可以具体推荐一道菜，并说清楚为什么合适。图中的话只是示意。", draw: () => <TwoAsks /> },
   "bundles": { kind: "举例", caption: "假设你的餐饮店一份主食卖 25\u00a0元，加 6\u00a0元可以配一杯饮料和一份小菜，套餐 31\u00a0元。点套餐的客人，每人多花 6\u00a0元。", draw: () => <SetMeal /> },
 };

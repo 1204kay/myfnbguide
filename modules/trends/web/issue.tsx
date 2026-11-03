@@ -31,7 +31,7 @@ const day = (date: string) => `${Number(date.slice(5, 7))} 月 ${Number(date.sli
 const span = (i: TrendsIssue) => `${day(i.periodStart)} – ${day(i.periodEnd)}`;
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
-  if (!data) return [{ title: titled("没有这一周") }, { name: "robots", content: "noindex" }];
+  if (!data) return [{ title: titled("该周不存在") }, { name: "robots", content: "noindex" }];
   const { issue } = data;
   return pageMeta({
     title: `${TITLE} · ${span(issue)}`,
@@ -54,7 +54,7 @@ export default function TrendsIssueRoute() {
           <div className="py-6 @[880px]:py-8">
             <h1 id="report-start" data-page-title="" className="text-[32px] font-black leading-[1.2] tracking-[-0.02em] text-ink @[880px]:text-[44px]">{TITLE}</h1>
             <p className="mt-4 max-w-[46em] text-[15.5px] leading-[1.9] text-ink-2">
-              这一周里，三家以上的来源各自讲到同一件事。每家一句，只说那篇原文自己说的，不替它们下结论；点标题看我们收录的那条，点原文看原话。
+              这一周里，三家以上的来源各自谈到同一件事。每个来源一句，只转述该原文的内容，不替它们下结论；点击标题查看本站收录的条目，点击「原文」查看原文。
             </p>
           </div>
           <div aria-hidden="true" className="border-t border-line-strong" />

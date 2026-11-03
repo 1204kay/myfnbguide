@@ -44,8 +44,8 @@ export function BeforeAfter({ rows, label }: { rows: Array<[string, string, stri
   return (
     <svg viewBox={`0 0 320 ${rows.length * 44 + 22}`} role="img" aria-label={label} className="block w-full">
       <defs><marker id="sec-ba-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: accent }} /></marker></defs>
-      <text x="124" y="13" textAnchor="middle" style={text}>以前</text>
-      <text x="262" y="13" textAnchor="middle" style={{ ...text, fill: accent, fontWeight: 600 }}>改了以后</text>
+      <text x="124" y="13" textAnchor="middle" style={text}>调整前</text>
+      <text x="262" y="13" textAnchor="middle" style={{ ...text, fill: accent, fontWeight: 600 }}>调整后</text>
       {rows.map(([what, before, after], i) => (
         <g key={what}>
           <text x="0" y={i * 44 + 46} style={strong}>{what}</text>

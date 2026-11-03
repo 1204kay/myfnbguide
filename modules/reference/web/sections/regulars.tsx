@@ -27,10 +27,10 @@ function Reminder() {
 function StampCard() {
   const stamped = 6;
   return (
-    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：一张集点卡，每来一次盖一个章，集满换奖励；积分、储值和会员俱乐部也是给客人一个再来的理由" className="block w-full">
+    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：一张集点卡，每次消费盖一个章，集满换奖励；积分、储值和会员俱乐部也是给客人一个再来的理由" className="block w-full">
       <rect x="2" y="2" width="316" height="104" rx="10" style={box} />
       <text x="18" y="28" style={strong}>集点卡</text>
-      <text x="302" y="28" textAnchor="end" style={text}>每来一次盖一个章</text>
+      <text x="302" y="28" textAnchor="end" style={text}>每次消费盖一个章</text>
       {Array.from({ length: 10 }, (_, i) => {
         const cx = 34 + (i % 5) * 50;
         const cy = 56 + Math.floor(i / 5) * 32;
@@ -49,11 +49,11 @@ function StampCard() {
 
 /** 记住客人: what a shop writes down about a regular, and the question it asks next time. */
 function Remember() {
-  const rows: Array<[string, string]> = [["名字", "怎么称呼"], ["常点", "上次点的菜"], ["口味", "少辣、不要葱"]];
+  const rows: Array<[string, string]> = [["名字", "如何称呼"], ["常点", "上次点的菜"], ["口味", "少辣、不要葱"]];
   return (
     <svg viewBox="0 0 320 150" role="img" aria-label="示意图：记下常客的名字、常点的菜和口味，下次来时主动问：还是和上次一样吗" className="block w-full">
       <rect x="2" y="6" width="176" height="138" rx="8" style={box} />
-      <text x="16" y="30" style={strong}>常客本子</text>
+      <text x="16" y="30" style={strong}>常客记录簿</text>
       {rows.map(([name, what], i) => (
         <g key={name}>
           <path d={`M16 ${i * 34 + 44} H164`} style={{ stroke: "var(--line)" }} />

@@ -3,9 +3,9 @@ import { text, strong, accent, box, soft, Eg, type Section } from "./kit";
 
 /** 钱被什么占住: what holds the cash (slow stock, paying before the goods come) and the change that frees it. */
 function CashBack() {
-  const rows: Array<[string, string]> = [["卖不动的库存", "降价清掉"], ["先付款再到货", "改成货到付款"]];
+  const rows: Array<[string, string]> = [["滞销库存", "降价清理"], ["先付款再到货", "改为货到付款"]];
   return (
-    <svg viewBox="0 0 320 112" role="img" aria-label="示意图：卖不动的库存降价清掉，先付款再到货改成货到付款，占住的钱换回现金" className="block w-full">
+    <svg viewBox="0 0 320 112" role="img" aria-label="示意图：滞销库存降价清理，先付款再到货改为货到付款，让占用的资金回笼" className="block w-full">
       <defs><marker id="cf-tied-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: accent }} /></marker></defs>
       {rows.map(([held, change], i) => (
         <g key={held}>
@@ -28,7 +28,7 @@ function MonthsKept() {
   const w = 48;
   const x = (m: number) => m * (w + 6);
   return (
-    <svg viewBox="0 0 320 128" role="img" aria-label="举例：每月开支 20,000 元，至少留 3 个月 60,000 元，最好留到 6 个月 120,000 元" className="block w-full">
+    <svg viewBox="0 0 320 128" role="img" aria-label="举例：每月开支 20,000 元，至少预留 3 个月 60,000 元，最好预留到 6 个月 120,000 元" className="block w-full">
       <text x="0" y="17" style={strong}>每月开支 20,000 元</text>
       <Eg x={146} y={16} />
       {[0, 1, 2, 3, 4, 5].map((m) => (
@@ -47,6 +47,6 @@ function MonthsKept() {
 }
 
 export const sections: Record<string, Section> = {
-  "cash-tied-up": { kind: "示意", caption: "卖不动的库存和先付出去的货款都占着现金。几家店的做法是把放久了的货降价清掉、跟供货商改成货到付款、收紧补货点，让钱回到手上；缺口已经出现时，有的店先用短期借款补上。", draw: () => <CashBack /> },
-  reserve: { kind: "举例", caption: "假设你的餐饮店每月房租、工资、进货等开支合计 20,000 元。按几位老板的建议手上至少留 3 个月，就是 60,000 元；留到 6 个月是 120,000 元。有的店从开业起每月固定存一笔，钱紧时再调低。", draw: () => <MonthsKept /> },
+  "cash-tied-up": { kind: "示意", caption: "滞销库存和预付货款都会占用现金。几家店的做法是把积压的货品降价清理、与供货商改为货到付款、收紧补货点，让现金回笼；缺口已经出现时，有的店先用短期借款补上。", draw: () => <CashBack /> },
+  reserve: { kind: "举例", caption: "假设你的餐饮店每月房租、工资、进货等开支合计 20,000 元。按几位老板的建议，至少预留 3 个月的开支，共 60,000 元；预留 6 个月是 120,000 元。有的店从开业起每月固定存一笔，资金紧张时再调低。", draw: () => <MonthsKept /> },
 };

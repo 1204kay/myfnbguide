@@ -21,16 +21,18 @@ export const scriptLines = (script: string) => script.split(/\n+/u).map((l) => l
  * of the 文字稿 (backend/voice.ts joinLines; lineStarts for audio read before it), lets the 文字稿 follow the voice;
  * otherwise it is shown whole.
  */
-export async function issueAudio(no: number): Promise<{ url: string; seconds: number; transcript: string[] | null; starts?: number[] } | null> {
+export async function issueAudio(no: number): Promise<{ url: string; seconds: number; transcript: string[] | null; starts?: number[]; pauses?: Array<[number, number]> } | null> {
   try {
     const [meta] = await Promise.all([readFile(path.join(DIR, `${no}.json`), "utf8"), stat(path.join(DIR, `${no}.mp3`))]);
-    const json = JSON.parse(meta) as { seconds?: unknown; starts?: unknown };
+    const json = JSON.parse(meta) as { seconds?: unknown; starts?: unknown; pauses?: unknown };
     const seconds = Number(json.seconds);
     if (!Number.isFinite(seconds) || seconds <= 0) return null;
     const script = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
     const lines = scriptLines(script);
     const starts = Array.isArray(json.starts) && json.starts.length === lines.length && json.starts.every((t) => typeof t === "number") ? json.starts as number[] : undefined;
-    return { url: `/api/reference/issues/${no}/audio.mp3`, seconds: Math.round(seconds), transcript: lines.length ? lines : null, ...(starts && lines.length ? { starts } : {}) };
+    // Where the voice is quiet (voice.ts followTimes), so the 文字稿 lights only while she speaks.
+    const pauses = Array.isArray(json.pauses) && json.pauses.every((p) => Array.isArray(p) && p.length === 2 && p.every((t) => typeof t === "number")) ? json.pauses as Array<[number, number]> : undefined;
+    return { url: `/api/reference/issues/${no}/audio.mp3`, seconds: Math.round(seconds), transcript: lines.length ? lines : null, ...(starts && lines.length ? { starts, ...(pauses ? { pauses } : {}) } : {}) };
   } catch {
     return null;
   }

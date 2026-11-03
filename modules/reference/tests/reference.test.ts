@@ -117,15 +117,17 @@ after(async () => { installModules([]); await app.close(); await model.close(); 
 
 test("the pages list the stories' items by cause under the items' own titles, a situation once enough shops tell it", async () => {
   const thin = await get("/api/reference");
-  assert.deepEqual([thin.categories, thin.totals.situations], [[], 0], "two shops are no page in the lists where they ask for five");
-  LISTED.fromShops = 2;
+  assert.deepEqual([thin.categories, thin.totals.situations], [[], 0], "three items are no page in the lists where they ask for eight");
+  // The stories here are three: the rest reads the lists as they are from two.
+  LISTED.fromCases = 2;
   const home = await get("/api/reference");
   const cost = home.categories.find((c: { key: string }) => c.key === "cost");
   assert.deepEqual(cost.situations.map((s: { slug: string; count: Count }) => [s.slug, s.count]),
     [["busy-no-profit", { shops: 2, insiders: 0, cases: 3 }]], "the bistro's two items one shop; the held case not counted");
   assert.deepEqual(home.ranking.map((s: { slug: string }) => s.slug), ["busy-no-profit"]);
-  assert.deepEqual(home.totals, { situations: 1, cases: 4 }, "every story shown, in a situation or not");
+  assert.deepEqual(home.totals, { situations: 1, cases: 3 }, "the story placed in no situation is on no page and not counted");
   assert.equal("recent" in home, false, "no 最近收进: it was the newest story");
+  for (const gone of ["/api/reference/kinds/dining", "/api/reference/kinds/coffee"]) assert.equal((await app.inject(gone)).statusCode, 404, `${gone}: no shop kinds' pages`);
 
   const page = await get("/api/reference/situations/busy-no-profit");
   assert.deepEqual(page.count, { shops: 2, insiders: 0, cases: 3 });
@@ -162,7 +164,7 @@ test("the pages list the stories' items by cause under the items' own titles, a 
   const after = await get("/api/reference");
   assert.deepEqual([after.categories, after.ranking], [[], []], "one shop left is not in the lists");
   await sql`UPDATE publications SET visibility = 'public' WHERE article_id IN (${ids.SECOND!}, ${ids.COFFEE!})`;
-  LISTED.fromShops = 5;
+  LISTED.fromCases = 8;
 });
 
 test("a day is dated with the year only when it is another", () => {
@@ -203,8 +205,8 @@ test("an item without a story is placed in one situation and group of the list, 
   assert.deepEqual(placing, { placed: 2, none: 2, waiting: 0 }, "P2 and the held case, which fit none here");
 
   // Agents read the library by situation (backend/agent.ts): its items with their links to the item and the original.
-  // P1's owner is the one shop of 招人 here: listed from one.
-  LISTED.fromShops = 1;
+  // P1 is the one item of 招人 here: listed from one.
+  LISTED.fromCases = 1;
   const library = AGENT_ABILITIES.find((a) => a.path === "/reference")!;
   assert.ok((await app.inject("/api/v1/agent/reference")).body.includes("situation=hiring"), "the list names the situation by its slug");
   const hiring = (await library.mcp.run({ situation: "hiring" })).text;

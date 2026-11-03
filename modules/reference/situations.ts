@@ -1,6 +1,7 @@
 // What a small restaurant owner runs into, in six groups: the skeleton the reference pages hang on. Each
 // situation has a page; its groups are the causes or ways in that its cases fall under. Slugs and keys
-// are addresses and stored placements: never renamed once public (a title may change). Read by the case
+// are addresses and stored placements: never renamed once public (a title may change); a group is dropped only once its
+// placements are moved (11-03: myfnb/replace-placements-2026-11-03.ts). Read by the case
 // writer (which places each case) and by the pages.
 
 export interface SituationGroup {
@@ -35,14 +36,13 @@ const g = (key: string, title: string, line: string): SituationGroup => ({ key, 
 export const SITUATIONS: Situation[] = [
   // 成本与利润
   { slug: "busy-no-profit", category: "cost", title: "生意很忙，钱却留不下来", dek: "客人不少、订单不断，月底却没剩多少钱。钱从哪里漏掉，各地店家怎么堵住。", groups: [
+    g("where-it-leaks", "先找出钱漏在哪里", "营业额在涨、钱却没剩下的店，常有几个共同点"),
     g("food-over-recipe", "食材用得比配方多", "分量、浪费、进货出错，差出来的钱没有变成营业额"),
     g("fixed-costs-creep", "固定费用悄悄上涨", "每月自动付的钱，一次涨一点，几年就是一大笔"),
-    g("commission-rent", "抽成和房租太重", "订单再多，扣掉平台抽成和房租也可能不够"),
   ] },
   { slug: "read-the-numbers", category: "cost", title: "看不懂自己的账", dek: "营业额天天看，利润、毛利、保本点却说不清。各地店主每月先看哪几个数。", groups: [
     g("monthly-numbers", "每月先看的几个数", "营业额以外，哪几个数字说明店里的钱怎么样"),
     g("margin-breakeven", "毛利和保本点", "每份赚多少，一个月至少要卖多少"),
-    g("profit-vs-cash", "账上的利润和手上的现金", "账上赚了，手上的钱却不够用"),
   ] },
   { slug: "ingredient-prices-up", category: "cost", title: "食材涨价，售价跟不跟着调", dek: "主要食材一涨再涨，自己承担还是让客人分担。", groups: [
     g("measure-the-hit", "先算清楚影响多大", "涨的是哪几样，占每份成本多少"),
@@ -62,8 +62,7 @@ export const SITUATIONS: Situation[] = [
   ] },
   { slug: "waste", category: "cost", title: "浪费和损耗太多", dek: "备多了扔，备少了缺，过期和报损一直发生。", groups: [
     g("ordering-prep", "订货和备料", "按什么决定订多少、备多少"),
-    g("storage", "储存和先进先出", "标日期、分区放，过期的少了"),
-    g("reuse", "剩下的食材怎么处理", "边角料和当天没卖完的"),
+    g("storage", "储存、先进先出和剩料", "标日期、分区放；边角料和当天没卖完的怎么用"),
   ] },
   { slug: "rent", category: "cost", title: "房租太高或要涨", dek: "房租占营业额越来越多，续约时房东又要加价。", groups: [
     g("negotiate", "续约前怎么谈", "提前多久谈、拿什么谈"),
@@ -122,10 +121,11 @@ export const SITUATIONS: Situation[] = [
     g("delegate", "把工作交出去", "交给谁、怎么交、交了以后怎么看"),
     g("owner-time", "老板自己的时间和健康", "休息、家人和长期的打算"),
   ] },
-  { slug: "partners", category: "people", title: "合伙开店", dek: "合伙人怎么选、钱和权怎么分、不合时怎么拆伙。", groups: [
+  { slug: "partners", category: "people", title: "合伙开店", dek: "合伙人怎么选、钱和权怎么分、不合时怎么拆伙。夫妻一起开店，也是合伙。", groups: [
     g("choose", "怎么选合伙人", "合得来的朋友不一定是好的合伙人"),
     g("split", "怎么分钱分工", "出钱、出力、做决定，事先说清楚"),
     g("exit", "怎么拆伙", "退出的规则先写好"),
+    g("couples", "夫妻一起开店", "怎么分工、怎么分钱，在店里怎么不吵架"),
   ] },
 
   // 顾客与营销
@@ -134,15 +134,15 @@ export const SITUATIONS: Situation[] = [
     g("loyalty", "会员和积分", "积分、储值、会员俱乐部"),
     g("recognize", "记住客人", "叫得出名字、记得他点什么"),
   ] },
-  { slug: "slow-weekdays", category: "customers", title: "周末满，平日冷清", dek: "周末排队，平日空着一半的座位。", groups: [
+  { slug: "slow-weekdays", category: "customers", title: "周末满，平日冷清", dek: "周末排队，平日空着一半的座位；淡季和雨天也一样冷清。", groups: [
     g("weekday-reasons", "给平日一个来的理由", "只在平日有的东西"),
     g("time-pricing", "按时段定价和套餐", "冷清的时段卖什么、卖多少钱"),
     g("new-guests", "找新的客群", "平日有空的是哪些人"),
+    g("slow-seasons", "淡季、雨天和节日", "整个季节、坏天气或节日前后客人都少的时候"),
   ] },
   { slug: "bad-reviews", category: "customers", title: "遇到差评", dek: "网上一条差评，影响新客人的判断。", groups: [
     g("respond", "怎么回复", "回不回、怎么回、多快回"),
-    g("find-cause", "找出原因", "差评里说的是不是真的问题"),
-    g("prevent", "避免再发生", "改流程，而不只是道歉"),
+    g("find-cause", "找出原因、改流程", "差评里说的是不是真的问题，改了流程才不会再发生"),
   ] },
   { slug: "small-budget-marketing", category: "customers", title: "营销预算很少", dek: "钱不多，不知道该花在社交媒体、平台广告还是店门口。", groups: [
     g("first-moves", "先做什么", "钱少时最先花在哪里"),
@@ -160,9 +160,8 @@ export const SITUATIONS: Situation[] = [
     g("kitchen-flow", "厨房和人手接得住吗", "堂食和外带挤在同一个厨房"),
   ] },
   { slug: "competition", category: "customers", title: "附近开了竞争对手", dek: "隔壁开了同类的店，或大品牌降价抢客人。", groups: [
-    g("no-price-war", "不打价格战的做法", "不降价，留住客人"),
+    g("no-price-war", "不打价格战的做法", "不跟着降价也留住客人；对手降价、打折以后怎么办"),
     g("be-different", "找出自己的不同", "客人为什么来你这里"),
-    g("price-war", "遇到价格战", "大品牌下沉、降价以后"),
   ] },
   { slug: "ticket-size", category: "customers", title: "客单价太低", dek: "客人不少，每人花的钱却不多。", groups: [
     g("menu-design", "菜单设计", "放在显眼位置的是哪些菜"),
@@ -208,8 +207,7 @@ export const SITUATIONS: Situation[] = [
   ] },
   { slug: "equipment", category: "operations", title: "设备怎么选、坏了怎么办", dek: "设备一坏，生意就停。", groups: [
     g("choose", "怎么选", "买新的、买二手还是租"),
-    g("maintain", "保养", "定期做的保养"),
-    g("breakdown", "坏了以后", "临时的办法和维修"),
+    g("maintain", "保养和维修", "定期做的保养，坏了以后的临时办法和维修"),
   ] },
   { slug: "front-of-house", category: "operations", title: "点餐、上菜、结账太慢", dek: "厨房出得了，客人却在等点餐、等上菜、等结账。", groups: [
     g("ordering", "点餐", "点餐方式和菜单"),
@@ -219,14 +217,14 @@ export const SITUATIONS: Situation[] = [
 
   // 开店与关店
   { slug: "opening-cost", category: "open-close", title: "开一家店要多少钱", dek: "装修、设备、押金、开业前的周转金，加起来常常超出预算。", groups: [
+    g("before-opening", "开店前先想清楚", "自己适不适合开店，开之前要准备什么"),
     g("build-out", "装修和设备", "最大的一笔开支"),
     g("working-capital", "开业前后的周转金", "开业以后几个月还要付的钱"),
     g("by-format", "不同店型的开店成本", "摊位、小店、正式餐厅各要多少"),
   ] },
   { slug: "location", category: "open-close", title: "店开在哪里", dek: "位置决定了客流，也决定了房租。", groups: [
-    g("traffic", "看客流", "什么时段、什么人经过"),
+    g("traffic", "看客流和周边", "什么时段、什么人经过，附近有哪些店和住户"),
     g("lease", "租约条款", "签约前要看清楚的地方"),
-    g("neighborhood", "周边和竞争", "附近的店和住户"),
   ] },
   { slug: "first-months", category: "open-close", title: "开业头几个月", dek: "开业后客人不如预期，或忙到顾不过来。", groups: [
     g("soft-opening", "试营业", "正式开业前先试"),
@@ -266,7 +264,7 @@ export const SITUATIONS: Situation[] = [
     g("using-data", "用好系统里的数字", "销量、时段、客人"),
   ] },
   { slug: "ai-tools", category: "tools-rules", title: "用 AI 处理店里的事", dek: "记账、写菜单、排班、回复评价，各地店家让 AI 做到了哪一步。", groups: [
-    g("numbers", "整理数字", "账、费用和销量"),
+    g("numbers", "整理数字和表格", "账、费用、销量、考勤和排班"),
     g("writing", "文案和菜单", "菜单、介绍、回复"),
     g("training", "带新人和对练", "训练和问答"),
   ] },
@@ -293,7 +291,7 @@ export const SITUATIONS: Situation[] = [
   { slug: "online-presence", category: "tools-rules", title: "地图、点评网站和自己的网页", dek: "很多客人先在地图和点评网站上找到你。", groups: [
     g("maps", "地图和店铺资料", "营业时间、照片、菜单"),
     g("review-sites", "点评网站", "上面的资料和评价"),
-    g("website", "自己的网页和订位", "不经过平台的入口"),
+    g("website", "自己的网页、订位和取消", "不经过平台的入口；订了不来、临时取消怎么办"),
   ] },
 ];
 

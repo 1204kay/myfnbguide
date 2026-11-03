@@ -79,13 +79,14 @@ async function casesShown(where: ReturnType<typeof sql>, now: Date): Promise<Row
 }
 
 /**
- * A situation is in the lists (home, sitemap, 看全部 N 种情况) once this many shops tell it, counted as every count is
- * (tellerOf; an adviser, a vendor or a publication is no shop): a thinner one reads as a page of one or two shops (HANDOFF §9.2,
- * 只展示够厚的情况). Its page opens before that.
+ * A situation is in the lists (home, sitemap, 看全部 N 种情况) once this many items are placed in it: a thinner one
+ * reads as a page of a few items. Its page opens before that. Counted by shops until 11-03 (HANDOFF §9.2), which the
+ * stories told; since they are folded the items come mostly from media and advisers, and 订货和库存 with 13 items sat
+ * hidden while 用 AI 处理店里的事 with 10 was listed (全面整理 11-03, 块 A).
  */
-export const LISTED = { fromShops: 5 };
+export const LISTED = { fromCases: 8 };
 
-const isListed = (rows: Row[] | undefined) => countOf(rows ?? []).shops >= LISTED.fromShops;
+const isListed = (rows: Row[] | undefined) => (rows?.length ?? 0) >= LISTED.fromCases;
 
 /** "意大利酒馆店主" of "料理画家クチーナカメヤマ（日本 · 意大利酒馆店主）": what the source is, after its country. */
 export function sourceKind(name: string): string | null {
@@ -207,7 +208,8 @@ export async function readHome(now = new Date()): Promise<ReferenceHome> {
       key: c.key, title: c.title, situations: shown.filter((s) => s.category === c.key).map((s) => listed.get(s.slug)!).sort(byShops),
     })).filter((c) => c.situations.length),
     ranking: rankSituations([...listed.values()]),
-    totals: { situations: shown.length, cases: rows.length },
+    // The items in no situation (moved out of the library 11-03, 块 A) are on no page: not counted.
+    totals: { situations: shown.length, cases: rows.filter((r) => r.situations.length).length },
     updatedAt: latest(rows.map((r) => r.updated_at)),
   };
 }

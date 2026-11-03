@@ -205,13 +205,13 @@ async function read(script: string, subject: string, attempt: number, voice = VO
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
   let rate = 0;
   let calls = 0;
-  const say = async (line: string, n: number, seed: number): Promise<Int16Array> => {
+  const say = async (line: string, n: number, seed: number, relink?: number, hops = 0): Promise<Int16Array> => {
     // A line every 1.1 s keeps under the `speech-qwen` row's 60 a minute: 11-01 23:09 issue 2 read its first 60 lines in
     // 45 s and the 61st was refused (Budget for speech-qwen exhausted (minute)), and a 3,350-character issue runs past 60.
     if (calls++ > 0) await sleep(1_100);
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt, ...(seed ? { seed } : {}) }, requestSummary: { chars: line.length, n, attempt, ...(seed ? { seed } : {}) } },
+      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt, ...(seed ? { seed } : {}) }, requestSummary: { chars: line.length, n, attempt, ...(seed ? { seed } : {}) }, ...(relink ? { attemptTag: `relink:${relink}` } : {}) },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
         // seed sits in `input` with the SDK's other parameters, as sample_rate does (it reads at 24 kHz, not its 22,050).
@@ -237,7 +237,14 @@ async function read(script: string, subject: string, attempt: number, voice = VO
     url ??= (receipt.response as { url?: string } | null)?.url;
     if (!url) throw new Error(`speech-qwen: line ${n + 1} has no audio`);
     const got = await fetch(url, { signal: AbortSignal.timeout(120_000) });
-    if (!got.ok) throw new Error(`speech-qwen: line ${n + 1} audio ${got.status} (the link lasts 24 h)`);
+    if (!got.ok) {
+      // The identity has no issue number or date, so a line read before (same words, place and attempt, e.g. an
+      // unchanged line of an issue read again from its revised script) reuses that receipt and its link, which lasts
+      // 24 h. Such a link gone, the line is asked for again under a tag naming that receipt; a later run finds the same
+      // chain, and the step past its last (also gone) link is a new request.
+      if (got.status >= 400 && got.status < 500 && receipt.reused && hops < MAX_READS) return say(line, n, seed, receipt.receiptId, hops + 1);
+      throw new Error(`speech-qwen: line ${n + 1} audio ${got.status} (the link lasts 24 h)`);
+    }
     const wav = wavSamples(Buffer.from(await got.arrayBuffer()));
     if (rate && wav.rate !== rate) throw new Error(`speech-qwen: line ${n + 1} at ${wav.rate} Hz, the others ${rate}`);
     rate = wav.rate;

@@ -160,21 +160,21 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
   // No checker: a trial for how it reads (writeOnly), not for putting up.
   if (!check) return { lines, rounds };
+  // The last script that was wrong only in how it reads: a 拗口 fix can drop a 保留 the next round calls 误导, and that
+  // must not stop an issue the same script would have passed with before 拗口 was checked (review of #203).
+  let onlyStiff: string[] | null = null;
   for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { writeChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
-    if (round === MENDS) {
-      rounds.push({ problems, applied: 0 });
-      // 拗口 is how a line sounds, not what it says (Kay 11-03 18:20: nothing checked how a script reads aloud): its fixes
-      // go in and are checked again like the others, but a line still 拗口 after the last round does not stop the issue.
-      if (problems.every((p) => p.kind === AWKWARD)) return { lines, rounds };
-      break;
-    }
+    // 拗口 is how a line sounds, not what it says (Kay 11-03 18:20: nothing checked how a script reads aloud): its fixes
+    // go in and are checked again like the others, but a line still 拗口 at the end does not stop the issue.
+    if (problems.every((p) => p.kind === AWKWARD)) onlyStiff = lines;
+    if (round === MENDS) { rounds.push({ problems, applied: 0 }); break; }
     const fixed = applyFixes(lines, problems);
     rounds.push({ problems, applied: fixed.applied });
     lines = fixed.lines;
   }
-  return { lines: null, rounds };
+  return { lines: onlyStiff, rounds };
 }
 
 /**

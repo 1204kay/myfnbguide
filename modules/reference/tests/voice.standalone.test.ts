@@ -66,6 +66,10 @@ test("the check's fixes go in line by line; still wrong after three mends, there
   const stillStiff = { problems: [{ kind: "拗口", line: "没有这一行", fix: "改顺", why: "念着别扭" }] };
   const left = scripted({ reference_issue_voice: [{ lines: ["该店表示涨价。"] }], reference_issue_voice_check: [stillStiff, stillStiff, stillStiff, stillStiff] });
   assert.deepEqual((await writeScript(ISSUE, "2026-10-31", left, left)).lines?.slice(1, -1), ["该店表示涨价。"]);
+  // A 拗口 fix that drops a 保留, still 误导 at the end: the script from before that fix goes out, not none.
+  const dropped = { problems: [{ kind: "误导", line: "甲涨了。", fix: "报道说甲涨了。", why: "保留" }] };
+  const lost = scripted({ reference_issue_voice: [{ lines: ["报道说，甲涨了价。"] }], reference_issue_voice_check: [{ problems: [{ kind: "拗口", line: "报道说，甲涨了价。", fix: "甲涨了。", why: "念着别扭" }] }, dropped, { problems: [{ kind: "误导", line: "报道说甲涨了。", fix: "报道说甲涨了。", why: "保留" }] }, dropped] });
+  assert.deepEqual((await writeScript(ISSUE, "2026-10-31", lost, lost)).lines?.slice(1, -1), ["报道说，甲涨了价。"]);
 });
 
 test("a script too long goes back to the writer with its length, then is checked", async () => {

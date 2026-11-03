@@ -64,11 +64,12 @@ if (restore) {
 }
 
 // from 为 null：第一遍移出参考库、复核后要放回去的条目。它现在没有放置，放置自带的字段（故事的 card、放置的 fit）
-// 从第一遍之前的整表备份里取，备份里也没有的不写。
-const back = ids.some((id) => !plan[id]!.from) ? new Map((await sql<Array<{ id: string; p: Record<string, unknown> | null }>>`
-  SELECT article_id AS id, story->'placements'->0 AS p FROM backup_ref_cases_20261103 WHERE status = 'story' AND article_id IN ${sql(ids)}
+// 从第一遍之前的整表备份里取，备份里也没有的不写。两张表都有的，按故事那一行（和上面读现在位置的规则一样）。
+const back = ids.some((id) => !plan[id]!.from) ? new Map((await sql<Array<{ id: string; p: Record<string, unknown> | null; o: number }>>`
+  SELECT article_id AS id, placements->0 AS p, 1 AS o FROM backup_ref_placements_20261103 WHERE article_id IN ${sql(ids)}
   UNION ALL
-  SELECT article_id, placements->0 FROM backup_ref_placements_20261103 WHERE article_id IN ${sql(ids)}`).filter((x) => x.p).map((x) => [x.id, x.p!])) : new Map<string, Record<string, unknown>>();
+  SELECT article_id, story->'placements'->0, 2 FROM backup_ref_cases_20261103 WHERE status = 'story' AND article_id IN ${sql(ids)}
+  ORDER BY o`).filter((x) => x.p).map((x) => [x.id, x.p!])) : new Map<string, Record<string, unknown>>();
 const todo: Now[] = [];
 const drift: string[] = [];
 for (const id of ids) {

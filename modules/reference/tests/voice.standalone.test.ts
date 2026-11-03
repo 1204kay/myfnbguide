@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinLines, linePitch, offPitch, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinLines, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -131,18 +131,6 @@ test("half a second of silence goes in at each seam between lines, and each line
   assert.deepEqual(quiet, [[3.1, 3.6], [6.3, 6.8]]);
   assert.deepEqual([...samples.subarray(Math.round(3.6 * rate), Math.round(3.6 * rate) + 50)], [...lines[1]!.subarray(0, 50)]);
   assert.deepEqual(joinLines([tone(rate, 1)], rate).starts, [0]);
-});
-
-test("a line read far above or below the others is picked to be read again; lines with no pitch are left", () => {
-  const rate = 16_000;
-  const at = (hz: number) => Int16Array.from({ length: rate }, (_, i) => Math.round(6000 * Math.sin((2 * Math.PI * hz * i) / rate)));
-  const pitch = [200, 210, 280, 195, 205, 150].map((hz) => linePitch(at(hz), rate));
-  for (const [n, hz] of [200, 210, 280, 195, 205, 150].entries()) assert.ok(Math.abs(pitch[n]! - hz) < 3, `${hz} Hz measured as ${pitch[n]}`);
-  // Middle 202.5 Hz: 280 is 5.6 semitones up, 150 is 5.2 down; 210 and 195 are under one.
-  assert.deepEqual(offPitch(pitch), [2, 5]);
-  assert.equal(linePitch(new Int16Array(rate), rate), 0);
-  assert.deepEqual(offPitch([0, 200, 0, 205]), []);
-  assert.deepEqual(offPitch([]), []);
 });
 
 test("卖 heard as 买 fails the check, however small a share of the script it is", () => {

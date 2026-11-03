@@ -51,8 +51,12 @@ case $verb in
     # 公司流水线看板（dino-valley company-view/board，css-cloud 每 10 分钟读一次）：从今天 08:00（马来西亚时间，即 UTC 0 点，
     # 和日报同一个分界）起收了几篇、打了分的几篇和分数分布、进精选几条，以及近 3 天跑过的每个任务最近一次的结果、
     # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss），Claude API 这一期和 7 天、DeepSeek 7 天的花费，
-    # 以及十一说念稿用掉的阿里云语音字数。只读账号，输出一行 JSON。
-    sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -v ON_ERROR_STOP=1 <<'SQL'
+    # 十一说念稿用掉的阿里云语音字数，各外部模型接口最近一次调用的结果，以及这台服务器根分区和内存的用量。只读账号，输出一行 JSON。
+    # 磁盘和内存在这里读（df、/proc/meminfo，只读），以 psql 变量传进去，好和其余的拼成同一行。
+    disk_total=$(df -B1 --output=size / | tail -1 | tr -d ' '); disk_used=$(df -B1 --output=used / | tail -1 | tr -d ' ')
+    mem_total=$(awk '/^MemTotal:/{print $2 * 1024}' /proc/meminfo); mem_avail=$(awk '/^MemAvailable:/{print $2 * 1024}' /proc/meminfo)
+    sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -v ON_ERROR_STOP=1 \
+      -v disk_total="${disk_total:-0}" -v disk_used="${disk_used:-0}" -v mem_total="${mem_total:-0}" -v mem_avail="${mem_avail:-0}" <<'SQL'
 WITH a AS (SELECT id FROM articles WHERE discovered_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),
 p AS (SELECT p.score, p.selected FROM publications p JOIN a ON a.id = p.article_id WHERE p.visibility <> 'withdrawn'),
 j AS (SELECT DISTINCT job FROM job_runs WHERE started_at > now() - interval '3 days')
@@ -117,6 +121,19 @@ SELECT json_build_object(
      CROSS JOIN LATERAL (SELECT (ra.usage->>'characters')::numeric AS billed,
        CASE WHEN ra.usage->>'characters' IS NULL THEN coalesce((r.request->>'chars')::numeric, 0) END AS plain) t
      WHERE ra.service = 'speech-qwen' AND ra.origin = 'live' AND ra.started_at >= least('2026-11-03T06:18:00Z'::timestamptz, now() - interval '7 days')),
+  'host', json_build_object('disk_total', :'disk_total'::numeric, 'disk_used', :'disk_used'::numeric,
+       'mem_total', :'mem_total'::numeric, 'mem_avail', :'mem_avail'::numeric),
+  -- apis：各外部模型接口最近一次真实调用（不算重放）的结果和时间，以及 24 小时内成功、失败各几次。钥匙失效、余额用完、
+  --   对方停服时，这里会先看到失败。只看 7 天内调用过的接口。
+  'apis', (SELECT coalesce(json_agg(x ORDER BY x.service), '[]') FROM (
+     SELECT ra.service, l.status, l.started_at, left(l.error, 160) AS error,
+       count(*) FILTER (WHERE ra.started_at > now() - interval '24 hours' AND ra.status = 'received')::int AS ok_24h,
+       count(*) FILTER (WHERE ra.started_at > now() - interval '24 hours' AND ra.status = 'failed')::int AS failed_24h
+     FROM receipt_attempts ra
+     CROSS JOIN LATERAL (SELECT status, started_at, error FROM receipt_attempts r2 WHERE r2.service = ra.service AND r2.origin = 'live'
+       AND r2.status <> 'pending' ORDER BY started_at DESC, id DESC LIMIT 1) l
+     WHERE ra.origin = 'live' AND ra.started_at > now() - interval '7 days'
+     GROUP BY ra.service, l.status, l.started_at, l.error) x),
   'jobs', (SELECT coalesce(json_agg(x ORDER BY x.job), '[]') FROM (
      SELECT j.job, l.started_at, l.finished_at, l.status, left(l.error, 200) AS error, c.failed_24h, c.runs_24h, r.recent
      FROM j CROSS JOIN LATERAL (SELECT started_at, finished_at, status, error FROM job_runs WHERE job = j.job ORDER BY started_at DESC, id DESC LIMIT 1) l

@@ -821,7 +821,8 @@ export async function writeOnly(no: number, write: Ask, check: Ask) {
   await writeFile(path.join(out, "check.json"), `${JSON.stringify(rounds, null, 1)}\n`);
   const up = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
   if (up) await writeFile(path.join(out, "up.txt"), up);
-  await writeFile(path.join(out, "write.txt"), `${(lines ?? []).join("\n")}\n`);
+  // A script that did not pass leaves the last trial's write.txt as it was; the problems are in check.json.
+  if (lines) await writeFile(path.join(out, "write.txt"), `${lines.join("\n")}\n`);
   return { out: path.join(out, "write.txt"), lines: lines?.length ?? 0, chars: scriptChars(lines ?? []), passed: lines !== null, rounds: rounds.length };
 }
 

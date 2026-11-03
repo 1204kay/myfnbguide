@@ -89,7 +89,7 @@ if (writeNo) {
   const receipts: number[] = [];
   const done = await writeOnly(Number(writeNo), modelAsk(writer, `voice-write:${writeNo}`, receipts), modelAsk(checker, `voice-write:${writeNo}`, receipts));
   if (receipts.length) await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
-  console.log(`第 ${writeNo} 期试写 ${done.chars} 字、${done.lines} 行，核对 ${done.rounds} 轮${done.passed ? "，过了" : "，没过，没有稿（问题在 check.json）"}：${done.out}`);
+  console.log(`第 ${writeNo} 期试写 ${done.chars} 字、${done.lines} 行，核对 ${done.rounds} 轮${done.passed ? "，过了" : "，没过，write.txt 没动（问题在 check.json）"}：${done.out}`);
 }
 
 const missing = await voiceMissing();

@@ -44,7 +44,7 @@ export const SITUATIONS: Situation[] = [
     g("monthly-numbers", "每月先看的几个数", "营业额以外，哪几个数字说明店里的钱怎么样"),
     g("margin-breakeven", "毛利和保本点", "每份赚多少，一个月至少要卖多少"),
   ] },
-  { slug: "ingredient-prices-up", category: "cost", title: "食材涨价，售价是否随之调整", dek: "主要食材一涨再涨，自己承担还是让客人分担。", groups: [
+  { slug: "ingredient-prices-up", category: "cost", title: "食材涨价怎么应对", dek: "主要食材一涨再涨，是自己承担、让客人分担，还是调整做法和分量、更换货源。", groups: [
     g("measure-the-hit", "先算清楚影响多大", "涨的是哪几样，占每份成本多少"),
     g("menu-portion", "调整菜单和分量", "换做法、换食材、改分量，客人能不能接受"),
     g("suppliers", "更换货源、与供货商洽谈", "比价、合并订货、谈条件"),
@@ -134,7 +134,7 @@ export const SITUATIONS: Situation[] = [
     g("loyalty", "会员和积分", "积分、储值、会员俱乐部"),
     g("recognize", "记住客人", "记住客人的名字和常点的菜"),
   ] },
-  { slug: "slow-weekdays", category: "customers", title: "周末客满，平日冷清", dek: "周末排队，平日空着一半的座位；淡季和雨天也一样冷清。", groups: [
+  { slug: "slow-weekdays", category: "customers", title: "平日和淡季客人少", dek: "周末排队，平日空着一半的座位；淡季和雨天也一样冷清。", groups: [
     g("weekday-reasons", "给平日一个来的理由", "只在平日才有的菜品和活动"),
     g("time-pricing", "按时段定价和套餐", "冷清的时段卖什么、卖多少钱"),
     g("new-guests", "找新的客群", "平日有空的是哪些人"),
@@ -175,7 +175,7 @@ export const SITUATIONS: Situation[] = [
   ] },
 
   // 门店运营
-  { slug: "rush-chaos", category: "operations", title: "午市高峰一到，出餐就乱", dek: "平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。", groups: [
+  { slug: "rush-chaos", category: "operations", title: "用餐高峰一到，出餐就乱", dek: "平时一切顺畅，一到高峰就出餐变慢、员工互相挡路、客人久等。", groups: [
     g("crossing-paths", "路线交叉", "出餐和收碗走同一条路，员工的时间花在互相让路上"),
     g("searching-shouting", "员工在找物料、在喊叫", "物料不在手边、分工不清楚，高峰时就有人离开岗位"),
     g("seats-vs-kitchen", "入座快于出餐", "一次入座的客人超过厨房的出餐能力"),
@@ -216,7 +216,7 @@ export const SITUATIONS: Situation[] = [
   ] },
 
   // 开店与关店
-  { slug: "opening-cost", category: "open-close", title: "开一家店要多少钱", dek: "装修、设备、押金、开业前的周转金，加起来常常超出预算。", groups: [
+  { slug: "opening-cost", category: "open-close", title: "开店前的准备和开销", dek: "适不适合自己开店、开之前要准备什么；装修、设备、押金和开业前后的周转金，加起来常常超出预算。", groups: [
     g("before-opening", "开店前先想清楚", "自己适不适合开店，开之前要准备什么"),
     g("build-out", "装修和设备", "最大的一笔开支"),
     g("working-capital", "开业前后的周转金", "开业以后几个月还要付的钱"),
@@ -283,7 +283,7 @@ export const SITUATIONS: Situation[] = [
     g("supplier-contracts", "供应商和服务合同", "涨价条款和最低用量"),
     g("auto-renew", "自动续约和自动扣款", "无人查看的账单"),
   ] },
-  { slug: "automation", category: "tools-rules", title: "设备和自动化能节省多少人力", dek: "自助点餐、炒菜机、洗碗机，需要投入多少、能节省多少。", groups: [
+  { slug: "automation", category: "tools-rules", title: "用设备和自动化节省人力", dek: "自助点餐、炒菜机、洗碗机，需要投入多少、能节省多少，适合哪些环节，员工和客人能否接受。", groups: [
     g("payback", "投入和回本", "多久收回成本"),
     g("what-works", "哪些环节适合", "哪些环节交给机器"),
     g("acceptance", "员工和客人的接受程度", "实际使用情况"),

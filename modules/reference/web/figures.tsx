@@ -72,7 +72,7 @@ function Bucket({ groups }: { groups: string[] }) {
   );
 }
 
-/** 午市高峰一到，出餐就乱: the way out with dishes and the way back with plates cross at the pass. */
+/** 用餐高峰一到，出餐就乱: the way out with dishes and the way back with plates cross at the pass. */
 function Kitchen() {
   return (
     <>
@@ -288,7 +288,7 @@ function Portions() {
   );
 }
 
-/** 开一家店要多少钱: the budget ends on opening day; the months after it still need money. */
+/** 开店前的准备和开销: the budget ends on opening day; the months after it still need money. */
 function OpeningBudget() {
   const share = (n: number) => n / 35;
   return (
@@ -817,7 +817,7 @@ function KeepOrLetGo({ groups }: { groups: string[] }) {
   );
 }
 
-/** 周末客满，平日冷清: the weekend fills every seat with a queue; the weekdays stop short of the line that pays a day's rent and wages. */
+/** 平日和淡季客人少: the weekend fills every seat with a queue; the weekdays stop short of the line that pays a day's rent and wages. */
 function SeatsByDay() {
   const days: Array<[string, number]> = [["周一", 0.45], ["周二", 0.4], ["周三", 0.5], ["周四", 0.5], ["周五", 0.75], ["周六", 1], ["周日", 1]];
   const top = 40, bottom = 140, line = 0.6;
@@ -991,7 +991,7 @@ function PlatformBetween({ groups }: { groups: string[] }) {
   );
 }
 
-/** 食材涨价，售价是否随之调整: the same 3 yuan more per portion comes out of the margin, or goes onto the price. */
+/** 食材涨价怎么应对: the same 3 yuan more per portion comes out of the margin, or goes onto the price. */
 function IngredientRise() {
   const share = (n: number) => n / 33;
   const food = { label: "食材 12 元", share: share(12), tone: 3 } as const;
@@ -1179,7 +1179,7 @@ function PosHub() {
   );
 }
 
-/** 设备和自动化能节省多少人力: the machine pays for itself in 10 months if the hours it saves are really cut, in 20 if half. */
+/** 用设备和自动化节省人力: the machine pays for itself in 10 months if the hours it saves are really cut, in 20 if half. */
 function MachinePayback() {
   const x = (month: number) => 40 + month * 10.5;
   const y = (yuan: number) => 160 - yuan / 250;

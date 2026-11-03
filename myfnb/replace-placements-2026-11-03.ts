@@ -4,7 +4,7 @@
 //
 //   node myfnb/replace-placements-2026-11-03.ts [--only busy-no-profit,…]            只数，不写
 //   node myfnb/replace-placements-2026-11-03.ts --apply --expect N [--only …]       先整表备份，再写；N 要等于要写的条数
-//   node myfnb/replace-placements-2026-11-03.ts --restore [--only …]                照备份把这些条目放回原处
+//   node myfnb/replace-placements-2026-11-03.ts --restore [--only …]                照备份把还停在这次位置上的条目放回原处
 //
 // 备份：backup_ref_cases_20261103、backup_ref_placements_20261103、backup_settings_20261103，整表，
 // IF NOT EXISTS 留住第一次的（第一次 --apply 之前的原样）。--only 按 from 或 to 的情况挑条目，先做一个情况看网站再放开全部。
@@ -28,18 +28,6 @@ for (const [id, p] of Object.entries(plan)) {
 }
 const ids = Object.keys(plan).filter((id) => !only || only.includes(plan[id]!.from[0]) || (plan[id]!.to && only.includes(plan[id]!.to![0])));
 
-if (restore) {
-  const [a, b] = await sql.begin(async (tx) => [
-    await tx`UPDATE reference_cases c SET situations = b.situations, story = jsonb_set(c.story, '{placements}', b.story->'placements'), updated_at = now()
-      FROM backup_ref_cases_20261103 b WHERE b.article_id = c.article_id AND c.article_id IN ${tx(ids)}`,
-    await tx`UPDATE reference_placements r SET situations = b.situations, placements = b.placements, prompt_version = b.prompt_version, updated_at = now()
-      FROM backup_ref_placements_20261103 b WHERE b.article_id = r.article_id AND r.article_id IN ${tx(ids)}`,
-  ]);
-  console.log(`放回 ${a!.count + b!.count} 条（故事 ${a!.count}，放置 ${b!.count}）`);
-  await closeDb();
-  process.exit(0);
-}
-
 interface Now { id: string; kind: "case" | "placed"; situations: string[]; placements: Array<Record<string, unknown>> }
 const rows = await sql<Now[]>`
   SELECT article_id AS id, 'case' AS kind, situations, story->'placements' AS placements FROM reference_cases WHERE status = 'story' AND article_id IN ${sql(ids)}
@@ -47,6 +35,29 @@ const rows = await sql<Now[]>`
   SELECT r.article_id, 'placed', r.situations, r.placements FROM reference_placements r
   WHERE r.article_id IN ${sql(ids)} AND NOT EXISTS (SELECT 1 FROM reference_cases k WHERE k.article_id = r.article_id AND k.status = 'story')`;
 const byId = new Map(rows.map((r) => [r.id, r]));
+// 只放回还停在这次写的位置上的条目：写库以后别人又改过的（模型重新放、手动再调），留着不动，列出来。
+if (restore) {
+  const back: string[] = [];
+  const moved: string[] = [];
+  for (const id of ids) {
+    const r = byId.get(id);
+    const to = plan[id]!.to;
+    const at = r?.placements[0] as { situation?: string; group?: string } | undefined;
+    const still = r && (to ? r.situations.length === 1 && at?.situation === to[0] && (at?.group ?? null) === to[1] : r.situations.length === 0 && r.placements.length === 0);
+    (still ? back : moved).push(id);
+  }
+  const [a, b] = back.length ? await sql.begin(async (tx) => [
+    await tx`UPDATE reference_cases c SET situations = b.situations, story = jsonb_set(c.story, '{placements}', b.story->'placements'), updated_at = now()
+      FROM backup_ref_cases_20261103 b WHERE b.article_id = c.article_id AND c.article_id IN ${tx(back)}`,
+    await tx`UPDATE reference_placements r SET situations = b.situations, placements = b.placements, prompt_version = b.prompt_version, updated_at = now()
+      FROM backup_ref_placements_20261103 b WHERE b.article_id = r.article_id AND r.article_id IN ${tx(back)}`,
+  ]) : [{ count: 0 }, { count: 0 }];
+  console.log(`放回 ${a!.count + b!.count} 条（故事 ${a!.count}，放置 ${b!.count}）；写库以后又被改过、不动的 ${moved.length} 条`);
+  for (const id of moved) console.log(`  不动：${id}（现在 ${JSON.stringify(byId.get(id)?.placements ?? "不在页面上")}）`);
+  await closeDb();
+  process.exit(0);
+}
+
 const todo: Now[] = [];
 const drift: string[] = [];
 for (const id of ids) {

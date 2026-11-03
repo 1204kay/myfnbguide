@@ -1,24 +1,23 @@
 // The reference pages' parts, in the site's own look (warm white, hairline cards, the accent's short bar,
 // big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html (removed 11-03; in commit c29b520),
-// and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): story cards, practice cards and rows,
-// and situations as compact rows, the same on phones and desktops. Who tells a situation shows as the hot list shows
-// who talks about a story: its sources' faces and every count (the owner, 10/6). The frame around them (back links,
-// headers, counts, rows' and cards' type) follows the closest AIHOT page (the owner 10/16: modules keep the original).
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { flushSync } from "react-dom";
+// and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): item cards and situations as compact
+// rows, the same on phones and desktops. Who tells a situation shows as the hot list shows who talks about a story:
+// its sources' faces and every count (the owner, 10/6). The frame around them (back links, headers, counts, rows' and
+// cards' type) follows the closest AIHOT page (the owner 10/16: modules keep the original).
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
-import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconChevronRight } from "@aihot/web/components/icons";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { copyText } from "@aihot/web/lib/clipboard";
 import { siteUrl } from "@aihot/web/lib/seo";
-import { comparable, day, exact, figureSplit, fullCountText, listCount, listCountText, num, restCountText, tellersText } from "../format.ts";
-import type { Block, CaseCard, CompareBlock, Count, ExampleBlock, PartsBlock, PracticeCard, ShopPractices, SituationRow } from "../types.ts";
+import { day, fullCountText, listCount, num, restCountText } from "../format.ts";
+import type { CaseCard, Count, SituationRow } from "../types.ts";
 
 /**
  * A reference page's column, in the engine's widths: `wide` (the home page) fills the main area as the engine's lists
- * do; else the engine's reading width (--page-max-reading), as its reading pages have it. The situation and story
+ * do; else the engine's reading width (--page-max-reading), as its reading pages have it. The situation and 十一说
  * pages lay themselves out in the engine's reading templates instead (components/ui/Page.tsx ReadingLayout, ArticleLayout).
  */
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
@@ -70,11 +69,6 @@ export function PageHeader({ kicker, to, title, dek, counts, updatedAt, asideFac
   );
 }
 
-/** A practice card's line under its title (14.5/15px). */
-export function Dek({ children, className = "mt-2" }: { children: ReactNode; className?: string }) {
-  return <p className={`text-[14.5px] leading-[1.7] text-ink-3 lg:text-[15px] ${className}`}>{children}</p>;
-}
-
 /** A section's heading (20/22px); `id` lets a link land on it below the phone bar. */
 export function Heading({ children, id }: { children: ReactNode; id?: string }) {
   return <h2 id={id} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[20px] font-extrabold leading-[1.35] text-ink lg:text-[22px]">{children}</h2>;
@@ -118,9 +112,6 @@ export function RankTag({ rank }: { rank: number }) {
   return <span className={`mono text-[12px] font-bold tracking-[0.16em] ${rankColor(rank)}`}>NO.{pad(rank)}</span>;
 }
 
-/** Where a story's card or line leads: its page, or for a folded one its item's (backend/read.ts foldedStories). */
-export const caseHref = (id: string, folded: boolean) => (folded ? `/items/${id}` : `/reference/cases/${id}`);
-
 /** A card's source line with its month on one line, as the feed card keeps its time in one piece; otherwise a phone breaks "2025 年 6 | 月". */
 function SourceLine({ text }: { text: string }) {
   const m = /^(.*?)(\d{4} 年 \d{1,2} 月)$/u.exec(text);
@@ -128,8 +119,8 @@ function SourceLine({ text }: { text: string }) {
 }
 
 /**
- * A story's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
- * bookmark, its title, the item's 收录理由 under a hairline from desktops; then the way to its shop's page.
+ * An item's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
+ * bookmark, its title leading to the item's page, the item's 收录理由 under a hairline from desktops.
  */
 export function StoryCard({ c }: { c: CaseCard }) {
   return (
@@ -139,17 +130,12 @@ export function StoryCard({ c }: { c: CaseCard }) {
         <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
       </div>
       <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">
-        <Link viewTransition to={caseHref(c.id, c.folded)} className={STRETCH}>{c.title}</Link>
+        <Link viewTransition to={`/items/${c.id}`} className={STRETCH}>{c.title}</Link>
       </h3>
       {c.reason && (
         <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
           <p className="line-clamp-2 text-[13px] leading-[1.65] text-note lg:leading-[1.75]">{ITEM_COPY.reasonLabel}：{reasonLines(c.reason)[0]}</p>
         </div>
-      )}
-      {c.shop && (
-        <Link viewTransition to={`/reference/shops/${c.shop.key}`} className="relative z-10 -mb-2 mt-0.5 flex min-h-11 items-center text-[13px] text-accent hover:text-accent-ink">
-          这家店另有 {c.shop.others} 条原文 ›
-        </Link>
       )}
     </article>
   );
@@ -157,104 +143,6 @@ export function StoryCard({ c }: { c: CaseCard }) {
 
 export function StoryCards({ cards }: { cards: CaseCard[] }) {
   return <div className="mt-3 grid gap-2.5">{cards.map((c) => <StoryCard key={c.id} c={c} />)}</div>;
-}
-
-/**
- * Opens the rest of a list in place by a button that then goes: the keyboard goes on from `first`, the first link
- * it opened, not from the page's top.
- */
-export function openRest(open: () => void, first: () => HTMLElement | null | undefined) {
-  flushSync(open);
-  first()?.focus();
-}
-
-/** How many shops a practice card lists before 展开其余 N 家. */
-const LINES_SHOWN = 4;
-
-/**
- * A practice two shops or more tell (layout A7-3, J4-2): who tells it, what to do, how the shops did it, and a line
- * a shop leading to its newest story in it.
- */
-export function Practice({ p }: { p: PracticeCard }) {
-  const [open, setOpen] = useState(false);
-  const list = useRef<HTMLUListElement>(null);
-  const lines = open ? p.lines : p.lines.slice(0, LINES_SHOWN);
-  return (
-    <article id={p.key} className="card scroll-mt-[calc(var(--bar-h)+8px)] px-4 pb-1 pt-3.5 sm:px-5 lg:pt-[18px]">
-      <p className="text-[13px] text-ink-4">{tellersText(p.count)}</p>
-      <h3 className="mt-1.5 text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</h3>
-      {p.summary && <Dek className="mt-1.5 lg:max-w-[34em]">{p.summary}</Dek>}
-      <ul ref={list} className="mt-3 border-t border-line">
-        {lines.map((l) => (
-          <li key={l.caseId} className="border-t border-line-soft first:border-t-0">
-            <Link viewTransition to={caseHref(l.caseId, l.folded)} className="-mx-1 flex min-h-[52px] items-center gap-2 rounded-tile px-1 py-2 transition-colors hover:text-accent touch:active:bg-bg-sunk lg:min-h-11">
-              <span className="min-w-0 flex-1 leading-[1.5]">
-                <span className="block text-[13px] text-ink-4 lg:inline">{l.country} · {l.name}<span className="hidden lg:inline"> · </span></span>
-                <span className="block text-[14px] text-ink-2 lg:inline">{l.line}{l.cases > 1 && <span className="text-ink-4"> · 共 {l.cases} 篇</span>}</span>
-              </span>
-              <IconChevronRight size={16} />
-            </Link>
-          </li>
-        ))}
-      </ul>
-      {!open && p.lines.length > LINES_SHOWN && (
-        // The original's toggle for a group's other reports (AIHOT features/feed/ReadingGroup.tsx Toggle): 12.5px, grey,
-        // a chevron down; 44px tall to tap. myfnb/DIFFERENCES.md: the original folds repeats of one story, this the shops' own ways.
-        <button type="button" aria-expanded={false} onClick={() => openRest(() => setOpen(true), () => list.current?.querySelectorAll<HTMLElement>("a")[LINES_SHOWN])}
-          className="relative z-10 inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent">
-          另有 {p.lines.length - LINES_SHOWN} 家的做法<IconChevronDown size={13} />
-        </button>
-      )}
-    </article>
-  );
-}
-
-/**
- * One practice a shop tells alone, its whole row leading to the story: who (when the row names it), the title, the
- * shop's line and how many of its stories tell it, as a card's line does. The keyboard's ring is inside the row: the
- * card clips what is outside.
- */
-function PracticeRow({ p, who }: { p: ShopPractices["practices"][number]; who?: string }) {
-  return (
-    <Link id={p.key} viewTransition to={caseHref(p.caseId, p.folded)}
-      className={`flex min-h-[52px] scroll-mt-[calc(var(--bar-h)+8px)] items-center gap-2 px-4 transition-colors hover:bg-bg-sunk/40 focus-visible:-outline-offset-2 touch:active:bg-bg-sunk sm:px-5 ${who ? "py-3" : "py-2.5"}`}>
-      <span className="min-w-0 flex-1">
-        {who && <span className="block text-[13px] leading-[1.5] text-ink-4">{who}</span>}
-        <b className="block text-[16px] font-[650] leading-[1.5] text-ink sm:text-[17px]">{p.title}</b>
-        {(p.line || p.cases > 1) && (
-          <span className="mt-0.5 block text-[14px] leading-[1.6] text-ink-3">
-            {p.line}{p.cases > 1 && <span className="text-ink-4">{p.line ? " · " : ""}共 {p.cases} 篇</span>}
-          </span>
-        )}
-      </span>
-      <IconChevronRight size={16} />
-    </Link>
-  );
-}
-
-/**
- * The practices one shop tells alone (layout J4-3, J4-4), rows in one card with a hairline between them: no summary
- * and no count. A shop with several has them under one line naming it, "日本 · 京都一家小酒馆 · 2 种做法".
- */
-export function ShopRows({ shops, className }: { shops: ShopPractices[]; className: string }) {
-  if (!shops.length) return null;
-  return (
-    <div className={`card overflow-hidden ${className}`}>
-      <ul className="divide-y divide-line">
-        {shops.map((shop) => {
-          const who = `${shop.country} · ${shop.name}`;
-          return shop.practices.length === 1 ? (
-            <li key={shop.practices[0]!.key}><PracticeRow p={shop.practices[0]!} who={who} /></li>
-          ) : (
-            <li key={shop.practices[0]!.key}>
-              <p className="px-4 pt-3 text-[13px] leading-[1.5] text-ink-4 sm:px-5">{who} · {shop.practices.length} 种做法</p>
-              <ul className="divide-y divide-line-soft">{shop.practices.map((p) => <li key={p.key}><PracticeRow p={p} /></li>)}</ul>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
 }
 
 /** A row's columns: its place when ranked, the text, what it counts from 641px (one width, so the rows line up), ›. */
@@ -265,7 +153,7 @@ const COLUMNS = {
 
 /**
  * Situations as compact rows in one card (layout J3-3, J3-4): the place when ranked (from `from`), the title with
- * 代表做法 under it (the situation's line before its stories are grouped), what it counts, ›; on phones the count
+ * the situation's line under it, what it counts, ›; on phones the count
  * goes under the text. `category` names each row's category over its title (a search). `children` close the card.
  * Ranked, the list is numbered from `from`, so a screen reader reads the places shown; the keyboard's ring is inside
  * a row, as the card clips what is outside.
@@ -284,7 +172,7 @@ export function SituationRows({ rows, from, category = false, children }: { rows
               <h3 className="text-[15px] font-[650] leading-[1.55] text-ink">
                 <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
               </h3>
-              <p className="mt-0.5 line-clamp-2 text-[13px] leading-[1.65] text-ink-4 lg:line-clamp-1">{s.practice ?? s.dek}</p>
+              <p className="mt-0.5 line-clamp-2 text-[13px] leading-[1.65] text-ink-4 lg:line-clamp-1">{s.dek}</p>
               <span className="mt-1 block text-[13px] text-ink-4 sm:hidden">{fullCountText(s.count)}</span>
             </div>
             {/* As the hot list's rows: who tells it, then its shops in a big number with the rest of its count under it. */}
@@ -305,7 +193,7 @@ export function SituationRows({ rows, from, category = false, children }: { rows
 }
 
 /**
- * A story's way back into the library at its end on phones, as the item page lists 相关事件 (AIHOT routes/item.tsx):
+ * An item's way into the library on its page, as the item page lists 相关事件 (AIHOT routes/item.tsx):
  * a small heading, then the row; `count` under the title.
  */
 export function WhereFiled({ to, title, count }: { to: string; title: string; count: string | null }) {
@@ -392,8 +280,6 @@ export function Figure({ children, caption, kind, after }: { children: ReactNode
  * the accent (or red for a loss) is what the eye finds. Shares of the theme's own ink, so both themes work.
  */
 export const TONES = ["bg-ink-4/55", "bg-ink-4/35", "bg-ink-4/22", "bg-ink-4/13", "bg-line-strong"];
-/** Shades of the accent for the parts of one whole (原文数据 parts): one colour, so none reads as a warning. */
-const RAMP = ["bg-accent", "bg-accent/65", "bg-accent/40", "bg-accent/22", "bg-ink-4/30", "bg-ink-4/16"];
 /** A bar's empty track: visible on both themes' cards (bg-sunk is not, on the dark one). */
 const TRACK = "bg-ink-4/10";
 
@@ -418,295 +304,5 @@ export function Fill({ parts }: { parts: Array<{ label: string; share: number; t
   );
 }
 
-/**
- * A label with its value at the right, over a thin bar of `share` (compare, list-total, percent-over); a range's top
- * runs on to `upTo` in a paler `upToClass`.
- */
-function BarRow({ label, value, share, className, strong, upTo, upToClass }: { label: ReactNode; value: ReactNode; share: number; className: string; strong?: boolean; upTo?: number; upToClass?: string }) {
-  const width = (s: number) => `${Math.min(Math.max(s, 0), 1) * 100}%`;
-  return (
-    <div>
-      <div className="flex items-baseline justify-between gap-3 text-[14px] leading-[1.45] sm:text-[15px]">
-        <span className={`min-w-0 ${strong ? "font-semibold text-ink" : "text-ink-3"}`}>{label}</span>
-        <span className={`num shrink-0 text-right ${strong ? "font-bold text-ink" : "font-semibold text-ink-2"}`}>{value}</span>
-      </div>
-      <div className={`mt-2 flex h-3 overflow-hidden rounded-full ${TRACK}`}>
-        <div className={`h-full min-w-1 ${upTo === undefined ? "rounded-full" : "rounded-l-full"} ${className}`} style={{ width: width(share) }} />
-        {upTo !== undefined && <div className={`h-full rounded-r-full ${upToClass}`} style={{ width: width(upTo - share) }} />}
-      </div>
-    </div>
-  );
-}
-
-/** What the program worked out from the original's numbers, under the bars: what it is in small grey, then the line. */
-function Worked({ children }: { children: ReactNode }) {
-  return (
-    <div className="mt-4">
-      <p className="text-[12.5px] leading-[1.5] text-ink-4 sm:text-[13px]">按原文数字计算</p>
-      <p className="mt-0.5 text-[15px] leading-[1.7] text-ink-2 sm:text-[16px]">{children}</p>
-    </div>
-  );
-}
-
-/** A number of a worked line: bigger and in ink, so the line reads at a glance. */
-const Big = ({ children, className = "text-ink" }: { children: ReactNode; className?: string }) => <b className={`num text-[20px] font-bold sm:text-[22px] ${className}`}>{children}</b>;
-
-function Compare({ b }: { b: CompareBlock }) {
-  const max = Math.max(...b.items.map((i) => i.to ?? i.value));
-  const per = b.per ? `每${b.per} ` : "";
-  // Before and after: the last, where it went, in the accent. Groups side by side: the first, the story's own.
-  const main = b.by === "group" ? 0 : b.items.length - 1;
-  return (
-    <Figure kind="原文数据" caption={b.caption}>
-      <div className="grid gap-4">
-        {b.items.map((item, i) => {
-          const strong = i === main;
-          const range = item.to != null;
-          return <BarRow key={i} label={item.label} strong={strong} share={item.value / max} className={strong ? "bg-accent" : "bg-accent/45"}
-            upTo={range ? item.to! / max : undefined} upToClass={strong ? "bg-accent/50" : "bg-accent/22"}
-            value={<>{per && <span className="mr-1 text-[13px] font-normal text-ink-3">{per.trim()}</span>}{exact(item.value)}{range && <>–{exact(item.to!)}</>}<span className={`${b.unit === "%" ? "" : "ml-1"} text-[13px] font-normal text-ink-3`}>{b.unit}</span></>} />;
-        })}
-      </div>
-      {b.change && b.change.amount !== 0 && (
-        <Worked>
-          {/* Between two percentages the change is in points (1.1% → 2.3%: 1.2 个百分点), not a percent of a percent. */}
-          {b.change.amount > 0 ? "多了" : "少了"} <Big>{num(Math.abs(b.change.amount))}</Big>{" "}
-          <span className="whitespace-nowrap">
-            {b.unit === "%" ? "个百分点" : b.unit}
-            {b.unit !== "%" && <span className="num ml-1.5 inline-flex h-6 items-center rounded-full bg-accent-soft px-2 align-[2px] text-[13px] font-bold text-accent">{b.change.amount > 0 ? "+" : "−"}{num(Math.abs(b.change.percent))}%</span>}
-          </span>
-          {b.change.yearly !== null && <>，<span className="whitespace-nowrap">按一年算 <Big>{num(Math.abs(b.change.yearly))}</Big> {b.unit}</span></>}
-        </Worked>
-      )}
-    </Figure>
-  );
-}
-
-/**
- * Under a bar of parts, what each colour is and its number: the labels never have to fit inside the parts. Two
- * columns from 641px, so a number stays near its label in the wide column.
- */
-function Legend({ rows }: { rows: Array<{ label: string; value: ReactNode; tone: string }> }) {
-  return (
-    <ul className="mt-3 grid gap-x-8 gap-y-1.5 text-[14px] leading-[1.5] sm:grid-cols-2 sm:text-[15px]">
-      {rows.map((r, i) => (
-        <li key={i} className="flex items-baseline gap-2">
-          <i className={`size-3 shrink-0 translate-y-[1px] rounded-mark ${r.tone}`} />
-          <span className="min-w-0 flex-1 text-ink-3">{r.label}</span>
-          <span className="num shrink-0 font-semibold text-ink-2">{r.value}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/** A bar of parts with hairlines between them, no words inside; `tones` per part; `mark` a red line at a share (where the money ran out). */
-function Stack({ parts, mark }: { parts: Array<{ share: number; tone: string }>; mark?: number }) {
-  return (
-    <div className="relative">
-      <div className={`flex h-4 overflow-hidden rounded-full ${TRACK}`}>
-        {parts.filter((p) => p.share > 0).map((p, i) => (
-          <i key={i} className={`h-full shadow-[inset_-2px_0_0_var(--surface)] last:shadow-none ${p.tone}`} style={{ width: `${Math.min(p.share, 1) * 100}%` }} />
-        ))}
-      </div>
-      {mark !== undefined && <i aria-hidden="true" className="absolute -bottom-1 -top-1 w-[2px] -translate-x-1/2 rounded-full bg-hot" style={{ left: `${mark * 100}%` }} />}
-    </div>
-  );
-}
-
-/** Units of money (元, 万元, 卢比, 美元…): only parts in money set against an income are 支出 with a 剩 or 亏. */
-const MONEY = /元|币|卢比|镑|令吉|铢|比索|卢布|里拉|兰特|法郎|盾|美分|欧|克朗|里亚尔|迪拉姆|[$€£¥]/u;
-
-/**
- * Parts of a whole. Three cases, by what the writer set them against (prompts: against is written only when the parts
- * are the whole of it): parts that add up to it exactly are a breakdown of it (门店总数 = 原有 + 新城市), one bar under
- * its name and nothing worked out; parts in money against an income are 支出, with what is left or lost; with nothing
- * against them, one bar and their total. The bar is titled with what the parts make up as the writer names it
- * (`whole`: 一个蛋挞的出厂成本); a block written before there was one says 合计 (支出 against an income).
- */
-function Parts({ b }: { b: PartsBlock }) {
-  const whole = Math.max(b.total, b.against?.value ?? 0);
-  const name = b.whole?.trim() || null;
-  const breakdown = b.against !== null && b.gap === 0;
-  const spending = b.against !== null && !breakdown && MONEY.test(b.unit);
-  const value = (n: number) => <>{num(n)}<span className="ml-1 text-[13px] font-normal text-ink-3">{b.unit}</span></>;
-  const head = (label: string, v?: ReactNode) => (
-    <div className="mb-2 flex items-baseline justify-between gap-3 text-[14px] sm:text-[15px]"><span className="font-semibold text-ink-2">{label}</span>{v !== undefined && <span className="num font-bold text-ink">{v}</span>}</div>
-  );
-  const stack = <Stack parts={b.items.map((i, n) => ({ share: i.value / whole, tone: RAMP[n % RAMP.length]! }))} mark={spending && b.gap! < 0 ? b.against!.value / whole : undefined} />;
-  return (
-    <Figure kind="原文数据" caption={b.caption}>
-      {breakdown ? (
-        <div>{head(b.against!.label, value(b.against!.value))}{stack}</div>
-      ) : b.against ? (
-        <div className="grid gap-4">
-          <div>
-            {head(b.against.label, value(b.against.value))}
-            <div className={`h-4 overflow-hidden rounded-full ${TRACK}`}><div className="h-full rounded-full bg-accent/45" style={{ width: `${(b.against.value / whole) * 100}%` }} /></div>
-          </div>
-          <div>{head(name ?? (spending ? "支出" : "合计"))}{stack}</div>
-        </div>
-      ) : (
-        <div>{head(name ?? "合计", value(b.total))}{stack}</div>
-      )}
-      <Legend rows={b.items.map((i, n) => ({ label: i.label, value: num(i.value), tone: RAMP[n % RAMP.length]! }))} />
-      {/* A breakdown adds up to its whole, and parts with nothing against them have their total over the bar: nothing to work out. */}
-      {b.against && !breakdown && (
-        <Worked>
-          {name ?? "合计"} {num(b.total)} {b.unit}
-          {spending && (b.gap! < 0
-            ? <>，亏 <Big className="text-hot">{num(-b.gap!)}</Big> {b.unit}</>
-            : <>，剩 <Big className="text-accent">{num(b.gap!)}</Big> {b.unit}</>)}
-        </Worked>
-      )}
-    </Figure>
-  );
-}
-
-function Example({ b }: { b: ExampleBlock }) {
-  const rowsKind = b.kind === "list-total" || b.kind === "percent-over";
-  const bar = !rowsKind && b.rows.some((r) => r.share !== null);
-  // What is left (剩下, 毛利) is the point, in the accent, or red when it is a loss; what is taken off stays grey.
-  const shade = (r: ExampleBlock["rows"][number], i: number) => r.label === "剩下" || r.label === "毛利" ? (r.value < 0 ? "bg-hot" : "bg-accent") : TONES[i % TONES.length]!;
-  const max = Math.max(...b.rows.map((r) => r.share ?? 0), 1e-9);
-  return (
-    <Figure kind="举例" caption={b.caption}>
-      {bar && (
-        <>
-          <Stack parts={b.rows.map((r, i) => ({ share: r.share ?? 0, tone: shade(r, i) }))} />
-          <Legend rows={b.rows.map((r, i) => ({ label: r.label, tone: shade(r, i), value: <span className={r.value < 0 ? "text-hot" : ""}>{num(r.value)}<span className="ml-0.5 font-normal text-ink-4">{r.unit}</span></span> }))} />
-        </>
-      )}
-      {rowsKind && (
-        <div className="grid gap-4">
-          {b.rows.map((r) => (
-            <BarRow key={r.label} label={<span className={r.flag ? "text-hot" : ""}>{r.label}</span>} share={b.kind === "percent-over" ? r.share ?? 0 : (r.share ?? 0) / max}
-              className={r.flag ? "bg-hot" : "bg-accent/45"} value={<span className={r.flag ? "text-hot" : ""}>{num(r.value)}{r.unit === "%" ? "%" : ""}</span>} />
-          ))}
-          {/* The red rows are the ones the result calls 标出的几项; the key under them says which colour is which. */}
-          {b.kind === "list-total" && b.rows.some((r) => r.flag) && (
-            <p className="-mt-1 flex flex-wrap items-center gap-x-5 gap-y-1 text-[13px] text-ink-3 sm:text-[14px]">
-              <span className="flex items-center gap-2"><i className="h-3 w-5 rounded-full bg-hot" />标出的几项</span>
-              <span className="flex items-center gap-2"><i className="h-3 w-5 rounded-full bg-accent/45" />其余几项</span>
-            </p>
-          )}
-        </div>
-      )}
-      {b.equation && <p className={`num well rounded-control ${bar || rowsKind ? "mt-4" : ""} px-3 py-2.5 text-center text-[15px] font-semibold text-ink-2 sm:text-[16px]`}>{b.equation}</p>}
-      <p className={`text-[15.5px] font-bold leading-[1.6] text-ink sm:text-[16.5px] ${bar || rowsKind || b.equation ? "mt-3.5" : ""}`}>{b.result}</p>
-    </Figure>
-  );
-}
-
-/** A figure as the original writes it, the number at `size` and the words around it at `small`. */
-function FigureValue({ value, size, small = "text-[14px] sm:text-[15px]" }: { value: string; size: string; small?: string }) {
-  const [before, n, after] = figureSplit(value);
-  return (
-    <span className="num">
-      {before && <span className={`mr-1 font-semibold text-ink-3 ${small}`}>{before}</span>}
-      <span className={`${size} font-extrabold tracking-[-0.025em] text-ink`}>{n}</span>
-      {after && <span className={`ml-1 font-semibold text-ink-3 ${small}`}>{after}</span>}
-    </span>
-  );
-}
-
 /** Body text (16/17px, 1.85). */
 export const BODY = "text-[16px] leading-[1.85] text-ink-2 lg:text-[17px]";
-
-export function StoryBlock({ block }: { block: Block }) {
-  switch (block.type) {
-    case "text": return <p className={`mt-3 ${BODY}`}>{block.text}</p>;
-    // A point with its lead on a line of its own, so a phone reader can run down the leads.
-    case "list": return (
-      <ul className={`mt-3.5 grid gap-3 ${BODY}`}>
-        {block.items.map((i, n) => (
-          <li key={n} className="relative pl-5 before:absolute before:left-0.5 before:top-[0.72em] before:size-[7px] before:rounded-full before:bg-accent">
-            {i.lead && <b className="block font-semibold text-ink">{i.lead}</b>}{i.text}
-          </li>
-        ))}
-      </ul>
-    );
-    // Steps one under another, numbered, joined by a line: read in order on a phone as on a desktop.
-    case "flow": return (
-      <ol className="card mt-4 grid px-4 py-4 sm:px-6 sm:py-5">
-        {block.steps.map((s, n) => (
-          <li key={n} className="relative flex gap-3.5 pb-4 last:pb-0">
-            {n < block.steps.length - 1 && <span aria-hidden="true" className="absolute bottom-0 left-[13px] top-7 w-[2px] rounded-full bg-accent/25" />}
-            <span className="num relative flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-[13px] font-bold text-accent-contrast">{n + 1}</span>
-            <span className="min-w-0 pt-[3px] text-[15px] leading-[1.65] text-ink-2 [text-wrap:pretty] sm:text-[16px]">{s}</span>
-          </li>
-        ))}
-      </ol>
-    );
-    // The words large under a quotation mark in the accent, who said them under a short rule.
-    case "quote": return (
-      <blockquote className="relative mt-5 pl-8 sm:pl-9">
-        <span aria-hidden="true" className="absolute -top-1.5 left-0 font-serif text-[44px] font-bold leading-none text-accent/70">“</span>
-        <p className="text-[17px] font-semibold leading-[1.7] text-ink lg:text-[18px]">{block.text}</p>
-        <footer className="mt-2 flex gap-2 text-[13px] leading-[1.6] text-ink-4"><span aria-hidden="true" className="mt-[0.8em] h-px w-4 shrink-0 bg-ink-4/60" />{block.who}</footer>
-      </blockquote>
-    );
-    case "compare": return <Compare b={block} />;
-    case "parts": return <Parts b={block} />;
-    case "example": return <Example b={block} />;
-    // The original's key figures, each with what it counts, under the one sentence saying what they show. Three looks:
-    // one figure large with what it is beside it; figures in one unit in a row between hairlines; figures in different
-    // units in a plain list, what each is beside its number.
-    case "numbers": {
-      const one = block.items.length === 1;
-      const short = block.items.every((i) => figureSplit(i.value).join("").length <= 6);
-      return (
-        <Figure kind="原文数据" caption={block.caption}>
-          {block.point ? <p className="mb-4 text-[16px] font-bold leading-[1.55] text-ink sm:text-[17px]">{block.point}</p> : null}
-          {one ? (
-            <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
-              <div className="leading-none">
-                <FigureValue value={block.items[0]!.value} size="text-[48px] sm:text-[60px]" small="text-[17px] sm:text-[19px]" />
-                <span aria-hidden="true" className="mt-3 block h-[3px] w-10 rounded-full bg-accent" />
-              </div>
-              <div className="min-w-[11em] flex-1 text-[16px] font-medium leading-[1.6] text-ink-2 sm:border-l sm:border-line sm:py-1 sm:pl-7 sm:text-[17px]">{block.items[0]!.label}</div>
-            </div>
-          ) : comparable(block.items.map((i) => i.value)) ? (
-            // In one row the figures are divided by hairlines; three long ones go one under another on a phone.
-            <div className={`grid gap-y-5 ${block.items.length === 2 || short ? `${block.items.length === 2 ? "grid-cols-2" : "grid-cols-3"} [&>*+*]:border-l [&>*+*]:border-line [&>*+*]:pl-4 sm:[&>*+*]:pl-6 [&>*]:pr-2` : "sm:grid-cols-3 sm:[&>*+*]:border-l sm:[&>*+*]:border-line sm:[&>*+*]:pl-6"}`}>
-              {block.items.map((i, n) => (
-                <div key={n} className="min-w-0">
-                  <div className="leading-none"><FigureValue value={i.value} size={block.items.length === 3 && short ? "text-[32px] sm:text-[40px]" : "text-[36px] sm:text-[42px]"} /></div>
-                  <span aria-hidden="true" className="mt-2.5 block h-[2px] w-7 rounded-full bg-accent" />
-                  <div className="mt-2.5 text-[14px] leading-[1.5] text-ink-3 sm:text-[15px]">{i.label}</div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            // Figures in different units: a plain list, what each is beside its number, none set up as the others' equal
-            // (the tinted strips tried in round four doubled the height on a phone and are not in the original).
-            <dl className="divide-y divide-line-soft">
-              {block.items.map((i, n) => (
-                <div key={n} className="flex items-baseline justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
-                  <dt className="min-w-0 text-[14.5px] leading-[1.55] text-ink-2 sm:text-[15.5px]">{i.label}</dt>
-                  <dd className="shrink-0 text-right leading-none"><FigureValue value={i.value} size="text-[26px] sm:text-[30px]" /></dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </Figure>
-      );
-    }
-    // Before and after side by side (one under the other on a phone), the after in the accent, an arrow between.
-    case "change": return (
-      <Figure caption={block.caption}>
-        <div className="grid items-stretch gap-2.5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
-          <div className="rounded-tile bg-ink-4/[0.07] px-3.5 py-3">
-            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-4"><i className="size-2 rounded-full border-[1.5px] border-ink-4" />{block.before.label}</div>
-            <p className="mt-1.5 text-[15px] leading-[1.65] text-ink-3">{block.before.text}</p>
-          </div>
-          <span aria-hidden="true" className="flex size-7 items-center justify-center self-center justify-self-center relative z-10 rounded-full bg-surface text-[15px] text-accent ring-1 ring-line-strong max-sm:-my-[19px] max-sm:rotate-90">→</span>
-          <div className="rounded-tile bg-accent-soft px-3.5 py-3 ring-1 ring-inset ring-accent/25">
-            <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-accent"><i className="size-2 rounded-full bg-accent" />{block.after.label}</div>
-            <p className="mt-1.5 text-[15px] leading-[1.65] text-ink">{block.after.text}</p>
-          </div>
-        </div>
-      </Figure>
-    );
-  }
-}

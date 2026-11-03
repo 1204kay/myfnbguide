@@ -11,6 +11,5 @@ export default defineModule({
     { path: "reference/issues/:no", file: "web/issue.tsx", id: "reference-issue" },
     { path: "reference/:slug", file: "web/situation.tsx", id: "reference-situation" },
   ],
-  // The api also answers the stories' share images (backend/share.ts).
-  apiPaths: [/^\/api\/reference(?:\/|$)/, /^\/og\/reference\//],
+  apiPaths: [/^\/api\/reference(?:\/|$)/],
 });

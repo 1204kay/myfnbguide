@@ -2,7 +2,7 @@
 // 故事」), and the situation pages list items, not stories. An item selected after the stories stopped (10-18) had no
 // case, so it sat on no situation page; nor did one whose case came out thin or held. One short model call now reads the item's own title, 导读 and 原文要点 (not the
 // original: the call only picks a place, and the three are what the page shows) and picks the situation and its group,
-// as the story writer did (prompts/case.md 六), with who tells it for the counts (read.ts tellerOf). No title or line is
+// as the story writer did (prompts/case.md 六, removed 11-03), with who tells it for the counts (read.ts tellerOf). No title or line is
 // written. An answer that names a situation or group not in the list goes back once with that named; one still wrong is
 // stored with none, so it is not paid for again. Every call goes through the engine's receipts and budget.
 import { createHash } from "node:crypto";

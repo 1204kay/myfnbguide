@@ -1,31 +1,28 @@
 // 图的总览（布局定案 J10）：把参考库里程序画的图全部渲染出来、截图、量字号和出界，给逐张审图用。
 //
 // 用法（一条命令重新生成全部；浏览器目录换成本机 Playwright 浏览器所在的目录）：
-//   PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/figure-sheet/sheet.ts [--refresh] [--base https://new.myfnbguide.com]
-//   改完几张图只看这几张：加 --only s-rent,g-cash-flow,c-<故事 id>（逗号分隔的图编号，见 index.md；写 g-busy-no-profit 包括它的各节），
+//   PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/figure-sheet/sheet.ts
+//   改完几张图只看这几张：加 --only s-rent,g-cash-flow（逗号分隔的图编号，见 index.md；写 g-busy-no-profit 包括它的各节），
 //   再加 --out <目录> 把结果写到别处（几个人同时改图时互不覆盖；目录要在仓库里，例如 .data/figure-sheet-a，打包后的渲染入口才找得到
-//   node_modules；故事数据仍读默认目录的 cache/）。
+//   node_modules）。
 //
 // 做的事：
 //   1. 用 rolldown 打包同目录的 entry.tsx（它引用页面上实际的组件 figures.tsx、ui.tsx），在 Node 里渲染成 HTML；样式表用
 //      Tailwind 按 apps/web/app/app.css 现编（与网站构建同一套来源），浅色、深色两套变量都来自 app.css。
-//   2. 图有三类：50 张情况图（SituationDrawing / 情况页图卡）；情况页每一节自己的图（SectionFigure）；
-//      故事里程序按原文数字画的图（compare、parts、example），数据取自线上只读接口 /api/reference/situations/<slug> 和
-//      /api/reference/cases/<id>，挑 28–30 篇带图的故事（各情况轮流取，补齐没出现过的图种）。接口结果存在
-//      .data/figure-sheet/cache/，再跑时直接用；加 --refresh 重新取。
+//   2. 图有两类：50 张情况图（SituationDrawing / 情况页图卡）；情况页每一节自己的图（SectionFigure）。故事里程序按原文
+//      数字画的图 11-03 随故事的代码一起删了（modules/reference/backend/read.ts）。
 //   3. 每张图截四种（png/<id>--<种>.png，静态 HTML 在 html/）：
-//        phone-light / phone-dark  手机 390 宽，卡片宽 358（情况页图卡；分节图卡；故事页的图）
+//        phone-light / phone-dark  手机 390 宽，卡片宽 358（情况页图卡；分节图卡）
 //        narrow-light              最窄的位置：情况图在参考首页第 1 名大卡右栏（≥ 1280，宽 260，最高 200）；
-//                                  分节图和故事的图在 320 宽手机（卡片宽 288）
-//        desktop-light             电脑：情况页图卡（栏宽 760，图最宽 360）；分节图卡（栏宽 760，图最宽 360）；
-//                                  故事页（栏宽 760）
+//                                  分节图在 320 宽手机（卡片宽 288）
+//        desktop-light             电脑：情况页图卡（栏宽 760，图最宽 360）；分节图卡（栏宽 760，图最宽 360）
 //   4. 同时量：图里每个 text 实际显示的字号（px，小于 11 算问题）、是否超出 svg 的边框（会被裁掉）、文字之间是否重叠
 //      （按字形的实际范围算）；HTML 部分：字号、标签（不长于 24 个字的块）在两个字之间折行（「处理杂｜事」）、数字和
 //      单位分在两行、文字超出卡片、文字被容器截掉；句子里断在词中间的只列在 proseBreaks 供参考（中文排版常见）。
 //      写进 measure.json。
 //   5. 总览图：手机宽度浅色、深色各一套，每页 12 张，图下写编号和名称（有问题的再写一行），在 sheets/；文件清单在 index.md。
-// 只读线上接口，不登录、不提交表单。输出全部在 .data/figure-sheet/（不进 git），每次运行先清掉上次的图和页面。
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+// 不连网站。输出全部在 .data/figure-sheet/（不进 git），每次运行先清掉上次的图和页面。
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { rolldown } from "rolldown";
@@ -36,22 +33,14 @@ import { chromium, type Browser, type Page } from "@playwright/test";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "../..");
 const DEFAULT_OUT = path.join(ROOT, ".data", "figure-sheet");
-const CACHE = path.join(DEFAULT_OUT, "cache");
 const arg = (name: string) => {
   const i = process.argv.indexOf(name);
   return i > 0 ? process.argv[i + 1] : undefined;
 };
-const BASE = (arg("--base") ?? "https://new.myfnbguide.com").replace(/\/$/, "");
-const REFRESH = process.argv.includes("--refresh");
 const OUT = arg("--out") ? path.resolve(arg("--out")!) : DEFAULT_OUT;
 const ONLY = arg("--only")?.split(",").map((id) => id.trim()).filter(Boolean);
 if (!process.env.PLAYWRIGHT_BROWSERS_PATH) console.warn("提示：没有设 PLAYWRIGHT_BROWSERS_PATH，Playwright 会去默认目录找浏览器。");
 
-/** 故事的图挑多少篇：先取够 STORIES 篇，再为还没出现过的图种补到 STORIES_MAX 篇；最多取 FETCH_MAX 篇故事。 */
-const STORIES = 28;
-const STORIES_MAX = 30;
-const FETCH_MAX = 220;
-const FIGURE_BLOCKS = new Set(["compare", "parts", "example"]);
 /** 图里的字实际显示不小于 11px（布局定案 B2）。 */
 const SMALL = 11;
 
@@ -60,7 +49,6 @@ const SMALL = 11;
 
 for (const dir of ["build", "html", "png", "sheets"]) rmSync(path.join(OUT, dir), { recursive: true, force: true });
 for (const dir of ["build", "html", "png", "sheets"]) mkdirSync(path.join(OUT, dir), { recursive: true });
-mkdirSync(CACHE, { recursive: true });
 
 const bundle = await rolldown({
   input: path.join(HERE, "entry.tsx"),
@@ -89,75 +77,13 @@ async function siteCss(): Promise<string> {
 writeFileSync(path.join(OUT, "build", "site.css"), await siteCss());
 
 // ---------------------------------------------------------------------------------------------------------------
-// 2. 故事的数据（线上只读接口，存进 cache/）
-
-async function api<T>(route: string): Promise<T | null> {
-  const file = path.join(CACHE, `${route.replace(/^\/api\/reference\//, "").replace(/[\\/]/g, "_")}.json`);
-  if (!REFRESH && existsSync(file)) return JSON.parse(readFileSync(file, "utf8")) as T | null;
-  const res = await fetch(BASE + route, { headers: { accept: "application/json" } });
-  if (!res.ok && res.status !== 404) throw new Error(`${route}: HTTP ${res.status}`);
-  const data = res.ok ? ((await res.json()) as T) : null;
-  writeFileSync(file, JSON.stringify(data));
-  return data;
-}
-
-type Block = Parameters<typeof R.storyFigure>[0];
-interface CaseData { id: string; story: { title: string; parts: Array<{ heading: string; blocks: Block[] }> } }
-interface Story { slug: string; id: string; title: string; blocks: Block[] }
-
-/** 一种情况页里出现的故事 id，按页面上的顺序（新旧两版接口都适用：做法行的 caseId、故事卡的 id）。 */
-function caseIds(page: unknown): string[] {
-  const ids: string[] = [];
-  const walk = (v: unknown, key?: string) => {
-    if (Array.isArray(v)) for (const x of v) {
-      if (key === "cases" && x && typeof (x as { id?: unknown }).id === "string") ids.push((x as { id: string }).id);
-      walk(x, key);
-    }
-    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) {
-      if (k === "caseId" && typeof x === "string") ids.push(x);
-      walk(x, k);
-    }
-  };
-  walk(page);
-  return [...new Set(ids)];
-}
-
-const blockName = (b: Block) => (b.type === "example" ? `example:${(b as { kind: string }).kind}` : b.type);
-
-async function pickStories(): Promise<Story[]> {
-  const perSituation: Array<[string, string[]]> = [];
-  for (const s of R.situations) perSituation.push([s.slug, caseIds(await api(`/api/reference/situations/${s.slug}`))]);
-  // 各情况轮流取一篇，样本分散在各种情况里。
-  const queue: Array<[string, string]> = [];
-  const seen = new Set<string>();
-  for (let round = 0; perSituation.some(([, ids]) => ids.length > round); round++) {
-    for (const [slug, ids] of perSituation) if (ids[round] && !seen.has(ids[round]!)) { seen.add(ids[round]!); queue.push([slug, ids[round]!]); }
-  }
-  const stories: Story[] = [];
-  const kinds = new Set<string>();
-  for (let i = 0; i < Math.min(queue.length, FETCH_MAX) && stories.length < STORIES_MAX; i += 4) {
-    const batch = await Promise.all(queue.slice(i, i + 4).map(async ([slug, id]) => [slug, await api<CaseData>(`/api/reference/cases/${id}`)] as const));
-    for (const [slug, c] of batch) {
-      if (!c || stories.length >= STORIES_MAX) continue;
-      const blocks = c.story.parts.flatMap((p) => p.blocks).filter((b) => FIGURE_BLOCKS.has(b.type));
-      // 取够以后，只收带新图种的。
-      if (!blocks.length || (stories.length >= STORIES && blocks.every((b) => kinds.has(blockName(b))))) continue;
-      stories.push({ slug, id: c.id, title: c.story.title, blocks });
-      for (const b of blocks) kinds.add(blockName(b));
-    }
-  }
-  return stories;
-}
-const stories = await pickStories();
-
-// ---------------------------------------------------------------------------------------------------------------
-// 3. 要截的图和每种的位置
+// 2. 要截的图和每种的位置
 
 type VariantName = "phone-light" | "phone-dark" | "narrow-light" | "desktop-light";
 const VARIANTS: VariantName[] = ["phone-light", "phone-dark", "narrow-light", "desktop-light"];
 /** 一种截法：视口宽、舞台（图所在的栏）宽（fit 为按内容）、深浅色、放在哪里（写进 measure.json）、HTML。 */
 interface Shot { viewport: number; column: number | "fit"; dark: boolean; place: string; markup: string }
-interface Figure { id: string; kind: "situation" | "group" | "story"; label: string; name: string; slug: string; shots: Record<VariantName, Shot> }
+interface Figure { id: string; kind: "situation" | "group"; label: string; name: string; slug: string; shots: Record<VariantName, Shot> }
 
 const phone = (markup: string, place: string, dark: boolean): Shot => ({ viewport: 390, column: 358, dark, place, markup });
 const figures: Figure[] = [];
@@ -190,21 +116,6 @@ for (const s of R.situations) {
     });
   });
 }
-for (const st of stories) {
-  st.blocks.forEach((b, i) => {
-    const markup = R.storyFigure(b);
-    figures.push({
-      id: `c-${st.id}-${i + 1}`, kind: "story", label: `${st.slug} · ${blockName(b)}`, name: st.title, slug: st.slug,
-      shots: {
-        "phone-light": phone(markup, "故事页，手机（卡宽 358）", false),
-        "phone-dark": phone(markup, "故事页，手机（卡宽 358）", true),
-        "narrow-light": { viewport: 320, column: 288, dark: false, place: "故事页，320 宽手机（卡宽 288）", markup },
-        "desktop-light": { viewport: 1440, column: 760, dark: false, place: "故事页，电脑（栏宽 760）", markup },
-      },
-    });
-  });
-}
-
 if (ONLY) {
   const keep = figures.filter((f) => ONLY.some((id) => f.id === id || f.id.startsWith(`${id}-`)));
   figures.splice(0, figures.length, ...keep);
@@ -228,7 +139,7 @@ function pageHtml(shot: Shot, title: string): string {
 const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 // ---------------------------------------------------------------------------------------------------------------
-// 4. 截图和量（measure 在页面里运行）
+// 3. 截图和量（measure 在页面里运行）
 
 interface Problem { type: "small" | "clipped" | "overlap" | "broken-word" | "number-split" | "truncated" | "overflow"; text: string; detail: string }
 interface Measured {
@@ -402,7 +313,7 @@ const browser = await chromium.launch();
 const results = await shoot(browser);
 
 // ---------------------------------------------------------------------------------------------------------------
-// 5. 总览图、measure.json、index.md
+// 4. 总览图、measure.json、index.md
 
 const rel = (file: string) => path.relative(OUT, file).split(path.sep).join("/");
 const byId = new Map<string, Partial<Record<VariantName, Result>>>();
@@ -465,13 +376,12 @@ const issues = results.filter((r) => r.measured.problems.length).map((r) => ({
 }));
 writeFileSync(path.join(OUT, "measure.json"), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  api: BASE,
   rule: `图里的文字实际显示不小于 ${SMALL}px（布局定案 B2）；出界按字形的实际范围和 svg 的边框比；重叠按字形的实际范围算（大于 1×1px）`,
   browser: `Chromium ${browser.version()}，Windows 字体（中文为微软雅黑），deviceScaleFactor 2`,
   variants: {
     "phone-light": "手机 390 宽，卡宽 358，浅色", "phone-dark": "同上，深色",
-    "narrow-light": "最窄的位置：情况图在首页第 1 名大卡右栏（260，最高 200）；分节图和故事的图在 320 宽手机（卡宽 288）",
-    "desktop-light": "电脑：情况页图卡（图最宽 360）；分节图卡（图最宽 360）；故事页（栏宽 760）",
+    "narrow-light": "最窄的位置：情况图在首页第 1 名大卡右栏（260，最高 200）；分节图在 320 宽手机（卡宽 288）",
+    "desktop-light": "电脑：情况页图卡（图最宽 360）；分节图卡（图最宽 360）",
   },
   summary: Object.fromEntries(Object.keys(PROBLEM_NAMES).map((t) => [t, issues.flatMap((i) => i.problems.filter((p) => p.type === t).map((p) => `${i.id} [${i.variant}] ${p.text}：${p.detail}`))])),
   issues,
@@ -484,18 +394,18 @@ writeFileSync(path.join(OUT, "measure.json"), JSON.stringify({
   })),
 }, null, 1));
 
-const KIND_TITLES = { situation: "情况图（每种情况一张）", group: "分节图（情况页每一节自己的图）", story: "故事里程序画的图（原文数据图、举例算例）" };
+const KIND_TITLES = { situation: "情况图（每种情况一张）", group: "分节图（情况页每一节自己的图）" };
 const md = [
   "# 图的总览",
   "",
-  `生成于 ${new Date().toISOString().slice(0, 16).replace("T", " ")}（UTC）。重新生成：\`PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/figure-sheet/sheet.ts\`（加 \`--refresh\` 重新取线上故事数据）。`,
+  `生成于 ${new Date().toISOString().slice(0, 16).replace("T", " ")}（UTC）。重新生成：\`PLAYWRIGHT_BROWSERS_PATH=<浏览器目录> node myfnb/figure-sheet/sheet.ts\`。`,
   "下面的路径都相对于 `.data/figure-sheet/`；每张图的静态 HTML 在 `html/`，文件名与截图相同。量出来的结果在 `measure.json`（`summary` 按问题种类列出）。",
   "",
   "## 总览图",
   "",
   ...sheets.map((f) => `- [${rel(f).replace(/\.html$/, ".jpg")}](${rel(f).replace(/\.html$/, ".jpg")})`),
   "",
-  ...(["situation", "group", "story"] as const).flatMap((kind) => [
+  ...(["situation", "group"] as const).flatMap((kind) => [
     `## ${KIND_TITLES[kind]}`,
     "",
     "| 编号 | 名称 | 手机浅色 | 手机深色 | 最窄位置 | 电脑 | 量出的问题 |",
@@ -509,7 +419,7 @@ const md = [
 ].join("\n");
 writeFileSync(path.join(OUT, "index.md"), md);
 
-console.log(`图 ${figures.length} 张（情况 ${figures.filter((f) => f.kind === "situation").length}，分节 ${figures.filter((f) => f.kind === "group").length}，故事 ${figures.filter((f) => f.kind === "story").length}，来自 ${stories.length} 篇故事），截图 ${results.length} 张，总览 ${sheets.length} 页。`);
+console.log(`图 ${figures.length} 张（情况 ${figures.filter((f) => f.kind === "situation").length}，分节 ${figures.filter((f) => f.kind === "group").length}），截图 ${results.length} 张，总览 ${sheets.length} 页。`);
 for (const [type, name] of Object.entries(PROBLEM_NAMES)) {
   const n = issues.reduce((sum, i) => sum + i.problems.filter((p) => p.type === type).length, 0);
   if (n) console.log(`  ${name}：${n} 处`);

@@ -1,10 +1,7 @@
-// One situation (layout B2, J4): what it is and how many shops and 条原文 it has, 先了解这种情况, its picture with
-// the causes numbered, then its practices: cards for those two shops or more tell, rows for those one shop tells
-// alone, and (before the stories are grouped, or for stories written since) the stories. By cause only where two
-// causes have two practices or more each; else one list, most shops first.
+// One situation (layout B2, J4): what it is and how many shops and 条原文 it has, its picture with the causes
+// numbered, then its items by cause, newest first, and those in no cause under 其他做法 (backend/read.ts).
 import { useState, type ReactNode } from "react";
-import { Link, useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
-import { Kicker } from "@aihot/web/components/ui/Kicker";
+import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { AsideCard, ReadingLayout } from "@aihot/web/components/ui/Page";
 import { IconCopy, IconMore, IconShare } from "@aihot/web/components/icons";
@@ -13,10 +10,10 @@ import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { breadcrumbLd, itemListLd, pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
 import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
-import type { PracticeList, SituationPage } from "../types.ts";
+import type { SituationPage } from "../types.ts";
 import { SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
-import { BODY, Heading, MEASURE, PageHeader, Practice, ROW_BUTTON, ShopRows, StoryCards, useShare, BackLink } from "./ui";
+import { Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
 
 export const handle: Screen = { tab: "reference" };
 
@@ -32,7 +29,7 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
   if (!data) return [{ title: titled("没有这个情况") }, { name: "robots", content: "noindex" }];
   const path = `/reference/${data.slug}`;
   // Machine description as the engine's list pages give it (routes/all.tsx itemListLd, routes/topic.tsx breadcrumbLd).
-  const titles = [...data.groups.flatMap((g) => g.cases), ...data.rest.cases].map((c) => c.title);
+  const titles = [...data.groups.flatMap((g) => g.cases), ...data.rest].map((c) => c.title);
   return pageMeta({
     title: data.title, description: data.dek, path,
     jsonLd: [
@@ -50,10 +47,8 @@ export default function SituationRoute() {
   const onShare = () => void share(s.title, path);
   const split = s.groups.length > 0;
   const titles = s.causes.map((g) => g.title);
-  const rest = s.rest.practices.length || s.rest.shops.length || s.rest.cases.length ? s.rest : null;
-  const who = tellers(s.count).map(([n, unit]) => `${num(n)} ${unit}`).join("和 ");
   // Desktops: the engine's reading template, the page and an aside of cards (as 更新日志 and 反馈 have it): what the
-  // page counts, when it was updated and the share button, and how its words were written.
+  // page counts, when it was updated and the share button.
   const aside = (
     <div className="hidden space-y-4 lg:block">
       <AsideCard title="这种情况">
@@ -65,12 +60,6 @@ export default function SituationRoute() {
         {s.updatedAt && <p className="mt-3 border-t border-line-soft pt-3 text-[12.5px] text-ink-4"><span className="num">{day(s.updatedAt)}</span> 更新</p>}
         <button type="button" onClick={onShare} className={`${ROW_BUTTON} mt-3 w-full justify-center`}><IconShare size={16} />分享</button>
       </AsideCard>
-      {s.overview && (
-        <AsideCard title="关于这一页">
-          <p className="text-[13px] leading-relaxed text-ink-3">做法和归纳由 AI 根据本页 {who}的原文整理，各家的做法以原文为准；每一条都附原文出处。</p>
-          <Link to="/feedback" className="mt-2 inline-flex min-h-9 items-center text-[13px] font-semibold text-accent hover:text-accent-ink">发现不对，去反馈 ›</Link>
-        </AsideCard>
-      )}
     </div>
   );
   return (
@@ -90,13 +79,6 @@ export default function SituationRoute() {
       <BackLink to="/reference" label="参考" />
       <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
         counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
-      {s.overview && (
-        <section className="mt-8">
-          <Kicker>先了解这种情况</Kicker>
-          <p className={`mt-3 ${BODY} ${MEASURE}`}>{s.overview}</p>
-          <p className={`mt-2 text-[13px] leading-[1.5] text-ink-4 ${MEASURE}`}>AI 根据本页 {who}的原文归纳，各家的做法以原文为准。</p>
-        </section>
-      )}
       <SituationFigure slug={s.slug} groups={titles}>
         {s.causes.length > 1 && (
           <ol className="mt-3">
@@ -127,16 +109,16 @@ export default function SituationRoute() {
           </div>
           {/* No section picture for now: 6 of 20 checked against their stories were wrong (10-18); they come back one
               by one once each is checked (sections/, myfnb/figure-sheet still draws them all). */}
-          <List list={g} grouped={s.count.grouped} />
+          <StoryCards cards={g.cases} />
         </section>
       )) : (
-        <section className="mt-9"><List list={s.rest} grouped={s.count.grouped} /></section>
+        <section className="mt-9">{s.rest.length > 0 && <StoryCards cards={s.rest} />}</section>
       )}
-      {split && rest && (
+      {split && s.rest.length > 0 && (
         <section className="mt-10">
           <Heading>其他做法</Heading>
           <p className="mt-1 text-[13px] text-ink-4">与这种情况有关，没有归入上面几组。</p>
-          <List list={rest} grouped={s.count.grouped} />
+          <StoryCards cards={s.rest} />
         </section>
       )}
       <ActionsSheet
@@ -149,28 +131,5 @@ export default function SituationRoute() {
       />
       {toast}
     </ReadingLayout>
-  );
-}
-
-/**
- * One list: the practice cards, the rows of practices one shop tells alone, then the stories in no practice (all
- * of them before the stories are grouped).
- */
-function List({ list, grouped }: { list: PracticeList; grouped: boolean }) {
-  return (
-    <>
-      {list.practices.length > 0 && (
-        <div className="mt-3.5 grid gap-2.5">
-          {list.practices.map((p) => <Practice key={p.key} p={p} />)}
-        </div>
-      )}
-      <ShopRows shops={list.shops} className={list.practices.length ? "mt-2.5" : "mt-3.5"} />
-      {list.cases.length > 0 && (
-        <>
-          {grouped && <p className="mt-5 text-[13px] text-ink-4">最近收进来的原文</p>}
-          <StoryCards cards={list.cases} />
-        </>
-      )}
-    </>
   );
 }

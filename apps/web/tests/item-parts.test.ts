@@ -17,7 +17,7 @@ const detail = (id: string): SiteItemDetail => ({
   readingMode: "full", author: null, body: null, outline: [], relatedStories: [], topics: [], indexable: true, markdownAvailable: true, group: null,
   hasTranslation: false, bodyLanguage: "zh",
 } as SiteItemDetail);
-const WRITTEN = { id: "written", title: "布草账单四年涨到每周 1,503 美元", situation: { slug: "busy-no-profit", title: "生意忙却不赚钱", count: { grouped: true, shops: 3, insiders: 0, cases: 3 } } };
+const WRITTEN = { id: "written", situation: { slug: "busy-no-profit", title: "生意忙却不赚钱", count: { shops: 3, insiders: 0, cases: 3 } } };
 
 let web: ChildProcess;
 let origin: string;
@@ -65,7 +65,7 @@ async function page(path: string): Promise<string> {
   return res.text();
 }
 
-// The site's reference module gives the item page the way to its story (modules/reference/web/item-part.tsx).
+// The site's reference module gives the item page the way to its situation (modules/reference/web/item-part.tsx).
 test("an item page draws a module's block where its api has something, and leaves it out where not", async () => {
   const written = await page("/items/written");
   for (const text of ["参考", WRITTEN.situation.title, "/reference/busy-no-profit"]) assert.ok(written.includes(text), text);

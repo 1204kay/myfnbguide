@@ -100,6 +100,8 @@ test("a failed reading names the script's stretches the transcript lacks, longes
 test("a fix naming no line of the script changes nothing", () => {
   assert.deepEqual(applyFixes(["甲", "乙"], [{ kind: "", line: "丙", fix: "丁", why: "" }]), { lines: ["甲", "乙"], applied: 0 });
   assert.deepEqual(applyFixes(["甲", "乙"], [{ kind: "", line: "乙", fix: "乙一\n乙二", why: "" }]).lines, ["甲", "乙一", "乙二"]);
+  // Issue 11 (11-04): a note to the editor is not a line to read.
+  assert.deepEqual(applyFixes(["甲", "乙。"], [{ kind: "误导", line: "乙。", fix: "乙。（整行删除，不念）", why: "" }]), { lines: ["甲", "乙。"], applied: 0 });
 });
 
 test("numbers are compared as said, whether the transcript writes digits or characters", () => {

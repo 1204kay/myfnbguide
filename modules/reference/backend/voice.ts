@@ -121,12 +121,17 @@ export const scriptChars = (lines: string[]) => lines.join("").replace(/\s/gu, "
  * Puts the check's fixes in: each names a line of the script word for word and gives it whole. A line no longer there
  * (an earlier fix took it) is left; the check reads the result again.
  */
+/**
+ * An editor's note in a fix, not words to say: issue 11 (11-04) had the check answer 「…照顾明白。（整行删除，不念）」 for a
+ * line on the page it wanted gone, the fix went in, and the voice read the note aloud. A fix carrying one is left out.
+ */
+const EDITOR_NOTE = /[（(][^（）()]*(删|不念|别念|补上|改为|改成|此行|这行|整行|原文)[^（）()]*[）)]/u;
 export function applyFixes(lines: string[], problems: Problem[]): { lines: string[]; applied: number } {
   const out = [...lines];
   let applied = 0;
   for (const p of problems) {
     const at = out.findIndex((l) => l.trim() === p.line.trim());
-    if (at < 0 || !p.fix.trim()) continue;
+    if (at < 0 || !p.fix.trim() || EDITOR_NOTE.test(p.fix)) continue;
     out.splice(at, 1, ...p.fix.split(/\n+/u).map((l) => l.trim()).filter(Boolean));
     applied += 1;
   }

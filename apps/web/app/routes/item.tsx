@@ -545,7 +545,7 @@ function ItemView({ item, parts = {}, followups }: Loaded) {
           )}
 
           {item.reason && !summaryOnly && (
-            <section className="mt-6 border-t border-line pt-4 side:hidden">
+            <section className="mt-6 border-t border-line pt-4">
               <div className="mb-1 text-[12px] font-semibold text-ink-3">{ITEM_COPY.reasonLabel}</div>
               <Reason text={item.reason} className="text-[15px] leading-[1.75] text-ink-2 xl:text-[16px]" />
             </section>

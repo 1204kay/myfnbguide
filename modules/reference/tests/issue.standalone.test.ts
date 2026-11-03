@@ -7,7 +7,7 @@ import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { answerText, CACHE_TTL, joined, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
-import { amendIssue, type Ask, checkIssue, citedItems, composeIssue, edit, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { amendIssue, type Ask, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -461,4 +461,19 @@ test("on the shared layout the check, the last read and the editor send the same
   sent.length = 0;
   await reviewIssue(draft, ITEMS, ask);
   assert.ok(sent[0]!.system.startsWith("你是") && typeof sent[0]!.user === "string");
+});
+
+test("a draft too short for twelve minutes is written once more, told so, unless the day had little to tell", async () => {
+  const long = (title: string) => ({ ...issue(title, "说了〔1〕。"), deep: `细说〔4〕${"讲得很深。".repeat(WRITE_FLOOR / 5)}` });
+  const rich = ITEMS.map((i) => ({ ...i, text: "原文".repeat(THIN_DAY / 2) }));
+  const { ask, calls } = scripted({
+    reference_issue_write: (u, attempt) => (attempt === "a" ? issue("短稿", "说了〔1〕。") : attempt === "a2" && u.includes("太短了") ? long("长稿") : long("另一稿")),
+    reference_issue_check: () => ({ lively: 5, problems: [] }),
+  });
+  const out = await composeIssue(rich, "2026-11-03", ask);
+  assert.deepEqual(calls.filter((c) => c.purpose === "reference_issue_write").map((c) => c.attempt), ["a", "a2", "b"]);
+  assert.ok(out.drafts.some((d) => d.written?.title === "长稿"), "the longer rewrite replaces the short draft");
+  const thin = scripted({ reference_issue_write: () => issue("短稿", "说了〔1〕。"), reference_issue_check: () => ({ lively: 5, problems: [] }) });
+  await composeIssue(ITEMS, "2026-11-03", thin.ask);
+  assert.deepEqual(thin.calls.filter((c) => c.purpose === "reference_issue_write").map((c) => c.attempt), ["a", "b"], "a thin day is left short");
 });

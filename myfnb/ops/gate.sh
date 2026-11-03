@@ -50,7 +50,8 @@ case $verb in
   board)
     # 公司流水线看板（dino-valley company-view/board，css-cloud 每 10 分钟读一次）：从今天 08:00（马来西亚时间，即 UTC 0 点，
     # 和日报同一个分界）起收了几篇、打了分的几篇和分数分布、进精选几条，以及近 3 天跑过的每个任务最近一次的结果、
-    # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss），以及各付费服务本月和 7 天的花费。只读账号，输出一行 JSON。
+    # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss），Claude API 这一期和 7 天、DeepSeek 7 天的花费，
+    # 以及十一说念稿用掉的阿里云语音字数。只读账号，输出一行 JSON。
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -v ON_ERROR_STOP=1 <<'SQL'
 WITH a AS (SELECT id FROM articles WHERE discovered_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),
 p AS (SELECT p.score, p.selected FROM publications p JOIN a ON a.id = p.article_id WHERE p.visibility <> 'withdrawn'),
@@ -102,6 +103,20 @@ SELECT json_build_object(
          + t.tout * pr.output_per_mtok) / 1e6 AS cost) c
      WHERE ra.service = 'deepseek' AND ra.origin = 'live' AND ra.usage IS NOT NULL AND ra.started_at > now() - interval '7 days'
      GROUP BY pr.currency) d),
+  -- speech：十一说念稿（service speech-qwen，modules/reference/backend/voice.ts）用掉的阿里云免费额度。阿里云没有查询接口，
+  --   仪表从控制台读过的一个数往下推：Kay 11-03 14:18（MYT）控制台写剩 702.33K / 1M，2027-01-31 到期。base 和 since 是那次读数，
+  --   再读一次控制台就改这两个值。billed 是回执里阿里云自己报的计费字数（usage.characters）；没报的那几次只有我们送去的字数
+  --   （receipts.request 的 chars），记进 plain，仪表按汉字 2 个字符推算（11-01：一期约 3,350 字计费 6–7K）。每次尝试都算，重试也计费。
+  'speech', (SELECT json_build_object('base_left', 702330, 'total', 1000000, 'since', '2026-11-03T06:18:00Z', 'expires', '2027-01-31',
+       'billed', coalesce(sum(t.billed) FILTER (WHERE ra.started_at >= '2026-11-03T06:18:00Z'), 0),
+       'plain', coalesce(sum(t.plain) FILTER (WHERE ra.started_at >= '2026-11-03T06:18:00Z'), 0),
+       'week_billed', coalesce(sum(t.billed) FILTER (WHERE ra.started_at > now() - interval '7 days'), 0),
+       'week_plain', coalesce(sum(t.plain) FILTER (WHERE ra.started_at > now() - interval '7 days'), 0),
+       'calls', count(*) FILTER (WHERE ra.started_at >= '2026-11-03T06:18:00Z'))
+     FROM receipt_attempts ra JOIN receipts r ON r.id = ra.receipt_id
+     CROSS JOIN LATERAL (SELECT (ra.usage->>'characters')::numeric AS billed,
+       CASE WHEN ra.usage->>'characters' IS NULL THEN coalesce((r.request->>'chars')::numeric, 0) END AS plain) t
+     WHERE ra.service = 'speech-qwen' AND ra.origin = 'live' AND ra.started_at >= least('2026-11-03T06:18:00Z'::timestamptz, now() - interval '7 days')),
   'jobs', (SELECT coalesce(json_agg(x ORDER BY x.job), '[]') FROM (
      SELECT j.job, l.started_at, l.finished_at, l.status, left(l.error, 200) AS error, c.failed_24h, c.runs_24h, r.recent
      FROM j CROSS JOIN LATERAL (SELECT started_at, finished_at, status, error FROM job_runs WHERE job = j.job ORDER BY started_at DESC, id DESC LIMIT 1) l

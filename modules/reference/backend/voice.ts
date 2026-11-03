@@ -670,6 +670,33 @@ export async function timeIssue(no: number) {
   return heard.starts;
 }
 
+/** Lines shorter than this many characters are read joined to a neighbour (joinShort). */
+export const SHORT_LINE = 18;
+/**
+ * The script with its short lines joined to a neighbour, the words as they were. A short line that opens what follows
+ * (「第二条，英国酒税。」「第一层，…」「换到葡萄牙。」「再看越南。」「先说英国。」「下一条在巴西。」「最后一条，…」, or one
+ * ending in a colon or question mark) goes onto the start of the line after it; any other short line onto the end of the
+ * line before. The first and last lines stay as they are and are never joined to. Each line is its own request and
+ * starts its own tune, and a short one starts high and stays there: 11-03 on issue 10, 「第二条，英国酒税。」 read alone
+ * sat 4.9 semitones above an ordinary line and 1.3 joined to the next; 「最低工资也上调了。」 5.4 and 1.5; 「第四条，
+ * 消费入座。」 4.1 and 0.7 (Kay 11-03 06:38 「有时候音高 有时候音低」, 12:11 「是不是用词的关系？」). Which way each kind
+ * goes was set with the 全面整理 review of issues 2 and 4–10 on 11-03.
+ */
+/** A short line that opens what follows (joinShort). */
+const OPENS = /^(?:第[一二三四五六七八九十]+[条篇层]|换到|再看|先说|下一条|最后一条)|[：:？?]$/u;
+
+export function joinShort(lines: string[], short = SHORT_LINE): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i]!;
+    const isShort = [...line].length < short && i > 0 && i < lines.length - 1;
+    if (isShort && i + 1 < lines.length - 1 && OPENS.test(line)) { out.push(line + lines[i + 1]!); i += 1; continue; }
+    if (isShort && out.length) { out[out.length - 1] += line; continue; }
+    out.push(line);
+  }
+  return out;
+}
+
 /** The pause added before each line of the script after the first, in seconds. */
 export const BREATH = 0.5;
 /**
@@ -738,7 +765,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       // A script already checked and up, such as an issue's own N.txt (11-01: issues 1–7 read again in 龙安欢's voice from
       // their texts as they are, not rewritten). No length limit here: Kay 11-01 22:37 「原稿超过上限的照原长念」
       // (issues 2–5 run 4,651–5,852 characters).
-      const lines = scriptLines(opts.script);
+      const lines = joinShort(scriptLines(opts.script));
       script = lines.join("\n");
       report.chars = scriptChars(lines);
       report.scriptRounds = [];
@@ -749,7 +776,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const written = await writeScript(row.issue, row.date, ask.write, ask.check);
       report.scriptRounds = written.rounds;
       if (!written.lines) { report.status = "script failed"; return keep(); }
-      script = written.lines.join("\n");
+      script = joinShort(written.lines).join("\n");
       report.chars = scriptChars(written.lines);
       if (report.chars > MAX_CHARS) { report.status = "too long"; return keep(); }
       await mkdir(work, { recursive: true });

@@ -31,7 +31,7 @@ import { installModules } from "@aihot/backend/modules";
 import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "../modules/reference/backend/issue.ts";
 import { issueAudio } from "../modules/reference/backend/audio.ts";
-import { hearIssue, pauseIssue, putTry, timeIssue, voiceIssue, voiceMissing, voiceReport } from "../modules/reference/backend/voice.ts";
+import { hearIssue, pauseIssue, putTry, timeIssue, voiceIssue, writeOnly, voiceMissing, voiceReport } from "../modules/reference/backend/voice.ts";
 
 // modelFor knows a module's steps only once the modules are installed.
 installModules(SERVER_MODULES);

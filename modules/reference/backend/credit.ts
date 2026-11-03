@@ -1,4 +1,4 @@
-// The Claude API credit (planned at US$100 a month, renewing on the 4th; settings 'reference.claude-credit'), runs 十一说's check and the module's other Claude steps.
+// The Claude API credit (planned at US$100 a month, renewing on the 1st; settings 'reference.claude-credit'), runs 十一说's check and the module's other Claude steps.
 // The server has no budget row for it, and when it runs out Anthropic refuses: that morning's issue then fails whole,
 // no text and no audio (Kay 11-01 22:43 asked for a warning before that day comes). The receipts carry no cost for
 // Claude, so the month's spend is counted from their tokens at list price. Since 11-02 the check reads the originals
@@ -9,12 +9,15 @@ import type { Finding } from "@aihot/backend/notify/feishu";
 
 /**
  * The credit and the day of the month it renews, unless settings 'reference.claude-credit' says otherwise
- * ({"monthly": 100, "renewsOn": 4}): a plan change is then one row, not a deploy. Not the 1st: on 11-02 the credit ran
- * out while the receipts counted from 11-01 showed about US$2.7, so the warning never went off; Kay's bill (11-02 19:28)
- * renews on the 4th (next 12-04). Ultra gives US$200, but Kay 11-02 19:31 set US$100 a month as the standard to plan by.
+ * ({"monthly": 100, "renewsOn": 1}): a plan change is then one row, not a deploy. The 1st, as the Console's monthly spend
+ * limit: Kay's screenshot 11-03 21:22 shows US$5.76 spent this month of a US$100 limit that resets on the 1st, with a
+ * balance of US$190.79, so the limit is what refuses first. From 11-02 to 11-03 this counted from the 4th: on 11-02 the
+ * balance ran out while the receipts counted from 11-01 showed about US$2.7, and Kay's bill (11-02 19:28) renews on the
+ * 4th; counting from the 4th then put most of October in "this month" (US$102 on 11-03 against the Console's US$5.76).
+ * Kay 11-02 19:31 set US$100 a month as the standard to plan by.
  */
 export type CreditPlan = { monthly: number; renewsOn: number };
-export const DEFAULT_PLAN: CreditPlan = { monthly: 100, renewsOn: 4 };
+export const DEFAULT_PLAN: CreditPlan = { monthly: 100, renewsOn: 1 };
 /** US$ per million tokens: input, output, and a cache read (platform.claude.com pricing, 11-01; reads 11-02).
  * myfnb/ops/gate.sh `board` copies these and the write multipliers for the company gauge: change both together. */
 const PRICES: Record<string, [number, number, number]> = {

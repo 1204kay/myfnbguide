@@ -397,19 +397,20 @@ test("a fix to the preview stays in the preview, though the preview repeats a ne
 });
 
 test("the Claude credit warns at 80% spent, or once the period's pace would go over it, and not before", () => {
-  // US$100 a month as the standard (Kay 11-02 19:31), renewing on the 4th, so 11-02 still counts from 10-04.
+  // US$100 a month as the standard (Kay 11-02 19:31), renewing on the 1st as the Console's limit (Kay's screenshot 11-03).
   const nov = (d: number) => new Date(Date.UTC(2026, 10, d, 2));
-  assert.equal(creditPeriod(nov(2)).start, Date.UTC(2026, 9, 4));
-  assert.equal(creditPeriod(nov(4)).start, Date.UTC(2026, 10, 4));
+  assert.equal(creditPeriod(nov(3)).start, Date.UTC(2026, 10, 1));
+  assert.equal(creditPeriod(nov(3)).end, Date.UTC(2026, 11, 1));
+  assert.equal(creditPeriod(nov(2), 4).start, Date.UTC(2026, 9, 4), "a setting's renewal day");
   assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000 }]), 6);
   // Of a million read in: 100k written for an hour (2 × $4), 800k read from the cache ($0.20), 100k plain.
   assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000, cacheRead: 800_000, write1h: 100_000 }]).toFixed(2), "3.36", "0.4 plain + 0.16 read + 0.8 written + 2 output");
-  assert.equal(creditFinding(20, nov(6)), null, "two days say too little about the period");
-  assert.equal(creditFinding(20, nov(13)), null, "US$20 nine days in is about US$66 for the period");
-  const pace = creditFinding(40, nov(13));
+  assert.equal(creditFinding(20, nov(3)), null, "two days say too little about the period");
+  assert.equal(creditFinding(20, nov(10)), null, "US$20 nine days in is about US$66 for the period");
+  const pace = creditFinding(40, nov(10));
   assert.equal(pace?.level, "today");
   assert.ok(pace?.impact?.includes("整月约 US$132"), String(pace?.impact));
-  assert.equal(creditFinding(81, nov(2))?.level, "today", "late in the period that began 10-04");
+  assert.equal(creditFinding(81, nov(2))?.level, "today", "80% spent, however early");
   assert.equal(creditFinding(96, nov(2))?.level, "now");
   assert.equal(creditFinding(161, nov(2), { monthly: 200, renewsOn: 4 })?.level, "today", "the setting's credit");
 });

@@ -1,9 +1,13 @@
 // 十一说 read aloud (backend/voice.ts) without a model or a voice: the script written and mended from what the check
 // names, and the machine check's parts on made-up audio and transcripts. No database, no model.
 import assert from "node:assert/strict";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { test } from "node:test";
+import { config } from "@aihot/backend/config";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -228,4 +232,31 @@ test("a WAV's samples are found wherever its data chunk sits", () => {
   const { rate, samples } = wavSamples(riff);
   assert.equal(rate, 24_000);
   assert.deepEqual([...samples.slice(0, 2)], [1000, -1000]);
+});
+
+test("a passed --try goes up with its exact line starts and pauses; one not passed, or not matching, does not", async () => {
+  const no = 9000 + Math.floor(Math.random() * 999);
+  const dir = await mkdtemp(path.join(os.tmpdir(), "try-"));
+  const rate = 16_000;
+  const tone = (s: number) => Int16Array.from({ length: rate * s }, (_, i) => Math.round(6000 * Math.sin((2 * Math.PI * 200 * i) / rate)));
+  const { samples, starts } = joinLines([tone(30), tone(31)], rate);
+  await writeFile(path.join(dir, `${no}.wav`), wavOf(samples, rate));
+  await writeFile(path.join(dir, `${no}.mp3`), "mp3");
+  await writeFile(path.join(dir, `${no}.txt`), "第一行，念了三十秒。\n第二行，念了三十一秒。\n");
+  await writeFile(path.join(dir, `${no}.starts.json`), JSON.stringify(starts));
+  const report = (status: string, seconds = 62) => writeFile(path.join(dir, `${no}.voice.json`), JSON.stringify({ status, reads: [{ seconds }] }));
+  await report("check failed");
+  assert.ok("refused" in await putTry(no, dir), "a reading that failed the check stays a try");
+  await report("tried", 70);
+  assert.ok("refused" in await putTry(no, dir), "a wav other than the one checked stays a try");
+  await report("tried");
+  assert.deepEqual(await putTry(no, dir), { seconds: 62, lines: 2 });
+  const up = path.join(config.dataDir, "reference", "audio");
+  const meta = JSON.parse(await readFile(path.join(up, `${no}.json`), "utf8")) as { seconds: number; starts: number[]; pauses: unknown[] };
+  assert.equal(meta.seconds, 62);
+  assert.deepEqual(meta.starts, [0, 30.5]);
+  assert.ok(Array.isArray(meta.pauses) && meta.pauses.length > 0);
+  assert.equal(await readFile(path.join(up, `${no}.mp3`), "utf8"), "mp3");
+  await writeFile(path.join(dir, `${no}.starts.json`), JSON.stringify([0]));
+  assert.ok("refused" in await putTry(no, dir), "starts that do not match the lines");
 });

@@ -759,6 +759,35 @@ export function joinLines(parts: Int16Array[], rate: number, seconds = BREATH): 
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
+
+/**
+ * Puts up a reading a --try left in `dir` (tries/<no>/) and passed the machine check: its MP3 and script, and <no>.json
+ * with the seconds, each line's start as the reading joined them (joinLines, exact) and the pauses (followTimes), as
+ * --put writes them. Reads nothing aloud and pays nothing. 11-03: issues 2 and 4–10 were read again with short lines
+ * joined (Kay 12:11 「是不是用词的关系？」), as tries to be heard first; --put would read them once more, and issues 2, 5,
+ * 7 and 9 have no reads left; issue-audio.sh writes only the seconds, so the 文字稿 would not follow the voice.
+ */
+export async function putTry(no: number, dir: string): Promise<{ seconds: number; lines: number } | { refused: string }> {
+  const file = (ext: string) => path.join(dir, `${no}.${ext}`);
+  const tried = await readFile(file("voice.json"), "utf8").then((t) => JSON.parse(t) as VoiceReport, () => null);
+  if (tried?.status !== "tried") return { refused: `${file("voice.json")} 不是一次核对通过的试念（${tried?.status ?? "没有这个文件"}）` };
+  const [script, wav, startsText] = await Promise.all([readFile(file("txt"), "utf8"), readFile(file("wav")), readFile(file("starts.json"), "utf8")]);
+  const starts = JSON.parse(startsText) as number[];
+  const lines = scriptLines(script);
+  if (lines.length !== starts.length) return { refused: `听稿 ${lines.length} 行，开始时间 ${starts.length} 个，对不上` };
+  const { rate, samples } = wavSamples(wav);
+  const seconds = Math.round(samples.length / rate);
+  if (seconds !== tried.reads?.at(-1)?.seconds) return { refused: `wav ${seconds} 秒，和核对通过的那次（${tried.reads?.at(-1)?.seconds} 秒）不是同一份` };
+  await mkdir(DIR, { recursive: true });
+  for (const ext of ["mp3", "txt"]) {
+    await writeFile(path.join(DIR, `${no}.${ext}.part`), await readFile(file(ext)));
+    await rename(path.join(DIR, `${no}.${ext}.part`), path.join(DIR, `${no}.${ext}`));
+  }
+  // The seconds last: until they are there the page shows no 听.
+  await writeFile(path.join(DIR, `${no}.json.part`), JSON.stringify({ seconds, ...followTimes(samples, rate, starts) }));
+  await rename(path.join(DIR, `${no}.json.part`), path.join(DIR, `${no}.json`));
+  return { seconds, lines: lines.length };
+}
 export async function voiceReport(no: number): Promise<VoiceReport | null> {
   return readFile(reportFile(no), "utf8").then((t) => JSON.parse(t) as VoiceReport, () => null);
 }
@@ -782,7 +811,12 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
   const before = await voiceReport(no);
   const used = opts.dryRun ? 0 : before?.tries ?? 0;
   const report: VoiceReport = { no, date: row.date, at: new Date().toISOString(), status: "error", tries: used, reads: opts.dryRun ? [] : before?.reads ?? [] };
-  const keep = async () => { if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); } return report; };
+  // A dry run keeps its report beside its reading, for putTry to see the reading passed.
+  const keep = async () => {
+    if (!opts.dryRun) { await mkdir(DIR, { recursive: true }); await writeFile(reportFile(no), JSON.stringify(report, null, 1)); }
+    else if (opts.out) { await mkdir(opts.out, { recursive: true }); await writeFile(path.join(opts.out, `${no}.voice.json`), JSON.stringify(report, null, 1)); }
+    return report;
+  };
   if (used >= MAX_READS && !before?.unheard) return { ...report, status: "no reads left" };
   // Not kept: once the key or the row is there, the next half hour reads it.
   const missing = await voiceMissing();
@@ -845,7 +879,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
       report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
       if (!verdict.pass) { await keep(); continue; }
-      if (opts.dryRun) { report.status = "tried"; return report; }
+      if (opts.dryRun) { report.status = "tried"; return keep(); }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.
       await mkdir(DIR, { recursive: true });
       for (const ext of ["mp3", "txt"]) {

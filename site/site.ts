@@ -31,7 +31,7 @@ export const SITE = {
   /** 主题目录页（/topics）的标题。 */
   topicsTitle: "餐饮主题：经营主题、品类与地区的最新动态",
   /** 反馈表单输入框里的示例。 */
-  feedbackExample: "例如：某一篇故事里的数字和原文对不上……",
+  feedbackExample: "例如：某一条的原文要点和原文对不上……",
   /** 反馈页标题下面的一句话。 */
   feedbackLead: "内容有误、页面出错，或者希望增加的功能，都可以在这里告诉我们。",
   /** 反馈表单邮箱框里的提示。 */
@@ -170,8 +170,8 @@ export const ABOUT = {
   steps: {
     collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体，分布在亚洲、大洋洲、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
     store: "收进来的内容都保存下来，同一件事的多篇报道归为一组。",
-    select: `模型先判断内容是否与餐饮经营有关，再写中文标题、摘要和${ITEM_COPY.reasonLabel}，按固定的评分标准选出精选；只面向食客的美食推荐、食评和食谱，以及与餐饮经营无关的内容不收录。`,
-    publish: `入选的内容写成故事，按经营者遇到的情况整理进参考；早上 ${EDITION_WHEN.daily} 编日报，${EDITION_WHEN.weekly} 编周报，${EDITION_WHEN.monthly} 编月报。`,
+    select: `模型先判断内容是否与餐饮经营有关，再写中文标题、导读和${ITEM_COPY.reasonLabel}，按固定的评分标准选出精选；只面向食客的美食推荐、食评和食谱，以及与餐饮经营无关的内容不收录。`,
+    publish: `入选的内容按经营者遇到的情况整理进参考；早上 ${EDITION_WHEN.daily} 编日报，头条放十一说：读完前一天收进来的全部内容后写的一期，每句标出原文出处；${EDITION_WHEN.weekly} 编周报，${EDITION_WHEN.monthly} 编月报。`,
   },
   /**
    * 作者块（选填），null 就不显示。
@@ -215,7 +215,7 @@ export const REPORTS = {
   motto: SITE.subject as string,
   /** 每种报告页面的描述（搜索结果、分享卡片），不带句号；llms.txt 介绍周报、月报时也用它。 */
   descriptions: {
-    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，收录前一天收进来的餐饮消息和店家做法，按重要程度排列`,
+    daily: `${SITE.name} 的${withSubject("日报")}：早上 ${spokenTime(EDITION_TIMES.daily)}编排，从近三天还没上过日报的餐饮消息和店家做法里挑出，头条放十一说`,
     weekly: `从上一周的${withSubject("日报")}里选出的内容，按类别分组`,
     monthly: `从上个月的${withSubject("日报")}里选出的内容，按类别分组`,
   },
@@ -277,7 +277,7 @@ export const CARDS: Record<string, { kicker: string; title: string; subtitle: st
   site: { kicker: "餐饮小店的经营参考", title: SITE.tagline, subtitle: "收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，由你自己判断。" },
   all: { kicker: subjectAfter("全部", "动态"), title: "收进来的全部内容，按时间排列", subtitle: "可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
-  daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "前一天收录的餐饮消息和店家做法，按重要程度排列。" },
+  daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "从近三天还没上过日报的餐饮消息和店家做法里挑出，头条放十一说。" },
   weekly: { kicker: withSubject("周报"), title: "一周的内容汇编", subtitle: "从上一周的日报里选出，按类别分组。" },
   monthly: { kicker: withSubject("月报"), title: "一个月的内容汇编", subtitle: "从上个月的日报里选出，按类别分组。" },
   about: { kicker: "关于", title: `关于 ${SITE.name}`, subtitle: SITE.description },

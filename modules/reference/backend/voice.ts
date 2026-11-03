@@ -32,9 +32,11 @@ const DIR = path.join(config.dataDir, "reference", "audio");
  * against a script that runs long, never an aim, and MAX_CHARS appears in no prompt. Before: 2,450/2,650 until 11-01, when
  * Gemini's Leda read the issue in one request and longer readings broke at the end and drifted (issue 7, 10-31: 3,091
  * characters, stopping short and climbing 63 Hz); then 3,700 (about thirteen minutes) once Qwen read line by line
- * (Kay 11-01 19:02 「是不是可以长一点了」).
+ * (Kay 11-01 19:02 「是不是可以长一点了」). 11-03 ep 5's trial (#202) packed seven items into the aim and came out like a
+ * table read aloud (four numbers in one sentence), so a full day may run to about fifteen minutes before it is sent back
+ * (Kay 11-03 21:11 「为什么要强制12分钟？我的原话是12分钟左右」, 21:12 「你们决定吧」): SHORTEN_ABOVE 4,200, MAX_CHARS 4,500.
  */
-export const MAX_CHARS = 3_900;
+export const MAX_CHARS = 4_500;
 const WRITE_CHARS = 3_350;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
@@ -142,11 +144,11 @@ export const AWKWARD = "拗口";
  * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS after
  * the check is refused as before. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
  * read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
- * second ask shows the writer the length it gave. SHORTEN_ABOVE sits halfway to MAX_CHARS, leaving the check's fixes
- * room: issue 8's three put in about 40 characters.
+ * second ask shows the writer the length it gave. SHORTEN_ABOVE is about fifteen minutes, below MAX_CHARS to leave the
+ * check's fixes room: issue 8's three put in about 40 characters.
  */
 export const SHORTENS = 2;
-const SHORTEN_ABOVE = WRITE_CHARS + (MAX_CHARS - WRITE_CHARS) / 2;
+const SHORTEN_ABOVE = 4_200;
 /** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
 export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
@@ -154,7 +156,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
   const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
   let lines = framed((await write("reference_issue_voice", system, `网站上的这一期：\n\n${page}`, Script)).lines);
   for (let n = 1; n <= SHORTENS && scriptChars(lines) > SHORTEN_ABOVE; n += 1) {
-    const user = `网站上的这一期：\n\n${page}\n\n上一份听稿 ${scriptChars(lines)} 字，超过了 ${WRITE_CHARS} 字。请照上面的要求重写，每件事说得更简短，全稿不超过 ${WRITE_CHARS} 字：\n\n${lines.join("\n")}`;
+    const user = `网站上的这一期：\n\n${page}\n\n上一份听稿 ${scriptChars(lines)} 字，念出来超过十五分钟了。请照上面的要求重写：最要紧的几条照样讲清楚，次要的快讯各用一两句带过，不要把句子压短，全稿不超过 ${SHORTEN_ABOVE} 字：\n\n${lines.join("\n")}`;
     lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
   }
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];

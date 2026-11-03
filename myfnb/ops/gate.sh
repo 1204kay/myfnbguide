@@ -50,7 +50,7 @@ case $verb in
   board)
     # 公司流水线看板（dino-valley company-view/board，css-cloud 每 10 分钟读一次）：从今天 08:00（马来西亚时间，即 UTC 0 点，
     # 和日报同一个分界）起收了几篇、打了分的几篇和分数分布、进精选几条，以及近 3 天跑过的每个任务最近一次的结果、
-    # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss）。只读账号，输出一行 JSON。
+    # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss），以及各付费服务本月和 7 天的花费。只读账号，输出一行 JSON。
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -v ON_ERROR_STOP=1 <<'SQL'
 WITH a AS (SELECT id FROM articles WHERE discovered_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),
 p AS (SELECT p.score, p.selected FROM publications p JOIN a ON a.id = p.article_id WHERE p.visibility <> 'withdrawn'),
@@ -62,6 +62,46 @@ SELECT json_build_object(
   'scored', (SELECT count(*) FROM p WHERE score IS NOT NULL),
   'scores', (SELECT json_build_object('60+', count(*) FILTER (WHERE score >= 60), '50-59', count(*) FILTER (WHERE score >= 50 AND score < 60), '40-49', count(*) FILTER (WHERE score >= 40 AND score < 50), '<40', count(*) FILTER (WHERE score < 40), 'max', max(score)) FROM p),
   'selected', (SELECT count(*) FROM p WHERE selected),
+  -- 花费（仪表推算额度哪天用完）。两家分开算，口径各照站里已有的那一份，不另起一个数：
+  -- claude：照 modules/reference/backend/credit.ts。额度这一期从 settings reference.claude-credit 的 renewsOn
+  --   （默认每月 4 号，UTC 日）起算，不是 1 号；回执没有 Claude 的费用，按 token × 标价算，缓存读、写分开算。
+  --   标价抄自 credit.ts 的 PRICES / WRITE_5M / WRITE_1H，那边改了这里跟着改。不在表里的模型照 Opus 算（同 credit.ts）。
+  -- deepseek：照 myfnb/place-now.ts 的 costOf()。按后台价格表 service_prices，缓存命中按 cached_per_mtok 算；
+  --   币种照价格表如实输出；价格表里没有、或缺价格的次数记进 unpriced，这时 week 不可信，仪表要说明。
+  'claude', (SELECT json_build_object('start', per.start, 'end', per.start + interval '1 month', 'monthly', per.monthly,
+       'spent', round(coalesce(sum(c.cost) FILTER (WHERE ra.started_at >= per.start), 0), 4),
+       'week', round(coalesce(sum(c.cost) FILTER (WHERE ra.started_at > now() - interval '7 days'), 0), 4),
+       'calls', count(*) FILTER (WHERE ra.started_at >= per.start))
+     FROM (SELECT monthly, (date_trunc('month', now() AT TIME ZONE 'UTC')
+             - CASE WHEN extract(day FROM now() AT TIME ZONE 'UTC') < r THEN interval '1 month' ELSE interval '0' END
+             + (r - 1) * interval '1 day') AT TIME ZONE 'UTC' AS start
+           FROM (SELECT coalesce((v->>'monthly')::numeric, 100) AS monthly, coalesce((v->>'renewsOn')::int, 4) AS r
+                 FROM (SELECT (SELECT value FROM settings WHERE key = 'reference.claude-credit') AS v) s0) s1) per
+     LEFT JOIN receipt_attempts ra ON ra.service = 'anthropic' AND ra.origin = 'live'
+       AND ra.started_at >= least(per.start, now() - interval '7 days') AND ra.started_at <= now()
+     LEFT JOIN LATERAL (SELECT CASE ra.model WHEN 'claude-sonnet-5-5' THEN 2 WHEN 'claude-haiku-5-5' THEN 0.1 ELSE 4 END AS i,
+                               CASE ra.model WHEN 'claude-sonnet-5-5' THEN 10 WHEN 'claude-haiku-5-5' THEN 0.5 ELSE 20 END AS o,
+                               CASE ra.model WHEN 'claude-haiku-5-5' THEN 0.01 ELSE 0.2 END AS rd,
+                               coalesce((ra.usage->>'prompt_tokens')::numeric, 0) AS tin,
+                               coalesce((ra.usage->>'completion_tokens')::numeric, 0) AS tout,
+                               coalesce((ra.usage->>'cache_read_input_tokens')::numeric, 0) AS cr,
+                               coalesce((ra.usage->'cache_creation'->>'ephemeral_5m_input_tokens')::numeric, 0) AS w5,
+                               coalesce((ra.usage->'cache_creation'->>'ephemeral_1h_input_tokens')::numeric, 0) AS w1) t ON true
+     LEFT JOIN LATERAL (SELECT (greatest(0, t.tin - t.cr - t.w5 - t.w1) * t.i + t.cr * t.rd + t.w5 * t.i * 1.25 + t.w1 * t.i * 2
+                               + t.tout * t.o) / 1e6 AS cost) c ON true
+     GROUP BY per.start, per.monthly),
+  'deepseek', (SELECT coalesce(json_agg(d ORDER BY d.currency NULLS LAST), '[]') FROM (
+     SELECT pr.currency, round(sum(c.cost), 4) AS week, count(*) FILTER (WHERE c.cost IS NULL)::int AS unpriced, count(*)::int AS calls
+     FROM receipt_attempts ra
+       LEFT JOIN LATERAL (SELECT input_per_mtok, cached_per_mtok, output_per_mtok, currency FROM service_prices sp
+         WHERE sp.service = 'deepseek' AND sp.model IN (ra.model, '') ORDER BY sp.model = '' LIMIT 1) pr ON true
+       CROSS JOIN LATERAL (SELECT coalesce((ra.usage->>'prompt_tokens')::numeric, 0) AS tin,
+         coalesce((ra.usage->'prompt_tokens_details'->>'cached_tokens')::numeric, (ra.usage->>'prompt_cache_hit_tokens')::numeric, 0) AS tc,
+         coalesce((ra.usage->>'completion_tokens')::numeric, 0) AS tout) t
+       CROSS JOIN LATERAL (SELECT ((t.tin - t.tc) * pr.input_per_mtok + t.tc * coalesce(pr.cached_per_mtok, pr.input_per_mtok)
+         + t.tout * pr.output_per_mtok) / 1e6 AS cost) c
+     WHERE ra.service = 'deepseek' AND ra.origin = 'live' AND ra.usage IS NOT NULL AND ra.started_at > now() - interval '7 days'
+     GROUP BY pr.currency) d),
   'jobs', (SELECT coalesce(json_agg(x ORDER BY x.job), '[]') FROM (
      SELECT j.job, l.started_at, l.finished_at, l.status, left(l.error, 200) AS error, c.failed_24h, c.runs_24h, r.recent
      FROM j CROSS JOIN LATERAL (SELECT started_at, finished_at, status, error FROM job_runs WHERE job = j.job ORDER BY started_at DESC, id DESC LIMIT 1) l

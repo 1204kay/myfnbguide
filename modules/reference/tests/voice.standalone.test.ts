@@ -1,7 +1,7 @@
 // 十一说 read aloud (backend/voice.ts) without a model or a voice: the script written and mended from what the check
 // names, and the machine check's parts on made-up audio and transcripts. No database, no model.
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
@@ -259,4 +259,5 @@ test("a passed --try goes up with its exact line starts and pauses; one not pass
   assert.equal(await readFile(path.join(up, `${no}.mp3`), "utf8"), "mp3");
   await writeFile(path.join(dir, `${no}.starts.json`), JSON.stringify([0]));
   assert.ok("refused" in await putTry(no, dir), "starts that do not match the lines");
+  await Promise.all([dir, ...["json", "mp3", "txt"].map((ext) => path.join(up, `${no}.${ext}`))].map((f) => rm(f, { recursive: true, force: true })));
 });

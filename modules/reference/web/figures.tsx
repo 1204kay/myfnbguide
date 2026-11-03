@@ -11,6 +11,8 @@ import { SECTIONS } from "./sections";
 
 const text = { fill: "var(--ink-3)", fontSize: 14 } as const;
 const strong = { fill: "var(--ink)", fontSize: 15, fontWeight: 600 } as const;
+/** For a label that has to sit over a line: an outline in the card's colour, drawn under the letters. */
+const HALO = { stroke: "var(--surface)", strokeWidth: 4, strokeLinejoin: "round", paintOrder: "stroke" } as const;
 
 /** The causes on a picture drawn by cause: each one's number (none while there is one cause) and its numbered mark. */
 function causes(groups: string[]) {
@@ -88,8 +90,8 @@ function Kitchen() {
         <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }} markerEnd="url(#ref-ar-a)"><path d="M46 74 V116" /><path d="M72 126 Q104 104 122 76" /><path d="M168 66 Q194 78 206 98" /><path d="M228 100 H290" /></g>
         <g style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2, strokeDasharray: "5 4" }} markerEnd="url(#ref-ar-g)"><path d="M290 118 H230" /><path d="M206 120 Q190 146 170 158" /></g>
         <circle cx="216" cy="109" r="15" style={{ fill: "var(--hot-soft)", stroke: "var(--hot)", strokeWidth: 2 }} />
-        <text x="216" y="80" textAnchor="middle" style={{ fill: "var(--hot)", fontWeight: 700, fontSize: 14 }}>交叉</text>
-        <text x="216" y="146" textAnchor="middle" style={text}>出餐口</text>
+        <text x="216" y="80" textAnchor="middle" style={{ fill: "var(--hot)", fontWeight: 700, fontSize: 14, ...HALO }}>交叉</text>
+        <text x="216" y="148" textAnchor="middle" style={{ ...text, ...HALO }}>出餐口</text>
       </svg>
       <div className="mt-2 flex gap-4 text-[12.5px] text-ink-3">
         <span className="flex items-center gap-1.5"><i className="h-[3px] w-5 rounded-mark bg-accent" />出餐的路线</span>
@@ -186,7 +188,7 @@ function LabourShare() {
         ["去年", [{ label: "食材", share: 0.32, tone: 3 }, { label: "人工 28%", share: 0.28, tone: 1 }, { label: "房租和其他", share: 0.3, tone: 4 }, { label: "", share: 0.1, tone: "accent" }]],
         ["今年", [{ label: "食材", share: 0.32, tone: 3 }, { label: "人工 32%", share: 0.32, tone: 1 }, { label: "房租和其他", share: 0.3, tone: 4 }, { label: "", share: 0.06, tone: "accent" }]],
       ]} />
-      <p className="mt-3 text-[14px] text-ink-2">人工 <b className="num text-ink">28% → 32%</b>，利润 <b className="num text-accent">10% → 6%</b></p>
+      <p className="mt-3 text-[14px] text-ink-2">人工 <b className="num whitespace-nowrap text-ink">28% → 32%</b>，利润 <b className="num whitespace-nowrap text-accent">10% → 6%</b></p>
     </>
   );
 }
@@ -205,7 +207,7 @@ function OwnerDay() {
   return (
     <div className="@container">
       <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-        <b className="num text-[44px] font-extrabold leading-none tracking-[-0.025em] text-accent">16</b>
+        <b className="num whitespace-nowrap text-[44px] font-extrabold leading-none tracking-[-0.025em] text-accent">16</b>
         <span className="text-[16px] font-semibold text-ink">小时在店里</span>
         <span className="num text-[13px] text-ink-4">7:00 – 23:00</span>
       </p>
@@ -295,7 +297,7 @@ function OpeningBudget() {
         ["预算", [{ label: "30 万元", share: share(30), tone: 1 }]],
         ["实际", [{ label: "装修", share: share(12), tone: 1 }, { label: "设备", share: share(8), tone: 2 }, { label: "", share: share(4), tone: 3 }, { label: "", share: share(2), tone: 4 }, { label: "周转金", share: share(9), tone: "loss" }]],
       ]} />
-      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">装修 12 万、设备 8 万、押金和预付房租 4 万、开业前的其他开支 2 万，开业以后三个月的周转金 <b className="num text-hot">9 万</b>：一共 <b className="num text-ink">35 万</b>，超出预算 <b className="num text-hot">5 万</b>。</p>
+      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">装修 12 万、设备 8 万、押金和预付房租 4 万、开业前的其他开支 2 万，开业以后三个月的周转金 <b className="num whitespace-nowrap text-hot">9 万</b>：一共 <b className="num whitespace-nowrap text-ink">35 万</b>，超出预算 <b className="num whitespace-nowrap text-hot">5 万</b>。</p>
     </>
   );
 }
@@ -386,11 +388,11 @@ function TeachLoop() {
   return (
     <svg viewBox="-10 0 320 200" role="img" aria-label="示意图：教一件事、新人自己做、检查并说清对错，再教下一件，中间是写下来的标准" className="mx-auto block w-full">
       <defs><marker id="training-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
-      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="100" y="8" width="100" height="32" rx="6" /><rect x="186" y="156" width="108" height="32" rx="6" /><rect x="6" y="156" width="108" height="32" rx="6" /></g>
-      <g textAnchor="middle" style={strong}><text x="150" y="28">教一件事</text><text x="240" y="176">新人自己做</text><text x="60" y="176">检查、说清对错</text></g>
+      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="100" y="8" width="100" height="32" rx="6" /><rect x="186" y="156" width="108" height="32" rx="6" /><rect x="-4" y="156" width="118" height="32" rx="6" /></g>
+      <g textAnchor="middle" style={strong}><text x="150" y="28">教一件事</text><text x="240" y="176">新人自己做</text><text x="55" y="176">检查、说清对错</text></g>
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#training-ar)"><path d="M204 26 Q258 32 250 150" /><path d="M182 172 H122" /><path d="M48 150 Q40 32 94 26" /></g>
       <text x="38" y="92" textAnchor="end" style={text}>下一件</text>
-      <path d="M118 66 H170 L182 78 V136 H118 Z M170 66 V78 H182" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5, strokeLinejoin: "round" }} />
+      <path d="M112 66 H174 L188 80 V136 H112 Z M174 66 V80 H188" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5, strokeLinejoin: "round" }} />
       <text x="150" y="98" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>写下来的</text>
       <text x="150" y="114" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>标准</text>
     </svg>
@@ -495,15 +497,15 @@ function AiFirst() {
   return (
     <svg viewBox="0 0 320 156" role="img" aria-label="示意图：账单和销量、菜单和评价、新人的问题先交给 AI 整理、起草或回答，店里的人再看一遍" className="block w-full">
       <defs><marker id="ai-tools-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
-      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}>{[16, 66, 116].map((y) => <rect key={y} x="6" y={y} width="80" height="34" rx="6" />)}</g>
-      <g textAnchor="middle" style={strong}><text x="46" y="37.5">账单和销量</text><text x="46" y="87.5">菜单和评价</text><text x="46" y="137.5">新人的问题</text></g>
-      <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)"><path d="M88 33 Q104 40 114 64" /><path d="M88 83 H112" /><path d="M88 133 Q104 126 114 102" /></g>
-      <rect x="116" y="46" width="100" height="74" rx="10" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
-      <text x="166" y="80" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>AI 先做一遍</text>
-      <text x="166" y="98" textAnchor="middle" style={text}>整理、起草、回答</text>
-      <path d="M218 83 H244" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)" />
-      <rect x="248" y="56" width="66" height="54" rx="8" style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }} />
-      <g textAnchor="middle" style={strong}><text x="281" y="79">店里的人</text><text x="281" y="97">再看一遍</text></g>
+      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}>{[16, 66, 116].map((y) => <rect key={y} x="2" y={y} width="84" height="34" rx="6" />)}</g>
+      <g textAnchor="middle" style={strong}><text x="44" y="37.5">账单和销量</text><text x="44" y="87.5">菜单和评价</text><text x="44" y="137.5">新人的问题</text></g>
+      <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)"><path d="M88 33 Q100 40 107 64" /><path d="M88 83 H105" /><path d="M88 133 Q100 126 107 102" /></g>
+      <rect x="109" y="46" width="120" height="74" rx="10" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
+      <text x="169" y="80" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>AI 先做一遍</text>
+      <text x="169" y="98" textAnchor="middle" style={text}>整理、起草、回答</text>
+      <path d="M231 83 H246" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)" />
+      <rect x="250" y="56" width="68" height="54" rx="8" style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }} />
+      <g textAnchor="middle" style={strong}><text x="284" y="79">店里的人</text><text x="284" y="97">再看一遍</text></g>
     </svg>
   );
 }
@@ -548,8 +550,8 @@ function WasteExits() {
         <marker id="waste-ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
         <marker id="waste-ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker>
       </defs>
-      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}>{steps.map(([x]) => <rect key={x} x={x} y="44" width="62" height="34" rx="6" />)}</g>
-      <g textAnchor="middle" style={strong}>{steps.map(([x, name]) => <text key={x} x={x + 31} y="65.5">{name}</text>)}</g>
+      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}>{steps.map(([x], i) => <rect key={x} x={x} y="44" width={i === 3 ? 66 : 62} height="34" rx="6" />)}</g>
+      <g textAnchor="middle" style={strong}>{steps.map(([x, name], i) => <text key={x} x={x + (i === 3 ? 33 : 31)} y="65.5">{name}</text>)}</g>
       <g style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2 }} markerEnd="url(#waste-ar-g)"><path d="M70 61 H84" /><path d="M152 61 H166" /><path d="M234 61 H248" /></g>
       <g textAnchor="middle" style={mark}><text x="37" y="32">订多少</text><text x="201" y="32">备多少</text></g>
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }} markerEnd="url(#waste-ar-a)"><path d="M119 80 Q119 126 140 140" /><path d="M201 80 Q201 126 180 140" /></g>
@@ -651,7 +653,7 @@ function MenuTail() {
         ["菜单", [{ label: "10 道", share: 0.25, tone: "accent" }, { label: "另外 30 道", share: 0.75, tone: 2 }]],
         ["卖出", [{ label: "150 份", share: 0.75, tone: "accent" }, { label: "50 份", share: 0.25, tone: 2 }]],
       ]} />
-      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">另外 30 道菜一天一共卖 <b className="num text-ink">50</b> 份，平均每道不到 <b className="num text-ink">2</b> 份，每一道仍要进货、备料、占冰箱的位置。</p>
+      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">另外 30 道菜一天一共卖 <b className="num whitespace-nowrap text-ink">50</b> 份，平均每道不到 <b className="num whitespace-nowrap text-ink">2</b> 份，每一道仍要进货、备料、占冰箱的位置。</p>
     </>
   );
 }
@@ -705,20 +707,20 @@ function RenovationOverrun() {
 function PaymentPath() {
   const mark = { fill: "var(--accent)", fontSize: 15, fontWeight: 700 } as const;
   return (
-    <svg viewBox="-10 0 320 176" role="img" aria-label="示意图：刷卡和电子钱包的钱先进入收款公司，扣掉手续费，过一段时间才到店里；现金直接到店里；店里收到的钱和收银系统的营业额对账" className="block w-full">
+    <svg viewBox="-12 0 324 176" role="img" aria-label="示意图：刷卡和电子钱包的钱先进入收款公司，扣掉手续费，过一段时间才到店里；现金直接到店里；店里收到的钱和收银系统的营业额对账" className="block w-full">
       <defs>
         <marker id="payments-ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
         <marker id="payments-ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker>
       </defs>
       <path d="M32 56 Q32 26 82 26 H211 Q261 26 261 52" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2 }} markerEnd="url(#payments-ar-g)" />
       <text x="147" y="19" textAnchor="middle" style={text}>现金</text>
-      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="-8" y="58" width="80" height="34" rx="6" /><rect x="214" y="58" width="94" height="34" rx="6" /><rect x="180" y="138" width="128" height="32" rx="6" /></g>
+      <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="-10" y="58" width="84" height="34" rx="6" /><rect x="212" y="58" width="98" height="34" rx="6" /><rect x="176" y="138" width="134" height="32" rx="6" /></g>
       <rect x="92" y="54" width="110" height="42" rx="6" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
-      <g textAnchor="middle" style={strong}><text x="32" y="80">客人付的钱</text><text x="261" y="80">店里收到的钱</text><text x="244" y="159">收银系统的营业额</text></g>
+      <g textAnchor="middle" style={strong}><text x="32" y="80">客人付的钱</text><text x="261" y="80">店里收到的钱</text><text x="243" y="159">收银系统的营业额</text></g>
       <text x="147" y="73" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>收款公司</text>
       <text x="147" y="90" textAnchor="middle" style={text}>刷卡、电子钱包</text>
       <text x="147" y="46" textAnchor="middle" style={text}>钱先停在这里</text>
-      <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#payments-ar-a)"><path d="M73 75 H88" /><path d="M203 75 H210" /><path d="M147 98 V112" /></g>
+      <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#payments-ar-a)"><path d="M76 75 H88" /><path d="M203 75 H210" /><path d="M147 98 V112" /></g>
       <text x="147" y="130" textAnchor="middle" style={mark}>手续费</text>
       <path d="M261 94 V138" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2, strokeDasharray: "4 4" }} />
       <text x="253" y="122" textAnchor="end" style={mark}>对账</text>
@@ -922,7 +924,7 @@ function TableHour({ groups }: { groups: string[] }) {
         <text x={x(0)} y="155" textAnchor="middle" style={text}>坐下</text>
         <text x={x(60)} y="155" textAnchor="end" style={text}>离开</text>
       </svg>
-      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">三处等待一共 <b className="num text-[16px] text-accent">8 + 5 + 10 = 23</b> 分钟<br />比做菜的 <b className="num text-ink">12</b> 分钟还长</p>
+      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">三处等待一共 <b className="num whitespace-nowrap text-[16px] text-accent">8 + 5 + 10 = 23</b> 分钟<br />比做菜的 <b className="num whitespace-nowrap text-ink">12</b> 分钟还长</p>
     </>
   );
 }
@@ -1111,14 +1113,14 @@ function StockGap() {
   return (
     <svg viewBox="0 0 320 196" role="img" aria-label="示意图：货从左边进来，备料和卖出从右边出去；账上记的库存比架上实际有的多" className="block w-full">
       <defs><marker id="inventory-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
-      <rect x="121" y="122" width="94" height="61" style={{ fill: "var(--accent-soft)" }} />
-      <rect x="120" y="36" width="96" height="148" rx="4" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2 }} />
+      <rect x="117" y="122" width="102" height="61" style={{ fill: "var(--accent-soft)" }} />
+      <rect x="116" y="36" width="104" height="148" rx="4" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2 }} />
       <text x="168" y="26" textAnchor="middle" style={strong}>库存</text>
       <text x="168" y="158" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>架上实际有的</text>
-      <path d="M114 86 H222" style={{ stroke: "var(--ink-3)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
+      <path d="M110 86 H224" style={{ stroke: "var(--ink-3)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
       <text x="168" y="78" textAnchor="middle" style={text}>账上记的</text>
-      <path d="M224 86 h5 v36 h-5" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 1.5 }} />
-      <text x="234" y="108" style={strong}>对不上</text>
+      <path d="M226 86 h5 v36 h-5" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 1.5 }} />
+      <text x="236" y="108" style={strong}>对不上</text>
       <path d="M8 60 H110" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#inventory-ar)" />
       <text x="8" y="80" style={text}>进货</text>
       <path d="M50 53 L62 67 V53 L50 67 Z" style={{ fill: "var(--accent)" }} />
@@ -1128,7 +1130,7 @@ function StockGap() {
       <text x="82" y="86" textAnchor="middle" style={label}>收货核对</text>
       <path d="M106 122 H128" style={{ stroke: "var(--accent)", strokeWidth: 1.5 }} />
       <text x="102" y="126" textAnchor="end" style={label}>盘点</text>
-      <path d="M216 170 H304" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#inventory-ar)" />
+      <path d="M220 170 H306" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#inventory-ar)" />
       <text x="262" y="160" textAnchor="middle" style={text}>备料、卖出</text>
     </svg>
   );
@@ -1160,15 +1162,15 @@ function LossThreeWays() {
 
 /** 收银和管理系统: ordering, payment, the kitchen, stock and the delivery apps all hang on one system. */
 function PosHub() {
-  const boxes: Array<[number, number, string]> = [[6, 12, "点单"], [6, 73, "收款"], [6, 134, "外卖平台"], [234, 12, "厨房出单"], [234, 73, "库存"], [234, 134, "销量和时段"]];
+  const boxes: Array<[number, number, string]> = [[4, 12, "点单"], [4, 73, "收款"], [4, 134, "外卖平台"], [232, 12, "厨房出单"], [232, 73, "库存"], [232, 134, "销量和时段"]];
   return (
     <svg viewBox="0 0 320 176" role="img" aria-label="示意图：点单、收款、外卖平台、厨房出单、库存都接在收银系统上，销量和时段的数字也存在里面" className="block w-full">
-      <g style={{ stroke: "var(--ink-4)", strokeWidth: 1.5 }}><path d="M118 80 L86 27" /><path d="M118 88 H86" /><path d="M118 96 L86 149" /><path d="M202 80 L234 27" /><path d="M202 88 H234" /></g>
-      <path d="M202 96 L234 149" style={{ stroke: "var(--accent)", strokeWidth: 2 }} />
+      <g style={{ stroke: "var(--ink-4)", strokeWidth: 1.5 }}><path d="M118 80 L88 27" /><path d="M118 88 H88" /><path d="M118 96 L88 149" /><path d="M202 80 L232 27" /><path d="M202 88 H232" /></g>
+      <path d="M202 96 L232 149" style={{ stroke: "var(--accent)", strokeWidth: 2 }} />
       {boxes.map(([x, y, name], i) => (
         <g key={name}>
-          <rect x={x} y={y} width="80" height="30" rx="6" style={i === 5 ? { fill: "var(--accent-soft)", stroke: "var(--accent)" } : { fill: "var(--fig-box)", stroke: "var(--line-strong)" }} />
-          <text x={x + 40} y={y + 19} textAnchor="middle" style={i === 5 ? { ...strong, fill: "var(--accent)" } : strong}>{name}</text>
+          <rect x={x} y={y} width="84" height="30" rx="6" style={i === 5 ? { fill: "var(--accent-soft)", stroke: "var(--accent)" } : { fill: "var(--fig-box)", stroke: "var(--line-strong)" }} />
+          <text x={x + 42} y={y + 19} textAnchor="middle" style={i === 5 ? { ...strong, fill: "var(--accent)" } : strong}>{name}</text>
         </g>
       ))}
       <rect x="118" y="70" width="84" height="36" rx="8" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />

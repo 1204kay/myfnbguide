@@ -81,8 +81,7 @@ test('the sitemap lists stories of several reports; notifications keep every sto
   const several = await add(['story-two-a', 'story-two-b']);
   const at = new Date('2026-10-09');
   const all = await loadDiscoveryEntries(at);
-  // MYFNB：一篇报道的事件页是 noindex，通知也不送（myfnb/DIFFERENCES.md「事件页」）；原版这里断言通知会带上它。
-  assert.ok(!all.some(e => e.loc === `/story/${single}`), 'MYFNB leaves single-report stories out of notifications too');
+  assert.ok(all.some(e => e.loc === `/story/${single}`), 'notifications read the whole inventory');
   const listed = await loadDiscoveryEntries(at, { urls: 100 });
   const [report] = await sql<{ at: Date }[]>`SELECT discovered_at AS at FROM publications WHERE article_id = 'story-two-a'`;
   assert.equal(listed.find(e => e.loc === `/story/${several}`)?.lastmod?.toISOString(), report!.at.toISOString(),
@@ -97,8 +96,6 @@ test('dry runs leave changes pending, corrections and disappeared URLs are submi
   const [story] = await sql<{ id: number }[]>`INSERT INTO stories (public_id,title,created_at,updated_at) VALUES (${publicId},'事件','2026-10-01','2026-10-01') RETURNING id`;
   const [fact] = await sql<{ id: number }[]>`INSERT INTO facts (public_id,story_id,title) VALUES (${randomUUID()},${story!.id},'事实') RETURNING id`;
   await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'changed-story-item','primary')`;
-  await material('changed-story-second');
-  await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'changed-story-second','report')`;
   config.indexNowSubmitEnabled = false;
   globalThis.fetch = async () => { throw new Error('dry run made a network request'); };
   assert.equal((await submitIndexNow()).status, 'disabled');
@@ -121,18 +118,6 @@ test('dry runs leave changes pending, corrections and disappeared URLs are submi
   assert.ok(batches[2]!.some(url => url.endsWith(`/story/${publicId}`)), 'an old merge URL needs a recrawl');
   assert.ok(batches[2]!.some(url => url.endsWith('/items/changed-story-item')), 'a withdrawn URL needs a recrawl');
   assert.equal((await submitIndexNow()).status, 'empty');
-});
-
-test('a story enters discovery only once a second report joins it (MYFNB)', async () => {
-  await material('lone-story-item');
-  const publicId = randomUUID();
-  const [story] = await sql<{ id: number }[]>`INSERT INTO stories (public_id,title,created_at,updated_at) VALUES (${publicId},'单篇事件','2026-10-01','2026-10-01') RETURNING id`;
-  const [fact] = await sql<{ id: number }[]>`INSERT INTO facts (public_id,story_id,title) VALUES (${randomUUID()},${story!.id},'事实') RETURNING id`;
-  await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'lone-story-item','primary')`;
-  assert.ok(!(await loadDiscoveryEntries(new Date('2026-10-09'))).some(e => e.loc === `/story/${publicId}`), 'one report repeats its item page');
-  await material('lone-story-second');
-  await sql`INSERT INTO fact_articles (fact_id,article_id,role) VALUES (${fact!.id},'lone-story-second','report')`;
-  assert.ok((await loadDiscoveryEntries(new Date('2026-10-09'))).some(e => e.loc === `/story/${publicId}`));
 });
 
 test('batches over the service limit make progress even when every change has the same timestamp', async () => {

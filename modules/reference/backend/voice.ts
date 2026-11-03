@@ -676,7 +676,8 @@ export const SHORT_LINE = 18;
  * The script with its short lines joined to a neighbour, the words as they were. A short line that opens what follows
  * (「第二条，英国酒税。」「第一层，…」「换到葡萄牙。」「再看越南。」「先说英国。」「下一条在巴西。」「最后一条，…」, or one
  * ending in a colon or question mark) goes onto the start of the line after it; any other short line onto the end of the
- * line before. The first and last lines stay as they are and are never joined to. Each line is its own request and
+ * line before. The first and last lines are never moved, and nothing is joined onto the last (a short line just after
+ * the opening still goes onto the end of the opening). Each line is its own request and
  * starts its own tune, and a short one starts high and stays there: 11-03 on issue 10, 「第二条，英国酒税。」 read alone
  * sat 4.9 semitones above an ordinary line and 1.3 joined to the next; 「最低工资也上调了。」 5.4 and 1.5; 「第四条，
  * 消费入座。」 4.1 and 0.7 (Kay 11-03 06:38 「有时候音高 有时候音低」, 12:11 「是不是用词的关系？」). Which way each kind

@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinLines, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -131,6 +131,20 @@ test("half a second of silence goes in at each seam between lines, and each line
   assert.deepEqual(quiet, [[3.1, 3.6], [6.3, 6.8]]);
   assert.deepEqual([...samples.subarray(Math.round(3.6 * rate), Math.round(3.6 * rate) + 50)], [...lines[1]!.subarray(0, 50)]);
   assert.deepEqual(joinLines([tone(rate, 1)], rate).starts, [0]);
+});
+
+test("short lines are read joined to a neighbour, a head to the line after it, the words unchanged", () => {
+  const lines = ["大家早上好！我是十一。今天是11月3号。", "第二条，英国酒税。", "据英国酒馆和餐饮行业媒体报道，酒税从二月起上调百分之四点五。",
+    "酒税通常每年按通胀调整，但这对抵消成本上涨作用不大。", "最低工资也上调了。", "这就是今天的十一说。我们明天早上见。"];
+  const joined = joinShort(lines);
+  assert.deepEqual(joined, [lines[0], lines[1]! + lines[2], lines[3]! + lines[4], lines[5]]);
+  assert.equal(joined.join(""), lines.join(""), "not a character more or less");
+  assert.deepEqual(joinShort(["大家早上好！我是十一。", "第一条，短。", "这就是今天的十一说。我们明天早上见。"]),
+    ["大家早上好！我是十一。第一条，短。", "这就是今天的十一说。我们明天早上见。"], "the closing line is never joined to");
+  const opens = ["大家早上好！我是十一。", "这一段讲的是英国的酒馆生意，今年一共净少了九百多家店。", "换到葡萄牙。", "葡萄牙的餐馆这个月又少了三十家。", "那明天就能做什么？",
+    "先把备料单拿出来，一项一项对一遍。", "这就是今天的十一说。我们明天早上见。"];
+  assert.deepEqual(joinShort(opens), [opens[0], opens[1], opens[2]! + opens[3], opens[4]! + opens[5], opens[6]],
+    "a turn to the next place and a question go onto the line after them");
 });
 
 test("卖 heard as 买 fails the check, however small a share of the script it is", () => {

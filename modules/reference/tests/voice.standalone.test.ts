@@ -58,6 +58,14 @@ test("the check's fixes go in line by line; still wrong after three mends, there
   const stubborn = { problems: [{ kind: "漏讲", line: "没有这一行", fix: "补上", why: "漏了细说" }] };
   const bad = scripted({ reference_issue_voice: [{ lines: ["英国净少了977家店。"] }], reference_issue_voice_check: [stubborn, stubborn, stubborn, stubborn] });
   assert.equal((await writeScript(ISSUE, "2026-10-31", bad, bad)).lines, null);
+
+  // 拗口 is mended like the rest, but one still there after the last round does not stop the issue.
+  const stiff = { problems: [{ kind: "拗口", line: "该店表示涨价。", fix: "这家店说要涨价。", why: "书面词" }] };
+  const mendedStiff = scripted({ reference_issue_voice: [{ lines: ["该店表示涨价。"] }], reference_issue_voice_check: [stiff, { problems: [] }] });
+  assert.deepEqual((await writeScript(ISSUE, "2026-10-31", mendedStiff, mendedStiff)).lines?.slice(1, -1), ["这家店说要涨价。"]);
+  const stillStiff = { problems: [{ kind: "拗口", line: "没有这一行", fix: "改顺", why: "念着别扭" }] };
+  const left = scripted({ reference_issue_voice: [{ lines: ["该店表示涨价。"] }], reference_issue_voice_check: [stillStiff, stillStiff, stillStiff, stillStiff] });
+  assert.deepEqual((await writeScript(ISSUE, "2026-10-31", left, left)).lines?.slice(1, -1), ["该店表示涨价。"]);
 });
 
 test("a script too long goes back to the writer with its length, then is checked", async () => {

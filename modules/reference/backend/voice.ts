@@ -136,6 +136,8 @@ export function applyFixes(lines: string[], problems: Problem[]): { lines: strin
  * finding a different line the rewrite had lost a source on.
  */
 export const MENDS = 3;
+/** The check's fourth kind (prompts/issue-voice-check.md): the line reads stiffly aloud. Mended, never a reason to refuse. */
+export const AWKWARD = "拗口";
 /**
  * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS after
  * the check is refused as before. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
@@ -161,7 +163,13 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
   for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { writeChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
-    if (round === MENDS) { rounds.push({ problems, applied: 0 }); break; }
+    if (round === MENDS) {
+      rounds.push({ problems, applied: 0 });
+      // 拗口 is how a line sounds, not what it says (Kay 11-03 18:20: nothing checked how a script reads aloud): its fixes
+      // go in and are checked again like the others, but a line still 拗口 after the last round does not stop the issue.
+      if (problems.every((p) => p.kind === AWKWARD)) return { lines, rounds };
+      break;
+    }
     const fixed = applyFixes(lines, problems);
     rounds.push({ problems, applied: fixed.applied });
     lines = fixed.lines;

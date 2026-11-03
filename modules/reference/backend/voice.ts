@@ -160,7 +160,6 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
   }
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
-  // No checker: a trial for how it reads (writeOnly), not for putting up.
   if (!check) return { lines, rounds };
   // The last script that was wrong only in how it reads: a 拗口 fix can drop a 保留 the next round calls 误导, and that
   // must not stop an issue the same script would have passed with before 拗口 was checked (review of #203).
@@ -810,17 +809,21 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
  * 文字稿的内容 因为好听的播客是内容和声音的配合」): the new script goes to writes/<no>/write.txt, apart from tries/,
  * with the one up beside it as up.txt.
  */
-export async function writeOnly(no: number, write: Ask) {
+export async function writeOnly(no: number, write: Ask, check: Ask) {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
   const out = path.join(DIR, "writes", String(no));
   await mkdir(out, { recursive: true });
-  const { lines } = await writeScript(row.issue, row.date, write, null);
+  // Checked like a daily issue (Kay 11-03 21:34 「质量最重要 其他都是其次」): issue 10's unchecked trial turned 八十八元
+  // into 「几十块钱」, and a trial that reads well only because nobody checked it says nothing about the rule.
+  const { lines, rounds } = await writeScript(row.issue, row.date, write, check);
+  await writeFile(path.join(out, "check.json"), `${JSON.stringify(rounds, null, 1)}\n`);
   const up = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
   if (up) await writeFile(path.join(out, "up.txt"), up);
-  await writeFile(path.join(out, "write.txt"), `${(lines ?? []).join("\n")}\n`);
-  return { out: path.join(out, "write.txt"), lines: lines?.length ?? 0, chars: scriptChars(lines ?? []) };
+  // A script that did not pass leaves the last trial's write.txt as it was; the problems are in check.json.
+  if (lines) await writeFile(path.join(out, "write.txt"), `${lines.join("\n")}\n`);
+  return { out: path.join(out, "write.txt"), lines: lines?.length ?? 0, chars: scriptChars(lines ?? []), passed: lines !== null, rounds: rounds.length };
 }
 
 /**

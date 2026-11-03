@@ -167,25 +167,57 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
   return { lines: null, rounds };
 }
 
-/** The script read aloud, line by line, the lines joined: a WAV (16-bit, one channel). */
-async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<Buffer> {
+/**
+ * How far a line's pitch may sit from the issue's before it is read again (LINE_PITCH), and how many other takes it
+ * gets (RESEEDS). Read line by line, every line starts its own tune: issue 10 had lines 3–5 semitones above or below
+ * the lines around them, short heads like 「第二条，英国酒税。」 the highest (Kay 11-03 06:38: 「有时候音高 有时候音低」).
+ * The three-minute check (pitchWindows) evens those out and cannot hear them. Another take is the same line with another
+ * `seed`: the same seed reads the same line the same way (help.aliyun.com/en/model-studio/qwen-audio-tts-http-java-sdk,
+ * seed 0–65535, default 0), so reading again without one would bring the same take back.
+ */
+export const LINE_PITCH = 2;
+export const RESEEDS = 2;
+
+/** The middle pitch of one line (pyin, Hz), or 0 when too little of it is voiced to say. */
+export function linePitch(samples: Int16Array, rate: number): number {
+  const frames = pyin(to16k(samples, rate), 16_000);
+  return frames.length >= 10 ? median(frames) : 0;
+}
+
+/** Semitones from `pitch` to `middle`, either way. */
+const off = (pitch: number, middle: number) => Math.abs(12 * Math.log2(pitch / middle));
+
+/** The lines whose pitch is more than `limit` semitones from the middle of all the lines'; lines without one are left. */
+export function offPitch(pitch: number[], limit = LINE_PITCH): number[] {
+  const known = pitch.filter((p) => p > 0);
+  if (!known.length) return [];
+  const middle = median(known);
+  return pitch.flatMap((p, n) => (p > 0 && off(p, middle) > limit ? [n] : []));
+}
+
+/**
+ * The script read aloud, line by line, the lines joined with a breath between (joinLines): a WAV (16-bit, one channel),
+ * where each line starts, and how many lines were read again for their pitch (`evened` of `reread`).
+ */
+async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[]; reread: number; evened: number }> {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
   let rate = 0;
-  const parts: Int16Array[] = [];
-  for (const [n, line] of script.split("\n").map((l) => l.trim()).filter(Boolean).entries()) {
+  let calls = 0;
+  const say = async (line: string, n: number, seed: number): Promise<Int16Array> => {
     // A line every 1.1 s keeps under the `speech-qwen` row's 60 a minute: 11-01 23:09 issue 2 read its first 60 lines in
     // 45 s and the 61st was refused (Budget for speech-qwen exhausted (minute)), and a 3,350-character issue runs past 60.
-    if (n > 0) await sleep(1_100);
+    if (calls++ > 0) await sleep(1_100);
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt } },
+      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt, ...(seed ? { seed } : {}) }, requestSummary: { chars: line.length, n, attempt, ...(seed ? { seed } : {}) } },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
+        // seed sits in `input` with the SDK's other parameters, as sample_rate does (it reads at 24 kHz, not its 22,050).
         const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
-          body: JSON.stringify({ model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
+          body: JSON.stringify({ model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}), ...(seed ? { seed } : {}) } }),
         });
         // Which line, for the error: 11-01 the first line failed with only the engine's words to go by.
         if (!res.ok) {
@@ -209,12 +241,28 @@ async function read(script: string, subject: string, attempt: number, voice = VO
     const wav = wavSamples(Buffer.from(await got.arrayBuffer()));
     if (rate && wav.rate !== rate) throw new Error(`speech-qwen: line ${n + 1} at ${wav.rate} Hz, the others ${rate}`);
     rate = wav.rate;
-    parts.push(wav.samples);
+    return wav.samples;
+  };
+  const lines = scriptLines(script);
+  const parts: Int16Array[] = [];
+  for (const [n, line] of lines.entries()) parts.push(await say(line, n, 0));
+  // Lines far off the issue's pitch get other takes, the nearest kept. A take that fails leaves the line as it was:
+  // the reading is whole already, and the check still hears all of it.
+  const pitch = parts.map((p) => linePitch(p, rate));
+  const middle = median(pitch.filter((p) => p > 0));
+  const far = offPitch(pitch);
+  let evened = 0;
+  for (const n of far) {
+    for (let seed = 1; seed <= RESEEDS; seed += 1) {
+      const take = await say(lines[n]!, n, seed).catch(() => null);
+      if (!take) break;
+      const p = linePitch(take, rate);
+      if (p > 0 && off(p, middle) < off(pitch[n]!, middle)) { parts[n] = take; pitch[n] = p; }
+      if (off(pitch[n]!, middle) <= LINE_PITCH) { evened += 1; break; }
+    }
   }
-  const all = new Int16Array(parts.reduce((sum, p) => sum + p.length, 0));
-  let at = 0;
-  for (const p of parts) { all.set(p, at); at += p.length; }
-  return wavOf(all, rate);
+  const { samples, starts } = joinLines(parts, rate);
+  return { wav: wavOf(samples, rate), starts, reread: far.length, evened };
 }
 
 /** The samples of a 16-bit PCM WAV, wherever its data chunk sits. */
@@ -573,6 +621,8 @@ export interface VoiceReport {
   tries?: number;
   chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
   reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
+  /** The last reading's lines far off the issue's pitch (LINE_PITCH), and how many of them another take brought near. */
+  evened?: { reread: number; evened: number };
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
   error?: string;
@@ -659,34 +709,24 @@ export async function timeIssue(no: number) {
 /** The pause added before each line of the script after the first, in seconds. */
 export const BREATH = 0.5;
 /**
- * Room to breathe between the script's lines (Kay 10-31 22:30: listening to 十一说 felt like running out of breath).
- * Leda read the whole issue in one request and went from one line to the next with hardly a pause: issue 7 had 12
- * pauses over 0.8 s in 57 lines and about 8 over 0.5 s a minute, where the voice before it (Qwen, line by line with
- * 0.45 s put between) had about 18. So BREATH of silence goes in at the quietest 20 ms in the 0.6 s before each line
- * starts (not mid-word: the line's start is where Whisper heard it, a little late or early), and the line times move
- * with it so the 文字稿 still follows the voice.
+ * The lines read one by one, joined with BREATH of silence between, and where each line starts in seconds (Kay 10-31
+ * 22:30: listening to 十一说 felt like running out of breath). The breath goes in at the seam itself, which reading line
+ * by line knows to the sample. It used to go in at the quietest 20 ms in the 0.6 s before where Whisper heard each line
+ * start; Whisper heard some a second early, and issue 10 had 10 breaths cut into the last word of a line (Kay 11-03
+ * 06:37: 「大概7-8词卡了一个字 就是说到一半卡了一个字」).
  */
-export function breathe(samples: Int16Array, rate: number, starts: number[], seconds = BREATH): { samples: Int16Array; starts: number[] } {
+export function joinLines(parts: Int16Array[], rate: number, seconds = BREATH): { samples: Int16Array; starts: number[] } {
   const gap = Math.round(rate * seconds);
-  const step = Math.round(rate * 0.02);
-  const cuts: number[] = [];
-  for (const [n, t] of starts.entries()) {
-    if (n === 0) continue;
-    const end = Math.min(samples.length, Math.round(t * rate));
-    let best = end, low = Infinity;
-    // Not before the previous line's start either, or that line would not move with its own silence.
-    for (let i = Math.max(cuts.at(-1) ?? 0, Math.round(starts[n - 1]! * rate), end - Math.round(rate * 0.6)); i + step <= end; i += step) {
-      let e = 0;
-      for (let j = i; j < i + step; j += 1) e += samples[j]! * samples[j]!;
-      if (e < low) { low = e; best = i + (step >> 1); }
-    }
-    cuts.push(Math.max(best, cuts.at(-1) ?? 0));
+  const out = new Int16Array(parts.reduce((sum, p) => sum + p.length, 0) + gap * Math.max(0, parts.length - 1));
+  const starts: number[] = [];
+  let at = 0;
+  for (const [n, p] of parts.entries()) {
+    if (n) at += gap;
+    starts.push(Math.round((at / rate) * 10) / 10);
+    out.set(p, at);
+    at += p.length;
   }
-  const out = new Int16Array(samples.length + gap * cuts.length);
-  let from = 0, to = 0;
-  for (const c of cuts) { out.set(samples.subarray(from, c), to); to += c - from + gap; from = c; }
-  out.set(samples.subarray(from), to);
-  return { samples: out, starts: starts.map((t, i) => Math.round((t + i * seconds) * 10) / 10) };
+  return { samples: out, starts };
 }
 
 const reportFile = (no: number) => path.join(DIR, `${no}.voice.json`);
@@ -721,7 +761,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
   // Kept under the data folder, not the container's /tmp: a reading not yet heard outlives a restart.
   const work = opts.out ?? path.join(DIR, "work", String(no));
   const saved = !opts.dryRun && before?.unheard
-    ? await Promise.all([readFile(path.join(work, `${no}.txt`), "utf8"), readFile(path.join(work, `${no}.wav`))]).catch(() => null)
+    ? await Promise.all([readFile(path.join(work, `${no}.txt`), "utf8"), readFile(path.join(work, `${no}.wav`)), readFile(path.join(work, `${no}.starts.json`), "utf8")]).catch(() => null)
     : null;
   report.unheard = Boolean(saved);
   try {
@@ -753,11 +793,15 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
     }
     for (let attempt = saved ? used : used + 1; attempt <= MAX_READS; attempt += 1) {
       let wav: Buffer;
-      if (saved && attempt === used) wav = saved[1];
+      let starts: number[];
+      if (saved && attempt === used) { wav = saved[1]; starts = JSON.parse(saved[2]) as number[]; }
       else {
         report.tries = attempt;
         await keep();
-        wav = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model);
+        let reread: number, evened: number;
+        ({ wav, starts, reread, evened } = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model));
+        report.evened = { reread, evened };
+        await writeFile(path.join(work, `${no}.starts.json`), JSON.stringify(starts));
         await writeFile(path.join(work, `${no}.wav`), wav);
         report.unheard = true;
         await keep();
@@ -765,7 +809,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const { rate, samples } = wavSamples(wav);
       const seconds = Math.round(samples.length / rate);
       await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
-      const { text: heard, segments } = await hear(samples, rate, `issue:${no}:${attempt}`);
+      const { text: heard } = await hear(samples, rate, `issue:${no}:${attempt}`);
       report.unheard = false;
       const match = heardShare(script, heard);
       const gaps = silences(samples, rate, PASS.gap);
@@ -774,16 +818,6 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
       report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
       if (!verdict.pass) { await keep(); continue; }
-      // A breath between the script's lines (breathe): the reading is checked as it was read, then heard with room.
-      let starts = lineStarts(scriptLines(script), segments);
-      let length = seconds;
-      if (starts) {
-        const roomy = breathe(samples, rate, starts);
-        starts = roomy.starts;
-        length = Math.round(roomy.samples.length / rate);
-        await writeFile(path.join(work, `${no}.wav`), wavOf(roomy.samples, rate));
-        await run("lame", ["--quiet", "-m", "m", "-b", "64", path.join(work, `${no}.wav`), path.join(work, `${no}.mp3`)]);
-      }
       if (opts.dryRun) { report.status = "tried"; return report; }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.
       await mkdir(DIR, { recursive: true });
@@ -791,8 +825,8 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
         await writeFile(path.join(DIR, `${no}.${ext}.part`), await readFile(path.join(work, `${no}.${ext}`)));
         await rename(path.join(DIR, `${no}.${ext}.part`), path.join(DIR, `${no}.${ext}`));
       }
-      // Where each line starts, for the 文字稿 to follow the voice; without it the 文字稿 is shown whole, as before.
-      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds: length, starts: starts ?? undefined }));
+      // Where each line starts, for the 文字稿 to follow the voice.
+      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds, starts }));
       report.status = "up";
       return keep();
     }

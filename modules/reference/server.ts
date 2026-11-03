@@ -1,7 +1,6 @@
 // The reference library's backend: a schedule finds selected items without a case and queues them, the
 // queue writes each case (backend/write.ts); another writes up every other listed item for its page (backend/body.ts);
-// another groups each situation's stories by practice once they change (backend/methods.ts); and the api answers
-// the pages and the item page's block (backend/read.ts).
+// and the api answers the pages and the item page's block (backend/read.ts).
 import { config } from "@aihot/backend/config";
 import { sql } from "@aihot/backend/db";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
@@ -9,19 +8,18 @@ import { enqueueOn } from "@aihot/backend/jobs/queue";
 import { beijingDate } from "@aihot/contracts/time";
 import { mcpToolName } from "@aihot/contracts/mcp";
 import { SITE } from "@aihot/site";
-import { SITUATIONS } from "./situations.ts";
 import {
-  membersBySituation, readCase, readHome, readItemText, readShare, readShop, readSituation, readStatus, sitemapEntries,
+  readCase, readHome, readItemText, readShare, readShop, readSituation, readStatus, sitemapEntries,
 } from "./backend/read.ts";
 import { renderShare, shareCard, shareEtag } from "./backend/share.ts";
 import { articlesToBody, BODY_STEP, writeBody } from "./backend/body.ts";
 import { blocking, problemKind } from "./backend/checks.ts";
-import { groupSituation, METHODS_STEP, situationsToGroup } from "./backend/methods.ts";
+import { METHODS_STEP } from "./backend/methods.ts";
 import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "./backend/issue.ts";
 import { MAX_READS, voiceIssue, voiceReport } from "./backend/voice.ts";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
-import { issueLead, issuePath, issueSitemap, readIssue, writeIssue } from "./backend/issues.ts";
+import { issueLead, issuePath, issueSitemap, listIssues, readIssue, writeIssue } from "./backend/issues.ts";
 import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
 import { AGENT_ABILITIES } from "./backend/agent.ts";
@@ -99,14 +97,6 @@ const PLACES = defineQueue<{ date: string }>({
 /** At most this many a day: a day selects about 10–20 (/api/site/stats); the rest of a backlog goes on the next days. */
 const PLACE_LIMIT = 300;
 
-const METHODS = defineQueue<{ slug: string }>({
-  name: "reference.methods",
-  options: { policy: "short", retryLimit: 2, retryDelay: 300, retryBackoff: true, expireInSeconds: 900 },
-  worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
-  // The stories as they are when the job runs, not when it was queued.
-  run: async (jobs) => { for (const { slug } of jobs) await groupSituation(slug, (await membersBySituation()).get(slug) ?? []); },
-});
-
 /** Shared caches keep a page as long as the engine keeps its topic pages: a minute. */
 const CACHE = "public, max-age=60, stale-while-revalidate=60";
 /** A story's share image is kept as the engine keeps its items' (apps/api/src/routes/og.ts CONTENT_IMAGE_CACHE): it changes with the story. */
@@ -118,11 +108,13 @@ export default defineServerModule({
     [MODEL_STEP]: { label: "参考库的故事（入选内容写成故事，并放进老板遇到的情况）", env: "REFERENCE_CASE_MODEL", purposes: ["reference_case"] },
     [BODY_STEP]: { label: "条目页的正文（不是参考库故事的条目，整理自原文，写在导读下面）", env: "REFERENCE_BODY_MODEL", purposes: ["reference_body"] },
     [PLACE_STEP]: { label: "参考库的情况（没有故事的入选条目，只选放进哪个情况、哪一组）", env: "REFERENCE_PLACE_MODEL", purposes: ["reference_place"] },
+    // Nothing groups the stories by practice since 11-03: the folded pages never show the groups. The step stays
+    // only while backend/methods.ts does, until the story code is removed.
     [METHODS_STEP]: { label: "参考库的做法（同一种情况里说同一种做法的故事归在一起）", env: "REFERENCE_METHODS_MODEL", purposes: ["reference_methods"] },
     [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak", "reference_issue_voice"] },
     [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen", "reference_issue_voice_check"] },
   },
-  queues: [CASES, BODIES, PLACES, METHODS, ISSUES, VOICES],
+  queues: [CASES, BODIES, PLACES, ISSUES, VOICES],
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // A warning before the Claude credit runs out and the morning's issue with it (backend/credit.ts).
@@ -175,18 +167,6 @@ export default defineServerModule({
       const ids = await articlesToBody(40);
       for (const articleId of ids) await enqueueOn(BODIES, { articleId }, { singletonKey: articleId });
       return { queued: ids.length };
-    },
-  }, {
-    // Once a day before the daily issue is composed (layout D1): a situation is grouped again only when its stories
-    // changed, so the stories written through the day cost one call a situation, not one each.
-    name: "reference.methods",
-    cron: "0 5 * * *",
-    missed: "once",
-    run: async () => {
-      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
-      const due = await situationsToGroup(await membersBySituation(), SITUATIONS.length);
-      for (const [slug] of due) await enqueueOn(METHODS, { slug }, { singletonKey: slug });
-      return { queued: due.length };
     },
   }, {
     // 十一说: three hours before the 08:00 daily, from what it lists so far (the last three hours wait for tomorrow's).
@@ -271,6 +251,7 @@ export default defineServerModule({
       }
       return reply.header("Cache-Control", "no-store").send({ run, cases: [...cases.values()] });
     });
+    app.get("/api/reference/issues", async (_req, reply) => reply.header("Cache-Control", CACHE).send(await listIssues()));
     app.get("/api/reference/issues/:no", async (req, reply) => {
       const no = Number((req.params as { no: string }).no);
       const page = Number.isSafeInteger(no) && no > 0 ? await readIssue(no) : null;

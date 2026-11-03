@@ -39,7 +39,7 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
     title, description, path, type: "article",
     jsonLd: [
       articleLd({ path, headline: title, description, publishedAt: data.date }),
-      breadcrumbLd([{ name: SITE.name, path: "/" }, { name: "日报", path: `/daily/${data.date}` }, { name: title, path }]),
+      breadcrumbLd([{ name: SITE.name, path: "/" }, { name: "日报", path: data.daily ? `/daily/${data.date}` : "/daily" }, { name: title, path }]),
     ],
   });
 }
@@ -92,7 +92,8 @@ export default function IssueRoute() {
   const title = `${kicker(p)}：${issue.title}`;
   const onShare = () => void share(title, path);
   const onCopy = () => void copy(`${siteUrl()}${path}`);
-  const up = { to: `/daily/${p.date}`, label: "日报" };
+  // Before its daily is out (it goes up at 08:00, the issue a few hours earlier) 返回 goes to the latest daily.
+  const up = { to: p.daily ? `/daily/${p.date}` : "/daily", label: "日报" };
   const back = () => {
     if (window.history.state?.idx > 0) navigate(-1);
     else navigate(up.to);
@@ -102,20 +103,26 @@ export default function IssueRoute() {
       <IconArrowLeft size={16} /> 返回
     </button>
   );
+  const shareButton = (className: string) => (
+    <button
+      type="button"
+      onClick={onShare}
+      className={`inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink ${className}`}
+    >
+      分享 <IconShare size={13} />
+    </button>
+  );
+  const moreMenu = (
+    <Menu label="更多操作" trigger={<IconMenu size={17} />}>
+      {(close) => <MenuItem icon={<IconCopy size={15} />} onSelect={() => { close(); onCopy(); }}>复制链接</MenuItem>}
+    </Menu>
+  );
   const actions = (
     <>
       {audio && !listen.open && <div className="mb-2"><ListenButton seconds={audio.seconds} onClick={listen.start} /></div>}
       <div className="flex items-center gap-1">
-        <button
-          type="button"
-          onClick={onShare}
-          className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
-        >
-          分享 <IconShare size={13} />
-        </button>
-        <Menu label="更多操作" trigger={<IconMenu size={17} />}>
-          {(close) => <MenuItem icon={<IconCopy size={15} />} onSelect={() => { close(); onCopy(); }}>复制链接</MenuItem>}
-        </Menu>
+        {shareButton("flex-1 touch:h-11")}
+        {moreMenu}
       </div>
     </>
   );
@@ -123,7 +130,7 @@ export default function IssueRoute() {
     <RailSection title="这一期">
       <div className="text-[14px] leading-snug text-ink-2">{day(p.date)} 日报的头条</div>
       <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">读完当天收录的 {p.count} 条，点名 {p.sources.length} 篇</div>
-      <Link viewTransition to={up.to} className="mt-2 flex min-h-9 items-center text-[13px] text-accent hover:text-accent-ink">看这一天的日报 ›</Link>
+      {p.daily && <Link viewTransition to={up.to} className="mt-2 flex min-h-9 items-center text-[13px] text-accent hover:text-accent-ink">看这一天的日报 ›</Link>}
     </RailSection>
   );
   const neighbours = (
@@ -131,6 +138,7 @@ export default function IssueRoute() {
       {p.prev && <Link viewTransition to={`/reference/issues/${p.prev}`} className="flex min-h-9 items-center text-[13px] text-ink-2 hover:text-accent">第 {p.prev} 期</Link>}
       {p.next && <Link viewTransition to={`/reference/issues/${p.next}`} className="flex min-h-9 items-center text-[13px] text-ink-2 hover:text-accent">第 {p.next} 期</Link>}
       {!p.prev && !p.next && <div className="text-[13px] text-ink-4">这是第一期</div>}
+      <Link viewTransition to="/reference/issues" className="mt-2 flex min-h-9 items-center text-[13px] text-accent hover:text-accent-ink">全部往期 ›</Link>
     </RailSection>
   );
   return (
@@ -148,7 +156,16 @@ export default function IssueRoute() {
         }
       />
       <ArticleLayout left={<>{backButton}{facts}</>} right={<>{actions}{neighbours}</>}>
-        <div className="sticky top-0 z-20 -mx-2 hidden bg-bg/95 px-2 py-1.5 backdrop-blur lg:block 2xl:hidden">{backButton}</div>
+        {/* Between lg and 2xl the left rail is hidden and 返回 stays at the top; below side the right rail is hidden too,
+            and its actions join 返回, as on the engine's item page (routes/item.tsx). */}
+        <div className="sticky top-0 z-20 -mx-2 hidden items-center justify-between gap-3 bg-bg/95 px-2 py-1.5 backdrop-blur lg:flex 2xl:hidden">
+          {backButton}
+          <div className="flex items-center gap-1 side:hidden">
+            {audio && !listen.open && <ListenButton compact seconds={audio.seconds} onClick={listen.start} />}
+            {shareButton("touch:h-11")}
+            {moreMenu}
+          </div>
+        </div>
         <article className="pb-6 pt-3 lg:pt-2 2xl:pt-1">
           <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3">
             <span className="font-semibold text-accent">{kicker(p)}</span>
@@ -206,6 +223,7 @@ export default function IssueRoute() {
           <div className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[13px] lg:hidden">
             {p.prev && <Link viewTransition to={`/reference/issues/${p.prev}`} className="inline-flex min-h-11 items-center gap-1 text-ink-3 hover:text-accent"><IconArrowLeft size={13} /> 第 {p.prev} 期</Link>}
             {p.next && <Link viewTransition to={`/reference/issues/${p.next}`} className="inline-flex min-h-11 items-center gap-1 text-ink-3 hover:text-accent">第 {p.next} 期 <IconArrowRight size={13} /></Link>}
+            <Link viewTransition to="/reference/issues" className="inline-flex min-h-11 items-center gap-1 text-accent hover:text-accent-ink">全部往期 ›</Link>
           </div>
         </article>
       </ArticleLayout>

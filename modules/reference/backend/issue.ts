@@ -178,8 +178,21 @@ async function write(items: DayItem[], date: string, ask: Ask, attempt: string, 
     // The second draft tells another deep piece: two drafts of one subject left nothing to choose (10-22).
     ...(other ? [`另一稿细说的是「${other.title}」。这一稿细说换一件别的。`] : []),
   ].join("\n\n");
-  return ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
+  const first = await ask("reference_issue_write", WRITE, user, IssueAnswer, attempt);
+  if (issueChars(first) >= WRITE_FLOOR || items.reduce((n, i) => n + i.text.length, 0) < THIN_DAY) return first;
+  // Too short to fill the twelve minutes the prompt asks for: once more, told so; the longer of the two goes on.
+  const again = await ask("reference_issue_write", WRITE, `${user}\n\n你上一次写的这一稿只有约 ${issueChars(first)} 字，太短了，听不到十二分钟。请重写：全稿约 3,600 字，细说那一件讲深讲透（约 1,500 字以上），不要重复或说空话来凑。`, IssueAnswer, `${attempt}2`);
+  return issueChars(again) > issueChars(first) ? again : first;
 }
+
+/**
+ * A draft shorter than this is written once more (11-03, issue 10: the second draft's deep piece ran 912 characters, the
+ * whole 2,372; it alone came through the check clean, so it went up and the issue ran 8:48 against twelve minutes asked
+ * for). About four fifths of the 3,600 the prompt asks for (issue-write.md), as issueChars counts.
+ */
+export const WRITE_FLOOR = 2_900;
+/** Less than this much original text in the day, and a short issue is the material's (「料少的那天少讲几条」), not the writer's. */
+export const THIN_DAY = 20_000;
 
 /**
  * Goes over a draft once for the ear before it is checked, the second step of NotebookLlama (Meta's llama-cookbook):

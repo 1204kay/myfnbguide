@@ -1,5 +1,5 @@
 // The reference pages' parts, in the site's own look (warm white, hairline cards, the accent's short bar,
-// big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html,
+// big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html (removed 11-03; in commit c29b520),
 // and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): story cards, practice cards and rows,
 // and situations as compact rows, the same on phones and desktops. Who tells a situation shows as the hot list shows
 // who talks about a story: its sources' faces and every count (the owner, 10/6). The frame around them (back links,
@@ -121,6 +121,12 @@ export function RankTag({ rank }: { rank: number }) {
 /** Where a story's card or line leads: its page, or for a folded one its item's (backend/read.ts foldedStories). */
 export const caseHref = (id: string, folded: boolean) => (folded ? `/items/${id}` : `/reference/cases/${id}`);
 
+/** A card's source line with its month on one line, as the feed card keeps its time in one piece; otherwise a phone breaks "2025 年 6 | 月". */
+function SourceLine({ text }: { text: string }) {
+  const m = /^(.*?)(\d{4} 年 \d{1,2} 月)$/u.exec(text);
+  return m ? <>{m[1]}<span className="whitespace-nowrap">{m[2]}</span></> : <>{text}</>;
+}
+
 /**
  * A story's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
  * bookmark, its title, the item's 收录理由 under a hairline from desktops; then the way to its shop's page.
@@ -129,7 +135,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
   return (
     <article className={`${CARD} px-4 pb-3.5 pt-3.5 lg:px-[18px] lg:pb-[14px] lg:pt-[15px]`}>
       <div className="flex min-h-[22px] items-center gap-1.5 text-[12.5px] leading-[18px] text-ink-4 lg:min-h-[18px]">
-        <span className="min-w-0 flex-1">{c.src}</span>
+        <span className="min-w-0 flex-1"><SourceLine text={c.src} /></span>
         <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
       </div>
       <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">

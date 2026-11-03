@@ -321,6 +321,11 @@ export interface ItemBody {
 export interface ItemText { id: string; title: string; situation: { slug: string; title: string; count: Count } | null }
 
 /** One 十一说 as its page reads it (backend/issues.ts readIssue, web/issue.tsx). */
+/** All issues, newest first: what the list of them (web/issues.tsx) reads. */
+export interface IssueIndex {
+  issues: Array<{ no: number; date: string; title: string }>;
+}
+
 export interface IssuePage {
   no: number;
   /** The daily it leads, a Beijing date. */
@@ -335,6 +340,8 @@ export interface IssuePage {
   count: number;
   prev: number | null;
   next: number | null;
+  /** Whether the daily it leads is out yet; the issue goes up a few hours before it. */
+  daily: boolean;
   /** The issue read aloud (backend/audio.ts), or null: then the page has no 听 button. `transcript` is what the voice
    *  reads, a line a sentence, or null for audio put up without it: then the player has no 文字稿 button. `starts`,
    *  when there, is when each of those lines begins in seconds, and the 文字稿 follows the voice. */

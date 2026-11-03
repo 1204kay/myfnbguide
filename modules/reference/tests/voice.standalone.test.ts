@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, breathe, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinLines, linePitch, offPitch, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -120,19 +120,29 @@ test("the audio goes to Whisper in pieces cut at the quietest moment near every 
   assert.deepEqual([...samples], [...audio.subarray(0, 100)]);
 });
 
-test("half a second of silence goes in at the quiet spot before each line, and the line times move with it", () => {
+test("half a second of silence goes in at each seam between lines, and each line starts where it was put", () => {
   const rate = 8000;
-  // Lines start at 0, 3.5 and 6.3 s; the speaker breathes at 3.1–3.3 and 6.0–6.1 s.
-  const audio = join(tone(rate, 3.1), tone(rate, 0.2, false), tone(rate, 2.7), tone(rate, 0.1, false), tone(rate, 2));
-  const { samples, starts } = breathe(audio, rate, [0, 3.5, 6.3]);
-  assert.equal(samples.length, audio.length + rate);
-  assert.deepEqual(starts, [0, 4, 7.3]);
+  // A line that ends loud: the breath still goes after its last sample, never inside it.
+  const lines = [tone(rate, 3.1), tone(rate, 2.7), tone(rate, 2)];
+  const { samples, starts } = joinLines(lines, rate);
+  assert.equal(samples.length, lines.reduce((n, l) => n + l.length, 0) + rate);
+  assert.deepEqual(starts, [0, 3.6, 6.8]);
   const quiet = silences(samples, rate, 0.4).map((s) => [Math.round(s.from * 10) / 10, Math.round(s.to * 10) / 10]);
-  assert.deepEqual(quiet, [[3.1, 3.8], [6.5, 7.1]]);
-  // Two lines 0.3 s apart: the cut for the second never falls before the first, so the first still starts where it said.
-  const close = breathe(join(tone(rate, 4.9), tone(rate, 0.1, false), tone(rate, 1)), rate, [0, 5, 5.3]);
-  const gaps = silences(close.samples, rate, 0.3).map((s) => Math.round(s.from * 10) / 10);
-  assert.ok(gaps[1]! >= 5.5 - 0.05, `second silence at ${gaps[1]} s, before the line that starts at 5.5 s`);
+  assert.deepEqual(quiet, [[3.1, 3.6], [6.3, 6.8]]);
+  assert.deepEqual([...samples.subarray(Math.round(3.6 * rate), Math.round(3.6 * rate) + 50)], [...lines[1]!.subarray(0, 50)]);
+  assert.deepEqual(joinLines([tone(rate, 1)], rate).starts, [0]);
+});
+
+test("a line read far above or below the others is picked to be read again; lines with no pitch are left", () => {
+  const rate = 16_000;
+  const at = (hz: number) => Int16Array.from({ length: rate }, (_, i) => Math.round(6000 * Math.sin((2 * Math.PI * hz * i) / rate)));
+  const pitch = [200, 210, 280, 195, 205, 150].map((hz) => linePitch(at(hz), rate));
+  for (const [n, hz] of [200, 210, 280, 195, 205, 150].entries()) assert.ok(Math.abs(pitch[n]! - hz) < 3, `${hz} Hz measured as ${pitch[n]}`);
+  // Middle 202.5 Hz: 280 is 5.6 semitones up, 150 is 5.2 down; 210 and 195 are under one.
+  assert.deepEqual(offPitch(pitch), [2, 5]);
+  assert.equal(linePitch(new Int16Array(rate), rate), 0);
+  assert.deepEqual(offPitch([0, 200, 0, 205]), []);
+  assert.deepEqual(offPitch([]), []);
 });
 
 test("卖 heard as 买 fails the check, however small a share of the script it is", () => {

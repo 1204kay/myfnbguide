@@ -560,14 +560,14 @@ test("cases are written for selected items, once more when the checks find probl
 
 test("the pages show public cases only, a situation once enough shops tell it, each shop once in a list, and the practices by shop", async () => {
   const thin = await get("/api/reference");
-  assert.deepEqual([thin.categories, thin.totals.situations], [[], 0], "two shops are no page in the lists where they ask for five");
-  // The stories here are of two or three shops: the rest reads the lists as they are from two.
-  LISTED.fromShops = 2;
+  assert.deepEqual([thin.categories, thin.totals.situations], [[], 0], "three items are no page in the lists where they ask for eight");
+  // The stories here are three: the rest reads the lists as they are from two.
+  LISTED.fromCases = 2;
   const home = await get("/api/reference");
   const cost = home.categories.find((c: { key: string }) => c.key === "cost");
   assert.deepEqual(cost.situations.map((s: { slug: string; count: Count; practice: string | null }) => [s.slug, s.count, s.practice]),
     [["busy-no-profit", { grouped: false, shops: 2, insiders: 0, cases: 3 }, null]], "not grouped yet: 条原文 on the page; the bistro's two stories one shop");
-  assert.deepEqual(home.totals, { situations: 1, cases: 4 }, "no countries");
+  assert.deepEqual(home.totals, { situations: 1, cases: 3 }, "no countries; the story placed in no situation is on no page and not counted");
   for (const gone of ["/api/reference/kinds/dining", "/api/reference/kinds/coffee"]) assert.equal((await app.inject(gone)).statusCode, 404, `${gone}: no shop kinds' pages`);
 
   const before = await get("/api/reference/situations/busy-no-profit");
@@ -685,6 +685,8 @@ test("a page splits by cause only where two causes have two practices each; one 
   assert.deepEqual([flat.rest.practices.map((p: { key: string }) => p.key), flat.rest.shops.map((s: { name: string }) => s.name)], [["p456", "p1"], ["大阪一家家庭食堂"]],
     "the most shops first");
 
+  // The lists from three items: 生意很忙 keeps the earlier test's two.
+  LISTED.fromCases = 3;
   const home = await get("/api/reference");
   assert.deepEqual(home.ranking.map((s: { slug: string; practice: string; count: Count }) => [s.slug, s.practice, s.count.shops]), [["hiring", "面试时请应聘者试做一天", 4]],
     "代表做法: the practice the most shops tell");

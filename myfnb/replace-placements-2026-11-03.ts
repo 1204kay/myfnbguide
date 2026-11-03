@@ -11,6 +11,7 @@
 // 一条现在的位置和 from 不一样（审读以后被别的改过），就不动它，列出来。
 // --file 换一份去向表（同目录，默认 replace-placements-2026-11-03.json）：第一遍写完以后的复核用另一份，from 是第一遍写好的位置；
 // 放回仍照第一遍之前的整表备份，只放回还停在这份表 to 上的条目。
+// from 为 null 的条目（第一遍移出、复核后放回参考库）放回时回到第一遍之前的原位置，不是回到移出的状态。
 import { readFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 import { SITUATIONS } from "../modules/reference/situations.ts";
@@ -19,7 +20,7 @@ type Spot = [string, string | null];
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i < 0 ? undefined : process.argv[i + 1]; };
 const file = arg("--file") ?? "replace-placements-2026-11-03.json";
 if (!/^replace-placements-2026-11-03\w*\.json$/.test(file)) throw new Error(`--file 只能是同目录的 replace-placements-2026-11-03*.json：${file}`);
-const plan: Record<string, { from: Spot; to: Spot | null; why: string }> = JSON.parse(readFileSync(new URL(`./${file}`, import.meta.url), "utf8"));
+const plan: Record<string, { from: Spot | null; to: Spot | null; why: string }> = JSON.parse(readFileSync(new URL(`./${file}`, import.meta.url), "utf8"));
 const only = arg("--only")?.split(",");
 const apply = process.argv.includes("--apply");
 const restore = process.argv.includes("--restore");
@@ -30,7 +31,7 @@ for (const [id, p] of Object.entries(plan)) {
   const s = SITUATIONS.find((x) => x.slug === p.to![0]);
   if (!s || !s.groups.some((g) => g.key === p.to![1])) throw new Error(`${id}: ${p.to.join("/")} 不在 situations.ts 里`);
 }
-const ids = Object.keys(plan).filter((id) => !only || only.includes(plan[id]!.from[0]) || (plan[id]!.to && only.includes(plan[id]!.to![0])));
+const ids = Object.keys(plan).filter((id) => !only || (plan[id]!.from && only.includes(plan[id]!.from![0])) || (plan[id]!.to && only.includes(plan[id]!.to![0])));
 
 interface Now { id: string; kind: "case" | "placed"; situations: string[]; placements: Array<Record<string, unknown>> }
 const rows = await sql<Now[]>`
@@ -62,14 +63,21 @@ if (restore) {
   process.exit(0);
 }
 
+// from 为 null：第一遍移出参考库、复核后要放回去的条目。它现在没有放置，放置自带的字段（故事的 card、放置的 fit）
+// 从第一遍之前的整表备份里取，备份里也没有的不写。
+const back = ids.some((id) => !plan[id]!.from) ? new Map((await sql<Array<{ id: string; p: Record<string, unknown> | null }>>`
+  SELECT article_id AS id, story->'placements'->0 AS p FROM backup_ref_cases_20261103 WHERE status = 'story' AND article_id IN ${sql(ids)}
+  UNION ALL
+  SELECT article_id, placements->0 FROM backup_ref_placements_20261103 WHERE article_id IN ${sql(ids)}`).filter((x) => x.p).map((x) => [x.id, x.p!])) : new Map<string, Record<string, unknown>>();
 const todo: Now[] = [];
 const drift: string[] = [];
 for (const id of ids) {
   const r = byId.get(id);
   const p = plan[id]!;
   const at = r?.placements[0] as { situation?: string; group?: string } | undefined;
-  if (!r || r.situations.length !== 1 || at?.situation !== p.from[0] || (at?.group ?? null) !== p.from[1]) drift.push(`${id}（现在 ${r ? JSON.stringify(r.placements) : "不在页面上"}）`);
-  else todo.push(r);
+  const same = p.from ? r && r.situations.length === 1 && at?.situation === p.from[0] && (at?.group ?? null) === p.from[1] : r && r.situations.length === 0 && r.placements.length === 0 && back.has(id);
+  if (!same) drift.push(`${id}（现在 ${r ? JSON.stringify(r.placements) : "不在页面上"}）`);
+  else todo.push(p.from ? r! : { ...r!, placements: [back.get(id)!] });
 }
 const out = todo.filter((r) => !plan[r.id]!.to).length;
 console.log(`挑出 ${ids.length} 条；要写 ${todo.length} 条：换位置 ${todo.length - out}，移出参考库 ${out}；和审读时不一样、不动的 ${drift.length} 条`);

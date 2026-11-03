@@ -220,7 +220,8 @@ export default function IssueRoute() {
             关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[13px] lg:hidden">
+          {/* Up to side the right rail with 往期 is hidden, so the way to the other issues stays under the text there too. */}
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[13px] side:hidden">
             {p.prev && <Link viewTransition to={`/reference/issues/${p.prev}`} className="inline-flex min-h-11 items-center gap-1 text-ink-3 hover:text-accent"><IconArrowLeft size={13} /> 第 {p.prev} 期</Link>}
             {p.next && <Link viewTransition to={`/reference/issues/${p.next}`} className="inline-flex min-h-11 items-center gap-1 text-ink-3 hover:text-accent">第 {p.next} 期 <IconArrowRight size={13} /></Link>}
             <Link viewTransition to="/reference/issues" className="inline-flex min-h-11 items-center gap-1 text-accent hover:text-accent-ink">全部往期 ›</Link>

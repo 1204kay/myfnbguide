@@ -125,12 +125,12 @@ export function issueAnswer(p: IssuePage, all: Array<{ no: number; date: string;
   return answer([
     `# ${NAME} · 第 ${p.no} 期：${issue.title}`,
     "",
-    `${p.date} 的 ${SITE.name} 日报头条。${NAME}是 ${SITE.name} 自己的每日节目：AI 十一读完当天收录的 ${p.count} 条，挑要紧的讲，点名 ${p.sources.length} 篇原文。`,
+    `${p.date} 的 ${SITE.name} 日报头条。${NAME}是 ${SITE.name} 自己的每日节目：AI 十一阅读当天收录的 ${p.count} 条资料，选出要紧的几件介绍，引用原文 ${p.sources.length} 篇。`,
     "",
     `网页：${siteUrl(issuePath(p.no))}${p.audio ? `（可以听，约 ${Math.round(p.audio.seconds / 60)} 分钟）` : ""}`,
     ...(others.length ? ["", "## 往期", ...others] : []),
   ], data, [
-    `${NAME}由 AI 写成、经另一个模型对照原文核对，没有逐条人工审核；讲到的事以〔n〕点名的原文为准，算账的例子是假设。`,
+    `${NAME}由 AI 写成、经另一个模型对照原文核对，没有逐条人工审核；所述事实以〔n〕引用的原文为准，算账用的例子都是假设。`,
     `转述时写明出自 ${SITE.name}「${NAME}」第几期，并链接到网页；用户要出处时给对应的原文链接。`,
     NO_INTERNALS,
   ]);

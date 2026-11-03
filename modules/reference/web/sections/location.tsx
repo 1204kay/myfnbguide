@@ -5,7 +5,7 @@ import { text, strong, hot, accent, box, soft, type Section } from "./kit";
 function TrafficByTime() {
   const slots: Array<[string, string, number]> = [["早上", "上班的人", 54], ["中午", "吃午饭的人", 86], ["下午", "附近住户", 32], ["晚上", "下班的人", 68]];
   return (
-    <svg viewBox="0 0 320 156" role="img" aria-label="示意图：同一条街，早上、中午、下午和晚上经过的人多少不同，经过的人也不同" className="block w-full">
+    <svg viewBox="0 0 320 156" role="img" aria-label="示意图：同一条街，早上、中午、下午和晚上过往人流量不同，经过的人也不同" className="block w-full">
       {slots.map(([slot, who, h], i) => {
         const cx = 40 + i * 80;
         return (
@@ -25,7 +25,7 @@ function TrafficByTime() {
 function LeaseChecks() {
   const items = ["能拿到营业许可", "能装排烟罩", "通风设备够用"];
   return (
-    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：签租约之前，先查清能不能拿到营业许可、能不能装排烟罩、通风设备够不够，查清以后再签字" className="block w-full">
+    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：签租约之前，先查清能否拿到营业许可、能否安装排烟罩、通风设备是否足够，查清以后再签字" className="block w-full">
       <defs><marker id="sec-lease-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: accent }} /></marker></defs>
       <rect x="2" y="4" width="196" height="142" rx="8" style={box} />
       <text x="18" y="30" style={strong}>签约前查清</text>
@@ -63,7 +63,7 @@ function WithinWalk() {
 }
 
 export const sections: Record<string, Section> = {
-  "traffic": { kind: "示意", caption: "同一条街，早上、中午、下午和晚上经过的人数不同，经过的人也不同；柱子只表示多少，不是实际人数。几家店的做法是先定下想开的店和想要的客人，再到现场看这些人什么时候经过、会不会走进来。", draw: () => <TrafficByTime /> },
-  "lease": { kind: "示意", caption: "签租约之前，先查清这处店面能不能拿到营业许可、能不能装排烟罩、通风设备够不够用，查清以后再签字。", draw: () => <LeaseChecks /> },
+  "traffic": { kind: "示意", caption: "同一条街，早上、中午、下午和晚上经过的人数不同，经过的人也不同；柱高只表示相对多少，并非实际人数。几家店的做法是先定下想开的店和想要的客人，再到现场看这些人什么时候经过、是否会进店。", draw: () => <TrafficByTime /> },
+  "lease": { kind: "示意", caption: "签租约之前，先查清这处店面能否拿到营业许可、能否安装排烟罩、通风设备是否足够，查清以后再签字。", draw: () => <LeaseChecks /> },
   "neighborhood": { kind: "示意", caption: "看一处店面，也要看步行可到的范围里有什么：住户和办公楼是可能来的客人，同类的店会分走一部分客人。", draw: () => <WithinWalk /> },
 };

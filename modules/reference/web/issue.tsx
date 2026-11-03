@@ -30,7 +30,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 const kicker = (p: IssuePage) => `十一说 · 第 ${p.no} 期`;
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
-  if (!data) return [{ title: titled("没有这一期") }, { name: "robots", content: "noindex" }];
+  if (!data) return [{ title: titled("该期不存在") }, { name: "robots", content: "noindex" }];
   const path = `/reference/issues/${data.no}`;
   const title = `${kicker(data)}：${data.issue.title}`;
   const description = data.issue.brief.join("");
@@ -127,10 +127,10 @@ export default function IssueRoute() {
     </>
   );
   const facts = (
-    <RailSection title="这一期">
+    <RailSection title="本期信息">
       <div className="text-[14px] leading-snug text-ink-2">{day(p.date)} 日报的头条</div>
-      <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">读完当天收录的 {p.count} 条，点名 {p.sources.length} 篇</div>
-      {p.daily && <Link viewTransition to={up.to} className="mt-2 flex min-h-9 items-center text-[13px] text-accent hover:text-accent-ink">看这一天的日报 ›</Link>}
+      <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">依据当天收录的 {p.count} 条资料撰写，引用原文 {p.sources.length} 篇</div>
+      {p.daily && <Link viewTransition to={up.to} className="mt-2 flex min-h-9 items-center text-[13px] text-accent hover:text-accent-ink">查看当日日报 ›</Link>}
     </RailSection>
   );
   const neighbours = (
@@ -180,7 +180,7 @@ export default function IssueRoute() {
           </section>
 
           <section className="mt-9 border-t border-line pt-4 xl:mt-10">
-            <div className={BODY_LABEL}>正文 · AI 十一读完当天的收录写的</div>
+            <div className={BODY_LABEL}>正文 · 由 AI 十一根据当天收录的资料撰写</div>
             <p className={BODY}>{lines.open}</p>
             <Paragraphs text={issue.preview} />
             {issue.news.map((x, i) => (
@@ -217,7 +217,7 @@ export default function IssueRoute() {
           )}
 
           <p className={`mt-8 text-[13px] leading-relaxed text-ink-4 ${MEASURE}`}>
-            关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。
+            关于十一：十一是 AI。它阅读当天收录的全部资料，选出要紧的几件介绍给读者；所述事实以文中引用的原文为准，算账用的例子都注明是假设。
           </p>
 
           {/* Up to side the right rail with 往期 is hidden, so the way to the other issues stays under the text there too. */}

@@ -24,9 +24,9 @@ function FeeShare() {
 function TillAgainstTakings() {
   const rows: Array<[string, number, number]> = [["现金", 1, 1], ["刷卡", 1, 0.72], ["电子钱包", 0.8, 0.8]];
   return (
-    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：每天把收银系统记的和实际收到的现金、刷卡、电子钱包逐项对一遍，刷卡这一项对不上" className="block w-full">
-      <text x="132" y="16" textAnchor="middle" style={text}>收银系统记的</text>
-      <text x="264" y="16" textAnchor="middle" style={text}>实际收到的</text>
+    <svg viewBox="0 0 320 150" role="img" aria-label="示意图：每天把收银系统记录的现金、刷卡、电子钱包金额和实际收款逐项核对，刷卡一项金额不符" className="block w-full">
+      <text x="132" y="16" textAnchor="middle" style={text}>收银系统记录</text>
+      <text x="264" y="16" textAnchor="middle" style={text}>实际收款</text>
       {rows.map(([name, till, got], i) => {
         const y = i * 42 + 30;
         const off = till !== got;
@@ -46,6 +46,6 @@ function TillAgainstTakings() {
 }
 
 export const sections: Record<string, Section> = {
-  "fees": { kind: "举例", caption: "假设你的餐饮店每月刷卡和电子钱包收 30,000 元，到账 29,100 元，差的 900 元是手续费，实际费率 3%。几家店的做法是先这样算出自己实际付的费率，再拿去和别家收款公司比较，或从毛利、菜单上消化。", draw: () => <FeeShare /> },
-  "reconcile": { kind: "示意", caption: "每天把收银系统记的营业额和实际收到的钱逐项对一遍：现金点数、刷卡到账、电子钱包到账。哪一项对不上，当天就查原因。", draw: () => <TillAgainstTakings /> },
+  "fees": { kind: "举例", caption: "假设你的餐饮店每月刷卡和电子钱包收 30,000 元，到账 29,100 元，差额 900 元是手续费，实际费率 3%。几家店的做法是先这样算出自己实际付的费率，再拿去和别家收款公司比较，或从毛利、菜单上消化。", draw: () => <FeeShare /> },
+  "reconcile": { kind: "示意", caption: "每天把收银系统记录的营业额和实际收到的钱逐项核对：现金点数、刷卡到账、电子钱包到账。哪一项金额不符，当天就查明原因。", draw: () => <TillAgainstTakings /> },
 };

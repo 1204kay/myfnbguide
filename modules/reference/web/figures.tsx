@@ -42,7 +42,7 @@ function Bucket({ groups }: { groups: string[] }) {
   ];
   const drop = ([x, y]: [number, number]) => `M${x} ${y - 10} C${x + 3} ${y - 5} ${x + 7} ${y} ${x + 7} ${y + 4} A7 7 0 0 1 ${x - 7} ${y + 4} C${x - 7} ${y} ${x - 3} ${y - 5} ${x} ${y - 10} Z`;
   return (
-    <svg viewBox="-18 0 354 262" role="img" aria-label="一只水桶：客人付的钱从上面倒进来，从几个洞漏出去，桶里剩下的才是月底的钱" className="mx-auto block w-full">
+    <svg viewBox="-18 0 354 262" role="img" aria-label="一只水桶：客人支付的款项从上方流入，从几处缺口漏出，桶里剩下的才是月底的结余" className="mx-auto block w-full">
       <defs><marker id="ref-ar-coin" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-3)" }} /></marker></defs>
       {[[126, 22], [150, 40], [176, 16], [154, 10]].map(([cx, cy]) => (
         <g key={`${cx}-${cy}`}>
@@ -51,7 +51,7 @@ function Bucket({ groups }: { groups: string[] }) {
         </g>
       ))}
       <path d="M152 56 V70" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2 }} markerEnd="url(#ref-ar-coin)" />
-      <text x="198" y="32" style={{ fill: "var(--ink-2)", fontSize: 15, fontWeight: 600 }}>客人付的钱</text>
+      <text x="198" y="32" style={{ fill: "var(--ink-2)", fontSize: 15, fontWeight: 600 }}>客人支付的款项</text>
       <clipPath id="ref-bucket"><path d="M58 82 L262 82 L231 240 L89 240 Z" /></clipPath>
       <g clipPath="url(#ref-bucket)">
         <path d="M50 118 Q80 108 110 118 T170 118 T230 118 T290 118 V250 H50 Z" style={{ fill: "var(--accent)", opacity: 0.2 }} />
@@ -59,7 +59,7 @@ function Bucket({ groups }: { groups: string[] }) {
       </g>
       <path d="M58 82 L89 240 H231 L262 82" style={{ fill: "none", stroke: "var(--ink-2)", strokeWidth: 3, strokeLinejoin: "round", strokeLinecap: "round" }} />
       <rect x="48" y="76" width="224" height="10" rx="5" style={{ fill: "var(--ink-2)" }} />
-      <text x="160" y="190" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 18, fontWeight: 800 }}>月底剩下的钱</text>
+      <text x="160" y="190" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 18, fontWeight: 800 }}>月底结余</text>
       {leaks.slice(0, groups.length).map(([[hx, hy], stream, at, [mx, my]], i) => (
         <g key={i}>
           <path d={stream} style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 4.5, strokeLinecap: "round" }} />
@@ -148,7 +148,7 @@ function Takings() {
  * the one above; at each step two people walk off to the side.
  */
 function Funnel() {
-  const steps = ["看到招聘启事", "来面试", "录用", "做满三个月"];
+  const steps = ["看到招聘启事", "参加面试", "录用", "工作满三个月"];
   const top = [142, 112, 84, 58];
   const bottom = [114, 86, 60, 42];
   const cx = 148;
@@ -160,7 +160,7 @@ function Funnel() {
     </g>
   );
   return (
-    <svg viewBox="0 0 320 212" role="img" aria-label="示意图：看到招聘启事的人里，来面试的是一部分，录用的更少，做满三个月的又少一些" className="mx-auto block w-full">
+    <svg viewBox="0 0 320 212" role="img" aria-label="示意图：看到招聘启事的人里，参加面试的是一部分，录用的更少，工作满三个月的又少一些" className="mx-auto block w-full">
       <defs><marker id="ref-ar-out" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker></defs>
       {steps.map((step, i) => (
         <g key={step}>
@@ -194,7 +194,7 @@ function LabourShare() {
 }
 
 /**
- * 老板自己累垮: one owner's day on a line from 0:00 to 24:00, the 16 hours from 7:00 to 23:00 filled in the accent with a
+ * 老板本人过度劳累: one owner's day on a line from 0:00 to 24:00, the 16 hours from 7:00 to 23:00 filled in the accent with a
  * dot at each thing he does, and the day's list under it. A line and not a dial: a ring reads as a 12-hour clock face,
  * and its hours then look wrong (用户 10/16: 会让人以为这是在画时钟). Laid out in HTML so its words stay at text size
  * at any width; the list takes as many columns as the card has room for.
@@ -245,7 +245,7 @@ function OwnerDay() {
 /** 想加做外带或外卖: three streams of orders through one kitchen and one pass. */
 function OneKitchen() {
   return (
-    <svg viewBox="0 0 320 170" role="img" aria-label="示意图：堂食、外带和外卖平台的订单都进同一个厨房，从同一个出餐口出去" className="block w-full">
+    <svg viewBox="0 0 320 170" role="img" aria-label="示意图：堂食、外带和外卖平台的订单都进同一个厨房，经同一个出餐口送出" className="block w-full">
       <defs><marker id="ref-ar-k" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}>{[16, 66, 116].map((y) => <rect key={y} x="6" y={y} width="76" height="34" rx="6" />)}</g>
       <g textAnchor="middle" style={strong}><text x="44" y="37.5">堂食</text><text x="44" y="87.5">外带</text><text x="44" y="137.5">外卖平台</text></g>
@@ -306,8 +306,8 @@ function OpeningBudget() {
 function TwoStreets() {
   const people = (x0: number, n: number) => Array.from({ length: n }, (_, i) => <circle key={i} cx={x0 + (i % 5) * 22} cy={118 + Math.floor(i / 5) * 16} r="5" style={{ fill: "var(--ink-4)", opacity: 0.55 }} />);
   return (
-    <svg viewBox="0 0 320 170" role="img" aria-label="示意图：大街上的店经过的人多、房租高；巷子里的店经过的人少、房租低" className="block w-full">
-      {[[10, "大街上", "经过的人多，房租高"], [170, "巷子里", "经过的人少，房租低"]].map(([x, name, note]) => (
+    <svg viewBox="0 0 320 170" role="img" aria-label="示意图：大街上的店人流量大、房租高；小巷里的店人流量小、房租低" className="block w-full">
+      {[[10, "大街上", "人流量大，房租高"], [170, "小巷里", "人流量小，房租低"]].map(([x, name, note]) => (
         <g key={String(name)}>
           <rect x={Number(x)} y="22" width="140" height="68" rx="8" style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)", strokeWidth: 1.5 }} />
           <rect x={Number(x) + 52} y="52" width="36" height="38" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)" }} />
@@ -346,7 +346,7 @@ function ContractLines() {
 /** 菜单怎么定价: the price has room only between the floor the costs set and the most guests will pay. */
 function PriceRange() {
   return (
-    <svg viewBox="-10 0 320 132" role="img" aria-label="示意图：一条价格带，低于成本算出的底价是亏本，高过客人愿意付的上限点的人变少，中间是可以定价的范围" className="mx-auto block w-full">
+    <svg viewBox="-10 0 320 132" role="img" aria-label="示意图：一条价格带，低于成本算出的底价会亏本，高于客人愿意支付的上限点单会减少，中间是可以定价的范围" className="mx-auto block w-full">
       <defs>
         <clipPath id="pricing-bar"><rect x="8" y="50" width="284" height="38" rx="7" /></clipPath>
         <marker id="pricing-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
@@ -359,12 +359,12 @@ function PriceRange() {
       <rect x="8" y="50" width="284" height="38" rx="7" style={{ fill: "none", stroke: "var(--line-strong)" }} />
       <path d="M96 36 V96 M214 36 V96" style={{ stroke: "var(--ink-3)", strokeWidth: 2 }} />
       <text x="96" y="28" textAnchor="middle" style={strong}>成本底价</text>
-      <text x="214" y="28" textAnchor="middle" style={strong}>客人愿意付的上限</text>
+      <text x="214" y="28" textAnchor="middle" style={strong}>客人愿意支付的上限</text>
       <text x="155" y="66" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>涨价</text>
       <path d="M120 76 H186" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#pricing-ar)" />
-      <text x="52" y="114" textAnchor="middle" style={{ fill: "var(--hot)", fontSize: 15, fontWeight: 700 }}>卖一份亏一份</text>
+      <text x="52" y="114" textAnchor="middle" style={{ fill: "var(--hot)", fontSize: 15, fontWeight: 700 }}>每份都亏本</text>
       <text x="155" y="114" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>定价的范围</text>
-      <text x="253" y="114" textAnchor="middle" style={text}>点的人变少</text>
+      <text x="253" y="114" textAnchor="middle" style={text}>点单减少</text>
     </svg>
   );
 }
@@ -378,7 +378,7 @@ function DeliveryShare() {
         ["堂食", [{ label: "食材", share: share(12), tone: 3 }, { label: "", share: share(18), tone: "accent" }]],
         ["外卖", [{ label: "食材", share: share(12), tone: 3 }, { label: "抽成", share: share(9), tone: 1 }, { label: "", share: share(2), tone: 2 }, { label: "", share: share(7), tone: "accent" }]],
       ]} />
-      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">堂食：食材 12，剩 <b className="text-[16px] text-accent">18</b> 元<br />外卖：食材 12、抽成 9、包装 2，剩 <b className="text-[16px] text-accent">7</b> 元</p>
+      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">堂食：食材 12，毛利 <b className="text-[16px] text-accent">18</b> 元<br />外卖：食材 12、抽成 9、包装 2，余 <b className="text-[16px] text-accent">7</b> 元</p>
     </>
   );
 }
@@ -386,14 +386,14 @@ function DeliveryShare() {
 /** 新人怎么带: teach one thing, let him do it, check it against the written standard, then the next. */
 function TeachLoop() {
   return (
-    <svg viewBox="-10 0 320 200" role="img" aria-label="示意图：教一件事、新人自己做、检查并说清对错，再教下一件，中间是写下来的标准" className="mx-auto block w-full">
+    <svg viewBox="-10 0 320 200" role="img" aria-label="示意图：教一件事、新人自己做、检查并说清对错，再教下一件，中间是书面标准" className="mx-auto block w-full">
       <defs><marker id="training-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="100" y="8" width="100" height="32" rx="6" /><rect x="186" y="156" width="108" height="32" rx="6" /><rect x="-4" y="156" width="118" height="32" rx="6" /></g>
       <g textAnchor="middle" style={strong}><text x="150" y="28">教一件事</text><text x="240" y="176">新人自己做</text><text x="55" y="176">检查、说清对错</text></g>
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#training-ar)"><path d="M204 26 Q258 32 250 150" /><path d="M182 172 H122" /><path d="M48 150 Q40 32 94 26" /></g>
       <text x="38" y="92" textAnchor="end" style={text}>下一件</text>
       <path d="M112 66 H174 L188 80 V136 H112 Z M174 66 V80 H188" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5, strokeLinejoin: "round" }} />
-      <text x="150" y="98" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>写下来的</text>
+      <text x="150" y="98" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>书面</text>
       <text x="150" y="114" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>标准</text>
     </svg>
   );
@@ -431,7 +431,7 @@ function EmptyFull() {
     const [up, down] = full ? [x + 70, x + 78] : [x + 62, x + 86];
     return (
       <g>
-        <text x={x + 74} y="14" textAnchor="middle" style={strong}>{full ? "坐满的时候" : "空着的时候"}</text>
+        <text x={x + 74} y="14" textAnchor="middle" style={strong}>{full ? "满座时" : "空店时"}</text>
         <rect x={x} y="26" width="148" height="22" style={{ fill: "var(--fig-box)" }} />
         <text x={x + 74} y="41" textAnchor="middle" style={text}>厨房</text>
         <path d={`M${x + 60} 158 H${x} V26 H${x + 148} V158 H${x + 88}`} style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.5 }} />
@@ -442,7 +442,7 @@ function EmptyFull() {
     );
   };
   return (
-    <svg viewBox="0 0 320 166" role="img" aria-label="示意图：同一家店，空着的时候通道很宽；坐满以后椅子往后推，进出的人挤在同一条窄通道里" className="block w-full">
+    <svg viewBox="0 0 320 166" role="img" aria-label="示意图：同一家店，空店时通道很宽；满座以后椅子往后推，进出的人挤在同一条窄通道里" className="block w-full">
       <defs><marker id="layout-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       {plan(6, false)}
       {plan(166, true)}
@@ -470,10 +470,10 @@ function DownDays() {
   );
 }
 
-/** 加盟还是自己做: what goes to the head office, what comes back, and the contract around both. */
+/** 加盟还是自己经营: what goes to the head office, what comes back, and the contract around both. */
 function FranchiseFlows() {
   return (
-    <svg viewBox="0 0 320 172" role="img" aria-label="示意图：加盟店向总部付加盟费、管理费和进货的钱，总部给加盟店品牌、配方和培训，两者之间的规矩写在合同里" className="block w-full">
+    <svg viewBox="0 0 320 172" role="img" aria-label="示意图：加盟店向总部付加盟费、管理费和进货款，总部给加盟店品牌、配方和培训，双方的约定写在合同里" className="block w-full">
       <defs>
         <marker id="franchise-ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
         <marker id="franchise-ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker>
@@ -495,17 +495,17 @@ function FranchiseFlows() {
 /** 用 AI 处理店里的事: the numbers, the words and the questions go to AI first; people look before use. */
 function AiFirst() {
   return (
-    <svg viewBox="0 0 320 156" role="img" aria-label="示意图：账单和销量、菜单和评价、新人的问题先交给 AI 整理、起草或回答，店里的人再看一遍" className="block w-full">
+    <svg viewBox="0 0 320 156" role="img" aria-label="示意图：账单和销量、菜单和评价、新人的问题先交给 AI 整理、起草或回答，再由店内人员复核" className="block w-full">
       <defs><marker id="ai-tools-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}>{[16, 66, 116].map((y) => <rect key={y} x="2" y={y} width="84" height="34" rx="6" />)}</g>
       <g textAnchor="middle" style={strong}><text x="44" y="37.5">账单和销量</text><text x="44" y="87.5">菜单和评价</text><text x="44" y="137.5">新人的问题</text></g>
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)"><path d="M88 33 Q100 40 107 64" /><path d="M88 83 H105" /><path d="M88 133 Q100 126 107 102" /></g>
       <rect x="109" y="46" width="120" height="74" rx="10" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
-      <text x="169" y="80" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>AI 先做一遍</text>
+      <text x="169" y="80" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>AI 先行处理</text>
       <text x="169" y="98" textAnchor="middle" style={text}>整理、起草、回答</text>
       <path d="M231 83 H246" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#ai-tools-ar)" />
       <rect x="250" y="56" width="68" height="54" rx="8" style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }} />
-      <g textAnchor="middle" style={strong}><text x="284" y="79">店里的人</text><text x="284" y="97">再看一遍</text></g>
+      <g textAnchor="middle" style={strong}><text x="284" y="79">店内人员</text><text x="284" y="97">复核</text></g>
     </svg>
   );
 }
@@ -545,7 +545,7 @@ function WasteExits() {
   const steps: Array<[number, string]> = [[6, "进货"], [88, "储存"], [170, "备料"], [252, "卖给客人"]];
   const mark = { fill: "var(--accent)", fontSize: 15, fontWeight: 700 } as const;
   return (
-    <svg viewBox="0 0 320 192" role="img" aria-label="示意图：食材从进货、储存、备料到卖给客人；储存时过期、变质的，备料的边角料和当天没卖完的，都被丢弃" className="block w-full">
+    <svg viewBox="0 0 320 192" role="img" aria-label="示意图：食材从进货、储存、备料到卖给客人；储存时过期、变质的，备料的边角料和当天未售出的，都被丢弃" className="block w-full">
       <defs>
         <marker id="waste-ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
         <marker id="waste-ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker>
@@ -557,7 +557,7 @@ function WasteExits() {
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }} markerEnd="url(#waste-ar-a)"><path d="M119 80 Q119 126 140 140" /><path d="M201 80 Q201 126 180 140" /></g>
       <text x="111" y="114" textAnchor="end" style={mark}>过期、变质</text>
       <text x="209" y="106" style={mark}>边角料、</text>
-      <text x="209" y="124" style={mark}>没卖完的</text>
+      <text x="209" y="124" style={mark}>未售出的</text>
       <g style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round" }}><path d="M134 148 H186" /><path d="M152 148 V143 H168 V148" /><path d="M140 152 L180 152 L176 186 L144 186 Z" /></g>
       <text x="160" y="174" textAnchor="middle" style={strong}>丢弃</text>
     </svg>
@@ -567,10 +567,10 @@ function WasteExits() {
 /** 员工留不住: one person leaving makes the next one more likely to leave. */
 function LeavingLoop() {
   return (
-    <svg viewBox="0 0 320 178" role="img" aria-label="示意图：有人离开，剩下的人更累，新人没有人带，又有人离开，形成一个循环" className="block w-full">
+    <svg viewBox="0 0 320 178" role="img" aria-label="示意图：有人离开，剩下的人更累，新人无人指导，又有人离开，形成一个循环" className="block w-full">
       <defs><marker id="retention-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="106" y="8" width="108" height="34" rx="6" /><rect x="8" y="136" width="116" height="34" rx="6" /><rect x="196" y="136" width="116" height="34" rx="6" /></g>
-      <g textAnchor="middle" style={strong}><text x="160" y="29.5">有人离开</text><text x="66" y="157.5">新人没有人带</text><text x="254" y="157.5">剩下的人更累</text></g>
+      <g textAnchor="middle" style={strong}><text x="160" y="29.5">有人离开</text><text x="66" y="157.5">新人无人指导</text><text x="254" y="157.5">剩下的人更累</text></g>
       <text x="160" y="60" textAnchor="middle" style={text}>不只因为薪水</text>
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }} markerEnd="url(#retention-ar)"><path d="M218 25 Q254 25 254 130" /><path d="M192 153 H130" /><path d="M66 132 Q66 25 100 25" /></g>
     </svg>
@@ -583,7 +583,7 @@ function StaffCurve() {
   const mark = { fill: "var(--accent)", fontSize: 15, fontWeight: 700 } as const;
   return (
     <>
-      <svg viewBox="0 0 320 166" role="img" aria-label="示意图：每个时段需要的人手在午市和晚市最多；每个时段排的人手一样多，高峰时不够，下午有人闲着" className="block w-full">
+      <svg viewBox="0 0 320 166" role="img" aria-label="示意图：每个时段需要的人手在午市和晚市最多；每个时段安排的人手一样多，高峰时人手不足，下午人手闲置" className="block w-full">
         <defs>
           <clipPath id="scheduling-above"><rect x="0" y="0" width="320" height="80" /></clipPath>
           <clipPath id="scheduling-below"><rect x="0" y="80" width="320" height="80" /></clipPath>
@@ -593,13 +593,13 @@ function StaffCurve() {
         <path d="M20 140 H300" style={{ stroke: "var(--line)", strokeWidth: 1.5 }} />
         <path d={need} style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }} />
         <path d="M20 80 H300" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2, strokeDasharray: "5 4" }} />
-        <g textAnchor="middle" style={mark}><text x="78" y="26">人不够</text><text x="242" y="34">人不够</text></g>
-        <text x="160" y="104" textAnchor="middle" style={{ fill: "var(--ink-2)", fontSize: 15, fontWeight: 700 }}>人闲着</text>
+        <g textAnchor="middle" style={mark}><text x="78" y="26">人手不足</text><text x="242" y="34">人手不足</text></g>
+        <text x="160" y="104" textAnchor="middle" style={{ fill: "var(--ink-2)", fontSize: 15, fontWeight: 700 }}>人手闲置</text>
         <g textAnchor="middle" style={text}><text x="20" y="157" textAnchor="start">开门</text><text x="78" y="157">午市</text><text x="160" y="157">下午</text><text x="242" y="157">晚市</text><text x="300" y="157" textAnchor="end">关门</text></g>
       </svg>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-3">
         <span className="flex items-center gap-1.5"><i className="h-[3px] w-5 rounded-mark bg-accent" />每个时段需要的人手</span>
-        <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-4" />每个时段排的人手</span>
+        <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-4" />每个时段安排的人手</span>
       </div>
     </>
   );
@@ -608,7 +608,7 @@ function StaffCurve() {
 /** 遇到差评: the review and the reply are read by guests who have not come yet; the cause is still in the shop. */
 function ReviewReaders() {
   return (
-    <svg viewBox="0 0 320 186" role="img" aria-label="示意图：一条差评和店家的回复，还没来过的客人都看得到；差评说的事，原因在店里：找出原因、改流程" className="block w-full">
+    <svg viewBox="0 0 320 186" role="img" aria-label="示意图：一条差评和店家的回复，尚未到店的客人都能看到；差评说的事，原因在店里：找出原因、改流程" className="block w-full">
       <defs>
         <marker id="bad-reviews-ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
         <marker id="bad-reviews-ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker>
@@ -619,7 +619,7 @@ function ReviewReaders() {
       <rect x="20" y="66" width="152" height="36" rx="6" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)" }} />
       <text x="30" y="82" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>店家的回复</text>
       <rect x="30" y="89" width="110" height="5" rx="2.5" style={{ fill: "var(--accent)", opacity: 0.35 }} />
-      <text x="260" y="30" textAnchor="middle" style={text}>还没来过的客人</text>
+      <text x="260" y="30" textAnchor="middle" style={text}>尚未到店的客人</text>
       {Array.from({ length: 6 }, (_, i) => <circle key={i} cx={238 + (i % 3) * 22} cy={52 + Math.floor(i / 3) * 22} r="7" style={{ fill: "var(--ink-4)", opacity: 0.55 }} />)}
       <path d="M226 63 H192" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2 }} markerEnd="url(#bad-reviews-ar-g)" />
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="40" y="146" width="112" height="34" rx="6" /><rect x="196" y="146" width="112" height="34" rx="6" /></g>
@@ -633,13 +633,13 @@ function ReviewReaders() {
 function TicketArea() {
   const plus = { fill: "var(--accent)", fontSize: 15, fontWeight: 700 } as const;
   return (
-    <svg viewBox="0 22 320 174" role="img" aria-label="举例：100 位客人每人 25 元，营业额 2,500 元；多来 20 位客人，或每人多花 5 元，都是多 500 元" className="block w-full">
+    <svg viewBox="0 22 320 174" role="img" aria-label="举例：100 位客人每人 25 元，营业额 2,500 元；客人增加 20 位，或每人多消费 5 元，营业额都增加 500 元" className="block w-full">
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="10" y="50" width="110" height="100" /><rect x="180" y="50" width="110" height="100" /></g>
       <g style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }}><rect x="120" y="50" width="22" height="100" /><rect x="180" y="30" width="110" height="20" /></g>
       <g textAnchor="middle" style={strong}><text x="65" y="97">100 位 × 25 元</text><text x="235" y="97">100 位 × 25 元</text></g>
       <g textAnchor="middle" style={text}><text x="65" y="115">营业额 2,500 元</text><text x="235" y="115">营业额 2,500 元</text></g>
       <g textAnchor="middle" style={plus}><text x="131" y="42">+500 元</text><text x="235" y="44.5">+500 元</text></g>
-      <g textAnchor="middle" style={strong}><text x="76" y="172">多来 20 位客人</text><text x="235" y="172">每人多花 5 元</text></g>
+      <g textAnchor="middle" style={strong}><text x="76" y="172">客人增加 20 位</text><text x="235" y="172">每人多消费 5 元</text></g>
       <text x="235" y="189" textAnchor="middle" style={text}>菜单、推荐、套餐和加购</text>
     </svg>
   );
@@ -670,7 +670,7 @@ function OpeningGuess() {
       <path d="M8 124 H312" style={{ stroke: "var(--line)", strokeWidth: 1.5 }} />
       <path d="M64 72 H312" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2, strokeDasharray: "5 4" }} />
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }}><path d="M64 72 C84 40 104 36 312 36" /><path d="M64 72 C84 104 104 108 312 108" /></g>
-      <g textAnchor="end" style={mark}><text x="312" y="28">比估计的多，忙不过来</text><text x="312" y="100">比估计的少</text></g>
+      <g textAnchor="end" style={mark}><text x="312" y="28">比估计的多，应接不暇</text><text x="312" y="100">比估计的少</text></g>
       <text x="312" y="66" textAnchor="end" style={text}>开业前估计的客人数</text>
       <path d="M66 130 V136 H310 V130" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.2 }} />
       <text x="188" y="152" textAnchor="middle" style={text}>头 90 天</text>
@@ -707,7 +707,7 @@ function RenovationOverrun() {
 function PaymentPath() {
   const mark = { fill: "var(--accent)", fontSize: 15, fontWeight: 700 } as const;
   return (
-    <svg viewBox="-12 0 324 176" role="img" aria-label="示意图：刷卡和电子钱包的钱先进入收款公司，扣掉手续费，过一段时间才到店里；现金直接到店里；店里收到的钱和收银系统的营业额对账" className="block w-full">
+    <svg viewBox="-12 0 324 176" role="img" aria-label="示意图：刷卡和电子钱包的款项先进入收款公司，扣除手续费，隔一段时间才转入店家；现金由店家直接收取；店家实收款项和收银系统的营业额对账" className="block w-full">
       <defs>
         <marker id="payments-ar-a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker>
         <marker id="payments-ar-g" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker>
@@ -716,10 +716,10 @@ function PaymentPath() {
       <text x="147" y="19" textAnchor="middle" style={text}>现金</text>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="-10" y="58" width="84" height="34" rx="6" /><rect x="212" y="58" width="98" height="34" rx="6" /><rect x="176" y="138" width="134" height="32" rx="6" /></g>
       <rect x="92" y="54" width="110" height="42" rx="6" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
-      <g textAnchor="middle" style={strong}><text x="32" y="80">客人付的钱</text><text x="261" y="80">店里收到的钱</text><text x="243" y="159">收银系统的营业额</text></g>
+      <g textAnchor="middle" style={strong}><text x="32" y="80">客人付款</text><text x="261" y="80">店家实收款项</text><text x="243" y="159">收银系统的营业额</text></g>
       <text x="147" y="73" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>收款公司</text>
       <text x="147" y="90" textAnchor="middle" style={text}>刷卡、电子钱包</text>
-      <text x="147" y="46" textAnchor="middle" style={text}>钱先停在这里</text>
+      <text x="147" y="46" textAnchor="middle" style={text}>款项暂存在这里</text>
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#payments-ar-a)"><path d="M76 75 H88" /><path d="M203 75 H210" /><path d="M147 98 V112" /></g>
       <text x="147" y="130" textAnchor="middle" style={mark}>手续费</text>
       <path d="M261 94 V138" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2, strokeDasharray: "4 4" }} />
@@ -733,9 +733,9 @@ function CashLocked({ groups }: { groups: string[] }) {
   const { n, mark } = causes(groups);
   const x = (yuan: number) => 116 + yuan * 0.016;
   // Each row runs from one running total to the next; the last row is the month's change in cash.
-  const rows: Array<[string, number, number, string]> = [["账上的利润", 0, 5400, "+5,400"], ["预付的房租", 5400, 3400, "−2,000"], ["多出的库存", 3400, 400, "−3,000"], ["平台还没结算", 400, -2000, "−2,400"], ["手上的现金", 0, -2000, "−2,000"]];
+  const rows: Array<[string, number, number, string]> = [["账上的利润", 0, 5400, "+5,400"], ["预付的房租", 5400, 3400, "−2,000"], ["多出的库存", 3400, 400, "−3,000"], ["平台尚未结算", 400, -2000, "−2,400"], ["手上的现金", 0, -2000, "−2,000"]];
   return (
-    <svg viewBox="-10 0 320 170" role="img" aria-label="举例：这个月账上的利润 5,400 元，预付房租 2,000 元，库存多出 3,000 元，平台还有 2,400 元没有结算，手上的现金比月初少了 2,000 元" className="block w-full">
+    <svg viewBox="-10 0 320 170" role="img" aria-label="举例：这个月账上的利润 5,400 元，预付房租 2,000 元，库存多出 3,000 元，平台还有 2,400 元尚未结算，手上的现金比月初少了 2,000 元" className="block w-full">
       <path d="M-8 123 H300" style={{ stroke: "var(--line)" }} />
       <path d="M116 2 V150" style={{ stroke: "var(--ink-4)", strokeDasharray: "4 3" }} />
       <text x="116" y="164" textAnchor="middle" style={text}>0</text>
@@ -753,9 +753,9 @@ function CashLocked({ groups }: { groups: string[] }) {
           </g>
         );
       })}
-      {n("钱被什么占住") > 0 && <path d="M264 40 H270 V116 H264" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 1.5 }} />}
-      {mark("钱被什么占住", 286, 78)}
-      {mark("留出周转的钱", 262, 138)}
+      {n("现金被什么占用") > 0 && <path d="M264 40 H270 V116 H264" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 1.5 }} />}
+      {mark("现金被什么占用", 286, 78)}
+      {mark("预留周转金", 262, 138)}
       {mark("借钱和还款", 288, 138)}
     </svg>
   );
@@ -767,7 +767,7 @@ function EnergyBill({ groups }: { groups: string[] }) {
   // The bill as an area: each row is what one use takes (its height is how much); the width is the price of each unit.
   const rows: Array<[string, number, number]> = [["冷藏", 8, 42], ["炉灶", 42, 72], ["空调", 72, 96], ["洗碗", 96, 118]];
   return (
-    <svg viewBox="-10 0 320 172" role="img" aria-label="示意图：一个月的水电燃气费画成一块面积，每一行是冷藏、炉灶、空调、洗碗和空转用掉的量，宽是单价，右边一截是单价上涨多付的" className="block w-full">
+    <svg viewBox="-10 0 320 172" role="img" aria-label="示意图：一个月的水电燃气费画成一块面积，每一行是冷藏、炉灶、空调、洗碗和空转用掉的量，宽是单价，右侧部分是单价上涨后多付的费用" className="block w-full">
       <defs>
         <pattern id="utilities-idle" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0 V6" style={{ stroke: "var(--ink-4)", strokeWidth: 1.5, opacity: 0.4 }} /></pattern>
       </defs>
@@ -780,7 +780,7 @@ function EnergyBill({ groups }: { groups: string[] }) {
       {rows.map(([name, a, b]) => <text key={name} x="54" y={(a + b) / 2 + 4} style={strong}>{name}</text>)}
       <text x="54" y="132" style={{ ...strong, fill: "var(--ink-3)" }}>空转</text>
       <text x="255" y="64" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>单价上涨</text>
-      <text x="255" y="84" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>多付的</text>
+      <text x="255" y="84" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>多付的费用</text>
       <g style={{ fill: "none", stroke: "var(--ink-4)" }}><path d="M38 8 H34 V138 H38" /><path d="M44 144 V148 H218 V144" /><path d="M222 144 V148 H290 V144" /></g>
       <text x="22" y="80" textAnchor="middle" style={text}>用</text>
       <text x="22" y="98" textAnchor="middle" style={text}>量</text>
@@ -798,7 +798,7 @@ function KeepOrLetGo({ groups }: { groups: string[] }) {
   const person = (cx: number, hy: number, style: { fill: string; stroke?: string; strokeWidth?: number; strokeDasharray?: string }) => <g style={style}><circle cx={cx} cy={hy} r="7" /><path d={`M${cx - 12} ${hy + 24} Q${cx - 12} ${hy + 11} ${cx} ${hy + 11} Q${cx + 12} ${hy + 11} ${cx + 12} ${hy + 24} Z`} /></g>;
   const team = { fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 };
   return (
-    <svg viewBox="-10 0 320 190" role="img" aria-label="示意图：留下不合适的人，其他人要替他补位；谈过仍然没有改、辞退以后，排班少一个人" className="block w-full">
+    <svg viewBox="-10 0 320 190" role="img" aria-label="示意图：留下不合适的人，其他人要替他补位；沟通后仍未改正、辞退以后，排班少一个人" className="block w-full">
       <defs><marker id="wrong-person-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <text x="0" y="56" style={strong}>留下</text>
       <text x="0" y="154" style={strong}>辞退</text>
@@ -808,8 +808,8 @@ function KeepOrLetGo({ groups }: { groups: string[] }) {
       {person(170, 136, { fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.5, strokeDasharray: "3 3" })}
       <text x="170" y="80" textAnchor="middle" style={text}>其他人要替他补位</text>
       <path d="M170 88 V112" style={{ stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#wrong-person-ar)" />
-      <text x="180" y="104" style={{ ...text, fill: "var(--ink-2)" }}>谈过，仍然没有改</text>
-      <text x="170" y="182" textAnchor="middle" style={text}>排班少一个人，要有人接上</text>
+      <text x="180" y="104" style={{ ...text, fill: "var(--ink-2)" }}>沟通后仍未改正</text>
+      <text x="170" y="182" textAnchor="middle" style={text}>排班少一个人，需要有人接替</text>
       {mark("标准和底线", 222, 10)}
       {mark("怎么谈", 150, 100)}
       {mark("辞退以后", 270, 177)}
@@ -817,14 +817,14 @@ function KeepOrLetGo({ groups }: { groups: string[] }) {
   );
 }
 
-/** 周末满，平日冷清: the weekend fills every seat with a queue; the weekdays stop short of the line that pays a day's rent and wages. */
+/** 周末客满，平日冷清: the weekend fills every seat with a queue; the weekdays stop short of the line that pays a day's rent and wages. */
 function SeatsByDay() {
   const days: Array<[string, number]> = [["周一", 0.45], ["周二", 0.4], ["周三", 0.5], ["周四", 0.5], ["周五", 0.75], ["周六", 1], ["周日", 1]];
   const top = 40, bottom = 140, line = 0.6;
   const y = (share: number) => bottom - share * (bottom - top);
   return (
     <>
-      <svg viewBox="-10 0 320 168" role="img" aria-label="示意图：一周七天的座位，周六、周日坐满还有人排队，周一到周四只坐了一半左右，来的客人不够付一天的房租和人工" className="block w-full">
+      <svg viewBox="-10 0 320 168" role="img" aria-label="示意图：一周七天的座位，周六、周日满座还有人排队，周一到周四只坐了一半左右，到店客人不足以支付一天的房租和人工" className="block w-full">
         {days.map(([day, share], i) => {
           const cx = 28 + i * 40;
           return (
@@ -841,8 +841,8 @@ function SeatsByDay() {
         <path d={`M6 ${y(line)} H294`} style={{ stroke: "var(--ink-2)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
       </svg>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-ink-3">
-        <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-2" />够付一天房租和人工的客人数</span>
-        <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-mark border border-hot bg-hot-soft" />还差的客人</span>
+        <span className="flex items-center gap-1.5"><i className="h-0 w-5 border-t-2 border-dashed border-ink-2" />支付一天房租和人工所需的客人数</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-mark border border-hot bg-hot-soft" />不足的客人数</span>
       </div>
     </>
   );
@@ -854,10 +854,10 @@ function PriceCut() {
   return (
     <>
       <Bars rows={[
-        ["原价", [{ label: "食材 12 元", share: share(12), tone: 3 }, { label: "剩 18 元", share: share(18), tone: "accent" }]],
-        ["降价后", [{ label: "食材 12 元", share: share(12), tone: 3 }, { label: "剩 12 元", share: share(12), tone: "accent" }]],
+        ["原价", [{ label: "食材 12 元", share: share(12), tone: 3 }, { label: "毛利 18 元", share: share(18), tone: "accent" }]],
+        ["降价后", [{ label: "食材 12 元", share: share(12), tone: 3 }, { label: "毛利 12 元", share: share(12), tone: "accent" }]],
       ]} />
-      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">原来卖 100 份：100 × 18 = 1,800 元<br />降价后卖 150 份：150 × 12 = 1,800 元<br />多卖 <b className="text-[16px] text-accent">50</b> 份，剩下的钱才和原来一样</p>
+      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">原来卖 100 份：100 × 18 = 1,800 元<br />降价后卖 150 份：150 × 12 = 1,800 元<br />多卖 <b className="text-[16px] text-accent">50</b> 份，毛利总额才和原来一样</p>
     </>
   );
 }
@@ -898,10 +898,10 @@ function TableHour({ groups }: { groups: string[] }) {
   const { n, mark } = causes(groups);
   const x = (minute: number) => 78 + minute * 3.5;
   // [label, group title or "", from minute, to minute]
-  const rows: Array<[string, string, number, number]> = [["等点餐", "点餐", 0, 8], ["做菜", "", 8, 20], ["等上菜", "上菜", 20, 25], ["吃饭", "", 25, 50], ["等结账", "结账", 50, 60]];
+  const rows: Array<[string, string, number, number]> = [["等点餐", "点餐", 0, 8], ["制作", "", 8, 20], ["等上菜", "上菜", 20, 25], ["用餐", "", 25, 50], ["等结账", "结账", 50, 60]];
   return (
     <>
-      <svg viewBox="-10 0 320 160" role="img" aria-label="举例：一桌客人坐了 60 分钟，等点餐 8 分钟，做菜 12 分钟，等上菜 5 分钟，吃饭 25 分钟，等结账 10 分钟" className="block w-full">
+      <svg viewBox="-10 0 320 160" role="img" aria-label="举例：一桌客人坐了 60 分钟，等点餐 8 分钟，制作 12 分钟，等上菜 5 分钟，用餐 25 分钟，等结账 10 分钟" className="block w-full">
         {rows.map(([name, group, from, to], i) => {
           const y = 8 + i * 26;
           const wait = group !== "";
@@ -921,10 +921,10 @@ function TableHour({ groups }: { groups: string[] }) {
         })}
         <path d={`M${x(0)} 138 H${x(60)}`} style={{ stroke: "var(--ink-4)" }} />
         <path d={`M${x(0)} 134 V142 M${x(60)} 134 V142`} style={{ stroke: "var(--ink-4)" }} />
-        <text x={x(0)} y="155" textAnchor="middle" style={text}>坐下</text>
+        <text x={x(0)} y="155" textAnchor="middle" style={text}>入座</text>
         <text x={x(60)} y="155" textAnchor="end" style={text}>离开</text>
       </svg>
-      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">三处等待一共 <b className="num whitespace-nowrap text-[16px] text-accent">8 + 5 + 10 = 23</b> 分钟<br />比做菜的 <b className="num whitespace-nowrap text-ink">12</b> 分钟还长</p>
+      <p className="mt-3 text-[13px] leading-relaxed text-ink-3">三处等待一共 <b className="num whitespace-nowrap text-[16px] text-accent">8 + 5 + 10 = 23</b> 分钟<br />比厨房制作的 <b className="num whitespace-nowrap text-ink">12</b> 分钟还长</p>
     </>
   );
 }
@@ -940,7 +940,7 @@ function SmallFormats({ groups }: { groups: string[] }) {
     ["共享\n厨房", "共享厨房和快闪", "低", "没有", "没有", "共用"],
   ];
   return (
-    <svg viewBox="0 0 320 186" role="img" aria-label="示意图：正式餐厅房租高，门面、座位、厨房都有；摊位和小店房租低，门面小、座位很少；只做外卖没有门面和座位；共享厨房没有门面和座位，厨房和别人共用" className="block w-full">
+    <svg viewBox="0 0 320 186" role="img" aria-label="示意图：正式餐厅房租高，门面、座位、厨房都有；摊位和小店房租低，门面小、座位很少；只做外卖没有门面和座位；共享厨房没有门面和座位，厨房与其他商家共用" className="block w-full">
       {["房租", "门面", "座位", "厨房"].map((row, r) => <text key={row} x="0" y={r === 0 ? 74 : 81 + r * 30} style={{ ...text, fontSize: 14 }}>{row}</text>)}
       <path d="M0 86 H320" style={{ stroke: "var(--line)" }} />
       {formats.map(([heading, group, rent, ...parts], i) => {
@@ -971,7 +971,7 @@ function SmallFormats({ groups }: { groups: string[] }) {
 function PlatformBetween({ groups }: { groups: string[] }) {
   const { n, mark } = causes(groups);
   return (
-    <svg viewBox="0 0 320 156" role="img" aria-label="示意图：客人通过平台到店家，平台决定抽成和费用、店排在第几；店家自己的渠道不经过平台" className="block w-full">
+    <svg viewBox="0 0 320 156" role="img" aria-label="示意图：客人通过平台到店家，平台决定抽成和费用、店铺的排名；店家自己的渠道不经过平台" className="block w-full">
       <defs><marker id="platform-rules-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="6" y="50" width="56" height="36" rx="6" /><rect x="258" y="50" width="56" height="36" rx="6" /></g>
       <text x="34" y="72.5" textAnchor="middle" style={strong}>客人</text>
@@ -980,7 +980,7 @@ function PlatformBetween({ groups }: { groups: string[] }) {
       <rect x="104" y="28" width="112" height="80" rx="10" style={{ fill: "var(--accent-soft)", stroke: "var(--accent)", strokeWidth: 1.5 }} />
       <text x="160" y="48" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>平台</text>
       <text x="136" y="76" style={{ ...text, fill: "var(--ink-2)", fontSize: 14 }}>抽成和费用</text>
-      <text x="136" y="98" style={{ ...text, fill: "var(--ink-2)", fontSize: 14 }}>排在第几</text>
+      <text x="136" y="98" style={{ ...text, fill: "var(--ink-2)", fontSize: 14 }}>排名</text>
       {mark("费率和抽成", 122, 72)}
       {mark("排名和曝光", 122, 94)}
       <g style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#platform-rules-ar)"><path d="M64 68 H100" /><path d="M218 68 H254" /></g>
@@ -991,7 +991,7 @@ function PlatformBetween({ groups }: { groups: string[] }) {
   );
 }
 
-/** 食材涨价，售价跟不跟着调: the same 3 yuan more per portion comes out of the margin, or goes onto the price. */
+/** 食材涨价，售价是否随之调整: the same 3 yuan more per portion comes out of the margin, or goes onto the price. */
 function IngredientRise() {
   const share = (n: number) => n / 33;
   const food = { label: "食材 12 元", share: share(12), tone: 3 } as const;
@@ -1003,8 +1003,8 @@ function IngredientRise() {
         ["自己承担", [food, more, { label: "毛利 15 元", share: share(15), tone: "accent" }]],
         ["调高售价", [food, more, { label: "毛利 18 元", share: share(18), tone: "accent" }]],
       ]} />
-      <div className="mt-2 flex items-center gap-1.5 text-[12.5px] text-ink-3"><i className={`h-3 w-5 rounded-mark ${TONES[0]}`} />主料涨价，每份多花的 3 元</div>
-      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">自己承担：一个月少赚 <b className="text-[16px] text-ink">3,900</b> 元<br />调高售价：每份从 30 元调到 <b className="text-[16px] text-ink">33</b> 元</p>
+      <div className="mt-2 flex items-center gap-1.5 text-[12.5px] text-ink-3"><i className={`h-3 w-5 rounded-mark ${TONES[0]}`} />主料涨价，每份增加的 3 元成本</div>
+      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">自己承担：每月毛利减少 <b className="text-[16px] text-ink">3,900</b> 元<br />调高售价：每份从 30 元调到 <b className="text-[16px] text-ink">33</b> 元</p>
     </>
   );
 }
@@ -1012,21 +1012,21 @@ function IngredientRise() {
 /** 房租太高或要涨: the months before renewal, then two ways on: stay and pay more each month, or move and pay once. */
 function LeaseRenewal() {
   return (
-    <svg viewBox="-10 0 320 200" role="img" aria-label="续约前的几个月和房东谈；续约时两条路：留下，每月房租 9,600 元，一年多付 19,200 元；搬走，新店每月房租 6,600 元，装修和搬迁一次 60,000 元，还要停业几周" className="block w-full">
+    <svg viewBox="-10 0 320 200" role="img" aria-label="续约前的几个月与房东协商；续约时两条路：续租，每月房租 9,600 元，一年多付 19,200 元；迁址，新店每月房租 6,600 元，装修和搬迁一次 60,000 元，还要停业几周" className="block w-full">
       <defs><marker id="rent-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--ink-4)" }} /></marker></defs>
       <path d="M-6 98 H34" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 2 }} />
       <path d="M40 98 H76" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 4, strokeLinecap: "round" }} />
       <circle cx="88" cy="98" r="5" style={{ fill: "var(--ink-3)" }} />
       <text x="-6" y="84" style={text}>租约期内</text>
       <text x="58" y="120" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>续约前</text>
-      <text x="58" y="137" textAnchor="middle" style={{ ...text, fill: "var(--accent)" }}>和房东谈</text>
+      <text x="58" y="137" textAnchor="middle" style={{ ...text, fill: "var(--accent)" }}>与房东协商</text>
       <text x="88" y="84" textAnchor="middle" style={strong}>续约</text>
       <g style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.8 }} markerEnd="url(#rent-ar)"><path d="M94 98 C110 98 106 44 121 44" /><path d="M94 98 C110 98 106 154 121 154" /></g>
       <g style={{ fill: "var(--fig-box)", stroke: "var(--line-strong)" }}><rect x="126" y="8" width="184" height="72" rx="8" /><rect x="126" y="112" width="184" height="84" rx="8" /></g>
-      <text x="136" y="29" style={strong}>留下</text>
+      <text x="136" y="29" style={strong}>续租</text>
       <text x="136" y="49" style={text}>每月房租 9,600 元</text>
       <text x="136" y="68" style={text}>一年多付 19,200 元</text>
-      <text x="136" y="133" style={strong}>搬走</text>
+      <text x="136" y="133" style={strong}>迁址</text>
       <text x="136" y="153" style={text}>新店每月房租 6,600 元</text>
       <text x="136" y="171" style={text}>装修和搬迁一次 60,000 元</text>
       <text x="136" y="189" style={text}>还要停业几周</text>
@@ -1039,9 +1039,9 @@ function OnlyTheChef() {
   const rows: Array<[string, boolean]> = [["招牌菜的配方", false], ["酱料的比例", false], ["向哪几家订货", false], ["排班", true]];
   const dot = (on: boolean, x: number, y: number) => <circle cx={x} cy={y} r="7" style={on ? { fill: "var(--accent)" } : { fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.5 }} />;
   return (
-    <svg viewBox="0 0 320 178" role="img" aria-label="示意图：四件事里三件只有主厨会，其他员工不会，也没有写下来" className="block w-full">
+    <svg viewBox="0 0 320 178" role="img" aria-label="示意图：四件事里三件只有主厨掌握，其他员工不会，也没有书面记录" className="block w-full">
       <rect x="152" y="6" width="48" height="166" rx="8" style={{ fill: "none", stroke: "var(--ink-4)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
-      <g textAnchor="middle"><text x="176" y="26" style={strong}>主厨</text><text x="176" y="41" style={text}>离职</text><text x="236" y="33" style={strong}>其他员工</text><text x="292" y="33" style={strong}>写下来</text></g>
+      <g textAnchor="middle"><text x="176" y="26" style={strong}>主厨</text><text x="176" y="41" style={text}>离职</text><text x="236" y="33" style={strong}>其他员工</text><text x="292" y="33" style={strong}>有记录</text></g>
       {rows.map(([task, other], i) => {
         const y = 66 + i * 30;
         return (
@@ -1061,7 +1061,7 @@ function PartnersSplit() {
   return (
     <>
       <Bars rows={[
-        ["出钱", [{ label: "甲 20 万元", share: 0.8, tone: 1 }, { label: "", share: 0.2, tone: "accent" }]],
+        ["出资", [{ label: "甲 20 万元", share: 0.8, tone: 1 }, { label: "", share: 0.2, tone: "accent" }]],
         ["出力", [{ label: "乙 每天 12 小时", share: 1, tone: "accent" }]],
         ["分利润", [{ label: "甲 8,000 元", share: 0.8, tone: 1 }, { label: "", share: 0.2, tone: "accent" }]],
       ]} />
@@ -1069,7 +1069,7 @@ function PartnersSplit() {
         <span className="flex items-center gap-1.5"><i className={`h-3 w-5 rounded-mark ${TONES[1]}`} />甲</span>
         <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark bg-accent" />乙</span>
       </div>
-      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">乙出 5 万元，每天在店里 12 小时<br />利润按出钱分，乙分得 <b className="text-[16px] text-ink">2,000</b> 元</p>
+      <p className="num mt-3 text-[13px] leading-relaxed text-ink-3">乙出 5 万元，每天在店里 12 小时<br />利润按出资比例分配，乙分得 <b className="text-[16px] text-ink">2,000</b> 元</p>
     </>
   );
 }
@@ -1095,32 +1095,32 @@ function MealMoments() {
   return (
     <>
       <div className="flex gap-1">
-        {["进门", "等位", "点菜", "上菜", "吃饭", "结账"].map((s) => (
-          <span key={s} className={`flex h-9 flex-1 items-center justify-center rounded-mark text-[12.5px] font-semibold ${s === "吃饭" ? "bg-accent text-accent-contrast" : "border border-line-strong text-ink-3"}`}>{s}</span>
+        {["进门", "等位", "点菜", "上菜", "用餐", "结账"].map((s) => (
+          <span key={s} className={`flex h-9 flex-1 items-center justify-center rounded-mark text-[12.5px] font-semibold ${s === "用餐" ? "bg-accent text-accent-contrast" : "border border-line-strong text-ink-3"}`}>{s}</span>
         ))}
       </div>
       <div className="mt-2.5 flex gap-4 text-[12.5px] text-ink-3">
         <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark bg-accent" />菜的味道</span>
-        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark border border-line-strong" />客人被怎样对待</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-5 rounded-mark border border-line-strong" />客人受到的接待</span>
       </div>
     </>
   );
 }
 
-/** 订货和库存说不清: goods come in on the left and go out on the right; the books and the shelf disagree. */
+/** 订货量和库存数量不清: goods come in on the left and go out on the right; the books and the shelf disagree. */
 function StockGap() {
   const label = { fill: "var(--accent)", fontSize: 15, fontWeight: 700 } as const;
   return (
-    <svg viewBox="0 0 320 196" role="img" aria-label="示意图：货从左边进来，备料和卖出从右边出去；账上记的库存比架上实际有的多" className="block w-full">
+    <svg viewBox="0 0 320 196" role="img" aria-label="示意图：货物从左侧入库，备料和售出从右侧出库；账面库存比架上实际库存多" className="block w-full">
       <defs><marker id="inventory-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: "var(--accent)" }} /></marker></defs>
       <rect x="117" y="122" width="102" height="61" style={{ fill: "var(--accent-soft)" }} />
       <rect x="116" y="36" width="104" height="148" rx="4" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2 }} />
       <text x="168" y="26" textAnchor="middle" style={strong}>库存</text>
-      <text x="168" y="158" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>架上实际有的</text>
+      <text x="168" y="158" textAnchor="middle" style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>架上实际库存</text>
       <path d="M110 86 H224" style={{ stroke: "var(--ink-3)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
-      <text x="168" y="78" textAnchor="middle" style={text}>账上记的</text>
+      <text x="168" y="78" textAnchor="middle" style={text}>账面库存</text>
       <path d="M226 86 h5 v36 h-5" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 1.5 }} />
-      <text x="236" y="108" style={strong}>对不上</text>
+      <text x="236" y="108" style={strong}>账实不符</text>
       <path d="M8 60 H110" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#inventory-ar)" />
       <text x="8" y="80" style={text}>进货</text>
       <path d="M50 53 L62 67 V53 L50 67 Z" style={{ fill: "var(--accent)" }} />
@@ -1131,7 +1131,7 @@ function StockGap() {
       <path d="M106 122 H128" style={{ stroke: "var(--accent)", strokeWidth: 1.5 }} />
       <text x="102" y="126" textAnchor="end" style={label}>盘点</text>
       <path d="M220 170 H306" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2 }} markerEnd="url(#inventory-ar)" />
-      <text x="262" y="160" textAnchor="middle" style={text}>备料、卖出</text>
+      <text x="262" y="160" textAnchor="middle" style={text}>备料、售出</text>
     </svg>
   );
 }
@@ -1140,20 +1140,20 @@ function StockGap() {
 function LossThreeWays() {
   const end = (y: number, a: string, b: string, fill: string) => <><text x="246" y={y} style={{ fill, fontSize: 15, fontWeight: 700 }}>{a}</text><text x="246" y={y + 17} style={{ fill, fontSize: 14 }}>{b}</text></>;
   return (
-    <svg viewBox="0 0 320 196" role="img" aria-label="示意图：开业以后还没收回的钱越来越多；从现在起三条路：调整以后开始赚、关店让亏损停住、照原样继续亏得更多" className="block w-full">
+    <svg viewBox="0 0 320 196" role="img" aria-label="示意图：开业以后尚未收回的投入越来越多；从现在起三条路：调整以后开始盈利、关店停止亏损、照原样继续亏损扩大" className="block w-full">
       <path d="M20 30 V66 L150 120 V30 Z" style={{ fill: "var(--hot-soft)" }} />
       <path d="M14 30 H314" style={{ stroke: "var(--ink-4)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
       <text x="314" y="23" textAnchor="end" style={text}>回本</text>
       <path d="M150 30 V178" style={{ stroke: "var(--line-strong)", strokeWidth: 1.5 }} />
-      <text x="26" y="52" style={{ fill: "var(--hot)", fontSize: 15, fontWeight: 700 }}>还没收回的钱</text>
+      <text x="26" y="52" style={{ fill: "var(--hot)", fontSize: 15, fontWeight: 700 }}>尚未收回的投入</text>
       <path d="M20 30 V66 L150 120" style={{ fill: "none", stroke: "var(--hot)", strokeWidth: 2.5, strokeLinejoin: "round" }} />
       <path d="M150 120 Q196 112 238 44" style={{ fill: "none", stroke: "var(--accent)", strokeWidth: 2.5 }} />
       <path d="M150 120 H238" style={{ fill: "none", stroke: "var(--ink-3)", strokeWidth: 2.5 }} />
       <path d="M150 120 Q196 128 238 168" style={{ fill: "none", stroke: "var(--hot)", strokeWidth: 2.5, strokeDasharray: "6 4" }} />
       <circle cx="150" cy="120" r="5" style={{ fill: "var(--ink)" }} />
-      {end(46, "调整以后", "开始赚", "var(--accent)")}
-      {end(118, "关店", "亏损停住", "var(--ink-2)")}
-      {end(166, "照原样", "亏得更多", "var(--hot)")}
+      {end(46, "调整以后", "开始盈利", "var(--accent)")}
+      {end(118, "关店", "停止亏损", "var(--ink-2)")}
+      {end(166, "照原样", "亏损扩大", "var(--hot)")}
       <text x="20" y="192" style={text}>开业</text>
       <text x="150" y="192" textAnchor="middle" style={strong}>现在</text>
     </svg>
@@ -1164,7 +1164,7 @@ function LossThreeWays() {
 function PosHub() {
   const boxes: Array<[number, number, string]> = [[4, 12, "点单"], [4, 73, "收款"], [4, 134, "外卖平台"], [232, 12, "厨房出单"], [232, 73, "库存"], [232, 134, "销量和时段"]];
   return (
-    <svg viewBox="0 0 320 176" role="img" aria-label="示意图：点单、收款、外卖平台、厨房出单、库存都接在收银系统上，销量和时段的数字也存在里面" className="block w-full">
+    <svg viewBox="0 0 320 176" role="img" aria-label="示意图：点单、收款、外卖平台、厨房出单、库存都连接在收银系统上，销量和时段的数据也存在系统里" className="block w-full">
       <g style={{ stroke: "var(--ink-4)", strokeWidth: 1.5 }}><path d="M118 80 L88 27" /><path d="M118 88 H88" /><path d="M118 96 L88 149" /><path d="M202 80 L232 27" /><path d="M202 88 H232" /></g>
       <path d="M202 96 L232 149" style={{ stroke: "var(--accent)", strokeWidth: 2 }} />
       {boxes.map(([x, y, name], i) => (
@@ -1179,13 +1179,13 @@ function PosHub() {
   );
 }
 
-/** 设备和自动化能省多少人: the machine pays for itself in 10 months if the hours it saves are really cut, in 20 if half. */
+/** 设备和自动化能节省多少人力: the machine pays for itself in 10 months if the hours it saves are really cut, in 20 if half. */
 function MachinePayback() {
   const x = (month: number) => 40 + month * 10.5;
   const y = (yuan: number) => 160 - yuan / 250;
   return (
-    <svg viewBox="0 0 320 190" role="img" aria-label="回本图：洗碗机 24,000 元；每月省 2,400 元，10 个月回本；每月只省 1,200 元，要 20 个月" className="block w-full">
-      <text x="40" y="22" style={text}>累计省下的钱</text>
+    <svg viewBox="0 0 320 190" role="img" aria-label="回本图：洗碗机 24,000 元；每月节省 2,400 元，10 个月回本；每月只节省 1,200 元，需要 20 个月" className="block w-full">
+      <text x="40" y="22" style={text}>累计节省金额</text>
       <path d={`M${x(0)} ${y(24000)} H300`} style={{ stroke: "var(--ink-4)", strokeWidth: 1.5, strokeDasharray: "5 4" }} />
       <text x="40" y={y(24000) - 7} style={strong}>洗碗机 24,000 元</text>
       <g style={{ stroke: "var(--line-strong)", strokeWidth: 1.5, strokeDasharray: "2 3" }}><path d={`M${x(10)} ${y(24000)} V160`} /><path d={`M${x(20)} ${y(24000)} V160`} /></g>
@@ -1194,7 +1194,7 @@ function MachinePayback() {
       <path d={`M${x(0)} ${y(0)} L${x(24)} ${y(28800)}`} style={{ stroke: "var(--ink-3)", strokeWidth: 2.5 }} />
       <circle cx={x(10)} cy={y(24000)} r="4.5" style={{ fill: "var(--accent)" }} />
       <circle cx={x(20)} cy={y(24000)} r="4.5" style={{ fill: "var(--ink-3)" }} />
-      <text x={x(13) + 6} y={y(31200) + 5} style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>每月省 2,400 元</text>
+      <text x={x(13) + 6} y={y(31200) + 5} style={{ fill: "var(--accent)", fontSize: 15, fontWeight: 700 }}>每月节省 2,400 元</text>
       <g style={{ fill: "var(--ink-2)", fontSize: 15, fontWeight: 700 }}><text x={x(20) + 6} y="84">每月只省</text><text x={x(20) + 6} y="102">1,200 元</text></g>
       <g textAnchor="middle"><text x="40" y="177" style={text}>0</text><text x={x(10)} y="177" style={strong}>10 个月</text><text x={x(20)} y="177" style={strong}>20 个月</text></g>
     </svg>
@@ -1203,55 +1203,55 @@ function MachinePayback() {
 
 /** Each situation's picture; the ones drawn by cause number their parts as the causes under the picture are. */
 const FIGURES: Record<string, { kicker: string; caption: string; kind: "举例" | "示意"; draw: (groups: string[]) => ReactNode }> = {
-  "busy-no-profit": { kicker: "钱从哪里漏掉", kind: "示意", caption: "客人付的钱从上面倒进来，从下面几个洞漏出去，桶里剩下的才是月底的钱。", draw: (groups) => <Bucket groups={groups} /> },
-  "read-the-numbers": { kicker: "营业额不是赚到的钱", kind: "举例", caption: "假设你的餐饮店一个月卖 1,300 份，每份 30 元、食材 12 元，房租和工资这些固定费用 18,000 元。营业额扣掉食材是毛利，毛利再扣掉固定费用，剩下的才是利润。", draw: () => <Takings /> },
-  hiring: { kicker: "每一步都有人离开", kind: "示意", caption: "看到招聘启事的人里，来面试的是一部分，录用的更少，做满三个月的又少一些。没有人来，是前面几步的事；来了做不久，是后面几步的事。", draw: () => <Funnel /> },
-  "labor-costs": { kicker: "人工多出来的，从利润里扣", kind: "举例", caption: "假设营业额和其他开支都不变，人工从占营业额的 28% 涨到 32%，利润就从 10% 降到 6%。", draw: () => <LabourShare /> },
+  "busy-no-profit": { kicker: "钱从哪里漏掉", kind: "示意", caption: "客人支付的款项从上方流入，从下方几处缺口漏出，桶里剩下的才是月底的结余。", draw: (groups) => <Bucket groups={groups} /> },
+  "read-the-numbers": { kicker: "营业额不等于利润", kind: "举例", caption: "假设你的餐饮店一个月卖 1,300 份，每份 30 元、食材 12 元，房租和工资这些固定费用 18,000 元。营业额扣除食材是毛利，毛利再扣除固定费用，余下的才是利润。", draw: () => <Takings /> },
+  hiring: { kicker: "每一步都有人离开", kind: "示意", caption: "看到招聘启事的人里，参加面试的是一部分，录用的更少，工作满三个月的又少一些。无人应聘，问题在前几步；入职后很快离开，问题在后几步。", draw: () => <Funnel /> },
+  "labor-costs": { kicker: "增加的人工成本从利润中扣除", kind: "举例", caption: "假设营业额和其他开支都不变，人工从占营业额的 28% 涨到 32%，利润就从 10% 降到 6%。", draw: () => <LabourShare /> },
   "owner-overload": { kicker: "老板的一天", kind: "举例", caption: "假设老板早上 7 点去采购，晚上 11 点记完账才离开，中间每件事都由他自己做。", draw: () => <OwnerDay /> },
-  takeout: { kicker: "同一个厨房，三路订单", kind: "示意", caption: "多卖外带和外卖，订单仍然从同一个厨房、同一批人手里出去。", draw: () => <OneKitchen /> },
-  consistency: { kicker: "同一道菜，三个人做", kind: "举例", caption: "配方写一份 100 克，三位厨师各装了 90 克、100 克、120 克，客人每次吃到的都不一样，成本也跟着变。", draw: () => <Portions /> },
-  "opening-cost": { kicker: "预算常常只算到开业那天", kind: "举例", caption: "假设开店预算 30 万元。开业以后的几个月，房租、工资和进货照付，营业额还没有跟上，这笔周转金也要事先准备。", draw: () => <OpeningBudget /> },
-  location: { kicker: "房租换来多少客人", kind: "示意", caption: "位置好的地方经过的人多，房租也高。要算的是房租换来的客人够不够多。", draw: () => <TwoStreets /> },
-  contracts: { kicker: "签字时没细看的几行", kind: "示意", caption: "这几种条款签的时候容易忽略，签了以后每个月都照着它付钱。", draw: () => <ContractLines /> },
-  "rush-chaos": { kicker: "12 点 20 分的厨房", kind: "示意", caption: "做好的菜从出餐口出去，吃完的空盘从同一个地方回来。", draw: () => <Kitchen /> },
+  takeout: { kicker: "同一个厨房，三路订单", kind: "示意", caption: "多卖外带和外卖，订单仍然由同一个厨房、同一批人手出餐。", draw: () => <OneKitchen /> },
+  consistency: { kicker: "同一道菜，三个人做", kind: "举例", caption: "配方写一份 100 克，三位厨师各装了 90 克、100 克、120 克，客人每次吃到的都不相同，成本也随之变化。", draw: () => <Portions /> },
+  "opening-cost": { kicker: "预算常常只算到开业那天", kind: "举例", caption: "假设开店预算 30 万元。开业以后的几个月，房租、工资和进货照付，营业额尚未跟上，这笔周转金也要事先准备。", draw: () => <OpeningBudget /> },
+  location: { kicker: "房租换来多少客人", kind: "示意", caption: "位置好的地方人流量大，房租也高。需要计算的是，房租换来的客人是否足够多。", draw: () => <TwoStreets /> },
+  contracts: { kicker: "签约时没有细看的条款", kind: "示意", caption: "这几种条款签约时容易忽略，签约以后每个月都按条款付款。", draw: () => <ContractLines /> },
+  "rush-chaos": { kicker: "12 点 20 分的厨房", kind: "示意", caption: "做好的菜从出餐口送出，空盘也从同一处收回。", draw: () => <Kitchen /> },
   "second-shop": { kicker: "老板只有一个", kind: "举例", caption: "假设老板一天在店里 12 个小时。店越多，每家店分到的时间越少。", draw: () => <OwnerHours /> },
-  pricing: { kicker: "价格定在两条线之间", kind: "示意", caption: "售价低于按成本算出的底价，每卖一份都在亏；高过客人愿意付的价钱，点的人就少了。定价和涨价，都在这两条线之间移动。", draw: () => <PriceRange /> },
-  "delivery-margin": { kicker: "同一份菜，外卖剩得更少", kind: "举例", caption: "假设你的餐饮店一份菜堂食和外卖都卖 30 元，食材 12 元。外卖平台抽成 30%，一份扣 9 元，包装再花 2 元。剩下的钱还要付房租和工资。", draw: () => <DeliveryShare /> },
-  training: { kicker: "教、做、检查的循环", kind: "示意", caption: "图里把带新人画成一个循环：教一件事，新人自己做一遍，再对照写下来的标准检查、说清对错，然后教下一件。对错按纸上的标准判断，不靠师傅的记性。", draw: () => <TeachLoop /> },
+  pricing: { kicker: "价格定在两条线之间", kind: "示意", caption: "售价低于按成本算出的底价，每卖出一份就亏一份；高于客人愿意支付的上限，点单就会减少。定价和涨价，都在这两条线之间移动。", draw: () => <PriceRange /> },
+  "delivery-margin": { kicker: "同一份菜，外卖余下的更少", kind: "举例", caption: "假设你的餐饮店一份菜堂食和外卖都卖 30 元，食材 12 元。外卖平台抽成 30%，每份扣 9 元，包装另花 2 元，余下的钱还要支付房租和工资。", draw: () => <DeliveryShare /> },
+  training: { kicker: "教、做、检查的循环", kind: "示意", caption: "图里把带新人画成一个循环：教一件事，新人自己做一遍，再对照书面标准检查、说清对错，然后教下一件。对错按纸上的标准判断，不依赖师傅的记忆。", draw: () => <TeachLoop /> },
   regulars: { kicker: "从第一次到第二次", kind: "举例", caption: "假设你的餐饮店一个月有 20 位客人第一次来，下个月再来的只有 4 位。记住客人，是在客人还在店里的时候；提醒，是在客人离开以后；会员和积分，是给客人一个再来的理由。", draw: () => <ComeBack /> },
-  layout: { kicker: "空着的店和坐满的店", kind: "示意", caption: "装修时看到的是空着的店。坐满以后椅子往后推，通道变窄，进门的客人、取餐的外卖员和端菜的员工都从这一条通道经过。", draw: () => <EmptyFull /> },
-  equipment: { kicker: "修好以前，生意停着", kind: "举例", caption: "假设你的餐饮店每天营业额 3,000 元，主要的炉灶周三早上坏了，等零件和维修人员，到周五开门前才修好。坏一次，付出去的是 800 元维修费；周三、周四停业两天，少收的营业额是 2 × 3,000 = 6,000 元。", draw: () => <DownDays /> },
-  franchise: { kicker: "付出去的，换回来的", kind: "示意", caption: "加盟店开店时付加盟费，每月付管理费，有的还要向总部进货；换来的是品牌、配方和培训。菜单和售价能不能改、装修怎么做、要做几年、怎样退出，都写在合同里。", draw: () => <FranchiseFlows /> },
-  "ai-tools": { kicker: "AI 先做，人再看", kind: "示意", caption: "账单和销量、菜单和评价、新人的问题，先由 AI 整理、起草或回答，再由店里的人看过，决定用不用。", draw: () => <AiFirst /> },
-  "online-presence": { kicker: "出门以前，客人先看到的", kind: "示意", caption: "很多客人出门以前，先在地图或点评网站上看营业时间、照片、菜单和评价，再决定去不去；有的从店里自己的网页订位。", draw: () => <PhoneListing /> },
-  waste: { kicker: "没卖出去的食材去了哪里", kind: "示意", caption: "进来的食材里，没有卖给客人的部分在两处被丢弃：储存时过期、变质的，以及备料切下的边角料和当天没卖完的。订多少、备多少，决定了这两处丢弃多少；订少了、备少了，又不够卖。", draw: () => <WasteExits /> },
-  retention: { kicker: "离开的人越多，越难留人", kind: "示意", caption: "有人离开，原因不只是薪水。空出来的班次由剩下的人分担，每个人都更累；新人来了，也没有人有空带。新人做不久，老员工也在考虑离开，这个循环就继续下去。", draw: () => <LeavingLoop /> },
-  scheduling: { kicker: "客人有高峰，人手却一样多", kind: "示意", caption: "客人集中在午市和晚市时，如果每个时段排一样多的人，高峰时人不够，下午又有人闲着，工资照付。按客流排班，是让排的人手跟着需要的人手变化；一人多岗和临时人手，补的是高峰时不够的部分。", draw: () => <StaffCurve /> },
-  "bad-reviews": { kicker: "看差评的，是还没来过的客人", kind: "示意", caption: "差评和店家的回复显示在一起，还没来过的客人都看得到，回复影响的是他们怎么看这条差评。差评说的如果是真的问题，原因还在店里，同样的事可能再发生；找出原因、改流程，处理的是这一部分。", draw: () => <ReviewReaders /> },
-  "ticket-size": { kicker: "多来客人，或每人多花一点", kind: "举例", caption: "长方形的宽是客人数，高是每位客人花的钱（客单价），面积就是营业额。假设你的餐饮店一天来 100 位客人，每人 25 元，营业额 2,500 元。一天多 500 元，可以是多来 20 位客人，也可以是每位客人多花 5 元。", draw: () => <TicketArea /> },
+  layout: { kicker: "空店和满座的店", kind: "示意", caption: "装修时看到的是空店。满座以后椅子往后推，通道变窄，进门的客人、取餐的外卖员和端菜的员工都从这一条通道经过。", draw: () => <EmptyFull /> },
+  equipment: { kicker: "修好以前无法营业", kind: "举例", caption: "假设你的餐饮店每天营业额 3,000 元，主要的炉灶周三早上出了故障，等零件和维修人员，到周五开门前才修好。坏一次，要支付 800 元维修费；周三、周四停业两天，少收的营业额是 2 × 3,000 = 6,000 元。", draw: () => <DownDays /> },
+  franchise: { kicker: "付出的和得到的", kind: "示意", caption: "加盟店开店时付加盟费，每月付管理费，有的还要向总部进货；换来的是品牌、配方和培训。菜单和售价能否更改、装修怎么做、合约期多长、怎样退出，都写在合同里。", draw: () => <FranchiseFlows /> },
+  "ai-tools": { kicker: "AI 先处理，人工复核", kind: "示意", caption: "账单和销量、菜单和评价、新人的问题，先由 AI 整理、起草或回答，再由店内人员审阅，决定是否采用。", draw: () => <AiFirst /> },
+  "online-presence": { kicker: "客人出门前先看到的内容", kind: "示意", caption: "很多客人出门以前，先在地图或点评网站上看营业时间、照片、菜单和评价，再决定是否前往；有的从店里自己的网页订位。", draw: () => <PhoneListing /> },
+  waste: { kicker: "没卖出去的食材去了哪里", kind: "示意", caption: "进货的食材中，没有卖给客人的部分在两处被丢弃：储存时过期、变质的，以及备料切下的边角料和当天未售出的。订多少、备多少，决定了这两处丢弃多少；订少了、备少了，又会供不应求。", draw: () => <WasteExits /> },
+  retention: { kicker: "离开的人越多，越难留人", kind: "示意", caption: "有人离开，原因不只是薪水。空出来的班次由剩下的人分担，每个人都更累；新人入职后，也没有人有空指导。新人很快离开，老员工也在考虑离开，这个循环就继续下去。", draw: () => <LeavingLoop /> },
+  scheduling: { kicker: "客人有高峰，人手却一样多", kind: "示意", caption: "客人集中在午市和晚市时，如果每个时段安排一样多的人手，高峰时人手不足，下午又有人手闲置，工资照付。按客流排班，是让安排的人手跟着需要的人手变化；一人多岗和临时人手，补的是高峰时不够的部分。", draw: () => <StaffCurve /> },
+  "bad-reviews": { kicker: "阅读差评的，是尚未到店的客人", kind: "示意", caption: "差评和店家的回复显示在一起，尚未到店的客人都能看到，回复影响的是他们如何看待这条差评。差评说的如果是真的问题，原因还在店里，同样的事可能再发生；找出原因、改流程，处理的是这一部分。", draw: () => <ReviewReaders /> },
+  "ticket-size": { kicker: "增加客人，或提高每人消费", kind: "举例", caption: "长方形的宽是客人数，高是每位客人花的钱（客单价），面积就是营业额。假设你的餐饮店一天来 100 位客人，每人 25 元，营业额 2,500 元。营业额一天增加 500 元，可以靠客人增加 20 位，也可以靠每位客人多消费 5 元。", draw: () => <TicketArea /> },
   "menu-size": { kicker: "卖得少的菜，也要每天备料", kind: "举例", caption: "假设你的餐饮店菜单上有 40 道菜，一天卖出 200 份，卖得最多的 10 道菜占了 150 份。删哪些菜、留哪些菜，取决于每道菜的销量和利润；几道菜共用同一样食材，要备的料也少一些。", draw: () => <MenuTail /> },
-  "first-months": { kicker: "开业以前，只能估计", kind: "示意", caption: "开业以前，每天来多少客人只能估计。开业以后，实际的人数可能比估计的多，人手和厨房忙不过来；也可能比估计的少，备好的料和排好的人都多了。试营业是在正式开业以前先看一次实际的情况；头 90 天的数字，说明估计差在哪里。", draw: () => <OpeningGuess /> },
-  renovation: { kicker: "多花的钱，加上多付的房租", kind: "举例", caption: "假设你的餐饮店装修预算 15 万元、计划 2 个月完工，实际花了 18 万元、做了 3 个月，装修期间每月房租 1.2 万元照付。", draw: () => <RenovationOverrun /> },
-  payments: { kicker: "客人付的钱，先经过收款公司", kind: "示意", caption: "刷卡和电子钱包收的钱先进入收款公司，扣掉手续费，过一段时间才转到店里；钱停在收款公司的时候，收款公司出了问题，营业款就可能被压住。现金直接进店里。对账，是看每天收到的钱和收银系统记的营业额是否一致。", draw: () => <PaymentPath /> },
-  "cash-flow": { kicker: "账上的利润去了哪里", kind: "举例", caption: "假设你的餐饮店这个月账上赚了 5,400 元，同时预付了 2,000 元房租，库存比月初多了 3,000 元，外卖平台还有 2,400 元没有结算。这三笔都不影响账上的利润，却占住了现金：手上的现金比月初少了 2,000 元，这个缺口由事先留出的钱或借来的钱补上。", draw: (groups) => <CashLocked groups={groups} /> },
-  utilities: { kicker: "账单是用量乘以单价", kind: "示意", caption: "把一个月的水电燃气费画成一块面积：每一行是一类设备用掉的水、电或燃气，越高用得越多；宽是每个单位的价格。单价上涨，每一行都多付右边这一截；最下面一行是设备开着却没有在用的部分。", draw: (groups) => <EnergyBill groups={groups} /> },
-  "wrong-person": { kicker: "留下和辞退都有代价", kind: "示意", caption: "不合适的人留下，其他人要替他补位；谈过仍然没有改、决定辞退以后，排班会少一个人，要有人接上。", draw: (groups) => <KeepOrLetGo groups={groups} /> },
-  "slow-weekdays": { kicker: "平日坐不满", kind: "示意", caption: "每一条是一天的全部座位，有颜色的部分坐了人。周末坐满还有人排队，平日只坐到一半左右，来的客人不够付一天的房租和人工。", draw: () => <SeatsByDay /> },
-  competition: { kicker: "降价以后要多卖多少", kind: "举例", caption: "假设你的餐饮店一份卖 30 元，食材 12 元，扣掉食材每份剩 18 元。附近的店降价，你也跟着每份降 6 元、卖 24 元；食材还是 12 元，少收的 6 元全部从每份剩下的钱里扣。", draw: () => <PriceCut /> },
-  "food-safety": { kicker: "每一道工序都可能出事", kind: "示意", caption: "食材从收货到上桌要经过几道工序。冷藏、烹调和上桌前的保温都关系到温度；每一道工序都用到台面、工具和手，都要清洁；从备料到上桌，都可能混进客人过敏的东西。任何一处出事，都可能停业。", draw: (groups) => <FoodSteps groups={groups} /> },
-  "front-of-house": { kicker: "一桌客人的 60 分钟", kind: "举例", caption: "假设你的餐饮店里，一桌客人从坐下到离开用了 60 分钟：厨房做菜 12 分钟，吃饭 25 分钟；其余的时间在等人来点餐、等做好的菜送上桌、等结账。", draw: (groups) => <TableHour groups={groups} /> },
-  "small-formats": { kicker: "房租低了，少了什么", kind: "示意", caption: "和正式餐厅相比，这几种店的房租低，少的是门面、座位或自己的厨房。没有门面，路过的人看不到；没有座位，只能卖外带和外卖；共用厨房，设备和使用时间要和别人协调。", draw: (groups) => <SmallFormats groups={groups} /> },
-  "platform-rules": { kicker: "客人和店家之间隔着平台", kind: "示意", caption: "外卖、点评和订位平台站在客人和店家之间，收多少抽成和费用、店排在第几，都由平台决定。平台改了规则，这两样都可能跟着变；店家自己的渠道不经过平台。", draw: (groups) => <PlatformBetween groups={groups} /> },
-  "ingredient-prices-up": { kicker: "多出来的 3 元由谁付", kind: "举例", caption: "假设你的餐饮店一份卖 30 元，食材 12 元，毛利 18 元，一个月卖 1,300 份。主料涨价以后，每份食材多花 3 元：自己承担，每份毛利剩 15 元；售价调到 33 元，多出的 3 元由客人付。换做法、改分量、换货源，则是设法让这 3 元变少。", draw: () => <IngredientRise /> },
-  rent: { kicker: "续约时的两条路", kind: "举例", caption: "假设你的餐饮店每月房租 8,000 元，续约时房东要涨 20%，涨到 9,600 元。留下，一年多付 19,200 元，客人还是这个位置的客人；搬走，新店房租每月少 3,000 元，装修和搬迁的 60,000 元却要 20 个月才能收回，还要停业几周，熟客也可能流失。", draw: () => <LeaseRenewal /> },
-  "key-person-leaves": { kicker: "只有一个人会的事", kind: "示意", caption: "四件事里有三件只有主厨会，其他员工不会，也没有写下来。主厨一走，这三件事就没有人会了。", draw: () => <OnlyTheChef /> },
-  partners: { kicker: "出钱的和出力的", kind: "举例", caption: "假设你的餐饮店有两位合伙人：甲出 20 万元，不在店里；乙出 5 万元，每天在店里 12 小时。每月利润 10,000 元按出钱的比例分，甲占 80%，分得 8,000 元；乙占 20%，分得 2,000 元，乙在店里的时间没有算进去。", draw: () => <PartnersSplit /> },
-  "small-budget-marketing": { kicker: "钱花在哪一圈", kind: "示意", caption: "离店由近到远，是门口经过的人、附近的住户和上班族、网上看到的人；招牌和门口、与周边的店合作、社交媒体和平台广告，各自对着其中一圈。钱不多，难在先花在哪一圈。", draw: () => <MarketingRings /> },
-  hospitality: { kicker: "一顿饭里，菜只是一段", kind: "示意", caption: "从进门到结账，菜的味道只是其中一段；其余五段，是客人被怎样对待：进门和等位时有没有人招呼，结账要等多久，不满意时店里怎么处理。", draw: () => <MealMoments /> },
-  inventory: { kicker: "账上记的和架上有的", kind: "示意", caption: "货从左边进来，备料和卖出从右边出去。账上记的和架上实际有的对不上，订货就没有依据，不是缺货就是积压。订多少，管进来的量；收货核对，看送来的货和账单对不对；盘点，数出架上实际有多少。", draw: () => <StockGap /> },
-  "not-breaking-even": { kicker: "往后的三条路", kind: "示意", caption: "开业以后一直在亏，还没收回的钱越积越多。从现在起有三条路：调整以后开始赚，这笔钱才逐渐收回；关店，和员工、房东、供货商把账结清以后，亏损不再增加；照原样继续，亏得更多。", draw: () => <LossThreeWays /> },
-  "pos-system": { kicker: "一套系统连着很多事", kind: "示意", caption: "点单、收款、厨房出单、库存和外卖平台都接在收银系统上，销量和时段的数字也存在里面。换系统时，每一项都要重新接上，存下的数字也要转到新系统。", draw: () => <PosHub /> },
-  automation: { kicker: "回本要看实际省下多少", kind: "举例", caption: "假设你的餐饮店买一台 24,000 元的洗碗机，洗碗的人手每天少排 4 小时，每小时人工 20 元，一个月按 30 天算，省 2,400 元，10 个月回本。如果用起来每天只少排 2 小时，一个月省 1,200 元，要 20 个月。水电和保养没有算进去。", draw: () => <MachinePayback /> },
+  "first-months": { kicker: "开业以前，只能估计", kind: "示意", caption: "开业以前，每天来多少客人只能估计。开业以后，实际的人数可能比估计的多，人手和厨房应接不暇；也可能比估计的少，备好的料和排好的人手都会过剩。试营业是在正式开业以前先看一次实际的情况；头 90 天的数字，说明估计差在哪里。", draw: () => <OpeningGuess /> },
+  renovation: { kicker: "超支的装修费，加上多付的房租", kind: "举例", caption: "假设你的餐饮店装修预算 15 万元、计划 2 个月完工，实际花了 18 万元、工期 3 个月，装修期间每月房租 1.2 万元照付。", draw: () => <RenovationOverrun /> },
+  payments: { kicker: "客人支付的款项先经过收款公司", kind: "示意", caption: "刷卡和电子钱包收到的款项先进入收款公司，扣除手续费后，隔一段时间才转入店家；款项留在收款公司期间，如果收款公司出了问题，营业款就可能被扣留。现金由店家直接收取。对账，是核对每天实收的款项和收银系统记录的营业额是否一致。", draw: () => <PaymentPath /> },
+  "cash-flow": { kicker: "账上的利润去了哪里", kind: "举例", caption: "假设你的餐饮店这个月账面利润 5,400 元，同时预付了 2,000 元房租，库存比月初多了 3,000 元，外卖平台还有 2,400 元没有结算。这三笔都不影响账上的利润，却占用了现金：手上的现金比月初少了 2,000 元，这个缺口由事先预留的周转金或借款补上。", draw: (groups) => <CashLocked groups={groups} /> },
+  utilities: { kicker: "账单是用量乘以单价", kind: "示意", caption: "把一个月的水电燃气费画成一块面积：每一行是一类设备用掉的水、电或燃气，越高用得越多；宽是每个单位的价格。单价上涨后，每一行都要多付右侧这一部分；最下面一行是设备开着却没有使用时消耗的部分。", draw: (groups) => <EnergyBill groups={groups} /> },
+  "wrong-person": { kicker: "留下和辞退都有代价", kind: "示意", caption: "不合适的人留下，其他人要替他补位；沟通后仍未改正、决定辞退以后，排班会少一个人，需要有人接替。", draw: (groups) => <KeepOrLetGo groups={groups} /> },
+  "slow-weekdays": { kicker: "平日难以满座", kind: "示意", caption: "每一条是一天的全部座位，有颜色的部分坐了人。周末满座还有人排队，平日只坐到一半左右，到店客人不足以支付一天的房租和人工。", draw: () => <SeatsByDay /> },
+  competition: { kicker: "降价以后要多卖多少", kind: "举例", caption: "假设你的餐饮店一份卖 30 元，食材 12 元，扣除食材，每份毛利 18 元。附近的店降价，你也跟着每份降 6 元、卖 24 元；食材还是 12 元，少收的 6 元全部从每份的毛利中扣除。", draw: () => <PriceCut /> },
+  "food-safety": { kicker: "每一道工序都可能出问题", kind: "示意", caption: "食材从收货到上桌要经过几道工序。冷藏、烹调和上桌前的保温都关系到温度；每一道工序都用到台面、工具和手，都要清洁；从备料到上桌，都可能混入过敏原。任何一处出了问题，都可能停业。", draw: (groups) => <FoodSteps groups={groups} /> },
+  "front-of-house": { kicker: "一桌客人的 60 分钟", kind: "举例", caption: "假设你的餐饮店里，一桌客人从入座到离开用了 60 分钟：厨房制作 12 分钟，用餐 25 分钟；其余的时间在等候点餐、等候上菜、等候结账。", draw: (groups) => <TableHour groups={groups} /> },
+  "small-formats": { kicker: "房租低了，少了什么", kind: "示意", caption: "和正式餐厅相比，这几种店的房租低，少的是门面、座位或自己的厨房。没有门面，路人无从发现这家店；没有座位，只能卖外带和外卖；共用厨房，设备和使用时间要与其他商家协调。", draw: (groups) => <SmallFormats groups={groups} /> },
+  "platform-rules": { kicker: "客人和店家之间隔着平台", kind: "示意", caption: "外卖、点评和订位平台站在客人和店家之间，收多少抽成和费用、店铺的排名，都由平台决定。平台改了规则，这两样都可能跟着变；店家自己的渠道不经过平台。", draw: (groups) => <PlatformBetween groups={groups} /> },
+  "ingredient-prices-up": { kicker: "多出的 3 元由谁承担", kind: "举例", caption: "假设你的餐饮店一份卖 30 元，食材 12 元，毛利 18 元，一个月卖 1,300 份。主料涨价以后，每份食材成本增加 3 元：自己承担，每份毛利降到 15 元；售价调到 33 元，多出的 3 元由客人付。换做法、改分量、换货源，则是设法让这 3 元变少。", draw: () => <IngredientRise /> },
+  rent: { kicker: "续约时的两条路", kind: "举例", caption: "假设你的餐饮店每月房租 8,000 元，续约时房东要涨 20%，涨到 9,600 元。续租，一年多付 19,200 元，客人还是这个位置的客人；迁址，新店房租每月少 3,000 元，装修和搬迁的 60,000 元却要 20 个月才能收回，还要停业几周，熟客也可能流失。", draw: () => <LeaseRenewal /> },
+  "key-person-leaves": { kicker: "只有一个人掌握的工作", kind: "示意", caption: "四件事里有三件只有主厨掌握，其他员工不会，也没有书面记录。主厨离职后，这三件事就无人能做。", draw: () => <OnlyTheChef /> },
+  partners: { kicker: "出资者与出力者", kind: "举例", caption: "假设你的餐饮店有两位合伙人：甲出 20 万元，不在店里；乙出 5 万元，每天在店里 12 小时。每月利润 10,000 元按出资比例分配，甲占 80%，分得 8,000 元；乙占 20%，分得 2,000 元，乙在店里的时间没有算进去。", draw: () => <PartnersSplit /> },
+  "small-budget-marketing": { kicker: "预算花在哪一圈", kind: "示意", caption: "离店由近到远，是门口经过的人、附近的住户和上班族、网上看到的人；招牌和门口、与周边的店合作、社交媒体和平台广告，各自对着其中一圈。预算不多，难点在于先投在哪一圈。", draw: () => <MarketingRings /> },
+  hospitality: { kicker: "一顿饭里，菜只是一段", kind: "示意", caption: "从进门到结账，菜的味道只是其中一段；其余五段，是客人受到的接待：进门和等位时有没有人招呼，结账要等多久，不满意时店里怎么处理。", draw: () => <MealMoments /> },
+  inventory: { kicker: "账面库存和架上库存", kind: "示意", caption: "货物从左侧入库，备料和售出从右侧出库。账面库存和架上实际库存不符，订货就没有依据，不是缺货就是积压。订多少，控制入库的数量；收货核对，查看送来的货物和账单是否相符；盘点，清点架上实际有多少库存。", draw: () => <StockGap /> },
+  "not-breaking-even": { kicker: "往后的三条路", kind: "示意", caption: "开业以后持续亏损，尚未收回的投入越积越多。从现在起有三条路：调整以后开始盈利，这笔投入才逐渐收回；关店，和员工、房东、供货商把账结清以后，亏损不再增加；照原样继续，亏损扩大。", draw: () => <LossThreeWays /> },
+  "pos-system": { kicker: "一套系统连着很多事", kind: "示意", caption: "点单、收款、厨房出单、库存和外卖平台都连接在收银系统上，销量和时段的数据也存在系统里。换系统时，每一项都要重新连接，存下的数据也要转到新系统。", draw: () => <PosHub /> },
+  automation: { kicker: "回本要看实际节省多少", kind: "举例", caption: "假设你的餐饮店买一台 24,000 元的洗碗机，洗碗的人手每天少排 4 小时，每小时人工 20 元，一个月按 30 天算，节省 2,400 元，10 个月回本。如果实际使用时每天只少排 2 小时，一个月节省 1,200 元，需要 20 个月。水电和保养费用没有计算在内。", draw: () => <MachinePayback /> },
 };
 
 

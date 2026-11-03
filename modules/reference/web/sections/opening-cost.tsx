@@ -8,7 +8,7 @@ function BuildOut() {
     ["接手旧店", [["少量翻新", 72], ["二手设备", 72], ["余量", 44]]],
   ];
   return (
-    <svg viewBox="0 0 320 110" role="img" aria-label="示意图：装修和设备逐项列出并留出余量；接手旧店、买二手设备，这笔开支短一截" className="block w-full">
+    <svg viewBox="0 0 320 110" role="img" aria-label="示意图：装修和设备逐项列出并留出余量；接手旧店、买二手设备，这笔开支明显减少" className="block w-full">
       {rows.map(([name, parts], r) => {
         let x = 72;
         return (
@@ -41,10 +41,10 @@ function Cushion() {
   const curve = takings.map(([m, y]) => `${mx(m)} ${y}`).join(" L");
   const under = takings.filter(([m]) => m <= 5).map(([m, y]) => `${mx(m)} ${y}`).reverse().join(" L");
   return (
-    <svg viewBox="0 0 320 166" role="img" aria-label="示意图：开业以后每月要付的钱差不多，营业额慢慢涨上来；涨上来之前差的部分，要靠事先备好的周转金" className="block w-full">
+    <svg viewBox="0 0 320 166" role="img" aria-label="示意图：开业以后每月固定开支大致不变，营业额逐步上升；营业额追上开支以前的缺口，要靠事先备好的周转金" className="block w-full">
       <path d={`M${mx(1)} ${bills} H${mx(meet)} L${under} Z`} style={{ fill: hot, opacity: 0.16 }} />
       <path d={`M${mx(1)} ${bills} H${mx(6)}`} style={{ stroke: "var(--ink-2)", strokeWidth: 2, strokeDasharray: "6 4" }} />
-      <text x={mx(1)} y={bills - 12} style={{ ...text, fill: "var(--ink-2)" }}>每月要付：房租、工资、进货</text>
+      <text x={mx(1)} y={bills - 12} style={{ ...text, fill: "var(--ink-2)" }}>每月固定开支：房租、工资、进货</text>
       <path d={`M${curve}`} style={{ fill: "none", stroke: accent, strokeWidth: 2.5 }} />
       <text x={mx(6)} y="34" textAnchor="end" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>营业额</text>
       <text x={mx(2.3)} y="86" textAnchor="middle" style={{ fill: hot, fontSize: 15, fontWeight: 700 }}>周转金</text>
@@ -56,6 +56,6 @@ function Cushion() {
 }
 
 export const sections: Record<string, Section> = {
-  "build-out": { kind: "示意", caption: "装修和设备是开店最大的一笔开支。几家店的做法是逐项列出各项费用，预算留出余量，避免施工中追加；也有店接手前一家店留下的装修和设备，或买二手设备，把这笔开支压下来。", draw: () => <BuildOut /> },
-  "working-capital": { kind: "示意", caption: "开业以后，房租、工资和进货每月照付，营业额要过几个月才涨上来；线只表示涨跌，不是实际金额。中间差的部分要靠事先备好的周转金，生活费和还款也要一起算进去。", draw: () => <Cushion /> },
+  "build-out": { kind: "示意", caption: "装修和设备是开店最大的一笔开支。几家店的做法是逐项列出各项费用，预算留出余量，避免施工中追加；也有店接手前一家店留下的装修和设备，或买二手设备，压低这笔开支。", draw: () => <BuildOut /> },
+  "working-capital": { kind: "示意", caption: "开业以后，房租、工资和进货每月照付，营业额需要几个月才逐步上升；图中的线只表示涨跌，并非实际金额。其间的缺口要靠事先备好的周转金，生活费和还款也要一起算进去。", draw: () => <Cushion /> },
 };

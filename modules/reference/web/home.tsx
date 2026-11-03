@@ -121,11 +121,11 @@ export default function ReferenceHomePage() {
         {counts.map(([n, unit]) => <span key={unit}><span className="num font-semibold text-ink-2">{num(n)}</span> {unit}</span>)}
         {data.updatedAt && <span><span className="num">{day(data.updatedAt)}</span> 更新</span>}
       </p>
-      {!data.categories.length && <div className="card rounded-sheet"><EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会出现在这里。</EmptyState></div>}
+      {!data.categories.length && <div className="card rounded-sheet"><EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会在本页列出。</EmptyState></div>}
       {data.ranking.length > 0 && (
         <section className="mt-6 lg:mt-2">
           {/* The label is the section's heading, so the places under it are not headings straight under the page's. */}
-          <div role="heading" aria-level={2}><Kicker>店家谈得最多的事</Kicker></div>
+          <div role="heading" aria-level={2}><Kicker>店家讨论最多的情况</Kicker></div>
           <p className="mt-1.5 text-[13px] text-ink-4">按分享过做法的店家数排列</p>
           <Ranking rows={data.ranking} />
         </section>
@@ -134,7 +134,7 @@ export default function ReferenceHomePage() {
         // The categories get the ranking's kind of label, so where the ranking ends and the full list begins is said
         // (Kay 10/17: past the tenth place a reader could not tell they had left it).
         <div className="mt-12 lg:mt-14">
-          <div role="heading" aria-level={2}><Kicker>按类别看全部情况</Kicker></div>
+          <div role="heading" aria-level={2}><Kicker>按类别查看全部情况</Kicker></div>
           <p className="mt-1.5 text-[13px] text-ink-4"><span className="num">{num(data.totals.situations)}</span> 种情况，分成 <span className="num">{num(data.categories.length)}</span> 类</p>
         </div>
       )}

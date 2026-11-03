@@ -38,8 +38,8 @@ function MadeInto() {
   return (
     <svg viewBox="0 0 320 162" role="img" aria-label="示意图：前一天的剩饭做成炒饭便当，胡萝卜皮放进蔬菜高汤，胡萝卜叶做成青酱和抹酱" className="block w-full">
       <defs>{arrow("ws-reuse-ar")}</defs>
-      <text x="62" y="14" textAnchor="middle" style={text}>剩下的</text>
-      <text x="254" y="14" textAnchor="middle" style={{ ...text, fill: accent, fontWeight: 600 }}>做成能卖的</text>
+      <text x="62" y="14" textAnchor="middle" style={text}>剩余食材</text>
+      <text x="254" y="14" textAnchor="middle" style={{ ...text, fill: accent, fontWeight: 600 }}>制成可售菜品</text>
       {rows.map(([left, made], i) => (
         <g key={left}>
           <rect x="0" y={i * 46 + 26} width="124" height="36" rx="6" style={{ ...box, strokeDasharray: "4 3" }} />
@@ -54,7 +54,7 @@ function MadeInto() {
 }
 
 export const sections: Record<string, Section> = {
-  "ordering-prep": { kind: "示意", caption: "几家店决定订多少、备多少的做法连起来是这几步：按销售记录估这几天卖多少，乘上配方卡上每份的用量，减去库存再订货，最后用盘点核对，偏差大的逐项查。", draw: () => <Steps label="示意图：订货的四步，按销售记录预测、乘上配方用量、减去库存订货、盘点核对偏差" steps={[["预测", "按销售记录估这几天卖多少"], ["用量", "乘上配方卡上每份的用量"], ["订货", "减去库存，订差额"], ["核对", "盘点，偏差大的逐项查"]]} /> },
-  "storage": { kind: "示意", caption: "每批食材进来先标上日期，分区放好；用的时候先拿先到的那一批，新到的放在后面。", draw: () => <FirstInFirstOut /> },
+  "ordering-prep": { kind: "示意", caption: "几家店决定订多少、备多少的做法连起来是这几步：按销售记录估算未来几天的销量，乘上配方卡上每份的用量，减去库存再订货，最后用盘点核对，偏差大的逐项查。", draw: () => <Steps label="示意图：订货的四步，按销售记录预测、乘上配方用量、减去库存订货、盘点核对偏差" steps={[["预测", "按销售记录估算未来几天的销量"], ["用量", "乘上配方卡上每份的用量"], ["订货", "减去库存，订差额"], ["核对", "盘点，偏差大的逐项查"]]} /> },
+  "storage": { kind: "示意", caption: "每批食材进来先标上日期，分区放好；使用时先取最早到货的一批，新到的放在后面。", draw: () => <FirstInFirstOut /> },
   "reuse": { kind: "示意", caption: "日本一家便当店把前一天剩下的米饭做成炒饭便当；法国一家素食餐馆把胡萝卜皮放进蔬菜高汤，胡萝卜叶做成青酱和抹酱。", draw: () => <MadeInto /> },
 };

@@ -24,7 +24,7 @@ function Roster() {
         </g>
       ))}
       <circle cx="80" cy="160" r="4.5" style={{ fill: "var(--ink-4)" }} />
-      <text x="90" y="165" style={text}>一个人</text>
+      <text x="90" y="165" style={text}>每个圆点代表 1 人</text>
     </svg>
   );
 }
@@ -33,7 +33,7 @@ function Roster() {
 function PartTime() {
   const x = (h: number) => 92 + ((h - 10) / 12) * 224;
   return (
-    <svg viewBox="0 0 320 132" role="img" aria-label="示意图：正式员工从开门做到关门，兼职只在午市和晚市高峰来几个小时" className="block w-full">
+    <svg viewBox="0 0 320 132" role="img" aria-label="示意图：正式员工从开门做到关门，兼职只在午市和晚市高峰时段上班数小时" className="block w-full">
       <rect x={x(12)} y="4" width={x(14.5) - x(12)} height="96" rx="4" style={{ fill: "var(--accent-soft)" }} />
       <rect x={x(18) - 0} y="4" width={x(20.5) - x(18)} height="96" rx="4" style={{ fill: "var(--accent-soft)" }} />
       <text x="0" y="33" style={strong}>正式员工</text>
@@ -54,5 +54,5 @@ function PartTime() {
 
 export const sections: Record<string, Section> = {
   "by-traffic": { kind: "示意", caption: "按每个时段的客人数排人：午市和晚市多排，下午少排，周末比平日多。班表提前定下来，员工也能安排自己的时间。", draw: () => <Roster /> },
-  "flexible-help": { kind: "示意", caption: "正式员工从开门做到关门，兼职只在午市和晚市的高峰来几个小时。也有店把休息日从一天改成两天，让留下的人手够用。", draw: () => <PartTime /> },
+  "flexible-help": { kind: "示意", caption: "正式员工从开门做到关门，兼职只在午市和晚市的高峰时段上班数小时。也有店把休息日从一天改成两天，让留下的人手够用。", draw: () => <PartTime /> },
 };

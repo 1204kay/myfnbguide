@@ -53,7 +53,7 @@ function RaiseSome() {
           <g key={name}>
             <text x="16" y={y} style={{ ...text, fill: "var(--ink-2)" }}>{name}</text>
             {up
-              ? <g><path d={`M160 ${y + 1} V${y - 12} M154 ${y - 6} L160 ${y - 12} L166 ${y - 6}`} style={{ fill: "none", stroke: hot, strokeWidth: 2.2, strokeLinecap: "round" }} /><text x="178" y={y} textAnchor="end" style={{ fill: hot, fontSize: 14, fontWeight: 700 }}>涨</text></g>
+              ? <g><path d={`M138 ${y + 1} V${y - 12} M132 ${y - 6} L138 ${y - 12} L144 ${y - 6}`} style={{ fill: "none", stroke: hot, strokeWidth: 2.2, strokeLinecap: "round" }} /><text x="178" y={y} textAnchor="end" style={{ fill: hot, fontSize: 14, fontWeight: 700 }}>涨价</text></g>
               : <text x="178" y={y} textAnchor="end" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>原价</text>}
           </g>
         );
@@ -73,8 +73,9 @@ function MenuPage() {
   return (
     <svg viewBox="0 0 320 210" role="img" aria-label="示意图：菜单的一页，客人先看到的左上方放最想卖的菜，配照片和说明，其他菜放小一些" className="block w-full">
       <defs><marker id="sec-menu-ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0.6 L8 4 L0 7.4 L2.2 4 Z" style={{ fill: accent }} /></marker></defs>
-      <text x="0" y="40" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>先看到</text>
-      <path d="M22 48 C22 62 40 62 60 58" style={{ fill: "none", stroke: accent, strokeWidth: 1.8 }} markerEnd="url(#sec-menu-ar)" />
+      <text x="0" y="26" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>最先看到</text>
+      <text x="0" y="44" style={{ fill: accent, fontSize: 14, fontWeight: 700 }}>的位置</text>
+      <path d="M22 50 C22 62 40 62 60 58" style={{ fill: "none", stroke: accent, strokeWidth: 1.8 }} markerEnd="url(#sec-menu-ar)" />
       <rect x="64" y="4" width="252" height="202" rx="8" style={box} />
       <rect x="76" y="16" width="110" height="84" rx="6" style={soft} />
       <circle cx="131" cy="44" r="18" style={{ fill: "var(--surface)", stroke: accent, strokeWidth: 1.5 }} />

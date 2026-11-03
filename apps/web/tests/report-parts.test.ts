@@ -44,18 +44,18 @@ const page = async (path: string) => {
 test("a weekly with trends ends with the line to them, the latest weekly too", async () => {
   for (const path of ["/weekly/2026-W43", "/weekly"]) {
     const html = await page(path);
-    assert.match(html, /这周几家都在讲/);
+    assert.match(html, /本周多家来源共同提及/);
     assert.match(html, /href="\/trends\/2026-W43"/);
   }
 });
 
 test("a weekly with none, or whose module api fails, has no line and still renders", async () => {
-  for (const path of ["/weekly/2026-W42", "/weekly/2026-W41"]) assert.doesNotMatch(await page(path), /这周几家都在讲/);
+  for (const path of ["/weekly/2026-W42", "/weekly/2026-W41"]) assert.doesNotMatch(await page(path), /本周多家来源共同提及/);
 });
 
 test("a daily does not ask a module that only answers weeklies", async () => {
   asked.length = 0;
-  assert.doesNotMatch(await page("/daily/2026-10-19"), /这周几家都在讲/);
+  assert.doesNotMatch(await page("/daily/2026-10-19"), /本周多家来源共同提及/);
   assert.deepEqual(asked, []);
 });
 

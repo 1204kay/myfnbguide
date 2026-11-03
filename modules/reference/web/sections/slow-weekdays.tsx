@@ -3,9 +3,9 @@ import { text, strong, accent, box, soft, type Section } from "./kit";
 
 /** 给平日一个来的理由: things the shop offers only on weekdays, each marked as such. */
 function WeekdayOnly() {
-  const offers: Array<[string, string]> = [["平日午餐", "只在周一到周五"], ["限时短菜单", "几道菜，几周就换"], ["季节菜单", "跟着季节换"]];
+  const offers: Array<[string, string]> = [["平日午餐", "只在周一到周五"], ["限时短菜单", "几道菜，几周就换"], ["季节菜单", "随季节更换"]];
   return (
-    <svg viewBox="0 0 320 152" role="img" aria-label="示意图：只在平日才有的东西：平日午餐、限时短菜单、季节菜单，给客人平日来的理由" className="block w-full">
+    <svg viewBox="0 0 320 152" role="img" aria-label="示意图：只在平日供应的餐点：平日午餐、限时短菜单、季节菜单，给客人平日来的理由" className="block w-full">
       {offers.map(([name, what], i) => (
         <g key={name}>
           <rect x="0" y={i * 50 + 2} width="320" height="42" rx="8" style={box} />
@@ -40,6 +40,6 @@ function WeekdayGuests() {
 }
 
 export const sections: Record<string, Section> = {
-  "weekday-reasons": { kind: "示意", caption: "给平日一个具体的到店理由：只在平日供应的午餐、几周就换的短菜单、跟着季节换的菜单，也有店在平日办活动或市集。", draw: () => <WeekdayOnly /> },
+  "weekday-reasons": { kind: "示意", caption: "给平日一个具体的到店理由：只在平日供应的午餐、几周就换的短菜单、随季节更换的菜单，也有店在平日办活动或市集。", draw: () => <WeekdayOnly /> },
   "new-guests": { kind: "示意", caption: "平日能来的客人和周末不同。几家店带着免费餐走访附近的写字楼，把餐车开到工厂和医院，给企业茶歇、活动和生日会分别定目标。", draw: () => <WeekdayGuests /> },
 };

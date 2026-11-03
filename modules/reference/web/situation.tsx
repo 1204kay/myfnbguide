@@ -26,7 +26,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 }
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
-  if (!data) return [{ title: titled("没有这个情况") }, { name: "robots", content: "noindex" }];
+  if (!data) return [{ title: titled("情况不存在") }, { name: "robots", content: "noindex" }];
   const path = `/reference/${data.slug}`;
   // Machine description as the engine's list pages give it (routes/all.tsx itemListLd, routes/topic.tsx breadcrumbLd).
   const titles = [...data.groups.flatMap((g) => g.cases), ...data.rest].map((c) => c.title);

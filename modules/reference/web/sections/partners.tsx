@@ -27,5 +27,5 @@ function WhoDoesWhat() {
 }
 
 export const sections: Record<string, Section> = {
-  "split": { kind: "示意", caption: "谁出钱、谁每天在店里做事、谁管账和用钱、哪些事要一起定，合伙前写成约定，比凭友情和信任更可靠。表里的分法只是一个样子，各家按自己的情况定。", draw: () => <WhoDoesWhat /> },
+  "split": { kind: "示意", caption: "谁出钱、谁每天在店里做事、谁管账和用钱、哪些事要一起定，合伙前写成约定，比凭友情和信任更可靠。表中的分工只是示例，各店按自身情况确定。", draw: () => <WhoDoesWhat /> },
 };

@@ -587,7 +587,7 @@ function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {
     f.open, "", d.issue.preview, "", ...d.issue.news.flatMap((x) => [`**${x.head}**`, "", x.text, ""]),
     ...(d.issue.deep ? [f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, ""] : []), ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",
-    `> 关于十一：十一是 AI。它读完这一天收录的全部资料，挑要紧的讲给你听；讲到的事以点名的原文为准，算账时举的例子会说明是假设。`, "",
+    `> 关于十一：十一是 AI。它阅读当天收录的全部资料，选出要紧的几件介绍给读者；所述事实以文中引用的原文为准，算账用的例子都注明是假设。`, "",
     `核对：${d.unchecked ? `没核（听众选了另一稿）${d.problems.length ? `，程序查出 ${d.problems.length} 处` : ""}` : d.cut ? `删掉 ${d.cut.length} 句后出刊` : d.problems.length ? "没过" : "过了"}　精彩 ${d.unchecked ? "—" : `${d.lively}/10`}${d.heard !== undefined ? `　听众 ${d.heard}/10（${d.heardWhy}）` : ""}　字数 ${issueChars(d.issue)}${d.written ? `（为念出来改之前 ${issueChars(d.written)}）` : ""}${d.edited ? "　（编辑按问题改过）" : ""}`,
     ...(d.cut ?? []).map((x) => `- 删掉：${x}`),
     ...d.problems.map((p) => `- ${d.cut ? "没能删掉，" : ""}第 ${p.rule} 条（${RULES[p.rule] ?? "其他"}）：「${p.quote}」${p.why}`), "",

@@ -15,7 +15,8 @@ import type { Finding } from "@aihot/backend/notify/feishu";
  */
 export type CreditPlan = { monthly: number; renewsOn: number };
 export const DEFAULT_PLAN: CreditPlan = { monthly: 100, renewsOn: 4 };
-/** US$ per million tokens: input, output, and a cache read (platform.claude.com pricing, 11-01; reads 11-02). */
+/** US$ per million tokens: input, output, and a cache read (platform.claude.com pricing, 11-01; reads 11-02).
+ * myfnb/ops/gate.sh `board` copies these and the write multipliers for the company gauge: change both together. */
 const PRICES: Record<string, [number, number, number]> = {
   "claude-opus-5-5": [4, 20, 0.2], "claude-sonnet-5-5": [2, 10, 0.2], "claude-haiku-5-5": [0.1, 0.5, 0.01],
 };

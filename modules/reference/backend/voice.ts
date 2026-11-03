@@ -146,7 +146,7 @@ export const MENDS = 3;
 export const SHORTENS = 2;
 const SHORTEN_ABOVE = WRITE_CHARS + (MAX_CHARS - WRITE_CHARS) / 2;
 /** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
-export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
+export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
   const page = pageText(issue, date);
   const system = prompt("issue-voice", { opening: opening(date), writeChars: String(WRITE_CHARS) });
   const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
@@ -156,6 +156,8 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
   }
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
+  // No checker: a trial for how it reads (writeOnly), not for putting up.
+  if (!check) return { lines, rounds };
   for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { writeChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
     if (!problems.length) return { lines, rounds };
@@ -793,23 +795,22 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
 }
 
 /**
- * Writes issue `no`'s script the way the daily run does and checks it, and only that: no voice, nothing put up. For
- * setting the writing against a script already up (Kay 11-03 18:09 「你可以多关注文字稿的内容 因为好听的播客是内容和
- * 声音的配合」): the new script goes to tries/<no>/write.txt with the one up beside it as up.txt.
+ * Writes issue `no`'s script the way the daily run does, and only that: not checked (the checker is the paid Claude
+ * API), no voice, nothing put up. For setting the writing against a script already up (Kay 11-03 18:09 「你可以多关注
+ * 文字稿的内容 因为好听的播客是内容和声音的配合」): the new script goes to writes/<no>/write.txt, apart from tries/,
+ * with the one up beside it as up.txt.
  */
-export async function writeOnly(no: number, ask: { write: Ask; check: Ask }) {
+export async function writeOnly(no: number, write: Ask) {
   const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
     SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
   if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
-  const out = path.join(DIR, "tries", String(no));
+  const out = path.join(DIR, "writes", String(no));
   await mkdir(out, { recursive: true });
-  const written = await writeScript(row.issue, row.date, ask.write, ask.check);
+  const { lines } = await writeScript(row.issue, row.date, write, null);
   const up = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
   if (up) await writeFile(path.join(out, "up.txt"), up);
-  const lines = written.lines ?? [];
-  await writeFile(path.join(out, "write.txt"), `${lines.join("\n")}\n`);
-  await writeFile(path.join(out, "write.json"), JSON.stringify(written, null, 1));
-  return { out: path.join(out, "write.txt"), lines: written.lines ? lines.length : 0, chars: scriptChars(lines), rounds: written.rounds.length };
+  await writeFile(path.join(out, "write.txt"), `${(lines ?? []).join("\n")}\n`);
+  return { out: path.join(out, "write.txt"), lines: lines?.length ?? 0, chars: scriptChars(lines ?? []) };
 }
 
 /**

@@ -336,8 +336,8 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 | GitHub 两步验证 | 已开（Authenticator app）。服务器自动部署 `main` 上检查通过的提交，GitHub 账号就是服务器的钥匙 |
 | DeepSeek | 服务器用的 key `myfnb-server`。10/1 余额 US$12.00 + ¥9.42，余额提醒设在 US$3；实际 30 天约 ¥8 |
 | Google AI Studio | 项目 `myfnb`、key `myfnb-embedding`，没绑卡；10/9 起服务器上叫 `GEMINI_API_KEY`，只给存档模块转写播客用 |
-| 腾讯云国际版 | Lighthouse `myfnb`，新加坡，**公网 IP 43.160.228.180**，**2026-11-01 到期，不自动续费**。防火墙：22、80、443、Ping |
-| Porkbun | A 记录 `new` → 43.160.228.180 |
+| 腾讯云国际版 | Lighthouse `myfnb`，新加坡，公网 IP 见公司手册（私有），**2026-11-01 到期，不自动续费**。防火墙：22、80、443、Ping |
+| Porkbun | A 记录 `new` → <服务器IP> |
 
 **所有 key 都不要让用户发给 Claude**，由用户自己粘贴到服务器上。后台密码存在用户的 Chrome 里；要换就在服务器终端跑这一行，新密码只显示一次，存进 Chrome 后输入 `clear` 清屏，不要截图：`cd /opt/myfnbguide && P=$(openssl rand -hex 12) && sudo install -m 600 /dev/null .env.new && sudo sh -c "grep -v '^ADMIN_PASSWORD=' .env > .env.new && echo ADMIN_PASSWORD=$P >> .env.new && mv .env.new .env" && sudo docker compose --profile https up -d --force-recreate api && echo "新管理员密码：$P"; cd ~`。**请用户贴终端输出时，一律复制文字、贴之前删掉密码和 key，不要截图**（10/1 一张截图连同密码发进了聊天）。
 
@@ -620,7 +620,7 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 - **写作模型对比（10/9 夜，20 个固定案例，`eval-reference.ts`）**：写法相同，只换模型：现行的 `deepseek-flash`（不思考，轮次 `2026-10-09 13:30`）和 `deepseek-flash-think`（打开思考，轮次 `13:35`；用服务器容器里的 LLM 地址和密钥临时跑，没改配置）。结果从 `/api/reference/eval?run=…` 读，两个子代理不知道哪篇是哪种，对照原文逐篇比。① **故事**：思考模式 7 个故事案例一篇没写成（5 篇判材料不够，其余想得太长、到了输出上限，`output token limit reached`）；不思考写成 7 篇。故事这一步不换。② **条目正文**（11 篇两边都写成）：思考模式更好 5、不思考更好 3、差不多 3；明确的事实错误思考模式约 3 处、不思考约 8 处（误译 Baumeister、把去年的 118% 放到今天的价格旁、把 38.6% 的人的看法写成全体、Olo「已在美国上市」而原文说已被收购退市）；思考模式行话解释得更全、数字留得更多，但常把「原文没有说……」放在开头，打断阅读。一轮 11 篇，噪声大，只能说正文换成思考模式「可能少一半错误」。③ 两种都错的：主持人名字（Chris Deferio 写成 Furio、ナルト 写成 ナルタ），出在导读那一层。**下一步（10/10）**：正文这一步试用思考模式：`site/models.ts` 加一个用 `LLM_BASE_URL`/`LLM_API_KEY` 的思考预设并设为 `referenceBody` 的默认（不用在服务器加密钥），先查清每篇多花多少（回执里的 token 数），再在 20 个案例上跑第二轮确认；确认后只重写条目正文（`rewrite-reference.ts` 要加只写正文的选项），故事不全部重写。
 - **条目正文不换思考模式（10/9 深夜第二轮，轮次 `2026-10-09 14:58`）**：用预设 `deepseek-flash-think-llm`（LLM 地址和密钥、计入 llm 上限）只换正文这一步再跑一轮，8 篇两边都写成的随机调换 A/B 交给两个子代理对照原文：这一轮**不思考更好 6、思考更好 2**，和第一轮（思考 5、不思考 3）正好相反，两轮合计思考 7、不思考 9、差不多 3，差别是随机波动。思考模式还有 5/16 篇想得太长、没写完（`output token limit reached`），输出约 3,970 token 对 680（约 6 倍；按 DeepSeek 官方价格页 10/9 读到的价格，每篇约 0.003 → 0.007 美元，高峰时段）。结论：**写作模型不换，也不全部重写**，预设已删。这一天的几轮评测说明同一写法同一模型写同一篇，好坏和错误每次都不同；改写作要求、换模型在 20 个案例上都比不出稳定差别。以后要提高质量，先找能稳定复现的毛病（同一篇跑三次都错的），不要再拿一轮 10–20 篇的结果做决定。
 - **推送后没有部署时先看检查**：10/9 深夜 GitHub 对同一个提交跑了两次检查、取消了其中一次，`update.sh` 把「cancelled」当成没通过（`journalctl -u myfnb-update` 里写「检查没通过（docker, check），不部署」）。用 `gh run rerun <被取消的那次>` 重跑，通过后下一个五分钟就部署。
-- **服务器登录（10/9 深夜，用户同意）**：用户电脑上有专用密钥 `~/.ssh/myfnb_server`（ed25519，注释 `claude-local-myfnb 2026-10-09`），服务器 `ubuntu@43.160.228.180` 的 `authorized_keys` 已加入，本机会话可以直接 `ssh -i ~/.ssh/myfnb_server ubuntu@43.160.228.180` 执行命令。收回：在 OrcaTerm 跑 `sed -i '/claude-local-myfnb/d' ~/.ssh/authorized_keys`。照规矩只做只读检查、评测、配置和重写这类事，不删数据、不改防火墙和密码。
+- **服务器登录（10/9 深夜，用户同意）**：用户电脑上有专用密钥 `~/.ssh/myfnb_server`（ed25519，注释 `claude-local-myfnb 2026-10-09`），服务器 `ubuntu@<服务器IP>` 的 `authorized_keys` 已加入，本机会话可以直接 `ssh -i ~/.ssh/myfnb_server ubuntu@<服务器IP>` 执行命令。收回：在 OrcaTerm 跑 `sed -i '/claude-local-myfnb/d' ~/.ssh/authorized_keys`。照规矩只做只读检查、评测、配置和重写这类事，不删数据、不改防火墙和密码。
 - **今晚之后的顺序（用户 10/9：「你决定」）**：① ~~全部重写后验收~~（作废：10/9 深夜定为不跑全部重写，见上面两段；新条目的验收并进第 ③ 步）；② 最近 30 天的标题和导读：先抽样重写、读过再定要不要整批跑（读者在首页、日报、列表看到的都是这一层，比正文重要）；③ 写法定下后观察一周，每周抽 20 篇新条目读，确是原则问题才在 20 个案例上改和验证，不再一天改二十次；④ 参考库重新归并（故事重写后内容变了）；⑤ 插图（J10）放最后。提醒用户：服务器 11/01 前续费，到期网站会停。
 
 **10/6 收尾（周额度用完，10/9 周五 04:00 恢复；本段由收尾对话根据截图和仓库状态补写）**：10/6 的清理和之后的修复都已在 `main` 并上线（最后一个提交 `c775925`），云端分支 `claude/zealous-albattani-74n9ji` 没有 `main` 以外的提交。没做完的，按这个顺序：
@@ -717,7 +717,7 @@ cd myfnbguide && git checkout claude/zealous-albattani-74n9ji && git remote add 
 4. GitHub 仓库 `1204kay/myf-b_book` 设为 Archive（不删）。
 5. **先处理拼写变体域名 `myfbguide.com`**：它现在 308 转到 `https://www.myfnbguide.com/`（看起来是 Vercel 做的）。停 Vercel 之前，在 Porkbun 给 `myfbguide.com`（含 www）设 URL Forwarding 到 `https://www.myfnbguide.com`，确认转址还通，再停。
 6. 上一条确认后，停掉 Vercel 旧项目（用户自己操作）。
-7. Porkbun 的 DNS 记录（快照 2026-10-01，共 13 条）：根域 A `216.198.79.1` 与 `www` CNAME `…vercel-dns-017.com`（切换时改这两条指到新服务器）；`new` A `43.160.228.180`；`forms` CNAME `cname.tally.so`；SendGrid 的三条 CNAME 与 `_dmarc.forms` TXT；邮件转发 MX 与 SPF TXT；两条 `_acme-challenge` TXT。除了根域和 `www`，其余都不动。
+7. Porkbun 的 DNS 记录（快照 2026-10-01，共 13 条）：根域 A `216.198.79.1` 与 `www` CNAME `…vercel-dns-017.com`（切换时改这两条指到新服务器）；`new` A `<服务器IP>`；`forms` CNAME `cname.tally.so`；SendGrid 的三条 CNAME 与 `_dmarc.forms` TXT；邮件转发 MX 与 SPF TXT；两条 `_acme-challenge` TXT。除了根域和 `www`，其余都不动。
 
 ---
 

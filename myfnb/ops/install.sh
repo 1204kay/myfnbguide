@@ -29,7 +29,7 @@ echo
 echo "====== 1. 复制下面整段（含 BEGIN、END 两行），贴进 GitHub 的 MYFNB_OPS_KEY ======"
 cat "$tmp/key"
 echo "====== 2. 复制下面这一行，贴进 GitHub 的 MYFNB_OPS_KNOWN_HOSTS ======"
-echo "43.160.228.180 $(cut -d' ' -f1,2 /etc/ssh/ssh_host_ed25519_key.pub)"
+echo "<服务器公网IP> $(cut -d' ' -f1,2 /etc/ssh/ssh_host_ed25519_key.pub)"
 echo "=================================================================="
 shred -u "$tmp/key"; rm -rf "$tmp"
 echo "私钥已从服务器上删掉，只剩上面这一份。贴好以后清屏：clear"

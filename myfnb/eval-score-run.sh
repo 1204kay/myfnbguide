@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 新评分提示词的评测，在服务器上一条命令跑完。Kay 电脑放行的就是这一条固定命令
 # （手册 决定记录「2026-10-24 评分小评测放行」），不带参数，所以放行规则不用通配，引号里接不上别的命令：
-#   ssh -i ~/.ssh/myfnb_server ubuntu@43.160.228.180 "cd /opt/myfnbguide && bash myfnb/eval-score-run.sh"
+#   ssh -i ~/.ssh/myfnb_server ubuntu@<服务器IP> "cd /opt/myfnbguide && bash myfnb/eval-score-run.sh"
 # 10-25 起用原版的评测（scripts/eval-selection.ts，docs/selection.md「校准」；十一 10-25 定）：myfnb/build-gold-rounds.ts 把标注过的样本
 # 写成金标（含原文正文，只放在这次的临时目录里，跑完删掉），现行提示词和候选各跑一遍预筛加两次评分，两次都导入后台 SelectBench，
 # 可以逐条看判错的条目和模型的理由；最后 myfnb/eval-selection-compare.ts 把两边并排列出来。留出集（holdout）只用来最后检查。

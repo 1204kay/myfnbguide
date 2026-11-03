@@ -10,7 +10,7 @@ set -euo pipefail
 NAME="${1:?名字}"; IP="${2:?出口IP}"
 [[ "$NAME" =~ ^[a-z0-9-]{1,20}$ && "$NAME" != github ]] || { echo "名字只用小写字母、数字、连字符：$NAME" >&2; exit 1; }
 [[ "$IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "出口IP 要是 IPv4：$IP" >&2; exit 1; }
-[ -x /usr/local/bin/myfnb-ops-gate ] || { echo "守门脚本还没装：先跑 sudo bash /opt/myfnbguide/myfnb/ops/install.sh" >&2; exit 1; }
+[ -x /usr/local/bin/myfnb-ops-gate ] || { echo "守门脚本还没装：先跑 sudo bash /opt/myfnbguide/myfnb/ops/install.sh <服务器公网IP>" >&2; exit 1; }
 read -r type key _ || true
 [[ "$type" == ssh-ed25519 && "$key" =~ ^[A-Za-z0-9+/=]{60,80}$ ]] || { echo "标准输入要是一行 ssh-ed25519 公钥" >&2; exit 1; }
 AK=/home/ubuntu/.ssh/authorized_keys

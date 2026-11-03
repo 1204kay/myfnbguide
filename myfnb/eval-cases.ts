@@ -5,7 +5,7 @@
 // --long prints one line per case and what every threshold would select instead; --sweep only the latter (30–60).
 // Run in the same container right after the eval (.data is not in the image; the app user cannot create it under
 // /app, hence -u root):
-//   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold.ts && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 > /dev/null && node myfnb/eval-cases.ts"
+//   sudo docker compose exec -T -u root worker sh -c "node myfnb/build-gold-rounds.ts .data/gold.jsonl && node scripts/eval-selection.ts --gold .data/gold.jsonl --n 500 > /dev/null && node myfnb/eval-cases.ts"
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { REPO_ROOT } from "@aihot/backend/config";

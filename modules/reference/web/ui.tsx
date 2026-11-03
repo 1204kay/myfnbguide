@@ -1,5 +1,5 @@
 // The reference pages' parts, in the site's own look (warm white, hairline cards, the accent's short bar,
-// big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html,
+// big numbers for what matters; red only for a loss or an overrun), after myfnb/samples/v2-busy-no-profit.html (removed 11-03; in commit c29b520),
 // and the card kinds of the layout (myfnb/layout-2026-10-05.md A7, J3, J4): story cards, practice cards and rows,
 // and situations as compact rows, the same on phones and desktops. Who tells a situation shows as the hot list shows
 // who talks about a story: its sources' faces and every count (the owner, 10/6). The frame around them (back links,

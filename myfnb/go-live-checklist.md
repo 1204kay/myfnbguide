@@ -38,7 +38,7 @@ www.myfnbguide.com, new.myfnbguide.com {
 }
 
 myfnbguide.com {
-	redir https://www.myfnbguide.com/ permanent
+	redir https://www.myfnbguide.com{uri} 308
 }
 ```
 
@@ -101,7 +101,7 @@ dig +short www.myfnbguide.com    # 应该是 <服务器IP>
 
 ## 5. 确认 www 通了，再改站点地址
 
-1. `curl -sI https://www.myfnbguide.com/ | head -3` 返回 200，证书有效（不加 `-k`）。`curl -sI https://myfnbguide.com/` 是 301 到 `https://www.myfnbguide.com/`。
+1. `curl -sI https://www.myfnbguide.com/ | head -3` 返回 200，证书有效（不加 `-k`）。`curl -sI 'https://myfnbguide.com/items/x?a=1'` 是 308 到 `https://www.myfnbguide.com/items/x?a=1`（路径和参数原样带上）。
 2. 整站随手点：首页、`/reference`、一个情况页、一个故事页、`/daily`、`/about`、`/privacy`、`/terms`、`/feed.xml`，都 200。
 3. **到这里才改 `.env`**。在服务器：
    ```bash
@@ -149,7 +149,7 @@ curl -sI https://new.myfnbguide.com/ | head -3        # 301，Location 是 https
 ## 9. 上线后（当天）
 
 1. 逐项核对，结果写进 `HANDOFF.md` §9.2 开头新的一条：
-   - `https://www.myfnbguide.com` 首页、参考库、日报、条款、隐私说明、关于页都 200；`https://myfnbguide.com`、`https://new.myfnbguide.com` 都 301 到 www；`https://myfbguide.com` 能转到 www。
+   - `https://www.myfnbguide.com` 首页、参考库、日报、条款、隐私说明、关于页都 200；`https://myfnbguide.com` 308、`https://new.myfnbguide.com` 301，都原路转到 www；`https://myfbguide.com` 能转到 www。
    - `curl -s https://www.myfnbguide.com/api/site/stats` 的来源数、条目数、日报期数和切换前一致。
    - 从中国大陆和马来西亚各测一次能不能打开、多快（10-10 用 Globalping 公开节点测过：中国大陆 8 个节点全部 200，中位约 0.9 秒；马来西亚约 0.5 秒，`HANDOFF.md:489`）；服务器在新加坡、没有备案。
    - 后台「运行」页没有新告警；`myfnb/visits.sh` 在服务器上能数出当天的访问（计数在 Caddy 的访问日志里，换成 www 后日志仍写同一个文件）。

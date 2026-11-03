@@ -1,0 +1,22 @@
+{
+"aj6as0eawqz8bnuf21xke12tr": {"from": ["ai-tools", "numbers"], "to": ["waste", "ordering-prep"], "why": "块B对原文复核：按销售、天气、假日做生产计划，过度生产减少约 25%"},
+"bpfda8zxcrfiy7mg3xg9pwivq": {"from": ["second-shop", "people-systems"], "to": ["second-shop", "more-not-richer"], "why": "块B对原文复核：店开多利润没跟上；丢租约只占开头"},
+"c9fs2ylv1jmen28m4ah8sb5tp": {"from": ["menu-size", "what-to-cut"], "to": ["busy-no-profit", "where-it-leaks"], "why": "块B对原文复核：店忙不赚钱，逐项查房租、库存、佣金、人工"},
+"djnsvkqjw1kgf51eag870rerq": {"from": ["pricing", "cost-based"], "to": ["pricing", "what-guests-pay"], "why": "块B对原文复核：薄饼两地价差和价格感受，没有算底价"},
+"dri2hwgf0bdb1ggk76r43b455": {"from": ["hiring", "fewer-hands"], "to": ["automation", "what-works"], "why": "块B对原文复核：分块机、滚圆机、AI 接电话让两人运营；房租只有一小段"},
+"edaibpkzdfy2vs93vopzx5pu7": {"from": ["rent", "negotiate"], "to": ["online-presence", "website"], "why": "块B对原文复核：最具体的是订位押金和取消费；房租只带过"},
+"egliff8dzt7aczn2p80lkt6fq": {"from": ["delivery-margin", "per-order-math"], "to": ["first-months", "adjust"], "why": "块B对原文复核：新店首月损益复盘定下月调整，没有算每单剩多少"},
+"fqnha05qk3woyjdahbf9hwnqv": {"from": ["busy-no-profit", "fixed-costs-creep"], "to": ["busy-no-profit", "where-it-leaks"], "why": "块B对原文复核：主线是忙却收入不涨的共同点，FL 成本只是一小节"},
+"gu3v2ixqjjuslj81k0xr5yj6a": {"from": ["waste", "ordering-prep"], "to": ["busy-no-profit", "food-over-recipe"], "why": "块B对原文复核：主体是多给、洒漏、偷拿、变质和 48 小时差异审计，订货只是结尾"},
+"j6tjy9m10yduc4jz1rqr30tfx": {"from": ["cash-flow", "cash-tied-up"], "to": ["busy-no-profit", "where-it-leaks"], "why": "块B对原文复核：用漏水管道讲钱从哪漏，没讲现金被占"},
+"n71yv0dtfoamufrdzw9scgv94": {"from": ["second-shop", "ready-signs"], "to": ["second-shop", "people-systems"], "why": "块B对原文复核：重点是管理层级和配方手册；时机只有几句"},
+"nbqstdj16prgdb4c8k7mc08hh": {"from": ["rent", "is-it-worth"], "to": ["location", "lease"], "why": "块B对原文复核：选址时算十年租金、看懂租约，不是续约谈判"},
+"nlnk7hh6lkxf744tdzhae6lyr": {"from": ["busy-no-profit", "where-it-leaks"], "to": ["owner-overload", "runs-without-you"], "why": "块B对原文复核：设想店主来不了时谁开门、谁发工资"},
+"t4dfmkyw0biflllxng927zpgv": {"from": ["small-formats", "kiosk"], "to": ["busy-no-profit", "fixed-costs-creep"], "why": "块B对原文复核：压低固定费是主线"},
+"tytwigkj5g1tgageuvmqf7b8r": {"from": ["read-the-numbers", "margin-breakeven"], "to": ["read-the-numbers", "monthly-numbers"], "why": "块B对原文复核：讲主要成本占比算法和每周看数，没讲每份毛利或保本销量"},
+"u1fvqhzmkf9xot6x9ceh3hjx5": {"from": ["cash-flow", "reserve"], "to": ["read-the-numbers", "monthly-numbers"], "why": "块B对原文复核：该看毛利、净利、现金流并每周对预测，没讲留多少周转金"},
+"uf31plzibr6lnhtu3t3ibjru7": {"from": ["ingredient-prices-up", "suppliers"], "to": ["ingredient-prices-up", "menu-portion"], "why": "块B对原文复核：肉价高后换短肋、鸡肉、开蔬菜栏目"},
+"vvxlbwsm937azb8pnd0piaeeg": {"from": ["pricing", "what-guests-pay"], "to": ["small-formats", "kiosk"], "why": "块B对原文复核：餐车买车、人手、挑活动、淡季"},
+"x5zjnuqu6de1hh4djbxvfugn8": {"from": ["pricing", "what-guests-pay"], "to": ["pricing", "raise-prices"], "why": "块B对原文复核：涨多少、定价权、告示，没算食材占比"},
+"zfg1owz0skzfemoln88p1u0i5": {"from": ["slow-weekdays", "weekday-reasons"], "to": ["busy-no-profit", "where-it-leaks"], "why": "块B对原文复核：主讲满座未必赚钱，用增量营业额算乐队回报，不是平日引客"}
+}

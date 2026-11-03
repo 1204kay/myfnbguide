@@ -1,6 +1,6 @@
 # HTTPS in front of the site: Caddy gets and renews the certificate for SITE_DOMAIN and compresses
 # responses. Point the domain's DNS at this server first.
-# 正式网址（myfnb/go-live-checklist.md 第 2、6 步，myfnb/DIFFERENCES.md「域名转址」）：www 是站；根域转到 www 首页，试运行用的 new 原路转到 www。
+# 正式网址（myfnb/go-live-checklist.md 第 2、6 步，myfnb/DIFFERENCES.md「域名转址」）：www 是站；根域和试运行用的 new 都原路转到 www。
 www.myfnbguide.com {
 	encode zstd gzip
 
@@ -42,8 +42,9 @@ www.myfnbguide.com {
 	reverse_proxy web:3000
 }
 
+# 根域原路转到 www（路径和问号后面的都带上），外面不带 www 的链接才打得开内容；旧站路径到了 www 再由上面的名单转首页。
 myfnbguide.com {
-	redir https://www.myfnbguide.com/ permanent
+	redir https://www.myfnbguide.com{uri} 308
 }
 
 new.myfnbguide.com {

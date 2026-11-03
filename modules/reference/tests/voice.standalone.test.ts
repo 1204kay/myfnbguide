@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -198,6 +198,20 @@ test("pitch over three minutes at a time: a voice at 210 Hz for two minutes, the
   assert.ok(Math.abs(pitch[0]! - 210) < 2 && Math.abs(pitch.at(-1)! - 240) < 2, pitch.join(" "));
   assert.ok(Math.abs(semitones(pitch) - 12 * Math.log2(240 / 210)) < 0.1);
   assert.equal(pitchWindows(samples.subarray(0, rate * 100), rate).length, 1, "under three minutes is one window");
+});
+
+test("the 文字稿's times: quiet stretches over 0.2 s, and a line starts where the voice comes in after the pause", () => {
+  const rate = 16_000;
+  const samples = new Int16Array(rate * 6);
+  for (let i = 0; i < samples.length; i += 1) {
+    const t = i / rate;
+    const on = t < 2 || (t >= 3 && t < 4.9) || t >= 5.05;
+    if (on) samples[i] = Math.round(6000 * Math.sin((2 * Math.PI * 220 * i) / rate));
+  }
+  const { starts, pauses } = followTimes(samples, rate, [0, 3.3]);
+  assert.deepEqual(pauses, [[2, 3]], "0.15 s at 4.9 is too short to count");
+  assert.deepEqual(starts, [0, 3], "Whisper's 3.3 moves to where the voice comes in");
+  assert.deepEqual(followTimes(samples, rate, [0, 4.5]).starts, [0, 4.5], "no pause near: left where it was");
 });
 
 test("a WAV's samples are found wherever its data chunk sits", () => {

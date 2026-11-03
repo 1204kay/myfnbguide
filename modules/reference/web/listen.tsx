@@ -70,14 +70,25 @@ export function useListen() {
  */
 const LEAD = 0.5;
 
-/** The 文字稿 that follows the voice: `starts[i]` is when line i begins, in seconds. */
-function Following({ lines, starts, at, length, onPick }: { lines: string[]; starts: number[]; at: number; length: number; onPick: (t: number) => void }) {
+/** Seconds of `pauses` between `from` and `to`. */
+const quiet = (pauses: Array<[number, number]>, from: number, to: number) =>
+  pauses.reduce((sum, [a, b]) => sum + Math.max(0, Math.min(to, b) - Math.max(from, a)), 0);
+
+/**
+ * The 文字稿 that follows the voice: `starts[i]` is when line i begins, in seconds. A line's characters light evenly
+ * over the time she is speaking it: `pauses` (where the voice is quiet, voice.ts followTimes) do not count, so the
+ * pause after a line does not hold its last words back (Kay 11-03 12:37). Without `pauses`, evenly from one start to
+ * the next, as before.
+ */
+function Following({ lines, starts, pauses = [], at, length, onPick }: { lines: string[]; starts: number[]; pauses?: Array<[number, number]>; at: number; length: number; onPick: (t: number) => void }) {
   let now = 0;
   while (now + 1 < starts.length && starts[now + 1]! <= at) now += 1;
   const from = starts[now]!;
   const to = starts[now + 1] ?? length;
   const line = [...lines[now]!];
-  const lit = at < from ? 0 : Math.min(line.length, Math.round(((at - from) / Math.max(0.1, to - from)) * line.length));
+  const spoken = Math.max(0, at - from - quiet(pauses, from, at));
+  const whole = Math.max(0.1, to - from - quiet(pauses, from, to));
+  const lit = at < from ? 0 : Math.min(line.length, Math.round((spoken / whole) * line.length));
   const box = useRef<HTMLDivElement>(null);
   const touched = useRef(0);
   const first = useRef(true);
@@ -143,7 +154,7 @@ function Seek({ at, length, onSeek, thumb = false }: { at: number; length: numbe
   );
 }
 
-export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: { url: string; seconds: number; title: string; transcript: string[] | null; starts?: number[]; onClose: () => void }) {
+export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onClose }: { url: string; seconds: number; title: string; transcript: string[] | null; starts?: number[]; pauses?: Array<[number, number]>; onClose: () => void }) {
   const audio = useRef<HTMLAudioElement>(null);
   const [reading, setReading] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -261,6 +272,7 @@ export function PlayerBar({ url, seconds, title, transcript, starts, onClose }: 
             <Following
               lines={transcript}
               starts={starts}
+              pauses={pauses}
               at={at + LEAD * speed}
               length={length}
               onPick={(t) => {

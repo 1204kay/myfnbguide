@@ -698,6 +698,43 @@ export function joinShort(lines: string[], short = SHORT_LINE): string[] {
   return out;
 }
 
+/**
+ * When the voice is quiet, for the 文字稿 to light only while she speaks: every silence over 0.2 s (silences), and each
+ * line's start moved to where her voice comes in after the pause around it. Kay 11-03 12:37 「现在文字稿好像没有提前
+ * 0.5秒」: lighting each line's characters evenly from its start to the next line's counted the pause after it (on
+ * issue 10, about 0.8 s: the line's own quiet tail and BREATH) as speech, so the last words lit about 0.2 s after they
+ * were said, not 0.5 s before; and lines timed by Whisper started up to 0.4 s after her voice did.
+ */
+export function followTimes(samples: Int16Array, rate: number, starts: number[]): { starts: number[]; pauses: Array<[number, number]> } {
+  const pauses = silences(samples, rate, 0.2).map(({ from, to }): [number, number] => [from, to]);
+  const moved = starts.map((t, i) => {
+    if (!i) return t;
+    // The pause her voice comes in at: one that ends near where the line was put to start.
+    const near = pauses.filter(([from, to]) => from <= t + 0.3 && to >= t - 0.6);
+    return near.length ? near.reduce((a, b) => (Math.abs(b[1] - t) < Math.abs(a[1] - t) ? b : a))[1] : t;
+  });
+  return { starts: moved, pauses };
+}
+
+/**
+ * Adds `pauses` (followTimes) to the <no>.json of an issue already up and moves its `starts` to where the voice comes
+ * in. Reads the MP3 only: no transcription, no voice, nothing paid.
+ */
+export async function pauseIssue(no: number) {
+  const meta = JSON.parse(await readFile(path.join(DIR, `${no}.json`), "utf8")) as Record<string, unknown> & { starts?: number[] };
+  if (!Array.isArray(meta.starts)) return null;
+  const work = path.join(os.tmpdir(), `issue-pause-${no}`);
+  await mkdir(work, { recursive: true });
+  await writeFile(path.join(work, "in.mp3"), await readFile(path.join(DIR, `${no}.mp3`)));
+  await run("lame", ["--quiet", "--decode", path.join(work, "in.mp3"), path.join(work, "out.wav")]);
+  const { rate, samples } = wavSamples(await readFile(path.join(work, "out.wav")));
+  await rm(work, { recursive: true, force: true });
+  const times = followTimes(samples, rate, meta.starts);
+  await writeFile(path.join(DIR, `${no}.json.part`), JSON.stringify({ ...meta, ...times }));
+  await rename(path.join(DIR, `${no}.json.part`), path.join(DIR, `${no}.json`));
+  return times;
+}
+
 /** The pause added before each line of the script after the first, in seconds. */
 export const BREATH = 0.5;
 /**
@@ -816,7 +853,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
         await rename(path.join(DIR, `${no}.${ext}.part`), path.join(DIR, `${no}.${ext}`));
       }
       // Where each line starts, for the 文字稿 to follow the voice.
-      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds, starts }));
+      await writeFile(path.join(DIR, `${no}.json`), JSON.stringify({ seconds, ...followTimes(samples, rate, starts) }));
       report.status = "up";
       return keep();
     }

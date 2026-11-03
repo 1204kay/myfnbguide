@@ -10,7 +10,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
 import { beijingAt } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
-import type { IssuePage } from "../types.ts";
+import type { IssueIndex, IssuePage } from "../types.ts";
 import { issueAudio } from "./audio.ts";
 import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, leadParagraph, ISSUE_VERSION, modelAsk } from "./issue.ts";
 
@@ -79,9 +79,11 @@ export async function issueLead(date: string): Promise<{ kicker: string; title: 
 
 /** One issue as its page reads it: the program's lines around what 十一 wrote, and the originals it names. */
 export async function readIssue(no: number): Promise<IssuePage | null> {
-  const [row] = await sql<{ no: number; date: string; content: ReturnType<typeof stored>; prev: number | null; next: number | null }[]>`
+  // The issue is up at about 05:20, its daily at 08:00: until then the page does not lead to a daily not there yet.
+  const [row] = await sql<{ no: number; date: string; content: ReturnType<typeof stored>; prev: number | null; next: number | null; daily: boolean }[]>`
     SELECT no, to_char(date, 'YYYY-MM-DD') AS date, content,
-      (SELECT max(no) FROM reference_issues WHERE no < r.no) AS prev, (SELECT min(no) FROM reference_issues WHERE no > r.no) AS next
+      (SELECT max(no) FROM reference_issues WHERE no < r.no) AS prev, (SELECT min(no) FROM reference_issues WHERE no > r.no) AS next,
+      EXISTS (SELECT 1 FROM reports WHERE kind = 'daily' AND key = to_char(r.date, 'YYYY-MM-DD')) AS daily
     FROM reference_issues r WHERE no = ${no} AND status = 'issue'`;
   const issue = row?.content.issue;
   if (!row || !issue) return null;
@@ -89,12 +91,21 @@ export async function readIssue(no: number): Promise<IssuePage | null> {
   return {
     no: row.no, date: row.date, issue, lines: fixedLines(row.date),
     sources: citedItems(issue, items).cited.map(({ n, sourceName, title, url }) => ({ n, sourceName, title, url })),
-    count: items.length, prev: row.prev, next: row.next, audio: await issueAudio(row.no),
+    count: items.length, prev: row.prev, next: row.next, daily: row.daily, audio: await issueAudio(row.no),
   };
 }
 
-/** Issue pages for the sitemap, newest first. */
+/** Every issue, newest first, for the list of all issues (web/issues.tsx). */
+export async function listIssues(): Promise<IssueIndex> {
+  const issues = await sql<IssueIndex["issues"]>`
+    SELECT no, to_char(date, 'YYYY-MM-DD') AS date, content->'issue'->>'title' AS title
+    FROM reference_issues WHERE status = 'issue' ORDER BY no DESC`;
+  return { issues };
+}
+
+/** Issue pages for the sitemap, newest first, and the list of them. */
 export async function issueSitemap(): Promise<SitemapEntry[]> {
   const rows = await sql<{ no: number; created_at: Date }[]>`SELECT no, created_at FROM reference_issues WHERE status = 'issue' ORDER BY no DESC`;
-  return rows.map((r) => ({ loc: issuePath(r.no), lastmod: r.created_at, changefreq: "monthly", priority: 0.6 }));
+  const pages = rows.map((r): SitemapEntry => ({ loc: issuePath(r.no), lastmod: r.created_at, changefreq: "monthly", priority: 0.6 }));
+  return rows[0] ? [{ loc: "/reference/issues", lastmod: rows[0].created_at, changefreq: "daily", priority: 0.6 }, ...pages] : pages;
 }

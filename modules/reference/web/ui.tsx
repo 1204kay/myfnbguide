@@ -112,6 +112,12 @@ export function RankTag({ rank }: { rank: number }) {
   return <span className={`mono text-[12px] font-bold tracking-[0.16em] ${rankColor(rank)}`}>NO.{pad(rank)}</span>;
 }
 
+/** A card's source line with its month on one line, as the feed card keeps its time in one piece; otherwise a phone breaks "2025 年 6 | 月". */
+function SourceLine({ text }: { text: string }) {
+  const m = /^(.*?)(\d{4} 年 \d{1,2} 月)$/u.exec(text);
+  return m ? <>{m[1]}<span className="whitespace-nowrap">{m[2]}</span></> : <>{text}</>;
+}
+
 /**
  * An item's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
  * bookmark, its title leading to the item's page, the item's 收录理由 under a hairline from desktops.
@@ -120,7 +126,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
   return (
     <article className={`${CARD} px-4 pb-3.5 pt-3.5 lg:px-[18px] lg:pb-[14px] lg:pt-[15px]`}>
       <div className="flex min-h-[22px] items-center gap-1.5 text-[12.5px] leading-[18px] text-ink-4 lg:min-h-[18px]">
-        <span className="min-w-0 flex-1">{c.src}</span>
+        <span className="min-w-0 flex-1"><SourceLine text={c.src} /></span>
         <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
       </div>
       <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">

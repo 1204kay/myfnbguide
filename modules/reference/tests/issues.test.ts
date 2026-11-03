@@ -69,6 +69,7 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.equal(users.length, calls, "a day written is not written again");
 
   assert.deepEqual(await issueLead(DAY), { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价。乙店没涨。丙店在等。", href: "/reference/issues/1" });
+  assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).daily, false, "up before its daily: the page does not lead to a daily not there yet");
   await composeDaily(DAY);
   const daily = await loadReport("daily", DAY);
   assert.deepEqual(daily?.lead, { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价。乙店没涨。丙店在等。", href: "/reference/issues/1" });
@@ -81,10 +82,12 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.equal(page.issue.title, "店里该不该涨价？");
   assert.equal(page.date, DAY);
   assert.equal(page.count, 5);
+  assert.equal(page.daily, true);
   assert.match(page.lines.open, /2020年3月10日，星期二/);
   assert.deepEqual(page.sources.map((s: { n: number; title: string }) => [s.n, s.title]), [[1, "标题 1"], [2, "标题 2"], [3, "标题 3"]], "only the originals it names");
   assert.equal((await app.inject("/api/reference/issues/2")).statusCode, 404);
   assert.equal((await app.inject("/api/reference/issues/x")).statusCode, 404);
+  assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues")).body), { issues: [{ no: 1, date: DAY, title: "店里该不该涨价？" }] }, "the list of all issues");
 
   // Agents read it too (backend/agent.ts): the latest in full with the originals it names, named in the guide and llms.txt.
   const agent = await app.inject("/api/v1/agent/shiyi");

@@ -22,7 +22,6 @@ import { installModules } from "@aihot/backend/modules";
 import { selectedCondition } from "@aihot/backend/publication/scope";
 import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { kanjiNumber, sourceNumbers } from "../modules/reference/backend/checks.ts";
-import { LISTED } from "../modules/reference/backend/read.ts";
 import { OWNERS } from "../modules/reference/situations.ts";
 import type { CaseStory } from "../modules/reference/types.ts";
 
@@ -116,7 +115,8 @@ const listed = new Set((await sql<{ slug: string }[]>`
     WHEN p.source_id IN ${sql(Object.keys(OWNERS))} THEN 'source:' || p.source_id
     WHEN c.shop_key IS NOT NULL THEN 'shop:' || c.shop_key
     WHEN c.story #>> '{shop,speaker}' IN ('adviser', 'vendor', 'media') THEN NULL
-    ELSE 'source:' || p.source_id END) >= ${LISTED.fromShops}`).map((r) => r.slug));
+    ELSE 'source:' || p.source_id END) >= 5 -- the lists' rule on 10-13 (five shops); counted by items since 11-03
+`).map((r) => r.slug));
 
 const rows = await sql<{ id: string; story: CaseStory; situations: string[] }[]>`
   SELECT c.article_id AS id, c.story, c.situations FROM reference_cases c

@@ -9,6 +9,8 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --hear 6            拿已放上的第 6 期（mp3 对文字稿）做一遍机器核对（连听出来的字一起打出来），
 //                                                                                    不念、不改网站，只花一次 Groq 转写（免费档）
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put 8             念第 8 期，机器核对过了就放上网站
+//   sudo docker compose exec -T worker node myfnb/issue-voice.ts --write 5           只照现在的写法写一份第 5 期的听稿、核一遍，不念、不放上网站，
+//                                                                                    写到 /data/reference/audio/tries/5/write.txt，旁边放线上的 5.txt 拿来比（DeepSeek 几分钱 + 核对模型）
 //   --try 和 --put 后面可加：--script <听稿 txt>：念已经核过、上过线的听稿（例如这一期自己的 N.txt），不再写、不再核、不查字数上限（不花 Claude API；11-01 第 1–7 期照线上原稿重念、不重写，Kay 22:37「原稿超过上限的照原长念」）；
 //   --voice <声音>、--model <模型> 换一个声音或模型（默认 voice.ts 的 VOICE 一行）、--style "……" 加一句语气。
 //   新加坡区能用的普通话女声：longanhuan_v3.1、longanlingxin_v3.1、longanfengyue_v3.1
@@ -39,6 +41,7 @@ const from = arg("--from");
 const tryNo = arg("--try");
 const putNo = arg("--put");
 const hearNo = arg("--hear");
+const writeNo = arg("--write");
 const timesNo = arg("--times");
 const pausesNo = arg("--pauses");
 const putTryNo = arg("--put-try");
@@ -79,6 +82,14 @@ if (no) {
   if (receipts.length) await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
   console.log(JSON.stringify(report, null, 1));
   if (out) console.log(`听稿和 mp3：${out}`);
+}
+
+if (writeNo) {
+  const [writer, checker] = await Promise.all([modelFor(ISSUE_STEP), modelFor(ISSUE_CHECK_STEP)]);
+  const receipts: number[] = [];
+  const done = await writeOnly(Number(writeNo), { write: modelAsk(writer, `voice-write:${writeNo}`, receipts), check: modelAsk(checker, `voice-write:${writeNo}`, receipts) });
+  if (receipts.length) await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
+  console.log(done.lines ? `第 ${writeNo} 期试写 ${done.chars} 字、${done.lines} 行，核了 ${done.rounds} 轮：${done.out}` : `第 ${writeNo} 期试写没过核对（${done.rounds} 轮），留在 ${done.out}`);
 }
 
 const missing = await voiceMissing();

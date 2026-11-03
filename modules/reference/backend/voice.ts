@@ -793,6 +793,26 @@ export async function voiceReport(no: number): Promise<VoiceReport | null> {
 }
 
 /**
+ * Writes issue `no`'s script the way the daily run does and checks it, and only that: no voice, nothing put up. For
+ * setting the writing against a script already up (Kay 11-03 18:09 「你可以多关注文字稿的内容 因为好听的播客是内容和
+ * 声音的配合」): the new script goes to tries/<no>/write.txt with the one up beside it as up.txt.
+ */
+export async function writeOnly(no: number, ask: { write: Ask; check: Ask }) {
+  const [row] = await sql<{ date: string; issue: IssueText | null }[]>`
+    SELECT to_char(date, 'YYYY-MM-DD') AS date, content->'issue' AS issue FROM reference_issues WHERE no = ${no} AND status = 'issue'`;
+  if (!row?.issue) throw new Error(`第 ${no} 期不存在`);
+  const out = path.join(DIR, "tries", String(no));
+  await mkdir(out, { recursive: true });
+  const written = await writeScript(row.issue, row.date, ask.write, ask.check);
+  const up = await readFile(path.join(DIR, `${no}.txt`), "utf8").catch(() => "");
+  if (up) await writeFile(path.join(out, "up.txt"), up);
+  const lines = written.lines ?? [];
+  await writeFile(path.join(out, "write.txt"), `${lines.join("\n")}\n`);
+  await writeFile(path.join(out, "write.json"), JSON.stringify(written, null, 1));
+  return { out: path.join(out, "write.txt"), lines: written.lines ? lines.length : 0, chars: scriptChars(lines), rounds: written.rounds.length };
+}
+
+/**
  * Reads issue `no` aloud and, unless `dryRun`, puts it up when the machine check passes. A dry run leaves the MP3 and
  * the script in `out` for a person to hear and keeps nothing on the site.
  */

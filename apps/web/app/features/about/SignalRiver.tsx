@@ -7,7 +7,7 @@
 // Theme-aware, paused off screen; reduced motion draws it still. The canvas only illustrates: what it
 // says is also written in the page.
 import { useEffect, useRef, type ReactNode } from "react";
-import { withSubject } from "@aihot/site";
+import { ITEM_COPY, withSubject } from "@aihot/site";
 import { EDITION } from "../report/format";
 import { watchAppearance } from "../../lib/local-state";
 import { reducedMotion } from "../../lib/motion";
@@ -507,8 +507,8 @@ export function SignalRiver({
       const b = L.bundles[s.bundle]!;
       if (x < L.x2) {
         hover = { s: best, bundle: null, paper: false };
-        const kind = s.source ? (KIND[s.source.kind] ?? "信源") : "信源";
-        place(x, y, s.source ? s.source.name : "一个信源", s.source?.heatOnly ? `${kind} · 只计入热度` : kind);
+        const kind = s.source ? (KIND[s.source.kind] ?? ITEM_COPY.sourceWord) : ITEM_COPY.sourceWord;
+        place(x, y, s.source ? s.source.name : `一个${ITEM_COPY.sourceWord}`, s.source?.heatOnly ? `${kind} · 只计入热度` : kind);
       } else {
         hover = { s: null, bundle: s.bundle, paper: false };
         if (x < L.gate) place(x, y, "同一件事", `${b.n} 个来源的报道合成一条`);

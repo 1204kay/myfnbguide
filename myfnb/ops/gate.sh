@@ -56,7 +56,7 @@ case $verb in
     disk_total=$(df -B1 --output=size / | tail -1 | tr -d ' '); disk_used=$(df -B1 --output=used / | tail -1 | tr -d ' ')
     mem_total=$(awk '/^MemTotal:/{print $2 * 1024}' /proc/meminfo); mem_avail=$(awk '/^MemAvailable:/{print $2 * 1024}' /proc/meminfo)
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -v ON_ERROR_STOP=1 \
-      -v disk_total="${disk_total:-0}" -v disk_used="${disk_used:-0}" -v mem_total="${mem_total:-0}" -v mem_avail="${mem_avail:-0}" <<'SQL'
+      -v disk_total="$disk_total" -v disk_used="$disk_used" -v mem_total="$mem_total" -v mem_avail="$mem_avail" <<'SQL'
 WITH a AS (SELECT id FROM articles WHERE discovered_at >= date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'),
 p AS (SELECT p.score, p.selected FROM publications p JOIN a ON a.id = p.article_id WHERE p.visibility <> 'withdrawn'),
 j AS (SELECT DISTINCT job FROM job_runs WHERE started_at > now() - interval '3 days')
@@ -121,8 +121,9 @@ SELECT json_build_object(
      CROSS JOIN LATERAL (SELECT (ra.usage->>'characters')::numeric AS billed,
        CASE WHEN ra.usage->>'characters' IS NULL THEN coalesce((r.request->>'chars')::numeric, 0) END AS plain) t
      WHERE ra.service = 'speech-qwen' AND ra.origin = 'live' AND ra.started_at >= least('2026-11-03T06:18:00Z'::timestamptz, now() - interval '7 days')),
-  'host', json_build_object('disk_total', :'disk_total'::numeric, 'disk_used', :'disk_used'::numeric,
-       'mem_total', :'mem_total'::numeric, 'mem_avail', :'mem_avail'::numeric),
+  -- 读不到的传空串，这里变成 null（仪表写「无法读取」），不传 0：0 会被算成 NaN% 还显示正常（审稿 #199）。
+  'host', json_build_object('disk_total', nullif(:'disk_total', '')::numeric, 'disk_used', nullif(:'disk_used', '')::numeric,
+       'mem_total', nullif(:'mem_total', '')::numeric, 'mem_avail', nullif(:'mem_avail', '')::numeric),
   -- apis：各外部模型接口最近一次真实调用（不算重放）的结果和时间，以及 24 小时内成功、失败各几次。钥匙失效、余额用完、
   --   对方停服时，这里会先看到失败。只看 7 天内调用过的接口。
   'apis', (SELECT coalesce(json_agg(x ORDER BY x.service), '[]') FROM (

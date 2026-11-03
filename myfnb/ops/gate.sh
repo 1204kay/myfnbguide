@@ -69,7 +69,7 @@ SELECT json_build_object(
   'selected', (SELECT count(*) FROM p WHERE selected),
   -- 花费（仪表推算额度哪天用完）。两家分开算，口径各照站里已有的那一份，不另起一个数：
   -- claude：照 modules/reference/backend/credit.ts。额度这一期从 settings reference.claude-credit 的 renewsOn
-  --   （默认每月 4 号，UTC 日）起算，不是 1 号；回执没有 Claude 的费用，按 token × 标价算，缓存读、写分开算。
+  --   （默认每月 1 号，UTC 日，同控制台的每月上限）起算；回执没有 Claude 的费用，按 token × 标价算，缓存读、写分开算。
   --   标价抄自 credit.ts 的 PRICES / WRITE_5M / WRITE_1H，那边改了这里跟着改。不在表里的模型照 Opus 算（同 credit.ts）。
   -- deepseek：照 myfnb/place-now.ts 的 costOf()。按后台价格表 service_prices，缓存命中按 cached_per_mtok 算；
   --   币种照价格表如实输出；价格表里没有、或缺价格的次数记进 unpriced，这时 week 不可信，仪表要说明。
@@ -80,7 +80,7 @@ SELECT json_build_object(
      FROM (SELECT monthly, (date_trunc('month', now() AT TIME ZONE 'UTC')
              - CASE WHEN extract(day FROM now() AT TIME ZONE 'UTC') < r THEN interval '1 month' ELSE interval '0' END
              + (r - 1) * interval '1 day') AT TIME ZONE 'UTC' AS start
-           FROM (SELECT coalesce((v->>'monthly')::numeric, 100) AS monthly, coalesce((v->>'renewsOn')::int, 4) AS r
+           FROM (SELECT coalesce((v->>'monthly')::numeric, 100) AS monthly, coalesce((v->>'renewsOn')::int, 1) AS r
                  FROM (SELECT (SELECT value FROM settings WHERE key = 'reference.claude-credit') AS v) s0) s1) per
      LEFT JOIN receipt_attempts ra ON ra.service = 'anthropic' AND ra.origin = 'live'
        AND ra.started_at >= least(per.start, now() - interval '7 days') AND ra.started_at <= now()

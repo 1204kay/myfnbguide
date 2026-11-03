@@ -9,13 +9,17 @@
 // 备份：backup_ref_cases_20261103、backup_ref_placements_20261103、backup_settings_20261103，整表，
 // IF NOT EXISTS 留住第一次的（第一次 --apply 之前的原样）。--only 按 from 或 to 的情况挑条目，先做一个情况看网站再放开全部。
 // 一条现在的位置和 from 不一样（审读以后被别的改过），就不动它，列出来。
+// --file 换一份去向表（同目录，默认 replace-placements-2026-11-03.json）：第一遍写完以后的复核用另一份，from 是第一遍写好的位置；
+// 放回仍照第一遍之前的整表备份，只放回还停在这份表 to 上的条目。
 import { readFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 import { SITUATIONS } from "../modules/reference/situations.ts";
 
 type Spot = [string, string | null];
-const plan: Record<string, { from: Spot; to: Spot | null; why: string }> = JSON.parse(readFileSync(new URL("./replace-placements-2026-11-03.json", import.meta.url), "utf8"));
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i < 0 ? undefined : process.argv[i + 1]; };
+const file = arg("--file") ?? "replace-placements-2026-11-03.json";
+if (!/^replace-placements-2026-11-03\w*\.json$/.test(file)) throw new Error(`--file 只能是同目录的 replace-placements-2026-11-03*.json：${file}`);
+const plan: Record<string, { from: Spot; to: Spot | null; why: string }> = JSON.parse(readFileSync(new URL(`./${file}`, import.meta.url), "utf8"));
 const only = arg("--only")?.split(",");
 const apply = process.argv.includes("--apply");
 const restore = process.argv.includes("--restore");
@@ -87,6 +91,6 @@ if (apply) {
       else await tx`UPDATE reference_placements SET situations = ${situations}, placements = ${sql.json(placements as never)}, prompt_version = ${MARK}, updated_at = now() WHERE article_id = ${r.id}`;
     }
   });
-  console.log(`写好 ${todo.length} 条。放回：node myfnb/replace-placements-2026-11-03.ts --restore${only ? ` --only ${only.join(",")}` : ""}`);
+  console.log(`写好 ${todo.length} 条。放回：node myfnb/replace-placements-2026-11-03.ts --restore${file === "replace-placements-2026-11-03.json" ? "" : ` --file ${file}`}${only ? ` --only ${only.join(",")}` : ""}`);
 }
 await closeDb();

@@ -4,12 +4,14 @@
 # 二、提交信息：查这个 PR 的每个提交，有 Claude-Session 行或 claude.ai/code 链接就标红。提交信息改不了，只能挡：红了不合并，
 #     要在分支上改写那个提交（这条分支还没合并，可以 amend 或 rebase 后推）。
 # 起因：11-04 #214、#215 和手册 #511 的正文都带了会话链接，开 PR 的工具会自己往里加，靠每个会话「记得读回」挡不住。
-# 用 pull_request_target：外人从 fork 开的 PR 也要能改正文；只用 gh 读写 PR，不检出也不运行 PR 里的代码。
+# 用 pull_request 而不用 pull_request_target：后者的检查挂在 main 的提交上，设不成合并必须通过的检查。
+# 代价是从 fork 开的 PR 只有只读权限，正文删不了，那一步会红并提示手动删（这个仓库的 PR 都是我们自己开的）。
+# 不检出也不运行 PR 里的代码，只用 gh 读写 PR。
 # 只用 gh CLI，不引第三方 action。PR 的正文、提交信息都当数据读进文件，不拼进命令。
 name: No session links
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, edited, reopened, synchronize]
 
 permissions:
@@ -42,7 +44,10 @@ jobs:
           fi
           n=$(grep -ciE "$pat" body.txt)
           grep -viE "$pat" body.txt > clean.txt || true
-          gh api -X PATCH "repos/$REPO/pulls/$PR" -F body=@clean.txt --silent
+          if ! gh api -X PATCH "repos/$REPO/pulls/$PR" -F body=@clean.txt --silent; then
+            echo "::error::正文里有 $n 行带会话链接或 Claude-Session，没有权限自动删（从 fork 开的 PR），请手动删。"
+            exit 1
+          fi
           # 写回以后再读一次，确认真的删掉了
           gh api "repos/$REPO/pulls/$PR" --jq '.body // ""' > after.txt
           if grep -qiE "$pat" after.txt; then

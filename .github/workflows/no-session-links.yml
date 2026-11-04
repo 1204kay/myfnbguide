@@ -1,6 +1,7 @@
 # MYFNB：PR 里不准有会话链接（公司手册 AGENTS.md，工作约定 §26）。
-# 一、PR 正文：开 PR 或改正文时，删掉含 claude.ai/code 链接（会话、项目串）和 Claude-Session 的整行，删过就把这一步标红留个记号；
-#     正文已经删干净，点「重新运行」就会变绿。
+# 一、PR 正文：开 PR 或改正文时，删掉含 claude.ai/code 链接（会话、项目串）和 Claude-Session 的整行，删过留一条黄色警告；
+#     删不掉才标红。不是删过就标红：开 PR 的工具每次都会往正文加链接，删过就红的话几乎每个 PR 都红，红就成了噪声；
+#     而且云端会话没有权限重新运行检查，红了消不掉（11-04 在 #216 实测）。
 # 二、提交信息：查这个 PR 的每个提交，有 Claude-Session 行或 claude.ai/code 链接就标红。提交信息改不了，只能挡：红了不合并，
 #     要在分支上改写那个提交（这条分支还没合并，可以 amend 或 rebase 后推）。
 # 起因：11-04 #214、#215 和手册 #511 的正文都带了会话链接，开 PR 的工具会自己往里加，靠每个会话「记得读回」挡不住。
@@ -54,9 +55,8 @@ jobs:
             echo "::error::正文里的会话链接没删掉，请手动删。"
             exit 1
           fi
-          echo "::error::正文里有 $n 行带会话链接或 Claude-Session，已自动删掉。点「重新运行」会变绿。"
+          echo "::warning::正文里有 $n 行带会话链接或 Claude-Session，已自动删掉。"
           echo "PR 正文删掉了 $n 行带会话链接或 Claude-Session 的内容。GitHub 的「已编辑」记录里还看得到旧文，要在网页上手动删那一版。" >> "$GITHUB_STEP_SUMMARY"
-          exit 1
 
   commits:
     name: 提交信息

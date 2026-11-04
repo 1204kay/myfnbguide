@@ -22,7 +22,7 @@ import { MODELS } from "@aihot/backend/providers/llm";
 import { completeReceipt, ModelOutputError } from "@aihot/backend/providers/receipts";
 import { claudeJson, joined } from "../modules/reference/backend/claude.ts";
 import { monthSpend } from "../modules/reference/backend/credit.ts";
-import { type Ask, checkIssue, type DayItem, type Draft, edit, ISSUE_VERSION, type IssueText, type Layout, type Problem, reviewIssue } from "../modules/reference/backend/issue.ts";
+import { type Ask, checkIssue, citedItems, type DayItem, type Draft, edit, ISSUE_VERSION, type IssueText, type Layout, type Problem, reviewIssue } from "../modules/reference/backend/issue.ts";
 
 const args = process.argv.slice(2);
 const one = (flag: string) => args.flatMap((a, i) => (a === flag && args[i + 1] ? [args[i + 1]!] : [])).at(-1);
@@ -44,13 +44,19 @@ const written = row.content.drafts.filter((d) => !d.edited).sort((a, b) => b.pro
 if (!written) throw new Error(`第 ${no} 期没有写稿人原样交的稿`);
 const draft: Draft = { issue: written.issue, lively: 0, problems: written.problems, edited: false };
 
-/** 最长的一次输入：当天全部收录（实际每次只放点名的）+ 稿子 + 当天清单 + 最长的提示词（核稿），再留 3,000 给问题清单。 */
+/**
+ * 最长的一次输入：修稿读的原文最多（点名的收录，加上核出漏标出处、要补进来的那几条），再加稿子、当天清单、
+ * 最长的提示词（核稿），留 3,000 给问题清单。每一步实际只放这些原文，不放当天全部收录：11-04 第一版量了全部，
+ * 第 10 期量出一次最坏 US$2.25，比实际放进去的多三倍，连两种排法各核一次都没过。
+ */
 const checkPrompt = readFileSync(new URL("../modules/reference/prompts/issue-check.md", import.meta.url), "utf8");
+const missed = new Set(draft.problems.filter((p) => p.rule === 4).flatMap((p) => [...p.quote.matchAll(/〔(\d+)〕/gu)].map((m) => Number(m[1]))));
+const given = [...citedItems(draft.issue, items).cited, ...items.filter((i) => missed.has(i.n))];
 async function longestInput(): Promise<number> {
   const baseUrl = credential("models", spec.baseUrlEnv);
   const apiKey = credential("models", spec.apiKeyEnv);
   if (!baseUrl || !apiKey) throw new Error(`没配 ${spec.baseUrlEnv}、${spec.apiKeyEnv}`);
-  const text = joined({ cached: items.map((i) => i.text).join("\n\n"), rest: `${JSON.stringify(draft.issue)}\n\n${JSON.stringify(row!.content.items)}\n\n${checkPrompt}` });
+  const text = joined({ cached: given.map((i) => i.text).join("\n\n"), rest: `${JSON.stringify(draft.issue)}\n\n${JSON.stringify(row!.content.items)}\n\n${checkPrompt}` });
   const res = await fetch(`${baseUrl.replace(/\/$/, "")}/messages/count_tokens`, {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2026-10-21" },

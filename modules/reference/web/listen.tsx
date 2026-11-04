@@ -168,7 +168,9 @@ export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onC
     void a.play().catch(() => setPlaying(false));
     // The lock screen and the headphones' buttons name the issue and play/pause it.
     if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "十一说" });
+      // Without artwork iOS shows the site icon, whose transparent rounded corners come out white;
+      // the cover is a full square and the lock screen rounds it itself.
+      navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "十一说", artwork: [{ src: "/shiyi-cover.png", sizes: "1024x1024", type: "image/png" }] });
       navigator.mediaSession.setActionHandler("play", () => void a.play());
       navigator.mediaSession.setActionHandler("pause", () => a.pause());
     }

@@ -108,7 +108,9 @@ for (const [layout, step, tag] of steps) {
   else r.edit = await edit(draft, items, ask, "e", layout);
   r.seconds += Math.round((Date.now() - started) / 1000);
   const usage = await usageOf(from);
-  const usd = priced(usage);
+  // 回执里读不到用量的那几次，按一次最坏算进已花的，宁可早停。
+  const unread = receiptIds.length - from - usage.filter((u) => n(u, "prompt_tokens") > 0).length;
+  const usd = priced(usage) + Math.max(unread, 0) * worstCall;
   r.usage.push(...usage);
   r.usd += usd;
   spent += usd;

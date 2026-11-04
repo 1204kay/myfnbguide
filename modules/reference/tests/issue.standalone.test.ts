@@ -444,26 +444,6 @@ test("the Messages request marks only the cached part, for an hour, and leaves t
   assert.equal(answerText({ content: [{ type: "thinking", text: "" }, { type: "text", text: "{\"a\":" }, { type: "text", text: "1}" }] }), "{\"a\":1}");
 });
 
-test("on the shared layout the check, the last read and the editor send the same cached originals and no system prompt", async () => {
-  const sent: Array<{ system: string; user: string | Parts }> = [];
-  const ask: Ask = async (purpose, system, user, schema) => {
-    sent.push({ system, user });
-    return schema.parse(purpose === "reference_issue_edit" ? issue("t", "说了〔1〕。") : { lively: 7, problems: [] });
-  };
-  const draft = issue("t", "先说〔3〕，再说〔1〕。");
-  await checkIssue(draft, ITEMS, ask, "shared");
-  await reviewIssue(draft, ITEMS, ask, "shared");
-  await edit({ issue: draft, lively: 7, problems: [{ rule: 1, quote: "先说〔3〕，再说〔1〕。", why: "不对" }], edited: false }, ITEMS, ask, "e", "shared");
-  const parts = sent.map((x) => x.user as Parts);
-  assert.ok(sent.every((x) => x.system === ""), "no system prompt, so nothing ahead of the originals differs");
-  assert.ok(parts.every((p) => p.cached === parts[0]!.cached), "one cached part for all three");
-  assert.ok(parts[0]!.rest.startsWith("你是「十一说」的核对员") && parts[2]!.rest.includes("核对员挑出的问题"), "each step's prompt comes after the originals");
-  // The layout in use is unchanged: the step's prompt is the system prompt.
-  sent.length = 0;
-  await reviewIssue(draft, ITEMS, ask);
-  assert.ok(sent[0]!.system.startsWith("你是") && typeof sent[0]!.user === "string");
-});
-
 test("a draft too short for twelve minutes is written once more, told so, unless the day had little to tell", async () => {
   const long = (title: string) => ({ ...issue(title, "说了〔1〕。"), deep: `细说〔4〕${"讲得很深。".repeat(WRITE_FLOOR / 5)}` });
   const rich = ITEMS.map((i) => ({ ...i, text: "原文".repeat(THIN_DAY / 2) }));

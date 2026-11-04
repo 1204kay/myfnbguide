@@ -1,5 +1,6 @@
 # MYFNB：PR 里不准有会话链接（公司手册 AGENTS.md，工作约定 §26）。
-# 一、PR 正文：开 PR 或改正文时，删掉含 claude.ai/code 链接（会话、项目串）和 Claude-Session 的整行，删过留一条黄色警告；
+# 一、PR 正文：开 PR 或改正文时，把 claude.ai/code/… 链接（会话、项目串）换成「（链接已删）」，以 Claude-Session: 开头的行整行删；
+#     只换链接、不删整行，免得把讲这条规矩的句子或顺带有链接的整段一起删掉（11-04 #216 自己的正文就被删过一条）。删过留一条黄色警告；
 #     删不掉才标红。不是删过就标红：开 PR 的工具每次都会往正文加链接，删过就红的话几乎每个 PR 都红，红就成了噪声；
 #     而且云端会话没有权限重新运行检查，红了消不掉（11-04 在 #216 实测）。
 # 二、提交信息：查这个 PR 的每个提交，有 Claude-Session 行或 claude.ai/code 链接就标红。提交信息改不了，只能挡：红了不合并，
@@ -38,13 +39,13 @@ jobs:
           set -euo pipefail
           # 读现在的正文（不用事件里的旧值：重新运行时要看删过以后的样子）
           gh api "repos/$REPO/pulls/$PR" --jq '.body // ""' > body.txt
-          pat='claude\.ai/code|Claude-Session'
+          pat='claude\.ai/code/|^[[:space:]]*Claude-Session:'
           if ! grep -qiE "$pat" body.txt; then
             echo "正文里没有会话链接。"
             exit 0
           fi
           n=$(grep -ciE "$pat" body.txt)
-          grep -viE "$pat" body.txt > clean.txt || true
+          sed -E '/^[[:space:]]*Claude-Session:/Id; s#(https?://)?claude\.ai/code/[^[:space:])>"`]*#（链接已删）#gI' body.txt > clean.txt
           if ! gh api -X PATCH "repos/$REPO/pulls/$PR" -F body=@clean.txt --silent; then
             echo "::error::正文里有 $n 行带会话链接或 Claude-Session，没有权限自动删（从 fork 开的 PR），请手动删。"
             exit 1
@@ -55,8 +56,8 @@ jobs:
             echo "::error::正文里的会话链接没删掉，请手动删。"
             exit 1
           fi
-          echo "::warning::正文里有 $n 行带会话链接或 Claude-Session，已自动删掉。"
-          echo "PR 正文删掉了 $n 行带会话链接或 Claude-Session 的内容。GitHub 的「已编辑」记录里还看得到旧文，要在网页上手动删那一版。" >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::正文里有 $n 行带会话链接或 Claude-Session 行，链接已换成「（链接已删）」，Claude-Session 行已删。"
+          echo "PR 正文有 $n 行带会话链接或 Claude-Session 行，链接已换成「（链接已删）」，Claude-Session 行已删。GitHub 的「已编辑」记录里还看得到旧文，要在网页上手动删那一版。" >> "$GITHUB_STEP_SUMMARY"
 
   commits:
     name: 提交信息

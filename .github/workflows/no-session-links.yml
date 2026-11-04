@@ -1,0 +1,90 @@
+# MYFNB：PR 里不准有会话链接（公司手册 AGENTS.md，工作约定 §26）。
+# 一、PR 正文：开 PR 或改正文时，把 claude.ai/code/… 链接（会话、项目串）换成「（链接已删）」，以 Claude-Session: 开头的行整行删；
+#     只换链接、不删整行，免得把讲这条规矩的句子或顺带有链接的整段一起删掉（11-04 #216 自己的正文就被删过一条）。删过留一条黄色警告；
+#     删不掉才标红。不是删过就标红：开 PR 的工具每次都会往正文加链接，删过就红的话几乎每个 PR 都红，红就成了噪声；
+#     而且云端会话没有权限重新运行检查，红了消不掉（11-04 在 #216 实测）。
+# 二、提交信息：查这个 PR 的每个提交，有 Claude-Session 行或 claude.ai/code 链接就标红。提交信息改不了，只能挡：红了不合并，
+#     要在分支上改写那个提交（这条分支还没合并，可以 amend 或 rebase 后推）。
+# 起因：11-04 #214、#215 和手册 #511 的正文都带了会话链接，开 PR 的工具会自己往里加，靠每个会话「记得读回」挡不住。
+# 用 pull_request 而不用 pull_request_target：后者的检查挂在 main 的提交上，设不成合并必须通过的检查。
+# 代价是从 fork 开的 PR 只有只读权限，正文删不了，那一步会红并提示手动删（这个仓库的 PR 都是我们自己开的）。
+# 不检出也不运行 PR 里的代码，只用 gh 读写 PR。
+# 只用 gh CLI，不引第三方 action。PR 的正文、提交信息都当数据读进文件，不拼进命令。
+name: No session links
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  pull-requests: write # 只为删正文里的那几行
+  contents: read
+
+concurrency:
+  group: no-session-links-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  body:
+    name: PR 正文
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - name: 删掉正文里的会话链接
+        run: |
+          set -euo pipefail
+          # 读现在的正文（不用事件里的旧值：重新运行时要看删过以后的样子）
+          gh api "repos/$REPO/pulls/$PR" --jq '.body // ""' > body.txt
+          pat='claude\.ai/code/|^[[:space:]]*Claude-Session:'
+          if ! grep -qiE "$pat" body.txt; then
+            echo "正文里没有会话链接。"
+            exit 0
+          fi
+          n=$(grep -ciE "$pat" body.txt)
+          sed -E '/^[[:space:]]*Claude-Session:/Id; s#(https?://)?claude\.ai/code/[^[:space:])>"`]*#（链接已删）#gI' body.txt > clean.txt
+          if ! gh api -X PATCH "repos/$REPO/pulls/$PR" -F body=@clean.txt --silent; then
+            echo "::error::正文里有 $n 行带会话链接或 Claude-Session，没有权限自动删（从 fork 开的 PR），请手动删。"
+            exit 1
+          fi
+          # 写回以后再读一次，确认真的删掉了
+          gh api "repos/$REPO/pulls/$PR" --jq '.body // ""' > after.txt
+          if grep -qiE "$pat" after.txt; then
+            echo "::error::正文里的会话链接没删掉，请手动删。"
+            exit 1
+          fi
+          echo "::warning::正文里有 $n 行带会话链接或 Claude-Session 行，链接已换成「（链接已删）」，Claude-Session 行已删。"
+          echo "PR 正文有 $n 行带会话链接或 Claude-Session 行，链接已换成「（链接已删）」，Claude-Session 行已删。GitHub 的「已编辑」记录里还看得到旧文，要在网页上手动删那一版。" >> "$GITHUB_STEP_SUMMARY"
+
+  commits:
+    name: 提交信息
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - name: 查每个提交的信息
+        run: |
+          set -euo pipefail
+          # 一个 PR 最多列 250 个提交（GitHub 的上限），--paginate 取全
+          gh api --paginate "repos/$REPO/pulls/$PR/commits?per_page=100" \
+            --jq '.[] | {sha: .sha[0:8], message: .commit.message}' > commits.jsonl
+          total=$(grep -c . commits.jsonl || true)
+          bad=$(jq -r 'select(.message | test("Claude-Session|claude\\.ai/code"; "i")) | .sha' commits.jsonl)
+          if [ -z "$bad" ]; then
+            echo "$total 个提交，都没有会话链接。"
+            exit 0
+          fi
+          for s in $bad; do echo "::error::提交 $s 的信息里有 Claude-Session 行或会话链接。"; done
+          {
+            echo "这些提交的信息里有 Claude-Session 行或会话链接，不能合并："
+            for s in $bad; do echo "- $s"; done
+            echo
+            echo "提交信息改不了，只能在这条分支上改写那个提交（amend 或 rebase，只留 Co-Authored-By），再推。"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1

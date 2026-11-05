@@ -190,7 +190,8 @@ export async function exportMarkdown(id: string): Promise<{ filename: string; bo
   lines.push(`- ${SITE.name}：${itemUrl(row.id)}`);
   lines.push(`- 原文：${row.url}`, "");
   if (row.summary) lines.push("## 摘要", "", row.summary, "");
-  if (row.selected && row.seat && row.reason) lines.push(`## ${ITEM_COPY.reasonLabel}`, "", ...reasonLines(row.reason).map((l) => `- ${l}`), "");
+  // A selected report's reason goes with its seat; any other carries only one an editor wrote (publish.ts).
+  if (row.reason && (!row.selected || row.seat)) lines.push(`## ${ITEM_COPY.reasonLabel}`, "", ...reasonLines(row.reason).map((l) => `- ${l}`), "");
   if (showsPost(row) && row.x_post) {
     const post = xView(row);
     if (post?.text) lines.push("## 正文", "", post.text, "");

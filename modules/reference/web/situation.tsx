@@ -1,10 +1,11 @@
 // One situation (layout B2, J4): what it is and how many shops and 条原文 it has, its picture with the causes
 // numbered, then its items by cause, newest first, and those in no cause under 其他做法 (backend/read.ts).
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { AsideCard, ReadingLayout } from "@aihot/web/components/ui/Page";
-import { IconCopy, IconMore, IconShare } from "@aihot/web/components/icons";
+import { IconChevronDown, IconCopy, IconMore, IconShare } from "@aihot/web/components/icons";
+import { Collapse } from "@aihot/web/components/ui/Presence";
 import { ActionsSheet } from "@aihot/web/features/item/ReaderTools";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { breadcrumbLd, itemListLd, pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
@@ -13,7 +14,7 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import type { SituationPage } from "../types.ts";
 import { SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
-import { Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
+import { FIRST, Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
 
 export const handle: Screen = { tab: "reference" };
 
@@ -102,23 +103,19 @@ export default function SituationRoute() {
         )}
       </SituationFigure>
       {split ? s.groups.map((g, i) => (
-        <section key={g.key} className="mt-10">
-          <div id={g.key} className="flex scroll-mt-[calc(var(--bar-h)+8px)] items-baseline gap-3">
-            <span className="num text-[17px] font-[650] leading-[1.5] text-accent">{i + 1}</span>
-            <h2 className="text-[17px] font-[650] leading-[1.5] text-ink">{g.title}</h2>
-          </div>
+        <Section key={g.key} id={g.key} no={i + 1} title={g.title} count={g.cases.length} first={i === 0}>
           {/* No section picture for now: 6 of 20 checked against their stories were wrong (10-18); they come back one
               by one once each is checked (sections/, myfnb/figure-sheet still draws them all). */}
-          <StoryCards cards={g.cases} />
-        </section>
+          <StoryCards cards={g.cases} first={FIRST} />
+        </Section>
       )) : (
-        <section className="mt-9">{s.rest.length > 0 && <StoryCards cards={s.rest} />}</section>
+        <section className="mt-9">{s.rest.length > 0 && <StoryCards cards={s.rest} first={FIRST} />}</section>
       )}
       {split && s.rest.length > 0 && (
         <section className="mt-10">
           <Heading>其他做法</Heading>
           <p className="mt-1 text-[13px] text-ink-4">与这种情况有关，没有归入上面几组。</p>
-          <StoryCards cards={s.rest} />
+          <StoryCards cards={s.rest} first={FIRST} />
         </section>
       )}
       <ActionsSheet
@@ -131,5 +128,35 @@ export default function SituationRoute() {
       />
       {toast}
     </ReadingLayout>
+  );
+}
+
+/**
+ * A cause's section (Kay 11-04 22:22「尤其是1234这部分」, 决定记录 L2575): its number and title open and close it,
+ * the first open; the picture's numbered list jumps to one and opens it.
+ */
+function Section({ id, no, title, count, first, children }: { id: string; no: number; title: string; count: number; first: boolean; children: ReactNode }) {
+  const [open, setOpen] = useState(first);
+  useEffect(() => {
+    const opened = () => { if (decodeURIComponent(location.hash.slice(1)) === id) setOpen(true); };
+    opened();
+    window.addEventListener("hashchange", opened);
+    return () => window.removeEventListener("hashchange", opened);
+  }, [id]);
+  return (
+    <section className="mt-8 border-t border-line pt-2">
+      <h2 id={id} className="scroll-mt-[calc(var(--bar-h)+8px)]">
+        <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}
+          className="grid min-h-11 w-full grid-cols-[30px_minmax(0,1fr)_auto] items-baseline gap-x-3 py-2 text-left">
+          <span className="num text-[17px] font-[650] leading-[1.5] text-accent">{no}</span>
+          <span className="text-[17px] font-[650] leading-[1.5] text-ink">{title}</span>
+          <span className="flex items-center gap-1 text-[12.5px] text-ink-4">
+            <span className="num">{count}</span> 条
+            <IconChevronDown size={14} className={`self-center transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+          </span>
+        </button>
+      </h2>
+      <Collapse open={open}>{children}</Collapse>
+    </section>
   );
 }

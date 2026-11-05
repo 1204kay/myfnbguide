@@ -7,7 +7,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
-import { IconArrowLeft, IconChevronRight } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
+import { Collapse } from "@aihot/web/components/ui/Presence";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { copyText } from "@aihot/web/lib/clipboard";
@@ -141,8 +142,39 @@ export function StoryCard({ c }: { c: CaseCard }) {
   );
 }
 
-export function StoryCards({ cards }: { cards: CaseCard[] }) {
-  return <div className="mt-3 grid gap-2.5">{cards.map((c) => <StoryCard key={c.id} c={c} />)}</div>;
+/** How many a folded list shows before its toggle (Kay 11-06, 决定记录 L2575: 3 of each, the rest folded). */
+export const FIRST = 3;
+
+/**
+ * The original's fold toggle (features/feed/ReadingGroup.tsx Toggle, 「另有 N 家信源报道」): quiet text and a chevron
+ * that turns; open, it reads 收起. Kay asked twice for folds that were lost with the parts they were on (经验 G15).
+ */
+export function FoldToggle({ open, onToggle, children, className = "" }: { open: boolean; onToggle: () => void; children: ReactNode; className?: string }) {
+  return (
+    <button type="button" aria-expanded={open} onClick={onToggle}
+      className={`inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent lg:min-h-8 ${className}`}>
+      {open ? "收起" : children}
+      <IconChevronDown size={13} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+    </button>
+  );
+}
+
+/** Item cards; with `first`, only that many until 另有 N 条原文 is opened. */
+export function StoryCards({ cards, first }: { cards: CaseCard[]; first?: number }) {
+  const [open, setOpen] = useState(false);
+  const shown = first === undefined ? cards : cards.slice(0, first);
+  const more = cards.slice(shown.length);
+  return (
+    <>
+      <div className="mt-3 grid gap-2.5">{shown.map((c) => <StoryCard key={c.id} c={c} />)}</div>
+      {more.length > 0 && (
+        <>
+          <Collapse open={open}><div className="grid gap-2.5 pt-2.5">{more.map((c) => <StoryCard key={c.id} c={c} />)}</div></Collapse>
+          <FoldToggle open={open} onToggle={() => setOpen(!open)} className="mt-1">另有 <span className="num mx-0.5">{num(more.length)}</span> 条原文</FoldToggle>
+        </>
+      )}
+    </>
+  );
 }
 
 /** A row's columns: its place when ranked, the text, what it counts from 641px (one width, so the rows line up), ›. */
@@ -158,10 +190,32 @@ const COLUMNS = {
  * Ranked, the list is numbered from `from`, so a screen reader reads the places shown; the keyboard's ring is inside
  * a row, as the card clips what is outside.
  */
-export function SituationRows({ rows, from, category = false, children }: { rows: SituationRow[]; from?: number; category?: boolean; children?: ReactNode }) {
-  const List = from === undefined ? "ul" : "ol";
+export function SituationRows({ rows, from, category = false, first, more: moreLabel, children }: {
+  rows: SituationRow[]; from?: number; category?: boolean; first?: number; more?: ReactNode; children?: ReactNode;
+}) {
+  // With `first`, the rest wait behind a toggle at the card's foot (`more` names it; 另有 N 种情况 if not).
+  const [open, setOpen] = useState(false);
+  const shown = first === undefined ? rows : rows.slice(0, first);
+  const rest = rows.slice(shown.length);
   return (
     <div className="card mt-3 overflow-hidden">
+      {shown.length > 0 && <Rows rows={shown} from={from} category={category} />}
+      {rest.length > 0 && (
+        <>
+          <Collapse open={open}><div className={shown.length ? "border-t border-line-soft" : ""}><Rows rows={rest} from={from === undefined ? undefined : from + shown.length} category={category} /></div></Collapse>
+          <div className={`px-4 sm:px-5 lg:px-6 ${shown.length || open ? "border-t border-line-soft" : ""}`}>
+            <FoldToggle open={open} onToggle={() => setOpen(!open)}>{moreLabel ?? <>另有 <span className="num mx-0.5">{num(rest.length)}</span> 种情况</>}</FoldToggle>
+          </div>
+        </>
+      )}
+      {children}
+    </div>
+  );
+}
+
+function Rows({ rows, from, category }: { rows: SituationRow[]; from?: number; category: boolean }) {
+  const List = from === undefined ? "ul" : "ol";
+  return (
       <List start={from} className="divide-y divide-line-soft">
         {rows.map((s, i) => (
           <li key={s.slug} className={`relative grid items-center gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/70 touch:active:bg-bg-sunk has-[.stretch:focus-visible]:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:-outline-offset-2 has-[.stretch:focus-visible]:outline-accent sm:px-5 lg:px-6 lg:py-3.5 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
@@ -187,8 +241,6 @@ export function SituationRows({ rows, from, category = false, children }: { rows
           </li>
         ))}
       </List>
-      {children}
-    </div>
   );
 }
 

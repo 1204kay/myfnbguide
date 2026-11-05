@@ -24,10 +24,10 @@ case "${1:-}" in
     nohup sudo docker compose run --rm -T \
       -v $TRIAL/modules/reference:/app/modules/reference:ro -v $TRIAL/myfnb:/app/myfnb:ro \
       -v $TRIAL/site/models.ts:/app/site/models.ts:ro -v $OUT:/out \
-      worker node myfnb/trial-issues.ts --model "${MODEL:-deepseek-v4-pro-llm}" --check-model claude-opus-5-5 \
+      worker node myfnb/trial-issues.ts --model "${MODEL:-deepseek-flash-think-llm}" --check-model claude-opus-5-5 \
       "${days[@]}" --apply --cap-usd "${CAP_USD:-8}" > "$LOG" 2>&1 &
     echo $! > "$PID"
-    echo "开跑：$(git -C $TRIAL rev-parse --short HEAD)，${MODEL:-deepseek-v4-pro-llm}，${*}"
+    echo "开跑：$(git -C $TRIAL rev-parse --short HEAD)，${MODEL:-deepseek-flash-think-llm}，${*}"
     ;;
   check)
     [ -n "${2:-}" ] && [ -f "$OUT/$2/01.json" ] || { echo "写那一趟的目录名：check 20261023012811-…"; exit 1; }

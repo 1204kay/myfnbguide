@@ -19,6 +19,11 @@ test("place names, spoken words, Japanese terms and notes to itself are sent bac
   assert.equal(flagged("熊本地震后重建，改为三种不同行业经营，从干货库走到冷藏，把货放进干货间").length, 0, "a place name, 行业 and a dry store and a dry-goods room");
   assert.equal(flagged("本地客人多，同行都在看，全是干货").length, 3);
   assert.equal(flagged("全国门店增加，国内市场放缓，店里的备品要自己买，他讲了三件事").length, 4);
+  assert.equal(flagged("凭目分量下料，按一人前出餐，靠集客活动拉人，店里有 20 个客席").length, 4);
+  assert.equal(flagged("不必收集客人的个人信息，请来客席教授讲课").length, 0, "收集客人 and 客席教授 are Chinese");
+  const points = (reasonZh: string) => wordingProblems({ titleZh: "", summaryZh: "", reasonZh });
+  assert.equal(points("文章说店主每天备料\n作者认为成本还会涨").length, 2, "a line opening with who said it, when the lead already named them");
+  assert.equal(points("店主每天备料\n他引用文章说法").length, 0);
 });
 
 test("region tags take the names readers see", () => {

@@ -6,7 +6,7 @@
 #   bash myfnb/trial-run.sh review 20261023…-… 01 02     只拿那一趟上线的稿再复核一遍「漏了什么」，一期接一期，前台跑完
 #   bash myfnb/trial-run.sh status                         还在跑 / 跑完了，和日志最后几行
 #   bash myfnb/trial-run.sh pack                           把这一趟的结果打成 tar.gz 写到标准输出
-# 写稿默认 DeepSeek V4 Pro（MODEL=deepseek-flash-think-llm 换成 flash），核对 Opus 5.5；花费上限默认 US$8，可用 CAP_USD 改。
+# 写稿默认 DeepSeek flash（MODEL=deepseek-v4-pro-llm 换成 Pro），核对 Opus 5.5；花费上限默认 US$8，可用 CAP_USD 改。
 set -euo pipefail
 TRIAL=/opt/myfnbguide-trial
 OUT=/tmp/myfnb-trial

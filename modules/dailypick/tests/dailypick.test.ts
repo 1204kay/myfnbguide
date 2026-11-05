@@ -101,28 +101,32 @@ test("an entry in full that is not selected gets its points once, shown on its p
   const chosen = await report("补要点甲", 0, POINTS, 20, false);
   const picked = await report("入选乙", 1, POINTS, 90);
   const flash = await report("补要点丙", 2, POINTS, 20, false);
+  // An editor's points written against the original (11-03): shown once republished, never rewritten by the model.
+  const edited = await report("补要点丁", 3, POINTS, 20, false);
+  await sql`INSERT INTO editorial_overrides (article_id, fields, reason, version, updated_by) VALUES (${edited}, ${sql.json({ reason: "编辑对着原文写的要点" } as never)}, '核对', 1, 'editor')`;
   const entry = (itemId: string) => ({ itemId, title: itemId });
   const end = beijingAt(POINTS, "08:00");
   await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at)
             VALUES ('daily', ${POINTS}, ${new Date(end.getTime() - 86400000)}, ${end},
-                    ${sql.json({ sections: [{ label: "店家经验", items: [entry(chosen), entry(picked)] }], flashes: [entry(flash)] } as never)}, ${end})`;
+                    ${sql.json({ sections: [{ label: "店家经验", items: [entry(chosen), entry(picked), entry(edited)] }], flashes: [entry(flash)] } as never)}, ${end})`;
   const later = end.getTime() + 4 * 3600_000;
   const before = await pointsFindings(later);
   assert.deepEqual(before.map((f) => [f.key, f.level]), [["dailypick.points", "today"]]);
-  assert.match(before[0]!.detail!, new RegExp(chosen));
+  assert.match(before[0]!.detail!, new RegExp(`${chosen}.*${edited}|${edited}.*${chosen}`));
   assert.doesNotMatch(before[0]!.detail!, new RegExp(`${picked}|${flash}`), "a selected entry has its points; a flash is not an entry in full");
   assert.deepEqual(await pointsFindings(end.getTime() + 3600_000), [], "within three hours it is still being written");
 
   const calls = asked.length;
-  assert.deepEqual(await writeWaiting(40, POINTS), { written: 1, held: 0, none: 0, failed: 0 });
+  assert.deepEqual(await writeWaiting(40, POINTS), { written: 1, held: 0, none: 0, failed: 0, shown: 1 });
   assert.equal(asked.length - calls, 1, "one understanding call for the one entry");
   const rows = await sql<{ article_id: string; title: string; summary: string; reason: string | null }[]>`
-    SELECT article_id, title, summary, reason FROM publications WHERE article_id IN ${sql([chosen, picked, flash])}`;
+    SELECT article_id, title, summary, reason FROM publications WHERE article_id IN ${sql([chosen, picked, flash, edited])}`;
   const by = new Map(rows.map((r) => [r.article_id, r]));
   assert.deepEqual(by.get(chosen), { article_id: chosen, title: "补要点甲", summary: "补要点甲的导读", reason: "原文第一条做法\n原文第二条做法，涨了 3 成" }, "only the points are new");
   assert.equal(by.get(picked)!.reason, "入选乙的要点");
   assert.equal(by.get(flash)!.reason, null);
+  assert.equal(by.get(edited)!.reason, "编辑对着原文写的要点");
   assert.deepEqual(await pointsFindings(later), []);
-  assert.deepEqual(await writeWaiting(40, POINTS), { written: 0, held: 0, none: 0, failed: 0 }, "written once");
+  assert.deepEqual(await writeWaiting(40, POINTS), { written: 0, held: 0, none: 0, failed: 0, shown: 0 }, "written once");
   assert.equal(asked.length - calls, 1);
 });

@@ -39,10 +39,34 @@ export async function waitingPoints(today = beijingDate(new Date()), limit = POI
   const rows = await sql<{ article_id: string }[]>`
     SELECT p.article_id FROM publications p
     WHERE p.article_id = ANY(${[...new Set(entries.map((e) => e.itemId))]}) AND NOT p.selected AND p.reason IS NULL AND p.visibility = 'public'
-      AND NOT EXISTS (SELECT 1 FROM dailypick_points d WHERE d.article_id = p.article_id)`;
+      AND NOT EXISTS (SELECT 1 FROM dailypick_points d WHERE d.article_id = p.article_id)
+      AND NOT EXISTS (SELECT 1 FROM editorial_overrides o WHERE o.article_id = p.article_id AND ${edited()})`;
   const waiting = new Set(rows.map((r) => r.article_id));
   // 新的日报先写：补旧的排在后面，每天的不会被它挤掉。
   return [...new Set(entries.filter((e) => waiting.has(e.itemId)).reverse().map((e) => e.itemId))].slice(0, limit);
+}
+
+/** 编辑已经写过要点（例如 11-03 对着原文人工核过的那批）：只差重发布就会显示，不再让模型重写。 */
+const edited = () => sql`coalesce(btrim(o.fields->>'reason'), '') <> ''`;
+
+/**
+ * 没入选、编辑写过要点、页面上还没显示的条目：框架改成编辑写的要点不看是否入选以后，它们要重发布一次才显示。
+ * 不花钱，全站都算（不只日报里的）；重发布以后 publications.reason 有值，下次就不再列出。
+ */
+export async function republishEdited(): Promise<number> {
+  const rows = await sql<{ article_id: string }[]>`
+    SELECT p.article_id FROM publications p JOIN editorial_overrides o ON o.article_id = p.article_id
+    WHERE NOT p.selected AND p.reason IS NULL AND ${edited()}`;
+  let shown = 0;
+  for (const { article_id: id } of rows) {
+    await sql.begin(async (tx) => {
+      const published = await publishArticleTx(tx, id);
+      if (!published?.changed) return;
+      shown++;
+      await emit("articleChanged", { id, kind: "content", reduced: published.reduced, reason: "edited points shown" }, tx);
+    });
+  }
+  return shown;
 }
 
 type Outcome = "written" | "held" | "none";
@@ -68,8 +92,17 @@ export async function writePoints(articleId: string): Promise<Outcome> {
     held = c.held;
   }
   if (held || !reason?.trim()) return record(articleId, a.revision, held ? "held" : "none", receipts);
-  await sql.begin(async (tx) => {
+  return sql.begin(async (tx): Promise<Outcome> => {
     const [before] = await tx<{ fields: Record<string, unknown> }[]>`SELECT fields FROM editorial_overrides WHERE article_id = ${articleId} FOR UPDATE`;
+    // 写的这段时间里编辑写了要点：用编辑的，不覆盖。
+    if (typeof before?.fields.reason === "string" && before.fields.reason.trim()) {
+      await tx`INSERT INTO dailypick_points (article_id, revision, outcome, receipt_ids) VALUES (${articleId}, ${a.revision}, 'none', ${receipts})
+               ON CONFLICT (article_id) DO NOTHING`;
+      for (const id of receipts) await completeReceipt(tx, id);
+      const published = await publishArticleTx(tx, articleId);
+      if (published?.changed) await emit("articleChanged", { id: articleId, kind: "content", reduced: published.reduced, reason: "edited points shown" }, tx);
+      return "none";
+    }
     const fields = { ...(before?.fields ?? {}), reason: reason!.trim() };
     await tx`
       INSERT INTO editorial_overrides (article_id, fields, reason, version, updated_by) VALUES (${articleId}, ${tx.json(fields as never)}, ${NOTE}, 1, ${ACTOR})
@@ -80,8 +113,8 @@ export async function writePoints(articleId: string): Promise<Outcome> {
     await tx`INSERT INTO dailypick_points (article_id, revision, outcome, receipt_ids) VALUES (${articleId}, ${a.revision}, 'written', ${receipts})
              ON CONFLICT (article_id) DO NOTHING`;
     for (const id of receipts) await completeReceipt(tx, id);
+    return "written";
   });
-  return "written";
 }
 
 async function record(articleId: string, revision: number, outcome: Outcome, receipts: number[]): Promise<Outcome> {
@@ -94,8 +127,8 @@ async function record(articleId: string, revision: number, outcome: Outcome, rec
 }
 
 /** 一次跑：等着的逐条写，一条出错不挡后面的。 */
-export async function writeWaiting(limit = POINTS_LIMIT, today = beijingDate(new Date())): Promise<Record<Outcome | "failed", number>> {
-  const counts = { written: 0, held: 0, none: 0, failed: 0 };
+export async function writeWaiting(limit = POINTS_LIMIT, today = beijingDate(new Date())): Promise<Record<Outcome | "failed" | "shown", number>> {
+  const counts = { written: 0, held: 0, none: 0, failed: 0, shown: await republishEdited() };
   for (const id of await waitingPoints(today, limit)) {
     try {
       counts[await writePoints(id)]++;

@@ -67,7 +67,12 @@ const CHECK_OUTPUT = 8_000;
 const outputOf = (m: string, room = OUTPUT) => room + (MODELS[m]?.reasoningTokens ?? 0);
 /** The most a call can cost: every character an input token (more than any text here takes) and all the output it may write. */
 const worst = (m: string, room = OUTPUT) => (chars * 1.5 * priceOf(m)[0] + outputOf(m, room) * priceOf(m)[1]) / 1e6;
-const need = worst(model) + worst(checkModel, CHECK_OUTPUT) * 2;
+/**
+ * --no-check: write only. The third run on the server (11-06 09:1x) had the check think past its 20,000 twice with no
+ * JSON, and the draft was lost with it; within what Kay's consent left, the draft is written and checked by hand.
+ */
+const noCheck = args.includes("--no-check");
+const need = worst(model) + (noCheck ? 0 : worst(checkModel, CHECK_OUTPUT) * 2);
 console.log(`最坏情况约 US$${need.toFixed(3)}（写一次、核对最多两次，每次都写满），上限 US$${cap}`);
 if (!apply) { await closeDb(); process.exit(0); }
 if (need > cap) throw new Error("超过 --cap-usd，没有调用");
@@ -101,6 +106,24 @@ const article = await write("reference_topic_write", prompt("topic-write", { 题
 // The first run on the server wrote 「第 1 组」 for 1, and the headings came out as the group's number (11-06 08:57).
 const groupTitle = (g: string) => groups.find((x) => x.no === g.replace(/^第\s*|\s*组$/gu, "").trim())?.title ?? g;
 const text = (a: ArticleText) => [`# ${a.title}`, "", ...a.lead, "", ...a.sections.flatMap((s) => [`## ${groupTitle(s.group)}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
+// The draft goes to disk before any check, so a failed check does not lose what was paid for.
+mkdirSync(out, { recursive: true });
+const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "");
+const base = join(out, `topic-${slug}-${model}-${stamp}`);
+const sourcesOf = (t: string) => {
+  const cited = new Set([...t.matchAll(/〔([^〕]+)〕/gu)].flatMap((m) => m[1]!.split(/[,，、\s]+/).map(Number)));
+  return items.filter((i) => cited.has(i.n)).map((i) => `- 〔${i.n}〕${i.title}（${i.src}）https://www.myfnbguide.com/items/${i.id}`);
+};
+writeFileSync(`${base}-draft.md`, [text(article), "## 原文出处", "", ...sourcesOf(text(article))].join("\n"));
+console.log(`草稿：${base}-draft.md`);
+if (noCheck) {
+  await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
+  const u = used[model] ?? { input: 0, output: 0 };
+  console.log(`只写不核：输入 ${u.input}、输出 ${u.output} token，约 US$${((u.input * priceOf(model)[0] + u.output * priceOf(model)[1]) / 1e6).toFixed(4)}`);
+  await stopBoss().catch(() => {});
+  await closeDb();
+  process.exit(0);
+}
 const found = await check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${text(article)}\n\n# 原文\n\n${listing}`, Problems);
 // 严重的句子删掉（照十一说：改不准的不留）；轻的留着，列在文件里给人看。
 const serious = found.problems.filter((p) => p.severity.includes("严重"));
@@ -109,13 +132,9 @@ const final: ArticleText = { title: article.title, lead: article.lead.map(cut).f
 const again = serious.length ? await check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${text(final)}\n\n# 原文\n\n${listing}`, Problems, "recheck") : { problems: [] };
 
 await sql.begin(async (tx) => { for (const id of receipts) await completeReceipt(tx, id); });
-const cited = new Set([...text(final).matchAll(/〔([^〕]+)〕/gu)].flatMap((m) => m[1]!.split(/[,，、\s]+/).map(Number)));
-const sources = items.filter((i) => cited.has(i.n)).map((i) => `- 〔${i.n}〕${i.title}（${i.src}）https://www.myfnbguide.com/items/${i.id}`);
+const sources = sourcesOf(text(final));
 const usd = Object.entries(used).reduce((s, [m, u]) => s + (u.input * priceOf(m)[0] + u.output * priceOf(m)[1]) / 1e6, 0);
 const chineseChars = text(final).replace(/〔[^〕]*〕/gu, "").replace(/[\s#]/g, "").length;
-mkdirSync(out, { recursive: true });
-const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "");
-const base = join(out, `topic-${slug}-${model}-${stamp}`);
 writeFileSync(`${base}.md`, [text(final), "## 原文出处", "", ...sources, "",
   "---", `写：${model}；核对：${checkModel}；约 ${chineseChars} 字，引用 ${sources.length} 条原文；花费约 US$${usd.toFixed(4)}（高峰价推算，按回执的 token 数）`,
   `核对第一遍：严重 ${serious.length} 处（已删），轻 ${found.problems.length - serious.length} 处（留着）；删后再核：${again.problems.length} 处`, "",

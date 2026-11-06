@@ -5,8 +5,11 @@
 //   sudo docker compose exec -T worker node myfnb/trial-flash-check.ts --date 2026-11-07                 只列要核哪几稿，不调模型
 //   sudo docker compose exec -T worker node myfnb/trial-flash-check.ts --date 2026-11-07 --apply         flash 每稿核 2 次
 //   … --model deepseek-flash-think-llm --reps 2                                                       默认就是这两个
+//   … --room 56000      这次试跑给思考的余量（只改这个进程里的预设）。11-07 07:16 flash 照预设的 12,000 想满了 20,000
+//                       没写出答案（回执 150420、150421）；DeepSeek 官方思考模式 max_tokens 默认 64K，56,000 加答案 8,000 正好是它。
 import { closeDb, sql } from "@aihot/backend/db";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
+import { MODELS } from "@aihot/backend/providers/llm";
 import { checkIssue, type DayItem, type IssueText, modelAsk, type Problem, type Usage } from "../modules/reference/backend/issue.ts";
 
 const arg = (name: string) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
@@ -15,6 +18,11 @@ if (!date || !/^\d{4}-\d{2}-\d{2}$/u.test(date)) throw new Error("--date 要一�
 const model = arg("--model") ?? "deepseek-flash-think-llm";
 const reps = Number(arg("--reps") ?? 2);
 const apply = process.argv.includes("--apply");
+const room = arg("--room");
+if (room) {
+  if (!MODELS[model]) throw new Error(`没有模型预设 ${model}`);
+  MODELS[model].reasoningTokens = Number(room);
+}
 
 type Stored = { issue: IssueText; problems: Problem[]; edited: boolean; unchecked?: boolean };
 const [row] = await sql<{ no: number | null; models: unknown; content: { drafts: Stored[]; items: Omit<DayItem, "text">[]; cut: string[] } }[]>`

@@ -100,12 +100,18 @@ export const tidy = (s: string) => s
   .replace(/[；，、：]+$/u, "。")
   .replace(/\s{2,}/g, " ").trim();
 
-/** The article without the sentences quoted; an emptied paragraph or section goes with them. */
+/**
+ * The article without the sentences quoted; an emptied point or section goes with them. A point whose first sentence,
+ * its conclusion, is cut goes whole: what is left is the reason for a conclusion no longer there (11-07 03:50, the
+ * card's first point read 「因为方向定了，看报价和店面才有判断标准……」 and nothing before it).
+ */
 export function cutSentences(a: TopicText, quotes: string[]): TopicText {
   const cut = (s: string) => tidy(quotes.reduce((t, q) => (q && t.includes(q) ? t.replace(q, "") : t), s));
+  const first = (s: string) => s.split(/(?<=[。！？])/u)[0]!.trim();
+  const point = (s: string) => { const c = cut(s); return c.startsWith(first(s)) ? [c] : []; };
   return {
-    lead: a.lead.map(cut).filter(Boolean),
-    sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.map(cut).filter(Boolean) })).filter((s) => s.paragraphs.length),
+    lead: a.lead.flatMap(point),
+    sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.flatMap(point) })).filter((s) => s.paragraphs.length),
   };
 }
 

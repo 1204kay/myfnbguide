@@ -49,6 +49,12 @@ test("a 严重 sentence is cut and the rest checked again: shown when that finds
   assert.equal(held.status, "held");
 });
 
+test("a point whose conclusion is cut goes whole: its reason alone is not left", async () => {
+  const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, scripted([[serious("几家店主都先定方向〔1,2〕。")], []]));
+  assert.deepEqual(c.article.lead, ["设备能用二手〔3〕。", "周转金要另算〔2〕。"]);
+  assert.deepEqual(c.article.sections.map((s) => s.group), ["2"], "the first cause's only point went with its conclusion");
+});
+
 test("a citation of no item given is 严重 though the checker finds nothing", async () => {
   const ask = scripted([[], []]);
   const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS.filter((i) => i.n !== 3), ask);

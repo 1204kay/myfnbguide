@@ -1,6 +1,6 @@
 // 参考, the site's home page (layout J3): how many situations and 条原文 the library has; 店家谈得最多的事, the
-// ten situations the most shops told, after AIHOT's 热点榜 (the first as a large card with its
-// picture, the next two as small cards beside it, the rest as rows); then each category's situations as rows, most
+// ten situations the most shops told, after AIHOT's 热点榜 (the first as a large card,
+// the next two as small cards beside it, the rest as rows); then each category's situations as rows, most
 // shops first. Neither countries nor shop kinds are ways in or counts (layout J0).
 import { Link, useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { Kicker } from "@aihot/web/components/ui/Kicker";
@@ -12,8 +12,7 @@ import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import { day, num } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
-import { figureKind, SituationDrawing } from "./figures";
-import { CARD, CountFigure, FIRST, KindTag, Page, PageHeader, RankTag, SituationRows, STRETCH, Who } from "./ui";
+import { CARD, CountFigure, FIRST, Page, PageHeader, RankTag, SituationRows, STRETCH, Who } from "./ui";
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
@@ -34,17 +33,14 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
 }
 
 /**
- * The first: its place and title, its line, its picture and what kind it is (举例 or 示意, as under every picture:
- * HANDOFF §3.1), and its shops in a big number. The
- * picture comes after the title on phones; beside the text from 1280px, where the card (8 of 12 columns) is wide
- * enough for the picture's words to stay 11px or more (layout B2); under the text between 961px and 1280px, where
- * the card is 7 columns.
+ * The first: its place and title, its line, and its shops in a big number. No picture: the pictures were examples
+ * with made-up amounts, and the reference pages show no amounts and draw only what many sources show (Kay 11-07
+ * 「行吧 试试吧」 to taking them off).
  */
 function Lead({ s }: { s: SituationRow }) {
-  const kind = figureKind(s.slug);
   return (
-    <article className={`${CARD} flex flex-col p-5 sm:p-6 xl:grid xl:grid-cols-[minmax(0,1fr)_auto] xl:grid-rows-[auto_1fr]`}>
-      <div className="min-w-0 xl:col-start-1 xl:row-start-1">
+    <article className={`${CARD} flex flex-col p-5 sm:p-6`}>
+      <div className="min-w-0">
         {/* The hot list's first card type (AIHOT routes/hot.tsx Lead): NO.01 over a 21/23/25px title, a 14px line. */}
         <RankTag rank={1} />
         <h3 className="mt-4 text-[21px] font-bold leading-[1.4] tracking-[-0.01em] text-ink sm:text-[23px] lg:text-[25px] lg:leading-[1.38]">
@@ -53,11 +49,7 @@ function Lead({ s }: { s: SituationRow }) {
         <p className="mt-3 line-clamp-3 text-[14px] leading-[1.75] text-ink-3">{s.dek}</p>
         <div className="mt-3"><Who s={s} size={24} /></div>
       </div>
-      <div className="mx-auto mt-4 w-full max-w-[360px] empty:hidden [&_svg]:max-h-[200px] xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:ml-6 xl:mt-0 xl:w-[260px] xl:self-center">
-        <SituationDrawing slug={s.slug} />
-        {kind && <p className="mt-2"><KindTag kind={kind} /></p>}
-      </div>
-      <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-4 xl:col-start-1 xl:row-start-2">
+      <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-4">
         <span className="ml-auto pb-1.5"><CountFigure count={s.count} size={30} /></span>
       </div>
     </article>

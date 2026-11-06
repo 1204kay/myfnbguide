@@ -14,7 +14,9 @@ const SOURCES = [
 ];
 
 // 只存 convert.ts 会用到的货币。
-const CODES = ["JPY", "MYR", "CNY", "TWD", "HKD", "MOP", "SGD", "KRW", "THB", "VND", "IDR", "PHP", "EUR", "GBP", "AUD", "CAD", "NZD", "INR", "CHF", "AED"];
+export const CODES = ["JPY", "MYR", "CNY", "TWD", "HKD", "MOP", "SGD", "KRW", "THB", "VND", "IDR", "PHP", "EUR", "GBP", "AUD", "CAD", "NZD", "INR", "CHF", "AED",
+  "PKR", "LKR", "NPR", "MXN", "CLP", "ARS", "COP", "SEK", "NOK", "DKK", "CZK", "ISK", "BRL", "ZAR", "TRY", "ILS", "SAR", "QAR",
+  "PLN", "HUF", "RON", "RUB", "EGP", "NGN", "BDT", "BND", "KHR", "MMK", "LAK"];
 
 export interface Rates { date: string; perUsd: PerUsd }
 
@@ -32,7 +34,9 @@ export function parseRates(body: unknown): Rates | null {
 
 /** 取当天的汇率，存进 settings；返回存了的日期，或者为什么没存。 */
 export async function refreshRates(): Promise<{ date: string } | { skipped: string }> {
-  const [fresh] = await sql<{ date: string }[]>`SELECT value->>'date' AS date FROM settings WHERE key = 'usd.rates' AND updated_at > now() - interval '12 hours'`;
+  // 存的那份少了 CODES 里新加的货币（加货币后的第一次部署），不等满 12 小时，马上重取。
+  const [fresh] = await sql<{ date: string }[]>`SELECT value->>'date' AS date FROM settings WHERE key = 'usd.rates' AND updated_at > now() - interval '12 hours'
+    AND value->'perUsd' ?& ${CODES}::text[]`;
   if (fresh) return { skipped: `rates of ${fresh.date} are less than 12 hours old` };
   const failures: string[] = [];
   for (const url of SOURCES) {

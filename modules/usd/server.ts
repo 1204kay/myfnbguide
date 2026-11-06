@@ -2,7 +2,7 @@
 // 所以只在 api 回应发出去之前补一次（onSend），框架的文件一个都不改，库里存的文字也不改。管理后台、上传、图片不碰。
 // 汇率每小时第 17 分钟看一次，存的那份满 12 小时才重新取（backend/rates.ts）：刚部署、取失败过，都在一小时内补上。
 //
-// 带 ETag 的回应：补过美元的，ETag 后面加上汇率日期（W/"abc" → W/"abc.usd-2026-11-05"），汇率一换，浏览器手上的旧版就
+// 带 ETag 的回应：补过美元的，ETag 后面加上汇率日期（W/"abc" → W/"abc.usd2-2026-11-05"），汇率一换，浏览器手上的旧版就
 // 对不上、会重新取；请求带回来的 If-None-Match 先去掉这个尾巴再交给原来的路由比对，日期不是当天的就整个去掉。
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { defineServerModule } from "@aihot/backend/modules";
@@ -11,7 +11,9 @@ import { currentRates, refreshRates } from "./backend/rates.ts";
 
 const SKIP = /^\/api\/(?:admin|auth|ingest|og|media|img-proxy|health)(?:\/|$)/;
 const TEXTUAL = /^(?:application\/(?:json|rss\+xml|atom\+xml|xml|feed\+json)|text\/)/i;
-const TAIL = /\.usd-(\d{4}-\d{2}-\d{2})(?=")/;
+// 补美元的规则改了（convert.ts），把 RULES 加一：旧尾巴对不上，浏览器手上按旧规则补的那份会重新取。
+const RULES = "2";
+const TAIL = new RegExp(`\\.usd${RULES}-(\\d{4}-\\d{2}-\\d{2})(?=")`);
 
 const tagged = new WeakSet<FastifyRequest>();
 
@@ -22,7 +24,7 @@ function wanted(req: FastifyRequest): boolean {
 }
 
 function withTail(etag: string, date: string): string {
-  return etag.endsWith('"') ? `${etag.slice(0, -1)}.usd-${date}"` : `${etag}.usd-${date}`;
+  return etag.endsWith('"') ? `${etag.slice(0, -1)}.usd${RULES}-${date}"` : `${etag}.usd${RULES}-${date}`;
 }
 
 async function onRequest(req: FastifyRequest): Promise<void> {

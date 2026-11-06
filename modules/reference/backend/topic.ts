@@ -78,9 +78,21 @@ export const topicMarkdown = (a: TopicText, groups: Group[]) => [`# ${a.title}`,
 
 const isSerious = (p: TopicProblem) => p.severity.includes("严重");
 
+/**
+ * The punctuation a cut leaves (the first article on the site, 11-06 10:27: 「〔99〕；。」 five times): a clause quoted
+ * without its 「；」 leaves that before the full stop, a whole sentence leaves two stops, a paragraph's first leaves a
+ * stop or a 「；」 at its start; a paragraph left with only these is gone.
+ */
+export const tidy = (s: string) => s
+  .replace(/[；，、：\s]+(?=[。！？])/gu, "")
+  .replace(/([。！？])[。；，、\s]+/gu, "$1")
+  .replace(/^[。！？；，、：\s]+/u, "")
+  .replace(/[；，、：]+$/u, "。")
+  .replace(/\s{2,}/g, " ").trim();
+
 /** The article without the sentences quoted; an emptied paragraph or section goes with them. */
 export function cutSentences(a: TopicText, quotes: string[]): TopicText {
-  const cut = (s: string) => quotes.reduce((t, q) => (q && t.includes(q) ? t.replace(q, "") : t), s).replace(/\s{2,}/g, " ").trim();
+  const cut = (s: string) => tidy(quotes.reduce((t, q) => (q && t.includes(q) ? t.replace(q, "") : t), s));
   return {
     title: a.title, lead: a.lead.map(cut).filter(Boolean),
     sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.map(cut).filter(Boolean) })).filter((s) => s.paragraphs.length),
@@ -216,8 +228,9 @@ export async function readTopic(slug: string): Promise<TopicView | null> {
   if (!row) return null;
   const { article, groups, sources } = row.content;
   return {
-    title: article.title, lead: article.lead,
-    sections: article.sections.map((s) => ({ title: groups.find((g) => g.no === groupNo(s.group))?.title ?? s.group, paragraphs: s.paragraphs })),
+    // Tidied as read too: the first article was cut before tidy was there, and stays as stored.
+    title: article.title, lead: article.lead.map(tidy).filter(Boolean),
+    sections: article.sections.map((s) => ({ title: groups.find((g) => g.no === groupNo(s.group))?.title ?? s.group, paragraphs: s.paragraphs.map(tidy).filter(Boolean) })),
     sources: Object.fromEntries(sources.map((s) => [s.n, s.id])),
     items: row.items, updatedAt: row.created_at.toISOString(),
   };

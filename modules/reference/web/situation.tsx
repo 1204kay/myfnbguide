@@ -78,8 +78,10 @@ export default function SituationRoute() {
       {/* As the topic page: 返回 on desktops (分享 is in the aside's card), then the header; desktops have the counts
           and the date in the aside. */}
       <BackLink to="/reference" label="参考" />
-      <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
+      <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.topic?.title ?? s.title} dek={s.dek}
         counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
+      {/* The page's title is the article's: the reader's question and the conclusion from the items (决定记录 L2575 第 4
+          条; Kay 11-06 10:34「开店前的准备和开销 这句不用优化吗」); the situation's own title stays in the lists. */}
       {s.topic && <Overview topic={s.topic} />}
       <SituationFigure slug={s.slug} groups={titles}>
         {/* Split by cause, the sections below are the list (Kay 11-06 08:24: 1234 shown twice reads as two things). */}
@@ -157,7 +159,7 @@ function Section({ id, no, title, count, first, children }: { id: string; no: nu
 
 /**
  * The 综合整理 (backend/topic.ts) at the top, as the engine's event page opens with its 先了解这件事 card
- * (apps/web/app/routes/story.tsx Panel; 决定记录 L2575): its title, the three sentences that tell the conclusion, and
+ * (apps/web/app/routes/story.tsx Panel, its title too; 决定记录 L2575): the three sentences that tell the conclusion, and
  * the rest by cause behind a toggle, so a reader who stops at the three has the point. Each 〔n〕 goes to its item.
  */
 function Overview({ topic }: { topic: TopicView }) {
@@ -166,7 +168,7 @@ function Overview({ topic }: { topic: TopicView }) {
   return (
     <section className="card mt-6 p-5 lg:p-6">
       <div className="flex items-start justify-between gap-3">
-        <h2 className="min-w-0 text-[17px] font-[650] leading-[1.5] text-ink">{topic.title}</h2>
+        <h2 className="min-w-0 text-[17px] font-[650] leading-[1.5] text-ink">先了解这件事</h2>
         <div className="shrink-0 text-[11.5px] text-ink-4">AI 综述</div>
       </div>
       <div className="mt-3.5 space-y-3">

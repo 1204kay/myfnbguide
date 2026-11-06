@@ -26,10 +26,14 @@ export const TOPIC_CHECK_STEP = "referenceTopicCheck";
 
 const prompt = (name: string, values: Record<string, string> = {}) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), values);
+/**
+ * The prompts' version: an article written with other prompts is written again (topicStale), as a change of how it is
+ * written is meant for the articles already up (Kay 11-06 10:34: 只有日本). Only the prompts: a change of this file's
+ * code alone does not rewrite every situation's article.
+ */
 export const TOPIC_VERSION = `reference-topic@${createHash("sha256")
   .update(readFileSync(new URL("../prompts/topic-write.md", import.meta.url)))
-  .update(readFileSync(new URL("../prompts/topic-check.md", import.meta.url)))
-  .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
+  .update(readFileSync(new URL("../prompts/topic-check.md", import.meta.url))).digest("hex").slice(0, 10)}`;
 
 /** At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575. */
 export const DAY_CAP_USD = 0.3;
@@ -146,10 +150,15 @@ export async function topicSlugs(): Promise<string[]> {
 /** Whether a situation has items its last article (shown or held) did not read: only then is it written again. */
 export async function topicStale(page: SituationPage): Promise<boolean> {
   const ids = [...page.groups.flatMap((g) => g.cases), ...page.rest].map((c) => c.id);
-  const [last] = await sql<{ item_ids: string[] }[]>`SELECT item_ids FROM reference_topics WHERE slug = ${page.slug} ORDER BY id DESC LIMIT 1`;
+  const [last] = await sql<{ item_ids: string[]; version: string }[]>`SELECT item_ids, version FROM reference_topics WHERE slug = ${page.slug} ORDER BY id DESC LIMIT 1`;
+  return needsRewrite(last, ids);
+}
+
+/** Written again when there is none, the situation has an item the last did not read, or the prompts changed since. */
+export function needsRewrite(last: { item_ids: string[]; version: string } | undefined, ids: string[], version = TOPIC_VERSION): boolean {
   if (!last) return ids.length > 0;
   const read = new Set(last.item_ids);
-  return ids.some((id) => !read.has(id));
+  return last.version !== version || ids.some((id) => !read.has(id));
 }
 
 /** What the articles cost so far on the Beijing date of `now`. */

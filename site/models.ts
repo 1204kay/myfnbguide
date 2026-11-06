@@ -71,10 +71,12 @@ export const PRESETS: Record<string, ModelPreset> = {
   },
   // 十一说 is checked, mended and picked by Opus (Kay 10-19; DeepSeek writes, 10-23). Opus 5.5 takes no sampling
   // parameters, so extra drops the framework's temperature (undefined is left out of the request); it always thinks,
-  // and reasoningTokens leaves room for that.
+  // and reasoningTokens leaves room for that. 11-07 05:05 the two checks of that day's issue thought 16,695 and 16,620 tokens
+  // and were cut off at 20,000 in the middle of their answer (receipts 150398, 150399; the issue did not go up), so the
+  // room is 24,000 on top of the answer's 8,000. Only what is used is paid for.
   "claude-opus-5-5": {
     service: "anthropic", model: "claude-opus-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
-    extra: { temperature: undefined }, reasoningTokens: 12000, jsonMode: false,
+    extra: { temperature: undefined }, reasoningTokens: 24000, jsonMode: false,
   },
   "qwen3-vl-flash": {
     service: "dashscope", model: "qwen3-vl-flash", baseUrlEnv: "DASHSCOPE_BASE_URL", apiKeyEnv: "DASHSCOPE_API_KEY",

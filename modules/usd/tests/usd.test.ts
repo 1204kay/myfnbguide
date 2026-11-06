@@ -31,12 +31,14 @@ test("the api's text gets US$, its ETag the rate's date, and a browser's copy is
   const r = await app.inject({ url: "/api/x" });
   assert.equal(r.json().items[0].summary, "平均975万日元（约 US$6.2万）");
   const etag = String(r.headers.etag);
-  assert.match(etag, /\.usd-2026-11-05"$/);
+  assert.match(etag, /\.usd2-2026-11-05"$/);
   const again = await app.inject({ url: "/api/x", headers: { "if-none-match": etag } });
   assert.equal(again.statusCode, 304);
   assert.equal(again.headers.etag, etag);
   const older = await app.inject({ url: "/api/x", headers: { "if-none-match": etag.replace("2026-11-05", "2026-11-04") } });
   assert.equal(older.statusCode, 200, "a copy made with another day's rate is sent again");
+  const oldRules = await app.inject({ url: "/api/x", headers: { "if-none-match": etag.replace(".usd2-", ".usd-") } });
+  assert.equal(oldRules.statusCode, 200, "a copy made under the earlier rules is sent again");
 
   const plain = await app.inject({ url: "/api/plain" });
   assert.doesNotMatch(String(plain.headers.etag), /usd-/, "a body with no amount keeps its own ETag");

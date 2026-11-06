@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { affordable, composeTopic, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, composeTopic, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
 const GROUPS = [{ no: "1", title: "开店前先想清楚" }, { no: "2", title: "装修和设备" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
@@ -79,4 +79,14 @@ test("a cut leaves no 「；。」, no 「。。」 and no paragraph opening wit
   assert.equal(tidy("周转金常见按每月经费3到6个月准备；"), "周转金常见按每月经费3到6个月准备。");
   assert.equal(tidy("；。"), "");
   assert.equal(tidy("先定方向〔1〕；再定菜单〔2〕。"), "先定方向〔1〕；再定菜单〔2〕。", "a 「；」 between clauses stays");
+});
+
+test("an article is written again for an item it did not read or for prompts changed since, not otherwise", () => {
+  const last = { item_ids: ["a", "b"], version: "v1" };
+  assert.equal(needsRewrite(undefined, ["a"], "v1"), true, "none yet");
+  assert.equal(needsRewrite(undefined, [], "v1"), false, "nothing to write from");
+  assert.equal(needsRewrite(last, ["a", "b"], "v1"), false);
+  assert.equal(needsRewrite(last, ["b"], "v1"), false, "an item gone is no reason");
+  assert.equal(needsRewrite(last, ["a", "b", "c"], "v1"), true, "a new item");
+  assert.equal(needsRewrite(last, ["a", "b"], "v2"), true, "other prompts (Kay 11-06: 只有日本)");
 });

@@ -1,8 +1,10 @@
 // A situation's 综合整理 (决定记录 L2575, Kay 11-06 07:11「你们讨论决定吧」): all of a situation's items (title, 导读,
 // 原文要点, by cause) go to one model, which writes one article that cites them by number (prompts/topic-write.md); a
-// checker reads it against those items sentence by sentence (prompts/topic-check.md). Sentences it finds 严重 wrong are
+// checker reads it against those items sentence by sentence (prompts/topic-check.md). It is three points for the card
+// at the top and three or four for each cause, each a conclusion and at most one reason, no amounts (Kay 11-06 22:30
+// 「你们讨论决定了就可以直接上线了」「全部情况 一起优化」, after the ninth sample of 开店前的准备和开销). Sentences it finds 严重 wrong are
 // cut and what is left is checked again: an article that still has one is held, not shown, and the page keeps the
-// last one shown. Written only when the situation has items the last article did not read, at most US$0.3 a day.
+// last one shown. Written only when the situation has items the last article did not read, at most DAY_CAP_USD a day.
 // Which situations are written is the settings row `reference.topics` ({"slugs": ["opening-cost"]}), so Kay's
 // starting and stopping waits for no deploy (as 十一说); with no row none is. Stop:
 // DELETE FROM settings WHERE key = 'reference.topics'.
@@ -35,8 +37,12 @@ export const TOPIC_VERSION = `reference-topic@${createHash("sha256")
   .update(readFileSync(new URL("../prompts/topic-write.md", import.meta.url)))
   .update(readFileSync(new URL("../prompts/topic-check.md", import.meta.url))).digest("hex").slice(0, 10)}`;
 
-/** At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575. */
-export const DAY_CAP_USD = 0.3;
+/**
+ * At most this much a day (Beijing date) on all situations' articles. Kay's cap in 决定记录 L2575 is US$0.3; it is
+ * US$3 while every situation is written the new way (about 2–4 a day fit 0.3, and there are 41), and back to 0.3 the
+ * day they are all written (十一 11-06 22:35).
+ */
+export const DAY_CAP_USD = 3;
 /** US$ per million input / output tokens: DeepSeek's price list (11-06, peak hours, uncached input); a model not here is not written with. */
 const PRICES: Record<string, [number, number]> = {
   "deepseek-flash": [0.3, 1.2], "deepseek-flash-think": [0.3, 1.2], "deepseek-flash-llm": [0.3, 1.2], "deepseek-flash-think-llm": [0.3, 1.2],
@@ -51,7 +57,6 @@ const CHECK_ROOM = 8_000;
 
 export interface TopicItem { n: number; id: string; title: string; src: string; summary: string; points: string; group: string }
 export const TopicArticle = z.object({
-  title: z.string().trim().min(1),
   lead: z.array(z.string().trim().min(1)).min(1),
   sections: z.array(z.object({ group: z.string().trim().min(1), paragraphs: z.array(z.string().trim().min(1)).min(1) })).min(1),
 });
@@ -59,11 +64,12 @@ export type TopicText = z.infer<typeof TopicArticle>;
 const Problems = z.object({ problems: z.array(z.object({ quote: z.string(), why: z.string(), severity: z.string() })) });
 export type TopicProblem = z.infer<typeof Problems>["problems"][number];
 
-interface Group { no: string; title: string }
+/** A cause as the article was written under it; `key` places its points in the page's section (none before 11-07). */
+interface Group { no: string; key?: string; title: string }
 
 /** A situation's groups as the writer is given them: 第 1 组…, and 其他 for what is in no cause. */
 export function topicGroups(page: SituationPage): Group[] {
-  return [...page.groups.map((g, i) => ({ no: String(i + 1), title: g.title })), ...(page.rest.length ? [{ no: "其他", title: "其他做法" }] : [])];
+  return [...page.groups.map((g, i) => ({ no: String(i + 1), key: g.key, title: g.title })), ...(page.rest.length ? [{ no: "其他", key: "rest", title: "其他做法" }] : [])];
 }
 
 /** The listing the writer and the checker read: each item numbered, with its 导读 and 原文要点. */
@@ -77,7 +83,7 @@ export const citedNumbers = (text: string) => new Set([...text.matchAll(/〔([^�
 export const groupNo = (g: string) => g.replace(/^第\s*|\s*组$/gu, "").trim();
 
 /** The whole article as one text, as the checker reads it. */
-export const topicMarkdown = (a: TopicText, groups: Group[]) => [`# ${a.title}`, "", ...a.lead, "",
+export const topicMarkdown = (title: string, a: TopicText, groups: Group[]) => [`# ${title}`, "", ...a.lead, "",
   ...a.sections.flatMap((s) => [`## ${groups.find((g) => g.no === groupNo(s.group))?.title ?? s.group}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
 
 const isSerious = (p: TopicProblem) => p.severity.includes("严重");
@@ -98,7 +104,7 @@ export const tidy = (s: string) => s
 export function cutSentences(a: TopicText, quotes: string[]): TopicText {
   const cut = (s: string) => tidy(quotes.reduce((t, q) => (q && t.includes(q) ? t.replace(q, "") : t), s));
   return {
-    title: a.title, lead: a.lead.map(cut).filter(Boolean),
+    lead: a.lead.map(cut).filter(Boolean),
     sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.map(cut).filter(Boolean) })).filter((s) => s.paragraphs.length),
   };
 }
@@ -106,7 +112,7 @@ export function cutSentences(a: TopicText, quotes: string[]): TopicText {
 /** Citations of no item given: 严重, found by the program, as 十一说's (issue.ts citedItems). */
 function unknownCitations(a: TopicText, items: TopicItem[]): TopicProblem[] {
   const known = new Set(items.map((i) => i.n));
-  return [a.title, ...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap((p) => p.split(/(?<=[。！？])/u))
+  return [...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap((p) => p.split(/(?<=[。！？])/u))
     .filter((s) => [...citedNumbers(s)].some((n) => !known.has(n)))
     .map((quote) => ({ quote: quote.trim(), why: "标的编号不在给的原文里", severity: "严重" }));
 }
@@ -118,7 +124,7 @@ export async function composeTopic(title: string, groups: Group[], items: TopicI
   const listing = topicListing(groups, items);
   const draft = await ask.write("reference_topic_write", prompt("topic-write", { 题目: title }), `# ${title}\n\n${listing}`, TopicArticle);
   const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items),
-    ...(await ask.check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
+    ...(await ask.check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
   const found = await checkOf(draft);
   const serious = found.filter(isSerious);
   if (!serious.length) return { status: "shown", article: draft, draft, found, again: [] };
@@ -217,7 +223,7 @@ export async function writeTopic(page: SituationPage, now = new Date()): Promise
     write: topicAsk(writer, subject, WRITE_ROOM, receipts, priced(wp)),
     check: topicAsk(checker, subject, CHECK_ROOM, receipts, priced(cp)),
   });
-  const cited = citedNumbers(topicMarkdown(c.article, groups));
+  const cited = citedNumbers(topicMarkdown(page.title, c.article, groups));
   const content = {
     article: c.article, groups, found: c.found, again: c.again, draft: c.draft,
     sources: items.filter((i) => cited.has(i.n)).map(({ n, id }) => ({ n, id })),
@@ -230,7 +236,11 @@ export async function writeTopic(page: SituationPage, now = new Date()): Promise
   return { slug: page.slug, status: c.status, usd };
 }
 
-/** A situation's last shown article as its page reads it: sections under their causes' titles, citations to items. */
+/**
+ * A situation's last shown article as its page reads it: the card's points, each cause's points under its key,
+ * citations to items. An article written before causes had keys (11-07) gives its card only: its paragraphs were
+ * written as one article, not as points for the sections, and the prompts' change writes it again.
+ */
 export async function readTopic(slug: string): Promise<TopicView | null> {
   const [row] = await sql<{ content: { article: TopicText; groups: Group[]; sources: Array<{ n: number; id: string }> }; created_at: Date; items: number }[]>`
     SELECT content, created_at, cardinality(item_ids) AS items FROM reference_topics WHERE slug = ${slug} AND status = 'shown' ORDER BY id DESC LIMIT 1`;
@@ -238,8 +248,11 @@ export async function readTopic(slug: string): Promise<TopicView | null> {
   const { article, groups, sources } = row.content;
   return {
     // Tidied as read too: the first article was cut before tidy was there, and stays as stored.
-    title: article.title, lead: article.lead.map(tidy).filter(Boolean),
-    sections: article.sections.map((s) => ({ title: groups.find((g) => g.no === groupNo(s.group))?.title ?? s.group, paragraphs: s.paragraphs.map(tidy).filter(Boolean) })),
+    lead: article.lead.map(tidy).filter(Boolean),
+    sections: article.sections.flatMap((s) => {
+      const key = groups.find((g) => g.no === groupNo(s.group))?.key;
+      return key ? [{ key, points: s.paragraphs.map(tidy).filter(Boolean) }] : [];
+    }),
     sources: Object.fromEntries(sources.map((s) => [s.n, s.id])),
     items: row.items, updatedAt: row.created_at.toISOString(),
   };

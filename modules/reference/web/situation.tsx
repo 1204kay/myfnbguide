@@ -14,7 +14,7 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import type { SituationPage, TopicView } from "../types.ts";
 import { SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
-import { CitedText, FIRST, FoldToggle, Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
+import { CitedText, FIRST, Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
 
 export const handle: Screen = { tab: "reference" };
 
@@ -48,6 +48,10 @@ export default function SituationRoute() {
   const onShare = () => void share(s.title, path);
   const split = s.groups.length > 0;
   const titles = s.causes.map((g) => g.title);
+  const points = (key: string) => s.topic?.sections.find((p) => p.key === key)?.points ?? [];
+  const srcOf = new Map([...s.groups.flatMap((g) => g.cases), ...s.rest].map((c) => [c.id, c.src]));
+  // "日本 · 意大利酒馆店主 · 2025 年 7 月": the country is the first part (backend/read.ts).
+  const countryOf = (id: string) => srcOf.get(id)?.split(" · ")[0] ?? "";
   // Desktops: the engine's reading template, the page and an aside of cards (as 更新日志 and 反馈 have it): what the
   // page counts, when it was updated and the share button.
   const aside = (
@@ -78,11 +82,10 @@ export default function SituationRoute() {
       {/* As the topic page: 返回 on desktops (分享 is in the aside's card), then the header; desktops have the counts
           and the date in the aside. */}
       <BackLink to="/reference" label="参考" />
-      <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.topic?.title ?? s.title} dek={s.dek}
+      {/* The situation's own title, as the lists have it: the article's title narrowed it (Kay 11-06「标题为什么是小餐饮？」). */}
+      <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
         counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
-      {/* The page's title is the article's: the reader's question and the conclusion from the items (决定记录 L2575 第 4
-          条; Kay 11-06 10:34「开店前的准备和开销 这句不用优化吗」); the situation's own title stays in the lists. */}
-      {s.topic && <Overview topic={s.topic} />}
+      {s.topic && <Overview topic={s.topic} countryOf={countryOf} />}
       <SituationFigure slug={s.slug} groups={titles}>
         {/* Split by cause, the sections below are the list (Kay 11-06 08:24: 1234 shown twice reads as two things). */}
         {s.causes.length > 1 && !split && (
@@ -108,6 +111,7 @@ export default function SituationRoute() {
         <Section key={g.key} id={g.key} no={i + 1} title={g.title} count={g.cases.length} first={i === 0}>
           {/* No section picture for now: 6 of 20 checked against their stories were wrong (10-18); they come back one
               by one once each is checked (sections/, myfnb/figure-sheet still draws them all). */}
+          {s.topic && <Points points={points(g.key)} topic={s.topic} countryOf={countryOf} />}
           <StoryCards cards={g.cases} first={FIRST} />
         </Section>
       )) : (
@@ -117,6 +121,7 @@ export default function SituationRoute() {
         <section className="mt-10">
           <Heading>其他做法</Heading>
           <p className="mt-1 text-[13px] text-ink-4">与这种情况有关，没有归入上面几组。</p>
+          {s.topic && <Points points={points("rest")} topic={s.topic} countryOf={countryOf} />}
           <StoryCards cards={s.rest} first={FIRST} />
         </section>
       )}
@@ -159,35 +164,53 @@ function Section({ id, no, title, count, first, children }: { id: string; no: nu
 
 /**
  * The 综合整理 (backend/topic.ts) at the top, as the engine's event page opens with its 先了解这件事 card
- * (apps/web/app/routes/story.tsx Panel, its title too; 决定记录 L2575): the three sentences that tell the conclusion, and
- * the rest by cause behind a toggle, so a reader who stops at the three has the point. Each 〔n〕 goes to its item.
+ * (apps/web/app/routes/story.tsx Panel, its title too; 决定记录 L2575): its three points, what a reader who reads nothing
+ * else should know. Each cause's points open its section below (Points), where its items are.
  */
-function Overview({ topic }: { topic: TopicView }) {
-  const [open, setOpen] = useState(false);
-  const cite = (text: string) => <CitedText text={text} href={(n) => (topic.sources[Number(n)] ? `/items/${topic.sources[Number(n)]}` : null)} />;
+function Overview({ topic, countryOf }: { topic: TopicView; countryOf: (id: string) => string }) {
   return (
     <section className="card mt-6 p-5 lg:p-6">
       <div className="flex items-start justify-between gap-3">
         <h2 className="min-w-0 text-[17px] font-[650] leading-[1.5] text-ink">先了解这件事</h2>
         <div className="shrink-0 text-[11.5px] text-ink-4">AI 综述</div>
       </div>
-      <div className="mt-3.5 space-y-3">
-        {topic.lead.map((p, i) => <p key={i} className="text-[15px] leading-[1.85] text-ink-2">{cite(p)}</p>)}
-      </div>
-      <Collapse open={open}>
-        {topic.sections.map((sec) => (
-          <div key={sec.title} className="mt-5">
-            <h3 className="text-[15px] font-[650] leading-[1.6] text-ink">{sec.title}</h3>
-            <div className="mt-1.5 space-y-3">
-              {sec.paragraphs.map((p, i) => <p key={i} className="text-[15px] leading-[1.85] text-ink-2">{cite(p)}</p>)}
-            </div>
-          </div>
-        ))}
-      </Collapse>
-      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3">
-        <FoldToggle open={open} onToggle={() => setOpen(!open)}>读全文</FoldToggle>
-        <p className="text-[12px] text-ink-4">AI 根据 <span className="num">{topic.items}</span> 条原文整理 · <span className="num">{day(topic.updatedAt)}</span> 更新</p>
-      </div>
+      <Points points={topic.lead} topic={topic} countryOf={countryOf} className="mt-2" />
+      <p className="mt-2 text-[12px] text-ink-4">AI 根据 <span className="num">{topic.items}</span> 条原文整理 · <span className="num">{day(topic.updatedAt)}</span> 更新</p>
     </section>
+  );
+}
+
+function Points({ points, topic, countryOf, className = "mt-1" }: { points: string[]; topic: TopicView; countryOf: (id: string) => string; className?: string }) {
+  if (!points.length) return null;
+  return <ul className={className}>{points.map((p, i) => <Point key={i} text={p} topic={topic} countryOf={countryOf} />)}</ul>;
+}
+
+/**
+ * One point (Kay 11-06, the ninth sample with 十一's changes): the conclusion, its first sentence, in bold and at most
+ * one reason after it, as the engine's Callout has a dot, a bold line and the text under it (features/agent/parts.tsx);
+ * then in small type how many countries and items it rests on, counted here from its citations, which open to the
+ * numbers, each to its item. The numbers are not in the text: a row of them after every clause buried the point.
+ */
+function Point({ text, topic, countryOf }: { text: string; topic: TopicView; countryOf: (id: string) => string }) {
+  const [open, setOpen] = useState(false);
+  const ns = [...new Set([...text.matchAll(/〔([^〕]+)〕/gu)].flatMap((m) => m[1]!.split(/[、,，\s]+/u).filter(Boolean)))];
+  const plain = text.replace(/〔[^〕]*〕/gu, "");
+  const end = plain.search(/[。！？]/u) + 1;
+  const [head, rest] = end > 0 ? [plain.slice(0, end), plain.slice(end)] : [plain, ""];
+  const countries = new Set(ns.map((n) => countryOf(topic.sources[Number(n)] ?? "")).filter(Boolean)).size;
+  return (
+    <li className="flex gap-2.5 py-1.5">
+      <span className="mt-[11px] size-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+      <div className="min-w-0 text-[15px] leading-[1.8] text-ink-2">
+        <span className="font-semibold text-ink">{head}</span>{rest}
+        {ns.length > 0 && (
+          <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}
+            className="ml-1.5 whitespace-nowrap text-[12px] text-ink-4 transition-colors hover:text-accent">
+            {countries > 0 && <><span className="num">{countries}</span> 国 · </>}<span className="num">{ns.length}</span> 篇
+          </button>
+        )}
+        {open && <span className="ml-1 text-[12px] text-ink-4"><CitedText text={`〔${ns.join("、")}〕`} href={(n) => (topic.sources[Number(n)] ? `/items/${topic.sources[Number(n)]}` : null)} /></span>}
+      </div>
+    </li>
   );
 }

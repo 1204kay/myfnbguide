@@ -147,13 +147,13 @@ export const FIRST = 3;
 
 /**
  * The original's fold toggle (features/feed/ReadingGroup.tsx Toggle, 「另有 N 家信源报道」): quiet text and a chevron
- * that turns; open, it reads 收起. Kay asked twice for folds that were lost with the parts they were on (经验 G15).
+ * that turns, the words the same open or closed. Kay asked twice for folds that were lost with the parts they were on (经验 G15).
  */
 export function FoldToggle({ open, onToggle, children, className = "" }: { open: boolean; onToggle: () => void; children: ReactNode; className?: string }) {
   return (
     <button type="button" aria-expanded={open} onClick={onToggle}
       className={`inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent lg:min-h-8 ${className}`}>
-      {open ? "收起" : children}
+      {children}
       <IconChevronDown size={13} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
     </button>
   );

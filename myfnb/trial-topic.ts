@@ -15,8 +15,10 @@ import { closeDb, sql } from "@aihot/backend/db";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
-import { MODELS } from "@aihot/backend/providers/llm";
-import { modelAsk, type Usage } from "../modules/reference/backend/issue.ts";
+import { chatJson, MODELS } from "@aihot/backend/providers/llm";
+import { ModelOutputError } from "@aihot/backend/providers/receipts";
+import { ISSUE_VERSION, type Ask, type Usage } from "../modules/reference/backend/issue.ts";
+import { joined } from "../modules/reference/backend/claude.ts";
 import { readSituation } from "../modules/reference/backend/read.ts";
 
 const args = process.argv.slice(2);
@@ -54,10 +56,17 @@ const listing = groups.map((g) => [`## 第 ${g.no} 组：${g.title}`, ...items.f
   `〔${i.n}〕${i.src}\n标题：${i.title}\n导读：${i.summary}\n原文要点：${i.points.replace(/\n/g, "；")}`)].join("\n\n")).join("\n\n");
 const chars = listing.length;
 console.log(`${page.title}：${groups.length} 组，${items.length} 条，给模型的原文约 ${chars} 字`);
-/** The most a call can cost: every character an input token (more than any text here takes) and the 16k output it may write. */
-const worst = (m: string) => (chars * 1.5 * priceOf(m)[0] + 16_000 * priceOf(m)[1]) / 1e6;
+/**
+ * Room to write: 十一说's ask gives 8,000 plus the preset's 12,000 for thinking, and the first run on the server (11-06
+ * 08:5x, 66k characters in) spent all 20,000 thinking before any JSON. DeepSeek flash writes up to 384K (官方价格页
+ * 「输出长度 最大 384K」, 11-06), so 40,000 in all here: thinking over 120 items, then a ~3,000-character article.
+ */
+const OUTPUT = 28_000;
+const outputOf = (m: string) => OUTPUT + (MODELS[m]?.reasoningTokens ?? 0);
+/** The most a call can cost: every character an input token (more than any text here takes) and all the output it may write. */
+const worst = (m: string) => (chars * 1.5 * priceOf(m)[0] + outputOf(m) * priceOf(m)[1]) / 1e6;
 const need = worst(model) + worst(checkModel) * 2;
-console.log(`最坏情况约 US$${need.toFixed(3)}（写一次、核对最多两次），上限 US$${cap}`);
+console.log(`最坏情况约 US$${need.toFixed(3)}（写一次、核对最多两次，每次都写满），上限 US$${cap}`);
 if (!apply) { await closeDb(); process.exit(0); }
 if (need > cap) throw new Error("超过 --cap-usd，没有调用");
 
@@ -73,8 +82,19 @@ const Article = z.object({
 const Problems = z.object({ problems: z.array(z.object({ quote: z.string(), why: z.string(), severity: z.string() })) });
 type ArticleText = z.infer<typeof Article>;
 
-const write = modelAsk(model, subject, receipts, tally(model));
-const check = modelAsk(checkModel, subject, receipts, tally(checkModel));
+/** As backend/issue.ts modelAsk, with room for a long input's thinking (OUTPUT); unusable output once is asked again once. */
+const askOf = (m: string): Ask => async (purpose, system, user, schema, attempt) => {
+  const once = (tag?: string) => chatJson({ model: m, purpose, subject, promptVersion: ISSUE_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: OUTPUT, timeoutMs: 900_000, attemptTag: tag });
+  const res = await once(attempt).catch((error: unknown) => {
+    if (error instanceof ModelOutputError) return once(`${attempt ?? ""}retry`);
+    throw error;
+  });
+  receipts.push(res.receiptId);
+  if (!res.reused) tally(m)({ input: Number(res.usage?.prompt_tokens ?? 0), output: Number(res.usage?.completion_tokens ?? 0) });
+  return res.data;
+};
+const write = askOf(model);
+const check = askOf(checkModel);
 const article = await write("reference_topic_write", prompt("topic-write", { 题目: page.title }), `# ${page.title}\n\n${listing}`, Article);
 const text = (a: ArticleText) => [`# ${a.title}`, "", ...a.lead, "", ...a.sections.flatMap((s) => [`## ${groups.find((g) => g.no === s.group)?.title ?? s.group}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
 const found = await check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${text(article)}\n\n# 原文\n\n${listing}`, Problems);

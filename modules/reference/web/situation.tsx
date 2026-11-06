@@ -86,7 +86,9 @@ export default function SituationRoute() {
       <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
         counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
       {s.topic && <Overview topic={s.topic} countryOf={countryOf} />}
-      <SituationFigure slug={s.slug} groups={titles}>
+      {/* Not with the 综合整理: its points carry what the picture showed, and the pictures were examples with made-up
+          amounts (Kay 11-06「要就全部有 不然就全部不要」「如果不要图 就把上下融合」, the ninth sample has none). */}
+      {!s.topic && <SituationFigure slug={s.slug} groups={titles}>
         {/* Split by cause, the sections below are the list (Kay 11-06 08:24: 1234 shown twice reads as two things). */}
         {s.causes.length > 1 && !split && (
           <ol className="mt-3">
@@ -106,7 +108,7 @@ export default function SituationRoute() {
             })}
           </ol>
         )}
-      </SituationFigure>
+      </SituationFigure>}
       {split ? s.groups.map((g, i) => (
         <Section key={g.key} id={g.key} no={i + 1} title={g.title} count={g.cases.length} first={i === 0}>
           {/* No section picture for now: 6 of 20 checked against their stories were wrong (10-18); they come back one

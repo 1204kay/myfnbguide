@@ -24,6 +24,7 @@ COPY modules/dailypick/package.json modules/dailypick/
 COPY modules/reference/package.json modules/reference/
 COPY modules/social/package.json modules/social/
 COPY modules/trends/package.json modules/trends/
+COPY modules/usd/package.json modules/usd/
 RUN npm ci --no-audit --no-fund ${NPM_REGISTRY:+--registry=$NPM_REGISTRY}
 COPY . .
 RUN npm run build -w @aihot/web && npm prune --omit=dev --no-audit --no-fund

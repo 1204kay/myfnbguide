@@ -1,0 +1,12 @@
+{
+  "name": "@aihot/usd",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": "./server.ts",
+    "./backend/*": "./backend/*.ts"
+  },
+  "dependencies": {
+    "@aihot/backend": "*"
+  }
+}

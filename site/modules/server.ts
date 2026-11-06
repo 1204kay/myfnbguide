@@ -6,5 +6,6 @@ import dailypick from "@aihot/dailypick/server";
 import reference from "@aihot/reference/server";
 import social from "@aihot/social/server";
 import trends from "@aihot/trends/server";
+import usd from "@aihot/usd/server";
 
-export const SERVER_MODULES: readonly ServerModule[] = [reference, archive, social, checker, trends, dailypick];
+export const SERVER_MODULES: readonly ServerModule[] = [reference, archive, social, checker, trends, dailypick, usd];

@@ -38,11 +38,11 @@ export const TOPIC_VERSION = `reference-topic@${createHash("sha256")
   .update(readFileSync(new URL("../prompts/topic-check.md", import.meta.url))).digest("hex").slice(0, 10)}`;
 
 /**
- * At most this much a day (Beijing date) on all situations' articles. Kay's cap in 决定记录 L2575 is US$0.3; it is
- * US$3 while every situation is written the new way (about 2–4 a day fit 0.3, and there are 41), and back to 0.3 the
- * day they are all written (十一 11-06 22:35).
+ * At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575, US$0.3 (about 2–4
+ * rewrites a day fit). It was US$3 for a day while every situation was to be written the new way (十一 11-06 22:35);
+ * the 41 first articles were written by hand on 11-07 instead, so it is back to 0.3.
  */
-export const DAY_CAP_USD = 3;
+export const DAY_CAP_USD = 0.3;
 /** US$ per million input / output tokens: DeepSeek's price list (11-06, peak hours, uncached input); a model not here is not written with. */
 const PRICES: Record<string, [number, number]> = {
   "deepseek-flash": [0.3, 1.2], "deepseek-flash-think": [0.3, 1.2], "deepseek-flash-llm": [0.3, 1.2], "deepseek-flash-think-llm": [0.3, 1.2],

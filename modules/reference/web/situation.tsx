@@ -1,6 +1,6 @@
 // One situation (layout B2, J4): what it is and how many shops and 条原文 it has, its picture with the causes
 // numbered, then its items by cause, newest first, and those in no cause under 其他做法 (backend/read.ts).
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { AsideCard, ReadingLayout } from "@aihot/web/components/ui/Page";
@@ -81,7 +81,8 @@ export default function SituationRoute() {
       <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
         counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
       <SituationFigure slug={s.slug} groups={titles}>
-        {s.causes.length > 1 && (
+        {/* Split by cause, the sections below are the list (Kay 11-06 08:24: 1234 shown twice reads as two things). */}
+        {s.causes.length > 1 && !split && (
           <ol className="mt-3">
             {s.causes.map((g, i) => {
               const body = (
@@ -93,9 +94,7 @@ export default function SituationRoute() {
               // Not split by cause, the list only explains the picture: nothing to jump to.
               return (
                 <li key={g.key} className="border-t border-line first:border-t-0">
-                  {split
-                    ? <a href={`#${g.key}`} className="grid min-h-11 grid-cols-[30px_minmax(0,1fr)] gap-3 py-3">{body}</a>
-                    : <div className="grid grid-cols-[30px_minmax(0,1fr)] gap-3 py-3">{body}</div>}
+                  <div className="grid grid-cols-[30px_minmax(0,1fr)] gap-3 py-3">{body}</div>
                 </li>
               );
             })}
@@ -133,16 +132,10 @@ export default function SituationRoute() {
 
 /**
  * A cause's section (Kay 11-04 22:22「尤其是1234这部分」, 决定记录 L2575): its number and title open and close it,
- * the first open; the picture's numbered list jumps to one and opens it.
+ * the first open. They are the page's list of causes; the picture's numbered list is shown only when there are none.
  */
 function Section({ id, no, title, count, first, children }: { id: string; no: number; title: string; count: number; first: boolean; children: ReactNode }) {
   const [open, setOpen] = useState(first);
-  useEffect(() => {
-    const opened = () => { if (decodeURIComponent(location.hash.slice(1)) === id) setOpen(true); };
-    opened();
-    window.addEventListener("hashchange", opened);
-    return () => window.removeEventListener("hashchange", opened);
-  }, [id]);
   return (
     <section className="mt-8 border-t border-line pt-2">
       <h2 id={id} className="scroll-mt-[calc(var(--bar-h)+8px)]">

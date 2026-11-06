@@ -159,7 +159,7 @@ export function toItemSummary(row: ItemRow): ItemSummary {
     title: row.title,
     originalTitle: row.original_title,
     summary: row.summary,
-    reason: row.selected ? row.reason : null,
+    reason: row.reason,
     source: { name: publicSourceName(row.source_name) },
     links: { original: row.url },
     publishedAt: row.published_at?.toISOString() ?? null,

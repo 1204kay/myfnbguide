@@ -96,7 +96,9 @@ const askOf = (m: string): Ask => async (purpose, system, user, schema, attempt)
 const write = askOf(model);
 const check = askOf(checkModel);
 const article = await write("reference_topic_write", prompt("topic-write", { 题目: page.title }), `# ${page.title}\n\n${listing}`, Article);
-const text = (a: ArticleText) => [`# ${a.title}`, "", ...a.lead, "", ...a.sections.flatMap((s) => [`## ${groups.find((g) => g.no === s.group)?.title ?? s.group}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
+// The first run on the server wrote 「第 1 组」 for 1, and the headings came out as the group's number (11-06 08:57).
+const groupTitle = (g: string) => groups.find((x) => x.no === g.replace(/^第\s*|\s*组$/gu, "").trim())?.title ?? g;
+const text = (a: ArticleText) => [`# ${a.title}`, "", ...a.lead, "", ...a.sections.flatMap((s) => [`## ${groupTitle(s.group)}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
 const found = await check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${text(article)}\n\n# 原文\n\n${listing}`, Problems);
 // 严重的句子删掉（照十一说：改不准的不留）；轻的留着，列在文件里给人看。
 const serious = found.problems.filter((p) => p.severity.includes("严重"));

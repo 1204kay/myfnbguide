@@ -70,10 +70,10 @@ const PLACES = defineQueue<{ date: string }>({
 const PLACE_LIMIT = 300;
 
 // 综合整理 (backend/topic.ts): the situations the settings row names, one after another in one job, each only when it
-// has new items and the day's cap holds it. One retry for a model that failed.
+// has new items and the day's cap holds it. No retry: it would spend past the cap (backend/topic.ts topicAsk).
 const TOPICS = defineQueue<{ date: string }>({
   name: "reference.topic",
-  options: { policy: "short", retryLimit: 1, retryDelay: 600, expireInSeconds: 3600 },
+  options: { policy: "short", retryLimit: 0, expireInSeconds: 3600 },
   worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
   run: async (jobs) => {
     for (const _ of jobs) {

@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { composeTopic, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, composeTopic, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
 const GROUPS = [{ no: "1", title: "开店前先想清楚" }, { no: "2", title: "装修和设备" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
@@ -62,4 +62,12 @@ test("a heading written as 「第 1 组」 is its cause's title", () => {
   assert.equal(groupNo("第 1 组"), "1");
   assert.equal(groupNo("2"), "2");
   assert.ok(topicMarkdown(ARTICLE, GROUPS).includes("## 开店前先想清楚"));
+});
+
+test("a run is not started when a write and two checks at their worst would pass the day's US$0.3", () => {
+  const [w, c] = ["deepseek-flash-think-llm", "deepseek-flash-llm"];
+  assert.equal(affordable(66_000, w, c, 0), true, "opening-cost's 66k characters fit a fresh day");
+  assert.equal(affordable(66_000, w, c, 0.2), false, "not what is left after US$0.2");
+  assert.equal(affordable(300_000, w, c, 0), false, "a situation too long for the cap");
+  assert.equal(affordable(1_000, "claude-opus-5-5", c, 0), false, "a model without a price");
 });

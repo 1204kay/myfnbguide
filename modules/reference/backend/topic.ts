@@ -15,7 +15,7 @@ import { sql } from "@aihot/backend/db";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson, MODELS } from "@aihot/backend/providers/llm";
-import { completeReceipt, ModelOutputError } from "@aihot/backend/providers/receipts";
+import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { beijingAt, beijingDate } from "@aihot/contracts/time";
 import type { SituationPage, TopicView } from "../types.ts";
 import { joined } from "./claude.ts";
@@ -149,14 +149,26 @@ async function spentToday(now: Date): Promise<number> {
 
 const priceOf = (m: string) => PRICES[m];
 
-/** One model call as issue.ts modelAsk, with `room` past the preset's thinking; unusable output once is asked again once. */
+/**
+ * Whether a write and two checks fit what is left of the day's cap at their worst: every character an input token
+ * (more than any text here takes) and every call writing all its room. A model without a price never fits.
+ */
+export function affordable(chars: number, writer: string, checker: string, spent: number): boolean {
+  const worst = (m: string, room: number) => {
+    const p = priceOf(m);
+    return p ? (chars * 1.5 * p[0] + (room + (MODELS[m]?.reasoningTokens ?? 0)) * p[1]) / 1e6 : Infinity;
+  };
+  return worst(writer, WRITE_ROOM) + 2 * worst(checker, CHECK_ROOM) <= DAY_CAP_USD - spent;
+}
+
+/**
+ * One model call with `room` past the preset's thinking. Unlike issue.ts modelAsk it is not asked again on unusable
+ * output, nor is the job retried: a retry would double the worst case past the day's cap (review of #223), and a
+ * situation not written today is still stale tomorrow.
+ */
 function topicAsk(model: string, subject: string, room: number, receipts: number[], onUsage: (u: Usage) => void): Ask {
   return async (purpose, system, user, schema, attempt) => {
-    const once = (tag?: string) => chatJson({ model, purpose, subject, promptVersion: TOPIC_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: room, timeoutMs: 900_000, attemptTag: tag });
-    const res = await once(attempt).catch((error: unknown) => {
-      if (error instanceof ModelOutputError) return once(`${attempt ?? ""}retry`);
-      throw error;
-    });
+    const res = await chatJson({ model, purpose, subject, promptVersion: TOPIC_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: room, timeoutMs: 900_000, attemptTag: attempt });
     receipts.push(res.receiptId);
     if (!res.reused) onUsage({ input: Number(res.usage?.prompt_tokens ?? 0), output: Number(res.usage?.completion_tokens ?? 0) });
     return res.data;
@@ -174,10 +186,7 @@ export async function writeTopic(page: SituationPage, now = new Date()): Promise
   if (!wp || !cp) return { slug: page.slug, status: `no price for ${!wp ? writer : checker}` };
   const groups = topicGroups(page);
   const items = await itemsOf(page, groups);
-  const chars = topicListing(groups, items).length;
-  const worst = (p: [number, number], m: string, room: number) => (chars * 1.5 * p[0] + (room + (MODELS[m]?.reasoningTokens ?? 0)) * p[1]) / 1e6;
-  const need = worst(wp, writer, WRITE_ROOM) + 2 * worst(cp, checker, CHECK_ROOM);
-  if (need > DAY_CAP_USD - (await spentToday(now))) return { slug: page.slug, status: "over the day's cap" };
+  if (!affordable(topicListing(groups, items).length, writer, checker, await spentToday(now))) return { slug: page.slug, status: "over the day's cap" };
 
   const receipts: number[] = [];
   let usd = 0;

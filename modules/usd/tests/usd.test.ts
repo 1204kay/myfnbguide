@@ -7,7 +7,7 @@ import Fastify from "fastify";
 import { closeDb, sql } from "@aihot/backend/db";
 import { sendJsonWithEtag, sendTextWithEtag } from "../../../apps/api/src/http/respond.ts";
 import usd from "../server.ts";
-import { forgetRates, refreshRates } from "../backend/rates.ts";
+import { CODES, forgetRates, refreshRates } from "../backend/rates.ts";
 
 after(async () => { await closeDb(); });
 
@@ -51,11 +51,14 @@ test("the hourly run fetches only when the stored rates are 12 hours old or miss
   try {
     await sql`INSERT INTO settings (key, value) VALUES ('usd.rates', ${sql.json({ date: "2026-11-05", perUsd: { JPY: 157.9 } })})
       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`;
+    assert.deepEqual(await refreshRates(), { date: "2026-11-06" }, "a stored copy without a currency added since is fetched again at once");
+    assert.equal(fetched.length, 1);
+    await sql`UPDATE settings SET value = jsonb_set(value, '{perUsd}', ${sql.json(Object.fromEntries(CODES.map((c) => [c, 1])))}), updated_at = now() WHERE key = 'usd.rates'`;
     assert.ok("skipped" in (await refreshRates()));
-    assert.deepEqual(fetched, []);
+    assert.equal(fetched.length, 1);
     await sql`UPDATE settings SET updated_at = now() - interval '13 hours' WHERE key = 'usd.rates'`;
     assert.deepEqual(await refreshRates(), { date: "2026-11-06" });
-    assert.equal(fetched.length, 1);
+    assert.equal(fetched.length, 2);
     await sql`DELETE FROM settings WHERE key = 'usd.rates'`;
     assert.deepEqual(await refreshRates(), { date: "2026-11-06" }, "a site that has never had rates fetches at once");
   } finally {

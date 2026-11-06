@@ -13,7 +13,7 @@ import type { Screen } from "@aihot/web/components/shell/screens";
 import { day, num } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
 import { figureKind, SituationDrawing } from "./figures";
-import { CARD, CountFigure, KindTag, Page, PageHeader, RankTag, SituationRows, STRETCH, Who } from "./ui";
+import { CARD, CountFigure, FIRST, KindTag, Page, PageHeader, RankTag, SituationRows, STRETCH, Who } from "./ui";
 
 export const handle: Screen = { tab: "reference", name: "参考" };
 
@@ -92,18 +92,22 @@ function Ranking({ rows }: { rows: SituationRow[] }) {
         <div className={`grid ${runners.length ? "lg:col-span-7 lg:row-span-2 xl:col-span-8" : "lg:col-span-12"}`}><Lead s={lead!} /></div>
         {runners.map((s, i) => <div key={s.slug} className="grid lg:col-span-5 xl:col-span-4"><Runner s={s} rank={i + 2} /></div>)}
       </div>
-      {rest.length > 2 && <SituationRows rows={rest.slice(2)} from={4} />}
+      {/* The fourth on behind one toggle, so the categories below are reached sooner (Kay 11-06, 决定记录 L2575). */}
+      {rest.length > 2 && <SituationRows rows={rest.slice(2)} from={4} first={0} more={<>查看第 4–{rest.length + 1} 名</>} />}
     </>
   );
 }
 
-/** A category: its title and all its situations as rows, most shops first, as the topics page lists all its topics. */
+/**
+ * A category: its title and its situations as rows, most shops first, as the topics page lists its topics; the
+ * first three, the rest behind 另有 N 种情况 (Kay 11-04 22:22 asked for the fold again, 决定记录 L2575).
+ */
 function Category({ c, top = "pt-8" }: { c: CategoryRows; top?: string }) {
   return (
     <section className={top}>
       {/* A group's heading, as the topics page has it (AIHOT routes/topics.tsx). */}
       <h2 id={c.key} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[15px] font-bold text-ink">{c.title}</h2>
-      <SituationRows rows={c.situations} />
+      <SituationRows rows={c.situations} first={FIRST} />
     </section>
   );
 }
@@ -135,7 +139,7 @@ export default function ReferenceHomePage() {
         // (Kay 10/17: past the tenth place a reader could not tell they had left it).
         <div className="mt-12 lg:mt-14">
           <div role="heading" aria-level={2}><Kicker>按类别查看全部情况</Kicker></div>
-          <p className="mt-1.5 text-[13px] text-ink-4"><span className="num">{num(data.totals.situations)}</span> 种情况，分成 <span className="num">{num(data.categories.length)}</span> 类</p>
+          <p className="mt-1.5 text-[13px] text-ink-4"><span className="num">{num(data.totals.situations)}</span> 种情况，分成 <span className="num">{num(data.categories.length)}</span> 类；每类先列店家最多的 <span className="num">{FIRST}</span> 种</p>
         </div>
       )}
       {/* From 1280px two categories side by side: the lists' width goes to columns, not longer lines (layout J2). The

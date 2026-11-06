@@ -4,7 +4,7 @@
 // at the top and three or four for each cause, each a conclusion and at most one reason, no amounts (Kay 11-06 22:30
 // 「你们讨论决定了就可以直接上线了」「全部情况 一起优化」, after the ninth sample of 开店前的准备和开销). Sentences it finds 严重 wrong are
 // cut and what is left is checked again: an article that still has one is held, not shown, and the page keeps the
-// last one shown. Written only when the situation has NEW_ITEMS items the last article did not read (or one, a week on), at most DAY_CAP_USD a day.
+// last one shown. Written only when the situation has NEW_ITEMS items the last article did not read, at most DAY_CAP_USD a day.
 // Which situations are written is the settings row `reference.topics` ({"slugs": ["opening-cost"]}), so Kay's
 // starting and stopping waits for no deploy (as 十一说); with no row none is. Stop:
 // DELETE FROM settings WHERE key = 'reference.topics'.
@@ -162,28 +162,23 @@ export async function topicSlugs(): Promise<string[]> {
 /** Whether a situation needs writing again: an item its last article (shown or held) did not read, or prompts changed since. */
 export async function topicStale(page: SituationPage): Promise<boolean> {
   const ids = [...page.groups.flatMap((g) => g.cases), ...page.rest].map((c) => c.id);
-  const [last] = await sql<{ item_ids: string[]; version: string; created_at: Date }[]>`SELECT item_ids, version, created_at FROM reference_topics WHERE slug = ${page.slug} ORDER BY id DESC LIMIT 1`;
+  const [last] = await sql<{ item_ids: string[]; version: string }[]>`SELECT item_ids, version FROM reference_topics WHERE slug = ${page.slug} ORDER BY id DESC LIMIT 1`;
   return needsRewrite(last, ids);
 }
 
 /**
- * New items a situation waits for before it is written again, and the days after which fewer will do. Every write reads
- * all the situation's items (120 for 开店前的准备和开销), so one new item rewrote the whole page (Kay 11-07 06:17「那是不是很
- *浪费？」「10条吧」); the items still show on the page under their causes while the points wait.
+ * New items a situation waits for before it is written again. Every write reads all the situation's items (120 for
+ * 开店前的准备和开销), so one new item rewrote the whole page (Kay 11-07 06:17「那是不是很浪费？」「10条吧」); the items still
+ * show on the page under their causes while the points wait. No time limit lets fewer do: with 50 situations a week's
+ * would rewrite most of them every week (Kay 06:19「满七天需要么？50种情况哦」).
  */
 export const NEW_ITEMS = 10;
-export const WAIT_DAYS = 7;
 
-/**
- * Written again when there is none, the prompts changed since, or the situation has NEW_ITEMS items the last did not
- * read (any one, once WAIT_DAYS have passed since it).
- */
-export function needsRewrite(last: { item_ids: string[]; version: string; created_at: Date } | undefined, ids: string[], version = TOPIC_VERSION, now = new Date()): boolean {
+/** Written again when there is none, the prompts changed since, or the situation has NEW_ITEMS items the last did not read. */
+export function needsRewrite(last: { item_ids: string[]; version: string } | undefined, ids: string[], version = TOPIC_VERSION): boolean {
   if (!last) return ids.length > 0;
-  if (last.version !== version) return true;
   const read = new Set(last.item_ids);
-  const fresh = ids.filter((id) => !read.has(id)).length;
-  return fresh >= NEW_ITEMS || (fresh > 0 && now.getTime() - last.created_at.getTime() >= WAIT_DAYS * 86_400_000);
+  return last.version !== version || ids.filter((id) => !read.has(id)).length >= NEW_ITEMS;
 }
 
 /** What the articles cost so far on the Beijing date of `now`. */

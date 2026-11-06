@@ -14,7 +14,13 @@ export type PerUsd = Readonly<Record<string, number>>;
 const SUFFIX: ReadonlyArray<readonly [string, string | null]> = [
   ["元人民币", "CNY"], ["人民币", "CNY"],
   ["新加坡元", "SGD"], ["新西兰元", "NZD"], ["澳门元", "MOP"], ["澳门币", "MOP"],
-  ["印度卢比", "INR"], ["菲律宾比索", "PHP"], ["瑞士法郎", "CHF"],
+  ["印度卢比", "INR"], ["印尼卢比", "IDR"], ["巴基斯坦卢比", "PKR"], ["斯里兰卡卢比", "LKR"], ["尼泊尔卢比", "NPR"],
+  ["菲律宾比索", "PHP"], ["墨西哥比索", "MXN"], ["智利比索", "CLP"], ["阿根廷比索", "ARS"], ["哥伦比亚比索", "COP"],
+  ["瑞典克朗", "SEK"], ["挪威克朗", "NOK"], ["丹麦克朗", "DKK"], ["捷克克朗", "CZK"], ["冰岛克朗", "ISK"],
+  ["瑞士法郎", "CHF"], ["瑞郎", "CHF"], ["巴西雷亚尔", "BRL"], ["雷亚尔", "BRL"], ["南非兰特", "ZAR"], ["兰特", "ZAR"],
+  ["土耳其里拉", "TRY"], ["新谢克尔", "ILS"], ["谢克尔", "ILS"], ["沙特里亚尔", "SAR"], ["卡塔尔里亚尔", "QAR"],
+  ["兹罗提", "PLN"], ["福林", "HUF"], ["列伊", "RON"], ["卢布", "RUB"], ["埃及镑", "EGP"], ["奈拉", "NGN"], ["塔卡", "BDT"],
+  ["文莱元", "BND"], ["柬埔寨瑞尔", "KHR"], ["瑞尔", "KHR"], ["缅元", "MMK"], ["基普", "LAK"],
   ["日元", "JPY"], ["日圆", "JPY"], ["日币", "JPY"], ["円", "JPY"],
   ["令吉", "MYR"], ["林吉特", "MYR"], ["马币", "MYR"],
   ["新台币", "TWD"], ["台币", "TWD"],
@@ -23,7 +29,9 @@ const SUFFIX: ReadonlyArray<readonly [string, string | null]> = [
   ["韩元", "KRW"], ["韩币", "KRW"], ["韩圜", "KRW"],
   ["泰铢", "THB"], ["越南盾", "VND"], ["印尼盾", "IDR"],
   ["欧元", "EUR"], ["英镑", "GBP"], ["澳元", "AUD"], ["澳币", "AUD"], ["加元", "CAD"], ["加币", "CAD"],
-  ["纽币", "NZD"], ["卢比", "INR"], ["迪拉姆", "AED"],
+  ["纽币", "NZD"], ["迪拉姆", "AED"],
+  // 好几个国家都叫这个名字的，看同一段说的是哪国（FAMILIES）。
+  ["卢比", "?卢比"], ["比索", "?比索"], ["克朗", "?克朗"],
   ["美元", null], ["美金", null], ["美分", null],
   ["元", "?"],
 ];
@@ -46,7 +54,8 @@ const SUFFIX_RE = SUFFIX.map(([w]) => esc(w)).join("|");
 const PREFIX_RE = PREFIX.map(([w]) => esc(w)).join("|");
 
 // 一：数字在前、币种在后（975万日元、400 万至 1,900 万日元）。二：币种在前（RM5,000、人民币500万元、€1.30）。
-const AFTER = new RegExp(`(?<![\\d.,，A-Za-z$])${AMOUNT}\\s?(${SUFFIX_RE})(?!店|素|宵|旦|器|件|首|老|气)`, "gu");
+// 数字前面紧挨着的逗号，只有逗号前面还是数字时才是千位分隔（3,000 的 000）；「登记，1500 万卢比」的逗号是句读，照补。
+const AFTER = new RegExp(`(?<![\\d.A-Za-z$])(?<!\\d[,，])${AMOUNT}\\s?(${SUFFIX_RE})(?!店|素|宵|旦|器|件|首|老|气)`, "gu");
 const M_PREFIX = String.raw`(?:\s?(万亿|千万|百万|十万|万|亿|千|百|k|K))?`;
 const BEFORE = new RegExp(`(?<![A-Za-z])(${PREFIX_RE})\\s?(${NUM})${M_PREFIX}(?:${SEP}(${NUM})${M_PREFIX})?(?:\\s?元)?`, "gu");
 
@@ -69,6 +78,28 @@ const PLACES: ReadonlyArray<readonly [RegExp, string]> = [
   [/美国|英国|欧洲|法国|德国|意大利|西班牙|澳大利亚|澳洲|加拿大|泰国|越南|印尼|菲律宾|印度|迪拜|中东/u, ""],
 ];
 
+// 卢比、比索、克朗：同一段只提到其中一个国家才补；卢比一个都没提时按印度算。
+const FAMILIES: Readonly<Record<string, ReadonlyArray<readonly [RegExp, string]>>> = {
+  卢比: [[/印度|孟买|新德里|德里|班加罗尔/u, "INR"], [/巴基斯坦/u, "PKR"], [/斯里兰卡/u, "LKR"], [/尼泊尔/u, "NPR"], [/印尼|印度尼西亚/u, "IDR"]],
+  比索: [[/墨西哥/u, "MXN"], [/菲律宾|马尼拉/u, "PHP"], [/智利/u, "CLP"], [/阿根廷/u, "ARS"], [/哥伦比亚/u, "COP"]],
+  克朗: [[/瑞典/u, "SEK"], [/挪威/u, "NOK"], [/丹麦/u, "DKK"], [/捷克/u, "CZK"], [/冰岛/u, "ISK"]],
+};
+
+/** 卢比、比索、克朗是哪国的；分不清是 null。 */
+export function familyOf(name: string, context: string, before = ""): string | null {
+  const family = FAMILIES[name] ?? [];
+  // 「印度尼西亚」「印尼」里都有「印度」或像「印度」：认印度之前先把它们拿掉。
+  const test = (re: RegExp, code: string, text: string) => re.test(code === "INR" ? text.replace(/印度尼西亚|印尼/gu, "") : text);
+  // 同一句里金额前面提到了哪国，就是哪国的（「墨西哥……；印度一例原估15万卢比」）；这一句提到几国、一国都没提，再看整段。
+  const clause = before.split(/[。；;！？!?\n〔]/u).pop() ?? "";
+  const near = family.filter(([re, code]) => test(re, code, clause)).map(([, code]) => code);
+  if (near.length === 1) return near[0]!;
+  const hits = family.filter(([re, code]) => test(re, code, context)).map(([, code]) => code);
+  if (hits.length === 1) return hits[0]!;
+  // 中文稿里单写「卢比」的，几乎都是印度的：一个用卢比的国家都没提，就按印度算。
+  return name === "卢比" && hits.length === 0 ? "INR" : null;
+}
+
 /** 单写「元」时按哪种钱算：同一段只提到一个地方就是那里的钱；一处都没提、提到几处，都是 null，不加。 */
 export function yuanOf(context: string): string | null {
   const hits = [...new Set(PLACES.filter(([re]) => re.test(context)).map(([, code]) => code))];
@@ -82,7 +113,8 @@ function untouched(text: string): Array<[number, number]> {
   return [...text.matchAll(UNTOUCHED)].map((m) => [m.index, m.index + m[0].length]);
 }
 
-const value = (num: string, mult: string | undefined) => Number(num.replace(/[,，]/g, "")) * (mult ? MULT[mult]! : 1);
+const num = (n: string) => Number(n.replace(/[,，]/g, ""));
+const value = (n: string, mult: string | undefined) => num(n) * (mult ? MULT[mult]! : 1);
 
 /** 两位有效数字：61,747 → 6.2万，9,080 → 9,100，4.43 → 4.4，0.754 → 0.75。 */
 export function usdText(v: number): string {
@@ -110,12 +142,16 @@ export function addUsd(text: string, perUsd: PerUsd, context: string = text): st
   const add = (src: string, keep: Array<[number, number]>, whole: string, offset: number, code: string | null, n1: string, m1: string | undefined, n2: string | undefined, m2: string | undefined) => {
     if (code === null || keep.some(([a, b]) => offset < b && offset + whole.length > a)) return whole;
     if (code === "?") code = yuan === undefined ? (yuan = yuanOf(context)) : yuan;
+    else if (code?.startsWith("?")) code = familyOf(code.slice(1), context, src.slice(Math.max(0, offset - 60), offset));
     if (code === null) return whole;
     const after = src.slice(offset + whole.length);
     if (HAS_USD_AFTER.test(after) || USD_BEFORE.test(src.slice(Math.max(0, offset - 24), offset))) return whole;
-    // 「3到6万日元」是 3 万到 6 万。
-    const lo = value(n1, m1 ?? (n2 ? m2 : undefined));
+    // 「3到6万日元」是 3 万到 6 万；「5000至2.5万澳元」是 5000 到 2.5 万，前面的数本身就比后面的大，不借后面的「万」。
+    const borrow = !m1 && n2 && m2 && num(n1) <= num(n2);
+    const lo = value(n1, m1 ?? (borrow ? m2 : undefined));
     const hi = n2 ? value(n2, m2) : null;
+    // 拼出来前面比后面大，是没读懂这个范围：不补，免得补出离谱的数。
+    if (hi !== null && !(hi >= lo)) return whole;
     const n = note(lo, hi, code, perUsd);
     return n ? whole + n : whole;
   };

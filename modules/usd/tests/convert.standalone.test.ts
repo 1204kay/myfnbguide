@@ -5,7 +5,8 @@ import { test } from "node:test";
 import { addUsd, addUsdToJson, addUsdToText, usdText } from "../backend/convert.ts";
 import { parseRates } from "../backend/rates.ts";
 
-const R = { JPY: 157.9, MYR: 4.048, CNY: 6.669, TWD: 33.04, HKD: 7.844, SGD: 1.276, VND: 25643, EUR: 0.888, GBP: 0.7413 };
+const R = { JPY: 157.9, MYR: 4.048, CNY: 6.669, TWD: 33.04, HKD: 7.844, SGD: 1.276, VND: 25643, EUR: 0.888, GBP: 0.7413,
+  AUD: 1.427, INR: 94.53, MXN: 18.58, PHP: 63.11, PLN: 3.896, BRL: 5.46 };
 
 test("the amounts on the 开店 reference page get their US$ beside them", () => {
   assert.equal(
@@ -14,6 +15,25 @@ test("the amounts on the 开店 reference page get their US$ beside them", () =>
   );
   assert.equal(addUsd("开业资金多在 400 万至 1,900 万日元", R), "开业资金多在 400 万至 1,900 万日元（约 US$2.5万至12万）");
   assert.equal(addUsd("周转金3到6万日元", R), "周转金3到6万日元（约 US$190至380）", "「3到6万」是 3 万到 6 万");
+});
+
+test("a range whose first number is already bigger than its 万 does not borrow it", () => {
+  // 11-06 线上出过「5000至2.5万澳元（约 US$3500万）」：前面的 5000 借了后面的「万」。
+  assert.equal(addUsd("澳大利亚一例咖啡车5000至2.5万澳元", R), "澳大利亚一例咖啡车5000至2.5万澳元（约 US$3,500至1.8万）");
+  assert.equal(addUsd("房租 8000 至 1 万日元", R), "房租 8000 至 1 万日元（约 US$51至63）");
+  assert.equal(addUsd("2.5万至5000澳元", R), "2.5万至5000澳元", "a range that reads backwards is left alone");
+});
+
+test("an amount right after a 「，」 is converted, and so is the first of a range there", () => {
+  assert.equal(addUsd("超过 200 万卢比要登记，1500 万卢比以下", R), "超过 200 万卢比（约 US$2.1万）要登记，1500 万卢比（约 US$16万）以下");
+  assert.equal(addUsd("一份甜品，3 至 4 欧元", R), "一份甜品，3 至 4 欧元（约 US$3.4至4.5）");
+});
+
+test("比索 and 卢比 are the money of the country named nearest before them", () => {
+  assert.equal(addUsd("墨西哥一家店月租8万比索，波兰月租5000兹罗提", R), "墨西哥一家店月租8万比索（约 US$4,300），波兰月租5000兹罗提（约 US$1,300）");
+  assert.equal(addUsd("墨西哥一例要15万比索；印度一例原估15万卢比", R, "墨西哥 印度 印尼"), "墨西哥一例要15万比索（约 US$8,100）；印度一例原估15万卢比（约 US$1,600）");
+  assert.equal(addUsd("菲律宾和墨西哥都卖100比索", R), "菲律宾和墨西哥都卖100比索");
+  assert.equal(addUsd("一杯奶茶20卢比", R), "一杯奶茶20卢比（约 US$0.21）", "卢比 with no country named is India's");
 });
 
 test("currencies written before or after the number", () => {

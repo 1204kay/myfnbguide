@@ -14,7 +14,9 @@ const SOURCES = [
 ];
 
 // 只存 convert.ts 会用到的货币。
-const CODES = ["JPY", "MYR", "CNY", "TWD", "HKD", "MOP", "SGD", "KRW", "THB", "VND", "IDR", "PHP", "EUR", "GBP", "AUD", "CAD", "NZD", "INR", "CHF", "AED"];
+const CODES = ["JPY", "MYR", "CNY", "TWD", "HKD", "MOP", "SGD", "KRW", "THB", "VND", "IDR", "PHP", "EUR", "GBP", "AUD", "CAD", "NZD", "INR", "CHF", "AED",
+  "PKR", "LKR", "NPR", "MXN", "CLP", "ARS", "COP", "SEK", "NOK", "DKK", "CZK", "ISK", "BRL", "ZAR", "TRY", "ILS", "SAR", "QAR",
+  "PLN", "HUF", "RON", "RUB", "EGP", "NGN", "BDT", "BND", "KHR", "MMK", "LAK"];
 
 export interface Rates { date: string; perUsd: PerUsd }
 

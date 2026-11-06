@@ -1,6 +1,6 @@
 // 金额旁边补美元（Kay 11-06，backend/convert.ts 文件头）。网页、日报、参考页、RSS、给 Agent 读的接口都从 api 读，
 // 所以只在 api 回应发出去之前补一次（onSend），框架的文件一个都不改，库里存的文字也不改。管理后台、上传、图片不碰。
-// 汇率每天 09:17（北京时间）取一次（backend/rates.ts）。
+// 汇率每小时第 17 分钟看一次，存的那份满 12 小时才重新取（backend/rates.ts）：刚部署、取失败过，都在一小时内补上。
 //
 // 带 ETag 的回应：补过美元的，ETag 后面加上汇率日期（W/"abc" → W/"abc.usd-2026-11-05"），汇率一换，浏览器手上的旧版就
 // 对不上、会重新取；请求带回来的 If-None-Match 先去掉这个尾巴再交给原来的路由比对，日期不是当天的就整个去掉。
@@ -76,7 +76,7 @@ export default defineServerModule({
   },
   schedules: [{
     name: "usd.rates",
-    cron: "17 9 * * *",
+    cron: "17 * * * *",
     missed: "once",
     run: async () => {
       if (process.env.COLLECT_ENABLED !== "true") return { skipped: "collection is off (COLLECT_ENABLED)" };

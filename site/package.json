@@ -18,6 +18,7 @@
     "@aihot/dailypick": "*",
     "@aihot/reference": "*",
     "@aihot/social": "*",
-    "@aihot/trends": "*"
+    "@aihot/trends": "*",
+    "@aihot/usd": "*"
   }
 }

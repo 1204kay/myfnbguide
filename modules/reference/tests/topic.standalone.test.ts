@@ -93,12 +93,18 @@ test("a cut leaves no 「；。」, no 「。。」 and no paragraph opening wit
   assert.equal(tidy("先定方向〔1〕；再定菜单〔2〕。"), "先定方向〔1〕；再定菜单〔2〕。", "a 「；」 between clauses stays");
 });
 
-test("an article is written again for an item it did not read or for prompts changed since, not otherwise", () => {
-  const last = { item_ids: ["a", "b"], version: "v1" };
+test("an article is written again for ten new items, for one a week on, or for prompts changed since, not otherwise", () => {
+  const at = new Date("2026-11-07T00:00:00Z");
+  const last = { item_ids: ["a", "b"], version: "v1", created_at: at };
+  const day = (n: number) => new Date(at.getTime() + n * 86_400_000);
+  const fresh = (n: number) => ["a", "b", ...Array.from({ length: n }, (_, i) => `n${i}`)];
   assert.equal(needsRewrite(undefined, ["a"], "v1"), true, "none yet");
   assert.equal(needsRewrite(undefined, [], "v1"), false, "nothing to write from");
-  assert.equal(needsRewrite(last, ["a", "b"], "v1"), false);
-  assert.equal(needsRewrite(last, ["b"], "v1"), false, "an item gone is no reason");
-  assert.equal(needsRewrite(last, ["a", "b", "c"], "v1"), true, "a new item");
-  assert.equal(needsRewrite(last, ["a", "b"], "v2"), true, "other prompts (Kay 11-06: 只有日本)");
+  assert.equal(needsRewrite(last, ["a", "b"], "v1", day(30)), false, "nothing new, however long");
+  assert.equal(needsRewrite(last, ["b"], "v1", day(30)), false, "an item gone is no reason");
+  assert.equal(needsRewrite(last, fresh(9), "v1", day(1)), false, "nine new items wait (Kay 11-07: 10条吧)");
+  assert.equal(needsRewrite(last, fresh(10), "v1", day(1)), true, "ten do");
+  assert.equal(needsRewrite(last, fresh(1), "v1", day(6.9)), false, "one waits a week");
+  assert.equal(needsRewrite(last, fresh(1), "v1", day(7)), true, "and is written then");
+  assert.equal(needsRewrite(last, ["a", "b"], "v2", day(0)), true, "other prompts (Kay 11-06: 只有日本)");
 });

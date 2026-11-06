@@ -436,7 +436,7 @@ test("the Messages request marks only the cached part, for an hour, and leaves t
     { type: "text", text: "原文", cache_control: { type: "ephemeral", ttl: CACHE_TTL } },
     { type: "text", text: "稿子" },
   ]);
-  assert.equal(body.max_tokens, 8000 + 12000, "the same room as before: the answer and the preset's thinking");
+  assert.equal(body.max_tokens, 8000 + (opus.reasoningTokens ?? 0), "room for the answer and, on top, the preset's thinking");
   assert.equal(body.system, "核对员");
   assert.ok(!("thinking" in body) && !("temperature" in body), "Opus 5.5 thinks adaptively at its default effort, as it did through the compatible endpoint");
   assert.deepEqual((messagesBody(opus, "s", "一段", 8000) as { messages: Array<{ content: unknown }> }).messages[0]!.content, [{ type: "text", text: "一段" }], "a plain string is not cached");

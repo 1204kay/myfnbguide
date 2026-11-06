@@ -1,6 +1,7 @@
 // 十一说核稿试 flash（Kay 11-07 06:12「直接这期就试 flash核对」）：拿已经出刊的某一期，把 Opus 当时核过的原稿
 // （两稿各自第一次核对前的样子）交给另一个模型照同一份核对提示词再核一遍，把两边挑出的问题并排列出来。
-// 只读那一期和它点名的原文；不改那一期，不改网站。花的钱只有这几次核对，各记一张回执（subject trial-check:<日期>）。
+// 只读那一期和它点名的原文；不改那一期，不改网站，只写回执。花的钱只有这几次核对，各记一张回执（subject trial-check:<日期>）。
+// 只能拿已经写进 reference_issues 的一期：核稿失败的那天（例如 11-07 修好前）没有这一行，脚本会报「没有十一说」。
 //   sudo docker compose exec -T worker node myfnb/trial-flash-check.ts --date 2026-11-07                 只列要核哪几稿，不调模型
 //   sudo docker compose exec -T worker node myfnb/trial-flash-check.ts --date 2026-11-07 --apply         flash 每稿核 2 次
 //   … --model deepseek-flash-think-llm --reps 2                                                       默认就是这两个

@@ -4,13 +4,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { affordable, composeTopic, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, composeTopic, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
-const GROUPS = [{ no: "1", title: "开店前先想清楚" }, { no: "2", title: "装修和设备" }];
+const GROUPS = [{ no: "1", key: "before-opening", title: "是否该开这家店？" }, { no: "2", key: "build-out", title: "资金用在哪里、何处能省？" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
 const ITEMS = [item(1, "1"), item(2, "1"), item(3, "2")];
 const ARTICLE: TopicText = {
-  title: "开店要准备什么：先想清楚做什么店",
   lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算〔2〕。"],
   sections: [
     { group: "第 1 组", paragraphs: ["几家店主都先定方向〔1,2〕。饺子店店主说先决定不做什么〔1〕。"] },
@@ -43,7 +42,7 @@ test("a 严重 sentence is cut and the rest checked again: shown when that finds
   const fixed = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, scripted([[serious(wrong)], []]));
   assert.equal(fixed.status, "shown");
   assert.deepEqual(fixed.article.sections[0]!.paragraphs, ["几家店主都先定方向〔1,2〕。"]);
-  assert.ok(!topicMarkdown(fixed.article, GROUPS).includes("饺子店"));
+  assert.ok(!topicMarkdown("开店前的准备和开销", fixed.article, GROUPS).includes("饺子店"));
   assert.deepEqual(fixed.draft, ARTICLE, "the draft is kept as written, to see what was cut");
 
   const held = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, scripted([[serious(wrong)], [serious("设备能用二手〔3〕。")]]));
@@ -54,21 +53,21 @@ test("a citation of no item given is 严重 though the checker finds nothing", a
   const ask = scripted([[], []]);
   const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS.filter((i) => i.n !== 3), ask);
   assert.ok(c.found.some((p) => p.severity === "严重" && p.quote.includes("〔3〕")));
-  assert.ok(!topicMarkdown(c.article, GROUPS).includes("〔3〕"), "its sentences are cut");
+  assert.ok(!topicMarkdown("开店前的准备和开销", c.article, GROUPS).includes("〔3〕"), "its sentences are cut");
   assert.equal(ask.checked.length, 2);
 });
 
 test("a heading written as 「第 1 组」 is its cause's title", () => {
   assert.equal(groupNo("第 1 组"), "1");
   assert.equal(groupNo("2"), "2");
-  assert.ok(topicMarkdown(ARTICLE, GROUPS).includes("## 开店前先想清楚"));
+  assert.ok(topicMarkdown("开店前的准备和开销", ARTICLE, GROUPS).includes("## 是否该开这家店？"));
 });
 
-test("a run is not started when a write and two checks at their worst would pass the day's US$0.3", () => {
+test("a run is not started when a write and two checks at their worst would pass the day's cap", () => {
   const [w, c] = ["deepseek-flash-think-llm", "deepseek-flash-llm"];
   assert.equal(affordable(66_000, w, c, 0), true, "opening-cost's 66k characters fit a fresh day");
-  assert.equal(affordable(66_000, w, c, 0.2), false, "not what is left after US$0.2");
-  assert.equal(affordable(300_000, w, c, 0), false, "a situation too long for the cap");
+  assert.equal(affordable(66_000, w, c, DAY_CAP_USD - 0.1), false, "not what is left of the day's cap after all but US$0.1");
+  assert.equal(affordable(10_000_000, w, c, 0), false, "a situation too long for the cap");
   assert.equal(affordable(1_000, "claude-opus-5-5", c, 0), false, "a model without a price");
 });
 

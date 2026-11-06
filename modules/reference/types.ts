@@ -102,11 +102,10 @@ export interface SituationPage {
 
 /** A situation's 综合整理 as its page reads it: citations are marked 〔n〕, n an item's id in `sources`. */
 export interface TopicView {
-  title: string;
-  /** The three sentences that tell its conclusion. */
+  /** The card's three points: a conclusion each, at most one reason. */
   lead: string[];
-  /** By cause, each under its cause's title. */
-  sections: Array<{ title: string; paragraphs: string[] }>;
+  /** Each cause's points, by the key of its group (`rest` for 其他做法), shown at the top of its section. */
+  sections: Array<{ key: string; points: string[] }>;
   sources: Record<number, string>;
   /** How many items it was written from. */
   items: number;

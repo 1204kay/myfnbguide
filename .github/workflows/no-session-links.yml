@@ -3,7 +3,8 @@
 #     只换链接、不删整行，免得把讲这条规矩的句子或顺带有链接的整段一起删掉（11-04 #216 自己的正文就被删过一条）。删过留一条黄色警告；
 #     删不掉才标红。不是删过就标红：开 PR 的工具每次都会往正文加链接，删过就红的话几乎每个 PR 都红，红就成了噪声；
 #     而且云端会话没有权限重新运行检查，红了消不掉（11-04 在 #216 实测）。
-# 二、提交信息：查这个 PR 的每个提交，有 Claude-Session 行或 claude.ai/code 链接就标红。提交信息改不了，只能挡：红了不合并，
+# 二、提交信息：查这个 PR 的每个提交，有以 Claude-Session: 开头的行或 claude.ai/code/ 链接就标红（和正文那步同一套规则）。
+#     只认行首：11-04 十一回报，原来整段模糊匹配，提交信息只要提到这个词（比如讲这条规矩）就红。提交信息改不了，只能挡：红了不合并，
 #     要在分支上改写那个提交（这条分支还没合并，可以 amend 或 rebase 后推）。
 # 起因：11-04 #214、#215 和手册 #511 的正文都带了会话链接，开 PR 的工具会自己往里加，靠每个会话「记得读回」挡不住。
 # 用 pull_request 而不用 pull_request_target：后者的检查挂在 main 的提交上，设不成合并必须通过的检查。
@@ -75,7 +76,9 @@ jobs:
           gh api --paginate "repos/$REPO/pulls/$PR/commits?per_page=100" \
             --jq '.[] | {sha: .sha[0:8], message: .commit.message}' > commits.jsonl
           total=$(grep -c . commits.jsonl || true)
-          bad=$(jq -r 'select(.message | test("Claude-Session|claude\\.ai/code"; "i")) | .sha' commits.jsonl)
+          # 和正文那步用同一套规则：Claude-Session 只认行首（git trailer 的样子），链接认 claude.ai/code/（带斜杠，真链接都有），在哪都算；
+          # 提交信息里只是讲到这两个词不算。
+          bad=$(jq -r 'select(.message | test("(^|\n)[ \t]*Claude-Session:|claude\\.ai/code/"; "i")) | .sha' commits.jsonl)
           if [ -z "$bad" ]; then
             echo "$total 个提交，都没有会话链接。"
             exit 0

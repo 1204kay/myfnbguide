@@ -3,8 +3,9 @@
 // 不改，所以核对员、改稿和十一说的听稿都看不到这个数。汇率是 backend/rates.ts 每天取的那一份，不按文章日期：读者
 // 想知道的是这笔钱现在大概值多少美元。取两位有效数字，前面写「约」。
 //
-// 只认写明了币种的金额。单写「元」的，看同一段（同一个对象和它的来源）里说的是哪里：只提到台湾、香港、澳门、
-// 新加坡、马来西亚中的一处就按那里的钱算，一处都没提就按人民币算，提到两处以上不加。「$」「¥」分不清是哪国的，不加。
+// 只认写明了币种的金额。单写「元」的，看同一段（同一个对象和它的来源名，来源名里写着国家）里说的是哪里：只提到
+// 一个地方就按那里的钱算，一处都没提或者提到几处，分不清，不加。「$」「¥」分不清是哪国的，不加。
+// 网址、链接、RSS 的 guid 里的字不动（「/RM50-meal」补了链接就坏了，guid 一变阅读器会再推一次）。
 
 /** 1 美元换多少这种货币，键是大写代码（USD 以外）。 */
 export type PerUsd = Readonly<Record<string, number>>;
@@ -45,7 +46,7 @@ const SUFFIX_RE = SUFFIX.map(([w]) => esc(w)).join("|");
 const PREFIX_RE = PREFIX.map(([w]) => esc(w)).join("|");
 
 // 一：数字在前、币种在后（975万日元、400 万至 1,900 万日元）。二：币种在前（RM5,000、人民币500万元、€1.30）。
-const AFTER = new RegExp(`(?<![\\d.,，A-Za-z$])${AMOUNT}\\s?(${SUFFIX_RE})(?!店)`, "gu");
+const AFTER = new RegExp(`(?<![\\d.,，A-Za-z$])${AMOUNT}\\s?(${SUFFIX_RE})(?!店|素|宵|旦|器|件|首|老|气)`, "gu");
 const M_PREFIX = String.raw`(?:\s?(万亿|千万|百万|十万|万|亿|千|百|k|K))?`;
 const BEFORE = new RegExp(`(?<![A-Za-z])(${PREFIX_RE})\\s?(${NUM})${M_PREFIX}(?:${SEP}(${NUM})${M_PREFIX})?(?:\\s?元)?`, "gu");
 
@@ -53,29 +54,32 @@ const BEFORE = new RegExp(`(?<![A-Za-z])(${PREFIX_RE})\\s?(${NUM})${M_PREFIX}(?:
 const HAS_USD_AFTER = /^\s?[（(][^）)]{0,16}(?:US\$|美元|美金|USD)/u;
 const USD_BEFORE = /(?:美元|美金|US\$\s?[\d.,]+\s?[万亿]?)\s?[（(]$/u;
 
-// 单写「元」的时候，这一段说的是哪里。
+// 单写「元」的时候，这一段说的是哪里。来源名写着国家（「红餐网（中国 · 媒体）」），条目的上下文里一定有一处。
 const PLACES: ReadonlyArray<readonly [RegExp, string]> = [
-  [/台湾|台灣|台北|台南|高雄|新北/u, "TWD"],
+  [/中国(?!台湾|香港|澳门)|内地|大陆|大陸|北京|上海|广州|深圳|成都|重庆|杭州|武汉|西安|南京|长沙|郑州|苏州|天津|青岛|厦门|福建|广东|浙江|江苏|四川|湖南|湖北|山东|河南|云南|洛阳|台州|漳州|佛山|东莞|人民币/u, "CNY"],
+  [/台湾|台灣|台北|台南|高雄|新北|桃园/u, "TWD"],
   [/香港/u, "HKD"],
   [/澳门|澳門/u, "MOP"],
   [/新加坡|狮城/u, "SGD"],
-  [/马来西亚|馬來西亞|大马(?!路)|吉隆坡|槟城/u, "MYR"],
+  [/马来西亚|馬來西亞|大马(?!路|士革)|马国|吉隆坡|雪兰莪|雪州|八打灵|梳邦|莎阿南|巴生|蒲种|加影|安邦|槟城|槟岛|槟榔屿|大山脚|柔佛|新山|麻坡|居銮|峇株|马六甲|甲州|森美兰|芙蓉|霹雳|怡保|金宝|太平市|吉打|亚罗士打|玻璃市|吉兰丹|哥打巴鲁|登嘉楼|彭亨|关丹|文冬|沙巴|亚庇|斗湖|山打根|砂拉越|砂州|古晋|诗巫|美里|民都鲁|纳闽/u, "MYR"],
   // 写日本、韩国的稿子里单写的「元」，多半是日元、韩元的省写。
-  [/日本|东京|大阪|京都|福冈|札幌|名古屋/u, "JPY"],
+  [/日本|东京|大阪|京都|福冈|札幌|名古屋|广岛|岐阜/u, "JPY"],
   [/韩国|首尔|釜山/u, "KRW"],
-  // 其他国家的钱不叫「元」，单写「元」说的是哪国的分不清，不加。
+  // 其他国家的钱不叫「元」，提到它们就分不清了。
   [/美国|英国|欧洲|法国|德国|意大利|西班牙|澳大利亚|澳洲|加拿大|泰国|越南|印尼|菲律宾|印度|迪拜|中东/u, ""],
 ];
 
-const FOREIGN = new RegExp(SUFFIX.filter(([w, c]) => c !== "CNY" && c !== "?" && !w.startsWith("美")).map(([w]) => esc(w)).join("|") + "|" + PREFIX.filter(([, c]) => c !== "CNY").map(([w]) => esc(w)).join("|"), "u");
-
-/** 单写「元」时按哪种钱算：一处都没提是人民币，只提到一处就是那里的钱；null 是分不清，不加。 */
+/** 单写「元」时按哪种钱算：同一段只提到一个地方就是那里的钱；一处都没提、提到几处，都是 null，不加。 */
 export function yuanOf(context: string): string | null {
-  const hits = PLACES.filter(([re]) => re.test(context)).map(([, code]) => code);
-  // 没提地方、却写着别国的钱（「31750日元，年费88元」），这个「元」是哪国的分不清。
-  if (hits.length === 0) return FOREIGN.test(context) ? null : "CNY";
-  if (hits.length === 1 && hits[0] && !/人民币|内地|大陆|大陸/u.test(context)) return hits[0];
-  return null;
+  const hits = [...new Set(PLACES.filter(([re]) => re.test(context)).map(([, code]) => code))];
+  return hits.length === 1 && hits[0] ? hits[0] : null;
+}
+
+// 网址（https://…、www.…、/items/…）、XML 的 <link>/<guid>、标签属性、Markdown 链接的目标：这些地方的字不动。
+const UNTOUCHED = /(?:https?:\/\/|www\.)[^\s"'<>）)\]]+|(?<![\p{L}\p{N}])\/[\w\-./%?=&#~+]*[A-Za-z][\w\-./%?=&#~+]*|<(link|guid)\b[^>]*>[\s\S]*?<\/\1>|\b[\w-]+="[^"]*"|\]\([^)]*\)/gu;
+
+function untouched(text: string): Array<[number, number]> {
+  return [...text.matchAll(UNTOUCHED)].map((m) => [m.index, m.index + m[0].length]);
 }
 
 const value = (num: string, mult: string | undefined) => Number(num.replace(/[,，]/g, "")) * (mult ? MULT[mult]! : 1);
@@ -103,8 +107,8 @@ function note(lo: number, hi: number | null, code: string, perUsd: PerUsd): stri
 export function addUsd(text: string, perUsd: PerUsd, context: string = text): string {
   if (!/\d/.test(text)) return text;
   let yuan: string | null | undefined;
-  const add = (src: string, whole: string, offset: number, code: string | null, n1: string, m1: string | undefined, n2: string | undefined, m2: string | undefined) => {
-    if (code === null) return whole;
+  const add = (src: string, keep: Array<[number, number]>, whole: string, offset: number, code: string | null, n1: string, m1: string | undefined, n2: string | undefined, m2: string | undefined) => {
+    if (code === null || keep.some(([a, b]) => offset < b && offset + whole.length > a)) return whole;
     if (code === "?") code = yuan === undefined ? (yuan = yuanOf(context)) : yuan;
     if (code === null) return whole;
     const after = src.slice(offset + whole.length);
@@ -116,10 +120,12 @@ export function addUsd(text: string, perUsd: PerUsd, context: string = text): st
     return n ? whole + n : whole;
   };
   // 币种在前的先做：「人民币500万元」照人民币算，不要被后面那一遍当成单写的「元」。
+  const k1 = untouched(text);
   const once = text.replace(BEFORE, (whole, sym, n1, m1, n2, m2, offset: number) =>
-    add(text, whole, offset, PREFIX.find(([w]) => w === sym)![1], n1, m1, n2, m2));
+    add(text, k1, whole, offset, PREFIX.find(([w]) => w === sym)![1], n1, m1, n2, m2));
+  const k2 = untouched(once);
   return once.replace(AFTER, (whole, n1, m1, n2, m2, unit, offset: number) =>
-    add(once, whole, offset, SUFFIX.find(([w]) => w === unit)![1], n1, m1, n2, m2));
+    add(once, k2, whole, offset, SUFFIX.find(([w]) => w === unit)![1], n1, m1, n2, m2));
 }
 
 const MONEY_HINT = new RegExp(`\\d\\s?(?:[万亿千百]\\s?)?(?:${SUFFIX_RE})|(?:${PREFIX_RE})\\s?\\d`, "u");

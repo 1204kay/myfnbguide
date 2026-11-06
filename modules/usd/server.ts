@@ -15,6 +15,8 @@ const TAIL = /\.usd-(\d{4}-\d{2}-\d{2})(?=")/;
 
 const tagged = new WeakSet<FastifyRequest>();
 
+// 只补 GET。MCP 的工具调用是 POST，回应是 SDK 给的流（可能是 SSE，apps/api/src/routes/mcp.ts respond），读进来改会拖住
+// 流，所以 MCP 不补；同样的内容在 /api/v1/agent/* 是补过的。
 function wanted(req: FastifyRequest): boolean {
   return (req.method === "GET" || req.method === "HEAD") && !SKIP.test((req.raw.url ?? "/").split("?")[0] ?? "/");
 }

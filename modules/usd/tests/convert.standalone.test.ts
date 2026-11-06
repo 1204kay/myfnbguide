@@ -30,21 +30,31 @@ test("dollars, amounts already given in dollars, and amounts too small to matter
   assert.equal(addUsd(once, R), once, "adding twice changes nothing");
 });
 
-test("a bare 元 is the money of the one place the passage names, 人民币 when it names none", () => {
-  assert.equal(addUsd("营收178.9亿元", R), "营收178.9亿元（约 US$27亿）");
+test("a bare 元 is the money of the one place the passage names, and is left alone when it names none or several", () => {
+  assert.equal(addUsd("中国瑞幸营收178.9亿元", R), "中国瑞幸营收178.9亿元（约 US$27亿）");
   assert.equal(addUsd("台湾一碗面120元", R), "台湾一碗面120元（约 US$3.6）");
-  assert.equal(addUsd("新加坡的店一份5元", R), "新加坡的店一份5元（约 US$3.9）");
-  // 没提地方却写着日元的、提了两个地方的、提了不用「元」的国家的：分不清，不加。
-  for (const s of ["首日营业额31750日元（约 US$200），年费88元", "台湾和香港都卖20元", "美国门店一杯5元"]) assert.equal(addUsd(s, R), s);
+  assert.equal(addUsd("新山小贩每碗卖8元，怡保月租3000元", R), "新山小贩每碗卖8元（约 US$2），怡保月租3000元（约 US$740）");
+  for (const s of ["营收178.9亿元", "首日营业额31750日元（约 US$200），年费88元", "台湾和香港都卖20元", "美国门店一杯5元", "中国和马来西亚都卖5元", "5元素"]) assert.equal(addUsd(s, R), s);
   assert.deepEqual(
-    addUsdToJson({ items: [{ summary: "一碗面120元", source: { name: "某媒体（台湾 · 媒体）" } }, { summary: "营收8.05万元", source: { name: "36氪" } }] }, R),
-    { items: [{ summary: "一碗面120元（约 US$3.6）", source: { name: "某媒体（台湾 · 媒体）" } }, { summary: "营收8.05万元（约 US$1.2万）", source: { name: "36氪" } }] },
-    "an item's source says where it is",
+    addUsdToJson({ items: [{ summary: "一碗面120元", source: { name: "某媒体（台湾 · 媒体）" } }, { summary: "营收8.05万元", source: { name: "红餐网（中国 · 媒体）" } }] }, R),
+    { items: [{ summary: "一碗面120元（约 US$3.6）", source: { name: "某媒体（台湾 · 媒体）" } }, { summary: "营收8.05万元（约 US$1.2万）", source: { name: "红餐网（中国 · 媒体）" } }] },
+    "an item's source names its country",
   );
   assert.equal(
-    addUsdToText("<item><title>台湾 面</title><description>120元</description></item><item><description>营收8万元</description></item>", R),
-    "<item><title>台湾 面</title><description>120元（约 US$3.6）</description></item><item><description>营收8万元（约 US$1.2万）</description></item>",
+    addUsdToText("<item><title>台湾 面</title><description>120元</description></item><item><description>中国 营收8万元</description></item>", R),
+    "<item><title>台湾 面</title><description>120元（约 US$3.6）</description></item><item><description>中国 营收8万元（约 US$1.2万）</description></item>",
   );
+});
+
+test("addresses, links and feed ids are left as they are", () => {
+  const R2 = { ...R, MYR: 4.048 };
+  for (const s of ["https://x.com/RM50-meal", "/items/RM50-meal", "www.x.com/500日元"]) assert.equal(addUsd(s, R2), s);
+  assert.equal(addUsd("套餐RM50，见 [这里](https://x.com/RM50-meal)", R2), "套餐RM50（约 US$12），见 [这里](https://x.com/RM50-meal)");
+  assert.equal(
+    addUsdToText('<item><title>RM50 套餐</title><link>https://x.com/RM50-meal</link><guid isPermaLink="false">RM50-meal</guid><a href="https://x.com/RM50">RM50</a></item>', R2),
+    '<item><title>RM50（约 US$12） 套餐</title><link>https://x.com/RM50-meal</link><guid isPermaLink="false">RM50-meal</guid><a href="https://x.com/RM50">RM50（约 US$12）</a></item>',
+  );
+  assert.deepEqual(addUsdToJson({ title: "RM50 套餐", url: "https://x.com/RM50-meal", path: "/items/RM50-meal" }, R2), { title: "RM50（约 US$12） 套餐", url: "https://x.com/RM50-meal", path: "/items/RM50-meal" });
 });
 
 test("two significant figures, in 万 and 亿 from ten thousand", () => {

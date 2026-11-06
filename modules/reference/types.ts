@@ -96,6 +96,21 @@ export interface SituationPage {
   /** What is placed in no cause (其他做法). */
   rest: CaseCard[];
   updatedAt: string | null;
+  /** Its 综合整理 (backend/topic.ts), or null: none written, or none that passed its check. */
+  topic: TopicView | null;
+}
+
+/** A situation's 综合整理 as its page reads it: citations are marked 〔n〕, n an item's id in `sources`. */
+export interface TopicView {
+  title: string;
+  /** The three sentences that tell its conclusion. */
+  lead: string[];
+  /** By cause, each under its cause's title. */
+  sections: Array<{ title: string; paragraphs: string[] }>;
+  sources: Record<number, string>;
+  /** How many items it was written from. */
+  items: number;
+  updatedAt: string;
 }
 
 /** What the item page shows under its three parts (web/item-part.tsx): the way to the situation the item is placed in. */

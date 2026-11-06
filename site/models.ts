@@ -32,6 +32,12 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think-llm": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
   },
+  // Flash without thinking on the same key: the 综合整理's checker (modules/reference/backend/topic.ts). With thinking it
+  // read the 66k characters of a situation's items and thought past 20,000 tokens twice without an answer (11-06).
+  "deepseek-flash-llm": {
+    service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY",
+    extra: { thinking: { type: "disabled" } }, jsonMode: true,
+  },
   // Only the checker's backup now (CHECK_BACKUP). It wrote 十一说 and picked the daily until 11-05; since then every step
   // runs on flash, which since 10-17 is V4.1-Flash-1017: stronger than Pro on 14 of 16 benchmarks and 1/3 to 1/7 of its
   // price (决定记录 L1409; Kay 11-05: 全部换成 flash).
@@ -87,6 +93,9 @@ export const DEFAULTS: Record<string, string> = {
   // 十一说 (modules/reference): flash writes, Opus checks and mends.
   referenceIssue: "deepseek-flash-think-llm",
   referenceIssueCheck: "claude-opus-5-5",
+  // 参考页的综合整理 (modules/reference/backend/topic.ts)：flash 写，不思考的 flash 核对。
+  referenceTopic: "deepseek-flash-think-llm",
+  referenceTopicCheck: "deepseek-flash-llm",
   // 日报正文整天一起挑 (modules/dailypick)。
   dailyPick: "deepseek-flash-think-llm",
 };

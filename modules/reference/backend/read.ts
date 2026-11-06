@@ -19,6 +19,7 @@ import { month } from "../format.ts";
 import { CATEGORIES, categoryTitle, findSituation, OWNERS, SITUATIONS, type Situation } from "../situations.ts";
 import type { CaseCard, CaseStory, Count, ItemText, ReferenceHome, SituationPage, SituationRow, Speaker, StarItem } from "../types.ts";
 import type { Placed } from "./place.ts";
+import { readTopic } from "./topic.ts";
 
 interface Row {
   id: string;
@@ -232,6 +233,7 @@ export async function readSituation(slug: string, now = new Date()): Promise<Sit
     groups: causes.map((g) => ({ key: g.key, title: g.title, line: g.line, cases: cards(g.key) })),
     rest: cards(null),
     updatedAt: latest(rows.map((r) => r.updated_at)),
+    topic: await readTopic(slug),
   };
 }
 

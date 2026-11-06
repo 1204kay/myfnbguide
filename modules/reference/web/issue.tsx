@@ -3,7 +3,7 @@
 // the three sentences the daily leads with, then the issue as it is read out (the program's greeting, the news, the
 // turn to the one told in depth, the goodbye) under 正文, each 〔n〕 going to its original under 原文出处, and what
 // 十一 is. Only the frame's parts already on the story page are used (myfnb/DIFFERENCES.md).
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link, useLoaderData, useNavigate, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
 import { IconArrowLeft, IconArrowRight, IconCopy, IconMenu, IconShare } from "@aihot/web/components/icons";
@@ -14,7 +14,7 @@ import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "@aihot/web/l
 import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { IssuePage } from "../types.ts";
-import { BODY, BODY_LABEL, MEASURE, useShare } from "./ui";
+import { BODY, BODY_LABEL, CitedText, MEASURE, useShare } from "./ui";
 import { ListenButton, PlayerBar, useListen } from "./listen";
 
 export const handle: Screen = { home: "reference" };
@@ -48,27 +48,7 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
 const day = (date: string) => `${Number(date.slice(5, 7))} 月 ${Number(date.slice(8, 10))} 日`;
 
 /** A paragraph with its 〔n〕 marks as links to the originals below. */
-function Cited({ text }: { text: string }) {
-  const parts: ReactNode[] = [];
-  let last = 0;
-  for (const m of text.matchAll(/〔([\d、,，\s]+)〕/gu)) {
-    parts.push(text.slice(last, m.index));
-    const ns = m[1]!.split(/[、,，\s]+/u).filter(Boolean);
-    parts.push(
-      <sup key={m.index} className="ml-0.5 text-[11px] text-ink-4">
-        {ns.map((n, i) => (
-          <Fragment key={n}>
-            {i > 0 && "、"}
-            <a href={`#src-${n}`} className="hover:text-accent">{n}</a>
-          </Fragment>
-        ))}
-      </sup>,
-    );
-    last = m.index + m[0].length;
-  }
-  parts.push(text.slice(last));
-  return <>{parts}</>;
-}
+const Cited = ({ text }: { text: string }) => <CitedText text={text} href={(n) => `#src-${n}`} />;
 
 /** Paragraphs as 十一 wrote them, a blank line apart. */
 function Paragraphs({ text, first = "mt-4" }: { text: string; first?: string }) {

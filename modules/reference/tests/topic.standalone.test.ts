@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { affordable, composeTopic, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, composeTopic, cutSentences, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
 const GROUPS = [{ no: "1", key: "before-opening", title: "是否该开这家店？" }, { no: "2", key: "build-out", title: "资金用在哪里、何处能省？" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
@@ -53,6 +53,13 @@ test("a point whose conclusion is cut goes whole: its reason alone is not left",
   const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, scripted([[serious("几家店主都先定方向〔1,2〕。")], []]));
   assert.deepEqual(c.article.lead, ["设备能用二手〔3〕。", "周转金要另算〔2〕。"]);
   assert.deepEqual(c.article.sections.map((s) => s.group), ["2"], "the first cause's only point went with its conclusion");
+});
+
+test("a point is kept when nothing in it is cut, though its conclusion has a space before the stop", () => {
+  const a: TopicText = { lead: ["先定方向〔1〕 。因为后面的判断都靠它〔2〕。"], sections: [{ group: "1", paragraphs: ["设备能用二手〔3〕 。"] }] };
+  const c = cutSentences(a, ["别的句子〔9〕。"]);
+  assert.deepEqual(c.lead, ["先定方向〔1〕。因为后面的判断都靠它〔2〕。"]);
+  assert.deepEqual(c.sections[0]!.paragraphs, ["设备能用二手〔3〕。"]);
 });
 
 test("a citation of no item given is 严重 though the checker finds nothing", async () => {

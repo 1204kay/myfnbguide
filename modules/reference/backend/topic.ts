@@ -108,7 +108,7 @@ export const tidy = (s: string) => s
 export function cutSentences(a: TopicText, quotes: string[]): TopicText {
   const cut = (s: string) => tidy(quotes.reduce((t, q) => (q && t.includes(q) ? t.replace(q, "") : t), s));
   const first = (s: string) => s.split(/(?<=[。！？])/u)[0]!.trim();
-  const point = (s: string) => { const c = cut(s); return c.startsWith(first(s)) ? [c] : []; };
+  const point = (s: string) => { const c = cut(s); return c.startsWith(tidy(first(s))) ? [c] : []; };
   return {
     lead: a.lead.flatMap(point),
     sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.flatMap(point) })).filter((s) => s.paragraphs.length),

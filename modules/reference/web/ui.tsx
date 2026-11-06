@@ -4,7 +4,7 @@
 // rows, the same on phones and desktops. Who tells a situation shows as the hot list shows who talks about a story:
 // its sources' faces and every count (the owner, 10/6). The frame around them (back links, headers, counts, rows' and
 // cards' type) follows the closest AIHOT page (the owner 10/16: modules keep the original).
-import { useEffect, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
@@ -358,3 +358,32 @@ export function Fill({ parts }: { parts: Array<{ label: string; share: number; t
 
 /** Body text (16/17px, 1.85). */
 export const BODY = "text-[16px] leading-[1.85] text-ink-2 lg:text-[17px]";
+
+/**
+ * A text with its 〔n〕 marks as small links: to the originals below on 十一说's page (web/issue.tsx), to the items on a
+ * situation's 综合整理 (web/situation.tsx). A number `href` has no address for stays as text.
+ */
+export function CitedText({ text, href }: { text: string; href: (n: string) => string | null }) {
+  const parts: ReactNode[] = [];
+  let last = 0;
+  for (const m of text.matchAll(/〔([\d、,，\s]+)〕/gu)) {
+    parts.push(text.slice(last, m.index));
+    const ns = m[1]!.split(/[、,，\s]+/u).filter(Boolean);
+    parts.push(
+      <sup key={m.index} className="ml-0.5 text-[11px] text-ink-4">
+        {ns.map((n, i) => {
+          const to = href(n);
+          return (
+            <Fragment key={n}>
+              {i > 0 && "、"}
+              {to ? <a href={to} className="hover:text-accent">{n}</a> : n}
+            </Fragment>
+          );
+        })}
+      </sup>,
+    );
+    last = m.index + m[0].length;
+  }
+  parts.push(text.slice(last));
+  return <>{parts}</>;
+}

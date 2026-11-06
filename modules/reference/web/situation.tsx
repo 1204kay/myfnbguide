@@ -11,10 +11,10 @@ import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { breadcrumbLd, itemListLd, pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
 import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
-import type { SituationPage } from "../types.ts";
+import type { SituationPage, TopicView } from "../types.ts";
 import { SituationFigure } from "./figures";
 import { day, num, tellers } from "../format.ts";
-import { FIRST, Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
+import { CitedText, FIRST, FoldToggle, Heading, PageHeader, ROW_BUTTON, StoryCards, useShare, BackLink } from "./ui";
 
 export const handle: Screen = { tab: "reference" };
 
@@ -80,6 +80,7 @@ export default function SituationRoute() {
       <BackLink to="/reference" label="参考" />
       <PageHeader kicker={s.category.title} to={`/reference#${s.category.key}`} title={s.title} dek={s.dek}
         counts={[...tellers(s.count), [s.count.cases, "条原文"]]} updatedAt={s.updatedAt} asideFacts className="pb-2 pt-3 lg:pt-1" />
+      {s.topic && <Overview topic={s.topic} />}
       <SituationFigure slug={s.slug} groups={titles}>
         {/* Split by cause, the sections below are the list (Kay 11-06 08:24: 1234 shown twice reads as two things). */}
         {s.causes.length > 1 && !split && (
@@ -150,6 +151,41 @@ function Section({ id, no, title, count, first, children }: { id: string; no: nu
         </button>
       </h2>
       <Collapse open={open}>{children}</Collapse>
+    </section>
+  );
+}
+
+/**
+ * The 综合整理 (backend/topic.ts) at the top, as the engine's event page opens with its 先了解这件事 card
+ * (apps/web/app/routes/story.tsx Panel; 决定记录 L2575): its title, the three sentences that tell the conclusion, and
+ * the rest by cause behind a toggle, so a reader who stops at the three has the point. Each 〔n〕 goes to its item.
+ */
+function Overview({ topic }: { topic: TopicView }) {
+  const [open, setOpen] = useState(false);
+  const cite = (text: string) => <CitedText text={text} href={(n) => (topic.sources[Number(n)] ? `/items/${topic.sources[Number(n)]}` : null)} />;
+  return (
+    <section className="card mt-6 p-5 lg:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="min-w-0 text-[17px] font-[650] leading-[1.5] text-ink">{topic.title}</h2>
+        <div className="shrink-0 text-[11.5px] text-ink-4">AI 综述</div>
+      </div>
+      <div className="mt-3.5 space-y-3">
+        {topic.lead.map((p, i) => <p key={i} className="text-[15px] leading-[1.85] text-ink-2">{cite(p)}</p>)}
+      </div>
+      <Collapse open={open}>
+        {topic.sections.map((sec) => (
+          <div key={sec.title} className="mt-5">
+            <h3 className="text-[15px] font-[650] leading-[1.6] text-ink">{sec.title}</h3>
+            <div className="mt-1.5 space-y-3">
+              {sec.paragraphs.map((p, i) => <p key={i} className="text-[15px] leading-[1.85] text-ink-2">{cite(p)}</p>)}
+            </div>
+          </div>
+        ))}
+      </Collapse>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3">
+        <FoldToggle open={open} onToggle={() => setOpen(!open)}>读全文</FoldToggle>
+        <p className="text-[12px] text-ink-4">AI 根据 <span className="num">{topic.items}</span> 条原文整理 · <span className="num">{day(topic.updatedAt)}</span> 更新</p>
+      </div>
     </section>
   );
 }

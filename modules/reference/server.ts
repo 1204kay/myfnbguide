@@ -18,6 +18,7 @@ import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
 import { AGENT_ABILITIES } from "./backend/agent.ts";
 import { articlesToPlace, PLACE_STEP, placeWaiting, placingOn } from "./backend/place.ts";
+import { TOPIC_CHECK_STEP, TOPIC_STEP, topicSlugs, topicStale, writeTopic } from "./backend/topic.ts";
 
 // 十一说 (backend/issues.ts): one a day; two drafts, checks and up to five rounds of mending take long, so it runs as a job
 // of its own with room for that, and one retry for a model that failed.
@@ -68,6 +69,22 @@ const PLACES = defineQueue<{ date: string }>({
 /** At most this many a day: a day selects about 10–20 (/api/site/stats); the rest of a backlog goes on the next days. */
 const PLACE_LIMIT = 300;
 
+// 综合整理 (backend/topic.ts): the situations the settings row names, one after another in one job, each only when it
+// has new items and the day's cap holds it. No retry: it would spend past the cap (backend/topic.ts topicAsk).
+const TOPICS = defineQueue<{ date: string }>({
+  name: "reference.topic",
+  options: { policy: "short", retryLimit: 0, expireInSeconds: 3600 },
+  worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
+  run: async (jobs) => {
+    for (const _ of jobs) {
+      for (const slug of await topicSlugs()) {
+        const page = await readSituation(slug);
+        if (page) console.log(JSON.stringify({ job: "reference.topic", ...await writeTopic(page) }));
+      }
+    }
+  },
+});
+
 /** Shared caches keep a page as long as the engine keeps its topic pages: a minute. */
 const CACHE = "public, max-age=60, stale-while-revalidate=60";
 
@@ -76,9 +93,11 @@ export default defineServerModule({
   models: {
     [PLACE_STEP]: { label: "参考库的情况（没有故事的入选条目，只选放进哪个情况、哪一组）", env: "REFERENCE_PLACE_MODEL", purposes: ["reference_place"] },
     [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak", "reference_issue_voice"] },
+    [TOPIC_STEP]: { label: "参考页的综合整理（读一种情况的全部原文条目，写一篇每句标出原文的整理）", env: "REFERENCE_TOPIC_MODEL", purposes: ["reference_topic_write"] },
+    [TOPIC_CHECK_STEP]: { label: "综合整理的核对（逐句对原文，严重的句子删掉再核一次）", env: "REFERENCE_TOPIC_CHECK_MODEL", purposes: ["reference_topic_check"] },
     [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen", "reference_issue_voice_check"] },
   },
-  queues: [PLACES, ISSUES, VOICES],
+  queues: [PLACES, TOPICS, ISSUES, VOICES],
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // A warning before the Claude credit runs out and the morning's issue with it (backend/credit.ts).
@@ -108,6 +127,22 @@ export default defineServerModule({
       if (!(await articlesToPlace(1)).length) return { queued: 0, reason: "nothing to place" };
       const date = beijingDate(new Date());
       await enqueueOn(PLACES, { date }, { singletonKey: date });
+      return { queued: 1, date };
+    },
+  }, {
+    // 综合整理: after the day's items are placed (03:20), in DeepSeek's off-peak hours, before 十一说 at 05:00.
+    name: "reference.topic",
+    cron: "50 3 * * *",
+    missed: "once",
+    run: async () => {
+      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+      const slugs = await topicSlugs();
+      if (!slugs.length) return { queued: 0, reason: "综合整理 is not on (settings reference.topics)" };
+      const pages = await Promise.all(slugs.map((s) => readSituation(s)));
+      const stale = await Promise.all(pages.map((p) => (p ? topicStale(p) : false)));
+      if (!stale.some(Boolean)) return { queued: 0, reason: "no new items" };
+      const date = beijingDate(new Date());
+      await enqueueOn(TOPICS, { date }, { singletonKey: date });
       return { queued: 1, date };
     },
   }, {

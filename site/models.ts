@@ -32,8 +32,9 @@ export const PRESETS: Record<string, ModelPreset> = {
   "deepseek-flash-think-llm": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
   },
-  // 十一说's writer (Kay 10-19: DeepSeek's strongest, thinking as deep as it goes): Pro still leads Flash on reasoning.
-  // Also the checker of the item points (决定记录 2026-10-23).
+  // Only the checker's backup now (CHECK_BACKUP). It wrote 十一说 and picked the daily until 11-05; since then every step
+  // runs on flash, which since 10-17 is V4.1-Flash-1017: stronger than Pro on 14 of 16 benchmarks and 1/3 to 1/7 of its
+  // price (决定记录 L1409; Kay 11-05: 全部换成 flash).
   "deepseek-v4-pro-llm": {
     service: "deepseek", model: "deepseek-v4-pro", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
     extra: { thinking: { type: "enabled" }, reasoning_effort: "high" },
@@ -80,13 +81,14 @@ export const PRESETS: Record<string, ModelPreset> = {
  * 例：{ score: "glm-5.3-flash-selection", groupReview: "mimo-v2.6-flash" }
  */
 export const DEFAULTS: Record<string, string> = {
-  // 要点的核对员（决定记录 2026-10-23）：考试 11/11 抓到严重错。
-  check: "deepseek-v4-pro-llm",
-  // 十一说 (modules/reference): DeepSeek's strongest writes, Opus checks and mends (Kay 10-19; trial round 3, 10-13 to 10-15).
-  referenceIssue: "deepseek-v4-pro-llm",
+  // DeepSeek 一律用 flash（V4.1，比 Pro 强也比 Pro 省；Kay 11-05）。
+  // 要点的核对员：10-24 起服务器后台就选了 flash（决定记录 L984），这里跟着改，免得后台那行一删就回到 Pro。
+  check: "deepseek-flash-think-llm",
+  // 十一说 (modules/reference): flash writes, Opus checks and mends.
+  referenceIssue: "deepseek-flash-think-llm",
   referenceIssueCheck: "claude-opus-5-5",
-  // 日报正文整天一起挑 (modules/dailypick)：影子里用的就是它（手册 评分标准 §4）。
-  dailyPick: "deepseek-v4-pro-llm",
+  // 日报正文整天一起挑 (modules/dailypick)。
+  dailyPick: "deepseek-flash-think-llm",
 };
 
 /**

@@ -6,7 +6,7 @@
 // 没放第二轮四天（10-19、10-20、10-21、10-24）的任何例子，所以那四天是留出集。
 //   node myfnb/eval-listwise.ts            只估调用次数和花费，不调模型
 //   node myfnb/eval-listwise.ts --apply    跑：每天 × 每个模型 × --reps 次
-//   --models a,b   默认「站上评分用的模型」和 deepseek-v4-pro-llm；--reps 2；--cap-usd 2（回执累计到这个数就停）
+//   --models a,b   默认「站上评分用的模型」和 deepseek-flash-think-llm；--reps 2；--cap-usd 2（回执累计到这个数就停）
 //   --pools 1,3    候选池几天（Kay 10-25「一天挑不出 可以两三天都行」，十一定一起比）：1 = 每天只看当天；3 = 当天加前两天里还没上过日报的，
 //                  按日期顺序一天天往下排，上过的稿和它那件事不再出现。六天是连着的 10-19 到 10-24，10-19 的前两天没有标注，只看当天。
 //   --shadow 2026-10-06,2026-10-07   影子（2026-10-25，Kay「你和十一决定」，十一定）：不读标注，给哪几天就挑哪几天，和那天实际的日报正文并排，
@@ -179,7 +179,7 @@ const currentMain = (d: string) => {
   return main;
 };
 
-const models = values.models ? values.models.split(",") : [await modelFor("score"), "deepseek-v4-pro-llm"];
+const models = values.models ? values.models.split(",") : [await modelFor("score"), "deepseek-flash-think-llm"];
 const reps = Number(values.reps);
 const pools = values.pools.split(",").map(Number);
 // 池子：第 i 天加前 pool-1 天，去掉这次已经上过的稿和那件事，按哈希打乱。

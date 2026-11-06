@@ -62,10 +62,12 @@ console.log(`${page.title}：${groups.length} 组，${items.length} 条，给模
  * 「输出长度 最大 384K」, 11-06), so 40,000 in all here: thinking over 120 items, then a ~3,000-character article.
  */
 const OUTPUT = 28_000;
-const outputOf = (m: string) => OUTPUT + (MODELS[m]?.reasoningTokens ?? 0);
+/** The check writes a short list: 8,000 past its thinking (十一说's ask), so the run's worst case stays small. */
+const CHECK_OUTPUT = 8_000;
+const outputOf = (m: string, room = OUTPUT) => room + (MODELS[m]?.reasoningTokens ?? 0);
 /** The most a call can cost: every character an input token (more than any text here takes) and all the output it may write. */
-const worst = (m: string) => (chars * 1.5 * priceOf(m)[0] + outputOf(m) * priceOf(m)[1]) / 1e6;
-const need = worst(model) + worst(checkModel) * 2;
+const worst = (m: string, room = OUTPUT) => (chars * 1.5 * priceOf(m)[0] + outputOf(m, room) * priceOf(m)[1]) / 1e6;
+const need = worst(model) + worst(checkModel, CHECK_OUTPUT) * 2;
 console.log(`最坏情况约 US$${need.toFixed(3)}（写一次、核对最多两次，每次都写满），上限 US$${cap}`);
 if (!apply) { await closeDb(); process.exit(0); }
 if (need > cap) throw new Error("超过 --cap-usd，没有调用");
@@ -83,8 +85,8 @@ const Problems = z.object({ problems: z.array(z.object({ quote: z.string(), why:
 type ArticleText = z.infer<typeof Article>;
 
 /** As backend/issue.ts modelAsk, with room for a long input's thinking (OUTPUT); unusable output once is asked again once. */
-const askOf = (m: string): Ask => async (purpose, system, user, schema, attempt) => {
-  const once = (tag?: string) => chatJson({ model: m, purpose, subject, promptVersion: ISSUE_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: OUTPUT, timeoutMs: 900_000, attemptTag: tag });
+const askOf = (m: string, room = OUTPUT): Ask => async (purpose, system, user, schema, attempt) => {
+  const once = (tag?: string) => chatJson({ model: m, purpose, subject, promptVersion: ISSUE_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: room, timeoutMs: 900_000, attemptTag: tag });
   const res = await once(attempt).catch((error: unknown) => {
     if (error instanceof ModelOutputError) return once(`${attempt ?? ""}retry`);
     throw error;
@@ -94,7 +96,7 @@ const askOf = (m: string): Ask => async (purpose, system, user, schema, attempt)
   return res.data;
 };
 const write = askOf(model);
-const check = askOf(checkModel);
+const check = askOf(checkModel, CHECK_OUTPUT);
 const article = await write("reference_topic_write", prompt("topic-write", { 题目: page.title }), `# ${page.title}\n\n${listing}`, Article);
 // The first run on the server wrote 「第 1 组」 for 1, and the headings came out as the group's number (11-06 08:57).
 const groupTitle = (g: string) => groups.find((x) => x.no === g.replace(/^第\s*|\s*组$/gu, "").trim())?.title ?? g;

@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { affordable, composeTopic, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, composeTopic, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
 const GROUPS = [{ no: "1", title: "开店前先想清楚" }, { no: "2", title: "装修和设备" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
@@ -70,4 +70,13 @@ test("a run is not started when a write and two checks at their worst would pass
   assert.equal(affordable(66_000, w, c, 0.2), false, "not what is left after US$0.2");
   assert.equal(affordable(300_000, w, c, 0), false, "a situation too long for the cap");
   assert.equal(affordable(1_000, "claude-opus-5-5", c, 0), false, "a model without a price");
+});
+
+test("a cut leaves no 「；。」, no 「。。」 and no paragraph opening with a stop", () => {
+  assert.equal(tidy("四成以上不到500万日元〔99〕；。"), "四成以上不到500万日元〔99〕。", "the first article on the site, 11-06");
+  assert.equal(tidy("算进总价〔72〕。。"), "算进总价〔72〕。");
+  assert.equal(tidy("。澳大利亚咖啡店净利率约10%至15%〔114〕"), "澳大利亚咖啡店净利率约10%至15%〔114〕");
+  assert.equal(tidy("周转金常见按每月经费3到6个月准备；"), "周转金常见按每月经费3到6个月准备。");
+  assert.equal(tidy("；。"), "");
+  assert.equal(tidy("先定方向〔1〕；再定菜单〔2〕。"), "先定方向〔1〕；再定菜单〔2〕。", "a 「；」 between clauses stays");
 });

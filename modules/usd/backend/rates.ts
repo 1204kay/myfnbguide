@@ -1,4 +1,5 @@
-// 汇率：每天从 fawazahmed0/exchange-api 取一次「1 美元换多少」，存在 settings 的 `usd.rates` 一行。
+// 汇率：从 fawazahmed0/exchange-api 取「1 美元换多少」，存在 settings 的 `usd.rates` 一行；存的那份满 12 小时才重新取
+// （排程每小时看一次，server.ts），官方每天更新一次，所以一天取两次就跟得上。
 // 为什么用它（11-06）：开源（CC0）、免费、不用钥匙、不限次数，每天更新，200 多种货币都有；欧洲央行那份（Frankfurter）
 // 没有新台币、越南盾、迪拉姆。官方说明 https://github.com/fawazahmed0/exchange-api ：地址
 // cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json，jsdelivr 取不到时要改取
@@ -31,6 +32,8 @@ export function parseRates(body: unknown): Rates | null {
 
 /** 取当天的汇率，存进 settings；返回存了的日期，或者为什么没存。 */
 export async function refreshRates(): Promise<{ date: string } | { skipped: string }> {
+  const [fresh] = await sql<{ date: string }[]>`SELECT value->>'date' AS date FROM settings WHERE key = 'usd.rates' AND updated_at > now() - interval '12 hours'`;
+  if (fresh) return { skipped: `rates of ${fresh.date} are less than 12 hours old` };
   const failures: string[] = [];
   for (const url of SOURCES) {
     try {

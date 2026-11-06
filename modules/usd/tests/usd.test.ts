@@ -7,7 +7,7 @@ import Fastify from "fastify";
 import { closeDb, sql } from "@aihot/backend/db";
 import { sendJsonWithEtag, sendTextWithEtag } from "../../../apps/api/src/http/respond.ts";
 import usd from "../server.ts";
-import { forgetRates } from "../backend/rates.ts";
+import { forgetRates, refreshRates } from "../backend/rates.ts";
 
 after(async () => { await closeDb(); });
 
@@ -42,4 +42,23 @@ test("the api's text gets US$, its ETag the rate's date, and a browser's copy is
   assert.doesNotMatch(String(plain.headers.etag), /usd-/, "a body with no amount keeps its own ETag");
   assert.equal((await app.inject({ url: "/feed.xml" })).body, "<item><description>月租3,000令吉（约 US$740）</description></item>");
   assert.equal((await app.inject({ url: "/api/admin/x" })).json().summary, "平均975万日元", "the admin sees the stored text");
+});
+
+test("the hourly run fetches only when the stored rates are 12 hours old or missing", async () => {
+  const fetched: string[] = [];
+  const real = globalThis.fetch;
+  globalThis.fetch = (async (url: string) => { fetched.push(String(url)); return Response.json({ date: "2026-11-06", usd: { jpy: 150 } }); }) as typeof fetch;
+  try {
+    await sql`INSERT INTO settings (key, value) VALUES ('usd.rates', ${sql.json({ date: "2026-11-05", perUsd: { JPY: 157.9 } })})
+      ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`;
+    assert.ok("skipped" in (await refreshRates()));
+    assert.deepEqual(fetched, []);
+    await sql`UPDATE settings SET updated_at = now() - interval '13 hours' WHERE key = 'usd.rates'`;
+    assert.deepEqual(await refreshRates(), { date: "2026-11-06" });
+    assert.equal(fetched.length, 1);
+    await sql`DELETE FROM settings WHERE key = 'usd.rates'`;
+    assert.deepEqual(await refreshRates(), { date: "2026-11-06" }, "a site that has never had rates fetches at once");
+  } finally {
+    globalThis.fetch = real;
+  }
 });

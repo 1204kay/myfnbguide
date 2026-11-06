@@ -147,7 +147,7 @@ export async function topicSlugs(): Promise<string[]> {
   return Array.isArray(row?.value.slugs) ? row.value.slugs.filter((s): s is string => typeof s === "string") : [];
 }
 
-/** Whether a situation has items its last article (shown or held) did not read: only then is it written again. */
+/** Whether a situation needs writing again: an item its last article (shown or held) did not read, or prompts changed since. */
 export async function topicStale(page: SituationPage): Promise<boolean> {
   const ids = [...page.groups.flatMap((g) => g.cases), ...page.rest].map((c) => c.id);
   const [last] = await sql<{ item_ids: string[]; version: string }[]>`SELECT item_ids, version FROM reference_topics WHERE slug = ${page.slug} ORDER BY id DESC LIMIT 1`;

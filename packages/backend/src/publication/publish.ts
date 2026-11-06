@@ -147,7 +147,7 @@ export function v1Payload(p: {
     category: toPublicApiCategory(p.category),
     score: p.score === null ? null : Math.round(p.score),
     selected: p.selected,
-    reason: p.selected ? p.reason : null,
+    reason: p.reason,
     attribution: { name: SITE.name, url: aihot },
   };
 }
@@ -294,7 +294,8 @@ export async function publishArticleTx(tx: Tx, articleId: string, options: Publi
   // A historical import already has its public decision. Preserve that confirmed state on rebuild.
   const selected = selectionCandidate && article.grouping_status === "complete"
     && (f.selected === true || article.selection_adds_value !== false);
-  const reason = selected ? pickString(f.reason, original ? null : analysis?.reason_zh ?? null) : null;
+  // The model's reason belongs to the selection; one an editor (or a module, as one) wrote stands on its own.
+  const reason = selected ? pickString(f.reason, original ? null : analysis?.reason_zh ?? null) : pickString(f.reason, null);
   const hasXPost = !!article.x_post;
   const channel = channelOf(source.kind, hasXPost);
   const hasBody = !!article.body_text || !!article.x_post?.text || !!article.x_post?.media?.length || !!article.x_post?.quoted?.text;

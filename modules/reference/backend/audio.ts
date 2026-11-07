@@ -77,10 +77,10 @@ export function untimedFinding(nos: number[]): Finding {
   return {
     key: "reference.untimed-transcript",
     level: "today",
-    title: "十一说文字稿不跟着声音走",
-    impact: `第 ${nos.join("、")} 期的文字稿没有每行开始时间，听的时候文字不亮也不滚`,
-    heals: "不会自己好",
+    title: "十一说文字稿未与音频同步",
+    impact: `第 ${nos.join("、")} 期的文字稿缺少每行的开始时间，收听时文字不会高亮，也不会随之滚动`,
+    heals: "不会自动恢复",
     action: nos.map((n) => `node myfnb/issue-voice.ts --times ${n}`).join("；"),
-    detail: "<no>.json 没有 starts，或 starts 的行数和 <no>.txt 对不上；换音频只走 issue-voice.ts --put，不要手工拷文件",
+    detail: "<no>.json 没有 starts，或 starts 的行数和 <no>.txt 不一致；更换音频只能通过 issue-voice.ts --put，不要手动复制文件",
   };
 }

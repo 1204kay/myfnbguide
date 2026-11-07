@@ -235,7 +235,8 @@ async function mend(start: Draft, items: DayItem[], ask: Ask, drafts: Draft[], t
   }
   if (!last.problems.length) return last;
   const { issue, cut, kept } = cutProblems(last.issue, last.problems);
-  return { issue, lively: last.lively, problems: kept, edited: true, cut };
+  const lead = [last.issue.title, ...last.issue.brief].map(bare);
+  return { issue, lively: last.lively, problems: kept, edited: true, cut, cutLead: cut.some((x) => lead.includes(bare(x))) };
 }
 
 const ListenAnswer = z.object({ scores: z.array(z.object({ draft: z.coerce.number(), score: z.coerce.number(), why: z.string().default("") })) });
@@ -350,6 +351,8 @@ export interface Draft {
   issue: IssueText; lively: number; problems: Problem[]; edited: boolean;
   /** Sentences the program took out because the editor could not mend them. */
   cut?: string[];
+  /** Whether one of them was the title or one of the three sentences the daily's lead carries. */
+  cutLead?: boolean;
   /** What the last read for omissions found, its fixes put in. */
   reviewed?: Problem[];
   /** The draft as the writer gave it, before it was gone over for the ear. */
@@ -370,6 +373,14 @@ export interface ComposedIssue {
   drafts: Draft[];
   items: DayItem[];
 }
+
+/**
+ * A pick mended with at most this many sentences cut, none of them the title or the lead's three, goes up without the
+ * other being mended (Kay 11-07 09:54 「同意」). On 11-07 the pick went up with 1 cut, and mending the other first, five
+ * rounds and about US$2.5 of the day's US$5.82, ended with 3 cuts, so it could not have gone up instead (十一 10-23: 不出空期
+ * still holds: a pick that cites nothing or is cut more than this still leaves the other mended).
+ */
+export const CUT_ENOUGH = 2;
 
 /** Fewer than this many items is no issue: there is no day to tell. */
 export const MIN_ITEMS = 3;
@@ -525,7 +536,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   // A listener who reads no original picks a draft as it will be said, and only the pick is mended: the check's own
   // score for how lively a draft is picked the article told point by point over a bar's first night three times on
   // 10-22 (ee444d8, 3895dc2, 6bea306), and mending both drafts before picking doubled what 10-20 cost (7466b97,
-  // US$4.53). A pick that cites nothing, or is still wrong after mending, leaves the other to be mended too (十一 10-23: 不出空期).
+  // US$4.53). A pick that cites nothing, is still wrong after mending, or was cut more than CUT_ENOUGH sentences or in its lead, leaves the other to be mended too (十一 10-23: 不出空期; Kay 11-07).
   const heard = await listen(drafts, ask);
   drafts.forEach((d, i) => { d.heard = heard[i]?.score; d.heardWhy = heard[i]?.why; });
   // The check reads a draft only when it is to be mended (Kay 11-01 22:43 「要改做法现在就改」: a month of issues ran
@@ -546,7 +557,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     await check(d);
     const m = await mend(d, items, ask, drafts, "ab"[k]!);
     finals.push({ ...m, heard: d.heard, heardWhy: d.heardWhy });
-    if (!uncited(m) && !m.cut?.length && !m.problems.length) break;
+    if (!uncited(m) && !m.problems.length && (m.cut?.length ?? 0) <= CUT_ENOUGH && !m.cutLead) break;
   }
   const chosen = finals.sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (x.cut?.length ?? 0) - (y.cut?.length ?? 0)
     || (y.heard ?? 0) - (x.heard ?? 0) || y.lively - x.lively)[0]!;

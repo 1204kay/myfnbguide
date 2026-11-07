@@ -7,7 +7,7 @@ import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { answerText, CACHE_TTL, joined, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
-import { amendIssue, type Ask, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { amendIssue, type Ask, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, CUT_ENOUGH, edit, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -85,16 +85,25 @@ test("when the listener ranks the drafts, only the pick is checked; the other is
   assert.equal(t.chosen?.issue.title, "好听的一稿");
 
   const wrong = scripted({
-    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("稿 a", "说了〔1〕。") : issue("稿 b", "说了一句原文没有的话〔3〕。")),
+    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("稿 a", "说了〔1〕。") : { ...issue("稿 b", "说了〔3〕。"), brief: ["开头一句原文没有的话〔3〕", "二", "三"] }),
     reference_issue_listen: () => ({ scores: [{ draft: 1, score: 6, why: "" }, { draft: 2, score: 8, why: "" }] }),
-    reference_issue_check: (user) => ({ lively: 7, problems: user.includes("没有的话") ? [{ rule: 1, quote: "说了一句原文没有的话〔3〕。", why: "", fix: "说了一句原文没有的话〔3〕。" }] : [] }),
+    // A lead sentence is wrong and its fix changes nothing: it is cut, and a pick cut in its lead leaves the other mended.
+    reference_issue_check: (user) => ({ lively: 7, problems: user.includes("没有的话") ? [{ rule: 1, quote: "开头一句原文没有的话〔3〕", why: "", fix: "开头一句原文没有的话〔3〕" }] : [] }),
   });
   const w = await composeIssue(ITEMS, "2026-10-16", wrong.ask);
-  assert.ok(wrong.calls.filter((x) => x.purpose === "reference_issue_check").some((x) => x.user.includes("稿 a")), "the pick could not be mended, so the other is checked and mended");
+  assert.ok(wrong.calls.filter((x) => x.purpose === "reference_issue_check").some((x) => x.user.includes("稿 a")), "the pick's lead could not be mended, so the other is checked and mended");
   assert.equal(w.chosen?.issue.title, "稿 a");
+
+  const many = scripted({
+    reference_issue_write: (_u, attempt) => (attempt === "a" ? issue("稿 a", "说了〔1〕。") : issue("稿 b", "第一句原文没有的话〔3〕。第二句原文没有的话〔3〕。第三句原文没有的话〔3〕。")),
+    reference_issue_listen: () => ({ scores: [{ draft: 1, score: 6, why: "" }, { draft: 2, score: 8, why: "" }] }),
+    reference_issue_check: (user) => ({ lively: 7, problems: ["第一句原文没有的话", "第二句原文没有的话", "第三句原文没有的话"].filter((x) => user.includes(x)).map((x) => ({ rule: 1, quote: `${x}〔3〕。`, why: "", fix: `${x}〔3〕。` })) }),
+  });
+  const m = await composeIssue(ITEMS, "2026-10-16", many.ask);
+  assert.equal(m.chosen?.issue.title, "稿 a", `cut more than ${CUT_ENOUGH} sentences, the pick leaves the other mended, which goes up whole`);
 });
 
-test("when neither passes, the check's own fixes go into the pick and a fresh check reads it; a pick still wrong after the last round leaves the other mended too, and what is still wrong is cut", async () => {
+test("when neither passes, the check's own fixes go into the pick and a fresh check reads it; what is still wrong after the last round is cut, and a pick cut a sentence goes up without the other mended", async () => {
   let checks = 0;
   const { ask, calls } = scripted({
     reference_issue_write: (_u, attempt) => issue(`稿 ${attempt}`, attempt === "a" ? "说了一句原文没有的话〔3〕。另一句对得上〔3〕。" : "说了一句原文没有的话〔2〕。另一句对得上〔2〕。"),
@@ -109,10 +118,10 @@ test("when neither passes, the check's own fixes go into the pick and a fresh ch
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.ok(!calls.some((x) => x.purpose === "reference_issue_edit"), "the check's fixes need no editor");
-  assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 2 + 2 * EDIT_ROUNDS, "the pick could not be mended whole, so the other is mended too");
+  assert.equal(calls.filter((x) => x.purpose === "reference_issue_check").length, 2 + EDIT_ROUNDS, "the pick goes up with one sentence cut, so the other is not mended");
   assert.ok(calls[7]!.user.includes("改过的第 2 句") && !calls[7]!.user.includes("像真事"), "the fresh check reads the fixed draft, not the last verdict");
   assert.equal(c.status, "issue");
-  assert.equal(c.drafts.length, 2 + 2 * EDIT_ROUNDS);
+  assert.equal(c.drafts.length, 2 + EDIT_ROUNDS);
   assert.equal(c.chosen?.issue.news[0]?.text, "另一句对得上〔2〕。");
   assert.deepEqual(c.chosen?.cut, [`改过的第 ${2 + EDIT_ROUNDS - 1} 句〔2〕。`]);
   assert.equal(dailyLead(c, 1)?.title, "稿 b");

@@ -264,7 +264,7 @@ test("a draft the model cannot write in usable form leaves the other; with neith
   const plain = await composeIssue(ITEMS, "2026-10-13", broken);
   assert.equal(plain.status, "issue");
   assert.equal(plain.chosen?.issue.news[0]?.text, `来源 1报道：${ITEMS[0]!.summary}〔1〕`);
-  assert.ok(issueMarkdown(plain, 8).includes("出简版") && !issueMarkdown(plain, 8).includes("下面详述一件"));
+  assert.ok(issueMarkdown(plain, 8).includes("出简版") && !issueMarkdown(plain, 8).includes("下面，细说一件"));
 });
 
 test("a citation of no item is a problem even when the check finds none", async () => {
@@ -289,7 +289,7 @@ test("the date and weekday come from the calendar, and the program's own lines f
   const c = await composeIssue(ITEMS, "2026-10-11", ask);
   assert.ok(calls[0]!.user.startsWith("日期：2026年10月11日，星期日"));
   const md = issueMarkdown(c, 1);
-  assert.ok(md.includes("今日是2026年10月11日，星期日，我是十一。") && md.includes("下面详述一件。") && md.includes("明日早上再见。"));
+  assert.ok(md.includes("早上好，今天是2026年10月11日，星期日。我是十一。") && md.includes("下面，细说一件。") && md.includes("我们明天早上见。"));
 });
 
 test("the program finds what the check model is not asked to count: an item with no source, a big event left out; how many news items is the writer's", async () => {

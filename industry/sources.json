@@ -3611,7 +3611,7 @@
     },
     {
       "id": "rss-khaosod-sentangsedtee",
-      "name": "Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小本经营栏目）",
+      "name": "Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小本经营致富栏目）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.khaosod.co.th/sentangsedtee/feed",
@@ -4063,7 +4063,7 @@
     },
     {
       "id": "note-leight888",
-      "name": "エイト専務（日本 · 经营咖啡店与店铺物业的不动产交易顾问：政策对门店的影响、关店时如何退租、接手时原有设备的归属）",
+      "name": "エイト専務（日本 · 经营咖啡店与店铺物业的宅地建物交易士（日本的不动产交易资格）：政策对门店的影响、关店时如何退租、接手时原有设备的归属）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/leight888/rss",

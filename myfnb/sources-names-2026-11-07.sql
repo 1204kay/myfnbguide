@@ -20,9 +20,9 @@ UPDATE sources SET name = 'あろ（日本 · 26 岁在地方城市独自开设�
 UPDATE sources SET name = '樋口尚敬 · 喫茶星時（日本 · 岐阜一家独自经营十年的咖啡馆，开店未借款，也不雇员工）' WHERE id = 'note-gifukissa-lover' AND name = '樋口尚敬 · 喫茶星時（日本 · 岐阜一个人经营十年的喫茶店，不借钱开店、不雇人）';
 UPDATE sources SET name = 'みならい店長（日本 · 一家约 20 平方米的咖啡酒吧的店长，从开业贷款到保本的记录）' WHERE id = 'note-e-yu-shun' AND name = 'みならい店長（日本 · 6.2 坪咖啡酒吧的店长，从开业贷款到保本的记录）';
 UPDATE sources SET name = '山ノ食堂（日本 · 两位 40 多岁女性合开的小餐馆，从寻找店面开始的经过）' WHERE id = 'note-yamanoshokudo' AND name = '山ノ食堂（日本 · 两位 40 多岁女性合开的食堂，从找店面开始的经过）';
-UPDATE sources SET name = 'Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小本经营栏目）' WHERE id = 'rss-khaosod-sentangsedtee' AND name = 'Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小生意致富栏目）';
+UPDATE sources SET name = 'Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小本经营致富栏目）' WHERE id = 'rss-khaosod-sentangsedtee' AND name = 'Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小生意致富栏目）';
 UPDATE sources SET name = 'ワンゼミ（日本 · 餐饮店经营：对 205 项经营措施逐项评分，并测算最低工资、年收入门槛等政策对门店的影响）' WHERE id = 'note-one-zemi' AND name = 'ワンゼミ（日本 · 飲食店経営：205 个经营施策逐个打分，最低工资、年收之壁等政策算到店里的账）';
-UPDATE sources SET name = 'エイト専務（日本 · 经营咖啡店与店铺物业的不动产交易顾问：政策对门店的影响、关店时如何退租、接手时原有设备的归属）' WHERE id = 'note-leight888' AND name = 'エイト専務（日本 · 做咖啡店和店铺物业的宅建士：政策对店的影响、关店怎么退、居抜设备归谁）';
+UPDATE sources SET name = 'エイト専務（日本 · 经营咖啡店与店铺物业的宅地建物交易士（日本的不动产交易资格）：政策对门店的影响、关店时如何退租、接手时原有设备的归属）' WHERE id = 'note-leight888' AND name = 'エイト専務（日本 · 做咖啡店和店铺物业的宅建士：政策对店的影响、关店怎么退、居抜设备归谁）';
 UPDATE sources SET name = '近代食堂プラス（日本 · 餐饮行业杂志《近代食堂》在 note 平台的专栏：生意兴隆门店的案例与经营方法）' WHERE id = 'note-kinshoku-plus' AND name = '近代食堂プラス（日本 · 餐饮业界杂志《近代食堂》的 note：繁盛店案例和经营手法）';
 UPDATE sources SET name = '飲食店経営のリアル（日本 · 拉面连锁前区域负责人：月营业额从 350 万日元降至 150 万日元又回升的完整记录）' WHERE id = 'note-inshoku-saiken' AND name = '飲食店経営のリアル（日本 · 拉面连锁前区域本部长：月商 350 万掉到 150 万再回来的全记录）';
 UPDATE sources SET name = 'ゆうま（日本 · 东京板桥一家饺子酒馆的店主：选址、接手原店装修设备、计划与实际月营业额、独自经营的账目）' WHERE id = 'note-tesou2541' AND name = 'ゆうま（日本 · 东京板橋饺子酒场店主：立地、居抜、计划和实际月商、一人经营的账）';

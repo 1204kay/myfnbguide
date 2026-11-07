@@ -379,7 +379,9 @@ export interface ComposedIssue {
  * three, goes up without the other being mended (Kay 11-07 09:54 「同意」, 09:56「你们决定吧」). Issues 11–14 (11-04 to
  * 11-07): the pick ended with 0, 4, 2 and 1 left; with 1 the other was mended five rounds anyway (11-07, about US$2.5 of
  * the day's US$5.82) and the pick still went up, so 1 changes no issue that went out. 2 would have put issue 13's pick up
- * with two cut where the other went up with one (十一 10-23 不出空期: past this the other is still mended).
+ * with two cut where the other went up with one (十一 10-23 不出空期: past this the other is still mended). Cut counts
+ * the lines it changed, so a flagged news head taken out with its item counts as two or three. What is still wrong and
+ * could not be cut goes up as it stands, as it did on 11-07 before this.
  */
 export const LEFT_ENOUGH = 1;
 

@@ -4,7 +4,7 @@
 // a pick of nothing usable written as an empty issue. Its entries that are not selected get the points the engine writes only for the
 // selection (backend/points.ts): one that has none is written once and shown, one already written or selected is left alone, and a
 // daily entry still without points three hours after the edition is an alert.
-import { editionAt, pointModels, stub, tag } from "../../../tests/setup.ts";
+import { editionAt, pointModels, Reply, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
@@ -28,10 +28,14 @@ const NONE = "2012-05-12";
 const POINTS = "2031-03-12";
 const SOURCES = ["甲报", "乙报", "丙报", "丁报", "戊报"].map((name, i) => ({ id: `dailypick-${T}-${i}`, name }));
 const asked: string[] = [];
+/** The provider refuses the account (a revoked key), not the request. */
+let keyRevoked = true;
 const answer = (content: string) => ({ id: "stub", model: "stub", choices: [{ message: { content } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } });
 const model = await stub((_hit, req) => {
   const user = (JSON.parse(req.body) as { messages: Array<{ content: string }> }).messages.at(-1)!.content;
   asked.push(user);
+  if (user.includes("账号被拒")) return keyRevoked ? new Reply(401, { error: { message: "Authentication Fails, Your api key is invalid", type: "authentication_error" } }) : answer(JSON.stringify({ itemType: ITEM_TYPES[0], authorRole: "principal", tags: [], editorialJudgment: "换了钥匙以后写的要点", titleZh: "标题", summaryZh: "导读。" }));
+  if (user.includes("写不出")) return answer(JSON.stringify({ itemType: ITEM_TYPES[0], authorRole: "principal", tags: [], editorialJudgment: "要点", titleZh: "标题", summaryZh: "" }));
   if (user.includes("补要点")) return answer(JSON.stringify({ itemType: ITEM_TYPES[0], authorRole: "principal", tags: [], editorialJudgment: "原文第一条做法\n原文第二条做法，涨了 3 成", titleZh: "模型另写的标题", summaryZh: "模型另写的导读。" }));
   if (user.includes("坏稿")) return answer("{\"picks\": [");
   if (user.includes("空挑")) return answer(JSON.stringify({ picks: [{ n: 99, why: "" }] }));
@@ -129,4 +133,31 @@ test("an entry in full that is not selected gets its points once, shown on its p
   assert.deepEqual(await pointsFindings(later), []);
   assert.deepEqual(await writeWaiting(40, POINTS), { written: 0, held: 0, none: 0, failed: 0, shown: 0 }, "written once");
   assert.equal(asked.length - calls, 1);
+});
+
+test("an entry whose understanding comes back unusable is recorded as not written: not asked again, and off the alert", async () => {
+  const day = "2031-04-12";
+  const id = await report("写不出戊", 4, day, 20, false);
+  const end = beijingAt(day, "08:00");
+  await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at)
+            VALUES ('daily', ${day}, ${new Date(end.getTime() - 86400000)}, ${end}, ${sql.json({ sections: [{ label: "店家经验", items: [{ itemId: id, title: id }] }], flashes: [] } as never)}, ${end})`;
+  const calls = asked.length;
+  assert.deepEqual(await writeWaiting(40, day), { written: 0, held: 0, none: 1, failed: 0, shown: 0 });
+  assert.ok(asked.length > calls);
+  const after = asked.length;
+  assert.deepEqual(await writeWaiting(40, day), { written: 0, held: 0, none: 0, failed: 0, shown: 0 });
+  assert.equal(asked.length, after, "not asked again");
+  assert.deepEqual((await pointsFindings(end.getTime() + 4 * 3600_000)).map((f) => [f.key, f.level]), [["dailypick.points-held", "later"]]);
+});
+
+test("a refusal of the account, not of the entry, is asked again once access is back", async () => {
+  const day = "2031-05-12";
+  const id = await report("账号被拒己", 0, day, 20, false);
+  const end = beijingAt(day, "08:00");
+  await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at)
+            VALUES ('daily', ${day}, ${new Date(end.getTime() - 86400000)}, ${end}, ${sql.json({ sections: [{ label: "店家经验", items: [{ itemId: id, title: id }] }], flashes: [] } as never)}, ${end})`;
+  assert.deepEqual(await writeWaiting(40, day), { written: 0, held: 0, none: 0, failed: 1, shown: 0 });
+  keyRevoked = false;
+  assert.deepEqual(await writeWaiting(40, day), { written: 1, held: 0, none: 0, failed: 0, shown: 0 });
+  assert.equal((await sql<{ reason: string }[]>`SELECT reason FROM publications WHERE article_id = ${id}`)[0]!.reason, "换了钥匙以后写的要点");
 });

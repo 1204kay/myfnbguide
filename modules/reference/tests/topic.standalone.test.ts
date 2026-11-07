@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { affordable, asTemplate, composeTopic, cutSentences, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, asTemplate, composeTopic, cutSentences, keepTemplate, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
 const GROUPS = [{ no: "1", key: "before-opening", title: "是否该开这家店？" }, { no: "2", key: "build-out", title: "资金用在哪里、何处能省？" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
@@ -94,6 +94,77 @@ test("a sentence citing no item is 严重 though the checker finds nothing: a te
   const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, { ...ask, write: (async () => bare) as Ask });
   assert.ok(c.found.some((p) => p.severity === "严重" && p.quote === "周转金要另算。"));
   assert.deepEqual(c.article.lead, ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。"], "it is cut");
+});
+
+// The template as asTemplate gives it: the article shown, in this write's numbers; item 4 (cause 2) is new.
+const TEMPLATE: TopicText = {
+  lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算〔2〕。"],
+  sections: [
+    { group: "1", paragraphs: ["几家店主都先定方向〔1,2〕。因为后面的判断都靠它〔1〕。"] },
+    { group: "2", paragraphs: ["设备能用二手〔3〕。"] },
+  ],
+};
+const WITH_NEW = [...ITEMS, item(4, "2")];
+const fresh4 = { article: TEMPLATE, fresh: new Set([4]) };
+
+test("a template's sentence keeps its numbers: a number the writer adds of an item the template read is taken off", () => {
+  // 11-07 trial: no new item, and a third of the sentences came back with more numbers of items already read.
+  const written: TopicText = { lead: ["几家店主都先定方向〔1,2,3〕。", "设备能用二手〔1,3〕。", "周转金要另算〔2〕。"], sections: TEMPLATE.sections };
+  const k = keepTemplate(written, { article: TEMPLATE, fresh: new Set() });
+  assert.deepEqual(k.article, TEMPLATE, "the numbers change only when an item is gone (asTemplate), not here");
+  assert.equal(k.kept.size, 4);
+  // The same in a card a new item changed: only 4 is added, to the sentence it was added to.
+  const touched: TopicText = { lead: ["几家店主都先定方向〔1,2,3〕。", "设备能用二手〔3,4〕。", "周转金要另算〔1,2〕。"], sections: TEMPLATE.sections };
+  assert.deepEqual(keepTemplate(touched, fresh4).article.lead, ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3,4〕。", "周转金要另算〔2〕。"]);
+});
+
+test("a new item's number is added to the template's sentence it supports, and that sentence is checked", () => {
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔1,3,4〕。"] }] };
+  const k = keepTemplate(written, fresh4);
+  assert.deepEqual(k.article.sections[1]!.paragraphs, ["设备能用二手〔3,4〕。"], "4 is new, 1 the template read");
+  assert.ok(!k.kept.has("设备能用二手〔3,4〕。"));
+});
+
+test("a cause or the card citing no new item is the template's as it was: words the writer changed there go back", () => {
+  const written: TopicText = {
+    lead: ["几家店主都先定好方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算〔2〕。"],
+    sections: [{ group: "1", paragraphs: ["几家店主都先定方向〔1,2〕。", "另一条没有新原文的结论〔1〕。"] }, { group: "2", paragraphs: ["设备多用二手〔3〕。另找供应商〔4〕。"] }],
+  };
+  const k = keepTemplate(written, fresh4);
+  assert.deepEqual(k.article.lead, TEMPLATE.lead);
+  assert.deepEqual(k.article.sections[0], TEMPLATE.sections[0]);
+  assert.deepEqual(k.article.sections[1]!.paragraphs, ["设备多用二手〔3〕。另找供应商〔4〕。"], "a cause a new item changed is the writer's, words changed and all");
+  assert.ok(!k.kept.has("设备多用二手〔3〕。"), "a sentence in other words than the template's is checked, whatever it cites");
+});
+
+test("a template's sentence whose items are all gone takes the numbers the writer gave the same words", () => {
+  const bare: TopicText = { ...TEMPLATE, lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算。"] };
+  const written: TopicText = { ...TEMPLATE, lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算〔1〕。"] };
+  const k = keepTemplate(written, { article: bare, fresh: new Set() });
+  assert.deepEqual(k.article.lead[2], "周转金要另算〔1〕。");
+  assert.ok(!k.kept.has("周转金要另算〔1〕。"));
+});
+
+test("the check's 严重 on a template's sentence kept as it was is listed, not cut; on a changed one it is cut", async () => {
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔3,4〕。"] }] };
+  const checked: string[] = [];
+  const check = (async (_p: string, _s: string, user: unknown) => {
+    checked.push(String(user));
+    return { problems: checked.length === 1 ? [serious("周转金要另算〔2〕。"), serious("设备能用二手〔3,4〕。")] : [serious("周转金要另算〔2〕。")] };
+  }) as Ask;
+  const c = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => written) as Ask, check }, fresh4);
+  assert.equal(c.status, "shown", "the 严重 left is on a kept sentence");
+  assert.deepEqual(c.article.lead, TEMPLATE.lead, "the kept sentence stays");
+  assert.deepEqual(c.article.sections.map((s) => s.group), ["1"], "the changed one went, and its cause with it");
+  assert.ok(c.found.some((p) => p.quote === "周转金要另算〔2〕。"), "listed for us to read");
+});
+
+test("an article the same as its template is shown without a check", async () => {
+  let checks = 0;
+  const c = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => TEMPLATE) as Ask, check: (async () => { checks++; return { problems: [] }; }) as Ask }, fresh4);
+  assert.equal(c.status, "shown");
+  assert.deepEqual(c.article, TEMPLATE);
+  assert.equal(checks, 0);
 });
 
 test("a heading written as 「第 1 组」 is its cause's title", () => {

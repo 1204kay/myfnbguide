@@ -172,27 +172,83 @@ export function asTemplate(shown: Shown, groups: Group[], items: TopicItem[]): {
 export const templateMarkdown = (a: TopicText, groups: Group[]) => ["## 开头三条", "", ...a.lead, "",
   ...a.sections.flatMap((s) => [`## 第 ${s.group} 组：${groups.find((g) => g.no === s.group)?.title ?? ""}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
 
+const sentences = (p: string) => p.split(/(?<=[。！？])/u).map((s) => s.trim()).filter(Boolean);
+const allSentences = (a: TopicText) => [...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap(sentences);
+/** A sentence's words without its numbers or spaces: the same sentence however it is cited. */
+const bare = (s: string) => s.replace(/〔[^〕]*〕/gu, "").replace(/\s+/gu, "");
+const cites = (ns: Iterable<number>) => `〔${[...new Set(ns)].sort((a, b) => a - b).join(",")}〕`;
+
+/**
+ * The written article held to its template by the program, not by the prompt: in the 11-07 trial (five pages, no new
+ * item) the writer kept the words but added numbers of items the template had read to a third of its sentences, and
+ * wrote seven sentences no new item asked for. So:
+ * - a sentence in the template's words keeps the template's numbers; only a new item's number can be added to it
+ *   (topic-update 第 3 条), and a number goes only when its item is gone (asTemplate). One whose numbers all went takes
+ *   the writer's (第 6 条);
+ * - the card, or a cause, where the writer cites no new item is the template's as it was: nothing new asked for a change.
+ * `kept` are the template's sentences as they were: checked already, the check's 严重 on them is listed, not cut.
+ */
+export function keepTemplate(written: TopicText, template: { article: TopicText; fresh: Set<number> }): { article: TopicText; kept: Set<string> } {
+  const { article: t, fresh } = template;
+  const was = new Map(allSentences(t).map((s) => [bare(s), s]));
+  const kept = new Set<string>();
+  const one = (s: string) => {
+    const old = was.get(bare(s));
+    const before = old ? citedNumbers(old) : new Set<number>();
+    if (!old || !before.size) return s;
+    const added = [...citedNumbers(s)].filter((n) => fresh.has(n) && !before.has(n));
+    if (!added.length) { kept.add(old); return old; }
+    const last = old.lastIndexOf("〔");
+    return `${old.slice(0, last)}${cites([...citedNumbers(old.slice(last)), ...added])}${old.slice(old.indexOf("〕", last) + 1)}`;
+  };
+  const held = (ps: string[]) => ps.map((p) => sentences(p).map(one).join(""));
+  // The template's own: a sentence whose numbers all went takes the writer's numbers for the same words, if any.
+  const writer = new Map(allSentences(written).map((s) => [bare(s), s]));
+  const asWas = (ps: string[]) => ps.map((p) => sentences(p).map((s) => (citedNumbers(s).size ? one(s) : (writer.get(bare(s)) ?? s))).join(""));
+  const touched = (ps: string[]) => ps.some((p) => [...citedNumbers(p)].some((n) => fresh.has(n)));
+  const theirs = (no: string) => written.sections.find((s) => groupNo(s.group) === no);
+  const nos = [...new Set([...t.sections.map((s) => s.group), ...written.sections.map((s) => groupNo(s.group))])];
+  return {
+    article: {
+      lead: touched(written.lead) ? held(written.lead) : asWas(t.lead),
+      sections: nos.flatMap((no) => {
+        const w = theirs(no), o = t.sections.find((s) => s.group === no);
+        const paragraphs = w && (touched(w.paragraphs) || !o) ? held(w.paragraphs) : asWas(o!.paragraphs);
+        return paragraphs.length ? [{ group: no, paragraphs }] : [];
+      }).sort((a, b) => nos.indexOf(a.group) - nos.indexOf(b.group)),
+    },
+    kept,
+  };
+}
+
 export interface ComposedTopic { status: "shown" | "held"; article: TopicText; draft: TopicText; found: TopicProblem[]; again: TopicProblem[] }
 
 /**
  * Writes, checks, cuts what is 严重 and checks again; held when the second check still finds one. With a template (the
- * article shown, asTemplate) the writer keeps to it and changes what its new items, marked 新, change; the check is the same.
+ * article shown, asTemplate) the writer keeps to it and changes what its new items, marked 新, change, and the program
+ * holds it to that (keepTemplate). The check reads the whole article as before; its 严重 on a sentence kept as the
+ * template had it stays in `found` for us to read and is not cut: those were checked when written, and in the 11-07
+ * trial the check found 16 of 30 such sentences 严重 on one page and cut it to 11, its card to none. An article the
+ * same as its template is not checked again.
  */
 export async function composeTopic(title: string, groups: Group[], items: TopicItem[], ask: { write: Ask; check: Ask },
   template?: { article: TopicText; fresh: Set<number> }): Promise<ComposedTopic> {
   const listing = topicListing(groups, items);
-  const draft = template
+  const written = template
     ? await ask.write("reference_topic_write", `${prompt("topic-write", { 题目: title })}\n\n${prompt(UPDATE)}`,
       `# ${title}\n\n# 样板\n\n${templateMarkdown(template.article, groups)}\n\n# 原文\n\n${topicListing(groups, items, template.fresh)}`, TopicArticle)
     : await ask.write("reference_topic_write", prompt("topic-write", { 题目: title }), `# ${title}\n\n${listing}`, TopicArticle);
+  const { article: draft, kept } = template ? keepTemplate(written, template) : { article: written, kept: new Set<string>() };
+  if (template && allSentences(draft).every((s) => kept.has(s))) return { status: "shown", article: draft, draft, found: [], again: [] };
+  const cuts = (p: TopicProblem) => isSerious(p) && !kept.has(p.quote.trim());
   const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items),
     ...(await ask.check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
   const found = await checkOf(draft);
-  const serious = found.filter(isSerious);
+  const serious = found.filter(cuts);
   if (!serious.length) return { status: "shown", article: draft, draft, found, again: [] };
   const article = cutSentences(draft, serious.map((p) => p.quote));
   const again = article.lead.length && article.sections.length ? await checkOf(article, "recheck") : [{ quote: "", why: "删完没有剩下开头或小节", severity: "严重" }];
-  return { status: again.some(isSerious) ? "held" : "shown", article, draft, found, again };
+  return { status: again.some(cuts) ? "held" : "shown", article, draft, found, again };
 }
 
 /** The items of a situation as its page lists them, numbered in that order, with the 导读 and 要点 the writer reads. */

@@ -109,8 +109,8 @@ export default defineServerModule({
     const [latest] = await sql<{ no: number }[]>`SELECT max(no) AS no FROM reference_issues WHERE status = 'issue'`;
     return {
       pages: [
-        `- [参考](${config.siteUrl}/reference): 按遇到的事（定价、招人、房租、差评……），查各地店家的做法和经验；收录从开站到现在，不只最近 7 天，每条附原文出处；也可用给 Agent 的 /api/v1/agent/reference、MCP 工具 ${mcpToolName("get_reference")} 读取`,
-        ...(latest?.no ? [`- [十一说](${config.siteUrl}${issuePath(latest.no)}): ${SITE.name} 自己的每日节目，放在日报头条：AI 十一读完当天的全部收录，写几条快讯、细说一件，点名原文；链接是最新一期，往期在 /reference/issues/{期数}；也可用给 Agent 的 /api/v1/agent/shiyi、MCP 工具 ${mcpToolName("get_shiyi")} 读取`] : []),
+        `- [参考](${config.siteUrl}/reference): 按遇到的情况（定价、招人、房租、差评……）查阅各地店家的做法和经验；收录范围自开站至今，不只最近 7 天，每条附原文出处；也可用给 Agent 的 /api/v1/agent/reference、MCP 工具 ${mcpToolName("get_reference")} 读取`,
+        ...(latest?.no ? [`- [十一说](${config.siteUrl}${issuePath(latest.no)}): ${SITE.name} 自己的每日节目，放在日报头条：AI 十一阅读当天的全部收录后，撰写数条快讯并详述一件，注明原文出处；链接是最新一期，往期在 /reference/issues/{期数}；也可用给 Agent 的 /api/v1/agent/shiyi、MCP 工具 ${mcpToolName("get_shiyi")} 读取`] : []),
       ],
     };
   },

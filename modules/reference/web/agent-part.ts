@@ -5,7 +5,7 @@ import type { AgentPart } from "@aihot/web/modules";
 
 export default {
   tools: [
-    { name: mcpToolName("get_reference"), does: "参考库：按遇到的情况查找各地店家的做法，收录范围从开站至今", ask: "各地小店房租太高时怎么办？" },
-    { name: mcpToolName("get_shiyi"), does: "十一说：本站自己编写的节目，最新一期或指定一期", ask: "今天的十一说谈到了什么？" },
+    { name: mcpToolName("get_reference"), does: "参考库：按遇到的情况查找各地店家的做法，收录范围从开站至今", ask: "各地小店如何应对过高的房租？" },
+    { name: mcpToolName("get_shiyi"), does: "十一说：本站自己编写的节目，最新一期或指定一期", ask: "今日的十一说谈到了哪些内容？" },
   ],
 } satisfies AgentPart;

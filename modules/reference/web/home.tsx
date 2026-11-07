@@ -120,7 +120,7 @@ export default function ReferenceHomePage() {
         </span>
       </>} />
       <PageHeader title="参考" dek={LEAD} counts={counts} updatedAt={data.updatedAt} className="hidden pb-5 pt-1 lg:flex" />
-      {!data.categories.length && <div className="card rounded-sheet"><EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会在本页列出。</EmptyState></div>}
+      {!data.categories.length && <div className="card rounded-sheet"><EmptyState title="尚无整理完成的情况">每种情况收到两家以上店家的做法以后，才会在本页列出。</EmptyState></div>}
       {data.ranking.length > 0 && (
         <section className="mt-6 lg:mt-2">
           {/* The label is the section's heading, so the places under it are not headings straight under the page's. */}

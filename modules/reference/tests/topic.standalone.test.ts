@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Ask } from "../backend/issue.ts";
-import { affordable, composeTopic, cutSentences, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
+import { affordable, asTemplate, composeTopic, cutSentences, DAY_CAP_USD, needsRewrite, tidy, groupNo, topicMarkdown, type TopicItem, type TopicProblem, type TopicText } from "../backend/topic.ts";
 
 const GROUPS = [{ no: "1", key: "before-opening", title: "是否该开这家店？" }, { no: "2", key: "build-out", title: "资金用在哪里、何处能省？" }];
 const item = (n: number, group: string): TopicItem => ({ n, id: `art-${n}`, title: `第 ${n} 条`, src: "日本", summary: `导读 ${n}`, points: `要点 ${n}`, group });
@@ -68,6 +68,24 @@ test("a citation of no item given is 严重 though the checker finds nothing", a
   assert.ok(c.found.some((p) => p.severity === "严重" && p.quote.includes("〔3〕")));
   assert.ok(!topicMarkdown("开店前的准备和开销", c.article, GROUPS).includes("〔3〕"), "its sentences are cut");
   assert.equal(ask.checked.length, 2);
+});
+
+test("a rewrite writes from the article shown, in the numbers its items have now, its new items marked", async () => {
+  // Shown when the page had items 1–3; since then a new item came first in the first cause, and art-2 is gone.
+  const shown = { article: ARTICLE, groups: GROUPS, sources: [1, 2, 3].map((n) => ({ n, id: `art-${n}` })), itemIds: ["art-1", "art-2", "art-3"] };
+  const now = [{ ...item(1, "1"), id: "art-new" }, { ...item(2, "1"), id: "art-1" }, { ...item(3, "2"), id: "art-3" }];
+  const t = asTemplate(shown, GROUPS, now);
+  assert.deepEqual(t.article.lead, ["几家店主都先定方向〔2〕。", "设备能用二手〔3〕。", "周转金要另算。"], "1 is 2 now, 3 is 3, 2 is gone");
+  assert.deepEqual(t.article.sections.map((s) => s.group), ["1", "2"], "「第 1 组」 is its cause's number");
+  assert.deepEqual([...t.fresh], [1]);
+
+  let given = "";
+  const ask = scripted([[]]);
+  const write = (async (_p: string, system: string, user: unknown) => { given = `${system}\n${String(user)}`; return ARTICLE; }) as Ask;
+  await composeTopic("开店前的准备和开销", GROUPS, now, { ...ask, write }, t);
+  assert.ok(given.includes("# 样板") && given.includes("几家店主都先定方向〔2〕。"), "the template is in what the writer reads");
+  assert.ok(given.includes("〔1〕（新）") && !given.includes("〔2〕（新）"), "only the new item is marked");
+  assert.ok(!ask.checked[0]!.includes("（新）") && !ask.checked[0]!.includes("# 样板"), "the check reads the article and items only");
 });
 
 test("a heading written as 「第 1 组」 is its cause's title", () => {

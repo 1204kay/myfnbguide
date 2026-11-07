@@ -141,7 +141,8 @@ async function run(variant: "B" | "AB") {
     out.push(one);
     if (!m.cut.length && !m.left.length) break;
   }
-  for (const id of tally.receiptIds) await completeReceipt(sql, id);
+  // 重放时回执本来就是 completed，不再碰它们（11-07 09:21 重放把 18 张的 updated_at 改了）。
+  if (!replay) for (const id of tally.receiptIds) await completeReceipt(sql, id);
   const sum = { variant, calls: tally.calls, usage: tally.usage, spent: Number(spent.toFixed(2)), receiptIds: tally.receiptIds };
   emit(sum);
   return { ...sum, drafts: out };

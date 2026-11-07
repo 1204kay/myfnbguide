@@ -7,13 +7,14 @@
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
-import { IconArrowLeft, IconChevronDown, IconChevronRight } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconChevronDown } from "@aihot/web/components/icons";
+import { Badge } from "@aihot/web/components/ui/Badge";
 import { Collapse } from "@aihot/web/components/ui/Presence";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { copyText } from "@aihot/web/lib/clipboard";
 import { siteUrl } from "@aihot/web/lib/seo";
-import { day, fullCountText, listCount, num, restCountText } from "../format.ts";
+import { day, listCount, num, restCountText } from "../format.ts";
 import type { CaseCard, Count, SituationRow } from "../types.ts";
 
 /**
@@ -22,7 +23,7 @@ import type { CaseCard, Count, SituationRow } from "../types.ts";
  * pages lay themselves out in the engine's reading templates instead (components/ui/Page.tsx ReadingLayout, ArticleLayout).
  */
 export function Page({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <div className={`mx-auto pb-14 ${wide ? "" : "max-w-[var(--page-max-reading)]"}`}>{children}</div>;
+  return <div className={`mx-auto pb-10 ${wide ? "" : "max-w-[var(--page-max-reading)]"}`}>{children}</div>;
 }
 
 /** Desktops: one line back up to where the page sits, as the topic page has it (phones have the bar's back). */
@@ -44,19 +45,19 @@ export const MEASURE = "max-w-[44em]";
 export const BODY_LABEL = "mb-6 text-[12px] text-ink-4";
 
 /**
- * A page's header, as the topic page has it (AIHOT routes/topic.tsx): a small label in the accent (a link with `to`),
- * the title, a line on what it is, its counts in one line (HANDOFF §2.4), and when it was updated on the right.
- * `asideFacts`: the page's aside shows the counts and the date on desktops, so the header shows them on phones only.
+ * A page's header, as the topic page has it (AIHOT routes/topic.tsx): a small label in the accent, the title, a line
+ * on what it is, its counts in one line (HANDOFF §2.4), and when it was updated on the right.
+ * `asideFacts`: the page's aside shows the counts and the date from `side` (1176px, where ReadingLayout puts the aside
+ * beside the page), so the header shows them below that.
  */
-export function PageHeader({ kicker, to, title, dek, counts, updatedAt, asideFacts = false, className = "pb-5 pt-3 lg:pt-1" }: {
-  kicker?: string; to?: string; title: ReactNode; dek?: ReactNode; counts?: Array<[number, string]>; updatedAt?: string | null; asideFacts?: boolean; className?: string;
+export function PageHeader({ kicker, title, dek, counts, updatedAt, asideFacts = false, className = "pb-5 pt-3 lg:pt-1" }: {
+  kicker?: string; title: ReactNode; dek?: ReactNode; counts?: Array<[number, string]>; updatedAt?: string | null; asideFacts?: boolean; className?: string;
 }) {
-  const hide = asideFacts ? "lg:hidden" : "";
-  const label = "text-[12px] font-semibold tracking-[0.08em] text-accent";
+  const hide = asideFacts ? "side:hidden" : "";
   return (
     <header className={`flex flex-wrap items-end justify-between gap-x-6 gap-y-2 ${className}`}>
       <div className="min-w-0 max-w-[760px]">
-        {kicker && (to ? <Link viewTransition to={to} className={`inline-flex items-center hover:text-accent-ink touch:min-h-11 ${label}`}>{kicker}</Link> : <p className={label}>{kicker}</p>)}
+        {kicker && <p className="text-[12px] font-semibold tracking-[0.08em] text-accent">{kicker}</p>}
         <h1 data-page-title="" className={`${kicker ? "mt-1.5" : ""} text-[24px] font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-[26px]`}>{title}</h1>
         {dek && <p className="mt-1.5 text-pretty text-[13.5px] leading-relaxed text-ink-3">{dek}</p>}
         {counts && counts.length > 0 && (
@@ -65,45 +66,52 @@ export function PageHeader({ kicker, to, title, dek, counts, updatedAt, asideFac
           </p>
         )}
       </div>
-      {updatedAt && <p className={`text-[12px] text-ink-4 ${hide}`}><span className="num">{day(updatedAt)}</span> 更新</p>}
+      {updatedAt && <p className={`text-[12px] text-ink-4 ${hide}`}><time dateTime={updatedAt} className="num">{day(updatedAt)}</time> 更新</p>}
     </header>
   );
 }
 
-/** A section's heading (20/22px); `id` lets a link land on it below the phone bar. */
-export function Heading({ children, id }: { children: ReactNode; id?: string }) {
-  return <h2 id={id} className="scroll-mt-[calc(var(--bar-h)+8px)] text-[20px] font-extrabold leading-[1.35] text-ink lg:text-[22px]">{children}</h2>;
-}
-
-/** What a situation counts in a list, its number at `size` px: "16 家店", "13 条原文" (layout J3-5). */
-export function CountFigure({ count, size }: { count: Count; size: number }) {
+/**
+ * What a situation counts in a list, where the hot list has its 热度指数 (AIHOT routes/hot.tsx): the number in the
+ * hot list's figure type at `size` px (34 on the first card, 24 on the next two, 20 in a row), what it counts under it.
+ */
+export function CountFigure({ count, size }: { count: Count; size: 34 | 24 | 20 }) {
   const [n, unit] = listCount(count);
   return (
-    <span className="whitespace-nowrap text-[13px] text-ink-4">
-      <b className="num mr-1 font-bold leading-none tracking-tight text-ink" style={{ fontSize: size }}>{num(n)}</b>{unit}
+    <span className="flex flex-col items-end gap-1 text-right">
+      <span className={`mono font-semibold leading-none text-ink ${size === 34 ? "tracking-[-0.03em]" : "tracking-[-0.02em]"}`} style={{ fontSize: size }}>{num(n)}</span>
+      <span className="whitespace-nowrap text-[11.5px] text-ink-4">{unit}</span>
     </span>
   );
 }
 
 /**
- * Who tells a situation and the rest of its count, as the hot list writes who talks about a story ("7 个来源 · 19 位
- * 参与者"): its sources' faces, then "1 位业内人士 · 26 条原文" beside the big number (CountFigure).
+ * Who tells a situation, as the hot list writes who talks about a story (AIHOT routes/hot.tsx Voices): its sources'
+ * faces, then "1 位业内人士 · 26 条原文", the phrases kept whole.
  */
-export function Who({ s, size = 22 }: { s: SituationRow; size?: number }) {
+export function Who({ s, size = 24 }: { s: SituationRow; size?: number }) {
   const rest = restCountText(s.count);
   return (
-    <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+    <span className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
       {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={size} interactive={false} />}
-      {/* Wraps under the faces on a narrow card rather than cutting the count off (reader review 10/9). */}
-      {rest && <span className="text-[12.5px] leading-snug text-ink-4">{rest}</span>}
+      {rest && <Phrases text={rest} />}
     </span>
   );
 }
 
-/** A card's look (layout A7): hairline, the accent on hover, a sunk ground while pressed, the accent's ring for the keyboard. */
-export const CARD = "card relative transition-colors hover:border-accent touch:active:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:outline-offset-2 has-[.stretch:focus-visible]:outline-accent";
-/** The link that makes a whole card or row clickable; its own other links sit above it. */
-export const STRETCH = "stretch after:absolute after:inset-0 focus-visible:outline-none";
+/** "1 位业内人士 · 26 条原文" in the hot list's voices type: lines break between the phrases, never inside one. */
+function Phrases({ text, className = "text-[12.5px] leading-snug text-ink-4" }: { text: string; className?: string }) {
+  return (
+    <span className={`min-w-0 ${className}`}>
+      {text.split(" · ").map((p, i) => <Fragment key={p}>{i > 0 && <span className="mx-1.5 text-line-strong">·</span>}<span className="whitespace-nowrap">{p}</span></Fragment>)}
+    </span>
+  );
+}
+
+/** A card that opens a page, as the hot list's cards (AIHOT routes/hot.tsx): the engine's card and its hover. */
+export const CARD = "card card-hover group relative";
+/** The title's link, stretched over its card or row as the hot list's StoryLink; the title takes the accent on hover. */
+export const STRETCH = "transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-accent";
 /** A place in 店家谈得最多的事, as the hot list writes it (AIHOT routes/hot.tsx): 01, its colour by place. */
 const RANK_COLOR = ["text-rank-1", "text-rank-2", "text-rank-3"];
 export const rankColor = (rank: number) => RANK_COLOR[rank - 1] ?? "text-rank-rest";
@@ -113,32 +121,43 @@ export function RankTag({ rank }: { rank: number }) {
   return <span className={`mono text-[12px] font-bold tracking-[0.16em] ${rankColor(rank)}`}>NO.{pad(rank)}</span>;
 }
 
-/** A card's source line with its month on one line, as the feed card keeps its time in one piece; otherwise a phone breaks "2025 年 6 | 月". */
+/**
+ * A card's source line as the feed card's (AIHOT features/feed/parts.tsx SourceLine): one line, the descriptor cut short
+ * where it is too long and the month kept whole after it ("美国 · 餐饮媒体 · 2025 年 7 月").
+ */
 function SourceLine({ text }: { text: string }) {
-  const m = /^(.*?)(\d{4} 年 \d{1,2} 月)$/u.exec(text);
-  return m ? <>{m[1]}<span className="whitespace-nowrap">{m[2]}</span></> : <>{text}</>;
+  const m = /^(.*?)( · \d{4} 年 \d{1,2} 月)$/u.exec(text);
+  if (!m) return <span className="min-w-0 truncate">{text}</span>;
+  return <><span className="min-w-0 truncate">{m[1]}</span><span className="shrink-0 whitespace-nowrap">{m[2]}</span></>;
 }
 
 /**
- * An item's card, in the feed card's type (AIHOT features/feed/FeedItem.tsx): country, source and month with the
- * bookmark, its title leading to the item's page, the item's 收录理由 under a hairline from desktops.
+ * An item, as the feed shows one (AIHOT features/feed/FeedItem.tsx, in the phone row of features/feed/Timeline.tsx
+ * TimelineSlot): a row between hairlines on phones, a card from desktops; its source line with the bookmark, its title
+ * leading to the item's page, the first of its points under a hairline from desktops. A list's `li`.
  */
 export function StoryCard({ c }: { c: CaseCard }) {
   return (
-    <article className={`${CARD} px-4 pb-3.5 pt-3.5 lg:px-[18px] lg:pb-[14px] lg:pt-[15px]`}>
-      <div className="flex min-h-[22px] items-center gap-1.5 text-[12.5px] leading-[18px] text-ink-4 lg:min-h-[18px]">
-        <span className="min-w-0 flex-1"><SourceLine text={c.src} /></span>
-        <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
+    <li className="group/slot bleed touch:has-[a:active]:bg-bg-sunk/70 lg:mx-0 lg:px-0 lg:touch:has-[a:active]:bg-transparent">
+      <div className="border-b border-line-soft py-3.5 group-last/slot:border-b-0 lg:border-b-0 lg:py-0">
+        <article className="relative min-w-0 lg:card lg:card-hover lg:px-[18px] lg:pb-[14px] lg:pt-[15px]">
+          <header className="flex min-h-[22px] items-center gap-1.5 text-[12.5px] leading-[18px] text-ink-4 lg:min-h-[18px] lg:gap-2">
+            <span className="flex min-w-0 items-center"><SourceLine text={c.src} /></span>
+            <span className="ml-auto flex shrink-0 items-center gap-1 pl-2 lg:gap-1.5">
+              <span className="-my-[11px] -mr-3 inline-flex lg:-my-1 lg:mr-0"><StarButton item={c.item} className="size-11 lg:size-[26px]" /></span>
+            </span>
+          </header>
+          <h3 className="mt-1.5 line-clamp-2 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:line-clamp-none lg:leading-[1.55]">
+            <Link viewTransition to={`/items/${c.id}`} className="after:absolute after:inset-0 after:content-['']">{c.title}</Link>
+          </h3>
+          {c.reason && (
+            <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
+              <p className="line-clamp-1 text-[13px] leading-[1.65] text-note lg:line-clamp-none lg:leading-[1.75]">{`${ITEM_COPY.reasonLabel}：`}{reasonLines(c.reason)[0]}</p>
+            </div>
+          )}
+        </article>
       </div>
-      <h3 className="mt-1.5 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:leading-[1.55]">
-        <Link viewTransition to={`/items/${c.id}`} className={STRETCH}>{c.title}</Link>
-      </h3>
-      {c.reason && (
-        <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
-          <p className="line-clamp-2 text-[13px] leading-[1.65] text-note lg:leading-[1.75]">{ITEM_COPY.reasonLabel}：{reasonLines(c.reason)[0]}</p>
-        </div>
-      )}
-    </article>
+    </li>
   );
 }
 
@@ -146,49 +165,46 @@ export function StoryCard({ c }: { c: CaseCard }) {
 export const FIRST = 3;
 
 /**
- * The original's fold toggle (features/feed/ReadingGroup.tsx Toggle, 「另有 N 家信源报道」): quiet text and a chevron
- * that turns, the words the same open or closed. Kay asked twice for folds that were lost with the parts they were on (经验 G15).
+ * The original's fold toggle (AIHOT features/feed/ReadingGroup.tsx Toggle, 「另外 N 家也报道了」): quiet text and a
+ * chevron that turns, the words the same open or closed. Kay asked twice for folds that were lost with the parts they
+ * were on (经验 G15). `className` places it.
  */
 export function FoldToggle({ open, onToggle, children, className = "" }: { open: boolean; onToggle: () => void; children: ReactNode; className?: string }) {
   return (
     <button type="button" aria-expanded={open} onClick={onToggle}
-      className={`inline-flex min-h-11 items-center gap-0.5 text-[12.5px] text-ink-4 transition-colors hover:text-accent lg:min-h-8 ${className}`}>
+      className={`relative z-10 inline-flex items-center gap-0.5 text-ink-4 transition-colors hover:text-accent text-[12.5px] ${className}`}>
       {children}
       <IconChevronDown size={13} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
     </button>
   );
 }
 
-/** Item cards; with `first`, only that many until 另有 N 条原文 is opened. */
+/** The feed's spacing of items: rows on phones, cards 12px apart from desktops, as the timeline has them. */
+const ITEMS = "lg:space-y-3";
+
+/** Items; with `first`, only that many until 另有 N 条原文 is opened. */
 export function StoryCards({ cards, first }: { cards: CaseCard[]; first?: number }) {
   const [open, setOpen] = useState(false);
   const shown = first === undefined ? cards : cards.slice(0, first);
   const more = cards.slice(shown.length);
   return (
     <>
-      <div className="mt-3 grid gap-2.5">{shown.map((c) => <StoryCard key={c.id} c={c} />)}</div>
+      <ul className={`mt-3 ${ITEMS}`}>{shown.map((c) => <StoryCard key={c.id} c={c} />)}</ul>
       {more.length > 0 && (
         <>
-          <Collapse open={open}><div className="grid gap-2.5 pt-2.5">{more.map((c) => <StoryCard key={c.id} c={c} />)}</div></Collapse>
-          <FoldToggle open={open} onToggle={() => setOpen(!open)} className="mt-1">另有 <span className="num mx-0.5">{num(more.length)}</span> 条原文</FoldToggle>
+          <Collapse open={open}><ul className={`${ITEMS} lg:pt-3`}>{more.map((c) => <StoryCard key={c.id} c={c} />)}</ul></Collapse>
+          <FoldToggle open={open} onToggle={() => setOpen(!open)} className="mt-2 min-h-11 lg:min-h-8">另有 <span className="num mx-0.5">{num(more.length)}</span> 条原文</FoldToggle>
         </>
       )}
     </>
   );
 }
 
-/** A row's columns: its place when ranked, the text, what it counts from 641px (one width, so the rows line up), ›. */
-const COLUMNS = {
-  ranked: "grid-cols-[30px_minmax(0,1fr)_16px] sm:grid-cols-[30px_minmax(0,1fr)_auto_16px] lg:grid-cols-[44px_minmax(0,1fr)_auto_16px]",
-  plain: "grid-cols-[minmax(0,1fr)_16px] sm:grid-cols-[minmax(0,1fr)_auto_16px]",
-};
-
 /**
- * Situations as compact rows in one card (layout J3-3, J3-4): the place when ranked (from `from`), the title with
- * the situation's line under it, what it counts, ›; on phones the count
- * goes under the text. `category` names each row's category over its title (a search). `children` close the card.
- * Ranked, the list is numbered from `from`, so a screen reader reads the places shown; the keyboard's ring is inside
- * a row, as the card clips what is outside.
+ * Situations as rows in one card, as the hot list's 4th to 10th (AIHOT routes/hot.tsx Row): the place when ranked
+ * (from `from`), the title with the situation's line under it; who tells it and what it counts on a line under the
+ * text on phones, in columns from `wide`. `category` names each row's category over its title (a search). `children`
+ * close the card. Ranked, the list is numbered from `from`, so a screen reader reads the places shown.
  */
 export function SituationRows({ rows, from, category = false, first, more: moreLabel, children }: {
   rows: SituationRow[]; from?: number; category?: boolean; first?: number; more?: ReactNode; children?: ReactNode;
@@ -203,8 +219,8 @@ export function SituationRows({ rows, from, category = false, first, more: moreL
       {rest.length > 0 && (
         <>
           <Collapse open={open}><div className={shown.length ? "border-t border-line-soft" : ""}><Rows rows={rest} from={from === undefined ? undefined : from + shown.length} category={category} /></div></Collapse>
-          <div className={`px-4 sm:px-5 lg:px-6 ${shown.length || open ? "border-t border-line-soft" : ""}`}>
-            <FoldToggle open={open} onToggle={() => setOpen(!open)}>{moreLabel ?? <>另有 <span className="num mx-0.5">{num(rest.length)}</span> 种情况</>}</FoldToggle>
+          <div className={`px-4 sm:px-5 wide:px-6 ${shown.length || open ? "border-t border-line-soft" : ""}`}>
+            <FoldToggle open={open} onToggle={() => setOpen(!open)} className="min-h-11 lg:min-h-9">{moreLabel ?? <>另有 <span className="num mx-0.5">{num(rest.length)}</span> 种情况</>}</FoldToggle>
           </div>
         </>
       )}
@@ -213,49 +229,65 @@ export function SituationRows({ rows, from, category = false, first, more: moreL
   );
 }
 
+/** A row's columns, as the hot list's (its sparkline left out: a situation has no day of heat). */
+const COLUMNS = {
+  ranked: "grid-cols-[30px_minmax(0,1fr)] wide:grid-cols-[44px_minmax(0,1fr)_auto_76px]",
+  plain: "grid-cols-[minmax(0,1fr)] wide:grid-cols-[minmax(0,1fr)_auto_76px]",
+};
+
 function Rows({ rows, from, category }: { rows: SituationRow[]; from?: number; category: boolean }) {
   const List = from === undefined ? "ul" : "ol";
   return (
-      <List start={from} className="divide-y divide-line-soft">
-        {rows.map((s, i) => (
-          <li key={s.slug} className={`relative grid items-center gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/70 touch:active:bg-bg-sunk has-[.stretch:focus-visible]:bg-bg-sunk has-[.stretch:focus-visible]:outline-2 has-[.stretch:focus-visible]:-outline-offset-2 has-[.stretch:focus-visible]:outline-accent sm:px-5 lg:px-6 lg:py-3.5 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
-            {from !== undefined && <span className={`mono self-start text-[16px] font-semibold leading-[24px] lg:text-[17px] ${rankColor(from + i)}`} aria-label={`第 ${from + i} 位`}>{pad(from + i)}</span>}
+    <List start={from} className="divide-y divide-line-soft">
+      {rows.map((s, i) => {
+        const [n, unit] = listCount(s.count);
+        const rest = restCountText(s.count);
+        return (
+          <li key={s.slug} className={`group relative grid items-start gap-x-3 px-4 py-3 transition-colors hover:bg-bg-sunk/70 sm:px-5 wide:items-center wide:gap-x-6 wide:px-6 wide:py-3.5 dark:hover:bg-bg-muted/40 ${from === undefined ? COLUMNS.plain : COLUMNS.ranked}`}>
+            {from !== undefined && <span className={`mono text-[16px] font-semibold leading-[24px] wide:text-[17px] ${rankColor(from + i)}`} aria-label={`第 ${from + i} 位`}>{pad(from + i)}</span>}
             <div className="min-w-0">
-              {category && <span className="block text-[13px] leading-[1.5] text-ink-4">{s.category}</span>}
-              {/* The hot list's row type (AIHOT routes/hot.tsx Row): 15px title, a 13px line under it. */}
+              {category && <span className="block text-[12px] leading-[1.5] text-ink-4">{s.category}</span>}
               <h3 className="text-[15px] font-[650] leading-[1.55] text-ink">
                 <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
               </h3>
-              <p className="mt-0.5 line-clamp-2 text-[13px] leading-[1.65] text-ink-4 lg:line-clamp-1">{s.dek}</p>
-              <span className="mt-1 block text-[13px] text-ink-4 sm:hidden">{fullCountText(s.count)}</span>
+              <p className="mt-0.5 line-clamp-2 text-[13px] leading-[1.65] text-ink-4 wide:line-clamp-1">{s.dek}</p>
+              <div className="mt-2 flex items-center gap-2.5 wide:hidden">
+                {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={20} interactive={false} />}
+                {rest && <span className="min-w-0 truncate text-[12px] text-ink-4">{rest}</span>}
+                <span className="ml-auto flex shrink-0 items-baseline gap-1">
+                  <span className="mono text-[17px] font-semibold leading-none text-ink">{num(n)}</span>
+                  <span className="text-[11.5px] text-ink-4">{unit}</span>
+                </span>
+              </div>
             </div>
-            {/* As the hot list's rows: who tells it, then its shops in a big number with the rest of its count under it. */}
-            <span className="hidden items-center gap-5 sm:flex">
-              {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={22} interactive={false} />}
-              <span className="min-w-[96px] text-right">
-                <CountFigure count={s.count} size={19} />
-                {restCountText(s.count) && <span className="mt-0.5 block whitespace-nowrap text-[12px] text-ink-4">{restCountText(s.count)}</span>}
-              </span>
-            </span>
-            <IconChevronRight size={16} className="text-ink-4" />
+            <div className="hidden min-w-0 flex-col items-end gap-1 wide:flex">
+              {s.faces.length > 0 && <Faces participants={s.faces} total={s.sources} size={20} interactive={false} />}
+              {rest && <span className="whitespace-nowrap text-[12px] text-ink-4">{rest}</span>}
+            </div>
+            <div className="hidden wide:block"><CountFigure count={s.count} size={20} /></div>
           </li>
-        ))}
-      </List>
+        );
+      })}
+    </List>
   );
 }
 
 /**
- * An item's way into the library on its page, as the item page lists 相关事件 (AIHOT routes/item.tsx):
- * a small heading, then the row; `count` under the title.
+ * An item's way into the library on its page, as the item page lists 相关事件 (AIHOT routes/item.tsx): a small
+ * heading, then the row; `count` under the title in the row's quieter type.
  */
 export function WhereFiled({ to, title, count }: { to: string; title: string; count: string | null }) {
   return (
     <section className="mt-8">
       <h2 className="mb-2 text-[14px] font-semibold text-ink">收在 {SITE.name} 参考</h2>
-      <Link viewTransition to={to} className="block border-y border-line-soft py-2.5 text-[14px] text-ink-2 hover:text-accent">
-        {title}
-        {count && <span className="mt-0.5 block text-[13px] text-accent">{count} ›</span>}
-      </Link>
+      <ul className="divide-y divide-line-soft">
+        <li>
+          <Link viewTransition to={to} className="block py-2.5 text-[14px] text-ink-2 hover:text-accent">
+            {title}
+            {count && <span className="mt-0.5 block text-[12.5px] text-ink-4">{count}</span>}
+          </Link>
+        </li>
+      </ul>
     </section>
   );
 }
@@ -297,14 +329,12 @@ export function useShare(): { share: (title: string, path: string) => Promise<vo
   return { share, copy, toast };
 }
 
-/** A button of a page's own row on desktops (分享, 收藏, 打开原文): 36px, 44px on touch screens. */
-export const ROW_BUTTON = "inline-flex h-9 items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[14px] text-ink-2 transition-colors hover:border-accent hover:text-accent touch:h-11";
+/** A button of a page's own row (分享), as the item page's (AIHOT routes/item.tsx 原文): 32px, 44px on touch screens. */
+export const ROW_BUTTON = "inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink touch:h-11";
 
-/** What kind a picture is, as a small tag before its caption: 原文数据 and 示意 in the accent, 举例 (made-up numbers) quieter. */
+/** What kind a picture is, before its caption: the engine's Badge, 原文数据 and 示意 in the accent, 举例 (made-up numbers) quieter. */
 export function KindTag({ kind }: { kind: "原文数据" | "举例" | "示意" }) {
-  return (
-    <span className={`mr-2 inline-flex h-5 items-center rounded-full px-2 align-[1px] text-[12px] font-semibold leading-none ${kind === "举例" ? "bg-ink-4/12 text-ink-3" : "bg-accent-soft text-accent"}`}>{kind}</span>
-  );
+  return <Badge tone={kind === "举例" ? "neutral" : "accent"} className="mr-2 align-[1px]">{kind}</Badge>;
 }
 
 /**

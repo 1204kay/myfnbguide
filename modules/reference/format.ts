@@ -1,5 +1,5 @@
 // Numbers, counts, dates and spacing as the reference pages write them, on the server and in the browser alike.
-import { beijingDate } from "@aihot/contracts/time";
+import { beijingDate, monthDay } from "@aihot/contracts/time";
 import type { Count } from "./types.ts";
 
 /** "18,000", "10.5", "−3,810": thousands separated, at most one decimal place. */
@@ -31,14 +31,15 @@ export const restCountText = (c: Count) =>
 /** A situation's whole count on a line: "16 家店 · 1 位业内人士 · 26 条原文". */
 export const fullCountText = (c: Count) => [...tellers(c).map(([n, unit]) => `${num(n)} ${unit}`), `${num(c.cases)} 条原文`].join(" · ");
 
-/** "10 月 5 日" this year (Beijing time), "2019 年 2 月 19 日" another (layout A8). */
+/**
+ * "10月5日" this year (Beijing time), "2019年2月19日" another: the engine's monthDay (apps/web/app/lib/format.ts), with
+ * no spaces, as the original writes a day (myfnb/DIFFERENCES.md: 日期加空格 was taken back on 10/6).
+ */
 export function day(at: string | Date, now: Date = new Date()): string {
-  const [year, m, d] = beijingDate(at).split("-");
-  const date = `${Number(m)} 月 ${Number(d)} 日`;
-  return year === beijingDate(now).slice(0, 4) ? date : `${year} 年 ${date}`;
+  return monthDay(beijingDate(at), beijingDate(now));
 }
 
-/** "2025 年 7 月": a month always has its year. */
+/** "2025 年 7 月": a month always has its year, as the engine writes a month (features/report/format.ts, routes/changelog.tsx). */
 export function month(at: string | Date): string {
   const [year, m] = beijingDate(at).split("-");
   return `${year} 年 ${Number(m)} 月`;

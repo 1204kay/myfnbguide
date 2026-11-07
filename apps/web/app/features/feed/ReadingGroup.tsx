@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router";
 import { Collapse } from "../../components/ui/Presence";
 import { Sheet } from "../../components/ui/Sheet";
 import type { GroupInfo, GroupReport, GroupReportsResponse, TimelineFilters } from "@aihot/contracts/site";
-import { ITEM_COPY } from "@aihot/site";
 import { IconArrowUpRight, IconChevronDown, IconChevronRight } from "../../components/icons";
 import { monthDayTime } from "../../lib/format";
 import { useReadSet } from "../../lib/local-state";
@@ -16,7 +15,7 @@ import { sessionCache } from "../../lib/session-cache";
 const reportsUrl = (factId: string, filters: TimelineFilters | undefined) =>
   listPath(`/api/site/groups/${encodeURIComponent(factId)}/reports`, filters ? filterParams(filters) : {});
 
-const labelOf = (group: GroupInfo) => (group.additionalSourceCount > 0 ? `另有 ${group.additionalSourceCount} 家${ITEM_COPY.sourceWord}报道` : `${group.reportCount} 篇报道`);
+const labelOf = (group: GroupInfo) => (group.additionalSourceCount > 0 ? `另外 ${group.additionalSourceCount} 家也报道了` : `${group.reportCount} 篇报道`);
 
 // The groups left open in each history entry, with what they showed (null: still loading): back from an
 // item finds them open again. In memory for back within the app; in session storage for a page the

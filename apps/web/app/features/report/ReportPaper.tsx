@@ -9,7 +9,7 @@ import { IntentLink } from "../../components/ui/IntentLink";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { REPORT_NAMES, type ReportCitation, type ReportDetail, type ReportNavigationEntry } from "@aihot/contracts/site";
-import { ITEM_COPY, REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
+import { REPORTS, SITE, subjectAfter, withSubject } from "@aihot/site";
 import { Badge } from "../../components/ui/Badge";
 import { IconArrowLeft, IconArrowRight, IconArrowUpRight } from "../../components/icons";
 import { Kicker } from "../../components/ui/Kicker";
@@ -137,8 +137,8 @@ function Coverage({ c }: { c: ReportCitation }) {
   return (
     <>
       {!!c.otherSources && (c.storyId
-        ? <IntentLink viewTransition to={`/story/${c.storyId}`} className="shrink-0 text-ink-4 transition-colors hover:text-accent">另有 {c.otherSources} 家{ITEM_COPY.sourceWord}报道</IntentLink>
-        : <span className="shrink-0 text-ink-4">另有 {c.otherSources} 家{ITEM_COPY.sourceWord}报道</span>)}
+        ? <IntentLink viewTransition to={`/story/${c.storyId}`} className="shrink-0 text-ink-4 transition-colors hover:text-accent">另外 {c.otherSources} 家也报道了</IntentLink>
+        : <span className="shrink-0 text-ink-4">另外 {c.otherSources} 家也报道了</span>)}
       {c.followUp && <Badge title={`${monthDay(c.followUp)}的日报报道过这件事，这里是新进展`}>跟进</Badge>}
     </>
   );

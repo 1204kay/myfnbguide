@@ -169,8 +169,8 @@ test("the pages list the stories' items by cause under the items' own titles, a 
 
 test("a day is dated with the year only when it is another", () => {
   const now = new Date("2026-10-05T02:00:00Z");
-  assert.equal(day("2026-10-04T20:00:00Z", now), "10 月 5 日", "Beijing's date");
-  assert.equal(day("2019-02-19T04:00:00Z", now), "2019 年 2 月 19 日");
+  assert.equal(day("2026-10-04T20:00:00Z", now), "10月5日", "Beijing's date");
+  assert.equal(day("2019-02-19T04:00:00Z", now), "2019年2月19日");
 });
 
 test("an item without a story is placed in one situation and group of the list, or none, and the pages list it as a story's item", async () => {

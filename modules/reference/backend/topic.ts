@@ -5,6 +5,8 @@
 // 「你们讨论决定了就可以直接上线了」「全部情况 一起优化」, after the ninth sample of 开店前的准备和开销). Sentences it finds 严重 wrong are
 // cut and what is left is checked again: an article that still has one is held, not shown, and the page keeps the
 // last one shown. Written only when the situation has NEW_ITEMS items the last article did not read, at most DAY_CAP_USD a day.
+// A rewrite is given the article shown as its template (asTemplate, prompts/topic-update.md): it keeps to it and changes
+// what the new items change, as the 41 first articles were written by hand and checked (Kay 11-07 08:20).
 // Which situations are written is the settings row `reference.topics` ({"slugs": ["opening-cost"]}), so Kay's
 // starting and stopping waits for no deploy (as 十一说); with no row none is. Stop:
 // DELETE FROM settings WHERE key = 'reference.topics'.
@@ -36,6 +38,13 @@ const prompt = (name: string, values: Record<string, string> = {}) =>
 export const TOPIC_VERSION = `reference-topic@${createHash("sha256")
   .update(readFileSync(new URL("../prompts/topic-write.md", import.meta.url)))
   .update(readFileSync(new URL("../prompts/topic-check.md", import.meta.url))).digest("hex").slice(0, 10)}`;
+/**
+ * How a rewrite keeps to the article it replaces (prompts/topic-update.md), added to topic-write.md when there is one.
+ * Not in TOPIC_VERSION: it says how to change an article only when one is written again for its new items, so a change
+ * of it writes no article again (the 41 first articles, 11-07, are the pages' templates; Kay 11-07 08:20「要做好样式
+ * 不然我不放心deepseek写的」).
+ */
+const UPDATE = "topic-update";
 
 /**
  * At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575, US$0.3 (about 2–4
@@ -52,8 +61,8 @@ const PRICES: Record<string, [number, number]> = {
  * before any JSON; 28,000 more held the article. The check writes a short list, and runs without thinking: with it,
  * the trial's third run thought past 20,000 twice and wrote nothing.
  */
-const WRITE_ROOM = 28_000;
-const CHECK_ROOM = 8_000;
+export const WRITE_ROOM = 28_000;
+export const CHECK_ROOM = 8_000;
 
 export interface TopicItem { n: number; id: string; title: string; src: string; summary: string; points: string; group: string }
 export const TopicArticle = z.object({
@@ -73,8 +82,8 @@ export function topicGroups(page: SituationPage): Group[] {
 }
 
 /** The listing the writer and the checker read: each item numbered, with its 导读 and 原文要点. */
-export const topicListing = (groups: Group[], items: TopicItem[]) => groups.map((g) => [`## 第 ${g.no} 组：${g.title}`, ...items.filter((i) => i.group === g.no).map((i) =>
-  `〔${i.n}〕${i.src}\n标题：${i.title}\n导读：${i.summary}\n原文要点：${i.points.replace(/\n/g, "；")}`)].join("\n\n")).join("\n\n");
+export const topicListing = (groups: Group[], items: TopicItem[], fresh = new Set<number>()) => groups.map((g) => [`## 第 ${g.no} 组：${g.title}`, ...items.filter((i) => i.group === g.no).map((i) =>
+  `〔${i.n}〕${fresh.has(i.n) ? "（新）" : ""}${i.src}\n标题：${i.title}\n导读：${i.summary}\n原文要点：${i.points.replace(/\n/g, "；")}`)].join("\n\n")).join("\n\n");
 
 /** The numbers a text cites. */
 export const citedNumbers = (text: string) => new Set([...text.matchAll(/〔([^〕]+)〕/gu)].flatMap((m) => m[1]!.split(/[,，、\s]+/).map(Number).filter(Number.isInteger)));
@@ -115,20 +124,67 @@ export function cutSentences(a: TopicText, quotes: string[]): TopicText {
   };
 }
 
-/** Citations of no item given: 严重, found by the program, as 十一说's (issue.ts citedItems). */
+/**
+ * Citations of no item given, and sentences citing none: 严重, found by the program, as 十一说's (issue.ts citedItems).
+ * Every sentence cites (prompts/topic-write.md 第 11 条); one that does not has nothing the check can hold it to, as a
+ * template's sentence left without numbers when the items it cited are gone (review of #237).
+ */
 function unknownCitations(a: TopicText, items: TopicItem[]): TopicProblem[] {
   const known = new Set(items.map((i) => i.n));
-  return [...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap((p) => p.split(/(?<=[。！？])/u))
-    .filter((s) => [...citedNumbers(s)].some((n) => !known.has(n)))
-    .map((quote) => ({ quote: quote.trim(), why: "标的编号不在给的原文里", severity: "严重" }));
+  return [...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap((p) => p.split(/(?<=[。！？])/u)).map((s) => s.trim()).filter(Boolean)
+    .flatMap((quote) => {
+      const cited = [...citedNumbers(quote)];
+      if (!cited.length) return [{ quote, why: "这一句没有标原文编号", severity: "严重" }];
+      return cited.some((n) => !known.has(n)) ? [{ quote, why: "标的编号不在给的原文里", severity: "严重" }] : [];
+    });
 }
+
+/** The article a situation shows, as stored: its groups and which item each of its numbers was. */
+export interface Shown { article: TopicText; groups: Group[]; sources: Array<{ n: number; id: string }>; itemIds: string[] }
+
+/**
+ * The shown article in this write's numbers and groups, to write from: the items a situation lists are numbered in
+ * page order, so a new item moves the numbers after it. A citation of an item gone is dropped, a section of a cause gone
+ * with it; `fresh` are the numbers of the items it did not read.
+ */
+export function asTemplate(shown: Shown, groups: Group[], items: TopicItem[]): { article: TopicText; fresh: Set<number> } {
+  const now = new Map(items.map((i) => [i.id, i.n]));
+  const was = new Map(shown.sources.map((s) => [s.n, s.id]));
+  const cite = (p: string) => p.replace(/〔([^〕]+)〕/gu, (_, list: string) => {
+    const ns = [...new Set(list.split(/[,，、\s]+/).map((n) => now.get(was.get(Number(n)) ?? "")).filter((n): n is number => n !== undefined))];
+    return ns.length ? `〔${ns.sort((a, b) => a - b).join(",")}〕` : "";
+  });
+  const noNow = (g: string) => {
+    const key = shown.groups.find((x) => x.no === groupNo(g))?.key;
+    return key ? groups.find((x) => x.key === key)?.no : undefined;
+  };
+  const read = new Set(shown.itemIds);
+  return {
+    article: {
+      lead: shown.article.lead.map(cite),
+      sections: shown.article.sections.flatMap((s) => { const no = noNow(s.group); return no ? [{ group: no, paragraphs: s.paragraphs.map(cite) }] : []; }),
+    },
+    fresh: new Set(items.filter((i) => !read.has(i.id)).map((i) => i.n)),
+  };
+}
+
+/** The template as the writer reads it: the card's points, then each group's under its number, as the JSON wants them. */
+export const templateMarkdown = (a: TopicText, groups: Group[]) => ["## 开头三条", "", ...a.lead, "",
+  ...a.sections.flatMap((s) => [`## 第 ${s.group} 组：${groups.find((g) => g.no === s.group)?.title ?? ""}`, "", ...s.paragraphs.flatMap((p) => [p, ""])])].join("\n");
 
 export interface ComposedTopic { status: "shown" | "held"; article: TopicText; draft: TopicText; found: TopicProblem[]; again: TopicProblem[] }
 
-/** Writes, checks, cuts what is 严重 and checks again; held when the second check still finds one. */
-export async function composeTopic(title: string, groups: Group[], items: TopicItem[], ask: { write: Ask; check: Ask }): Promise<ComposedTopic> {
+/**
+ * Writes, checks, cuts what is 严重 and checks again; held when the second check still finds one. With a template (the
+ * article shown, asTemplate) the writer keeps to it and changes what its new items, marked 新, change; the check is the same.
+ */
+export async function composeTopic(title: string, groups: Group[], items: TopicItem[], ask: { write: Ask; check: Ask },
+  template?: { article: TopicText; fresh: Set<number> }): Promise<ComposedTopic> {
   const listing = topicListing(groups, items);
-  const draft = await ask.write("reference_topic_write", prompt("topic-write", { 题目: title }), `# ${title}\n\n${listing}`, TopicArticle);
+  const draft = template
+    ? await ask.write("reference_topic_write", `${prompt("topic-write", { 题目: title })}\n\n${prompt(UPDATE)}`,
+      `# ${title}\n\n# 样板\n\n${templateMarkdown(template.article, groups)}\n\n# 原文\n\n${topicListing(groups, items, template.fresh)}`, TopicArticle)
+    : await ask.write("reference_topic_write", prompt("topic-write", { 题目: title }), `# ${title}\n\n${listing}`, TopicArticle);
   const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items),
     ...(await ask.check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
   const found = await checkOf(draft);
@@ -140,7 +196,7 @@ export async function composeTopic(title: string, groups: Group[], items: TopicI
 }
 
 /** The items of a situation as its page lists them, numbered in that order, with the 导读 and 要点 the writer reads. */
-async function itemsOf(page: SituationPage, groups: Group[]): Promise<TopicItem[]> {
+export async function itemsOf(page: SituationPage, groups: Group[]): Promise<TopicItem[]> {
   const parts = [...page.groups.map((g, i) => ({ no: groups[i]!.no, cases: g.cases })), ...(page.rest.length ? [{ no: "其他", cases: page.rest }] : [])];
   const ids = parts.flatMap((p) => p.cases.map((c) => c.id));
   const rows = await sql<{ article_id: string; summary: string | null; reason: string | null }[]>`
@@ -151,6 +207,13 @@ async function itemsOf(page: SituationPage, groups: Group[]): Promise<TopicItem[
     n: ++n, id: c.id, title: c.title, src: c.src, group: p.no,
     summary: byId.get(c.id)?.summary ?? "", points: byId.get(c.id)?.reason ?? c.reason ?? "",
   })));
+}
+
+/** The article a situation shows now, if any (readTopic reads the same row for the page). */
+export async function shownTopic(slug: string): Promise<Shown | undefined> {
+  const [row] = await sql<{ content: Omit<Shown, "itemIds">; item_ids: string[] }[]>`
+    SELECT content, item_ids FROM reference_topics WHERE slug = ${slug} AND status = 'shown' ORDER BY id DESC LIMIT 1`;
+  return row && { article: row.content.article, groups: row.content.groups, sources: row.content.sources, itemIds: row.item_ids };
 }
 
 /** The situations whose articles are written (settings `reference.topics`); none without the row. */
@@ -188,7 +251,7 @@ async function spentToday(now: Date): Promise<number> {
   return row?.usd ?? 0;
 }
 
-const priceOf = (m: string) => PRICES[m];
+export const priceOf = (m: string) => PRICES[m];
 
 /**
  * Whether a write and two checks fit what is left of the day's cap at their worst: every character an input token
@@ -207,7 +270,7 @@ export function affordable(chars: number, writer: string, checker: string, spent
  * output, nor is the job retried: a retry would double the worst case past the day's cap (review of #223), and a
  * situation not written today is still stale tomorrow.
  */
-function topicAsk(model: string, subject: string, room: number, receipts: number[], onUsage: (u: Usage) => void): Ask {
+export function topicAsk(model: string, subject: string, room: number, receipts: number[], onUsage: (u: Usage) => void): Ask {
   return async (purpose, system, user, schema, attempt) => {
     const res = await chatJson({ model, purpose, subject, promptVersion: TOPIC_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: room, timeoutMs: 900_000, attemptTag: attempt });
     receipts.push(res.receiptId);
@@ -227,7 +290,11 @@ export async function writeTopic(page: SituationPage, now = new Date()): Promise
   if (!wp || !cp) return { slug: page.slug, status: `no price for ${!wp ? writer : checker}` };
   const groups = topicGroups(page);
   const items = await itemsOf(page, groups);
-  if (!affordable(topicListing(groups, items).length, writer, checker, await spentToday(now))) return { slug: page.slug, status: "over the day's cap" };
+  const shown = await shownTopic(page.slug);
+  const template = shown && asTemplate(shown, groups, items);
+  // The template is read too: counted as the listing is, every character a token.
+  const chars = topicListing(groups, items).length + (template ? templateMarkdown(template.article, groups).length : 0);
+  if (!affordable(chars, writer, checker, await spentToday(now))) return { slug: page.slug, status: "over the day's cap" };
 
   const receipts: number[] = [];
   let usd = 0;
@@ -236,7 +303,7 @@ export async function writeTopic(page: SituationPage, now = new Date()): Promise
   const c = await composeTopic(page.title, groups, items, {
     write: topicAsk(writer, subject, WRITE_ROOM, receipts, priced(wp)),
     check: topicAsk(checker, subject, CHECK_ROOM, receipts, priced(cp)),
-  });
+  }, template);
   const cited = citedNumbers(topicMarkdown(page.title, c.article, groups));
   const content = {
     article: c.article, groups, found: c.found, again: c.again, draft: c.draft,

@@ -146,17 +146,35 @@ test("a template's sentence whose items are all gone takes the numbers the write
 });
 
 test("the check's 严重 on a template's sentence kept as it was is listed, not cut; on a changed one it is cut", async () => {
-  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔3,4〕。"] }] };
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备多用二手〔3,4〕。"] }] };
   const checked: string[] = [];
   const check = (async (_p: string, _s: string, user: unknown) => {
     checked.push(String(user));
-    return { problems: checked.length === 1 ? [serious("周转金要另算〔2〕。"), serious("设备能用二手〔3,4〕。")] : [serious("周转金要另算〔2〕。")] };
+    return { problems: checked.length === 1 ? [serious("周转金要另算〔2〕。"), serious("设备多用二手〔3,4〕。")] : [serious("周转金要另算〔2〕。")] };
   }) as Ask;
   const c = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => written) as Ask, check }, fresh4);
   assert.equal(c.status, "shown", "the 严重 left is on a kept sentence");
   assert.deepEqual(c.article.lead, TEMPLATE.lead, "the kept sentence stays");
   assert.deepEqual(c.article.sections.map((s) => s.group), ["1"], "the changed one went, and its cause with it");
   assert.ok(c.found.some((p) => p.quote === "周转金要另算〔2〕。"), "listed for us to read");
+});
+
+test("a 严重 on a template's sentence a new number was added to takes the number off, not the sentence", async () => {
+  // Second trial 11-07: small-formats' first point came back with only 〔1,3,4〕 added; the check found it 严重 and it was cut.
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔3,4〕。另找供应商〔4〕。"] }] };
+  const checks: string[] = [];
+  const check = (async (_p: string, _s: string, user: unknown) => {
+    checks.push(String(user));
+    return { problems: checks.length === 1 ? [serious("设备能用二手")] : [] };
+  }) as Ask;
+  const c = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => written) as Ask, check }, fresh4);
+  assert.equal(c.status, "shown");
+  assert.deepEqual(c.article.sections[1]!.paragraphs, ["设备能用二手〔3〕。另找供应商〔4〕。"], "4 taken off; the writer's own sentence stays");
+  assert.equal(checks.length, 1, "nothing cut, nothing to check again");
+  // The quote also in a sentence the writer wrote: that one is checked, and the quote cuts as before.
+  const theirs: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔3,4〕。设备能用二手的店更省〔4〕。"] }] };
+  const cut = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => theirs) as Ask, check: (async () => ({ problems: [serious("设备能用二手")] })) as Ask }, fresh4);
+  assert.deepEqual(cut.article.sections.map((s) => s.group), ["1"]);
 });
 
 test("a rewrite's check is told that a sentence may take its parts from different items it cites; a first write's is not", async () => {

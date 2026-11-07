@@ -375,12 +375,13 @@ export interface ComposedIssue {
 }
 
 /**
- * A pick mended with at most this many sentences cut, none of them the title or the lead's three, goes up without the
- * other being mended (Kay 11-07 09:54 「同意」). On 11-07 the pick went up with 1 cut, and mending the other first, five
- * rounds and about US$2.5 of the day's US$5.82, ended with 3 cuts, so it could not have gone up instead (十一 10-23: 不出空期
- * still holds: a pick that cites nothing or is cut more than this still leaves the other mended).
+ * A pick that ends its mending with at most this many sentences cut or still wrong, none cut from the title or the lead's
+ * three, goes up without the other being mended (Kay 11-07 09:54 「同意」, 09:56「你们决定吧」). Issues 11–14 (11-04 to
+ * 11-07): the pick ended with 0, 4, 2 and 1 left; with 1 the other was mended five rounds anyway (11-07, about US$2.5 of
+ * the day's US$5.82) and the pick still went up, so 1 changes no issue that went out. 2 would have put issue 13's pick up
+ * with two cut where the other went up with one (十一 10-23 不出空期: past this the other is still mended).
  */
-export const CUT_ENOUGH = 2;
+export const LEFT_ENOUGH = 1;
 
 /** Fewer than this many items is no issue: there is no day to tell. */
 export const MIN_ITEMS = 3;
@@ -536,7 +537,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
   // A listener who reads no original picks a draft as it will be said, and only the pick is mended: the check's own
   // score for how lively a draft is picked the article told point by point over a bar's first night three times on
   // 10-22 (ee444d8, 3895dc2, 6bea306), and mending both drafts before picking doubled what 10-20 cost (7466b97,
-  // US$4.53). A pick that cites nothing, is still wrong after mending, or was cut more than CUT_ENOUGH sentences or in its lead, leaves the other to be mended too (十一 10-23: 不出空期; Kay 11-07).
+  // US$4.53). A pick that cites nothing, is still wrong after mending, or ended with more than LEFT_ENOUGH sentences cut or wrong, or cut in its lead, leaves the other to be mended too (十一 10-23: 不出空期; Kay 11-07).
   const heard = await listen(drafts, ask);
   drafts.forEach((d, i) => { d.heard = heard[i]?.score; d.heardWhy = heard[i]?.why; });
   // The check reads a draft only when it is to be mended (Kay 11-01 22:43 「要改做法现在就改」: a month of issues ran
@@ -557,7 +558,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     await check(d);
     const m = await mend(d, items, ask, drafts, "ab"[k]!);
     finals.push({ ...m, heard: d.heard, heardWhy: d.heardWhy });
-    if (!uncited(m) && !m.problems.length && (m.cut?.length ?? 0) <= CUT_ENOUGH && !m.cutLead) break;
+    if (!uncited(m) && (m.cut?.length ?? 0) + m.problems.length <= LEFT_ENOUGH && !m.cutLead) break;
   }
   const chosen = finals.sort((x, y) => Number(uncited(x)) - Number(uncited(y)) || (x.cut?.length ?? 0) - (y.cut?.length ?? 0)
     || (y.heard ?? 0) - (x.heard ?? 0) || y.lively - x.lively)[0]!;

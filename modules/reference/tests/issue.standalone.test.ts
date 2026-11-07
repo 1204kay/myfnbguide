@@ -7,7 +7,7 @@ import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { answerText, CACHE_TTL, joined, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
-import { amendIssue, type Ask, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, CUT_ENOUGH, edit, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { amendIssue, type Ask, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -100,7 +100,7 @@ test("when the listener ranks the drafts, only the pick is checked; the other is
     reference_issue_check: (user) => ({ lively: 7, problems: ["第一句原文没有的话", "第二句原文没有的话", "第三句原文没有的话"].filter((x) => user.includes(x)).map((x) => ({ rule: 1, quote: `${x}〔3〕。`, why: "", fix: `${x}〔3〕。` })) }),
   });
   const m = await composeIssue(ITEMS, "2026-10-16", many.ask);
-  assert.equal(m.chosen?.issue.title, "稿 a", `cut more than ${CUT_ENOUGH} sentences, the pick leaves the other mended, which goes up whole`);
+  assert.equal(m.chosen?.issue.title, "稿 a", `cut more than ${LEFT_ENOUGH} sentence, the pick leaves the other mended, which goes up whole`);
 });
 
 test("when neither passes, the check's own fixes go into the pick and a fresh check reads it; what is still wrong after the last round is cut, and a pick cut a sentence goes up without the other mended", async () => {

@@ -36,7 +36,7 @@ export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_
 const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");
-const CHECK = prompt("issue-check");
+export const CHECK = prompt("issue-check");
 const EDIT = prompt("issue-edit");
 const REVIEW = prompt("issue-review");
 const SPEAK = prompt("issue-speak");
@@ -114,7 +114,7 @@ const IssueAnswer = z.object({
   close: z.string().trim().min(1).transform((s) => s.replace(CLOSE_LABEL, "")),
 });
 export type IssueText = z.infer<typeof IssueAnswer>;
-const CheckAnswer = z.object({
+export const CheckAnswer = z.object({
   lively: z.coerce.number().default(0),
   problems: z.array(z.object({
     rule: z.coerce.number().int(), quote: z.string().default(""), why: z.string().default(""),
@@ -140,7 +140,7 @@ export const fixedLines = (date: string) => ({
 });
 
 /** Everything 十一 wrote, for finding its citations. */
-const written = (issue: IssueText) => [issue.title, ...issue.brief, issue.preview, ...issue.news.flatMap((x) => [x.head, x.text]), issue.deep, issue.close].join("\n");
+export const written = (issue: IssueText) => [issue.title, ...issue.brief, issue.preview, ...issue.news.flatMap((x) => [x.head, x.text]), issue.deep, issue.close].join("\n");
 
 /** The items an issue cites, as 〔n〕 or 〔n、m〕, in order of first citing; numbers no item has are listed apart. */
 export function citedItems(issue: IssueText, items: DayItem[]): { cited: DayItem[]; unknown: number[] } {
@@ -208,7 +208,7 @@ async function speak(issue: IssueText, ask: Ask, attempt: string): Promise<Issue
 }
 
 /** A draft as the check and the editor read it, part by part. */
-const issueText = (issue: IssueText) => [
+export const issueText = (issue: IssueText) => [
   `标题：${issue.title}`, `三句话：\n${issue.brief.map((b) => `- ${b}`).join("\n")}`, `预告：${issue.preview}`,
   `快讯：\n${issue.news.map((x, i) => `${i + 1}. ${x.head}\n${x.text}`).join("\n\n")}`, `细说：\n${issue.deep}`, `合起来：${issue.close}`,
 ].join("\n\n");
@@ -312,13 +312,13 @@ function shapeProblems(issue: IssueText, items: DayItem[], cited: DayItem[]): Pr
 }
 
 /** What the program finds in a draft by itself, without a model: citations no item has, and shapeProblems. */
-function ownProblems(issue: IssueText, items: DayItem[]): Problem[] {
+export function ownProblems(issue: IssueText, items: DayItem[]): Problem[] {
   const { cited, unknown } = citedItems(issue, items);
   return [...unknown.map((n) => ({ rule: 1, quote: `〔${n}〕`, why: "没有这一条收录" })), ...shapeProblems(issue, items, cited)];
 }
 
 /** The originals a draft cites, in number order, as the cached part of a call. */
-const sourcesText = (cited: DayItem[]) => `这一期点名的收录（全文）：\n\n${citedText([...cited].sort((a, b) => a.n - b.n))}`;
+export const sourcesText = (cited: DayItem[]) => `这一期点名的收录（全文）：\n\n${citedText([...cited].sort((a, b) => a.n - b.n))}`;
 
 /** Reads one draft for the three rules against the full text of what it cites; problems the program finds come first. */
 export async function checkIssue(issue: IssueText, items: DayItem[], ask: Ask): Promise<{ lively: number; problems: Problem[] }> {
@@ -386,7 +386,7 @@ export const EDIT_ROUNDS = 5;
 /** Sentences, each with its closing mark, and the line breaks between paragraphs as they stand. */
 /** A sentence keeps the citation marks after its full stop: split before them, a mended sentence that cites its source
  * left the old mark standing beside its own (10-22, 0da591c: 〔8〕〔8〕 three times). */
-const sentences = (text: string) => text.split(/(?<=[。！？](?:〔[^〕]*〕)*|\n)(?!〔)/u).filter(Boolean);
+export const sentences = (text: string) => text.split(/(?<=[。！？](?:〔[^〕]*〕)*|\n)(?!〔)/u).filter(Boolean);
 const CITATIONS = /(?:〔[^〕]*〕)+(?=\s*$)/u;
 /** Compared without spaces, citation marks or the quotation marks the check puts around a quote. */
 const bare = (text: string) => text.replace(/〔[^〕]*〕|\s|^[「“]|[」”]$/gu, "");

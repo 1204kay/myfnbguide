@@ -9,7 +9,7 @@ import { audit } from "@aihot/backend/audit";
 import { loadAnalyzeInput, mendWording, runUnderstand } from "@aihot/backend/editorial/analyze";
 import { emit, moduleCopyCheck } from "@aihot/backend/modules";
 import type { Finding } from "@aihot/backend/notify/feishu";
-import { completeReceipt } from "@aihot/backend/providers/receipts";
+import { completeReceipt, failureKind } from "@aihot/backend/providers/receipts";
 import { publishArticleTx } from "@aihot/backend/publication/publish";
 import { addDays, beijingAt, beijingDate } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
@@ -133,6 +133,14 @@ export async function writeWaiting(limit = POINTS_LIMIT, today = beijingDate(new
     try {
       counts[await writePoints(id)]++;
     } catch (error) {
+      // 模型交回来的用不了（例如 11-06、11-07 两次都没给中文摘要），或服务商拒绝：同一请求再问多半还是一样，
+      // 记成写不出，不再每半小时花一次钱，也不让告警一直开着（它转进待办）。忙、断线、额度满这类下一轮再试。
+      const kind = failureKind(error);
+      if (kind === "unusable" || kind === "refused") {
+        await record(id, (await loadAnalyzeInput(id))?.revision ?? 0, "none", []);
+        counts.none++;
+        continue;
+      }
       counts.failed++;
       console.error(JSON.stringify({ level: "warn", msg: "daily points failed", articleId: id, error: String(error) }));
     }

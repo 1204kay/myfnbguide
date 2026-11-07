@@ -32,6 +32,7 @@ const answer = (content: string) => ({ id: "stub", model: "stub", choices: [{ me
 const model = await stub((_hit, req) => {
   const user = (JSON.parse(req.body) as { messages: Array<{ content: string }> }).messages.at(-1)!.content;
   asked.push(user);
+  if (user.includes("写不出")) return answer(JSON.stringify({ itemType: ITEM_TYPES[0], authorRole: "principal", tags: [], editorialJudgment: "要点", titleZh: "标题", summaryZh: "" }));
   if (user.includes("补要点")) return answer(JSON.stringify({ itemType: ITEM_TYPES[0], authorRole: "principal", tags: [], editorialJudgment: "原文第一条做法\n原文第二条做法，涨了 3 成", titleZh: "模型另写的标题", summaryZh: "模型另写的导读。" }));
   if (user.includes("坏稿")) return answer("{\"picks\": [");
   if (user.includes("空挑")) return answer(JSON.stringify({ picks: [{ n: 99, why: "" }] }));
@@ -129,4 +130,19 @@ test("an entry in full that is not selected gets its points once, shown on its p
   assert.deepEqual(await pointsFindings(later), []);
   assert.deepEqual(await writeWaiting(40, POINTS), { written: 0, held: 0, none: 0, failed: 0, shown: 0 }, "written once");
   assert.equal(asked.length - calls, 1);
+});
+
+test("an entry whose understanding comes back unusable is recorded as not written: not asked again, and off the alert", async () => {
+  const day = "2031-04-12";
+  const id = await report("写不出戊", 4, day, 20, false);
+  const end = beijingAt(day, "08:00");
+  await sql`INSERT INTO reports (kind, key, window_start, window_end, content, generated_at)
+            VALUES ('daily', ${day}, ${new Date(end.getTime() - 86400000)}, ${end}, ${sql.json({ sections: [{ label: "店家经验", items: [{ itemId: id, title: id }] }], flashes: [] } as never)}, ${end})`;
+  const calls = asked.length;
+  assert.deepEqual(await writeWaiting(40, day), { written: 0, held: 0, none: 1, failed: 0, shown: 0 });
+  assert.ok(asked.length > calls);
+  const after = asked.length;
+  assert.deepEqual(await writeWaiting(40, day), { written: 0, held: 0, none: 0, failed: 0, shown: 0 });
+  assert.equal(asked.length, after, "not asked again");
+  assert.deepEqual((await pointsFindings(end.getTime() + 4 * 3600_000)).map((f) => [f.key, f.level]), [["dailypick.points-held", "later"]]);
 });

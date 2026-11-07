@@ -74,11 +74,11 @@ export function creditFinding(spent: number, now: Date, plan: CreditPlan = DEFAU
     // pace alone is a forecast, not a credit nearly gone: 11-06 06:15 it fired with under a quarter spent (Console: about US$14.5 by 11-04 UTC) under the old
     // 「额度快用完」, and Kay read it as another false alarm (as 11-02's). So the title says which of the two it is; it
     // carries no number, since a title that changed every ten minutes would read as a new alert.
-    title: over ? "Claude API 本月额度已用掉八成以上，十一说可能断刊" : "Claude API 照现在的用量，月底前会用到每月上限，十一说可能断刊",
-    impact: `这个月已用约 US$${spent.toFixed(0)}（额度 US$${MONTHLY_CREDIT}），剩约 US$${left.toFixed(0)}${perDay > 0 ? `，照现在每天约 US$${perDay.toFixed(1)}，约 ${Math.floor(left / perDay)} 天后用完` : ""}${pace !== null ? `；照这个速度整月约 US$${pace.toFixed(0)}` : ""}；用完那天的十一说整期出不来（没有文字也没有声音）`,
+    title: over ? "Claude API 本月额度已用去八成以上，十一说可能断刊" : "Claude API 按目前的用量推算，月底前将达到每月上限，十一说可能断刊",
+    impact: `本月已用约 US$${spent.toFixed(0)}（额度 US$${MONTHLY_CREDIT}），剩余约 US$${left.toFixed(0)}${perDay > 0 ? `；按目前每天约 US$${perDay.toFixed(1)} 计算，约 ${Math.floor(left / perDay)} 天后用完` : ""}${pace !== null ? `；按此速度，整月约 US$${pace.toFixed(0)}` : ""}；额度用完当天的十一说无法生成（既没有文字，也没有声音）`,
     heals: `每月 ${plan.renewsOn} 号额度重置`,
-    action: "告诉 Kay：加额度，或者这个月剩下的日子少用 Claude",
-    detail: "按回执 token × 标价估算（Opus 5.5 $4/$20 每百万，缓存读 $0.20、写 1.25 或 2 倍），回执里没有 Claude 的费用；不含这台服务器以外用同一把钥匙的花费",
+    action: "告知 Kay：增加额度，或在本月余下的日子减少使用 Claude",
+    detail: "按回执 token × 标价估算（Opus 5.5 $4/$20 每百万，缓存读 $0.20、写 1.25 或 2 倍），回执中未记录 Claude 的费用；不含本服务器以外使用同一把钥匙的花费",
   };
 }
 

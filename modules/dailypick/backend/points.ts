@@ -160,19 +160,19 @@ export async function pointsFindings(now: number): Promise<Finding[]> {
   if (missing.length) out.push({
     key: "dailypick.points",
     level: "today",
-    title: "日报里有条目没有原文要点",
-    impact: `读者从日报点进去，${missing.length} 条只有导读、没有原文要点`,
-    heals: "没入选的每半小时自动补写一次；入选的没有要点不会自己好",
-    action: "转给 AI 查补写为什么没跑（dailypick.points 的排程和队列、模型额度），入选的查原版那一步",
+    title: "日报中有条目缺少原文要点",
+    impact: `读者从日报点开后，有 ${missing.length} 条只有导读，没有原文要点`,
+    heals: "未入选的条目每半小时自动补写一次；入选的条目缺少要点时不会自动恢复",
+    action: "交由 AI 查明补写为何没有运行（dailypick.points 的排程和队列、模型额度）；入选的条目查原版的对应步骤",
     detail: list(missing),
   });
   if (given.length) out.push({
     key: "dailypick.points-held",
     level: "later",
-    title: "日报里有条目的原文要点被核对员挡下或写不出",
-    impact: `${given.length} 条日报正文点进去没有原文要点，自动补写已经试过，不会再试`,
-    heals: "不会自己好",
-    action: "转给 AI 对照原文看要不要手写要点",
+    title: "日报中有条目的原文要点未通过核对或无法生成",
+    impact: `日报正文中有 ${given.length} 条点开后没有原文要点；自动补写已尝试过，不会再次尝试`,
+    heals: "不会自动恢复",
+    action: "交由 AI 对照原文，判断是否需要人工补写要点",
     detail: list(given),
   });
   return out;

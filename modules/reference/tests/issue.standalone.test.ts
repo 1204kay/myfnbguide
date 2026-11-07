@@ -410,7 +410,7 @@ test("the Claude credit warns at 80% spent, or once the period's pace would go o
   const pace = creditFinding(40, nov(10));
   assert.equal(pace?.level, "today");
   assert.ok(pace?.impact?.includes("整月约 US$132"), String(pace?.impact));
-  assert.ok(pace?.title.includes("照现在的用量"), "a pace alone is a forecast, not a credit nearly gone");
+  assert.ok(pace?.title.includes("按目前的用量推算"), "a pace alone is a forecast, not a credit nearly gone");
   assert.ok(creditFinding(81, nov(2))?.title.includes("八成"));
   assert.equal(creditFinding(81, nov(2))?.level, "today", "80% spent, however early");
   assert.equal(creditFinding(96, nov(2))?.level, "now");

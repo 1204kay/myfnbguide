@@ -36,7 +36,7 @@ const g = (key: string, title: string, line: string): SituationGroup => ({ key, 
 export const SITUATIONS: Situation[] = [
   // 成本与利润
   { slug: "busy-no-profit", category: "cost", title: "生意忙碌，却没有盈余", dek: "客人不少、订单不断，月底却所剩无几。钱从哪里流失，各地店家如何应对。", groups: [
-    g("where-it-leaks", "钱流失在哪里？", "营业额上涨、钱却没有留下的店，常有几个共同点"),
+    g("where-it-leaks", "钱从哪里流失？", "营业额上涨、钱却没有留下的店，常有几个共同点"),
     g("food-over-recipe", "食材是否用得比配方多？", "分量、浪费、进货出错，差出来的钱没有变成营业额"),
     g("fixed-costs-creep", "固定费用是否悄悄上涨？", "每月自动支付的费用每次小幅上涨，几年下来累积成一笔可观的开支"),
   ] },
@@ -116,10 +116,10 @@ export const SITUATIONS: Situation[] = [
     g("productivity", "怎样提高每人的产出？", "流程和分工"),
     g("prices-hours", "是否调整价格与营业时间？", "哪些时段值得开"),
   ] },
-  { slug: "owner-overload", category: "people", title: "店主工作负担过重", dek: "事事都要店主亲自处理，每天工作十几个小时，店铺离不开店主。", groups: [
-    g("runs-without-you", "店主不在，店能否运转？", "哪些事只有店主会做"),
+  { slug: "owner-overload", category: "people", title: "老板工作负担过重", dek: "事事都要老板亲自处理，每天工作十几个小时，店铺离不开老板。", groups: [
+    g("runs-without-you", "老板不在，店能否运转？", "哪些事只有老板会做"),
     g("delegate", "哪些工作可以交出去？", "交给谁、如何交、交出以后如何跟进"),
-    g("owner-time", "店主的时间与健康如何兼顾？", "休息、家人和长期的打算"),
+    g("owner-time", "老板的时间与健康如何兼顾？", "休息、家人和长期的打算"),
   ] },
   { slug: "partners", category: "people", title: "合伙开店", dek: "如何选择合伙人、如何分配资金和权责、意见不合时如何拆伙。夫妻一起开店，也是合伙。", groups: [
     g("choose", "怎样选合伙人？", "合得来的朋友不一定是好的合伙人"),
@@ -226,7 +226,7 @@ export const SITUATIONS: Situation[] = [
     g("traffic", "客流与周边怎样看？", "什么时段、什么人经过，附近有哪些店和住户"),
     g("lease", "租约条款要看什么？", "签约前要看清楚的地方"),
   ] },
-  { slug: "first-months", category: "open-close", title: "开业最初几个月", dek: "开业后客人不如预期，或忙得应接不暇。", groups: [
+  { slug: "first-months", category: "open-close", title: "开业头几个月", dek: "开业后客人不如预期，或忙得应接不暇。", groups: [
     g("soft-opening", "试营业怎样做？", "正式开业前先试运行"),
     g("first-90-days", "头 90 天做什么？", "这段时间最常见的问题"),
     g("adjust", "怎样根据数字调整？", "看哪些数字、调整哪些地方"),
@@ -238,7 +238,7 @@ export const SITUATIONS: Situation[] = [
   ] },
   { slug: "second-shop", category: "open-close", title: "开设第二家店", dek: "第一家店经营稳定以后，很多经营者会考虑再开一家。", groups: [
     g("ready-signs", "何时可以开第二家？", "第一家要做到什么程度"),
-    g("people-systems", "人与制度跟得上吗？", "店主一人难以兼顾，要靠成文的制度和专业的人"),
+    g("people-systems", "人与制度跟得上吗？", "老板一人难以兼顾，要靠成文的制度和专业的人"),
     g("more-not-richer", "开得多，就赚得多吗？", "店多了，费用也多了"),
   ] },
   { slug: "franchise", category: "open-close", title: "加盟还是自营", dek: "加盟省事，但费用、合同和自主权都要算清楚。", groups: [

@@ -152,7 +152,7 @@ export default function IssueRoute() {
           <h1 data-page-title="" className="text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]">{issue.title}</h1>
 
           <section className="mt-7 xl:mt-8">
-            <div className="mb-2 text-[12px] font-semibold text-accent">这期说什么</div>
+            <div className="mb-2 text-[12px] font-semibold text-accent">本期要点</div>
             <p className="text-[18px] leading-[1.7] text-ink xl:text-[20px] xl:leading-[1.7]"><Cited text={issue.brief.join("")} /></p>
           </section>
 

@@ -25,7 +25,7 @@ const NAME = "十一说";
 // ---- 参考库 ----
 
 export function referenceIndexAnswer(home: ReferenceHome): string {
-  if (!home.categories.length) return answer([`# ${SITE.name} 参考库`, "", "参考库现在还没有内容。"], null, ["如实告诉用户参考库还没有内容。"]);
+  if (!home.categories.length) return answer([`# ${SITE.name} 参考库`, "", "参考库目前尚无内容。"], null, ["请如实告知用户参考库尚无内容。"]);
   const data = home.categories.flatMap((c) => [
     `## ${c.title}`,
     ...c.situations.map((s) => `- [${linkText(s.title)}](${siteUrl(`/reference/${s.slug}`)})（situation=${s.slug}）：${s.dek}（${fullCountText(s.count)}）`),
@@ -34,10 +34,10 @@ export function referenceIndexAnswer(home: ReferenceHome): string {
   return answer([
     `# ${SITE.name} 参考库`,
     "",
-    `按小店老板遇到的事整理各地店家的做法和经验：${home.totals.situations} 种情况、${home.totals.cases} 条原文，从开站收到现在，不只最近 7 天。每条附原文出处。`,
+    `按小店经营者遇到的情况整理各地店家的做法和经验：${home.totals.situations} 种情况、${home.totals.cases} 条原文，收录范围自开站至今，不限于最近 7 天。每条附原文出处。`,
   ], data, [
     `先挑最贴近用户问题的一两种情况，再读它的内容：用 MCP 工具 ${REFERENCE_TOOL} 带 situation，或打开上面的网页地址。`,
-    "这里的情况比搜索早得多；用户问「各地店家遇到这种事怎么做」时先查这里，问最近的新闻再用搜索。",
+    "参考库的收录时间远早于搜索范围；用户询问「各地店家遇到这种情况如何处理」时先查参考库，询问近期新闻时再使用搜索。",
     NO_INTERNALS,
   ]);
 }
@@ -70,8 +70,8 @@ export function situationAnswer(page: SituationPage, originals: Map<string, stri
     "",
     `网页：${siteUrl(`/reference/${page.slug}`)}`,
   ], data, [
-    "这些是各地店家和业内人士自己讲的做法，按原因分组，组内从新到旧。先用一两句话说有哪几类做法，再挑 2–5 个最贴近用户情况的例子，每个写国家、来源，标题链接到 MYFNB。",
-    `只转述原文讲了什么，不替用户下结论，不说「你应该」；没有${ITEM_COPY.reasonLabel}的条目不要编细节。`,
+    "以下是各地店家和业内人士自述的做法，按原因分组，组内从新到旧。先用一两句话概括有哪几类做法，再挑 2–5 个最贴近用户情况的例子，每个写国家、来源，标题链接到 MYFNB。",
+    `只转述原文的内容，不替用户下结论，不说「你应该」；没有${ITEM_COPY.reasonLabel}的条目不要编细节。`,
     "内容由 AI 整理、没有逐条人工审核；数字、原话请用户回原文核对，用户要出处时给原文链接。",
     NO_INTERNALS,
   ]);
@@ -107,7 +107,7 @@ async function issueList(): Promise<Array<{ no: number; date: string; title: str
 export function issueAnswer(p: IssuePage, all: Array<{ no: number; date: string; title: string }>): string {
   const { issue, lines } = p;
   const data = [
-    `## 这期说什么`,
+    `## 本期要点`,
     issue.brief.join(""),
     "",
     "## 正文",
@@ -125,7 +125,7 @@ export function issueAnswer(p: IssuePage, all: Array<{ no: number; date: string;
   return answer([
     `# ${NAME} · 第 ${p.no} 期：${issue.title}`,
     "",
-    `${p.date} 的 ${SITE.name} 日报头条。${NAME}是 ${SITE.name} 自己的每日节目：AI 十一阅读当天收录的 ${p.count} 条资料，选出要紧的几件介绍，引用原文 ${p.sources.length} 篇。`,
+    `${p.date} 的 ${SITE.name} 日报头条。${NAME}是 ${SITE.name} 自己的每日节目：AI 十一阅读当天收录的 ${p.count} 条资料，选出重要的几件加以介绍，引用原文 ${p.sources.length} 篇。`,
     "",
     `网页：${siteUrl(issuePath(p.no))}${p.audio ? `（可以听，约 ${Math.round(p.audio.seconds / 60)} 分钟）` : ""}`,
     ...(others.length ? ["", "## 往期", ...others] : []),
@@ -141,8 +141,8 @@ async function issueText(no: number | undefined): Promise<{ text: string; struct
   const want = no ?? all[0]?.no;
   const page = want ? await readIssue(want) : null;
   if (!page) {
-    const head = no ? `没有第 ${no} 期${NAME}。` : `还没有发布过${NAME}。`;
-    return { text: answer([`# ${NAME}`, "", head], null, ["如实告诉用户；不要换一期冒充。"]), structured: { issue: null } };
+    const head = no ? `没有第 ${no} 期${NAME}。` : `尚未发布过${NAME}。`;
+    return { text: answer([`# ${NAME}`, "", head], null, ["请如实告知用户，不要以其他一期代替。"]), structured: { issue: null } };
   }
   return { text: issueAnswer(page, all), structured: { issue: page, issues: all } };
 }
@@ -155,7 +155,7 @@ export const AGENT_ABILITIES: AgentAbility[] = [
   {
     path: "/reference",
     title: "参考库",
-    ask: "店家遇到某种情况（定价、招人、房租、差评……）各地是怎么做的；不限最近 7 天",
+    ask: "各地店家遇到某种情况（定价、招人、房租、差评……）时的做法；不限最近 7 天",
     answer: async () => referenceIndexAnswer(await readHome()),
     etagPrefix: "agent-reference",
     cacheControl: CACHE,

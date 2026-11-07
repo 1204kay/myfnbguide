@@ -134,9 +134,9 @@ export function dayName(date: string): string {
 
 /** The program's own lines, the same every day. */
 export const fixedLines = (date: string) => ({
-  open: `早上好，今天是${dayName(date)}。我是十一。`,
-  turn: "以上是今天的几条快讯。下面，细说一件。",
-  end: "这就是今天的十一说。我们明天早上见。",
+  open: `今日是${dayName(date)}，我是十一。`,
+  turn: "以上是今日的几条快讯，下面详述一件。",
+  end: "本期十一说到此结束，明日早上再见。",
 });
 
 /** Everything 十一 wrote, for finding its citations. */

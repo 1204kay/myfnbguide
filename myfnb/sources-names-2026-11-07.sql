@@ -1,0 +1,33 @@
+-- 11-07 全站书面语审核：已上线来源的显示名改成书面语（seed 不覆盖已有来源，见 myfnb/layout-2026-10-05.md 第 802 行）。
+-- 只改 name，按 id 对旧名，旧名不符的不改。
+BEGIN;
+UPDATE sources SET name = 'Arrière-Cuisine（法国 · 餐饮招聘公司创办人访谈餐厅经营者如何招聘、培养员工和确定薪酬）' WHERE id = 'pod-fr-arriere-cuisine' AND name = 'Arrière-Cuisine（法国 · 餐饮招聘公司创办人访谈餐厅经营者怎样招人、带人、定薪）';
+UPDATE sources SET name = 'KTCHNrebel（德国 · 厨房设备商 RATIONAL 创办的餐饮经营网络杂志，英文版）' WHERE id = 'web-ktchnrebel' AND name = 'KTCHNrebel（德国 · 厨房设备商 RATIONAL 办的餐饮经营网络杂志，英文版）';
+UPDATE sources SET name = 'TAKE AWAY ONLY（美国 · 疫情初期各国餐厅经营者如何维持经营的访谈，已停止更新）' WHERE id = 'pod-take-away-only' AND name = 'TAKE AWAY ONLY（美国 · 疫情初期各国餐厅老板怎样撑店的访谈，已停更）';
+UPDATE sources SET name = 'Build Your Bakery Podcast（美国 · 阿拉巴马州一家面包店老板谈开店与经营）' WHERE id = 'pod-build-your-bakery' AND name = 'Build Your Bakery Podcast（美国 · 阿拉巴马州一家面包店老板讲开店和经营）';
+UPDATE sources SET name = 'Dirty Linen（澳大利亚 · 美食记者访谈餐厅老板，谈行业内不便公开的事）' WHERE id = 'pod-dirty-linen' AND name = 'Dirty Linen（澳大利亚 · 美食记者访谈餐厅老板，谈行业里不好公开说的事）';
+UPDATE sources SET name = 'The Food Truck Podcast（新西兰 · 奥克兰餐车老板访谈，已停止更新）' WHERE id = 'pod-nz-food-truck-podcast' AND name = 'The Food Truck Podcast（新西兰 · 奥克兰餐车老板访谈，已停更）';
+UPDATE sources SET name = 'Малыш на миллион（俄罗斯 · 两位餐饮从业者访谈各地开店者，谈经营成败与资金）' WHERE id = 'pod-ru-malysh-na-million' AND name = 'Малыш на миллион（俄罗斯 · 两位餐饮人访谈各地开店的人，谈成败和钱）';
+UPDATE sources SET name = 'Полная посадка（俄罗斯 · 新西伯利亚几位餐馆经理谈门店管理的难处）' WHERE id = 'pod-ru-polnaya-posadka' AND name = 'Полная посадка（俄罗斯 · 新西伯利亚几位餐馆经理谈管店的难处）';
+UPDATE sources SET name = 'コモリタ（日本 · 大阪福岛一家约 30 平方米的熟成寿司店店主，借款开业、维持经营七年的经过）' WHERE id = 'note-komo-rita' AND name = 'コモリタ（日本 · 大阪福岛 9 坪熟成寿司店店主，开业借钱撑过七年的经过）';
+UPDATE sources SET name = '村田一訓（日本 · 金泽便当店前店主，开店 3 年 8 个月后在盈利状态下转让的完整记录）' WHERE id = 'note-murata-kazunori' AND name = '村田一訓（日本 · 金泽便当店原店主，开店 3 年 8 个月后黑字转让的全记录）';
+UPDATE sources SET name = '大畑直矢 · バルタン（日本 · 广岛一位从约 13 平方米的居酒屋发展到 7 家店的经营者，开店与撤店的经过）' WHERE id = 'note-nteam' AND name = '大畑直矢 · バルタン（日本 · 广岛从 4 坪居酒屋做到 7 家店的老板，开店和撤店的经过）';
+UPDATE sources SET name = 'miki（日本 · 前咖啡店店主的妻子，记录从开店到闭店的资金与家庭情况）' WHERE id = 'note-fair-daisy3272' AND name = 'miki（日本 · 原咖啡店老板的妻子，开店到闭店的钱和家里的事）';
+UPDATE sources SET name = '凛々子（日本 · 借款 1,300 万日元开设咖啡店、经营 12 年后转让的前店主）' WHERE id = 'note-happy-m' AND name = '凛々子（日本 · 借 1,300 万日元开咖啡店、经营 12 年后转手的原店主）';
+UPDATE sources SET name = 'FLAME@Y（日本 · 最多同时经营 4 家餐饮店的经营者，将门店交给店长后遇到的问题）' WHERE id = 'note-ample-yucca7340' AND name = 'FLAME@Y（日本 · 最多经营 4 家餐饮店的老板，交给店长以后遇到的事）';
+UPDATE sources SET name = 'Hot coffee（日本 · 新开业的小咖啡店，记录每月的客流和营业额）' WHERE id = 'note-sane-acacia4519' AND name = 'Hot coffee（日本 · 刚开业的小咖啡店，每个月的客人和营业额）';
+UPDATE sources SET name = 'あろ（日本 · 26 岁在地方城市独自开设咖啡店，开业两年）' WHERE id = 'note-alocafe-note' AND name = 'あろ（日本 · 26 岁在地方城市一个人开咖啡店，开业两年）';
+UPDATE sources SET name = '樋口尚敬 · 喫茶星時（日本 · 岐阜一家独自经营十年的咖啡馆，开店未借款，也不雇员工）' WHERE id = 'note-gifukissa-lover' AND name = '樋口尚敬 · 喫茶星時（日本 · 岐阜一个人经营十年的喫茶店，不借钱开店、不雇人）';
+UPDATE sources SET name = 'みならい店長（日本 · 一家约 20 平方米的咖啡酒吧的店长，从开业贷款到保本的记录）' WHERE id = 'note-e-yu-shun' AND name = 'みならい店長（日本 · 6.2 坪咖啡酒吧的店长，从开业贷款到保本的记录）';
+UPDATE sources SET name = '山ノ食堂（日本 · 两位 40 多岁女性合开的小餐馆，从寻找店面开始的经过）' WHERE id = 'note-yamanoshokudo' AND name = '山ノ食堂（日本 · 两位 40 多岁女性合开的食堂，从找店面开始的经过）';
+UPDATE sources SET name = 'Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小本经营栏目）' WHERE id = 'rss-khaosod-sentangsedtee' AND name = 'Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小生意致富栏目）';
+UPDATE sources SET name = 'ワンゼミ（日本 · 餐饮店经营：对 205 项经营措施逐项评分，并测算最低工资、年收入门槛等政策对门店的影响）' WHERE id = 'note-one-zemi' AND name = 'ワンゼミ（日本 · 飲食店経営：205 个经营施策逐个打分，最低工资、年收之壁等政策算到店里的账）';
+UPDATE sources SET name = 'エイト専務（日本 · 经营咖啡店与店铺物业的不动产交易顾问：政策对门店的影响、关店时如何退租、接手时原有设备的归属）' WHERE id = 'note-leight888' AND name = 'エイト専務（日本 · 做咖啡店和店铺物业的宅建士：政策对店的影响、关店怎么退、居抜设备归谁）';
+UPDATE sources SET name = '近代食堂プラス（日本 · 餐饮行业杂志《近代食堂》在 note 平台的专栏：生意兴隆门店的案例与经营方法）' WHERE id = 'note-kinshoku-plus' AND name = '近代食堂プラス（日本 · 餐饮业界杂志《近代食堂》的 note：繁盛店案例和经营手法）';
+UPDATE sources SET name = '飲食店経営のリアル（日本 · 拉面连锁前区域负责人：月营业额从 350 万日元降至 150 万日元又回升的完整记录）' WHERE id = 'note-inshoku-saiken' AND name = '飲食店経営のリアル（日本 · 拉面连锁前区域本部长：月商 350 万掉到 150 万再回来的全记录）';
+UPDATE sources SET name = 'ゆうま（日本 · 东京板桥一家饺子酒馆的店主：选址、接手原店装修设备、计划与实际月营业额、独自经营的账目）' WHERE id = 'note-tesou2541' AND name = 'ゆうま（日本 · 东京板橋饺子酒场店主：立地、居抜、计划和实际月商、一人经营的账）';
+UPDATE sources SET name = '漁師社長（日本 · 渔民出身的小店店主：自行用 AI 制作成本表和考勤系统，以及节省的金额）' WHERE id = 'note-fisherman-ceo' AND name = '漁師社長（日本 · 渔夫出身的小店老板：自己用 AI 做原价表、打卡系统，省下多少钱）';
+UPDATE sources SET name = '尾高宏幸（日本 · 餐饮众筹：统计 Makuake 平台 1,809 个项目，比较各业态的筹资情况，并逐一对比各平台）' WHERE id = 'note-odachan22' AND name = '尾高宏幸（日本 · 餐饮集资：数 Makuake 1,809 件看哪种业态集资最多、平台逐件对比）';
+UPDATE sources SET name = 'パン屋の店長（日本 · 面包点心店店长：以 1,200 万日元开店，一年后倒闭，再以 400 万日元重新开业；记录日营业额、资金、设备与店面的账目）' WHERE id = 'note-bakerysweets-ten' AND name = 'パン屋の店長（日本 · 面包点心店店长：1200 万开店一年倒闭再用 400 万重开，日商、资金、设备、物件的账）';
+UPDATE sources SET name = 'coffret（日本 · 小店店主：菜单的撰写与删减，以及开业后才发现的停车场等问题）' WHERE id = 'note-coffret0906' AND name = 'coffret（日本 · 小店店主：菜单怎么写、怎么删，开业后才知道的停车场等教训）';
+COMMIT;

@@ -1919,7 +1919,7 @@
     },
     {
       "id": "pod-fr-arriere-cuisine",
-      "name": "Arrière-Cuisine（法国 · 餐饮招聘公司创办人访谈餐厅经营者怎样招人、带人、定薪）",
+      "name": "Arrière-Cuisine（法国 · 餐饮招聘公司创办人访谈餐厅经营者如何招聘、培养员工和确定薪酬）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feed.ausha.co/aErEes0zWRpw",
@@ -2748,7 +2748,7 @@
       "site_fulltext": false,
       "syndicate_fulltext": false,
       "id": "web-ktchnrebel",
-      "name": "KTCHNrebel（德国 · 厨房设备商 RATIONAL 办的餐饮经营网络杂志，英文版）",
+      "name": "KTCHNrebel（德国 · 厨房设备商 RATIONAL 创办的餐饮经营网络杂志，英文版）",
       "kind": "web_list",
       "config": {
         "url": "https://www.ktchnrebel.com/topic/business-growth/",
@@ -2770,7 +2770,7 @@
     },
     {
       "id": "pod-take-away-only",
-      "name": "TAKE AWAY ONLY（美国 · 疫情初期各国餐厅老板怎样撑店的访谈，已停更）",
+      "name": "TAKE AWAY ONLY（美国 · 疫情初期各国餐厅经营者如何维持经营的访谈，已停止更新）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.megaphone.fm/takeaway2020",
@@ -2792,7 +2792,7 @@
     },
     {
       "id": "pod-build-your-bakery",
-      "name": "Build Your Bakery Podcast（美国 · 阿拉巴马州一家面包店老板讲开店和经营）",
+      "name": "Build Your Bakery Podcast（美国 · 阿拉巴马州一家面包店老板谈开店与经营）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.megaphone.fm/build-your-own-bakery",
@@ -2814,7 +2814,7 @@
     },
     {
       "id": "pod-dirty-linen",
-      "name": "Dirty Linen（澳大利亚 · 美食记者访谈餐厅老板，谈行业里不好公开说的事）",
+      "name": "Dirty Linen（澳大利亚 · 美食记者访谈餐厅老板，谈行业内不便公开的事）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://feeds.megaphone.fm/EIDWD2559442918",
@@ -2858,7 +2858,7 @@
     },
     {
       "id": "pod-nz-food-truck-podcast",
-      "name": "The Food Truck Podcast（新西兰 · 奥克兰餐车老板访谈，已停更）",
+      "name": "The Food Truck Podcast（新西兰 · 奥克兰餐车老板访谈，已停止更新）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://app.kajabi.com/podcasts/2147781969/feed",
@@ -2880,7 +2880,7 @@
     },
     {
       "id": "pod-ru-malysh-na-million",
-      "name": "Малыш на миллион（俄罗斯 · 两位餐饮人访谈各地开店的人，谈成败和钱）",
+      "name": "Малыш на миллион（俄罗斯 · 两位餐饮从业者访谈各地开店者，谈经营成败与资金）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://cloud.mave.digital/37094",
@@ -2924,7 +2924,7 @@
     },
     {
       "id": "pod-ru-polnaya-posadka",
-      "name": "Полная посадка（俄罗斯 · 新西伯利亚几位餐馆经理谈管店的难处）",
+      "name": "Полная посадка（俄罗斯 · 新西伯利亚几位餐馆经理谈门店管理的难处）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://cloud.mave.digital/44154",
@@ -2946,7 +2946,7 @@
     },
     {
       "id": "note-komo-rita",
-      "name": "コモリタ（日本 · 大阪福岛 9 坪熟成寿司店店主，开业借钱撑过七年的经过）",
+      "name": "コモリタ（日本 · 大阪福岛一家约 30 平方米的熟成寿司店店主，借款开业、维持经营七年的经过）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/komo_rita/rss",
@@ -2968,7 +2968,7 @@
     },
     {
       "id": "note-murata-kazunori",
-      "name": "村田一訓（日本 · 金泽便当店原店主，开店 3 年 8 个月后黑字转让的全记录）",
+      "name": "村田一訓（日本 · 金泽便当店前店主，开店 3 年 8 个月后在盈利状态下转让的完整记录）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/murata_kazunori/rss",
@@ -3017,7 +3017,7 @@
     },
     {
       "id": "note-nteam",
-      "name": "大畑直矢 · バルタン（日本 · 广岛从 4 坪居酒屋做到 7 家店的老板，开店和撤店的经过）",
+      "name": "大畑直矢 · バルタン（日本 · 广岛一位从约 13 平方米的居酒屋发展到 7 家店的经营者，开店与撤店的经过）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/nteam/rss",
@@ -3039,7 +3039,7 @@
     },
     {
       "id": "note-fair-daisy3272",
-      "name": "miki（日本 · 原咖啡店老板的妻子，开店到闭店的钱和家里的事）",
+      "name": "miki（日本 · 前咖啡店店主的妻子，记录从开店到闭店的资金与家庭情况）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/fair_daisy3272/rss",
@@ -3061,7 +3061,7 @@
     },
     {
       "id": "note-happy-m",
-      "name": "凛々子（日本 · 借 1,300 万日元开咖啡店、经营 12 年后转手的原店主）",
+      "name": "凛々子（日本 · 借款 1,300 万日元开设咖啡店、经营 12 年后转让的前店主）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/happy_m/rss",
@@ -3083,7 +3083,7 @@
     },
     {
       "id": "note-ample-yucca7340",
-      "name": "FLAME@Y（日本 · 最多经营 4 家餐饮店的老板，交给店长以后遇到的事）",
+      "name": "FLAME@Y（日本 · 最多同时经营 4 家餐饮店的经营者，将门店交给店长后遇到的问题）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/ample_yucca7340/rss",
@@ -3127,7 +3127,7 @@
     },
     {
       "id": "note-sane-acacia4519",
-      "name": "Hot coffee（日本 · 刚开业的小咖啡店，每个月的客人和营业额）",
+      "name": "Hot coffee（日本 · 新开业的小咖啡店，记录每月的客流和营业额）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/sane_acacia4519/rss",
@@ -3193,7 +3193,7 @@
     },
     {
       "id": "note-alocafe-note",
-      "name": "あろ（日本 · 26 岁在地方城市一个人开咖啡店，开业两年）",
+      "name": "あろ（日本 · 26 岁在地方城市独自开设咖啡店，开业两年）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/alocafe_note/rss",
@@ -3237,7 +3237,7 @@
     },
     {
       "id": "note-gifukissa-lover",
-      "name": "樋口尚敬 · 喫茶星時（日本 · 岐阜一个人经营十年的喫茶店，不借钱开店、不雇人）",
+      "name": "樋口尚敬 · 喫茶星時（日本 · 岐阜一家独自经营十年的咖啡馆，开店未借款，也不雇员工）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/gifukissa_lover/rss",
@@ -3281,7 +3281,7 @@
     },
     {
       "id": "note-e-yu-shun",
-      "name": "みならい店長（日本 · 6.2 坪咖啡酒吧的店长，从开业贷款到保本的记录）",
+      "name": "みならい店長（日本 · 一家约 20 平方米的咖啡酒吧的店长，从开业贷款到保本的记录）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/e_yu_shun/rss",
@@ -3303,7 +3303,7 @@
     },
     {
       "id": "note-yamanoshokudo",
-      "name": "山ノ食堂（日本 · 两位 40 多岁女性合开的食堂，从找店面开始的经过）",
+      "name": "山ノ食堂（日本 · 两位 40 多岁女性合开的小餐馆，从寻找店面开始的经过）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/yamanoshokudo/rss",
@@ -3611,7 +3611,7 @@
     },
     {
       "id": "rss-khaosod-sentangsedtee",
-      "name": "Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小生意致富栏目）",
+      "name": "Khaosod เส้นทางเศรษฐี（泰国 · Khaosod 的小本经营栏目）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://www.khaosod.co.th/sentangsedtee/feed",
@@ -4041,7 +4041,7 @@
     },
     {
       "id": "note-one-zemi",
-      "name": "ワンゼミ（日本 · 飲食店経営：205 个经营施策逐个打分，最低工资、年收之壁等政策算到店里的账）",
+      "name": "ワンゼミ（日本 · 餐饮店经营：对 205 项经营措施逐项评分，并测算最低工资、年收入门槛等政策对门店的影响）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/one_zemi/rss",
@@ -4063,7 +4063,7 @@
     },
     {
       "id": "note-leight888",
-      "name": "エイト専務（日本 · 做咖啡店和店铺物业的宅建士：政策对店的影响、关店怎么退、居抜设备归谁）",
+      "name": "エイト専務（日本 · 经营咖啡店与店铺物业的不动产交易顾问：政策对门店的影响、关店时如何退租、接手时原有设备的归属）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/leight888/rss",
@@ -4085,7 +4085,7 @@
     },
     {
       "id": "note-kinshoku-plus",
-      "name": "近代食堂プラス（日本 · 餐饮业界杂志《近代食堂》的 note：繁盛店案例和经营手法）",
+      "name": "近代食堂プラス（日本 · 餐饮行业杂志《近代食堂》在 note 平台的专栏：生意兴隆门店的案例与经营方法）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/kinshoku_plus/rss",
@@ -4107,7 +4107,7 @@
     },
     {
       "id": "note-inshoku-saiken",
-      "name": "飲食店経営のリアル（日本 · 拉面连锁前区域本部长：月商 350 万掉到 150 万再回来的全记录）",
+      "name": "飲食店経営のリアル（日本 · 拉面连锁前区域负责人：月营业额从 350 万日元降至 150 万日元又回升的完整记录）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/inshoku_saiken/rss",
@@ -4129,7 +4129,7 @@
     },
     {
       "id": "note-tesou2541",
-      "name": "ゆうま（日本 · 东京板橋饺子酒场店主：立地、居抜、计划和实际月商、一人经营的账）",
+      "name": "ゆうま（日本 · 东京板桥一家饺子酒馆的店主：选址、接手原店装修设备、计划与实际月营业额、独自经营的账目）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/tesou2541/rss",
@@ -4151,7 +4151,7 @@
     },
     {
       "id": "note-fisherman-ceo",
-      "name": "漁師社長（日本 · 渔夫出身的小店老板：自己用 AI 做原价表、打卡系统，省下多少钱）",
+      "name": "漁師社長（日本 · 渔民出身的小店店主：自行用 AI 制作成本表和考勤系统，以及节省的金额）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/fisherman_ceo/rss",
@@ -4173,7 +4173,7 @@
     },
     {
       "id": "note-odachan22",
-      "name": "尾高宏幸（日本 · 餐饮集资：数 Makuake 1,809 件看哪种业态集资最多、平台逐件对比）",
+      "name": "尾高宏幸（日本 · 餐饮众筹：统计 Makuake 平台 1,809 个项目，比较各业态的筹资情况，并逐一对比各平台）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/odachan22/rss",
@@ -4195,7 +4195,7 @@
     },
     {
       "id": "note-bakerysweets-ten",
-      "name": "パン屋の店長（日本 · 面包点心店店长：1200 万开店一年倒闭再用 400 万重开，日商、资金、设备、物件的账）",
+      "name": "パン屋の店長（日本 · 面包点心店店长：以 1,200 万日元开店，一年后倒闭，再以 400 万日元重新开业；记录日营业额、资金、设备与店面的账目）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/bakerysweets_ten/rss",
@@ -4217,7 +4217,7 @@
     },
     {
       "id": "note-coffret0906",
-      "name": "coffret（日本 · 小店店主：菜单怎么写、怎么删，开业后才知道的停车场等教训）",
+      "name": "coffret（日本 · 小店店主：菜单的撰写与删减，以及开业后才发现的停车场等问题）",
       "kind": "rss",
       "config": {
         "feedUrl": "https://note.com/coffret0906/rss",

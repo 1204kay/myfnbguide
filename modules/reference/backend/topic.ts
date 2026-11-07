@@ -146,6 +146,19 @@ function unknownCitations(a: TopicText, items: TopicItem[]): TopicProblem[] {
     });
 }
 
+/**
+ * Sentences that say where they come from (「日本的原文认为」「几篇原文主张」「据报道」): 严重, found by the program. The
+ * article does not say who said what, its sources are only its numbers (topic-write 第 12 条); the 41 first articles,
+ * written by hand, kept to 第 10 条 (a conclusion of one country's items names the country) as 「日本的原文认为……」 in 51
+ * sentences, and neither the self-check nor the review held it (Kay 11-07 15:55「为什么是说 因为在日本的原文里」).
+ * The words are the program's, not the checker's, as unknownCitations: a word, not a reading.
+ */
+const SOURCE_WORDS = /原文|(?<!做)文章|报道|报导|据(?:调查|统计)/u;
+function sourceWords(a: TopicText): TopicProblem[] {
+  return allSentences(a).filter((s) => SOURCE_WORDS.test(s))
+    .map((quote) => ({ quote, why: "句子里写了出处（原文、文章、报道）：出处只靠编号", severity: "严重" }));
+}
+
 /** The article a situation shows, as stored: its groups and which item each of its numbers was. */
 export interface Shown { article: TopicText; groups: Group[]; sources: Array<{ n: number; id: string }>; itemIds: string[] }
 
@@ -268,7 +281,7 @@ export async function composeTopic(title: string, groups: Group[], items: TopicI
   const within = (q: string, ss: string[]) => { const w = words(q); return w.length > 0 && ss.some((s) => words(s).includes(w)); };
   const onKept = (a: TopicText, q: string) => within(q, [...kept]) && !within(q, allSentences(a).filter((s) => !kept.has(s)));
   const cuts = (a: TopicText) => (p: TopicProblem) => isSerious(p) && !onKept(a, p.quote);
-  const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items),
+  const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items), ...sourceWords(a),
     ...(await ask.check("reference_topic_check", template ? `${prompt("topic-check")}\n\n${prompt(CHECK_UPDATE)}` : prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
   const found = await checkOf(draft);
   // A 严重 on a sentence only numbered: back to the template's, kept from then on. Its words also in one the writer wrote

@@ -70,6 +70,16 @@ test("a citation of no item given is 严重 though the checker finds nothing", a
   assert.equal(ask.checked.length, 2);
 });
 
+test("a sentence saying where it comes from is 严重 though the checker finds nothing, and cut", async () => {
+  const said = "日本的原文认为，周转金要另算〔2〕。";
+  const write = (async () => ({ ...ARTICLE, lead: [...ARTICLE.lead.slice(0, 2), said] })) as Ask;
+  const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, { ...scripted([[], []]), write });
+  assert.ok(c.found.some((p) => p.severity === "严重" && p.quote === said));
+  assert.deepEqual(c.article.lead, ARTICLE.lead.slice(0, 2));
+  const kept = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, scripted([[]]));
+  assert.ok(!kept.found.length, "an article without such words is not held to it");
+});
+
 test("a rewrite writes from the article shown, in the numbers its items have now, its new items marked", async () => {
   // Shown when the page had items 1–3; since then a new item came first in the first cause, and art-2 is gone.
   const shown = { article: ARTICLE, groups: GROUPS, sources: [1, 2, 3].map((n) => ({ n, id: `art-${n}` })), itemIds: ["art-1", "art-2", "art-3"] };

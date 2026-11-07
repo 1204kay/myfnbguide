@@ -88,6 +88,14 @@ test("a rewrite writes from the article shown, in the numbers its items have now
   assert.ok(!ask.checked[0]!.includes("（新）") && !ask.checked[0]!.includes("# 样板"), "the check reads the article and items only");
 });
 
+test("a sentence citing no item is 严重 though the checker finds nothing: a template's sentence whose items are gone", async () => {
+  const bare: TopicText = { ...ARTICLE, lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算。"] };
+  const ask = scripted([[], []]);
+  const c = await composeTopic("开店前的准备和开销", GROUPS, ITEMS, { ...ask, write: (async () => bare) as Ask });
+  assert.ok(c.found.some((p) => p.severity === "严重" && p.quote === "周转金要另算。"));
+  assert.deepEqual(c.article.lead, ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。"], "it is cut");
+});
+
 test("a heading written as 「第 1 组」 is its cause's title", () => {
   assert.equal(groupNo("第 1 组"), "1");
   assert.equal(groupNo("2"), "2");

@@ -124,12 +124,19 @@ export function cutSentences(a: TopicText, quotes: string[]): TopicText {
   };
 }
 
-/** Citations of no item given: 严重, found by the program, as 十一说's (issue.ts citedItems). */
+/**
+ * Citations of no item given, and sentences citing none: 严重, found by the program, as 十一说's (issue.ts citedItems).
+ * Every sentence cites (prompts/topic-write.md 第 11 条); one that does not has nothing the check can hold it to, as a
+ * template's sentence left without numbers when the items it cited are gone (review of #237).
+ */
 function unknownCitations(a: TopicText, items: TopicItem[]): TopicProblem[] {
   const known = new Set(items.map((i) => i.n));
-  return [...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap((p) => p.split(/(?<=[。！？])/u))
-    .filter((s) => [...citedNumbers(s)].some((n) => !known.has(n)))
-    .map((quote) => ({ quote: quote.trim(), why: "标的编号不在给的原文里", severity: "严重" }));
+  return [...a.lead, ...a.sections.flatMap((s) => s.paragraphs)].flatMap((p) => p.split(/(?<=[。！？])/u)).map((s) => s.trim()).filter(Boolean)
+    .flatMap((quote) => {
+      const cited = [...citedNumbers(quote)];
+      if (!cited.length) return [{ quote, why: "这一句没有标原文编号", severity: "严重" }];
+      return cited.some((n) => !known.has(n)) ? [{ quote, why: "标的编号不在给的原文里", severity: "严重" }] : [];
+    });
 }
 
 /** The article a situation shows, as stored: its groups and which item each of its numbers was. */

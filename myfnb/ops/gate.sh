@@ -48,7 +48,7 @@ case $verb in
     if [ "${a[1]:-}" = test ]; then printf 'test.alert\t%s\t测试告警：这是 alerts test 输出的假告警，不用处理\n' "$(date -Is)"; exit 0; fi
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -F $'\t' -v ON_ERROR_STOP=1 -c "SELECT e.key, e.value->>'since', e.value->>'title' FROM settings s, jsonb_each(s.value) AS e(key, value) WHERE s.key = 'alerts.state' ORDER BY e.value->>'since'" ;;
   board)
-    # 公司流水线看板（dino-valley company-view/board，css-cloud 每 10 分钟读一次）：从今天 08:00（马来西亚时间，即 UTC 0 点，
+    # 公司流水线看板（dino-valley company-view/board，css-cloud 每 10 分钟读一次）：从今天 08:00（UTC+8，即 UTC 0 点，
     # 和日报同一个分界）起收了几篇、打了分的几篇和分数分布、进精选几条，以及近 3 天跑过的每个任务最近一次的结果、
     # 过去 24 小时失败几次、最近 20 次各是什么结果（口径同后台「运行」页 admin/runs.ts，只是不读 pgboss），Claude API 这一期和 7 天、DeepSeek 7 天的花费，
     # 十一说念稿用掉的阿里云语音字数，各外部模型接口最近一次调用的结果，以及这台服务器根分区和内存的用量。只读账号，输出一行 JSON。

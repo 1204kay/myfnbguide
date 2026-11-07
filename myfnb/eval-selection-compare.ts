@@ -33,7 +33,7 @@ for (const c of site) {
 // dailyScope pool): only selected reports get full entries, one per event, ranked by importance (edition.ts importance: the
 // event's best selected score + 5·log2(1 + its sources) + 5 when a T1 source carries it), at most two per source (the
 // subscription), twelve in all. What counts is how many of those twelve Kay picked. Unlike a real daily: the day here is the
-// Malaysian calendar day, an event's sources are only the ones among the day's gold cases, follow-ups of events covered in
+// UTC+8 calendar day, an event's sources are only the ones among the day's gold cases, follow-ups of events covered in
 // the last 7 days are not marked down or moved to the flashes, roundups are not folded under the event they mention, and
 // the checker's holds are not seen.
 const MAIN = 12, PER_SOURCE = 2;

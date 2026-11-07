@@ -47,7 +47,7 @@ export async function storyToPost(now = new Date()): Promise<{ id: string; story
 
 /** Drafts the day's posts, one per platform from one story, at most one story a day. Returns the ids made. */
 export async function draftToday(now = new Date()): Promise<number[]> {
-  // The day is the site's own (Malaysia and Beijing share it).
+  // The day is the site's own (UTC+8).
   const [{ n }] = await sql<{ n: number }[]>`
     SELECT count(*)::int AS n FROM social_posts WHERE created_at >= ${beijingAt(beijingDate(now), "00:00")}`;
   if (n > 0) return [];

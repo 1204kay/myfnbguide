@@ -5,7 +5,11 @@
 // 原稿的 Opus 第一次核对用那天入库的结果（不再花钱）。只写回执（subject trial-recheck:<日期>），不改那一期，不改网站。
 //   sudo docker compose exec -T worker node myfnb/trial-recheck-changed.ts --date 2026-11-07                只列要走的稿，不调模型
 //   … --apply --mode B|AB|both      默认 both
+//   … --cap 3                         这次最多花多少美元：按已花的加上下一次最坏情况算，超了就停（11-07 第一次跑没有它，超了上限）
+//   … --replay                        只重放已有回执、一次也不真调：要发出任何请求就当场停（11-07 B 跑完了结果没留下，用它取回）
+//   … --out <文件>                    每走完一份稿就把结果追加一行进去，中途停掉也留得下
 // 和正式流程一样：先走听稿排第一的那份，它改完还要删句子或还有问题，再走另一份。
+import { appendFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
@@ -25,6 +29,16 @@ if (!date || !/^\d{4}-\d{2}-\d{2}$/u.test(date)) throw new Error("--date 要一�
 const mode = arg("--mode") ?? "both";
 if (!["B", "AB", "both"].includes(mode)) throw new Error("--mode 只能是 B、AB 或 both");
 const apply = process.argv.includes("--apply");
+const cap = Number(arg("--cap") ?? 0);
+const replay = process.argv.includes("--replay");
+const outFile = arg("--out");
+if (apply && !replay && !(cap > 0)) throw new Error("真调要给 --cap（美元）");
+if (replay) globalThis.fetch = (() => { throw new Error("--replay：这一步没有回执可重放，要真调，停下"); }) as typeof fetch;
+const emit = (x: unknown) => { const line = JSON.stringify(x); console.log(line); if (outFile) appendFileSync(outFile, `${line}\n`); };
+// 估花费用的单价（美元／百万 token：输入、输出）。Opus 照 credit.ts、不算缓存折扣，宁可估高；flash 照高峰价往上取。
+const PRICE: Record<string, [number, number]> = { [OPUS]: [4, 20], [FLASH]: [0.6, 2.4] };
+const WORST_OUT: Record<string, number> = { [OPUS]: 32_000, [FLASH]: 64_000 };
+let spent = 0;
 
 type Stored = { issue: IssueText; problems: Problem[]; lively: number; edited: boolean; unchecked?: boolean; heard?: number };
 const [row] = await sql<{ no: number | null; content: { drafts: Stored[]; items: Omit<DayItem, "text">[]; chosen?: Stored } }[]>`
@@ -51,9 +65,17 @@ const touches = (p: Problem, changed: string[]) => changed.some((s) => bare(s).i
 type Tally = { calls: Record<string, number>; usage: Record<string, Usage>; receiptIds: number[] };
 const asker = (tally: Tally, model: string, tag: string) => {
   tally.usage[model] ??= { input: 0, output: 0 };
-  const ask = modelAsk(model, `trial-recheck:${date}`, tally.receiptIds, (u) => { tally.usage[model]!.input += u.input; tally.usage[model]!.output += u.output; });
+  const [pin, pout] = PRICE[model]!;
+  const ask = modelAsk(model, `trial-recheck:${date}`, tally.receiptIds, (u) => {
+    tally.usage[model]!.input += u.input; tally.usage[model]!.output += u.output;
+    spent += (u.input * pin + u.output * pout) / 1e6;
+  });
   let n = 0;
   return ((purpose, system, user, schema, attempt) => {
+    // 最坏一次：原文和稿子全按输入价、输出写满上限（一字按一 token 算，往高估）。
+    const chars = typeof user === "string" ? user.length : user.cached.length + user.rest.length;
+    const worst = ((system.length + chars) * pin + WORST_OUT[model]! * pout) / 1e6;
+    if (!replay && spent + worst > cap) throw new Error(`已花约 US$${spent.toFixed(2)}，下一次最坏约 US$${worst.toFixed(2)}，会超过 --cap ${cap}，停下`);
     tally.calls[`${model} ${purpose}`] = (tally.calls[`${model} ${purpose}`] ?? 0) + 1;
     return ask(purpose, system, user, schema, `${tag}${n++}${attempt ?? ""}`);
   }) as typeof ask;
@@ -114,15 +136,17 @@ async function run(variant: "B" | "AB") {
       }
     }
     const m = await mendChanged(issue, problems, opus, log);
-    out.push({ draft: d.i, start: d.problems.length, log, cut: m.cut, left: m.left.map((p) => ({ rule: p.rule, quote: p.quote, why: p.why })), issue: m.issue });
+    const one = { variant, draft: d.i, start: d.problems.length, log, cut: m.cut, left: m.left.map((p) => ({ rule: p.rule, quote: p.quote, why: p.why })), issue: m.issue };
+    emit(one);
+    out.push(one);
     if (!m.cut.length && !m.left.length) break;
   }
   for (const id of tally.receiptIds) await completeReceipt(sql, id);
-  return { variant, calls: tally.calls, usage: tally.usage, receiptIds: tally.receiptIds, drafts: out };
+  const sum = { variant, calls: tally.calls, usage: tally.usage, spent: Number(spent.toFixed(2)), receiptIds: tally.receiptIds };
+  emit(sum);
+  return { ...sum, drafts: out };
 }
 
-const results = [];
-for (const v of mode === "both" ? ["B", "AB"] as const : [mode as "B" | "AB"]) results.push(await run(v));
-console.log(JSON.stringify(results, null, 1));
+for (const v of mode === "both" ? ["B", "AB"] as const : [mode as "B" | "AB"]) await run(v);
 await closeDb();
 process.exit(0);

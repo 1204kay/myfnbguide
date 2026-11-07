@@ -4,7 +4,7 @@
 // at the top and three or four for each cause, each a conclusion and at most one reason, no amounts (Kay 11-06 22:30
 // 「你们讨论决定了就可以直接上线了」「全部情况 一起优化」, after the ninth sample of 开店前的准备和开销). Sentences it finds 严重 wrong are
 // cut and what is left is checked again: an article that still has one is held, not shown, and the page keeps the
-// last one shown. Written only when the situation has items the last article did not read, at most DAY_CAP_USD a day.
+// last one shown. Written only when the situation has NEW_ITEMS items the last article did not read, at most DAY_CAP_USD a day.
 // Which situations are written is the settings row `reference.topics` ({"slugs": ["opening-cost"]}), so Kay's
 // starting and stopping waits for no deploy (as 十一说); with no row none is. Stop:
 // DELETE FROM settings WHERE key = 'reference.topics'.
@@ -38,11 +38,11 @@ export const TOPIC_VERSION = `reference-topic@${createHash("sha256")
   .update(readFileSync(new URL("../prompts/topic-check.md", import.meta.url))).digest("hex").slice(0, 10)}`;
 
 /**
- * At most this much a day (Beijing date) on all situations' articles. Kay's cap in 决定记录 L2575 is US$0.3; it is
- * US$3 while every situation is written the new way (about 2–4 a day fit 0.3, and there are 41), and back to 0.3 the
- * day they are all written (十一 11-06 22:35).
+ * At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575, US$0.3 (about 2–4
+ * rewrites a day fit). It was US$3 for a day while every situation was to be written the new way (十一 11-06 22:35);
+ * the 41 first articles were written by hand on 11-07 instead, so it is back to 0.3.
  */
-export const DAY_CAP_USD = 3;
+export const DAY_CAP_USD = 0.3;
 /** US$ per million input / output tokens: DeepSeek's price list (11-06, peak hours, uncached input); a model not here is not written with. */
 const PRICES: Record<string, [number, number]> = {
   "deepseek-flash": [0.3, 1.2], "deepseek-flash-think": [0.3, 1.2], "deepseek-flash-llm": [0.3, 1.2], "deepseek-flash-think-llm": [0.3, 1.2],
@@ -100,12 +100,18 @@ export const tidy = (s: string) => s
   .replace(/[；，、：]+$/u, "。")
   .replace(/\s{2,}/g, " ").trim();
 
-/** The article without the sentences quoted; an emptied paragraph or section goes with them. */
+/**
+ * The article without the sentences quoted; an emptied point or section goes with them. A point whose first sentence,
+ * its conclusion, is cut goes whole: what is left is the reason for a conclusion no longer there (11-07 03:50, the
+ * card's first point read 「因为方向定了，看报价和店面才有判断标准……」 and nothing before it).
+ */
 export function cutSentences(a: TopicText, quotes: string[]): TopicText {
   const cut = (s: string) => tidy(quotes.reduce((t, q) => (q && t.includes(q) ? t.replace(q, "") : t), s));
+  const first = (s: string) => s.split(/(?<=[。！？])/u)[0]!.trim();
+  const point = (s: string) => { const c = cut(s); return c.startsWith(tidy(first(s))) ? [c] : []; };
   return {
-    lead: a.lead.map(cut).filter(Boolean),
-    sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.map(cut).filter(Boolean) })).filter((s) => s.paragraphs.length),
+    lead: a.lead.flatMap(point),
+    sections: a.sections.map((s) => ({ ...s, paragraphs: s.paragraphs.flatMap(point) })).filter((s) => s.paragraphs.length),
   };
 }
 
@@ -160,11 +166,19 @@ export async function topicStale(page: SituationPage): Promise<boolean> {
   return needsRewrite(last, ids);
 }
 
-/** Written again when there is none, the situation has an item the last did not read, or the prompts changed since. */
+/**
+ * New items a situation waits for before it is written again. Every write reads all the situation's items (120 for
+ * 开店前的准备和开销), so one new item rewrote the whole page (Kay 11-07 06:17「那是不是很浪费？」「10条吧」); the items still
+ * show on the page under their causes while the points wait. No time limit lets fewer do: with 50 situations a week's
+ * would rewrite most of them every week (Kay 06:19「满七天需要么？50种情况哦」).
+ */
+export const NEW_ITEMS = 10;
+
+/** Written again when there is none, the prompts changed since, or the situation has NEW_ITEMS items the last did not read. */
 export function needsRewrite(last: { item_ids: string[]; version: string } | undefined, ids: string[], version = TOPIC_VERSION): boolean {
   if (!last) return ids.length > 0;
   const read = new Set(last.item_ids);
-  return last.version !== version || ids.some((id) => !read.has(id));
+  return last.version !== version || ids.filter((id) => !read.has(id)).length >= NEW_ITEMS;
 }
 
 /** What the articles cost so far on the Beijing date of `now`. */

@@ -110,17 +110,17 @@ const fresh4 = { article: TEMPLATE, fresh: new Set([4]) };
 test("a template's sentence keeps its numbers: a number the writer adds of an item the template read is taken off", () => {
   // 11-07 trial: no new item, and a third of the sentences came back with more numbers of items already read.
   const written: TopicText = { lead: ["几家店主都先定方向〔1,2,3〕。", "设备能用二手〔1,3〕。", "周转金要另算〔2〕。"], sections: TEMPLATE.sections };
-  const k = keepTemplate(written, { article: TEMPLATE, fresh: new Set() });
+  const k = keepTemplate(written, { article: TEMPLATE, fresh: new Set() }, GROUPS);
   assert.deepEqual(k.article, TEMPLATE, "the numbers change only when an item is gone (asTemplate), not here");
   assert.equal(k.kept.size, 4);
   // The same in a card a new item changed: only 4 is added, to the sentence it was added to.
   const touched: TopicText = { lead: ["几家店主都先定方向〔1,2,3〕。", "设备能用二手〔3,4〕。", "周转金要另算〔1,2〕。"], sections: TEMPLATE.sections };
-  assert.deepEqual(keepTemplate(touched, fresh4).article.lead, ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3,4〕。", "周转金要另算〔2〕。"]);
+  assert.deepEqual(keepTemplate(touched, fresh4, GROUPS).article.lead, ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3,4〕。", "周转金要另算〔2〕。"]);
 });
 
 test("a new item's number is added to the template's sentence it supports, and that sentence is checked", () => {
   const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔1,3,4〕。"] }] };
-  const k = keepTemplate(written, fresh4);
+  const k = keepTemplate(written, fresh4, GROUPS);
   assert.deepEqual(k.article.sections[1]!.paragraphs, ["设备能用二手〔3,4〕。"], "4 is new, 1 the template read");
   assert.ok(!k.kept.has("设备能用二手〔3,4〕。"));
 });
@@ -130,7 +130,7 @@ test("a cause or the card citing no new item is the template's as it was: words 
     lead: ["几家店主都先定好方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算〔2〕。"],
     sections: [{ group: "1", paragraphs: ["几家店主都先定方向〔1,2〕。", "另一条没有新原文的结论〔1〕。"] }, { group: "2", paragraphs: ["设备多用二手〔3〕。另找供应商〔4〕。"] }],
   };
-  const k = keepTemplate(written, fresh4);
+  const k = keepTemplate(written, fresh4, GROUPS);
   assert.deepEqual(k.article.lead, TEMPLATE.lead);
   assert.deepEqual(k.article.sections[0], TEMPLATE.sections[0]);
   assert.deepEqual(k.article.sections[1]!.paragraphs, ["设备多用二手〔3〕。另找供应商〔4〕。"], "a cause a new item changed is the writer's, words changed and all");
@@ -140,7 +140,7 @@ test("a cause or the card citing no new item is the template's as it was: words 
 test("a template's sentence whose items are all gone takes the numbers the writer gave the same words", () => {
   const bare: TopicText = { ...TEMPLATE, lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算。"] };
   const written: TopicText = { ...TEMPLATE, lead: ["几家店主都先定方向〔1,2〕。", "设备能用二手〔3〕。", "周转金要另算〔1〕。"] };
-  const k = keepTemplate(written, { article: bare, fresh: new Set() });
+  const k = keepTemplate(written, { article: bare, fresh: new Set() }, GROUPS);
   assert.deepEqual(k.article.lead[2], "周转金要另算〔1〕。");
   assert.ok(!k.kept.has("周转金要另算〔1〕。"));
 });
@@ -167,6 +167,22 @@ test("a rewrite's check is told that a sentence may take its parts from differen
   await composeTopic("开店前的准备和开销", GROUPS, ITEMS, { write: (async () => ARTICLE) as Ask, check });
   assert.ok(systems[0]!.includes("不要求每一篇原文都单独说出整句话"));
   assert.ok(!systems[1]!.includes("不要求每一篇原文都单独说出整句话"));
+});
+
+test("a 严重 quoting a kept sentence without its numbers, or with other punctuation, does not cut it", async () => {
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔3,4〕。"] }] };
+  const halves = [serious("几家店主都先定方向"), serious("因为后面的判断都靠它."), serious("周转金要另算")];
+  const c = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => written) as Ask, check: (async () => ({ problems: halves })) as Ask }, fresh4);
+  assert.equal(c.status, "shown");
+  assert.deepEqual(c.article.sections[0], TEMPLATE.sections[0]);
+  assert.deepEqual(c.article.lead, TEMPLATE.lead);
+});
+
+test("a cause new since the template goes where the page has it", () => {
+  const three = [GROUPS[0]!, { no: "2", key: "new-cause", title: "新的原因？" }, { no: "3", key: "build-out", title: "资金用在哪里、何处能省？" }];
+  const template: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "3", paragraphs: ["设备能用二手〔3〕。"] }] };
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "3", paragraphs: ["设备能用二手〔3〕。"] }, { group: "2", paragraphs: ["新的结论〔4〕。"] }] };
+  assert.deepEqual(keepTemplate(written, { article: template, fresh: new Set([4]) }, three).article.sections.map((s) => s.group), ["1", "2", "3"]);
 });
 
 test("an article the same as its template is shown without a check", async () => {

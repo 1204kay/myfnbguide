@@ -195,7 +195,7 @@ const cites = (ns: Iterable<number>) => `〔${[...new Set(ns)].sort((a, b) => a 
  * - the card, or a cause, where the writer cites no new item is the template's as it was: nothing new asked for a change.
  * `kept` are the template's sentences as they were: checked already, the check's 严重 on them is listed, not cut.
  */
-export function keepTemplate(written: TopicText, template: { article: TopicText; fresh: Set<number> }): { article: TopicText; kept: Set<string> } {
+export function keepTemplate(written: TopicText, template: { article: TopicText; fresh: Set<number> }, groups: Group[]): { article: TopicText; kept: Set<string> } {
   const { article: t, fresh } = template;
   const was = new Map(allSentences(t).map((s) => [bare(s), s]));
   const kept = new Set<string>();
@@ -215,6 +215,8 @@ export function keepTemplate(written: TopicText, template: { article: TopicText;
   const touched = (ps: string[]) => ps.some((p) => [...citedNumbers(p)].some((n) => fresh.has(n)));
   const theirs = (no: string) => written.sections.find((s) => groupNo(s.group) === no);
   const nos = [...new Set([...t.sections.map((s) => s.group), ...written.sections.map((s) => groupNo(s.group))])];
+  // In the page's order of causes: a cause new since the template goes where the page has it.
+  const order = (no: string) => { const i = groups.findIndex((g) => g.no === no); return i < 0 ? groups.length : i; };
   return {
     article: {
       lead: touched(written.lead) ? held(written.lead) : asWas(t.lead),
@@ -222,7 +224,7 @@ export function keepTemplate(written: TopicText, template: { article: TopicText;
         const w = theirs(no), o = t.sections.find((s) => s.group === no);
         const paragraphs = w && (touched(w.paragraphs) || !o) ? held(w.paragraphs) : asWas(o!.paragraphs);
         return paragraphs.length ? [{ group: no, paragraphs }] : [];
-      }).sort((a, b) => nos.indexOf(a.group) - nos.indexOf(b.group)),
+      }).sort((a, b) => order(a.group) - order(b.group)),
     },
     kept,
   };
@@ -245,9 +247,17 @@ export async function composeTopic(title: string, groups: Group[], items: TopicI
     ? await ask.write("reference_topic_write", `${prompt("topic-write", { 题目: title })}\n\n${prompt(UPDATE)}`,
       `# ${title}\n\n# 样板\n\n${templateMarkdown(template.article, groups)}\n\n# 原文\n\n${topicListing(groups, items, template.fresh)}`, TopicArticle)
     : await ask.write("reference_topic_write", prompt("topic-write", { 题目: title }), `# ${title}\n\n${listing}`, TopicArticle);
-  const { article: draft, kept } = template ? keepTemplate(written, template) : { article: written, kept: new Set<string>() };
+  const { article: draft, kept } = template ? keepTemplate(written, template, groups) : { article: written, kept: new Set<string>() };
   if (template && allSentences(draft).every((s) => kept.has(s))) return { status: "shown", article: draft, draft, found: [], again: [] };
-  const cuts = (p: TopicProblem) => isSerious(p) && !kept.has(p.quote.trim());
+  // On a kept sentence when its words are part of one: the checker may quote half of it, leave its numbers off or write
+  // its punctuation otherwise (review of #240), and cutSentences cuts by what the quote contains.
+  const words = (s: string) => bare(s).replace(/\p{P}/gu, "");
+  const keptWords = [...kept].map(words);
+  const changedWords = allSentences(draft).filter((s) => !kept.has(s)).map(words);
+  // Words a kept sentence and a changed one share (a card's point repeated in its cause, one with a new number) are the
+  // changed one's: that one is checked.
+  const onKept = (q: string) => { const w = words(q); return w.length > 0 && keptWords.some((k) => k.includes(w)) && !changedWords.some((c) => c.includes(w)); };
+  const cuts = (p: TopicProblem) => isSerious(p) && !onKept(p.quote);
   const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items),
     ...(await ask.check("reference_topic_check", template ? `${prompt("topic-check")}\n\n${prompt(CHECK_UPDATE)}` : prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
   const found = await checkOf(draft);

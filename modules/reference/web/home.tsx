@@ -33,40 +33,41 @@ export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
 }
 
 /**
- * The first: its place and title, its line, and its shops in a big number. No picture: the pictures were examples
- * with made-up amounts, and the reference pages show no amounts and draw only what many sources show (Kay 11-07
- * 「行吧 试试吧」 to taking them off).
+ * The first, as the hot list's first card (AIHOT routes/hot.tsx Lead): its place, its title and line, who tells it at
+ * the foot and its shops in the hot list's big figure. No picture: the pictures were examples with made-up amounts,
+ * and the reference pages show no amounts and draw only what many sources show (Kay 11-07 「行吧 试试吧」).
  */
 function Lead({ s }: { s: SituationRow }) {
   return (
-    <article className={`${CARD} flex flex-col p-5 sm:p-6`}>
-      <div className="min-w-0">
-        {/* The hot list's first card type (AIHOT routes/hot.tsx Lead): NO.01 over a 21/23/25px title, a 14px line. */}
-        <RankTag rank={1} />
-        <h3 className="mt-4 text-[21px] font-bold leading-[1.4] tracking-[-0.01em] text-ink sm:text-[23px] lg:text-[25px] lg:leading-[1.38]">
+    <article className={`${CARD} flex flex-col overflow-hidden p-5 sm:p-6`}>
+      <div className="flex items-center gap-2.5"><RankTag rank={1} /></div>
+      <div className="mt-4 min-w-0">
+        <h3 className="text-[21px] font-bold leading-[1.4] tracking-[-0.01em] text-ink sm:text-[23px] lg:text-[25px] lg:leading-[1.38]">
           <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
         </h3>
         <p className="mt-3 line-clamp-3 text-[14px] leading-[1.75] text-ink-3">{s.dek}</p>
-        <div className="mt-3"><Who s={s} size={24} /></div>
       </div>
-      <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-1 pt-4">
-        <span className="ml-auto pb-1.5"><CountFigure count={s.count} size={30} /></span>
+      <div className="mt-auto flex flex-wrap items-end gap-x-6 gap-y-4 pt-5">
+        <div className="min-w-0 flex-[1_1_18rem]"><Who s={s} size={24} /></div>
+        <div className="flex w-full shrink-0 items-end justify-end sm:ml-auto sm:w-auto"><CountFigure count={s.count} size={34} /></div>
       </div>
     </article>
   );
 }
 
-/** The second and third: place and title, the situation's line, the shops. */
+/** The second and third, as the hot list's (AIHOT routes/hot.tsx Runner): the same card, smaller. */
 function Runner({ s, rank }: { s: SituationRow; rank: number }) {
   return (
     <article className={`${CARD} flex flex-col px-5 py-4`}>
-      {/* The hot list's second and third (AIHOT routes/hot.tsx Runner): NO.02 over a 16px title, a 13px line. */}
-      <RankTag rank={rank} />
-      <h3 className="mt-2.5 text-[16px] font-[650] leading-[1.5] text-ink">
+      <div className="flex items-center gap-2.5"><RankTag rank={rank} /></div>
+      <h3 className="mt-2.5 line-clamp-2 text-[16px] font-[650] leading-[1.5] text-ink">
         <Link viewTransition to={`/reference/${s.slug}`} className={STRETCH}>{s.title}</Link>
       </h3>
-      <p className="mt-1.5 line-clamp-2 text-[13px] leading-[1.7] text-ink-3">{s.dek}</p>
-      <div className="mt-auto flex items-end justify-between gap-3 pt-3"><Who s={s} /><CountFigure count={s.count} size={22} /></div>
+      <p className="mt-1.5 line-clamp-2 text-[13px] leading-[1.7] text-ink-3 lg:line-clamp-1">{s.dek}</p>
+      <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-2 pt-3">
+        <div className="min-w-0"><Who s={s} size={20} /></div>
+        <div className="ml-auto"><CountFigure count={s.count} size={24} /></div>
+      </div>
     </article>
   );
 }
@@ -80,9 +81,9 @@ function Ranking({ rows }: { rows: SituationRow[] }) {
   const runners = rest.slice(0, 2);
   return (
     <>
-      <div className="mt-3 grid gap-3 lg:grid-cols-12 lg:gap-4">
-        <div className={`grid ${runners.length ? "lg:col-span-7 lg:row-span-2 xl:col-span-8" : "lg:col-span-12"}`}><Lead s={lead!} /></div>
-        {runners.map((s, i) => <div key={s.slug} className="grid lg:col-span-5 xl:col-span-4"><Runner s={s} rank={i + 2} /></div>)}
+      <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-12 lg:gap-4">
+        <div className={`grid grid-cols-1 ${runners.length ? "lg:col-span-7 lg:row-span-2 xl:col-span-8" : "lg:col-span-12"}`}><Lead s={lead!} /></div>
+        {runners.map((s, i) => <div key={s.slug} className="grid grid-cols-1 lg:col-span-5 xl:col-span-4"><Runner s={s} rank={i + 2} /></div>)}
       </div>
       {/* The fourth on behind one toggle, so the categories below are reached sooner (Kay 11-06, 决定记录 L2575). */}
       {rest.length > 2 && <SituationRows rows={rest.slice(2)} from={4} first={0} more={<>查看第 4–{rest.length + 1} 名</>} />}
@@ -109,14 +110,16 @@ export default function ReferenceHomePage() {
   const counts: Array<[number, string]> = [[data.totals.situations, "种情况"], [data.totals.cases, "条原文"]];
   return (
     <Page wide>
-      {/* As the hot list: the bar's large title on phones with the lead under it, a header on desktops (the topic
-          page's counts line and date, HANDOFF §2.4, on both). */}
-      <PhoneBar title="参考" large sub={LEAD} />
+      {/* As the hot list: the bar's large title on phones with what the page is and when it was updated under it, a
+          header on desktops (the topic page's counts line and date, HANDOFF §2.4). */}
+      <PhoneBar title="参考" large sub={<>
+        {LEAD}
+        <span className="block">
+          {counts.map(([n, unit], i) => <span key={unit}>{i > 0 && " · "}<span className="num">{num(n)}</span> {unit}</span>)}
+          {data.updatedAt && <> · <time dateTime={data.updatedAt} className="num">{day(data.updatedAt)}</time> 更新</>}
+        </span>
+      </>} />
       <PageHeader title="参考" dek={LEAD} counts={counts} updatedAt={data.updatedAt} className="hidden pb-5 pt-1 lg:flex" />
-      <p className="flex flex-wrap gap-x-4 gap-y-1 pb-1 text-[12.5px] text-ink-4 lg:hidden">
-        {counts.map(([n, unit]) => <span key={unit}><span className="num font-semibold text-ink-2">{num(n)}</span> {unit}</span>)}
-        {data.updatedAt && <span><span className="num">{day(data.updatedAt)}</span> 更新</span>}
-      </p>
       {!data.categories.length && <div className="card rounded-sheet"><EmptyState title="还没有整理好的情况">每种情况收到两家以上店家的做法以后，才会在本页列出。</EmptyState></div>}
       {data.ranking.length > 0 && (
         <section className="mt-6 lg:mt-2">

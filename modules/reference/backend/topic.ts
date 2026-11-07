@@ -45,6 +45,13 @@ export const TOPIC_VERSION = `reference-topic@${createHash("sha256")
  * 不然我不放心deepseek写的」).
  */
 const UPDATE = "topic-update";
+/**
+ * How a rewrite's check reads 「不能把几条合成一句它们各自没说过的话」 (prompts/topic-check-update.md), added to topic-check.md
+ * when there is a template. In the 11-07 trial flash took it for 「each item must say the whole sentence」 and cut 19 of a
+ * page's 30 sentences, every one of which the review thread then found in the items it cites. Not in TOPIC_VERSION for
+ * UPDATE's reason: a change of it writes no article again.
+ */
+const CHECK_UPDATE = "topic-check-update";
 
 /**
  * At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575, US$0.3 (about 2–4
@@ -242,7 +249,7 @@ export async function composeTopic(title: string, groups: Group[], items: TopicI
   if (template && allSentences(draft).every((s) => kept.has(s))) return { status: "shown", article: draft, draft, found: [], again: [] };
   const cuts = (p: TopicProblem) => isSerious(p) && !kept.has(p.quote.trim());
   const checkOf = async (a: TopicText, attempt?: string) => [...unknownCitations(a, items),
-    ...(await ask.check("reference_topic_check", prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
+    ...(await ask.check("reference_topic_check", template ? `${prompt("topic-check")}\n\n${prompt(CHECK_UPDATE)}` : prompt("topic-check"), `# 综合整理\n\n${topicMarkdown(title, a, groups)}\n\n# 原文\n\n${listing}`, Problems, attempt)).problems];
   const found = await checkOf(draft);
   const serious = found.filter(cuts);
   if (!serious.length) return { status: "shown", article: draft, draft, found, again: [] };

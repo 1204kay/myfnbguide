@@ -159,6 +159,16 @@ test("the check's 严重 on a template's sentence kept as it was is listed, not 
   assert.ok(c.found.some((p) => p.quote === "周转金要另算〔2〕。"), "listed for us to read");
 });
 
+test("a rewrite's check is told that a sentence may take its parts from different items it cites; a first write's is not", async () => {
+  const systems: string[] = [];
+  const check = (async (_p: string, system: string) => { systems.push(system); return { problems: [] }; }) as Ask;
+  const written: TopicText = { lead: TEMPLATE.lead, sections: [TEMPLATE.sections[0]!, { group: "2", paragraphs: ["设备能用二手〔3,4〕。"] }] };
+  await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => written) as Ask, check }, fresh4);
+  await composeTopic("开店前的准备和开销", GROUPS, ITEMS, { write: (async () => ARTICLE) as Ask, check });
+  assert.ok(systems[0]!.includes("不要求每一篇原文都单独说出整句话"));
+  assert.ok(!systems[1]!.includes("不要求每一篇原文都单独说出整句话"));
+});
+
 test("an article the same as its template is shown without a check", async () => {
   let checks = 0;
   const c = await composeTopic("开店前的准备和开销", GROUPS, WITH_NEW, { write: (async () => TEMPLATE) as Ask, check: (async () => { checks++; return { problems: [] }; }) as Ask }, fresh4);

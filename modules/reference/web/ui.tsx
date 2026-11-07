@@ -35,12 +35,6 @@ export function BackLink({ to, label }: { to: string; label: string }) {
   );
 }
 
-/**
- * A smaller paragraph's measure: about 44 characters a line at its own size, as the 17px body runs in the 760px
- * column (layout A5); at 13px the full column would run 58. Narrower columns are untouched.
- */
-export const MEASURE = "max-w-[44em]";
-
 /** The line over a body, as the item page's 正文 label. */
 export const BODY_LABEL = "mb-6 text-[12px] text-ink-4";
 

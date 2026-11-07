@@ -47,7 +47,7 @@ export function ListenButton({ seconds, onClick, compact = false }: { seconds: n
       type="button"
       onClick={onClick}
       aria-label={compact ? `听 · ${minutes(seconds)}` : undefined}
-      className={`inline-flex h-8 items-center justify-center whitespace-nowrap rounded-full border border-line-strong bg-surface font-medium text-accent transition-colors hover:border-ink-4 hover:text-accent-ink ${compact ? "shrink-0 gap-1 px-2 text-[13px]" : "w-full gap-1.5 px-3 text-[12.5px]"}`}
+      className={`inline-flex h-8 items-center justify-center whitespace-nowrap rounded-full border border-line-strong bg-surface font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink ${compact ? "shrink-0 gap-1 px-2 text-[13px]" : "w-full gap-1.5 px-3 text-[12.5px]"}`}
     >
       <IconHeadphones size={compact ? 15 : 14} /> {compact ? `${wholeMinutes(seconds)} 分` : `听 · ${minutes(seconds)}`}
     </button>

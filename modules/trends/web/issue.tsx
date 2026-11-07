@@ -9,6 +9,7 @@ import { beijingDate } from "@aihot/contracts/time";
 import { apiGet, cachedPage, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import { ReportLayout } from "@aihot/web/features/report/ReportLayout";
+import { dateLine } from "@aihot/web/features/report/format";
 import { Rows, SectionPage, Story } from "@aihot/web/features/report/ReportPaper";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { TrendsIssue } from "../types.ts";
@@ -49,11 +50,11 @@ export default function TrendsIssueRoute() {
         <header className="pt-5 lg:pt-0">
           <div className="flex items-center justify-between gap-4 text-[12px] text-ink-4">
             <span>{`${SITE.name} · ${withSubject("周报")}`}</span>
-            <span className="num">{span(issue)}</span>
+            <span className="num">{dateLine("weekly", issue.key)}</span>
           </div>
           <div className="py-6 @[880px]:py-8">
             <h1 id="report-start" data-page-title="" className="text-[32px] font-black leading-[1.2] tracking-[-0.02em] text-ink @[880px]:text-[44px]">{TITLE}</h1>
-            <p className="mt-4 max-w-[46em] text-[15.5px] leading-[1.9] text-ink-2">
+            <p className="mt-4 max-w-[46em] text-[16.5px] leading-[1.9] text-ink-2 @[560px]:text-justify @[880px]:text-[17.5px]">
               这一周里，三家以上的来源各自谈到同一件事。每个来源一句，只转述该原文的内容，不替它们下结论；点击标题查看本站收录的条目，点击「原文」查看原文。
             </p>
           </div>

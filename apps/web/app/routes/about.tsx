@@ -213,9 +213,9 @@ export default function AboutPage() {
         <div>
           <Kicker>{ABOUT.kicker}</Kicker>
           <h1 data-page-title="" className="mt-5 text-[34px] font-black leading-[1.18] tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[46px] xl:text-[56px] 2xl:text-[64px]">
-            {ABOUT.headline[0]}
+            {clauses(ABOUT.headline[0])}
             <br />
-            <span className="text-accent">{ABOUT.headline[1]}</span>
+            <span className="text-accent">{clauses(ABOUT.headline[1])}</span>
           </h1>
           <p className="mt-5 max-w-[36em] text-[15.5px] leading-[1.85] text-ink-3 xl:text-[17px]">
             {ABOUT.lead.split("{sources}").map((part, i) => (
@@ -296,4 +296,9 @@ export default function AboutPage() {
       </footer>
     </div>
   );
+}
+
+/** 标题按逗号分成几段：平板和电脑上每段整块排，只在逗号后换行；手机上一段本来就排不下一行，照常折行。 */
+function clauses(text: string) {
+  return text.split(/(?<=，)/).map((part, i) => <span key={i} className="sm:inline-block">{part}</span>);
 }

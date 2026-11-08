@@ -36,7 +36,7 @@ export async function pickDaily({ date, entries }: DailyPickAsk): Promise<DailyP
     try {
       const res = await chatJson({
         model, purpose: PICK_PURPOSE, subject: `daily:${date}`, promptVersion: VERSION, attemptTag: attempt > 1 ? `retry-${attempt}` : undefined,
-        system: SYSTEM, user, schema: Schema, temperature: 0, maxTokens: 16000, timeoutMs: 300_000,
+        system: SYSTEM, user, schema: Schema, temperature: 0, maxTokens: 16000, timeoutMs: 600_000,
       });
       const itemIds = res.data.picks.map((p) => list[p.n - 1]?.entry.itemId).filter((id): id is string => !!id).slice(0, MAIN_ENTRIES);
       return { itemIds, model: res.model, receiptIds: [res.receiptId] };

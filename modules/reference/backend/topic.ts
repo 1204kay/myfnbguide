@@ -54,8 +54,8 @@ const UPDATE = "topic-update";
 const CHECK_UPDATE = "topic-check-update";
 
 /**
- * At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575, US$0.3 (about 2–4
- * rewrites a day fit). It was US$3 for a day while every situation was to be written the new way (十一 11-06 22:35);
+ * At most this much a day (Beijing date) on all situations' articles: Kay's cap in 决定记录 L2575, US$0.3 (about 2–3
+ * rewrites a day fit since the writer's thinking room went to 32,000, myfnbguide #253). It was US$3 for a day while every situation was to be written the new way (十一 11-06 22:35);
  * the 41 first articles were written by hand on 11-07 instead, so it is back to 0.3.
  */
 export const DAY_CAP_USD = 0.3;

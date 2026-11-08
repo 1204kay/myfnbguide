@@ -31,8 +31,10 @@ export const PRESETS: Record<string, ModelPreset> = {
   // thinking gets room (10-09: 5 of 16 items cut off at 4,000). 12,000 was not enough for flash: 11-08 the listen script
   // thought 18,905 and 17,876 and all 20,000 of the next, with no answer (receipts 151107, 151109, finish_reason length),
   // and 11-07 a check of a whole issue thought up to 28,653 (trial-flash-check). 32,000 covers those; DeepSeek's own
-  // default for thinking is 64K (api-docs.deepseek.com, create-chat-completion). Only what is used is paid for; at the
-  // ~180 tokens a second measured 11-07 the whole room is about four minutes, inside every caller's timeout (300 s and up).
+  // default for thinking is 64K (api-docs.deepseek.com, create-chat-completion). Only what is used is paid for. At about
+  // 180 tokens a second (11-07: receipts 150420 and 150421 wrote 20,000 each in about 110 s), thinking and answer written
+  // to the full are about 3.7 minutes for a check or 十一说 step (40,000), 4.4 for the daily pick (48,000, its timeout
+  // raised to 600 s for it) and 5.6 for a situation's article (60,000, 900 s).
   "deepseek-flash-think-llm": {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 32000, jsonMode: true,
   },

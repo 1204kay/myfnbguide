@@ -4287,6 +4287,426 @@
         "乌克兰",
         "媒体"
       ]
+    },
+    {
+      "id": "rss-horeca-advies",
+      "name": "Horeca Advies（比利时 · 餐饮顾问 Gino Vermeulen 的经营博客：现金流、转让估值、用工）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ginovermeulen.be/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "比利时",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-united-against-waste",
+      "name": "United Against Waste（瑞士 · 餐饮业减少食物浪费的协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://united-against-waste.ch/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "瑞士",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-strategeat",
+      "name": "Strategeat（法国 · 餐饮市场研究机构：连锁扩张与消费趋势）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.strategeat.fr/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-facilyta",
+      "name": "Facilyta Contabilidade（巴西 · 餐饮专门会计所：税改与外卖平台费用）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://facilytafoodcontabilidade.com.br/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "巴西",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-cloud-restaurant-manager",
+      "name": "Cloud Restaurant Manager（美国 · 餐厅收银系统商的经营文章：小费、报税、厨房屏）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cloudrestaurantmanager.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-tokeshi-shoji",
+      "name": "お米のとけし（日本 · 冲绳业务用米批发商：米价、供应和饮食店炊饭）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tokeshishoji.jp/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-vaphoto",
+      "name": "vaphoto（意大利 · 美食摄影师的博客：开餐厅成本、厨师薪资、外卖图片）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://vaphoto.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-canirac",
+      "name": "CANIRAC（墨西哥 · 全国餐饮业商会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://portal.canirac.org.mx/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "墨西哥",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-buyers-edge",
+      "name": "Buyers Edge Platform（美国 · 餐饮采购与供应链数据平台：食材行情报告）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://buyersedgeplatform.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-makelaar-in-horeca",
+      "name": "Makelaar in Horeca（荷兰 · 餐饮店铺经纪：租约、转让、融资）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://makelaarinhoreca.nl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "荷兰",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-coffee-traveler",
+      "name": "Coffee Traveler Magazine（泰国 · 咖啡杂志：咖啡店、烘焙厂和产地）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.coffeetravelermagazine.com/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "泰国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-e-restauracja",
+      "name": "Restauracja（波兰 · 餐饮业专业双月刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://e-restauracja.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "波兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-tabski",
+      "name": "Tabski（美国 · 美食广场收银系统商的每日美食广场新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tabski.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-snarr",
+      "name": "SNARR（法国 · 全国快餐业协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.snarr.fr/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-business-debut",
+      "name": "Business Debut（美国 · 东南部新店开业报道）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.businessdebut.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-metro-intelligencer",
+      "name": "Metro Intelligencer（美国 · 底特律一带餐厅开业和关店消息）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.metrointelligencer.com/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-westchester-food-safety",
+      "name": "Westchester Food Safety（美国 · 食品安全培训机构：餐厅食安与证书要求）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.westchesterfoodsafety.com/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-hotelgastrojobs",
+      "name": "HotelGastroJobs.ch（瑞士 · 餐旅招聘网站：薪资、小费和职业路径）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hotelgastrojobs.ch/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "瑞士",
+        "平台"
+      ]
+    },
+    {
+      "id": "rss-restaurantchains-net",
+      "name": "RestaurantChains.net（美国 · 餐饮连锁研究：开店、关店和门店增长报告）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://restaurantchains.net/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-superstation",
+      "name": "Бюро придорожного ритейла（俄罗斯 · 加油站零售和快餐店设计机构）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.superstation.pro/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "俄罗斯",
+        "服务商"
+      ]
     }
   ]
 }

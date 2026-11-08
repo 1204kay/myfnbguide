@@ -41,11 +41,13 @@ const page = async (path: string) => {
   return r.text();
 };
 
-test("a weekly with trends ends with the line to them, the latest weekly too", async () => {
+test("a weekly with trends ends with the line to them, inside the issue, the latest weekly too", async () => {
   for (const path of ["/weekly/2026-W43", "/weekly"]) {
     const html = await page(path);
     assert.match(html, /本周多家来源共同提及/);
     assert.match(html, /href="\/trends\/2026-W43"/);
+    // Read as the issue's last page: before its end mark, not after it.
+    assert.ok(html.indexOf("本周多家来源共同提及") < html.indexOf("（本期完）"), "the line comes before the end of the issue");
   }
 });
 

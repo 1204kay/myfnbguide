@@ -213,7 +213,8 @@ function leadStoryOf(report: ReportDetail): ReportCitation | null {
   return report.sections.flatMap((s) => s.items).find((c) => c.itemId === report.leadItemId && c.available) ?? null;
 }
 
-const WITHDRAWN_NOTE = "该内容已按来源方要求下架或调整展示方式。";
+/** What a withdrawn entry says; a site whose withdrawals are not all at the source's request words it itself (REPORTS.withdrawnNote). */
+const WITHDRAWN_NOTE = (REPORTS as { withdrawnNote?: string }).withdrawnNote ?? "该内容已按来源方要求下架或调整展示方式。";
 
 /**
  * Sections as pages. A story cited twice appears once, and
@@ -475,7 +476,8 @@ export function reportOutline(report: ReportDetail): OutlineEntry[] {
   ];
 }
 
-export function ReportPaper({ report, index }: { report: ReportDetail; index: ReportNavigationEntry[] }) {
+/** `children`: the modules' blocks (reportPart), read as the issue's last pages, before its neighbours and its end. */
+export function ReportPaper({ report, index, children }: { report: ReportDetail; index: ReportNavigationEntry[]; children?: ReactNode }) {
   const daily = report.kind === "daily";
   const leadStory = leadStoryOf(report);
   const pages = pagesOf(report, leadStory);
@@ -533,6 +535,8 @@ export function ReportPaper({ report, index }: { report: ReportDetail; index: Re
           </ul>
         </SectionPage>
       )}
+
+      {children}
 
       <Neighbours report={report} index={index} />
       {!daily && <History report={report} index={index} />}

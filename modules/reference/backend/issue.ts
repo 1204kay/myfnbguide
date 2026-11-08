@@ -101,12 +101,12 @@ export function modelAsk(model: string, subject: string, receiptIds: number[], o
 
 /** The label the close is shown under (issueText), which the writer or the editor copied in (10-13, 10-14, 10-21). */
 const CLOSE_LABEL = /^合起来[：:]\s*/u;
-const PART_LABEL = /^(?:标题|三句话|预告|快讯|细说|合起来)[：:]\s*/u;
+const PART_LABEL = /^(?:标题|导读|三句话|预告|快讯|细说|合起来)[：:]\s*/u;
 
 const IssueAnswer = z.object({
   /** The deep item's question. */
   title: z.string().trim().min(1),
-  /** Three sentences for the daily's lead. */
+  /** The deep item's 导读, under its title on the daily's lead and on the issue's page. */
   brief: z.array(z.string().trim().min(1)).min(1),
   preview: z.string().trim().min(1),
   news: z.array(z.object({ head: z.string().trim().min(1), text: z.string().trim().min(1) })).min(1),
@@ -209,7 +209,7 @@ async function speak(issue: IssueText, ask: Ask, attempt: string): Promise<Issue
 
 /** A draft as the check and the editor read it, part by part. */
 const issueText = (issue: IssueText) => [
-  `标题：${issue.title}`, `三句话：\n${issue.brief.map((b) => `- ${b}`).join("\n")}`, `预告：${issue.preview}`,
+  `标题：${issue.title}`, `导读：\n${issue.brief.map((b) => `- ${b}`).join("\n")}`, `预告：${issue.preview}`,
   `快讯：\n${issue.news.map((x, i) => `${i + 1}. ${x.head}\n${x.text}`).join("\n\n")}`, `细说：\n${issue.deep}`, `合起来：${issue.close}`,
 ].join("\n\n");
 const citedText = (cited: DayItem[]) => cited.map((i) =>
@@ -452,16 +452,14 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
     out.close = swap(out.close).replace(CLOSE_LABEL, "");
     if (changed.length === before) kept.push(p);
   }
-  if (!out.deep || !out.title) out.title = out.news[0]?.head ?? out.title;
-  // The daily's lead is three sentences (10-15 went out with two): a lead sentence taken out gives way to a part of the
-  // issue no sentence left tells, the deep piece first, as it is the issue's title. Taking the next news head instead
-  // (10-18, 8079e78) put back a head the first sentence already told and left the deep piece out of the lead.
-  const parts = [...(out.deep ? [{ say: out.title, about: `${out.title}${out.deep}` }] : []), ...out.news.map((x) => ({ say: x.head, about: `${x.head}${x.text}` }))];
-  for (const x of parts) {
-    if (out.brief.length >= 3) break;
-    if (!x.say || out.brief.some((b) => b === x.say || told(b, x.about) || told(x.say, b))) continue;
-    out.brief.push(x.say);
-  }
+  // The 导读 tells what the title tells, as the original's lead paragraph is its top entry's own summary (11-08, issues 12,
+  // 14, 15: three sentences on the day under the deep piece's title read as if they were all about it). Taking out the
+  // deep piece hands the title to the first news head, and the 导读 goes with it; a 导读 cut to nothing takes the opening
+  // of what the title heads. Refilling it with other parts' heads (10-15, 10-18) put other stories under the title.
+  const opening = (text: string) => sentences(text).slice(0, 2).map((x) => x.trim()).filter(Boolean);
+  const first = out.news[0];
+  if ((!out.deep || !out.title) && first && first.head !== out.title) { out.title = first.head; out.brief = opening(first.text); }
+  if (!out.brief.length) out.brief = opening(out.deep || first?.text || "");
   return { issue: out, changed, kept };
 }
 
@@ -469,17 +467,6 @@ export function amendIssue(issue: IssueText, problems: Problem[], replacement: (
  * Takes out what the check still found after the last mending (Kay 10-19: 「哪有人每天出的结果审核不过就不出了」): a
  * newspaper cuts the sentence it cannot stand behind and runs the page. Cutting adds no claim, so it is not checked again.
  */
-/** Two-character pieces of a sentence, without spaces, punctuation or citation marks. */
-const pairs = (s: string) => {
-  const c = [...s.replace(/〔[^〕]*〕|[\s\p{P}]/gu, "")];
-  return new Set(c.slice(1).map((x, i) => c[i] + x));
-};
-/** Whether `sentence` tells of what `text` says: most of its two-character pieces are there (Chinese has no spaces to split words on). */
-const told = (sentence: string, text: string) => {
-  const a = pairs(sentence), b = pairs(text);
-  return a.size > 0 && [...a].filter((x) => b.has(x)).length / a.size >= 0.5;
-};
-
 export const cutProblems = (issue: IssueText, problems: Problem[]) => {
   const { issue: out, changed, kept } = amendIssue(issue, problems, () => "");
   return { issue: out, cut: changed, kept };
@@ -492,7 +479,7 @@ export const cutProblems = (issue: IssueText, problems: Problem[]) => {
 function itemsIssue(items: DayItem[]): IssueText {
   const top = [...items.filter((i) => i.selected), ...items.filter((i) => !i.selected)].slice(0, 5);
   return {
-    title: top[0]!.title, brief: top.slice(0, 3).map((i) => i.title), preview: `今天先说${top.length}件事。`,
+    title: top[0]!.title, brief: [top[0]!.summary], preview: `今天先说${top.length}件事。`,
     news: top.map((i) => ({ head: i.title, text: `${i.sourceName}报道：${i.summary}〔${i.n}〕` })), deep: "", close: "",
   };
 }
@@ -569,7 +556,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
 
 // ---------------------------------------------------------------- the daily's top, and a page to read
 
-/** The three sentences as the daily's lead shows them: the 〔n〕 marks go to the originals on the issue's page, and the
+/** The 导读 as the daily's lead shows it: the 〔n〕 marks go to the originals on the issue's page, and the
  * daily has no originals under it, so there they would be bare numbers to a reader (10-24, issues 1 and 2). */
 export const leadParagraph = (brief: string[]) => brief.join("").replace(/〔[^〕]*〕/gu, "");
 
@@ -586,7 +573,7 @@ function draftMarkdown(d: Draft, items: DayItem[], date: string): string[] {
   const { cited } = citedItems(d.issue, items);
   const f = fixedLines(date);
   return [
-    `**${d.issue.title}**`, "", "### 三句话（日报头条用）", ...d.issue.brief.map((b) => `- ${b}`), "", "### 念出来的样子", "",
+    `**${d.issue.title}**`, "", "### 导读（日报头条用）", ...d.issue.brief.map((b) => `- ${b}`), "", "### 念出来的样子", "",
     f.open, "", d.issue.preview, "", ...d.issue.news.flatMap((x) => [`**${x.head}**`, "", x.text, ""]),
     ...(d.issue.deep ? [f.turn, "", `**${d.issue.title}**`, "", d.issue.deep, ""] : []), ...(d.issue.close ? [d.issue.close, ""] : []), f.end, "",
     "### 原文出处", ...(cited.length ? cited.map((i) => `- 〔${i.n}〕${i.sourceName}：《${i.title}》 ${i.url}`) : ["- （没有点名）"]), "",

@@ -184,25 +184,25 @@ test("「十一觉得」 is the writer's to say as often as it likes, and the cl
   assert.equal(c.chosen?.issue.close, "十一觉得都在算账。");
 });
 
-test("a lead sentence taken out gives way to a part no sentence left tells, the deep piece first, so the daily's lead stays three sentences", () => {
-  const { issue: out } = cutProblems(issue("问题", "说了〔1〕。"), [{ rule: 1, quote: "第二句说过头了", why: "" }].map((p) => ({ ...p, quote: "二" })));
+test("the 导读 tells what the title tells: a sentence cut is not refilled with other stories, and a 导读 follows its title", () => {
+  const { issue: out } = cutProblems(issue("问题", "说了〔1〕。"), [{ rule: 1, quote: "二", why: "" }]);
   assert.deepEqual(out.brief, ["一", "二", "三"], "a quote too short to place moves nothing");
-  const draft = { ...issue("问题", "说了〔1〕。"), brief: ["第一句话说的事", "第二句说过头了", "第三句话说的事"] };
-  assert.deepEqual(cutProblems(draft, [{ rule: 1, quote: "第二句说过头了", why: "" }]).issue.brief, ["第一句话说的事", "第三句话说的事", "问题"]);
-  // 10-18 (8079e78): the sentence on the deep piece was cut and the first news head went in, which the first sentence already told.
+  // 11-08 (issues 12, 14, 15): sentences on other stories sat under the deep piece's title on the daily.
   const day: IssueText = {
     title: "没开过餐饮店的人，凭什么开出三家门店？", preview: "预告", close: "合起来",
-    brief: ["日本店主说，接到活动出摊邀约别当场答应，先算清回店后的准备。", "调背景音乐前，先坐到客人位子上听。", "一位美国店主讲她怎么开出三家门店，最大的一家在春田。"],
+    brief: ["美国一位店主从帮母亲改品牌做起，五年开出三家门店〔4〕。", "她说第三家店面在春田，是最大的一家〔4〕。"],
     news: [
-      { head: "活动出摊邀约先别答应", text: "店主说接到活动出摊邀约先别当场回复〔1〕。" },
+      { head: "活动出摊邀约先别答应", text: "日本一位店主说接到活动出摊邀约先别当场回复〔1〕。他说先算清回店后的准备〔1〕。还有一句〔1〕。" },
       { head: "调背景音乐前先坐到客人位子上听", text: "他说先坐到客人的位子上听〔2〕。" },
-      { head: "咖啡酒吧过祭典不加人手", text: "一家咖啡酒吧过祭典没有加人〔3〕。" },
     ],
-    deep: "她从帮母亲改品牌开始，后来在春田拿下第三家店面〔4〕。",
+    deep: "她从帮母亲改品牌开始〔4〕。后来在春田拿下第三家店面〔4〕。\n\n第二段说的是开店的钱〔4〕。",
   };
-  assert.deepEqual(cutProblems(day, [{ rule: 1, quote: day.brief[2]!, why: "" }]).issue.brief, [day.brief[0], day.brief[1], day.title], "the title, not a head the first sentence told");
-  const noDeep = cutProblems({ ...day, brief: [day.brief[0]!, day.brief[1]!], deep: "" }, []).issue.brief;
-  assert.equal(noDeep[2], "咖啡酒吧过祭典不加人手", "without a deep piece, the first head no sentence tells");
+  assert.deepEqual(cutProblems(day, [{ rule: 1, quote: day.brief[1]!, why: "" }]).issue.brief, [day.brief[0]], "one sentence left, no news head put in");
+  assert.deepEqual(cutProblems(day, day.brief.map((b) => ({ rule: 1, quote: b, why: "" }))).issue.brief,
+    ["她从帮母亲改品牌开始〔4〕。", "后来在春田拿下第三家店面〔4〕。"], "all cut: the deep piece's opening");
+  const noDeep = cutProblems(day, [{ rule: 1, quote: "后来在春田拿下第三家店面", why: "" }, { rule: 1, quote: "她从帮母亲改品牌开始", why: "" }, { rule: 1, quote: "第二段说的是开店的钱", why: "" }]).issue;
+  assert.equal(noDeep.title, "活动出摊邀约先别答应", "without a deep piece, the first head is the title");
+  assert.deepEqual(noDeep.brief, ["日本一位店主说接到活动出摊邀约先别当场回复〔1〕。", "他说先算清回店后的准备〔1〕。"], "and the 导读 is that item's opening");
 });
 
 test("quotation marks a sentence after a citation of a source that may not be quoted are found by the program; a string of figures is the writer's", async () => {
@@ -245,7 +245,7 @@ test("an editor asked to add a source is given the day's numbers to add", async 
   assert.ok(edit.includes("这一天的全部收录") && edit.includes("〔2〕来源 2《第 2 条》"));
 });
 
-test("a flagged news head takes its item, a flagged question gives way to the first head, and what cannot be found stays listed", () => {
+test("a flagged news head takes its item, a flagged question gives way to the first head with its 导读, and what cannot be found stays listed", () => {
   const draft = issue("一个说过头的问题", "说了〔1〕。");
   draft.news[1]!.head = "这条快讯的标题说过头了";
   const { issue: out, cut, kept } = cutProblems(draft, [
@@ -257,7 +257,7 @@ test("a flagged news head takes its item, a flagged question gives way to the fi
   assert.equal(out.news.length, 2);
   assert.equal(out.title, "快讯");
   assert.ok(cut.includes("一个说过头的问题") && cut.includes("这条快讯的标题说过头了"));
-  assert.deepEqual(out.brief, ["一", "二", "三"], "a short sentence is not taken for part of a quote");
+  assert.deepEqual(out.brief, ["说了〔1〕。"], "the title gone to the first head, the 导读 goes with it");
   assert.deepEqual(kept.map((p) => p.quote), ["稿子里没有这句话", "快讯 3 条"]);
 });
 

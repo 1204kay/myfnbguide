@@ -7,7 +7,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { config } from "@aihot/backend/config";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -96,6 +96,9 @@ test("the length guard counts the script as the writer gave it, not the check's 
   const got = await writeScript(ISSUE, "2026-10-31", ask, ask);
   assert.deepEqual(got.lines?.slice(1, -1), [long]);
   assert.ok(got.written < 100, `the writer's script, before the fix (${got.written})`);
+  assert.equal(tooLong(4_200, 4_716), false, "issue 15: the writer's 4,200, fixed to 4,716, is read");
+  assert.equal(tooLong(4_600, 4_600), true, "the writer's script over MAX_CHARS is not");
+  assert.equal(tooLong(4_200, 5_100), true, "nor one the fixes ran past FINAL_MAX_CHARS");
 });
 
 test("a name the transcript spells with other characters of the same sound counts as heard; a different word does not", () => {

@@ -35,8 +35,15 @@ const DIR = path.join(config.dataDir, "reference", "audio");
  * (Kay 11-01 19:02 「是不是可以长一点了」). 11-03 ep 5's trial (#202) packed seven items into the aim and came out like a
  * table read aloud (four numbers in one sentence), so a full day may run to about fifteen minutes before it is sent back
  * (Kay 11-03 21:11 「为什么要强制12分钟？我的原话是12分钟左右」, 21:12 「你们决定吧」): SHORTEN_ABOVE 4,200, MAX_CHARS 4,500.
+ * MAX_CHARS is held against the script as the writer gave it, before the check; what the check's fixes add is not
+ * counted, up to FINAL_MAX_CHARS for the script read aloud (decided 11-08 by the 十一说 thread under Kay's 11-03
+ * 「你们决定吧」: issue 15 was refused at 4,716 after fourteen fixes, two of them 严重, and had no audio that day).
  */
 export const MAX_CHARS = 4_500;
+/** The script read aloud, fixes and all, about eighteen minutes: past it the check has rewritten more than it mended. */
+export const FINAL_MAX_CHARS = 5_000;
+/** Whether a script is too long to read: as the writer gave it (`written`), or as it will be read (`chars`). */
+export const tooLong = (written: number, chars: number) => written > MAX_CHARS || chars > FINAL_MAX_CHARS;
 const WRITE_CHARS = 3_350;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
@@ -147,9 +154,8 @@ export const MENDS = 3;
 export const AWKWARD = "拗口";
 /**
  * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS when the
- * writer is done is refused (`written`). The check's fixes are not counted: they put back what the script had wrong, and
- * issue 15 (11-08) was refused at 4,716 after the writer's 4,2xx and fourteen fixes, its audio never made. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
- * read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
+ * writer is done is refused (`written`), and the check's fixes are counted only against FINAL_MAX_CHARS. Issue 8
+ * (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
  * second ask shows the writer the length it gave. SHORTEN_ABOVE is about fifteen minutes, below MAX_CHARS to leave the
  * check's fixes room: issue 8's three put in about 40 characters.
  */
@@ -891,7 +897,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       if (!written.lines) { report.status = "script failed"; return keep(); }
       script = joinShort(written.lines).join("\n");
       report.chars = scriptChars(written.lines);
-      if (written.written > MAX_CHARS) { report.status = "too long"; return keep(); }
+      if (tooLong(written.written, report.chars)) { report.status = "too long"; return keep(); }
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     }

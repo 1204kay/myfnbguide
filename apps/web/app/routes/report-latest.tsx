@@ -48,8 +48,13 @@ export default function ReportLatestPage() {
   const { kind, report, index, parts, today } = useLoaderData<typeof loader>();
   return (
     <ReportLayout kind={kind} index={index} current={report?.key ?? null} today={today} outline={report ? reportOutline(report) : []}>
-      {report ? <ReportPaper report={report} index={index} /> : <EmptyState title={subjectAfter("还没有发布", REPORT_NAMES[kind])}>第一期发布后会出现在这里。</EmptyState>}
-      {report && PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} kind={kind} reportKey={report.key} data={parts[name]} />))}
+      {report ? (
+        <ReportPaper report={report} index={index}>
+          {PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} kind={kind} reportKey={report.key} data={parts[name]} />))}
+        </ReportPaper>
+      ) : (
+        <EmptyState title={subjectAfter("还没有发布", REPORT_NAMES[kind])}>第一期发布后会出现在这里。</EmptyState>
+      )}
     </ReportLayout>
   );
 }

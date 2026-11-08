@@ -56,8 +56,9 @@ export default function ReportDetailPage() {
   const { report, index, parts, today } = useLoaderData<typeof loader>();
   return (
     <ReportLayout kind={report.kind} index={index} current={report.key} today={today} outline={reportOutline(report)}>
-      <ReportPaper report={report} index={index} />
-      {PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} kind={report.kind} reportKey={report.key} data={parts[name]} />))}
+      <ReportPaper report={report} index={index}>
+        {PARTS.map(({ name, part }) => (parts[name] == null ? null : <part.Block key={name} kind={report.kind} reportKey={report.key} data={parts[name]} />))}
+      </ReportPaper>
     </ReportLayout>
   );
 }

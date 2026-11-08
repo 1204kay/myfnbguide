@@ -4707,6 +4707,621 @@
         "俄罗斯",
         "服务商"
       ]
+    },
+    {
+      "id": "pod-papilles",
+      "name": "Papilles（法国 · 甜点店主谈盈利和开店的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/b5VQNSDdMzlB",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-whet-palette",
+      "name": "The Whet Palette（美国迈阿密 · 店主访谈播客：开店与扩张）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1912639.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-toque-toque",
+      "name": "Toque Toque（法国 · 主厨谈经营、开店失败复盘的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/DPYq9Tw7ZmkP",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-derniere-pincee",
+      "name": "Dernière Pincée（法国 · 厨师访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/z4q7pTQNQee5",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-the-excuse",
+      "name": "The Excuse（咖啡店主访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/the-excuse/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-glasgow-bell-food",
+      "name": "The Bell 餐饮栏目（英国格拉斯哥 · 地方媒体的店讯）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.glasgowbell.co.uk/tag/food/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-gastivo-bar",
+      "name": "Gastivo 酒吧栏目（德国 · 餐饮采购平台的内容）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gastivo.de/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-jfc-guide",
+      "name": "創業融資ガイド（日本 · 餐饮开店融资指南）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://jfc-guide.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "博客"
+      ]
+    },
+    {
+      "id": "pod-coffee-people",
+      "name": "COFFEE PEOPLE（咖啡店主访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.coffeepeoplepodcast.com/rss/",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-krg-hospitality",
+      "name": "KRG Hospitality（加拿大 · 餐饮顾问的经营做法）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://krghospitality.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "加拿大",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-san-diego-beer-news",
+      "name": "San Diego Beer News 酒厂栏目（美国圣地亚哥 · 精酿啤酒新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sandiegobeer.news/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-union-chr-paris",
+      "name": "Union CHR Paris IDF（法国巴黎 · 餐饮酒店业工会：法规与行业消息）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ghr-parisidf.fr/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-rocky-mountain-employer",
+      "name": "The Rocky Mountain Employer（美国科罗拉多 · 雇主劳动法博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.rockymountainemployersblog.com/?format=rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "pod-philip-duff-show",
+      "name": "The Philip Duff Show（酒吧老板谈开店和酒单的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1956147.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-supper-club-joe-fresta",
+      "name": "Supper Club with Joe Fresta（美国圣路易斯 · 餐厅老板访谈播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2489094.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-bar-talking-talking-bar",
+      "name": "Bar Talking Talking Bar（美国纽约 · 酒吧经营播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2526003.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-sur-la-route-de-letoile",
+      "name": "Sur la route de l'étoile（法国 · 星级厨师播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/ZMvvju1azL0a",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "pod-tapped-in",
+      "name": "Tapped In（精酿酒厂和酒吧的社媒做法播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2622412.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-closed-pubs",
+      "name": "Closed Pubs（英国 · 酒吧关店记录）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "http://closedpubs.blogspot.com/atom.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-western-weekender-food",
+      "name": "The Western Weekender 餐饮栏目（澳大利亚悉尼彭里斯 · 地方开店关店消息）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.westernweekender.com.au/category/food-and-drink/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-manila-republic-eat",
+      "name": "Manila Republic 餐饮栏目（菲律宾马尼拉 · 开店消息）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.manilarepublic.com/category/eat-drink/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "菲律宾",
+        "媒体"
+      ]
+    },
+    {
+      "id": "pod-adventures-in-kakeland",
+      "name": "Adventures in kakeland（蛋糕店经营与创业者故事的播客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2013744.rss",
+        "summaryIsBody": true,
+        "_aihot": {
+          "initialBackfillLimit": 2
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 240,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-tuttogelato",
+      "name": "TuttoGelato（意大利 · 冰淇淋店经营媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tuttogelato.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-bars-and-cocktails",
+      "name": "Bars and Cocktails（澳大利亚 · 酒吧行业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.barsandcocktails.com.au/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-burnt-chef-project",
+      "name": "The Burnt Chef Project（英国 · 餐饮从业者心理健康组织）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.theburntchefproject.com/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-economia-sos-franquicias",
+      "name": "Economía SOS 加盟栏目（阿根廷 · 经济媒体：通胀、支付与加盟）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://economiasos.com.ar/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "阿根廷",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-rabotarestoran",
+      "name": "RABOTARESTORAN 主厨栏目（俄罗斯 · 餐饮经营媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rabotarestoran.ru/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "俄罗斯",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-humans-of-the-kitchen",
+      "name": "Humans of the Kitchen（厨师和店主访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://humansofthekitchen.org/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-foodinc-xiaoshidai",
+      "name": "小食代（中国大陆 · 食品饮料与连锁门店行业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodinc.com.cn/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "中国大陆",
+        "媒体"
+      ]
     }
   ]
 }

@@ -35,15 +35,15 @@ const DIR = path.join(config.dataDir, "reference", "audio");
  * (Kay 11-01 19:02 「是不是可以长一点了」). 11-03 ep 5's trial (#202) packed seven items into the aim and came out like a
  * table read aloud (four numbers in one sentence), so a full day may run to about fifteen minutes before it is sent back
  * (Kay 11-03 21:11 「为什么要强制12分钟？我的原话是12分钟左右」, 21:12 「你们决定吧」): SHORTEN_ABOVE 4,200, MAX_CHARS 4,500.
- * MAX_CHARS is held against the script as the writer gave it, before the check; what the check's fixes add is not
- * counted, up to FINAL_MAX_CHARS for the script read aloud (decided 11-08 by the 十一说 thread under Kay's 11-03
- * 「你们决定吧」: issue 15 was refused at 4,716 after fourteen fixes, two of them 严重, and had no audio that day).
+ * MAX_CHARS is held against the script as it will be read, fixes and all; the writer's own length only decides whether
+ * it is sent back to be cut (SHORTEN_ABOVE). 11-08 (the 十一说 thread, under Kay's 11-03 「你们决定吧」 and 21:34
+ * 「质量最重要 其他都是其次」): issue 15, a full day, was refused at 4,500 twice and had no audio; its checked script ran
+ * 4,627 (about sixteen minutes), and a day with no audio is worse than one that runs a few minutes long. 5,000 is about
+ * eighteen minutes: past it the writer has not cut what it was asked to.
  */
-export const MAX_CHARS = 4_500;
-/** The script read aloud, fixes and all, about eighteen minutes: past it the check has rewritten more than it mended. */
-export const FINAL_MAX_CHARS = 5_000;
-/** Whether a script is too long to read: as the writer gave it (`written`), or as it will be read (`chars`). */
-export const tooLong = (written: number, chars: number) => written > MAX_CHARS || chars > FINAL_MAX_CHARS;
+export const MAX_CHARS = 5_000;
+/** Whether the script, as it will be read, is too long to read. */
+export const tooLong = (chars: number) => chars > MAX_CHARS;
 const WRITE_CHARS = 3_350;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
@@ -153,8 +153,8 @@ export const MENDS = 3;
 /** The check's fourth kind (prompts/issue-voice-check.md): the line reads stiffly aloud. Mended, never a reason to refuse. */
 export const AWKWARD = "拗口";
 /**
- * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS when the
- * writer is done is refused (`written`), and the check's fixes are counted only against FINAL_MAX_CHARS. Issue 8
+ * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS once
+ * checked is refused (`written`, the writer's length, goes in the report). Issue 8
  * (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
  * second ask shows the writer the length it gave. SHORTEN_ABOVE is about fifteen minutes, below MAX_CHARS to leave the
  * check's fixes room: issue 8's three put in about 40 characters.
@@ -609,7 +609,7 @@ export interface VoiceReport {
   status: "up" | "tried" | "not ready" | "script failed" | "too long" | "check failed" | "no reads left" | "error";
   /** Readings of this issue begun, whatever came of them. */
   tries?: number;
-  chars?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
+  chars?: number; /** The script's length as the writer gave it, before the check's fixes. */ written?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
   reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
@@ -897,7 +897,13 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       if (!written.lines) { report.status = "script failed"; return keep(); }
       script = joinShort(written.lines).join("\n");
       report.chars = scriptChars(written.lines);
-      if (tooLong(written.written, report.chars)) { report.status = "too long"; return keep(); }
+      report.written = written.written;
+      // Kept where the next run does not clear it, for whoever looks into why it was not read (11-08: issue 15's was lost).
+      if (tooLong(report.chars)) {
+        report.status = "too long";
+        if (!opts.dryRun) { await mkdir(path.join(DIR, "refused"), { recursive: true }); await writeFile(path.join(DIR, "refused", `${no}.txt`), `${script}\n`); }
+        return keep();
+      }
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     }

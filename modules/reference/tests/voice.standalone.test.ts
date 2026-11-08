@@ -86,7 +86,7 @@ test("a script too long goes back to the writer with its length, then is checked
   assert.ok(again.includes(long[0]!), "the writer sees the script it gave");
 });
 
-test("the length guard counts the script as the writer gave it, not the check's fixes (issue 15, 11-08: 4,716 after fourteen fixes)", async () => {
+test("the writer's length is kept apart from the script as read, and only the script as read is held to MAX_CHARS (issue 15, 11-08)", async () => {
   const short = "英国净少了店。";
   const long = `英国一年净少了977家店，${"其中多数是独立小店".repeat(60)}。`;
   const ask = scripted({
@@ -96,9 +96,8 @@ test("the length guard counts the script as the writer gave it, not the check's 
   const got = await writeScript(ISSUE, "2026-10-31", ask, ask);
   assert.deepEqual(got.lines?.slice(1, -1), [long]);
   assert.ok(got.written < 100, `the writer's script, before the fix (${got.written})`);
-  assert.equal(tooLong(4_200, 4_716), false, "issue 15: the writer's 4,200, fixed to 4,716, is read");
-  assert.equal(tooLong(4_600, 4_600), true, "the writer's script over MAX_CHARS is not");
-  assert.equal(tooLong(4_200, 5_100), true, "nor one the fixes ran past FINAL_MAX_CHARS");
+  assert.equal(tooLong(4_627), false, "issue 15 (11-08): checked at 4,627, read");
+  assert.equal(tooLong(5_100), true, "past MAX_CHARS, not read");
 });
 
 test("a name the transcript spells with other characters of the same sound counts as heard; a different word does not", () => {

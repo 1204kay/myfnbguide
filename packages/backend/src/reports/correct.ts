@@ -11,19 +11,6 @@ interface Entry { itemId: string; followUp?: string; firstParty?: boolean; role?
 interface Group { label?: string; heading?: string; summary?: unknown; items?: Entry[]; storyRefs?: Entry[]; [key: string]: unknown }
 interface Content { sections?: Group[]; themes?: Group[]; metrics?: Record<string, number>; [key: string]: unknown }
 
-/**
- * Whether a section's introduction names the entries leaving it: a run of four Chinese characters, a Latin word
- * or a figure of the introduction found in what leaves and in none of what stays. A shared phrase is not taken
- * as a mention; a coincidence is, and then the introduction goes as the engine always let it go.
- */
-export function namesLeaving(intro: string, leaving: Entry[], staying: Entry[]): boolean {
-  const text = (es: Entry[]) => es.map(e => `${e.title ?? ""} ${e.summary ?? ""}`).join("\n");
-  const out = text(leaving), kept = text(staying);
-  const han = (intro.match(/\p{Script=Han}+/gu) ?? []).flatMap(run => [...run].slice(0, Math.max(0, [...run].length - 3)).map((_, i) => [...run].slice(i, i + 4).join("")));
-  const other = intro.match(/[A-Za-z][A-Za-z0-9.+-]{2,}|\d{2,}(?:\.\d+)?%?/g) ?? [];
-  return [...han, ...other].some(t => out.includes(t) && !kept.includes(t));
-}
-
 /** Moves the item to its new section in every issue that carries it; says whether any issue changed. */
 export async function correctReportClassification(tx: Tx, articleId: string, reason: string): Promise<boolean> {
   const [item] = await tx<{ category: string | null }[]>`SELECT category FROM publications WHERE article_id=${articleId}`;
@@ -50,15 +37,14 @@ export async function correctReportClassification(tx: Tx, articleId: string, rea
       let target = groups.find(g => g[labelKey] === label);
       if (!target) { target = { [labelKey]: label, [entriesKey]: [] }; groups.push(target); }
       target[entriesKey]!.push(...moving);
-      // MYFNB (myfnb/DIFFERENCES.md「分类改正保留导读」): the engine cleared both introductions on every move. An
-      // introduction still goes when its section falls below INTRO_EVENTS or when it names what left; the target's
-      // stays (it names nothing new), and a new section has none. A cleared one is logged to be rewritten.
+      // MYFNB (myfnb/DIFFERENCES.md「分类改正保留导读」): the engine cleared both introductions on every move. The one
+      // it left still goes, as it may name what moved; one that leaves INTRO_EVENTS or more behind is logged to be
+      // rewritten. The target's stays: every entry it names is still there. A new section has none.
       if (!daily) {
-        const intro = typeof from.summary === "string" ? from.summary : null;
-        if (intro && (from[entriesKey]!.length < INTRO_EVENTS || namesLeaving(intro, moving, from[entriesKey]!))) {
-          from.summary = null;
-          if (from[entriesKey]!.length >= INTRO_EVENTS) console.error(JSON.stringify({ level: "warn", msg: "a section introduction named a moved entry and was cleared; rewrite it", report: `${report.kind}:${report.key}`, section: from[labelKey], item: articleId }));
+        if (typeof from.summary === "string" && from[entriesKey]!.length >= INTRO_EVENTS) {
+          console.error(JSON.stringify({ level: "warn", msg: "a section introduction was cleared by a classification correction; rewrite it", report: `${report.kind}:${report.key}`, section: from[labelKey], item: articleId }));
         }
+        from.summary = null;
         if (!("summary" in target)) target.summary = null;
       }
     }

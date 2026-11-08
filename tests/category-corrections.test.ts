@@ -85,7 +85,7 @@ test("category corrections revise every standard report atomically without selec
   if (RELEASE) assert.equal(restored!.content.metrics.modelsReleased, 1);
 });
 
-test("a correction keeps the introductions that still hold and clears one that names the moved entry", async () => {
+test("a correction keeps the target's introduction and clears the one the entry left", async () => {
   const sourceId = `category-intro-${tag()}`;
   await sql`INSERT INTO sources (id,name,kind,tier,participation_mode) VALUES (${sourceId},'Category intro fixture','rss','T2','editorial')`;
   const { articleId } = await upsertMaterial({ sourceId, url: `https://example.com/${sourceId}`, title: "炭火烧鸟店改截单", bodyText: "正文", bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
@@ -94,20 +94,15 @@ test("a correction keeps the introductions that still hold and clears one that n
   await publishArticle(articleId, { releasedAt: new Date() });
   const moved = { itemId: articleId, title: "炭火烧鸟店改截单", summary: "烧鸟店把截单提前" };
   const other = (n: number, title: string) => ({ itemId: `${articleId}-${n}`, title, summary: `${title}的经过` });
-  const stays = [other(1, "面包店重开"), other(2, "咖啡店改菜单"), other(3, "面馆算房租")];
-  const there = [other(4, "外卖抽成上调"), other(5, "最低工资上调"), other(6, "平台收购被否")];
-  const themes = (intro: string) => [
-    { heading: FROM.section, summary: intro, storyRefs: [moved, ...stays] },
-    { heading: TO.section, summary: "外卖抽成和最低工资都在上调。", storyRefs: there },
+  const themes = [
+    { heading: FROM.section, summary: "日本烧鸟店截单时点和几家店的算账。", storyRefs: [moved, other(1, "面包店重开"), other(2, "咖啡店改菜单"), other(3, "面馆算房租")] },
+    { heading: TO.section, summary: "外卖抽成和最低工资都在上调。", storyRefs: [other(4, "外卖抽成上调"), other(5, "最低工资上调"), other(6, "平台收购被否")] },
   ];
-  const plain = { key: "2097-W02", intro: "面包店、咖啡店和面馆各自算账。" };
-  const naming = { key: "2097-W03", intro: "炭火烧鸟店改截单，面包店重开。" };
-  for (const r of [plain, naming]) await sql`INSERT INTO reports (kind,key,window_start,window_end,content,generated_at,origin)
-    VALUES ('weekly',${r.key},now(),now(),${sql.json({ headline: "冻结头条", leadItemId: articleId, storyOrder: [articleId], overview: "保留总述", themes: themes(r.intro), metrics: { totalStories: 7 } } as never)},now(),'imported')`;
+  await sql`INSERT INTO reports (kind,key,window_start,window_end,content,generated_at,origin)
+    VALUES ('weekly','2097-W02',now(),now(),${sql.json({ headline: "冻结头条", leadItemId: articleId, storyOrder: [articleId], overview: "保留总述", themes, metrics: { totalStories: 7 } } as never)},now(),'imported')`;
   await overrideFields(articleId, { fields: { category: TO.key }, version: 0, reason: "换栏目" }, "test-category");
-  const intros = async (key: string) => Object.fromEntries(((await sql`SELECT content FROM reports WHERE kind='weekly' AND key=${key}`)[0]!.content.themes as Array<{ heading: string; summary: string | null }>).map(g => [g.heading, g.summary]));
-  // Three entries stay and the introduction names none of what left: both introductions hold.
-  assert.deepEqual(await intros(plain.key), { [FROM.section]: plain.intro, [TO.section]: "外卖抽成和最低工资都在上调。" });
-  // It named the moved entry: that one goes, as the engine let it go; the target's still holds.
-  assert.deepEqual(await intros(naming.key), { [FROM.section]: null, [TO.section]: "外卖抽成和最低工资都在上调。" });
+  const [saved] = await sql`SELECT content FROM reports WHERE kind='weekly' AND key='2097-W02'`;
+  const intros = Object.fromEntries((saved!.content.themes as Array<{ heading: string; summary: string | null }>).map(g => [g.heading, g.summary]));
+  // The one it left may name it (a paraphrase cannot be told from text): it goes, as in the engine. The target's names only what is still there.
+  assert.deepEqual(intros, { [FROM.section]: null, [TO.section]: "外卖抽成和最低工资都在上调。" });
 });

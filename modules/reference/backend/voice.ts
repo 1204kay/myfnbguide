@@ -35,8 +35,15 @@ const DIR = path.join(config.dataDir, "reference", "audio");
  * (Kay 11-01 19:02 「是不是可以长一点了」). 11-03 ep 5's trial (#202) packed seven items into the aim and came out like a
  * table read aloud (four numbers in one sentence), so a full day may run to about fifteen minutes before it is sent back
  * (Kay 11-03 21:11 「为什么要强制12分钟？我的原话是12分钟左右」, 21:12 「你们决定吧」): SHORTEN_ABOVE 4,200, MAX_CHARS 4,500.
+ * MAX_CHARS is held against the script as the writer gave it, before the check; what the check's fixes add is not
+ * counted, up to FINAL_MAX_CHARS for the script read aloud (decided 11-08 by the 十一说 thread under Kay's 11-03
+ * 「你们决定吧」: issue 15 was refused at 4,716 after fourteen fixes, two of them 严重, and had no audio that day).
  */
 export const MAX_CHARS = 4_500;
+/** The script read aloud, fixes and all, about eighteen minutes: past it the check has rewritten more than it mended. */
+export const FINAL_MAX_CHARS = 5_000;
+/** Whether a script is too long to read: as the writer gave it (`written`), or as it will be read (`chars`). */
+export const tooLong = (written: number, chars: number) => written > MAX_CHARS || chars > FINAL_MAX_CHARS;
 const WRITE_CHARS = 3_350;
 /**
  * Readings of one issue at most, across a day's runs. Six since 11-01 (readers wait for the morning's audio, Kay 11-01
@@ -146,16 +153,16 @@ export const MENDS = 3;
 /** The check's fourth kind (prompts/issue-voice-check.md): the line reads stiffly aloud. Mended, never a reason to refuse. */
 export const AWKWARD = "拗口";
 /**
- * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS after
- * the check is refused as before. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
- * read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
+ * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS when the
+ * writer is done is refused (`written`), and the check's fixes are counted only against FINAL_MAX_CHARS. Issue 8
+ * (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
  * second ask shows the writer the length it gave. SHORTEN_ABOVE is about fifteen minutes, below MAX_CHARS to leave the
  * check's fixes room: issue 8's three put in about 40 characters.
  */
 export const SHORTENS = 2;
 const SHORTEN_ABOVE = 4_200;
 /** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
-export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
+export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }>; written: number }> {
   const page = pageText(issue, date);
   const system = prompt("issue-voice", { opening: opening(date), writeChars: String(WRITE_CHARS) });
   const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
@@ -164,14 +171,15 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     const user = `网站上的这一期：\n\n${page}\n\n上一份听稿 ${scriptChars(lines)} 字，念出来超过十五分钟了。请照上面的要求重写：最要紧的几条照样讲清楚，次要的快讯各用一两句带过，不要把句子压短，全稿不超过 ${SHORTEN_ABOVE} 字：\n\n${lines.join("\n")}`;
     lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
   }
+  const written = scriptChars(lines);
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
-  if (!check) return { lines, rounds };
+  if (!check) return { lines, rounds, written };
   // The last script that was wrong only in how it reads: a 拗口 fix can drop a 保留 the next round calls 误导, and that
   // must not stop an issue the same script would have passed with before 拗口 was checked (review of #203).
   let onlyStiff: string[] | null = null;
   for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { writeChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
-    if (!problems.length) return { lines, rounds };
+    if (!problems.length) return { lines, rounds, written };
     // 拗口 is how a line sounds, not what it says (Kay 11-03 18:20: nothing checked how a script reads aloud): its fixes
     // go in and are checked again like the others, but a line still 拗口 at the end does not stop the issue.
     if (problems.every((p) => p.kind === AWKWARD)) onlyStiff = lines;
@@ -180,7 +188,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     rounds.push({ problems, applied: fixed.applied });
     lines = fixed.lines;
   }
-  return { lines: onlyStiff, rounds };
+  return { lines: onlyStiff, rounds, written };
 }
 
 /**
@@ -889,7 +897,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       if (!written.lines) { report.status = "script failed"; return keep(); }
       script = joinShort(written.lines).join("\n");
       report.chars = scriptChars(written.lines);
-      if (report.chars > MAX_CHARS) { report.status = "too long"; return keep(); }
+      if (tooLong(written.written, report.chars)) { report.status = "too long"; return keep(); }
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     }

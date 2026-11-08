@@ -28,9 +28,13 @@ export const PRESETS: Record<string, ModelPreset> = {
     service: "deepseek", model: "deepseek-flash", baseUrlEnv: "DEEPSEEK_BASE_URL", apiKeyEnv: "DEEPSEEK_API_KEY", reasoningTokens: 4000, jsonMode: true,
   },
   // 十一说的试写 on the server's own DeepSeek key (LLM_*; the DEEPSEEK_* pair is not set there). An issue is long, so
-  // thinking gets as much room as Opus has (10-09: 5 of 16 items cut off at 4,000).
+  // thinking gets room (10-09: 5 of 16 items cut off at 4,000). 12,000 was not enough for flash: 11-08 the listen script
+  // thought 18,905 and 17,876 and all 20,000 of the next, with no answer (receipts 151107, 151109, finish_reason length),
+  // and 11-07 a check of a whole issue thought up to 28,653 (trial-flash-check). 32,000 covers those; DeepSeek's own
+  // default for thinking is 64K (api-docs.deepseek.com, create-chat-completion). Only what is used is paid for; at the
+  // ~180 tokens a second measured 11-07 the whole room is about four minutes, inside every caller's timeout (300 s and up).
   "deepseek-flash-think-llm": {
-    service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 12000, jsonMode: true,
+    service: "deepseek", model: "deepseek-flash", baseUrlEnv: "LLM_BASE_URL", apiKeyEnv: "LLM_API_KEY", reasoningTokens: 32000, jsonMode: true,
   },
   // Flash without thinking on the same key: the 综合整理's checker (modules/reference/backend/topic.ts). With thinking it
   // read the 66k characters of a situation's items and thought past 20,000 tokens twice without an answer (11-06).

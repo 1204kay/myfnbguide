@@ -146,8 +146,9 @@ export const MENDS = 3;
 /** The check's fourth kind (prompts/issue-voice-check.md): the line reads stiffly aloud. Mended, never a reason to refuse. */
 export const AWKWARD = "拗口";
 /**
- * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS after
- * the check is refused as before. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
+ * A script over SHORTEN_ABOVE goes back to the writer to be cut, at most SHORTENS times; one still over MAX_CHARS when the
+ * writer is done is refused (`written`). The check's fixes are not counted: they put back what the script had wrong, and
+ * issue 15 (11-08) was refused at 4,716 after the writer's 4,2xx and fourteen fixes, its audio never made. Issue 8 (11-01 15:11): asked for 2,450, the writer gave 2,915 and the issue was not
  * read; asking again with the same words gives the same answer (temperature 0, and the receipt reuses it), so the
  * second ask shows the writer the length it gave. SHORTEN_ABOVE is about fifteen minutes, below MAX_CHARS to leave the
  * check's fixes room: issue 8's three put in about 40 characters.
@@ -155,7 +156,7 @@ export const AWKWARD = "拗口";
 export const SHORTENS = 2;
 const SHORTEN_ABOVE = 4_200;
 /** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
-export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }> }> {
+export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }>; written: number }> {
   const page = pageText(issue, date);
   const system = prompt("issue-voice", { opening: opening(date), writeChars: String(WRITE_CHARS) });
   const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
@@ -164,14 +165,15 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     const user = `网站上的这一期：\n\n${page}\n\n上一份听稿 ${scriptChars(lines)} 字，念出来超过十五分钟了。请照上面的要求重写：最要紧的几条照样讲清楚，次要的快讯各用一两句带过，不要把句子压短，全稿不超过 ${SHORTEN_ABOVE} 字：\n\n${lines.join("\n")}`;
     lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
   }
+  const written = scriptChars(lines);
   const rounds: Array<{ problems: Problem[]; applied: number }> = [];
-  if (!check) return { lines, rounds };
+  if (!check) return { lines, rounds, written };
   // The last script that was wrong only in how it reads: a 拗口 fix can drop a 保留 the next round calls 误导, and that
   // must not stop an issue the same script would have passed with before 拗口 was checked (review of #203).
   let onlyStiff: string[] | null = null;
   for (let round = 0; round <= MENDS; round += 1) {
     const { problems } = await check("reference_issue_voice_check", prompt("issue-voice-check", { writeChars: String(WRITE_CHARS) }), `网站上的这一期：\n\n${page}\n\n听稿（一行一段）：\n\n${lines.join("\n")}`, Problems, `r${round}`);
-    if (!problems.length) return { lines, rounds };
+    if (!problems.length) return { lines, rounds, written };
     // 拗口 is how a line sounds, not what it says (Kay 11-03 18:20: nothing checked how a script reads aloud): its fixes
     // go in and are checked again like the others, but a line still 拗口 at the end does not stop the issue.
     if (problems.every((p) => p.kind === AWKWARD)) onlyStiff = lines;
@@ -180,7 +182,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     rounds.push({ problems, applied: fixed.applied });
     lines = fixed.lines;
   }
-  return { lines: onlyStiff, rounds };
+  return { lines: onlyStiff, rounds, written };
 }
 
 /**
@@ -889,7 +891,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       if (!written.lines) { report.status = "script failed"; return keep(); }
       script = joinShort(written.lines).join("\n");
       report.chars = scriptChars(written.lines);
-      if (report.chars > MAX_CHARS) { report.status = "too long"; return keep(); }
+      if (written.written > MAX_CHARS) { report.status = "too long"; return keep(); }
       await mkdir(work, { recursive: true });
       await writeFile(path.join(work, `${no}.txt`), `${script}\n`);
     }

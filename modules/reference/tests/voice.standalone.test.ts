@@ -86,6 +86,18 @@ test("a script too long goes back to the writer with its length, then is checked
   assert.ok(again.includes(long[0]!), "the writer sees the script it gave");
 });
 
+test("the length guard counts the script as the writer gave it, not the check's fixes (issue 15, 11-08: 4,716 after fourteen fixes)", async () => {
+  const short = "英国净少了店。";
+  const long = `英国一年净少了977家店，${"其中多数是独立小店".repeat(60)}。`;
+  const ask = scripted({
+    reference_issue_voice: [{ lines: [short] }],
+    reference_issue_voice_check: [{ problems: [{ kind: "漏讲", line: short, fix: long, why: "漏了" }] }, { problems: [] }],
+  });
+  const got = await writeScript(ISSUE, "2026-10-31", ask, ask);
+  assert.deepEqual(got.lines?.slice(1, -1), [long]);
+  assert.ok(got.written < 100, `the writer's script, before the fix (${got.written})`);
+});
+
 test("a name the transcript spells with other characters of the same sound counts as heard; a different word does not", () => {
   assert.equal(heardShare("日本店主大久保翔平这样写", "日本店主大久保祥平这样写"), 1);
   assert.ok(heardShare("日本店主大久保翔平这样写", "日本店主小林这样写") < 0.8);

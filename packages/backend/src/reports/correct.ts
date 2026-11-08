@@ -4,6 +4,7 @@ import { RELEASE } from "@aihot/industry/taxonomy";
 import type { Tx } from "../db.ts";
 import { isRelease } from "../editorial/vocabulary.ts";
 import { emit } from "../modules.ts";
+import { INTRO_EVENTS } from "./compose.ts";
 import { SECTION_ORDER, sectionOf } from "./edition.ts";
 
 interface Entry { itemId: string; followUp?: string; firstParty?: boolean; role?: string; [key: string]: unknown }
@@ -14,8 +15,8 @@ interface Content { sections?: Group[]; themes?: Group[]; metrics?: Record<strin
 export async function correctReportClassification(tx: Tx, articleId: string, reason: string): Promise<boolean> {
   const [item] = await tx<{ category: string | null }[]>`SELECT category FROM publications WHERE article_id=${articleId}`;
   if (!item?.category) return false;
-  const reports = await tx<{ id: number; kind: string; content: Content; revision: number; generated_at: Date }[]>`
-    SELECT id,kind,content,revision,generated_at FROM reports
+  const reports = await tx<{ id: number; kind: string; key: string; content: Content; revision: number; generated_at: Date }[]>`
+    SELECT id,kind,key,content,revision,generated_at FROM reports
     WHERE content @> ${tx.json({ sections: [{ items: [{ itemId: articleId }] }] })}
        OR content @> ${tx.json({ themes: [{ storyRefs: [{ itemId: articleId }] }] })}
     ORDER BY id FOR UPDATE`;
@@ -36,7 +37,16 @@ export async function correctReportClassification(tx: Tx, articleId: string, rea
       let target = groups.find(g => g[labelKey] === label);
       if (!target) { target = { [labelKey]: label, [entriesKey]: [] }; groups.push(target); }
       target[entriesKey]!.push(...moving);
-      if (!daily) { from.summary = null; target.summary = null; }
+      // MYFNB (myfnb/DIFFERENCES.md「分类改正保留导读」): the engine cleared both introductions on every move. The one
+      // it left still goes, as it may name what moved; one that leaves INTRO_EVENTS or more behind is logged to be
+      // rewritten. The target's stays: every entry it names is still there. A new section has none.
+      if (!daily) {
+        if (typeof from.summary === "string" && from[entriesKey]!.length >= INTRO_EVENTS) {
+          console.error(JSON.stringify({ level: "warn", msg: "a section introduction was cleared by a classification correction; rewrite it", report: `${report.kind}:${report.key}`, section: from[labelKey], item: articleId }));
+        }
+        from.summary = null;
+        if (!("summary" in target)) target.summary = null;
+      }
     }
     const arranged = groups.filter(g => g[entriesKey]?.length).sort((a, b) => SECTION_ORDER.indexOf(a[labelKey]!) - SECTION_ORDER.indexOf(b[labelKey]!));
     if (daily) {

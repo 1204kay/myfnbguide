@@ -84,3 +84,25 @@ test("category corrections revise every standard report atomically without selec
   assert.equal(restored!.content.sections[0].label, FROM.section);
   if (RELEASE) assert.equal(restored!.content.metrics.modelsReleased, 1);
 });
+
+test("a correction keeps the target's introduction and clears the one the entry left", async () => {
+  const sourceId = `category-intro-${tag()}`;
+  await sql`INSERT INTO sources (id,name,kind,tier,participation_mode) VALUES (${sourceId},'Category intro fixture','rss','T2','editorial')`;
+  const { articleId } = await upsertMaterial({ sourceId, url: `https://example.com/${sourceId}`, title: "炭火烧鸟店改截单", bodyText: "正文", bodyStatus: "ok", via: "fetch", publishedAt: new Date() });
+  await sql`INSERT INTO analyses (article_id,input_revision,origin,relevance,category,tags,title_zh,summary_zh,score,selected)
+    VALUES (${articleId},1,'rule','pass',${FROM.key},${["测试"]},'炭火烧鸟店改截单','烧鸟店把截单提前',70,true)`;
+  await publishArticle(articleId, { releasedAt: new Date() });
+  const moved = { itemId: articleId, title: "炭火烧鸟店改截单", summary: "烧鸟店把截单提前" };
+  const other = (n: number, title: string) => ({ itemId: `${articleId}-${n}`, title, summary: `${title}的经过` });
+  const themes = [
+    { heading: FROM.section, summary: "日本烧鸟店截单时点和几家店的算账。", storyRefs: [moved, other(1, "面包店重开"), other(2, "咖啡店改菜单"), other(3, "面馆算房租")] },
+    { heading: TO.section, summary: "外卖抽成和最低工资都在上调。", storyRefs: [other(4, "外卖抽成上调"), other(5, "最低工资上调"), other(6, "平台收购被否")] },
+  ];
+  await sql`INSERT INTO reports (kind,key,window_start,window_end,content,generated_at,origin)
+    VALUES ('weekly','2097-W02',now(),now(),${sql.json({ headline: "冻结头条", leadItemId: articleId, storyOrder: [articleId], overview: "保留总述", themes, metrics: { totalStories: 7 } } as never)},now(),'imported')`;
+  await overrideFields(articleId, { fields: { category: TO.key }, version: 0, reason: "换栏目" }, "test-category");
+  const [saved] = await sql`SELECT content FROM reports WHERE kind='weekly' AND key='2097-W02'`;
+  const intros = Object.fromEntries((saved!.content.themes as Array<{ heading: string; summary: string | null }>).map(g => [g.heading, g.summary]));
+  // The one it left may name it (a paraphrase cannot be told from text): it goes, as in the engine. The target's names only what is still there.
+  assert.deepEqual(intros, { [FROM.section]: null, [TO.section]: "外卖抽成和最低工资都在上调。" });
+});

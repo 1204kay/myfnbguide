@@ -168,7 +168,7 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
 /** A weekly's or monthly's size: the events it carries, chosen and ordered by rule. */
 const PERIOD_EVENTS = { weekly: 20, monthly: 30 } as const;
 /** A section is introduced once it carries this many events; one or two are read faster than introduced. */
-const INTRO_EVENTS = 3;
+export const INTRO_EVENTS = 3;
 /** The longest overview and introduction an issue prints; the brief asks for less, writers overshoot. */
 const OVERVIEW_CHARS = { weekly: 240, monthly: 340 } as const;
 const INTRO_CHARS = 90;

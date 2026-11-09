@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import { closeDb, sql } from "@aihot/backend/db";
 
-type Case = { caseId: string; title: string; decision: string | null; score: number | null; relevance: string | null };
+type Case = { caseId: string; title: string; decision: string | null; score: number | null; relevance: string | null; error?: string | null };
 const [file, since, h] = process.argv.slice(2);
 if (!file || !since) throw new Error("usage: node myfnb/eval-scope-summary.ts <candidate.json> <since ISO> [hours]");
 const hours = Number(h ?? 24);
@@ -13,6 +13,10 @@ const passed = cases.filter((c) => c.decision !== null && c.relevance !== "block
 const selected = passed.filter((c) => c.decision === "select");
 const failed = cases.filter((c) => c.decision === null);
 console.log(`# 站上挡掉 ${cases.length} 条：候选放进 ${passed.length}，仍挡 ${cases.length - passed.length - failed.length}，没跑成 ${failed.length}；放进的里面选进精选 ${selected.length}`);
+// 没跑成的按报错归类（11-09 第一次试跑 194 条里 179 条没跑成，报告随临时目录删掉，只剩条数）。
+const errs = new Map<string, number>();
+for (const c of failed) { const k = String(c.error ?? "（没有报错原文）").slice(0, 160); errs.set(k, (errs.get(k) ?? 0) + 1); }
+for (const [k, n] of [...errs].sort((a, b) => b[1] - a[1]).slice(0, 10)) console.log(`# 没跑成 ${n} 条：${k}`);
 console.log("\n# 放进的（分数 判定 | 标题），分数高的在前");
 for (const c of passed.sort((a, b) => (b.score ?? -1) - (a.score ?? -1)))
   console.log(`${c.score ?? "-"} ${c.decision === "select" ? "选" : "不选"} | ${c.title.slice(0, 70).replace(/\s+/g, " ")}`);

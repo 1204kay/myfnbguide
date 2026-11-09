@@ -31,8 +31,8 @@ for f in industry/prompts/prefilter.md industry/prompts/selection-score.md myfnb
 done
 SINCE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 echo "main $(git -c safe.directory="$PWD" rev-parse --short HEAD) · 候选 ${SHA:0:7} · 开始 $SINCE"
-run() { sudo docker compose run --rm -T -v "$TMP:/app/.data/run" -v "$TMP/eval:/app/.data/eval" "$@" </dev/null; }
+run() { sudo docker compose run --rm --no-deps -T -v "$TMP:/app/.data/run" -v "$TMP/eval:/app/.data/eval" "$@" </dev/null; }
 run -v "$TMP/build-gold-blocked.ts:/app/myfnb/build-gold-blocked.ts:ro" worker node myfnb/build-gold-blocked.ts .data/run/gold.jsonl 24
 run -v "$TMP/prefilter.md:/app/industry/prompts/prefilter.md:ro" -v "$TMP/selection-score.md:/app/industry/prompts/selection-score.md:ro" worker \
-  sh -c "node scripts/eval-selection.ts --gold .data/run/gold.jsonl --split all --n 1500 --concurrency 4 --label '收录范围候选 ${SHA:0:7}' && cp \"\$(ls -t .data/eval/selection-*.json | head -1)\" .data/run/candidate.json"
+  sh -c "node scripts/eval-selection.ts --gold .data/run/gold.jsonl --split all --n 1500 --concurrency 2 --label '收录范围候选 ${SHA:0:7}' && cp \"\$(ls -t .data/eval/selection-*.json | head -1)\" .data/run/candidate.json"
 run -v "$TMP/eval-scope-summary.ts:/app/myfnb/eval-scope-summary.ts:ro" worker node myfnb/eval-scope-summary.ts .data/run/candidate.json "$SINCE" 24

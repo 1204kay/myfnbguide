@@ -1,4 +1,4 @@
-# Kay 11-09 14:39 MYT 标注：PR #267 放宽预筛后，站上 11-08/09 一天挡掉、候选放进的 169 条。标注页 https://claude.ai/artifact/J2h7FcA1iW44ebK9ZzSx3H
+# Kay 11-09 14:39 MYT 标注：PR #267 放宽预筛后，站上 11-08/09 一天挡掉、候选放进的 169 条。
 # 原文打不开的 45 条 Kay 一律选不进（看不到内容，不是口味），校准时按 either 用。列：key 标注 现行分 原文状态 来源 原文链接
 key	label	score	status	source	url
 k000	不进	31	正文	Cibuslink Agrifood（意大利 · 食品产业新闻）	https://cibuslink.it/vino-italiano-sotto-pressione-costi-di-produzione-in-aumento-dell89-e-consumi-in-calo/

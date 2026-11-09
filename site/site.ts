@@ -79,7 +79,7 @@ export const SITE = {
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
   github: null as string | null,
   /** 页脚的“由 X 驱动”（选填）：填了就在侧栏底部和“我的”页底部显示，链到它的网址。默认链回上游 AIHOT，不想要就写 null。 */
-  poweredBy: null as { name: string; url: string } | null,
+  poweredBy: { name: "AIHOT", url: "https://aihot.news" } as { name: string; url: string } | null,
   /** 结构化数据里的网站运营者（搜索引擎用）。 */
   organization: {
     name: "MYFNB",
@@ -377,22 +377,22 @@ function spokenTime(time: string): string {
  * 日期一律是这一期、这一页内容的日期，不是今天的日期。换行业时把里面的说法一起换掉。
  */
 /**
- * 本站：入口页在搜索结果里的标题先照合并原版 11-09 以前的说法（myfnb/DIFFERENCES.md「搜索标题」）。
- * 原版的默认是 AI 资讯站的说法（“每日新闻”“资讯 API”“最新消息”），本站不是新闻站，要不要改另行讨论。
- * 日报、周报、月报多带上日期：原版这一处为的是读者按日期搜，换说法不影响它。
+ * 本站：入口页在搜索结果里的标题照原版的结构，说法换成本站的（myfnb/DIFFERENCES.md「搜索标题」，十一 11-09 定）：
+ * 原版是 AI 资讯站的说法（“每日新闻”“资讯 API”“最新消息”），本站是经营参考，不是新闻站。
  */
 export const SEO_TITLES = {
   /** 热点榜（/hot）。 */
-  hot: withSubject("热点榜"),
+  hot: `${withSubject("热点榜")}：今日热门事件排行`,
   /** 全部动态（/all），不含搜索和筛选结果。 */
-  all: subjectAfter("全部", "动态"),
+  all: `${subjectAfter("最新", "动态")}：实时更新`,
   /** Agent 接入页（/agent）。 */
-  agent: "Agent 接入",
+  agent: `${SITE.name} 的 API、MCP 与 RSS：接进你的 Agent`,
   /** 关于页（/about）的完整标题，已含站名。 */
-  about: `关于 · ${SITE.name}`,
+  about: `关于 ${SITE.name}：${SITE.tagline}`,
   /** 日报、周报、月报的最新一期（/daily、/weekly、/monthly）；date 是这一期的日期：“11月7日”“10月26日—11月1日”“2026年10月”。 */
   latestReport: (kind: "daily" | "weekly" | "monthly", date: string): string =>
-    `${withSubject({ daily: "日报", weekly: "周报", monthly: "月报" }[kind])} · ${date}`,
-  /** 主题页第一页；updated 是最新一篇精选的日期（“11月7日”），没有时为 null。 */
-  topic: (name: string, _group: "company" | "field" | "genre", _updated: string | null): string => `${name} 最新动态`,
+    ({ daily: `${withSubject("日报")}：各地店家的经营做法（${date}）`, weekly: `${withSubject("周报")}：一周经营参考（${date}）`, monthly: `${withSubject("月报")}：${date} 经营参考` })[kind],
+  /** 主题页第一页（本站主题都是经营方向、品类和地区，没有公司）；updated 是最新一篇精选的日期（“11月7日”），没有时为 null。 */
+  topic: (name: string, _group: "company" | "field" | "genre", updated: string | null): string =>
+    `${name}：店家的做法与经验${updated ? `（${updated}更新）` : ""}`,
 };

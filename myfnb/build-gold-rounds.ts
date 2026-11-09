@@ -14,6 +14,7 @@
 //   real      myfnb/labels-2026-10-25-real.tsv     the source trial's two blind checks, Kay's 10-25 grades; not in the database
 //   day1022   myfnb/labels-2026-10-25-day1022.tsv  every item of 10-22, Kay picked the ~12 he wants in that day's report
 //   day1023   myfnb/labels-2026-10-25-day1023.tsv  the same for 10-23
+//   scope     myfnb/labels-2026-11-09-scope.tsv    169 items the widened prefilter (#267) lets in, Kay's 11-09 grades
 // Kay 10-25: the newest labels are the current standard and outweigh the older ones. A picked item is select; one he
 // did not pick is either, since a day has room for about 12 (myfnb/eval-selection-compare.ts ranks each day instead).
 // Holdout: myfnb/labels-2026-10-25-holdout.tsv, 30 the prompt was never tuned on, for the last check only.
@@ -57,6 +58,11 @@ const cases: Case[] = [
   ...labelled("myfnb/labels-2026-10-25-kay4.tsv", "kay4", graded),
   ...labelled("myfnb/labels-2026-10-25-day1022.tsv", "day1022", (l) => (l === "选进" ? "select" : "either")),
   ...labelled("myfnb/labels-2026-10-25-day1023.tsv", "day1023", (l) => (l === "选进" ? "select" : "either")),
+  // scope: 11-09 Kay graded the 169 items the widened prefilter (#267) lets in. 进精选 select, 可进可不进 either, 不进 reject;
+  // the 45 whose original would not open he marked 不进 for want of content, not taste, so they count as either.
+  ...lines("myfnb/labels-2026-11-09-scope.tsv").map(([key, label, , status, , url]) => ({
+    key: key!, stratum: "scope", split: "development" as const, url,
+    decision: (label === "进精选" ? "select" : label === "可进可不进" || status === "打不开" ? "either" : "reject") as Decision })),
   ...lines("myfnb/labels-2026-10-25-real.tsv").map(([key, label, feed, feedUrl, url, title]) =>
     ({ key: key!, decision: graded(label!), stratum: "real", split: "development" as const, url, feed: [feed!, feedUrl!] as [string, string], title })),
   // thin: Kay saw no content for it (the original would not open, or only a one-line blurb), so its 不进 is not his taste.

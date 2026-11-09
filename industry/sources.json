@@ -5322,6 +5322,2522 @@
         "中国大陆",
         "媒体"
       ]
+    },
+    {
+      "id": "rss-karemelfirin",
+      "name": "Karemel Lab Bakery（土耳其 · 烘焙店的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://karemelfirin.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "土耳其",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-eater",
+      "name": "Eater（美国 · 餐饮媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.eater.com/rss/index.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-preptalk-podigee",
+      "name": "PREP.TALK（德国 · 一位教授每周评述德国餐饮酒店业的新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://preptalk.podigee.io/feed/mp3",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-ranandenpott-gastrotalk-podigee",
+      "name": "Ran an den Pott - Der Gastrotalk des Service-Bund（德国 · 食材批发联盟 Service-Bund 的节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ranandenpott-gastrotalk.podigee.io/feed/mp3",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout",
+      "name": "Desde la Cocina de ASORE（波多黎各 · 波多黎各餐厅协会 ASORE 的节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2470345.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "波多黎各",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-feed-ausha",
+      "name": "SERBOTEL - LE MOT DE（法国 · 展会 Serbotel 的嘉宾致辞）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/BDK61ukERWEl",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-feed-ausha-2",
+      "name": "La Brigade : Le podcast qui rassemble Gastronomie et Management（法国 · 把厨房的运作说给其他行业的管理者）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/GgpGjuja7gOx",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-feed-ausha-3",
+      "name": "Au coeur du pain（第二季）（法国 · 面包企业联合会 FEB 的节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feed.ausha.co/WJWO6Uj9wa9R",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-feeds-captivate",
+      "name": "Extra Serving: A restaurant industry podcast（美国 · 行业媒体 NRN 编辑部每周的新闻回顾）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/extra-serving/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-2",
+      "name": "Culinary 360 Podcast（美国 · 餐饮服务方案公司 Ignite 的厨师团队主持）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2261432.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-3",
+      "name": "Charcuterie & Cottage Biz Podcast（美国 · 两姐妹教人做熟食拼盘和家庭食品生意）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2427941.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-feeds-captivate-2",
+      "name": "Chef Life Radio（美国 · 一位厨师谈厨房带班人的情绪和自省）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.captivate.fm/thechefliferadio/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-4",
+      "name": "The Beyond The Counter Podcast（英国 · 点餐软件公司 me&u 访谈美食广场和集市的经营者）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2530132.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-5",
+      "name": "Cooked with Eric Reed（美国 · 厨房设备厂商代理人的节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2609558.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-6",
+      "name": "The OnTrade Show（英国 · 英国夜间经济行业的人物访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2606589.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-scoutmagazine",
+      "name": "Scout Magazine（加拿大 · 温哥华餐饮和本地生活媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://scoutmagazine.ca/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "加拿大",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-cfe-news",
+      "name": "CFE News（美国 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cfe-news.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-suppermag",
+      "name": "Hotel Food & Drink（Supper）（英国 · 酒店餐饮业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.suppermag.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-surgelatimagazine",
+      "name": "Surgelati Magazine（意大利 · 冷冻食品和餐饮渠道媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.surgelatimagazine.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-ristorazionemoderna",
+      "name": "Il quotidiano online del food retail（意大利 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ristorazionemoderna.it/news.feed?type=atom",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-kokswereld",
+      "name": "Kokswereld（荷兰 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.kokswereld.nl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "荷兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-artumagazine",
+      "name": "Artù Magazine（意大利 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.artumagazine.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-retailfood",
+      "name": "retail&food（意大利 · 零售和餐饮业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.retailfood.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-vendingpress",
+      "name": "Vending Press（意大利 · 自动售货和咖啡业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.vendingpress.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-foodbusinessmea",
+      "name": "Food Business MEA（非洲和中东 · 食品和餐饮业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foodbusinessmea.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "非洲和中东",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-inshoku-kaizen",
+      "name": "飲食店の現場改善ラボ（日本 · 餐饮店现场改善的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://inshoku-kaizen.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-letscast",
+      "name": "Transformationscoaches für das Gastgewerbe NRW（德国 · 北威州餐饮协会顾问谈数字化和减少浪费）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://letscast.fm/podcasts/transformationscoaches-fuer-das-gastgewerbe-nrw-a66241f4/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-thetablefoodconsultants",
+      "name": "The Table Food Consultants（澳大利亚 · 餐饮顾问的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://thetablefoodconsultants.com.au/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-kaseyanton",
+      "name": "Profit First for Restaurants（美国 · 餐厅财务顾问的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kaseyanton.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-magazineahresp",
+      "name": "Magazine de Negócios AHRESP（葡萄牙 · 葡萄牙餐饮酒店协会的商业杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://magazineahresp.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "葡萄牙",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-shokuhin",
+      "name": "食品新聞 WEB版·外食（日本 · 媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://shokuhin.net/category/gaishoku/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-vittlesmagazine",
+      "name": "Vittles（英国 · newsletter/杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.vittlesmagazine.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-horecamagazine",
+      "name": "Horeca Magazine（意大利 · 媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://horecamagazine.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-dissapore",
+      "name": "Dissapore / Scatti di Gusto / Puntarella Rossa / Mangiaebevi（意大利 · 消费媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.dissapore.com/feed/rss_home",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-krogarna-se",
+      "name": "Krogarna.se（瑞典 · 服务商/指南）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://krogarna.se/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "瑞典",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-ancon",
+      "name": "Ancon 博客（瑞典 · 服务商）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ancon.io/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "瑞典",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-feeds-feedburner",
+      "name": "Grocerants（Steven Johnson）（美国 · 博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "http://feeds.feedburner.com/Grocerant",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-mixologynews",
+      "name": "Mixology News（巴西 · 媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://mixologynews.com.br/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "巴西",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-boston",
+      "name": "Boston.com 美食栏目（美国 · 本地新闻的餐厅开张和动态）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.boston.com/category/food/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-breakthrough-2",
+      "name": "弁当屋のガイドブック（日本 · 便当店开店和经营指南）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://breakthrough-2.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-horiitakeshi-xsrv",
+      "name": "たけたこぱーてぃー（日本 · 餐车店主写开业和经营）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://horiitakeshi.xsrv.jp/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-ristorantiweb",
+      "name": "Ristoranti web（意大利 · 餐饮业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ristorantiweb.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-fastcasualconsulting",
+      "name": "Fast Casual Consulting（美国 · 快餐顾问的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.fastcasualconsulting.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-misetane",
+      "name": "店づくりのタネ（日本 · 店铺经营知识）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://misetane.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-viisitahtea",
+      "name": "Viisi Tähteä 酒吧栏目（芬兰 · 餐饮酒店业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://viisitahtea.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "芬兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-bakingbusiness",
+      "name": "Baking Business 咖啡栏目（澳大利亚 · 烘焙和咖啡生意媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://bakingbusiness.com.au/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-sterlingstockauditors",
+      "name": "Sterling Stock Auditors（英国 · 酒吧和餐厅盘点审计的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sterlingstockauditors.co.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-chefandhotel",
+      "name": "Chef & Hotel（智利 · 餐饮酒店业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://chefandhotel.cl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "智利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-feeds-blubrry",
+      "name": "The Restaurant Coach Podcast（美国 · 餐厅经营教练的节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://feeds.blubrry.com/feeds/therestaurantcoachpodcast.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-7",
+      "name": "Kitchen Notes（Bakery Business Academy）（美国 · 烘焙店经营节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/1992529.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-paytronix",
+      "name": "Paytronix Blog（美国 · 餐厅会员和点餐系统公司的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.paytronix.com/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-restaurantdigital",
+      "name": "Restaurant Digital（英国 · 餐饮业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://restaurantdigital.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-blog-stocktake-online",
+      "name": "StockTake Online Blog（英国 · 餐厅库存管理文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.stocktake-online.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-iamacollector",
+      "name": "I am a Collector 餐饮栏目（意大利 · 餐饮经营评论）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.iamacollector.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-hanty-mansiysk-drinkinfo",
+      "name": "Drinkinfo 汉特-曼西斯克新闻（俄罗斯 · 酒水和餐饮业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hanty-mansiysk.drinkinfo.ru/news/rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "俄罗斯",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-taniezmywanie",
+      "name": "Tanie Zmywanie 餐饮栏目（波兰 · 餐厅洗碗间和损耗的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://taniezmywanie.pl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "波兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-tnirestaurantconsultants",
+      "name": "TNI Restaurant Consultants（美国 · 餐厅顾问的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tnirestaurantconsultants.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-horecaline",
+      "name": "Horecaline（波兰 · 餐饮连锁和加盟新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://horecaline.pl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "波兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-laguiadelfoodie",
+      "name": "La Guía del Foodie 餐饮栏目（巴拿马 · 餐饮业人物和新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://laguiadelfoodie.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "巴拿马",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-podcastokawie",
+      "name": "Podcast o Kawie（波兰 · 咖啡业节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.podcastokawie.pl/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "波兰",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-foodserviceip",
+      "name": "Foodservice IP（美国 · 餐饮渠道顾问的行业文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://foodserviceip.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-tippr",
+      "name": "TIPPR 餐饮栏目（荷兰 · 餐饮店营业额和毛利文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tippr.nl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "荷兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-kantershorecaadvies",
+      "name": "Kanters Horeca（荷兰 · 餐饮顾问的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kantershorecaadvies.nl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "荷兰",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-tenpo01",
+      "name": "店舗経営者倶楽部（日本 · 店主交流会的报告）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tenpo01.jp/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-sra",
+      "name": "SRA 零售与加盟学院（越南 · 餐饮连锁和加盟的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.sra.edu.vn/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "越南",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-orientalcoffeeandtea",
+      "name": "Oriental Coffee（泰国 · 咖啡店经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.orientalcoffeeandtea.com/blog-feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "泰国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-khoequan",
+      "name": "Khoe Quán（越南 · 咖啡馆和餐厅的店面设计介绍）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://khoequan.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "越南",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-insight-cafefrihet",
+      "name": "프리헷 인사이트（韩国 · 无人咖啡店开店和经营）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://insight.cafefrihet.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "韩国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-hadining",
+      "name": "HA Dining（阿拉伯语 · 餐厅经营方法）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hadining.com/feeds/posts/default",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-rubixfoods",
+      "name": "Rubix Foods（美国 · 服务商）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rubixfoods.com/blog/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-yoomag",
+      "name": "Yoomag 餐饮栏目（巴西 · 餐饮业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://yoomag.com.br/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "巴西",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-retaildetail",
+      "name": "RetailDetail 咖啡馆栏目（比利时 · 零售和餐饮业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.retaildetail.be/fr/tag/cafe/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "比利时",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-tcma-conseil",
+      "name": "TCMA Conseil 餐饮栏目（法国 · 餐饮业数据和经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.tcma-conseil.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-hh-today",
+      "name": "Hasso Hering 餐厅栏目（美国 · 本地新闻的餐厅动态）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hh-today.com/tag/restaurants/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-kavaspojuje",
+      "name": "Káva spojuje（捷克 · 咖啡业文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kavaspojuje.cz/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "捷克",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-carverealestate",
+      "name": "Carve Real Estate（加拿大 · 餐厅买卖和经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.carverealestate.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "加拿大",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-horecatweepuntnul",
+      "name": "Horecatweepuntnul（荷兰 · 餐饮店经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://horecatweepuntnul.nl/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "荷兰",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-foodsafetymentor",
+      "name": "The Food Safety Mentor（美国 · 食品安全法规文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://foodsafetymentor.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-panoramachef",
+      "name": "PanoramaChef 吧台栏目（意大利 · 专业厨房和吧台的做法）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://panoramachef.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-blog-soplaya",
+      "name": "Il Blog di Soplaya（意大利 · 餐厅生意的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.soplaya.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-daotaophache",
+      "name": "Đào tạo pha chế（越南 · 饮品店店主的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://daotaophache.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "越南",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-kuechenherde-podigee",
+      "name": "Küchenherde - Mensch & KI in der Hospitality（德国 · Markus Wessel 谈餐饮酒店业的数字化和 AI）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kuechenherde.podigee.io/feed/mp3",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-storage-googleapis",
+      "name": "飲食note編集部（日本 · 餐饮新闻媒体「飲食note」的节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://storage.googleapis.com/inshoku-note-podcast/shows/editorial/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-8",
+      "name": "The Restaurant Innovator（美国 · 行业杂志 FSR 的编辑访谈餐厅经营者和主厨）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2158626.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-rss-buzzsprout-9",
+      "name": "It's All Gravy（英国 · 人事软件公司访谈多店餐饮集团的人事负责人）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rss.buzzsprout.com/2513556.rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-aedanrose",
+      "name": "Aedan Rose（美国 · 餐饮管理软件公司）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://aedanrose.ai/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-foxifood",
+      "name": "FoxiFood 博客（美国 · 线上点餐软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.foxifood.com/blog/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-billzova",
+      "name": "Billzova 博客（印度 · 餐厅收银软件公司的博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.billzova.com/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "印度",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-catering",
+      "name": "CATERING MANAGEMENT（德国 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://catering.de/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-theshout",
+      "name": "Australian Hotelier（The Shout）（澳大利亚 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://theshout.com.au/australian-hotelier/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-letscast-2",
+      "name": "MEINbusiness trifft dein Business（德国 · 餐饮店主和顾问访谈）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://letscast.fm/podcasts/meinbusiness-trifft-dein-business-ce87ca62/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-tryperdiem",
+      "name": "Per Diem 博客（美国 · 服务商）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tryperdiem.com/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-abc-gov",
+      "name": "加州酒类管理局 CA ABC（美国 · 酒牌法规和通知）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.abc.ca.gov/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "政府"
+      ]
+    },
+    {
+      "id": "rss-pubisthehub",
+      "name": "Pub is The Hub（英国 · 支持乡村酒馆的公益组织）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.pubisthehub.org.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-spigadivulga",
+      "name": "Spiga Divulga（西班牙 · 手工面包作坊的经营节目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.spigadivulga.es/podcast.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "西班牙",
+        "播客"
+      ]
+    },
+    {
+      "id": "rss-menubeacon",
+      "name": "MenuBeacon blog（餐厅经营方法）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://menubeacon.com/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-stiritupmagazine",
+      "name": "Stir it up Magazine（英国 · 餐饮业杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://stiritupmagazine.co.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-tribunedesboulangerspatissiers",
+      "name": "Tribune des Boulangers Pâtissiers（法国 · 面包糕点业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://tribunedesboulangerspatissiers.fr/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-aleno",
+      "name": "aleno Blog（德国 · 餐厅订位系统公司的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.aleno.me/de/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-hungryhungry",
+      "name": "Hungry Hungry Blog（马来西亚 · 餐厅点餐系统公司的经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hungryhungry.com/en/blogs/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "马来西亚",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-ncass",
+      "name": "NCASS（英国 · 餐车和街头餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ncass.org.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-paddl-ai",
+      "name": "Paddl Insights（英国 · 餐厅设备维护文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://paddl-ai.co/insights/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-alstiginc",
+      "name": "ALSTIG INC（餐厅经营文章）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://alstiginc.com/articles/feed.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-elegant-menu",
+      "name": "elegant.menu blog（餐厅经营方法）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://elegant.menu/blog/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-gaishoku",
+      "name": "外食産業新聞社（日本 · 餐饮业专业报纸（网上只放付费报纸的目录））",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://gaishoku.co.jp/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-presseportal",
+      "name": "德国系统餐饮协会 BdS 新闻稿（德国 · 连锁餐饮协会在 presseportal 发的新闻稿）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.presseportal.de/rss/pm_156852.rss2",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-bakerkonditor-no",
+      "name": "Baker og Konditor Baker- og Konditorbransjens landsforening（挪威 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.bakerkonditor.no/rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "挪威",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-veitingageirinn-is",
+      "name": "Veitingageirinn（冰岛 · 媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://veitingageirinn.is/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "冰岛",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-techinasia",
+      "name": "Tech in Asia · food delivery 标签（新加坡 · 亚洲科技创投媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.techinasia.com/tag/food-delivery/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "新加坡",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-techinasia-2",
+      "name": "Tech in Asia · restaurants 标签（新加坡 · 亚洲科技创投媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.techinasia.com/tag/restaurants/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "新加坡",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-alic-go",
+      "name": "農畜産業振興機構 alic（日本 · 农畜产品价格和供需的政府机构）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.alic.go.jp/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "政府"
+      ]
+    },
+    {
+      "id": "rss-emergingconcepts",
+      "name": "EMERGING Concepts（美国 · 连锁餐饮新概念的行业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://emergingconcepts.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-menumag",
+      "name": "MENU（加拿大 · 餐饮业杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://menumag.ca/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "加拿大",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-hosteleriahospitalaria",
+      "name": "AEHH 西班牙医院餐饮协会（西班牙 · 医院和养老院餐饮协会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hosteleriahospitalaria.org/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "西班牙",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-northbrooklyndispatch",
+      "name": "North Brooklyn Dispatch（美国 · 本地新闻的餐厅开张和动态）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.northbrooklyndispatch.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-swissbaker-ch",
+      "name": "Panissimo（swissbaker.ch）（瑞士 · 餐饮行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://swissbaker.ch/fr/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "瑞士",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-cuisine-kingdom",
+      "name": "料理王国（日本 · 厨师专业杂志）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cuisine-kingdom.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-oncubanews",
+      "name": "OnCuba 美食栏目（古巴 · 餐饮业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://oncubanews.com/tag/gastronomia/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "古巴",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-qsrmedia",
+      "name": "QSR Media AU（澳大利亚 · 媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://qsrmedia.com.au/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-brewsnews",
+      "name": "Brews News（澳大利亚 · 啤酒业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://brewsnews.com.au/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "澳大利亚",
+        "媒体"
+      ]
     }
   ]
 }

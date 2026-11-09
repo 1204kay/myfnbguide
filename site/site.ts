@@ -391,8 +391,8 @@ export const SEO_TITLES = {
   about: `关于 ${SITE.name}：${SITE.tagline}`,
   /** 日报、周报、月报的最新一期（/daily、/weekly、/monthly）；date 是这一期的日期：“11月7日”“10月26日—11月1日”“2026年10月”。 */
   latestReport: (kind: "daily" | "weekly" | "monthly", date: string): string =>
-    ({ daily: `${withSubject("日报")}：各地店家的经营做法（${date}）`, weekly: `${withSubject("周报")}：一周经营参考（${date}）`, monthly: `${withSubject("月报")}：${date} 经营参考` })[kind],
+    ({ daily: `${withSubject("日报")}：每天值得看的经营参考（${date}）`, weekly: `${withSubject("周报")}：一周经营参考（${date}）`, monthly: `${withSubject("月报")}：${date} 经营参考` })[kind],
   /** 主题页第一页（本站主题都是经营方向、品类和地区，没有公司）；updated 是最新一篇精选的日期（“11月7日”），没有时为 null。 */
   topic: (name: string, _group: "company" | "field" | "genre", updated: string | null): string =>
-    `${name}：店家的做法与经验${updated ? `（${updated}更新）` : ""}`,
+    `${name}：经营参考与最新动态${updated ? `（${updated}更新）` : ""}`,
 };

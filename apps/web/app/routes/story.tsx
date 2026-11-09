@@ -2,12 +2,15 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode }
 import { IntentLink } from "../components/ui/IntentLink";
 import { Link, useLoaderData, useLocation } from "react-router";
 import type { Route } from "./+types/story";
-import type { StoryDetail, StoryReportView } from "@aihot/contracts/site";
+import { STORY_INDEX_MIN_REPORTS, type StoryDetail, type StoryReportView } from "@aihot/contracts/site";
 import { SITE } from "@aihot/site";
+import { linkMentions } from "@aihot/contracts/mentions";
+import { addressRuns } from "@aihot/contracts/addresses";
+import { MentionText } from "../components/ui/MentionText";
 import { cachedPage, loadOr404 } from "../lib/api.server";
 import { pageReuse } from "../lib/page-reuse";
 import { breadcrumbLd, pageMeta, storyLd, titled } from "../lib/seo";
-import { beijingTime } from "@aihot/contracts/time";
+import { beijingDate, beijingTime } from "@aihot/contracts/time";
 import { byBeijingDay, monthDay, monthDayTime, relativeTime } from "../lib/format";
 import { useCurrentSection } from "../lib/motion";
 import { HeatChart } from "../features/story/HeatChart";
@@ -16,7 +19,7 @@ import { isReload } from "../lib/restore";
 import { Badge, SelectedBadge } from "../components/ui/Badge";
 import { PillTabs } from "../components/ui/Tabs";
 import { Select } from "../components/ui/Controls";
-import { IconArrowLeft, IconChevronRight, IconClock, IconDoc, IconUsers } from "../components/icons";
+import { IconArrowLeft, IconCalendar, IconChevronRight, IconClock, IconDoc, IconUsers } from "../components/icons";
 import { PhoneBar } from "../components/shell/PhoneBar";
 import { inNav, navUp } from "../components/shell/nav";
 import type { Screen } from "../components/shell/screens";
@@ -41,8 +44,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
     path: `/story/${s.publicId}`,
     image: `/og/stories/${s.publicId}.png`,
     type: "article",
-    // MYFNB: a single-report story repeats its item page; only stories with two or more reports are indexed (myfnb/DIFFERENCES.md 「事件页」).
-    noindex: s.reportCount < 2,
+    // With one report the page only repeats that report's own page, which stands in search instead.
+    noindex: s.reportCount < STORY_INDEX_MIN_REPORTS,
     jsonLd: [
       storyLd(s),
       breadcrumbLd([{ name: SITE.name, path: "/" }, ...UP.crumbs, { name: s.title, path: `/story/${s.publicId}` }]),
@@ -115,7 +118,7 @@ function TimelineRow({ r }: { r: StoryReportView }) {
         {r.summary && (
           <>
             <p ref={ref} className={`mt-1 text-[14px] leading-[1.75] text-ink-3 ${open ? "" : "line-clamp-2"}`}>
-              {r.summary}
+              <MentionText runs={addressRuns(r.summary)} />
             </p>
             {(clamped || open) && (
               <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="mt-1 text-[12.5px] text-note transition-colors hover:text-accent">
@@ -178,6 +181,7 @@ export default function StoryPage() {
       : story.excerpt
         ? { label: "报道摘要", text: story.excerpt.text, note: `摘自 ${story.excerpt.sourceName}` }
         : null;
+  const [overviewRuns] = useMemo(() => linkMentions([overview?.text], story.mentions), [overview?.text, story.mentions]);
   const showOfficial = () => {
     setFilter("official");
     goSection(SECTIONS.reports);
@@ -209,6 +213,15 @@ export default function StoryPage() {
             <IconUsers size={15} className="text-ink-4" />
             <b className="num font-semibold text-ink">{story.sourceCount}</b> 个报道来源
           </span>
+          {story.firstReportAt && (
+            <span className="inline-flex items-center gap-1.5">
+              <IconCalendar size={15} className="text-ink-4" />
+              <b className="num font-semibold text-ink">
+                <time dateTime={story.firstReportAt}>{monthDay(beijingDate(story.firstReportAt))}</time>
+              </b>
+              首报
+            </span>
+          )}
           {story.latestAt && (
             <span className="inline-flex items-center gap-1.5" suppressHydrationWarning>
               <IconClock size={15} className="text-ink-4" />
@@ -239,7 +252,7 @@ export default function StoryPage() {
           <Panel id={SECTIONS.overview} title="先了解这件事" right={overview?.label} className="order-1">
             {overview ? (
               <>
-                <p className="whitespace-pre-line text-[15px] leading-[1.85] text-ink-2">{overview.text}</p>
+                <p className="whitespace-pre-line text-[15px] leading-[1.85] text-ink-2"><MentionText runs={overviewRuns} /></p>
                 {overview.note && (
                   <p className="mt-2 text-[12px] text-ink-4" suppressHydrationWarning>
                     {overview.note}

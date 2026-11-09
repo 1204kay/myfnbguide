@@ -9,7 +9,7 @@ import { fakeApi, startWebServer, type WebServer } from "./web-server.ts";
 
 const report = (kind: ReportKind, key: string): ReportDetail => ({
   kind, key, issueNumber: 1, title: "测试刊物", generatedAt: "2026-10-19T02:00:00Z",
-  lead: null, leadItemId: null, overview: null, highlights: [], sections: [], flashes: [], cover: null, metrics: {}, readingMinutes: 1, prev: null, next: null,
+  lead: null, leadItemId: null, overview: null, highlights: [], sections: [], flashes: [], cover: null, metrics: {}, readingMinutes: 1, prev: null, next: null, mentions: [],
 });
 const cited = (n: number): ReportCitation => ({
   itemId: `i${n}`, title: `第 ${n} 篇`, summary: `第 ${n} 家说的那一句。`, sourceName: `来源${n}`, sourceUrl: `https://example.org/${n}`,

@@ -37,9 +37,9 @@ export const SITE = {
   /** 反馈表单邮箱框里的提示。 */
   feedbackEmailHint: "请留下邮箱，以便我们回复",
   /** 一句话介绍：搜索引擎、分享卡片、RSS、llms.txt 会用。 */
-  description: "餐饮小店的经营参考：收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，供读者自行判断。",
+  description: "餐饮人自己的参考站：收录各地和餐饮有关的消息，从行业动态、规定、食材与上下游，到店家的做法和食客的变化，附原文出处，供读者自行判断。",
   /** llms.txt 里一句话介绍下面的一段详细介绍（选填）。 */
-  llmsIntro: "MYFNB 从各国经营者的播客、访谈和文章里挑选与开店、经营有关的内容，由 AI 写成中文标题、导读和原文要点，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
+  llmsIntro: "MYFNB 收录各国和餐饮有关的消息，来源包括行业媒体、机构公告和经营者的播客、访谈、文章，由 AI 写成中文标题、导读和原文要点，每条附原文链接。内容没有经过人工逐条审核，引用时以原文为准。" as string | null,
   /** 一行小字：分享图、海报下方。 */
   tagline: "餐饮人自己的参考站",
   /** 搜索引擎读到的关键词（首页结构化数据）。 */
@@ -172,13 +172,13 @@ export const ABOUT = {
   /** 大标题：第一行正常颜色，第二行强调色。 */
   headline: ["各地的餐饮经验，", "往往是同一套原理。"] as [string, string],
   /** 标题下面的一段话。{sources} 会换成实时的信源数（两边自动加空格，所以 {sources} 两边不写空格）；统计没取到时换成 sourcesFallback。 */
-  lead: `${SITE.name} 从{sources}个来源收集各地店家的做法和经验，按经营者面临的问题整理成参考：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。`,
+  lead: `${SITE.name} 从{sources}个来源收录各地和餐饮有关的消息，连同店家的做法和经验，按经营者面临的问题整理成参考：挑选的标准由人定，整理和写作由 AI 完成，每条附原文出处。`,
   sourcesFallback: "数十",
   /** 信源河动画下面的四个环节。 */
   steps: {
-    collect: "来源是各国经营者的播客、访谈和文章，以及写给餐饮经营者的媒体，分布在亚洲、大洋洲、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
+    collect: "来源是各国经营者的播客、访谈和文章，以及餐饮和上下游的行业媒体、新闻与机构公告，分布在亚洲、大洋洲、欧洲和美洲；活跃的来源每 15 分钟查看一次。",
     store: "收录的内容全部保存，同一件事的多篇报道归为一组。",
-    select: `模型先判断内容是否与餐饮经营有关，再写中文标题、导读和${ITEM_COPY.reasonLabel}，按固定的评分标准选出精选；只面向食客的美食推荐、食评和食谱，以及与餐饮经营无关的内容不收录。`,
+    select: `模型先判断内容是否与餐饮有关，再写中文标题、导读和${ITEM_COPY.reasonLabel}，按固定的评分标准选出精选；与餐饮无关的内容和在家做菜的食谱不收录。`,
     publish: `入选的内容按经营者遇到的情况整理进参考；早上 ${EDITION_WHEN.daily} 编日报，头条是「十一说」：阅读前一天收录的全部内容后编写的一期，每句标出原文出处；${EDITION_WHEN.weekly} 编周报，${EDITION_WHEN.monthly} 编月报。`,
   },
   /**
@@ -288,7 +288,7 @@ export const COMMUNITY_FEEDS: { dev: string[]; hn: string[] } = {
 /** 各页分享图（/og/pages/*.png）上的文字。主题目录页的那张按主题数自动生成。 */
 export const CARDS: Record<string, { kicker: string; title: string; subtitle: string; accent?: "hot" | "amber" }> = {
   // 分享图左上角已有站名，这里不再写站名：用介绍的前半句，副标题是介绍的其余部分。
-  site: { kicker: "餐饮小店的经营参考", title: SITE.tagline, subtitle: "收集各地店家的做法和经验，按开店、成本、人手、客人等整理，附原文出处，供读者自行判断。" },
+  site: { kicker: "各地餐饮消息", title: SITE.tagline, subtitle: "收录各地和餐饮有关的消息，从行业动态、规定、食材与上下游，到店家的做法和食客的变化，附原文出处，供读者自行判断。" },
   all: { kicker: subjectAfter("全部", "动态"), title: "收录的全部内容，按时间排列", subtitle: "可按类别与标签筛选。" },
   hot: { kicker: "热点榜", title: "过去 48 小时，大家在讨论什么", subtitle: "热度指数、趋势与组成热度的公开来源。", accent: "hot" },
   daily: { kicker: withSubject("日报"), title: subjectAfter(`早上 ${spokenTime(EDITION_TIMES.daily)}编排的`, "日报"), subtitle: "从近三天尚未登上日报的餐饮消息和店家做法中选出，头条是「十一说」。" },

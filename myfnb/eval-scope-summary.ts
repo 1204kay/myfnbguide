@@ -18,8 +18,14 @@ const errs = new Map<string, number>();
 for (const c of failed) { const k = String(c.error ?? "（没有报错原文）").slice(0, 160); errs.set(k, (errs.get(k) ?? 0) + 1); }
 for (const [k, n] of [...errs].sort((a, b) => b[1] - a[1]).slice(0, 10)) console.log(`# 没跑成 ${n} 条：${k}`);
 console.log("\n# 放进的（分数 判定 | 标题），分数高的在前");
-for (const c of passed.sort((a, b) => (b.score ?? -1) - (a.score ?? -1)))
-  console.log(`${c.score ?? "-"} ${c.decision === "select" ? "选" : "不选"} | ${c.title.slice(0, 70).replace(/\s+/g, " ")}`);
+// 给 Kay 标注用：每条带来源名和原文链接（caseId 是 blocked-<条目 id>，只读）。
+const ids = passed.map((c) => c.caseId.replace(/^blocked-/, ""));
+const meta = new Map((ids.length ? await sql<{ id: string; url: string; source: string }[]>`
+  SELECT a.id, a.url, s.name AS source FROM articles a JOIN sources s ON s.id = a.source_id WHERE a.id IN ${sql(ids)}` : []).map((r) => [r.id, r]));
+for (const c of passed.sort((a, b) => (b.score ?? -1) - (a.score ?? -1))) {
+  const m = meta.get(c.caseId.replace(/^blocked-/, ""));
+  console.log(`${c.score ?? "-"} ${c.decision === "select" ? "选" : "不选"} | ${c.title.slice(0, 70).replace(/\s+/g, " ")} | ${m?.source ?? "-"} | ${m?.url ?? "-"}`);
+}
 const [run] = await sql<{ n: number; cost: string | null }[]>`
   SELECT count(*)::int AS n, sum(cost) AS cost FROM receipts WHERE origin = 'live' AND created_at >= ${since}::timestamptz`;
 console.log(`\n# 这次试跑：${run!.n} 次调用，${Number(run!.cost ?? 0).toFixed(4)} 美元（此刻起站上同时在跑的也算在内）`);

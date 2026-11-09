@@ -377,8 +377,8 @@ function spokenTime(time: string): string {
  * 日期一律是这一期、这一页内容的日期，不是今天的日期。换行业时把里面的说法一起换掉。
  */
 /**
- * 本站：入口页在搜索结果里的标题照原版的结构，说法换成本站的（myfnb/DIFFERENCES.md「搜索标题」，十一 11-09 定）：
- * 原版是 AI 资讯站的说法（“每日新闻”“资讯 API”“最新消息”），本站是经营参考，不是新闻站。
+ * 本站：照原版，只把日报的“每日餐饮新闻”换成“每日餐饮动态”（myfnb/DIFFERENCES.md「搜索标题」）：
+ * 本站收所有餐饮消息，但不把自己叫新闻站。
  */
 export const SEO_TITLES = {
   /** 热点榜（/hot）。 */
@@ -386,13 +386,13 @@ export const SEO_TITLES = {
   /** 全部动态（/all），不含搜索和筛选结果。 */
   all: `${subjectAfter("最新", "动态")}：实时更新`,
   /** Agent 接入页（/agent）。 */
-  agent: `${SITE.name} 的 API、MCP 与 RSS：接进你的 Agent`,
+  agent: `${withSubject("资讯")} API、MCP 与 RSS：接进你的 Agent`,
   /** 关于页（/about）的完整标题，已含站名。 */
   about: `关于 ${SITE.name}：${SITE.tagline}`,
   /** 日报、周报、月报的最新一期（/daily、/weekly、/monthly）；date 是这一期的日期：“11月7日”“10月26日—11月1日”“2026年10月”。 */
   latestReport: (kind: "daily" | "weekly" | "monthly", date: string): string =>
-    ({ daily: `${withSubject("日报")}：每天值得看的经营参考（${date}）`, weekly: `${withSubject("周报")}：一周经营参考（${date}）`, monthly: `${withSubject("月报")}：${date} 经营参考` })[kind],
-  /** 主题页第一页（本站主题都是经营方向、品类和地区，没有公司）；updated 是最新一篇精选的日期（“11月7日”），没有时为 null。 */
-  topic: (name: string, _group: "company" | "field" | "genre", updated: string | null): string =>
-    `${name}：经营参考与最新动态${updated ? `（${updated}更新）` : ""}`,
+    ({ daily: `${withSubject("日报")}：${subjectAfter("每日", "动态")}（${date}）`, weekly: `${withSubject("周报")}：一周大事回顾（${date}）`, monthly: `${withSubject("月报")}：${date} 大事回顾` })[kind],
+  /** 主题页第一页：公司搜“最新消息”，方向和内容类型搜“最新进展”；updated 是最新一篇精选的日期（“11月7日”），没有时为 null。 */
+  topic: (name: string, group: "company" | "field" | "genre", updated: string | null): string =>
+    `${name} ${group === "company" ? "最新消息与动态" : "最新动态与进展"}${updated ? `（${updated}更新）` : ""}`,
 };

@@ -17,7 +17,7 @@ import { chatJson } from "../providers/llm.ts";
 import { completeReceipt } from "../providers/receipts.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import { emit, moduleDailyLead, moduleDailyPick } from "../modules.ts";
-import { arrangeDaily, candidates, dailyEdition, FLASH_ENTRIES, MAIN_ENTRIES, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
+import { arrangeDaily, candidates, dailyEdition, dailyPicks, FLASH_ENTRIES, MAIN_ENTRIES, periodEntries, sectionOf, SECTION_ORDER, type Candidate, type EditionEntry } from "./edition.ts";
 
 export const REPORT_VERSION = promptVersion("report-period", "report-period-sections", "report-period-no-sections");
 
@@ -81,6 +81,9 @@ function windowPoint(at: Date): string {
   return `${Number(day.slice(5, 7))} 月 ${Number(day.slice(8, 10))} 日 ${beijingTime(at)}`;
 }
 
+/** The highlights a daily's front page lists after its lead (今日看点). */
+const DAILY_HIGHLIGHTS = 3;
+
 /**
  * A module's pick of the daily's entries in full (moduleDailyPick), from the events of this window and of the
  * days before it that earlier issues left out; the rest of this window's events are the flashes, most important
@@ -121,9 +124,10 @@ async function pickedDaily(date: string, start: Date, end: Date, entries: Editio
 
 /**
  * Daily report for Beijing date D covers the 24 hours up to the site's edition time on D (EDITION_TIMES).
- * Its most important entry leads, in its own words, and the next three are today's highlights. A window
- * the editors judged with nothing new in it still has its issue: no entries, and a lead that says so
- * (REPORTS.quiet).
+ * Its most important entry leads, in its own words, and the next three are today's highlights; a thin issue
+ * (a weekend's often carries a single entry) fills the rest with the window's best reports it left out
+ * (`picks`, dailyPicks), which are neither entries nor counted in its metrics. A window the editors judged
+ * with nothing new in it still has its issue: no entries, no highlights, and a lead that says so (REPORTS.quiet).
  */
 export async function composeDaily(date: string, reason?: string): Promise<{ key: string; entries: number }> {
   const previous = await savedReport("daily", date);
@@ -143,6 +147,8 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
     console.error(JSON.stringify({ level: "warn", msg: "module lead failed; the daily leads by rule", report: `daily:${date}`, error: logError(error) }));
     return null;
   }) : null;
+  const highlights = (own ? issue.main : rest).slice(0, DAILY_HIGHLIGHTS).map((e) => e.entry.itemId);
+  const picks = lead ? await dailyPicks(date, start, end, [...issue.main, ...issue.flashes], DAILY_HIGHLIGHTS - highlights.length) : [];
   const content = {
     date,
     lead: own
@@ -151,7 +157,8 @@ export async function composeDaily(date: string, reason?: string): Promise<{ key
         ? { title: lead.entry.title, leadParagraph: lead.entry.summary }
         : { title: REPORTS.quiet.title, leadParagraph: REPORTS.quiet.paragraph.replace("{start}", windowPoint(start)).replace("{end}", windowPoint(end)) },
     leadItemId: own ? null : lead?.entry.itemId ?? null,
-    highlights: (own ? issue.main : rest).slice(0, 3).map((e) => e.entry.itemId),
+    highlights: [...highlights, ...picks.map((p) => p.itemId)],
+    ...(picks.length ? { picks } : {}),
     sections: SECTION_ORDER
       .map((label) => ({ label, items: issue.main.filter((e) => sectionOf(e.category) === label).map((e) => e.entry) }))
       .filter((s) => s.items.length > 0),

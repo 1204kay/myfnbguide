@@ -8,6 +8,7 @@
 // - a technical-direction topic stops taking its tags;
 // - withdrawn or not yet released articles appear in a list or a count;
 // - an article or story page names a topic its reports do not belong to;
+// - an article page cannot tell which of its tags are a topic's own, so they link to filtered lists;
 // - a topic without content has no page, or an unknown slug or a page past the end has one.
 import { tag } from "./setup.ts";
 import assert from "node:assert/strict";
@@ -126,6 +127,18 @@ test("a company topic takes the articles about it, not the ones that only mentio
   assert.deepEqual(await topicsOf(subpoena), ["openai", "model-releases"]);
   assert.deepEqual(await topicsOf(pact), ["model-releases"]);
   assert.deepEqual(await topicsOf(agent), ["agent", "model-releases"]);
+});
+
+test("an article page says which of its tags are a topic's own", async () => {
+  // MYFNB 的主题不按公司分（myfnb/DIFFERENCES.md 第 3 节）：拿经营方向、品类、地区三种主题的标签来看，再加一个不属于任何主题的标签。
+  const own = { "外劳": "people", "咖啡": "coffee", "马来西亚": "southeast-asia" };
+  const loose = `测试标签${T}`;
+  const id = await report({ at: hoursAgo(3), title: `咖啡店请外劳的做法 ${T}`, tags: [...Object.keys(own), loose] });
+  const res = await app.inject({ method: "GET", url: `/api/site/items/${id}` });
+  const body = JSON.parse(res.body) as { tags: string[]; tagTopics: Record<string, string>; topics: Array<{ slug: string }> };
+  for (const [tag, slug] of Object.entries(own)) assert.equal(body.tagTopics[tag], slug);
+  assert.ok(body.tags.includes(loose) && !(loose in body.tagTopics));
+  for (const slug of Object.values(own)) assert.ok(body.topics.some((t) => t.slug === slug), slug);
 });
 
 // A company topic of the pack that keeps an old full name as an alias (the AI example: 「Kimi / 月之暗面」 renamed 「月之暗面 / Kimi」).

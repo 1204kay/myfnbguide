@@ -44,6 +44,11 @@ export const SITE = {
   tagline: "餐饮人自己的参考站",
   /** 搜索引擎读到的关键词（首页结构化数据）。 */
   keywords: ["餐饮经营", "餐饮小店", "开店经验", "餐饮成本", "餐饮管理"] as string[],
+  /**
+   * 搜索引擎站长平台的网站验证（选填）：meta 名 → 平台给的验证码，放在首页的 head 里。
+   * 比如 "baidu-site-verification": "codeva-…"、"msvalidate.01": "…"。验证通过后也要留着，平台会定期复查。
+   */
+  siteVerification: {} as Record<string, string>,
   /** 网站开始收录的年份（结构化数据的时间范围，选填）。 */
   since: "2026" as string | null,
   /** 界面语言（HTML lang、og:locale）。 */
@@ -73,6 +78,8 @@ export const SITE = {
   psb: null as string | null,
   /** 源码的 GitHub 仓库地址（选填），填了就在侧栏底部和“我的”页底部显示“GitHub 开源”。 */
   github: null as string | null,
+  /** 页脚的“由 X 驱动”（选填）：填了就在侧栏底部和“我的”页底部显示，链到它的网址。默认链回上游 AIHOT，不想要就写 null。 */
+  poweredBy: null as { name: string; url: string } | null,
   /** 结构化数据里的网站运营者（搜索引擎用）。 */
   organization: {
     name: "MYFNB",
@@ -364,3 +371,28 @@ function spokenTime(time: string): string {
   const [hour, minute] = time.split(":").map(Number) as [number, number];
   return `${hour} 点${minute ? ` ${minute} 分` : ""}`;
 }
+
+/**
+ * 入口页在搜索结果里的标题：读者会搜的词放前面，页面自动在最后接上“ · 站名”（首页用 SITE.homeTitle）。
+ * 日期一律是这一期、这一页内容的日期，不是今天的日期。换行业时把里面的说法一起换掉。
+ */
+/**
+ * 本站：入口页在搜索结果里的标题先照合并原版 11-09 以前的说法（myfnb/DIFFERENCES.md「搜索标题」）。
+ * 原版的默认是 AI 资讯站的说法（“每日新闻”“资讯 API”“最新消息”），本站不是新闻站，要不要改另行讨论。
+ * 日报、周报、月报多带上日期：原版这一处为的是读者按日期搜，换说法不影响它。
+ */
+export const SEO_TITLES = {
+  /** 热点榜（/hot）。 */
+  hot: withSubject("热点榜"),
+  /** 全部动态（/all），不含搜索和筛选结果。 */
+  all: subjectAfter("全部", "动态"),
+  /** Agent 接入页（/agent）。 */
+  agent: "Agent 接入",
+  /** 关于页（/about）的完整标题，已含站名。 */
+  about: `关于 · ${SITE.name}`,
+  /** 日报、周报、月报的最新一期（/daily、/weekly、/monthly）；date 是这一期的日期：“11月7日”“10月26日—11月1日”“2026年10月”。 */
+  latestReport: (kind: "daily" | "weekly" | "monthly", date: string): string =>
+    `${withSubject({ daily: "日报", weekly: "周报", monthly: "月报" }[kind])} · ${date}`,
+  /** 主题页第一页；updated 是最新一篇精选的日期（“11月7日”），没有时为 null。 */
+  topic: (name: string, _group: "company" | "field" | "genre", _updated: string | null): string => `${name} 最新动态`,
+};

@@ -15,7 +15,7 @@ const detail = (id: string): SiteItemDetail => ({
   id, title: "条目标题", summary: "固定摘要", reason: null, source: { name: "Fixture" }, publishedAt: at, timelineAt: at, category: null, tags: [], score: 50,
   selected: false, channel: "news", x: null, originalTitle: null, links: { original: "https://example.org/a" }, discoveredAt: at, story: null,
   readingMode: "full", author: null, body: null, outline: [], relatedStories: [], topics: [], indexable: true, markdownAvailable: true, group: null,
-  hasTranslation: false, bodyLanguage: "zh",
+  hasTranslation: false, bodyLanguage: "zh", tagTopics: {}, daily: null, googleNoindex: false, mentions: [],
 } as SiteItemDetail);
 const WRITTEN = { id: "written", situation: { slug: "busy-no-profit", title: "生意忙却不赚钱", count: { shops: 3, insiders: 0, cases: 3 } } };
 

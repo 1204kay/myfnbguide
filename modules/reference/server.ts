@@ -34,7 +34,10 @@ const ISSUES = defineQueue<{ date: string }>({
   name: "reference.issue",
   options: { policy: "short", retryLimit: 1, retryDelay: 300, expireInSeconds: 3 * 3600 },
   worker: { localConcurrency: 1, pollingIntervalSeconds: 10 },
-  run: async (jobs) => { for (const { date } of jobs) await writeIssue(date); },
+  run: async (jobs) => {
+    for (const { date } of jobs) await writeIssue(date);
+    await queueVoice();
+  },
 });
 
 // 十一说 read aloud (backend/voice.ts) once the day's issue is up, from the day the settings row `reference.voice` names
@@ -58,6 +61,26 @@ const VOICES = defineQueue<{ no: number }>({
     }
   },
 });
+
+/**
+ * Queues the day's issue to be read aloud when it is written and has no audio yet: right after the issue is written, and
+ * every half hour of the morning for a reading that failed its check. Kay 11-11 08:13 「八点两个都要同时」: waiting for the
+ * next half hour after the issue left the audio up to half an hour later than it needed to be.
+ */
+async function queueVoice() {
+  if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
+  const date = beijingDate(new Date());
+  const from = await voiceFrom();
+  if (!from || date < from) return { queued: 0, reason: "十一说 read aloud is not on (settings reference.voice)" };
+  const [row] = await sql<{ no: number }[]>`SELECT no FROM reference_issues WHERE date = ${date} AND status = 'issue'`;
+  if (!row) return { queued: 0, reason: "no issue yet" };
+  if (await issueAudio(row.no)) return { queued: 0, reason: "already read" };
+  const report = await voiceReport(row.no);
+  if (report && !["error", "check failed"].includes(report.status)) return { queued: 0, reason: report.status };
+  if ((report?.tries ?? 0) >= MAX_READS && !report?.unheard) return { queued: 0, reason: "no reads left today" };
+  await enqueueOn(VOICES, { no: row.no }, { singletonKey: String(row.no) });
+  return { queued: 1, no: row.no };
+}
 
 // Placing the items no story was written for (backend/place.ts): once a day, all waiting in one job, one short call each.
 const PLACES = defineQueue<{ date: string }>({
@@ -162,20 +185,7 @@ export default defineServerModule({
     // 十一说 read aloud: every half hour of the morning, the day's issue once it is written and has no audio yet.
     name: "reference.voice",
     cron: "20,50 5-9 * * *",
-    run: async () => {
-      if (!config.modelCallsEnabled) return { queued: 0, reason: "model calls are off" };
-      const date = beijingDate(new Date());
-      const from = await voiceFrom();
-      if (!from || date < from) return { queued: 0, reason: "十一说 read aloud is not on (settings reference.voice)" };
-      const [row] = await sql<{ no: number }[]>`SELECT no FROM reference_issues WHERE date = ${date} AND status = 'issue'`;
-      if (!row) return { queued: 0, reason: "no issue yet" };
-      if (await issueAudio(row.no)) return { queued: 0, reason: "already read" };
-      const report = await voiceReport(row.no);
-      if (report && !["error", "check failed"].includes(report.status)) return { queued: 0, reason: report.status };
-      if ((report?.tries ?? 0) >= MAX_READS && !report?.unheard) return { queued: 0, reason: "no reads left today" };
-      await enqueueOn(VOICES, { no: row.no }, { singletonKey: String(row.no) });
-      return { queued: 1, no: row.no };
-    },
+    run: () => queueVoice(),
   }],
   http: (app) => {
     app.get("/api/reference", async (_req, reply) => reply.header("Cache-Control", CACHE).send(await readHome()));

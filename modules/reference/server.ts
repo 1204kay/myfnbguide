@@ -95,7 +95,7 @@ export default defineServerModule({
     [ISSUE_STEP]: { label: "十一说的写手（读这一天的全部收录，写两稿快讯加细说一件，再各为念出来改一遍）", env: "REFERENCE_ISSUE_MODEL", purposes: ["reference_issue_write", "reference_issue_speak", "reference_issue_voice"] },
     [TOPIC_STEP]: { label: "参考页的综合整理（读一种情况的全部原文条目，写一篇每句标出原文的整理）", env: "REFERENCE_TOPIC_MODEL", purposes: ["reference_topic_write"] },
     [TOPIC_CHECK_STEP]: { label: "综合整理的核对（逐句对原文，严重的句子删掉再核一次）", env: "REFERENCE_TOPIC_CHECK_MODEL", purposes: ["reference_topic_check"] },
-    [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen", "reference_issue_voice_check"] },
+    [ISSUE_CHECK_STEP]: { label: "十一说的核对（读点名原文的全文核三条规则，写出改好的句子；改不了的由编辑只改有问题的句子）", env: "REFERENCE_ISSUE_CHECK_MODEL", purposes: ["reference_issue_check", "reference_issue_edit", "reference_issue_review", "reference_issue_listen", "reference_issue_lead", "reference_issue_voice_check"] },
   },
   queues: [PLACES, TOPICS, ISSUES, VOICES],
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).

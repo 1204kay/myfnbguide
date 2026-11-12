@@ -7,7 +7,7 @@ import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { answerText, CACHE_TTL, joined, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
-import { amendIssue, type Ask, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { amendIssue, type Ask, fitLead, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -16,7 +16,7 @@ const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
 const ITEMS = [item(1), item(2, "rss-hongcan"), item(3), item(4)];
 /** A draft whose first news item says `news`, then two more, each citing item 4. */
 const issue = (title: string, news: string): IssueText => ({
-  title, brief: ["一", "二", "三"], preview: "预告", deep: "细说〔4〕", close: "合起来",
+  title, brief: ["一", "二", `三${"字".repeat(80)}`], preview: "预告", deep: "细说〔4〕", close: "合起来",
   news: [{ head: "快讯", text: news }, ...[1, 2].map(() => ({ head: "另一条", text: "也说了〔4〕。" }))],
 });
 
@@ -58,7 +58,7 @@ test("of two passing drafts the livelier goes up, and the check reads what each 
   const check = calls[6]!.user;
   assert.ok(check.includes("〔3〕来源 3《第 3 条》（可以引原句）") && check.includes(ITEMS[2]!.text));
   assert.ok(!check.includes(ITEMS[0]!.text), "an item the draft does not cite is not sent to the check");
-  assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: "一二三" });
+  assert.deepEqual(dailyLead(c, 7), { kicker: "十一说 · 第 7 期", title: "好听的一稿", leadParagraph: `一二三${"字".repeat(80)}` });
 });
 
 test("when the listener ranks the drafts, only the pick is checked; the other is checked only if the pick cannot go up whole", async () => {
@@ -186,7 +186,7 @@ test("「十一觉得」 is the writer's to say as often as it likes, and the cl
 
 test("the 导读 tells what the title tells: a sentence cut is not refilled with other stories, and a 导读 follows its title", () => {
   const { issue: out } = cutProblems(issue("问题", "说了〔1〕。"), [{ rule: 1, quote: "二", why: "" }]);
-  assert.deepEqual(out.brief, ["一", "二", "三"], "a quote too short to place moves nothing");
+  assert.deepEqual(out.brief, ["一", "二", `三${"字".repeat(80)}`], "a quote too short to place moves nothing");
   // 11-08 (issues 12, 14, 15): sentences on other stories sat under the deep piece's title on the daily.
   const day: IssueText = {
     title: "没开过餐饮店的人，凭什么开出三家门店？", preview: "预告", close: "合起来",
@@ -468,4 +468,26 @@ test("a draft too short for twelve minutes is written once more, told so, unless
   const thin = scripted({ reference_issue_write: () => issue("短稿", "说了〔1〕。"), reference_issue_check: () => ({ lively: 5, problems: [] }) });
   await composeIssue(ITEMS, "2026-11-03", thin.ask);
   assert.deepEqual(thin.calls.filter((c) => c.purpose === "reference_issue_write").map((c) => c.attempt), ["a", "b"], "a thin day is left short");
+});
+
+test("a title or 导读 not the length asked is written again from the deep piece, and a part still not the length keeps what it had", async () => {
+  const deep = "洛杉矶一家人做赛百味加盟近40年〔1〕。";
+  // Issue 19 (11-12): the check cut the 导读 to its first sentence, 35 characters.
+  const short = { ...issue("16家关到10家，净利率从4%到15%", "说了〔1〕。"), brief: ["美国洛杉矶的Abtin Hishimian一家，做赛百味加盟近40年。"], deep };
+  const good = ["美国洛杉矶一家人做赛百味加盟近40年，五年里在租约到期时一家一家不续，把门店从16家关到10家〔1〕。", "营业额在缩，净利率却从2024年的4%升到2025年的15%，今年预计略高于20%〔1〕。"];
+  const { ask, calls } = scripted({ reference_issue_lead: () => ({ title: "这个标题太长了，写到了二十三个字还没有停下", brief: good }) });
+  const out = await fitLead(short, ask);
+  assert.deepEqual(out.brief, good);
+  assert.equal(out.title, short.title, "the title was the length, so it stays");
+  assert.ok(calls[0]!.user.includes(deep), "written from the deep piece");
+
+  const fits = { ...short, brief: good };
+  const none = scripted({});
+  assert.equal(await fitLead(fits, none.ask), fits, "a title and 导读 the length asked are not sent");
+
+  const long = { ...fits, title: "一箱鳕鱼贵五十英镑，他们把涨价摊到了整张菜单上面" };
+  const tooShort = scripted({ reference_issue_lead: () => ({ title: "一箱鳕鱼贵50英镑，涨价摊到整张菜单", brief: ["太短。"] }) });
+  const fixed = await fitLead(long, tooShort.ask);
+  assert.equal(fixed.title, "一箱鳕鱼贵50英镑，涨价摊到整张菜单");
+  assert.deepEqual(fixed.brief, good, "a 导读 that fitted is not swapped for one that does not");
 });

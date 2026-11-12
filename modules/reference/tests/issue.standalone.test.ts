@@ -471,7 +471,7 @@ test("a draft too short for twelve minutes is written once more, told so, unless
 });
 
 test("a title or 导读 not the length asked is written again from the deep piece, and a part still not the length keeps what it had", async () => {
-  const deep = "洛杉矶一家人做赛百味加盟近40年〔1〕。";
+  const deep = "洛杉矶一家人做赛百味加盟近40年，门店从16家关到10家〔1〕。净利率2024年4%，2025年15%，今年预计略高于20%〔1〕。一箱鳕鱼贵50英镑〔1〕。";
   // Issue 19 (11-12): the check cut the 导读 to its first sentence, 35 characters.
   const short = { ...issue("16家关到10家，净利率从4%到15%", "说了〔1〕。"), brief: ["美国洛杉矶的Abtin Hishimian一家，做赛百味加盟近40年。"], deep };
   const good = ["美国洛杉矶一家人做赛百味加盟近40年，五年里在租约到期时一家一家不续，把门店从16家关到10家〔1〕。", "营业额在缩，净利率却从2024年的4%升到2025年的15%，今年预计略高于20%〔1〕。"];
@@ -490,4 +490,16 @@ test("a title or 导读 not the length asked is written again from the deep piec
   const fixed = await fitLead(long, tooShort.ask);
   assert.equal(fixed.title, "一箱鳕鱼贵50英镑，涨价摊到整张菜单");
   assert.deepEqual(fixed.brief, good, "a 导读 that fitted is not swapped for one that does not");
+});
+
+test("a rewritten title or 导读 with a number or 〔n〕 the deep piece does not have is not used, and a failed call keeps the issue", async () => {
+  const deep = "洛杉矶一家人做赛百味加盟近40年，门店从16家关到10家，净利率从4%升到15%〔1〕。";
+  const short = { ...issue("一个超过二十二个字的标题，写了很长很长很长很长", "说了〔1〕。"), brief: ["太短。"], deep };
+  const made = ["洛杉矶一家人做赛百味加盟近40年，在租约到期时一家一家不续，把门店从16家关到10家，一共关了6家〔1〕。", "营业额在缩，净利率却从4%升到15%，比原来高了好几倍，这家人说这是他们管理带宽回来的结果〔2〕。"];
+  const { ask } = scripted({ reference_issue_lead: () => ({ title: "16家关到10家，净利率升到20%", brief: made }) });
+  const out = await fitLead(short, ask);
+  assert.equal(out.title, short.title, "20 is not in the deep piece");
+  assert.deepEqual(out.brief, short.brief, "6 and 〔2〕 are not in the deep piece");
+  const down: Ask = async () => { throw new Error("fetch failed"); };
+  assert.equal(await fitLead(short, down), short);
 });

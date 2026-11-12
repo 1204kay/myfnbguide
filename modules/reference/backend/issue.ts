@@ -367,17 +367,20 @@ const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: z.array(z.
 export async function fitLead(issue: IssueText, ask: Ask): Promise<IssueText> {
   if (leadFits(issue) || !issue.deep) return issue;
   const user = `标题：${issue.title}\n\n导读：${issue.brief.join("")}\n\n细说正文：\n${issue.deep}`;
+  // A failed call leaves the issue as composed: it is checked already, and the length is not worth losing the day for.
   const answer = await ask("reference_issue_lead", LEAD, user, LeadAnswer).catch((error: unknown) => {
-    if (error instanceof ModelOutputError) return null;
-    throw error;
+    console.warn(`十一说 fitLead: ${error instanceof Error ? error.message : String(error)}`);
+    return null;
   });
   if (!answer) return issue;
+  // Not read sentence by sentence again: every number and 〔n〕 in what comes back must be in the deep piece as checked.
+  const fromDeep = (text: string) => [...text.matchAll(/〔[^〕]*〕|\d+(?:\.\d+)?/gu)].every((m) => issue.deep.includes(m[0]));
   const n = leadChars(answer.brief);
-  const leadOk = n >= LEAD_CHARS[0] && n <= LEAD_CHARS[1];
+  const leadOk = n >= LEAD_CHARS[0] && n <= LEAD_CHARS[1] && fromDeep(answer.brief.join(""));
   const oldLeadOk = leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
   return {
     ...issue,
-    title: [...issue.title].length > TITLE_MAX && [...answer.title].length <= TITLE_MAX ? answer.title : issue.title,
+    title: [...issue.title].length > TITLE_MAX && [...answer.title].length <= TITLE_MAX && fromDeep(answer.title) ? answer.title : issue.title,
     brief: !oldLeadOk && leadOk ? answer.brief : issue.brief,
   };
 }

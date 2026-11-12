@@ -162,16 +162,29 @@ export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onC
   const [length, setLength] = useState(seconds);
   const [speed, setSpeed] = useState(1);
 
+  // Where it was, kept apart from the element: iOS can drop a paused element's media while the phone is locked a minute
+  // or two, and then the lock screen's play shows 「未在播放」 (Kay 11-11: paused from the lock screen, screen off a
+  // minute or two, play again). Playing then loads the file again from here.
+  const last = useRef(0);
+  const resume = (a: HTMLAudioElement) => {
+    if (a.error || a.readyState === HTMLMediaElement.HAVE_NOTHING || a.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+      const t = last.current;
+      a.load();
+      a.addEventListener("loadedmetadata", () => { a.currentTime = t; }, { once: true });
+    }
+    return a.play().catch(() => setPlaying(false));
+  };
+
   useEffect(() => {
     const a = audio.current;
     if (!a) return;
-    void a.play().catch(() => setPlaying(false));
+    void resume(a);
     // The lock screen and the headphones' buttons name the issue and play/pause it.
     if ("mediaSession" in navigator) {
       // Without artwork iOS shows the site icon, whose transparent rounded corners come out white;
       // the cover is a full square and the lock screen rounds it itself.
       navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "十一说", artwork: [{ src: "/shiyi-cover.png", sizes: "1024x1024", type: "image/png" }] });
-      navigator.mediaSession.setActionHandler("play", () => void a.play());
+      navigator.mediaSession.setActionHandler("play", () => void resume(a));
       navigator.mediaSession.setActionHandler("pause", () => a.pause());
     }
     return () => {
@@ -183,11 +196,12 @@ export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onC
   const toggle = () => {
     const a = audio.current;
     if (!a) return;
-    if (a.paused) void a.play();
+    if (a.paused) void resume(a);
     else a.pause();
   };
   const seek = (t: number) => {
     if (audio.current) audio.current.currentTime = t;
+    last.current = t;
     setAt(t);
   };
   // timeupdate comes only about four times a second, so the lit characters would trail and jump; while the 文字稿 is
@@ -221,10 +235,11 @@ export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onC
           ref={audio}
           src={url}
           preload="metadata"
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
+          // The lock screen keeps the issue as what is playing only while it is told the state (iOS: 「未在播放」 otherwise).
+          onPlay={() => { setPlaying(true); if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing"; }}
+          onPause={() => { setPlaying(false); if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused"; }}
           onEnded={() => setPlaying(false)}
-          onTimeUpdate={(e) => setAt(e.currentTarget.currentTime)}
+          onTimeUpdate={(e) => { last.current = e.currentTarget.currentTime; setAt(e.currentTarget.currentTime); }}
           onLoadedMetadata={(e) => Number.isFinite(e.currentTarget.duration) && setLength(e.currentTarget.duration)}
         />
         <Seek at={at} length={length} onSeek={seek} />

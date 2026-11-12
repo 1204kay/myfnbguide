@@ -193,7 +193,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
 
 /**
  * The script read aloud, line by line, the lines joined with a breath between (joinLines): a WAV (16-bit, one channel),
- * and where each line starts. No line is read again for its pitch: #178 read lines far off the issue's with seeds 1
+ * and where each line starts. A line is read again only for a drop in the middle of it (lowSeconds), not for its pitch as a whole: #178 read lines far off the issue's with seeds 1
  * and 2, and the other takes came back as high or low as the first (issue 10 on 11-03: 2 of 16 lines brought near;
  * issue 2: 2 of 34; about 40% more characters). The pitch goes with the words, short heads like 「第二条，英国酒税。」
  * reading high whatever the seed, not with the take.
@@ -204,13 +204,13 @@ async function read(script: string, subject: string, attempt: number, voice = VO
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
   let rate = 0;
   let calls = 0;
-  const say = async (line: string, n: number, relink?: number, hops = 0): Promise<Int16Array> => {
+  const say = async (line: string, n: number, relink?: number, hops = 0, take = 0): Promise<Int16Array> => {
     // A line every 1.1 s keeps under the `speech-qwen` row's 60 a minute: 11-01 23:09 issue 2 read its first 60 lines in
     // 45 s and the 61st was refused (Budget for speech-qwen exhausted (minute)), and a 3,350-character issue runs past 60.
     if (calls++ > 0) await sleep(1_100);
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt }, requestSummary: { chars: line.length, n, attempt }, ...(relink ? { attemptTag: `relink:${relink}` } : {}) },
+      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt, ...(take ? { take } : {}) }, requestSummary: { chars: line.length, n, attempt, ...(take ? { take } : {}) }, ...(relink ? { attemptTag: `relink:${relink}` } : {}) },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
         const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
@@ -240,7 +240,7 @@ async function read(script: string, subject: string, attempt: number, voice = VO
       // unchanged line of an issue read again from its revised script) reuses that receipt and its link, which lasts
       // 24 h. Such a link gone, the line is asked for again under a tag naming that receipt; a later run finds the same
       // chain, and the step past its last (also gone) link is a new request.
-      if (got.status >= 400 && got.status < 500 && receipt.reused && hops < MAX_READS) return say(line, n, receipt.receiptId, hops + 1);
+      if (got.status >= 400 && got.status < 500 && receipt.reused && hops < MAX_READS) return say(line, n, receipt.receiptId, hops + 1, take);
       throw new Error(`speech-qwen: line ${n + 1} audio ${got.status} (the link lasts 24 h)`);
     }
     const wav = wavSamples(Buffer.from(await got.arrayBuffer()));
@@ -250,9 +250,52 @@ async function read(script: string, subject: string, attempt: number, voice = VO
   };
   const lines = scriptLines(script);
   const parts: Int16Array[] = [];
-  for (const [n, line] of lines.entries()) parts.push(await say(line, n));
+  for (const [n, line] of lines.entries()) {
+    // A line whose voice drops low for a few characters is read again, and the take that drops least is kept.
+    let best = await say(line, n);
+    let low = lowSeconds(best, rate);
+    for (let take = 1; low > 0 && take <= DIP_TAKES; take += 1) {
+      const again = await say(line, n, undefined, 0, take);
+      const l = lowSeconds(again, rate);
+      if (l < low) { best = again; low = l; }
+    }
+    parts.push(best);
+  }
   const { samples, starts } = joinLines(parts, rate);
   return { wav: wavOf(samples, rate), starts };
+}
+
+/** How many more takes a line with a drop gets (lowSeconds). */
+export const DIP_TAKES = 2;
+/** A drop: this many semitones under the line's own median, for this long, not in the line's last second (a sentence falls at its end). */
+export const DIP = { semitones: 4, seconds: 1, tail: 1, window: 0.25 };
+/**
+ * How long, in seconds, a line's voice sits low in the middle of it. Kay 11-11 07:50 「有时候声音还是会忽然低沉 不过低沉通常
+ * 只持续几个字 … 一期大概有个三五次」, 11-13 「有低沉片段就不要」: the check over three minutes (pitchWindows) cannot see a
+ * second or two. Measured 11-13 on the audio up: issue 19 had 10 such lines of 97 (「其中酒吧、夜店和酒廊涨得最多」 8–10
+ * semitones down for 1.7 s), issue 17 6 of 69. Pitch by pyin a quarter second at a time, against the line's own median.
+ */
+export function lowSeconds(samples: Int16Array, rate: number): number {
+  const x = to16k(samples, rate);
+  const sr = 16_000;
+  const step = Math.round(DIP.window * sr);
+  const pitch: Array<number | null> = [];
+  for (let at = 0; at + step <= x.length; at += step) {
+    const f = pyin(x.subarray(at, at + step), sr);
+    pitch.push(f.length >= 4 ? median(f) : null);
+  }
+  const voiced = pitch.filter((f): f is number => f !== null);
+  if (voiced.length < 6) return 0;
+  const mid = median(voiced);
+  const last = pitch.length - Math.ceil(DIP.tail / DIP.window);
+  let total = 0, run = 0;
+  const end = () => { if (run * DIP.window >= DIP.seconds) total += run * DIP.window; run = 0; };
+  pitch.forEach((f, i) => {
+    if (f !== null && i < last && 12 * Math.log2(f / mid) < -DIP.semitones) run += 1;
+    else if (f !== null || !run) end();
+  });
+  end();
+  return total;
 }
 
 /** The samples of a 16-bit PCM WAV, wherever its data chunk sits. */

@@ -198,7 +198,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
  * issue 2: 2 of 34; about 40% more characters). The pitch goes with the words, short heads like 「第二条，英国酒税。」
  * reading high whatever the seed, not with the take.
  */
-async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[] }> {
+async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[]; dips: Dip[] }> {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
@@ -250,21 +250,27 @@ async function read(script: string, subject: string, attempt: number, voice = VO
   };
   const lines = scriptLines(script);
   const parts: Int16Array[] = [];
+  const dips: Dip[] = [];
   for (const [n, line] of lines.entries()) {
     // A line whose voice drops low for a few characters is read again, and the take that drops least is kept.
     let best = await say(line, n);
     let low = lowSeconds(best, rate);
+    const takes = [low];
     for (let take = 1; low > 0 && take <= DIP_TAKES; take += 1) {
       const again = await say(line, n, undefined, 0, take);
       const l = lowSeconds(again, rate);
+      takes.push(l);
       if (l < low) { best = again; low = l; }
     }
+    if (takes[0]) dips.push({ line: n + 1, takes, kept: low });
     parts.push(best);
   }
   const { samples, starts } = joinLines(parts, rate);
-  return { wav: wavOf(samples, rate), starts };
+  return { wav: wavOf(samples, rate), starts, dips };
 }
 
+/** A line read again for a drop: its number in the script, the seconds low of each take in turn, and of the one kept (0: none left). */
+export interface Dip { line: number; takes: number[]; kept: number }
 /** How many more takes a line with a drop gets (lowSeconds). */
 export const DIP_TAKES = 2;
 /** A drop: this many semitones under the line's own median, for this long, not in the line's last second (a sentence falls at its end). */
@@ -653,7 +659,7 @@ export interface VoiceReport {
   /** Readings of this issue begun, whatever came of them. */
   tries?: number;
   chars?: number; /** The script's length as the writer gave it, before the check's fixes. */ written?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
-  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
+  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** The lines read again for a drop (lowSeconds); none when the audio was read in an earlier run. */ dips?: Dip[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
   error?: string;
@@ -953,11 +959,12 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
     for (let attempt = saved ? used : used + 1; attempt <= MAX_READS; attempt += 1) {
       let wav: Buffer;
       let starts: number[];
+      let dips: Dip[] | undefined;
       if (saved && attempt === used) { wav = saved[1]; starts = JSON.parse(saved[2]) as number[]; }
       else {
         report.tries = attempt;
         await keep();
-        ({ wav, starts } = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model));
+        ({ wav, starts, dips } = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model));
         await writeFile(path.join(work, `${no}.starts.json`), JSON.stringify(starts));
         await writeFile(path.join(work, `${no}.wav`), wav);
         report.unheard = true;
@@ -973,7 +980,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const pitch = pitchWindows(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
-      report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
+      report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }), ...(dips?.length ? { dips } : {}) });
       if (!verdict.pass) { await keep(); continue; }
       if (opts.dryRun) { report.status = "tried"; return keep(); }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.

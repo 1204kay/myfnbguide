@@ -106,11 +106,14 @@ export function modelAsk(model: string, subject: string, receiptIds: number[], o
 const CLOSE_LABEL = /^合起来[：:]\s*/u;
 const PART_LABEL = /^(?:标题|导读|三句话|预告|快讯|细说|合起来)[：:]\s*/u;
 
+/** The 导读's sentences. A writer that gives them as one string is taken at its word: on 11-11 and 11-12 three drafts a day
+ * were refused for that alone, each a read of the whole day (380,000–530,000 tokens in) paid for nothing. */
+const Brief = z.preprocess((v) => (typeof v === "string" ? [v] : v), z.array(z.string().trim().min(1)).min(1));
 const IssueAnswer = z.object({
   /** The deep item's question. */
   title: z.string().trim().min(1),
   /** The deep item's 导读, under its title on the daily's lead and on the issue's page. */
-  brief: z.array(z.string().trim().min(1)).min(1),
+  brief: Brief,
   preview: z.string().trim().min(1),
   news: z.array(z.object({ head: z.string().trim().min(1), text: z.string().trim().min(1) })).min(1),
   deep: z.string().trim().min(1),
@@ -359,7 +362,7 @@ const leadChars = (brief: string[]) => bare(brief.join("")).length;
 export const leadFits = (issue: IssueText) =>
   [...issue.title].length <= TITLE_MAX && leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
 
-const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: z.array(z.string().trim().min(1)).min(1) });
+const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: Brief });
 
 /**
  * The title and 导读 written again from the deep piece when they are not the length asked: the prompts alone did not hold

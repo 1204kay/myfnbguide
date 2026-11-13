@@ -6,6 +6,7 @@
 // cards' type) follows the closest AIHOT page (the owner 10/16: modules keep the original).
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
+import { shortAddresses } from "@aihot/contracts/addresses";
 import { ITEM_COPY, reasonLines, SITE } from "@aihot/site";
 import { IconArrowLeft, IconChevronDown } from "@aihot/web/components/icons";
 import { Badge } from "@aihot/web/components/ui/Badge";
@@ -13,8 +14,9 @@ import { Collapse } from "@aihot/web/components/ui/Presence";
 import { StarButton } from "@aihot/web/features/feed/parts";
 import { Faces } from "@aihot/web/features/hot/Faces";
 import { copyText } from "@aihot/web/lib/clipboard";
+import { monthDayTime } from "@aihot/web/lib/format";
 import { siteUrl } from "@aihot/web/lib/seo";
-import { day, listCount, num, restCountText } from "../format.ts";
+import { listCount, num, restCountText } from "../format.ts";
 import type { CaseCard, Count, SituationRow } from "../types.ts";
 
 /**
@@ -40,7 +42,7 @@ export const BODY_LABEL = "mb-6 text-[12px] text-ink-4";
 
 /**
  * A page's header, as the topic page has it (AIHOT routes/topic.tsx): a small label in the accent, the title, a line
- * on what it is, its counts in one line (HANDOFF §2.4), and when it was updated on the right.
+ * on what it is, its counts in one line (HANDOFF §2.4), and when it was updated on the right (the day and the time, as there).
  * `asideFacts`: the page's aside shows the counts and the date from `side` (1176px, where ReadingLayout puts the aside
  * beside the page), so the header shows them below that.
  */
@@ -60,7 +62,7 @@ export function PageHeader({ kicker, title, dek, counts, updatedAt, asideFacts =
           </p>
         )}
       </div>
-      {updatedAt && <p className={`text-[12px] text-ink-4 ${hide}`}><time dateTime={updatedAt} className="num">{day(updatedAt)}</time> 更新</p>}
+      {updatedAt && <p className={`text-[12px] text-ink-4 ${hide}`}><time dateTime={updatedAt} className="num">{monthDayTime(updatedAt)}</time> 更新</p>}
     </header>
   );
 }
@@ -122,13 +124,14 @@ export function RankTag({ rank }: { rank: number }) {
 function SourceLine({ text }: { text: string }) {
   const m = /^(.*?)( · \d{4} 年 \d{1,2} 月)$/u.exec(text);
   if (!m) return <span className="min-w-0 truncate">{text}</span>;
-  return <><span className="min-w-0 truncate">{m[1]}</span><span className="shrink-0 whitespace-nowrap">{m[2]}</span></>;
+  return <><span className="min-w-0 truncate">{m[1]}</span><span className="shrink-0 whitespace-pre">{m[2]}</span></>;
 }
 
 /**
  * An item, as the feed shows one (AIHOT features/feed/FeedItem.tsx, in the phone row of features/feed/Timeline.tsx
  * TimelineSlot): a row between hairlines on phones, a card from desktops; its source line with the bookmark, its title
- * leading to the item's page, the first of its points under a hairline from desktops. A list's `li`.
+ * leading to the item's page, its 导读 cut to the feed's lines, the first of its points under a hairline from desktops.
+ * A list's `li`.
  */
 export function StoryCard({ c }: { c: CaseCard }) {
   return (
@@ -144,6 +147,7 @@ export function StoryCard({ c }: { c: CaseCard }) {
           <h3 className="mt-1.5 line-clamp-2 text-[17px] font-[650] leading-[1.5] text-ink lg:mt-2 lg:line-clamp-none lg:leading-[1.55]">
             <Link viewTransition to={`/items/${c.id}`} className="after:absolute after:inset-0 after:content-['']">{c.title}</Link>
           </h3>
+          {c.item.summary && <p className="mt-1 line-clamp-2 text-[14.5px] leading-[1.7] text-ink-3 lg:mt-2 lg:line-clamp-3 lg:text-[15px] lg:leading-[1.75]">{shortAddresses(c.item.summary)}</p>}
           {c.reason && (
             <div className="mt-1 lg:mt-3 lg:border-t lg:border-line-soft lg:pt-3">
               <p className="line-clamp-1 text-[13px] leading-[1.65] text-note lg:line-clamp-none lg:leading-[1.75]">{`${ITEM_COPY.reasonLabel}：`}{reasonLines(c.reason)[0]}</p>

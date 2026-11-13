@@ -2,13 +2,14 @@
 // modules keep the original's frame): 返回 and the day in the left rail, 分享 in the right one; the label over the title,
 // the three sentences the daily leads with, then the issue as it is read out (the program's greeting, the news, the
 // turn to the one told in depth, the goodbye) under 正文, each 〔n〕 going to its original under 原文出处, and what
-// 十一 is. Only the frame's parts already on the story page are used (myfnb/DIFFERENCES.md).
-import { Fragment } from "react";
+// 十一 is. The frame is the item page's; what is the module's own is listed in myfnb/DIFFERENCES.md.
+import { Fragment, useState } from "react";
 import { Link, useLoaderData, useNavigate, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import { BarButton, PhoneBar } from "@aihot/web/components/shell/PhoneBar";
-import { IconArrowLeft, IconArrowRight, IconCopy, IconMenu, IconShare } from "@aihot/web/components/icons";
+import { IconArrowLeft, IconArrowRight, IconCopy, IconMenu, IconMore, IconShare } from "@aihot/web/components/icons";
 import { Menu, MenuItem } from "@aihot/web/components/ui/Menu";
 import { ArticleLayout, MoreLink, RailSection } from "@aihot/web/components/ui/Page";
+import { ActionsSheet } from "@aihot/web/features/item/ReaderTools";
 import { monthDay } from "@aihot/contracts/time";
 import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { articleLd, breadcrumbLd, pageMeta, siteUrl, titled } from "@aihot/web/lib/seo";
@@ -63,6 +64,7 @@ export default function IssueRoute() {
   const navigate = useNavigate();
   const { share, copy, toast } = useShare();
   const listen = useListen();
+  const [actionsOpen, setActionsOpen] = useState(false);
   const audio = p.audio;
   const path = `/reference/issues/${p.no}`;
   const title = `${kicker(p)}：${issue.title}`;
@@ -104,7 +106,7 @@ export default function IssueRoute() {
   );
   const facts = (
     <RailSection title="本期信息">
-      <div className="text-[14px] leading-snug text-ink-2">{day(p.date)} 日报的头条</div>
+      <div className="text-[14px] font-semibold leading-snug text-ink">{day(p.date)} 日报的头条</div>
       <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">依据当天收录的 {p.count} 条资料撰写，引用原文 {p.sources.length} 篇</div>
       {p.daily && <div className="mt-3"><MoreLink to={up.to}>查看当日日报</MoreLink></div>}
     </RailSection>
@@ -119,14 +121,15 @@ export default function IssueRoute() {
   );
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-8">
+      {/* Phones: 分享 and 复制链接 behind the bar's ···, as the item page has its further actions (routes/item.tsx). */}
       <PhoneBar
         back={up}
         title={kicker(p)}
         actions={
           <>
             {audio && !listen.open && <ListenButton compact seconds={audio.seconds} onClick={listen.start} />}
-            <BarButton label="分享" onClick={onShare}>
-              <IconShare size={20} />
+            <BarButton label="更多操作" onClick={() => setActionsOpen(true)}>
+              <IconMore size={22} />
             </BarButton>
           </>
         }
@@ -137,7 +140,7 @@ export default function IssueRoute() {
         <div className="sticky top-0 z-20 -mx-2 hidden items-center justify-between gap-3 bg-bg/95 px-2 py-1.5 backdrop-blur lg:flex 2xl:hidden">
           {backButton}
           <div className="flex items-center gap-1 side:hidden">
-            {audio && !listen.open && <ListenButton compact seconds={audio.seconds} onClick={listen.start} />}
+            {audio && !listen.open && <ListenButton compact seconds={audio.seconds} onClick={listen.start} className="touch:h-11" />}
             {shareButton("touch:h-11")}
             {moreMenu}
           </div>
@@ -211,6 +214,14 @@ export default function IssueRoute() {
         </article>
       </ArticleLayout>
       {audio && listen.open && <PlayerBar url={audio.url} seconds={audio.seconds} title={kicker(p)} transcript={audio.transcript} starts={audio.starts} pauses={audio.pauses} onClose={listen.close} />}
+      <ActionsSheet
+        open={actionsOpen}
+        onClose={() => setActionsOpen(false)}
+        rows={[
+          { key: "share", label: "分享", icon: <IconShare size={20} />, onSelect: onShare },
+          { key: "copy", label: "复制链接", icon: <IconCopy size={20} />, onSelect: onCopy },
+        ]}
+      />
       {toast}
     </div>
   );

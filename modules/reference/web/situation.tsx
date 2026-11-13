@@ -13,7 +13,8 @@ import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
 import type { SituationPage, TopicView } from "../types.ts";
 import { SituationFigure } from "./figures";
-import { day, num, tellers } from "../format.ts";
+import { monthDayTime, relativeTime } from "@aihot/web/lib/format";
+import { num, tellers } from "../format.ts";
 import { BackLink, CitedText, FIRST, FoldToggle, PageHeader, ROW_BUTTON, StoryCards, useShare } from "./ui";
 
 export const handle: Screen = { tab: "reference" };
@@ -62,7 +63,7 @@ export default function SituationRoute() {
           <p key={unit} className="py-1 text-[13.5px] text-ink-2"><span className="num mr-1 font-semibold text-ink">{num(n)}</span>{unit}</p>
         ))}
       </div>
-      {s.updatedAt && <p className="mt-3 border-t border-line-soft pt-3 text-[12px] text-ink-4"><time dateTime={s.updatedAt} className="num">{day(s.updatedAt)}</time> 更新</p>}
+      {s.updatedAt && <p className="mt-3 border-t border-line-soft pt-3 text-[12px] text-ink-4"><time dateTime={s.updatedAt} className="num">{monthDayTime(s.updatedAt)}</time> 更新</p>}
       <button type="button" onClick={onShare} className={`${ROW_BUTTON} mt-3 w-full`}><IconShare size={14} />分享</button>
     </AsideCard>
   );
@@ -187,7 +188,7 @@ function Overview({ topic, countryOf }: { topic: TopicView; countryOf: (id: stri
       </div>
       <div className="mt-3.5">
         <Points points={topic.lead} topic={topic} countryOf={countryOf} className="" />
-        <p className="mt-2 text-[12px] text-ink-4">AI 根据 <span className="num">{topic.items}</span> 条原文整理 · <time dateTime={topic.updatedAt} className="num">{day(topic.updatedAt)}</time> 更新</p>
+        <p className="mt-2 text-[12px] text-ink-4" suppressHydrationWarning>AI 根据 <span className="num">{topic.items}</span> 条原文整理 · {relativeTime(topic.updatedAt)}更新</p>
       </div>
     </section>
   );

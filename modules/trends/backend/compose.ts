@@ -33,9 +33,13 @@ export const MIN_PUBLISHERS = 3;
 /** A sentence over this is cut by the writer's own rule (90 characters) with some room. */
 const MAX_LINE = 120;
 /**
- * Room for the find and gather answers. They grow with the week: at 4,000 the week of 11-02 (about 700 reports) had
- * its find answer cut off sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid
- * for), and the week after had about three times the reports. The model writes up to 384K (api-docs.deepseek.com
+ * Room for the find and gather answers. At 4,000 the week of 11-02 (about 700 reports) had its find answer cut off
+ * sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid for). Two answers read
+ * back: one listed what it would not count as well, a topic a report with "只有一条讲……" for a reason (receipt 171070,
+ * 104 topics); the other cut the week fine, two or three reports a topic, one pair twice (173544, 86). The one that
+ * ended had 44 (174141), five of them single reports. All three began with one owner's own posts as a topic. The
+ * prompt now says what is not listed is not written and one author's posts are one source (11-13); the room is for
+ * a week listed fine all the same. The model writes up to 384K (api-docs.deepseek.com
  * pricing, read 11-13) and only what is written is paid for; 32,000 at about 180 tokens a second stays inside the
  * call's 300 s.
  */
@@ -137,21 +141,25 @@ async function gather(found: Array<{ name: string; items: number[]; why: string 
   return withGathered(found, res.data.topics);
 }
 
+/** The find call alone: the things the model names over the week's pool, as it lists them (myfnb/trends-trial.ts --find reads it as it is). */
+export async function findTopics(pool: PoolItem[], model: string, subject: string, receipts: number[]): Promise<Array<{ name: string; items: number[]; why: string }>> {
+  if (pool.length < MIN_PUBLISHERS) return [];
+  const res = await chatJson({
+    model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
+    user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
+  });
+  receipts.push(res.receiptId);
+  await completeReceipt(sql, res.receiptId);
+  return res.data.topics;
+}
+
 /** Find, write and check one week's topics (paid calls, nothing kept: myfnb/trends-trial.ts reads it as it is). */
 export async function writeWeek(key: string, startDate: string, endDate: string): Promise<{ topics: Topic[]; dropped: Dropped[]; receipts: number[]; pool: PoolItem[]; found: Array<{ name: string; found: number; gathered: number }> }> {
   const pool = await weekPool(startDate, endDate);
   const receipts: number[] = [];
   const model = await modelFor(TRENDS_STEP);
   const subject = `trends:${key}`;
-  const found = pool.length < MIN_PUBLISHERS ? { topics: [] } : (await (async () => {
-    const res = await chatJson({
-      model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
-      user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
-    });
-    receipts.push(res.receiptId);
-    await completeReceipt(sql, res.receiptId);
-    return res.data;
-  })());
+  const found = { topics: await findTopics(pool, model, subject, receipts) };
   const gathered = await gather(found.topics, pool, model, subject, receipts);
   const { kept, dropped } = countTopics(gathered, pool);
   const byId = new Map(pool.map((p) => [p.id, p]));

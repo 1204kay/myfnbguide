@@ -16,6 +16,7 @@ import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { issueLead, issuePath, issueSitemap, listIssues, readIssue, writeIssue } from "./backend/issues.ts";
 import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
 import { creditAlerts } from "./backend/credit.ts";
+import { failedJobAlerts, missingIssueAlerts } from "./backend/failed.ts";
 import { AGENT_ABILITIES } from "./backend/agent.ts";
 import { articlesToPlace, PLACE_STEP, placeWaiting, placingOn } from "./backend/place.ts";
 import { TOPIC_CHECK_STEP, TOPIC_STEP, topicSlugs, topicStale, writeTopic } from "./backend/topic.ts";
@@ -124,7 +125,8 @@ export default defineServerModule({
   // The daily leads with the day's 十一说 when it was written in time (Kay 10-18: 每天放在 08:00 日报最上面).
   dailyLead: (date) => issueLead(date),
   // A warning before the Claude credit runs out and the morning's issue with it (backend/credit.ts).
-  alerts: async (now) => [...await creditAlerts(now), ...await untimedAlerts()],
+  // And what otherwise fails with nobody told: a module's queue job out of retries, a day without its 十一说 (backend/failed.ts).
+  alerts: async (now) => [...await creditAlerts(now), ...await untimedAlerts(), ...await failedJobAlerts(), ...await missingIssueAlerts(now)],
   // The library and 十一说 for agents (backend/agent.ts): addresses under /api/v1/agent and MCP tools, named in the guide.
   agent: { abilities: AGENT_ABILITIES },
   // llms.txt names the library and 十一说 beside the engine's pages. The library lists items by cause (backend/read.ts).

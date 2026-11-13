@@ -16,7 +16,9 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
-import { issueLead, writeIssue } from "../backend/issues.ts";
+import { dayItems, issueLead, writeIssue } from "../backend/issues.ts";
+import { failedJobAlerts, missingIssueAlerts } from "../backend/failed.ts";
+import { getBoss } from "@aihot/backend/jobs/queue";
 import { z } from "zod";
 import { AGENT_ABILITIES } from "../backend/agent.ts";
 import { BATCH_TIMES, batchLane, claudeJson } from "../backend/claude.ts";
@@ -188,4 +190,53 @@ test("a Claude call goes as a batch; one not back in time is canceled, and that 
     Object.assign(BATCH_TIMES, times);
     await claude.close();
   }
+});
+
+test("十一 reads what was listed in the day, whatever date the original bears", async () => {
+  // Dated thirty hours back by its source, listed two hours before the day's edition: the daily lists it that day.
+  const day = "2020-03-20";
+  const at = editionAt("daily", day, -7200);
+  const { articleId } = await upsertMaterial({ sourceId: SRC, url: `https://example.com/issue-${T}-late`, title: `Late ${T}`, bodyText: "原文", bodyStatus: "ok", via: "fetch", publishedAt: new Date(at.getTime() - 30 * 3_600_000), discoveredAt: at });
+  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected)
+            VALUES (${articleId}, 1, 'rule', 'pass', 'tip', '迟到的一条', '摘要', 50, false)`;
+  await publishArticle(articleId, { now: at, releasedAt: at });
+  ids.push(articleId);
+  assert.ok((await dayItems(editionAt("daily", day))).some((i) => i.id === articleId), "listed in the window: read");
+  assert.ok(!(await dayItems(editionAt("daily", "2020-03-21"))).some((i) => i.id === articleId), "and only in that one");
+  // Made a 精选 and released the next day: the daily would carry it again but for its own guard; 十一 read it yesterday.
+  const next = editionAt("daily", "2020-03-21");
+  await sql`UPDATE publications SET selected = true, visible_after = ${new Date(next.getTime() - 3_600_000)} WHERE article_id = ${articleId}`;
+  assert.ok((await dayItems(next)).some((i) => i.id === articleId), "in the release's window");
+  await sql`INSERT INTO reference_issues (date, no, status, content, version, models) VALUES (${day}, null, 'thin', ${sql.json({ items: [{ id: articleId }] })}, 'test', '{}')`;
+  try {
+    assert.ok(!(await dayItems(next)).some((i) => i.id === articleId), "not read twice");
+  } finally {
+    await sql`DELETE FROM reference_issues WHERE date = ${day}`;
+  }
+});
+
+test("a day without its 十一说 and a module job out of retries are told", async () => {
+  const day = "2020-03-25";
+  const due = editionAt("daily", day, -90 * 60).getTime();
+  const boss = await getBoss();
+  await boss.createQueue("reference.issue").catch(() => {});
+  await sql`INSERT INTO settings (key, value, updated_by) VALUES ('reference.issues', ${sql.json({ from: "2020-03-01" })}, 'test') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`;
+  try {
+    assert.deepEqual(await missingIssueAlerts(due - 60_000), [], "before it is due nothing is missing");
+    assert.match((await missingIssueAlerts(due + 60_000))[0]!.title, /2020-03-25.*十一说没有写出来/);
+    const running = await boss.send("reference.issue", { date: day });
+    assert.deepEqual(await missingIssueAlerts(due + 60_000), [], "its job still waiting or running is waited for");
+    await sql`DELETE FROM pgboss.job WHERE id = ${running!}`;
+    assert.deepEqual(await missingIssueAlerts(editionAt("daily", DAY).getTime()), [], "a day that has its issue is not told");
+  } finally {
+    await sql`DELETE FROM settings WHERE key = 'reference.issues'`;
+  }
+  await boss.createQueue("reference.voice").catch(() => {});
+  const id = await boss.send("reference.voice", { no: 999 });
+  // As pg-boss leaves a job whose retries are used up.
+  await sql`UPDATE pgboss.job SET state = 'failed', completed_on = now(), output = ${sql.json({ message: `boom ${T}` })} WHERE id = ${id!}`;
+  const told = (await failedJobAlerts()).find((f) => f.key === "modules.failed.reference.voice");
+  assert.match(told?.title ?? "", /十一说朗读/);
+  assert.ok(told?.detail?.includes(`boom ${T}`), "with why it failed");
+  await sql`DELETE FROM pgboss.job WHERE id = ${id!}`;
 });

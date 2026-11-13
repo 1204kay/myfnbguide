@@ -6,7 +6,7 @@ import { test } from "node:test";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
-import { answerText, CACHE_TTL, joined, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
+import { answerText, BATCH_TIMES, batchBody, batchLane, batchMessage, CACHE_TTL, joined, laneOpen, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
 import { amendIssue, type Ask, fitLead, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
@@ -414,6 +414,7 @@ test("the Claude credit warns at 80% spent, or once the period's pace would go o
   assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000 }]), 6);
   // Of a million read in: 100k written for an hour (2 × $4), 800k read from the cache ($0.20), 100k plain.
   assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000, cacheRead: 800_000, write1h: 100_000 }]).toFixed(2), "3.36", "0.4 plain + 0.16 read + 0.8 written + 2 output");
+  assert.equal(monthSpend([{ model: "claude-opus-5-5", input: 1_000_000, output: 100_000, cacheRead: 800_000, write1h: 100_000, batch: true }]).toFixed(2), "1.68", "sent as a batch, half of all of it");
   assert.equal(creditFinding(20, nov(3)), null, "two days say too little about the period");
   assert.equal(creditFinding(20, nov(10)), null, "US$20 nine days in is about US$66 for the period");
   const pace = creditFinding(40, nov(10));
@@ -453,6 +454,21 @@ test("the Messages request marks only the cached part, for an hour, and leaves t
   assert.deepEqual(usageOf({ input_tokens: 100, cache_creation_input_tokens: 30_000, cache_read_input_tokens: 0, output_tokens: 9000 }),
     { input_tokens: 100, cache_creation_input_tokens: 30_000, cache_read_input_tokens: 0, output_tokens: 9000, prompt_tokens: 30_100, completion_tokens: 9000 });
   assert.equal(answerText({ content: [{ type: "thinking", text: "" }, { type: "text", text: "{\"a\":" }, { type: "text", text: "1}" }] }), "{\"a\":1}");
+});
+
+test("a Claude call goes as a batch of the same one request, and a run that waited too long sends the rest straight", () => {
+  const body = messagesBody(MODELS["claude-opus-5-5"]!, "核对员", { cached: "原文", rest: "稿子" }, 8000);
+  assert.deepEqual(batchBody(body), { requests: [{ custom_id: "r", params: body }] }, "what the model is asked is the request it was sent straight");
+  const message = { id: "msg_1", content: [{ type: "text", text: "{}" }], usage: { input_tokens: 10, output_tokens: 5 } };
+  assert.deepEqual(batchMessage(`${JSON.stringify({ custom_id: "r", result: { type: "succeeded", message } })}\n`), { message });
+  assert.deepEqual(batchMessage(JSON.stringify({ custom_id: "r", result: { type: "canceled" } })), { failed: "canceled" });
+  assert.deepEqual(batchMessage(""), { failed: "no result" });
+  assert.equal(usageOf(message.usage, true)?.batch, true, "the receipt says it was a batch, which the credit halves the price by");
+  assert.ok(!("batch" in usageOf(message.usage)!));
+  const lane = batchLane();
+  assert.ok(laneOpen(lane) && !laneOpen(undefined));
+  assert.ok(!laneOpen({ ...lane, off: true }), "a call that missed its wait");
+  assert.ok(!laneOpen({ ...lane, waitedMs: BATCH_TIMES.run }), "a run slow in every call");
 });
 
 test("a draft too short for twelve minutes is written once more, told so, unless the day had little to tell", async () => {

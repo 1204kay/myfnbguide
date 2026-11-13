@@ -519,3 +519,13 @@ test("a rewritten title or 导读 with a number or 〔n〕 the deep piece does n
   const down: Ask = async () => { throw new Error("fetch failed"); };
   assert.equal(await fitLead(short, down), short);
 });
+
+test("a 导读 the writer gives as one string is taken as its one sentence, not refused", async () => {
+  // 11-11 and 11-12: three drafts a day refused for this alone.
+  const { ask } = scripted({
+    reference_issue_write: () => ({ ...issue("一稿", "说了〔1〕。"), brief: `导读写成了一整段${"字".repeat(80)}` }),
+    reference_issue_check: () => ({ lively: 7, problems: [] }),
+  });
+  const c = await composeIssue(ITEMS, "2026-10-16", ask);
+  assert.deepEqual(c.chosen?.issue.brief, [`导读写成了一整段${"字".repeat(80)}`]);
+});

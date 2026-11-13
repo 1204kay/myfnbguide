@@ -4,7 +4,7 @@ import { IntentLink } from "../ui/IntentLink";
 import { SITE } from "@aihot/site";
 import { RingMark, Wordmark } from "@aihot/site/brand/Logo.tsx";
 import { useChangelogSeen } from "../../lib/local-state";
-import { activeSidebarItem, rail, railIsActive, sidebar, type NavItem } from "./nav";
+import { litItem, rail, railIsActive, sidebar, type NavItem, type Tab } from "./nav";
 import { useScreen } from "./screens";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { Filings } from "./Filings";
@@ -46,14 +46,15 @@ function SideLink({ item, dot, active }: { item: NavItem; dot: boolean; active: 
 function Rail({ dot }: { dot: boolean }) {
   const { pathname } = useLocation();
   const { tab, home } = useScreen();
+  const lit = (all: Tab[]) => litItem(all.filter((t) => t.key !== "me").map((t) => ({ ...t, end: t.to === "/" })), pathname, { tab, home });
   return (
     <aside className="scrollbar-thin sticky top-0 hidden h-dvh w-16 shrink-0 flex-col items-center border-r border-line bg-sidebar px-1.5 pb-[max(14px,env(safe-area-inset-bottom))] pt-5 lg:flex wide:hidden short:overflow-y-auto short:pt-3">
       <Link to="/" className="mb-3 flex size-11 shrink-0 items-center justify-center text-accent short:mb-1" aria-label={`${SITE.name} 首页`}>
         <RingMark className="size-7" />
       </Link>
       <nav className="flex w-full flex-col gap-1" aria-label="主导航">
-        {rail().map((t) => {
-          const on = railIsActive(t, pathname, tab ?? home);
+        {rail().map((t, _, all) => {
+          const on = t.key === "me" ? railIsActive(t, pathname, tab ?? home) : t.to === lit(all)?.to;
           const Icon = t.icon;
           return (
             <IntentLink
@@ -80,6 +81,7 @@ function Rail({ dot }: { dot: boolean }) {
 export function Sidebar({ changelogVersion }: { changelogVersion: string | null }) {
   const dot = useChangelogDot(changelogVersion);
   const { pathname } = useLocation();
+  const screen = useScreen();
   // The links scroll between the wordmark and the footer; in a short window the footer would leave them
   // only a few rows, so the whole column scrolls instead.
   return (
@@ -92,7 +94,7 @@ export function Sidebar({ changelogVersion }: { changelogVersion: string | null 
         <nav className="scrollbar-thin -mx-1 flex-1 overflow-y-auto px-1 short:flex-none short:overflow-visible" aria-label="主导航">
           {sidebar().map((section) => {
             // Only the most specific entry of a section is lit, so a detail page does not light the list above it too.
-            const lit = activeSidebarItem(section.items, pathname);
+            const lit = litItem(section.items, pathname, screen);
             return (
               <div key={section.title}>
                 <div className="px-2.5 pb-1 pt-3.5 text-[11px] text-ink-4">{section.title}</div>

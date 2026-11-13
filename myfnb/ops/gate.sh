@@ -50,7 +50,7 @@ case $verb in
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -F $'\t' -v ON_ERROR_STOP=1 -c "SELECT e.key, e.value->>'since', e.value->>'title' FROM settings s, jsonb_each(s.value) AS e(key, value) WHERE s.key = 'alerts.state' ORDER BY e.value->>'since'" ;;
   feedback)
     # 读者反馈存在库里，只有后台 /admin 看得到，而飞书转发关着：有人要求下架、谈收费、删资料，没人知道（Kay 11-09 21:32）。
-    # css-cloud 每天读一次，有新的才报。feedback <编号> 只给编号比它大的，没给编号就给最近 7 天的；模型已判成没有内容的（spam）不给。
+    # css-cloud 每天读一次，有新的才报。feedback <编号> 只给编号比它大的，没给编号就给最近 7 天的；标成 spam 的不给（后台手动标的；转发开着时模型判成没有内容的也会标，服务器上转发关着）。
     # 一行一条：编号<TAB>时间<TAB>处理状态<TAB>开头 200 字（换行和制表符换成空格）。不输出邮箱、来源和截图；最多 200 条。
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -F $'\t' -v ON_ERROR_STOP=1 -v after="$(num "${a[1]:-}" -1)" <<'SQL'
 SELECT id, to_char(created_at AT TIME ZONE 'Asia/Kuala_Lumpur', 'YYYY-MM-DD HH24:MI'), status, regexp_replace(left(content, 200), '\s+', ' ', 'g')

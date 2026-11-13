@@ -359,8 +359,16 @@ export async function reviewIssue(issue: IssueText, items: DayItem[], ask: Ask):
 export const TITLE_MAX = 22;
 export const LEAD_CHARS = [80, 160] as const;
 const leadChars = (brief: string[]) => bare(brief.join("")).length;
-export const leadFits = (issue: IssueText) =>
-  [...issue.title].length <= TITLE_MAX && leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
+/**
+ * A title as the site shows it. The site may add to it when a page is read: modules/usd puts 「（约 US$…）」 after an
+ * amount in another currency, and that note is in the two lines too. Issue 18's title was 20 characters as kept and 30
+ * as shown (11-11: 「一箱鳕鱼贵50英镑（约 US$66），他们把涨价摊到整张菜单」); counted as kept, it passed. A module does not
+ * import another, so the site tells this one how (site/modules/server.ts, titlesShownAs); untold, a title is as kept.
+ */
+let shown: (title: string) => Promise<string> = async (title) => title;
+export function titlesShownAs(show: (title: string) => Promise<string>): void { shown = show; }
+export const leadFits = (issue: IssueText, title = issue.title) =>
+  [...title].length <= TITLE_MAX && leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
 
 const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: Brief });
 
@@ -371,8 +379,11 @@ const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: Brief });
  * read after it (reviewIssue) holds it to the originals. A part that comes back still not the length keeps what it had.
  */
 export async function fitLead(issue: IssueText, ask: Ask): Promise<IssueText> {
-  if (leadFits(issue) || !issue.deep) return issue;
-  const user = `标题：${issue.title}\n\n导读：${issue.brief.join("")}\n\n细说正文：\n${issue.deep}`;
+  // Shown as kept when the showing fails: the length is not worth losing the day for.
+  const show = (title: string) => shown(title).catch(() => title);
+  const title = await show(issue.title);
+  if (leadFits(issue, title) || !issue.deep) return issue;
+  const user = `标题：${issue.title}${title === issue.title ? "" : `\n（网站上显示成：${title}，${[...title].length} 个字）`}\n\n导读：${issue.brief.join("")}\n\n细说正文：\n${issue.deep}`;
   // A failed call leaves the issue as composed: it is checked already, and the length is not worth losing the day for.
   const answer = await ask("reference_issue_lead", LEAD, user, LeadAnswer).catch((error: unknown) => {
     console.warn(`十一说 fitLead: ${error instanceof Error ? error.message : String(error)}`);
@@ -386,7 +397,7 @@ export async function fitLead(issue: IssueText, ask: Ask): Promise<IssueText> {
   const oldLeadOk = leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
   return {
     ...issue,
-    title: [...issue.title].length > TITLE_MAX && [...answer.title].length <= TITLE_MAX && fromDeep(answer.title) ? answer.title : issue.title,
+    title: [...title].length > TITLE_MAX && [...(await show(answer.title))].length <= TITLE_MAX && fromDeep(answer.title) ? answer.title : issue.title,
     brief: !oldLeadOk && leadOk ? answer.brief : issue.brief,
   };
 }

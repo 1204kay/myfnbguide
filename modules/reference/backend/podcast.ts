@@ -39,6 +39,12 @@ export interface Episode {
 
 const cdata = (s: string) => `<![CDATA[${s.replace(/]]>/g, "]]]]><![CDATA[>").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "")}]]>`;
 
+/** The show notes as the little HTML Apple and Spotify both take inside CDATA (<p>, <a>): a bare address in plain text
+ *  is not a link there, and 小宇宙 makes no link of one either (Echo.js's notes, checked 11-14), so the way back to
+ *  the issue is an <a>; its text is the address itself, so an app that strips tags still shows where to go. */
+const notes = (e: Episode) => [...e.summary.split(/\n{2,}/).map(escapeXml), `全文和每句话的原文出处：<a href="${escapeXml(e.url)}">${escapeXml(e.url)}</a>`]
+  .map((p) => `<p>${p}</p>`).join("");
+
 /** The feed itself, from the episodes newest first. */
 export function podcastXml(episodes: Episode[], email: string | null): string {
   const home = siteUrl("/reference/issues");
@@ -46,7 +52,7 @@ export function podcastXml(episodes: Episode[], email: string | null): string {
   const items = episodes.map((e) => `    <item>
       <title>${escapeXml(e.title)}</title>
       <link>${escapeXml(e.url)}</link>
-      <description>${cdata(`${e.summary}\n\n全文和每句话的原文出处：${e.url}`)}</description>
+      <description>${cdata(notes(e))}</description>
       <guid isPermaLink="false">myfnb-shiyi-${e.no}</guid>
       <pubDate>${e.published.toUTCString()}</pubDate>
       <enclosure url="${escapeXml(e.audio)}" length="${e.bytes}" type="audio/mpeg" />

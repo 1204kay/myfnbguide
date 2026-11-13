@@ -2,6 +2,8 @@
 // ReportLayout with a bar leading back, the masthead's date line, SectionPage a topic and the reports' Story a
 // report). Each report keeps its source, title and original as the weekly shows them; its summary is our one
 // sentence from it. The headline is in the type of the reports' lead headline (ReportPaper): the page has no nameplate picture.
+// A topic's heading runs to two lines on a phone where the reports' section names are a word, so its number is kept
+// from shrinking here: under overflow-wrap:anywhere it would give way first and break into 0 / 1.
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import type { ReportNavigationResponse } from "@aihot/contracts/site";
 import { SITE, withSubject } from "@aihot/site";
@@ -46,7 +48,7 @@ export default function TrendsIssueRoute() {
   const { issue, index, today } = useLoaderData<typeof loader>();
   return (
     <ReportLayout kind="weekly" index={index} current={issue.key} today={today} back={{ to: `/weekly/${issue.key}`, label: "周报" }} title={TITLE}>
-      <article className="@container [overflow-wrap:anywhere]">
+      <article className="@container [overflow-wrap:anywhere] [&_section>header>.num]:shrink-0">
         <header className="pt-5 lg:pt-0">
           <div className="flex items-center justify-between gap-4 text-[12px] text-ink-4">
             <span>{`${SITE.name} · ${withSubject("周报")}`}</span>

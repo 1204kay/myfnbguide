@@ -365,8 +365,9 @@ const leadChars = (brief: string[]) => bare(brief.join("")).length;
  * as shown (11-11: 「一箱鳕鱼贵50英镑（约 US$66），他们把涨价摊到整张菜单」); counted as kept, it passed. A module does not
  * import another, so the site tells this one how (site/modules/server.ts, titlesShownAs); untold, a title is as kept.
  */
-let shown: (title: string) => Promise<string> = async (title) => title;
-export function titlesShownAs(show: (title: string) => Promise<string>): void { shown = show; }
+let shown: (title: string, context: string) => Promise<string> = async (title) => title;
+/** `context`: the 导读 and the deep piece, by which a bare 「元」 in the title is told for a currency, as the page's own text tells it. */
+export function titlesShownAs(show: (title: string, context: string) => Promise<string>): void { shown = show; }
 export const leadFits = (issue: IssueText, title = issue.title) =>
   [...title].length <= TITLE_MAX && leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
 
@@ -380,7 +381,7 @@ const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: Brief });
  */
 export async function fitLead(issue: IssueText, ask: Ask): Promise<IssueText> {
   // Shown as kept when the showing fails: the length is not worth losing the day for.
-  const show = (title: string) => shown(title).catch(() => title);
+  const show = (title: string) => shown(title, `${title}\n${issue.brief.join("")}\n${issue.deep}`).catch(() => title);
   const title = await show(issue.title);
   if (leadFits(issue, title) || !issue.deep) return issue;
   const user = `标题：${issue.title}${title === issue.title ? "" : `\n（网站上显示成：${title}，${[...title].length} 个字）`}\n\n导读：${issue.brief.join("")}\n\n细说正文：\n${issue.deep}`;

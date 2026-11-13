@@ -13,4 +13,4 @@ import { currentRates } from "@aihot/usd/backend/rates";
 export const SERVER_MODULES: readonly ServerModule[] = [reference, archive, social, checker, trends, dailypick, usd];
 
 // 十一说 counts its title's length as the site shows it: with the dollar note usd adds after an amount in another currency.
-titlesShownAs(async (title) => { const rates = await currentRates(); return rates ? addUsd(title, rates.perUsd) : title; });
+titlesShownAs(async (title, context) => { const rates = await currentRates(); return rates ? addUsd(title, rates.perUsd, context) : title; });

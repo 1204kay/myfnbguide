@@ -308,8 +308,8 @@ export const DIP = { semitones: 4, seconds: 1, tail: 1, window: 0.25 };
 export function lowSeconds(samples: Int16Array, rate: number): number {
   return lowRuns(samples, rate).reduce((sum, r) => sum + r.seconds, 0);
 }
-/** Each drop in a line (lowSeconds): where it starts and how long it lasts, in seconds. */
-export function lowRuns(samples: Int16Array, rate: number): Array<{ at: number; seconds: number }> {
+/** Each drop in a line (lowSeconds): where it starts and how long it lasts, in seconds. `seconds`: the shortest that counts. */
+export function lowRuns(samples: Int16Array, rate: number, seconds = DIP.seconds): Array<{ at: number; seconds: number }> {
   const x = to16k(samples, rate);
   const sr = 16_000;
   const step = Math.round(DIP.window * sr);
@@ -324,7 +324,7 @@ export function lowRuns(samples: Int16Array, rate: number): Array<{ at: number; 
   const last = pitch.length - Math.ceil(DIP.tail / DIP.window);
   const runs: Array<{ at: number; seconds: number }> = [];
   let run = 0, from = 0;
-  const end = () => { if (run * DIP.window >= DIP.seconds) runs.push({ at: from * DIP.window, seconds: run * DIP.window }); run = 0; };
+  const end = () => { if (run * DIP.window >= seconds) runs.push({ at: from * DIP.window, seconds: run * DIP.window }); run = 0; };
   pitch.forEach((f, i) => {
     if (f !== null && i < last && 12 * Math.log2(f / mid) < -DIP.semitones) { if (!run) from = i; run += 1; }
     else if (f !== null || !run) end();
@@ -347,8 +347,14 @@ export function cutBefore(line: string, share: number): [string, string] | null 
  * lines' start times), and for each, what reading it again brings: the same seed (the engine should give the first take
  * back), seeds 1 to 3, slower (rate 0.9), and cut in two before the drop, each part read on its own. Kay 11-13 13:22
  * 「重做也只做一段不是吗？为什么还会一直失败？」: #270's takes had no seed, so nothing told a drop that goes with the
- * words from one that goes with the take. Stops before `cap` characters are read; the takes go to `out` as WAVs.
+ * words from one that goes with the take. Kay heard a drop in all six stretches of issue 20 played to Kay 11-13
+ * 13:32, three of them with none a second long, so each take is measured twice: drops of a second (`long`, what the
+ * daily reading acts on) and of half a second (`short`); and the line is read by the two other Mandarin voices of the
+ * region and with an instruction to keep the voice level, to tell what is this voice's own way of ending a clause from
+ * what another reading changes. Stops before `cap` characters are read; the takes go to `out` as WAVs.
  */
+const TRIAL_VOICES = ["longanlingxin_v3.1", "longanfengyue_v3.1"];
+const TRIAL_STYLE = "语调平稳，句子中间和句尾都不要把声音压低。";
 export async function dipTrial(no: number, out: string, cap = 3_000) {
   const meta = JSON.parse(await readFile(path.join(DIR, `${no}.json`), "utf8")) as { starts?: number[] };
   const lines = scriptLines(await readFile(path.join(DIR, `${no}.txt`), "utf8"));
@@ -361,29 +367,32 @@ export async function dipTrial(no: number, out: string, cap = 3_000) {
   await rm(work, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
   const { say, rate } = reader(`dip-trial:${no}`, 0);
+  const others = [...TRIAL_VOICES.map((v) => ({ name: v, ...reader(`dip-trial:${no}`, 0, v) })), { name: "instruction", ...reader(`dip-trial:${no}`, 0, VOICE.voice, TRIAL_STYLE) }];
+  const low = (p: Int16Array, r: number) => ({ long: lowSeconds(p, r), short: lowRuns(p, r, 0.5).reduce((sum, x) => sum + x.seconds, 0) });
   let chars = 0;
-  const rows: Array<{ line: number; text: string; up: number; at: number; takes: Record<string, number | string> }> = [];
+  const rows: Array<{ line: number; text: string; up: { long: number; short: number }; at: number; takes: Record<string, { long: number; short: number } | string> }> = [];
   for (const [n, line] of lines.entries()) {
     const part = up.samples.subarray(Math.round(meta.starts[n]! * up.rate), n + 1 < lines.length ? Math.round(meta.starts[n + 1]! * up.rate) : up.samples.length);
     const runs = lowRuns(part, up.rate);
     if (!runs.length) continue;
     const halves = cutBefore(line, runs[0]!.at / (part.length / up.rate));
-    const cost = line.length * (5 + (halves ? 1 : 0));
+    const cost = line.length * (5 + others.length + (halves ? 1 : 0));
     if (chars + cost > cap) break;
     chars += cost;
-    const takes: Record<string, number | string> = {};
-    const tryTake = async (name: string, read: () => Promise<Int16Array[]>) => {
+    const takes: Record<string, { long: number; short: number } | string> = {};
+    const tryTake = async (name: string, read: () => Promise<Int16Array[]>, r = rate) => {
       try {
         const got = await read();
-        takes[name] = got.reduce((sum, p) => sum + lowSeconds(p, rate()), 0);
-        await writeFile(path.join(out, `${n + 1}-${name}.wav`), wavOf(joinLines(got, rate()).samples, rate()));
+        takes[name] = got.map((p) => low(p, r())).reduce((sum, l) => ({ long: sum.long + l.long, short: sum.short + l.short }));
+        await writeFile(path.join(out, `${n + 1}-${name}.wav`), wavOf(joinLines(got, r()).samples, r()));
       } catch (error) { takes[name] = error instanceof Error ? error.message.slice(0, 200) : String(error); }
     };
     await tryTake("seed0", async () => [await say(line, n)]);
     for (const seed of [1, 2, 3]) await tryTake(`seed${seed}`, async () => [await say(line, n, undefined, 0, seed)]);
     await tryTake("rate0.9", async () => [await say(line, n, undefined, 0, 0, 0.9)]);
     if (halves) await tryTake("cut", async () => [await say(halves[0], n), await say(halves[1], n)]);
-    rows.push({ line: n + 1, text: line, up: runs.reduce((sum, r) => sum + r.seconds, 0), at: runs[0]!.at, takes });
+    for (const other of others) { await sleep(1_100); await tryTake(other.name, async () => [await other.say(line, n)], other.rate); }
+    rows.push({ line: n + 1, text: line, up: low(part, up.rate), at: runs[0]!.at, takes });
   }
   return { no, lines: lines.length, dropped: rows.length, chars, rows };
 }

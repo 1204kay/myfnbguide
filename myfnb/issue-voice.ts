@@ -21,7 +21,7 @@
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put-try 8         把 --try 8 留下、机器核对通过的那份放上网站（mp3、听稿、每行开始时间、停顿），
 //                                                                                    不再念、不花钱；要这次改动部署之后试念的才有核对记录
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --dips 20           试验：量已放上的第 20 期哪几行中间声音忽然低沉，把这几行各再念几次
-//                                                                                    （同 seed、seed 1–3、慢一点、在低沉前的标点切成两行），量每次还低沉几秒；
+//                                                                                    （同 seed、seed 1–3、慢一点、在低沉前的标点切成两行、另两个声音、加一句「语调平稳」的指令），量每次还低沉几秒；
 //                                                                                    不改线上任何一期，念出来的放在 /data/reference/audio/dips/20/；最多念 --cap 字（默认 3000，阿里云字数）
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用阿里云（免费额度用完后每念一次约 US$0.07–0.1），一期最多念 6 次。
 import { readFile } from "node:fs/promises";

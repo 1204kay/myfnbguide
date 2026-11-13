@@ -42,6 +42,8 @@ const API_VERSION = "2026-10-21";
  * within the hour, the page says; 11-09 two sat for three hours with nothing done). So each call is a batch of one that
  * is waited on for BATCH_TIMES.wait, and a run that has a call miss that, or has spent BATCH_TIMES.run in batches, sends
  * the rest of its calls straight to the Messages API as before: the worst morning costs what every morning did, one wait later.
+ * A call is paid for twice, once at half price, only when its batch is answered after it was given up: not ended a
+ * minute after the cancel, the submit's own answer lost on the way, or the worker stopped while it waited (nobody cancels that one).
  */
 export interface BatchLane { off: boolean; waitedMs: number }
 export const batchLane = (): BatchLane => ({ off: false, waitedMs: 0 });
@@ -196,7 +198,8 @@ export async function claudeJson<S extends z.ZodType>(opts: ClaudeJsonOptions<S>
       await poll(started + BATCH_TIMES.wait);
       if (batch.processing_status !== "ended") {
         // Canceled before it reached the model it is not billed; one that was answered meanwhile still has its result.
-        await api("POST", `${at}/cancel`, undefined, 30_000);
+        // A cancel that fails is not the end either: the batch is watched as long as a canceled one, and read if it ended.
+        await api("POST", `${at}/cancel`, undefined, 30_000).catch(() => undefined);
         await poll(performance.now() + BATCH_TIMES.cancel);
         if (batch.processing_status !== "ended") throw new ProviderRejectedError(`batch ${batch.id} not ended ${BATCH_TIMES.cancel / 1000}s after cancel: it may still be answered and billed`, null, true);
       }

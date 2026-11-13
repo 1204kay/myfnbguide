@@ -1,24 +1,28 @@
 // The weekly trends' trial before it goes live (十一 10-24: one run, at most US$0.1, compared with the sample in the
 // handbook's 每周趋势-设计和样稿.md): the week's topics as modules/trends would write them, printed and not kept, so the
 // weekly shows nothing from it. Its calls keep their receipts; the last line is what they cost.
-//   sudo docker compose exec -T worker node myfnb/trends-trial.ts [--start 2026-10-18] [--end 2026-10-24] [--find]
+//   sudo docker compose exec -T worker node myfnb/trends-trial.ts [--start 2026-10-18] [--end 2026-10-24] [--find [--prompt 文件]]
 // The days as a weekly names them: the reports listed from the daily's edition the day before the first to the last's
 // (10-17 08:00 to 10-24 08:00 for these defaults), the sample's week.
+import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { closeDb, sql } from "@aihot/backend/db";
 import { installModules } from "@aihot/backend/modules";
 import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { modelFor } from "@aihot/backend/editorial/models";
+import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { findTopics, TRENDS_STEP, weekPool, writeWeek } from "@aihot/trends/backend/compose";
 
 installModules(SERVER_MODULES);
-const { values } = parseArgs({ options: { start: { type: "string", default: "2026-10-18" }, end: { type: "string", default: "2026-10-24" }, find: { type: "boolean", default: false } } });
+const { values } = parseArgs({ options: { start: { type: "string", default: "2026-10-18" }, end: { type: "string", default: "2026-10-24" }, find: { type: "boolean", default: false }, prompt: { type: "string" } } });
 try {
   // --find: the find call alone (one paid call), for seeing what it lists over a week without the writing and checks.
+  // --prompt <file>: with --find, a find prompt being tried, read from that file in place of the one in use ({{siteName}} filled in).
   if (values.find) {
     const pool = await weekPool(values.start!, values.end!);
     console.log(`${values.start} – ${values.end}：一周 ${pool.length} 条`);
-    const topics = await findTopics(pool, await modelFor(TRENDS_STEP), `trial:${values.start}:find`, []);
+    const tried = values.prompt ? promptFromText("trends/find-trial", readFileSync(values.prompt, "utf8")) : undefined;
+    const topics = await findTopics(pool, await modelFor(TRENDS_STEP), `trial:${values.start}:find`, [], tried);
     const sources = (t: { items: number[] }) => new Set(t.items.map((n) => pool[n - 1]?.publisher).filter(Boolean)).size;
     console.log(`找话题列了 ${topics.length} 个，其中不到 2 家来源的 ${topics.filter((t) => sources(t) < 2).length} 个`);
     for (const t of topics) console.log(`- ${t.name}（${new Set(t.items).size} 条，${sources(t)} 家）：${t.why}`);

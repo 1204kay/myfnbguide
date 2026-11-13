@@ -111,11 +111,16 @@ test("the day's issue is written once, from what was listed before it, and the d
 test("an issue has 听 only once its audio is in place, its 文字稿 once its listen script is, its times when they count its lines, and the audio is served in byte ranges", async () => {
   const dir = path.join(config.dataDir, "reference", "audio");
   assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, null, "no audio, no 听 button");
+  const feed = async () => (await app.inject("/feed/shiyi.xml")).body;
+  assert.ok(!(await feed()).includes("<item>"), "the podcast feed lists no issue without its audio");
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, "1.mp3"), Buffer.from(Array.from({ length: 1000 }, (_, i) => i % 256)));
   assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, null, "an mp3 without its seconds is not shown yet");
   await writeFile(path.join(dir, "1.json"), JSON.stringify({ seconds: 687.4 }));
   assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio, { url: "/api/reference/issues/1/audio.mp3", seconds: 687, transcript: null });
+  const listed = await feed();
+  assert.match(listed, /<enclosure url="[^"]+\/api\/reference\/issues\/1\/audio\.mp3" length="1000" type="audio\/mpeg" \/>/u, "with its audio up, the issue is an episode, its file's size in bytes");
+  assert.match(listed, /<title>第 1 期｜店里该不该涨价？<\/title>/u);
   await writeFile(path.join(dir, "1.txt"), "大家早上好！我是十一。\n\n第一条，牛肉。\n");
   assert.deepEqual(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio.transcript, ["大家早上好！我是十一。", "第一条，牛肉。"], "the listen script, a line a sentence, for 文字稿");
   assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).audio.starts, undefined, "no times: the 文字稿 is shown whole");

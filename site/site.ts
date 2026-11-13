@@ -57,7 +57,8 @@ export const SITE = {
   defaultUrl: "http://localhost:3000",
   /** 标准图标（favicon.ico、icon.png、icon-192.png、apple-icon.png、logo.svg）以外也放在网站根目录的图标，site/brand/ 里的文件名（选填）；manifest.webmanifest 或外站引用了它们时用。 */
   // 十一说的锁屏封面：满版正方形，四角不透明，由系统自己裁圆角（modules/reference/web/listen.tsx）。
-  rootIcons: ["shiyi-cover.png"] as string[],
+  // shiyi-podcast.png 是同一张画成 3000×3000，给播客订阅源用（Apple Podcasts 要 1400–3000，modules/reference/backend/podcast.ts）。
+  rootIcons: ["shiyi-cover.png", "shiyi-podcast.png"] as string[],
   /**
    * MCP 工具名的前缀（小写字母、数字、下划线），工具会叫 myhot_get_latest、myhot_search……
    * 已经有人接入后就不要再改。

@@ -7,6 +7,8 @@ import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { answerText, BATCH_TIMES, batchBody, batchLane, batchMessage, CACHE_TTL, joined, laneOpen, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
+import { XMLParser } from "fast-xml-parser";
+import { podcastXml } from "../backend/podcast.ts";
 import { amendIssue, type Ask, fitLead, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
@@ -528,4 +530,25 @@ test("a 导读 the writer gives as one string is taken as its one sentence, not 
   });
   const c = await composeIssue(ITEMS, "2026-10-16", ask);
   assert.deepEqual(c.chosen?.issue.brief, [`导读写成了一整段${"字".repeat(80)}`]);
+});
+
+test("the podcast feed carries the tags podcast apps require, one episode per issue with audio, and the owner's email only when there is one", () => {
+  const episode = {
+    no: 21, title: "第 21 期｜标题 & <符号>", summary: "导读。\n\n快讯：一；二", url: "https://www.example.com/reference/issues/21",
+    audio: "https://www.example.com/api/reference/issues/21/audio.mp3", bytes: 12345, seconds: 760, published: new Date("2026-11-13T21:20:00Z"),
+  };
+  const parse = (xml: string) => new XMLParser({ ignoreAttributes: false }).parse(xml).rss.channel;
+  const channel = parse(podcastXml([episode], "show@example.com"));
+  for (const tag of ["title", "description", "language", "itunes:image", "itunes:category", "itunes:explicit"]) assert.ok(channel[tag] !== undefined, tag);
+  assert.equal(channel["itunes:owner"]["itunes:email"], "show@example.com");
+  assert.match(channel["itunes:image"]["@_href"], /\/shiyi-podcast\.png$/);
+  const item = channel.item;
+  assert.equal(item.title, "第 21 期｜标题 & <符号>");
+  assert.equal(item.guid["#text"], "myfnb-shiyi-21");
+  assert.equal(item.enclosure["@_url"], episode.audio);
+  assert.equal(item.enclosure["@_length"], "12345");
+  assert.equal(item.enclosure["@_type"], "audio/mpeg");
+  assert.equal(item["itunes:duration"], 760);
+  assert.match(item.description, /原文出处：https:\/\/www\.example\.com\/reference\/issues\/21$/);
+  assert.equal(parse(podcastXml([], null))["itunes:owner"], undefined);
 });

@@ -15,6 +15,7 @@ import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { issueLead, issuePath, issueSitemap, listIssues, readIssue, writeIssue } from "./backend/issues.ts";
 import { issueAudio, sendIssueAudio, untimedAlerts } from "./backend/audio.ts";
+import { PODCAST_PATH, podcastEpisodes, podcastXml } from "./backend/podcast.ts";
 import { creditAlerts } from "./backend/credit.ts";
 import { failedJobAlerts, missingIssueAlerts } from "./backend/failed.ts";
 import { AGENT_ABILITIES } from "./backend/agent.ts";
@@ -135,7 +136,7 @@ export default defineServerModule({
     return {
       pages: [
         `- [参考](${config.siteUrl}/reference): 按遇到的情况（定价、招人、房租、差评……）查阅各地店家的做法和经验；收录范围自开站至今，不只最近 7 天，每条附原文出处；也可用给 Agent 的 /api/v1/agent/reference、MCP 工具 ${mcpToolName("get_reference")} 读取`,
-        ...(latest?.no ? [`- [十一说](${config.siteUrl}${issuePath(latest.no)}): ${SITE.name} 自己的每日节目，放在日报头条：AI 十一阅读当天的全部收录后，撰写数条快讯并详述一件，注明原文出处；链接是最新一期，往期在 /reference/issues/{期数}；也可用给 Agent 的 /api/v1/agent/shiyi、MCP 工具 ${mcpToolName("get_shiyi")} 读取`] : []),
+        ...(latest?.no ? [`- [十一说](${config.siteUrl}${issuePath(latest.no)}): ${SITE.name} 自己的每日节目，放在日报头条：AI 十一阅读当天的全部收录后，撰写数条快讯并详述一件，注明原文出处；链接是最新一期，往期在 /reference/issues/{期数}；也可用给 Agent 的 /api/v1/agent/shiyi、MCP 工具 ${mcpToolName("get_shiyi")} 读取；播客订阅源（带音频）是 ${PODCAST_PATH}`] : []),
       ],
     };
   },
@@ -198,6 +199,9 @@ export default defineServerModule({
           SELECT CASE WHEN cardinality(situations) > 0 THEN 'placed' ELSE 'none' END AS k, count(*)::int AS n FROM reference_placements GROUP BY 1`)
           .map((r) => [r.k, r.n])), waiting: (await articlesToPlace(5000)).length },
       }));
+    // 十一说 for podcast apps (backend/podcast.ts); under /feed, which the engine already sends to the api.
+    app.get(PODCAST_PATH, async (_req, reply) =>
+      reply.header("Cache-Control", "public, max-age=1800").type("application/rss+xml; charset=utf-8").send(podcastXml(await podcastEpisodes(), SITE.contactEmail)));
     app.get("/api/reference/issues", async (_req, reply) => reply.header("Cache-Control", CACHE).send(await listIssues()));
     app.get("/api/reference/issues/:no", async (req, reply) => {
       const no = Number((req.params as { no: string }).no);

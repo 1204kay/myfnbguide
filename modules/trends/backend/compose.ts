@@ -37,9 +37,10 @@ const MAX_LINE = 120;
  * sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid for). Two answers read
  * back: one listed what it would not count as well, a topic a report with "只有一条讲……" for a reason (receipt 171070,
  * 104 topics); the other cut the week fine, two or three reports a topic, one pair twice (173544, 86). The one that
- * ended had 44 (174141), five of them single reports. All three began with one owner's own posts as a topic. The
- * prompt now says what is not listed is not written and one author's posts are one source (11-13); the room is for
- * a week listed fine all the same. The model writes up to 384K (api-docs.deepseek.com
+ * ended had 44 (174141), five of them single reports. All three began with one owner's own posts as a topic. Telling
+ * the prompt that what is not listed is not written, and that one author's posts are one source, made it worse
+ * (11-13, receipt 187734: the same week listed 506 topics, 472 of them one source, 17,875 tokens) and was taken back
+ * the same day; a new wording is tried with myfnb/trends-trial.ts --find --prompt before it goes in. The model writes up to 384K (api-docs.deepseek.com
  * pricing, read 11-13) and only what is written is paid for; 32,000 at about 180 tokens a second stays inside the
  * call's 300 s.
  */
@@ -141,11 +142,11 @@ async function gather(found: Array<{ name: string; items: number[]; why: string 
   return withGathered(found, res.data.topics);
 }
 
-/** The find call alone: the things the model names over the week's pool, as it lists them (myfnb/trends-trial.ts --find reads it as it is). */
-export async function findTopics(pool: PoolItem[], model: string, subject: string, receipts: number[]): Promise<Array<{ name: string; items: number[]; why: string }>> {
+/** The find call alone: the things the model names over the week's pool, as it lists them (myfnb/trends-trial.ts --find reads it as it is, or with a prompt being tried in place of the one in use). */
+export async function findTopics(pool: PoolItem[], model: string, subject: string, receipts: number[], system = FIND): Promise<Array<{ name: string; items: number[]; why: string }>> {
   if (pool.length < MIN_PUBLISHERS) return [];
   const res = await chatJson({
-    model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
+    model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system,
     user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
   });
   receipts.push(res.receiptId);

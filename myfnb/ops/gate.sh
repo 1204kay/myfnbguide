@@ -9,6 +9,7 @@
 # 以及 css-cloud 断线监控读模型用量的 budget（只读，只输出三个数）、读网站自己开着的告警的 alerts（只读）、
 # 每天看读者反馈有没有新来的 feedback（只读，不带邮箱）、
 # 公司流水线看板读今天几篇几分、各任务最近一次跑得怎样的 board（只读，输出一行 JSON）；
+# 另有一把只给异地备份用的钥匙（command="… css-cloud-backup"），只能取最新一份每日备份（latest-backup db | files），不走下面的名单；
 # 花钱的、写库的其他脚本，和十一说的开关（--from、--stop），都只有 GitHub 那把能跑。
 # 删数据、改防火墙、装补丁、重启不在这里，仍由 Kay 在 OrcaTerm 做（公司手册 公司/讨论/④全部搬上云端.md #2、#3）。
 set -uo pipefail
@@ -17,6 +18,26 @@ LOG=/var/log/myfnb-ops
 CMD=${SSH_ORIGINAL_COMMAND:-help}
 caller=${1:-github}
 echo "$(date -Is) [$caller] $CMD" >> "$LOG/audit.log"
+if [ "$caller" = css-cloud-backup ]; then
+  # 异地备份用的钥匙：只能取最新一份每日备份，别的什么都不能做。
+  # 别的钥匙走下面的共用放行名单，名单里没有 latest-backup。数据库是 aihot-年月日时分.dump，文件包是 aihot-files-…tar.gz（backup.ts）。
+  case "$CMD" in
+    "latest-backup db")    pat='aihot-2*.dump' ;;
+    "latest-backup files") pat='aihot-files-2*.tar.gz' ;;
+    *) echo "$(date -Is) [$caller] 拒绝" >> "$LOG/audit.log"
+       echo "这把钥匙只能：latest-backup db | latest-backup files" >&2; exit 2 ;;
+  esac
+  d=/var/lib/docker/volumes/aihot_data/_data/backups
+  # 通配符交给 root 下的 find 匹配（/var/lib/docker 只有 root 进得去）；文件名是 UTC 年月日时分，排序后最后一个最新
+  f=$(sudo find "$d" -maxdepth 1 -type f -name "$pat" -printf '%f\n' 2>/dev/null | sort | tail -1)
+  if [ -z "$f" ]; then
+    [ "$pat" = 'aihot-files-2*.tar.gz' ] && { echo "latest-backup: none" >&2; exit 0; }   # 找不到文件包不算失败
+    echo "没有每日备份" >&2; exit 1
+  fi
+  echo "$(date -Is) [$caller] 送出 $f" >> "$LOG/audit.log"
+  echo "latest-backup: $f $(sudo stat -c %s "$d/$f")" >&2
+  exec sudo cat "$d/$f"
+fi
 read -ra a <<< "$CMD"
 verb=${a[0]:-help}
 if [ "$caller" != github ]; then

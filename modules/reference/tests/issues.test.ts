@@ -1,7 +1,7 @@
 // 十一说 on the site (backend/issues.ts): failure cases are a day written twice (paying twice), an issue that misses the
 // items listed just before it is written, a daily that does not lead with the day's issue or then drops the item it
 // would have led with, a lead that points nowhere, and an issue page that lists originals the issue never names.
-import { editionAt, pointModels, stub, tag } from "../../../tests/setup.ts";
+import { editionAt, pointModels, Reply, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -17,7 +17,9 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { issueLead, writeIssue } from "../backend/issues.ts";
+import { z } from "zod";
 import { AGENT_ABILITIES } from "../backend/agent.ts";
+import { BATCH_TIMES, batchLane, claudeJson } from "../backend/claude.ts";
 
 const T = tag();
 const DAY = "2020-03-10";
@@ -137,4 +139,53 @@ test("an issue has 听 only once its audio is in place, its 文字稿 once its l
 
 test("a day without an issue leads by rule", async () => {
   assert.equal(await issueLead("2020-03-11"), null);
+});
+
+test("a Claude call goes as a batch; one not back in time is canceled, and that call and the rest of the run go straight", async () => {
+  const times = { ...BATCH_TIMES };
+  Object.assign(BATCH_TIMES, { wait: 300, poll: 20, cancel: 300 });
+  const message = (ok: boolean) => ({ id: "msg_1", content: [{ type: "text", text: JSON.stringify({ ok }) }], stop_reason: "end_turn", usage: { input_tokens: 10, output_tokens: 5 } });
+  let ends = true, canceled = false, cancelFails = false;
+  const seen: string[] = [];
+  const claude = await stub((_hit, req) => {
+    const at = req.url.replace("/v1/messages", "") || "/";
+    seen.push(at);
+    const batch = { id: "b1", processing_status: (ends || canceled) && at !== "/batches" ? "ended" : "in_progress", results_url: `${claude.url}/v1/messages/batches/b1/results` };
+    // A cancel that fails for a batch answered meanwhile: the batch ends with its result.
+    if (at === "/batches/b1/cancel" && cancelFails) { ends = true; return new Reply(500, { error: { message: "overloaded" } }); }
+    if (at === "/batches/b1/cancel") canceled = true;
+    if (at === "/batches/b1/results") return { custom_id: "r", result: canceled ? { type: "canceled" } : { type: "succeeded", message: message(true) } };
+    return at === "/" ? message(false) : batch;
+  });
+  pointModels(claude.url, ["claude-opus-5-5"]);
+  try {
+    const lane = batchLane();
+    const ask = (n: number) => claudeJson({ model: "claude-opus-5-5", purpose: "reference_issue_check", subject: `batch-${T}`, promptVersion: "t", system: "核对员", user: `稿子 ${n}`, schema: z.object({ ok: z.boolean() }), maxTokens: 8000, timeoutMs: 5000, batch: lane });
+    const usage = async (id: number) => (await sql<{ usage: Record<string, unknown> }[]>`SELECT usage FROM receipts WHERE id = ${id}`)[0]!.usage;
+
+    const first = await ask(1);
+    assert.equal(first.data.ok, true, "the batch's answer");
+    assert.equal((await usage(first.receiptId)).batch, true, "its receipt says so, for the half price");
+    assert.ok(!seen.includes("/"), "nothing was sent straight");
+
+    ends = false;
+    const second = await ask(2);
+    assert.ok(seen.includes("/batches/b1/cancel"), "a batch not back in time is canceled, so it is not answered and billed later");
+    assert.equal(second.data.ok, false, "and the call is sent straight");
+    assert.equal((await usage(second.receiptId)).batch, undefined);
+    assert.equal(lane.off, true);
+
+    const batches = seen.filter((x) => x === "/batches").length;
+    assert.equal((await ask(3)).data.ok, false);
+    assert.equal(seen.filter((x) => x === "/batches").length, batches, "the rest of the run does not wait on another batch");
+
+    canceled = false; cancelFails = true;
+    const straight = seen.filter((x) => x === "/").length;
+    const late = await claudeJson({ model: "claude-opus-5-5", purpose: "reference_issue_check", subject: `batch-${T}`, promptVersion: "t", system: "核对员", user: "稿子 4", schema: z.object({ ok: z.boolean() }), maxTokens: 8000, timeoutMs: 5000, batch: batchLane() });
+    assert.equal(late.data.ok, true, "a cancel that failed leaves the batch watched: answered meanwhile, its answer is used");
+    assert.equal(seen.filter((x) => x === "/").length, straight, "and the call is not sent, and paid for, a second time");
+  } finally {
+    Object.assign(BATCH_TIMES, times);
+    await claude.close();
+  }
 });

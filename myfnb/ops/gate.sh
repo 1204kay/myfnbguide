@@ -82,7 +82,7 @@ SELECT json_build_object(
   -- 花费（仪表推算额度哪天用完）。两家分开算，口径各照站里已有的那一份，不另起一个数：
   -- claude：照 modules/reference/backend/credit.ts。额度这一期从 settings reference.claude-credit 的 renewsOn
   --   （默认每月 1 号，UTC 日，同控制台的每月上限）起算；回执没有 Claude 的费用，按 token × 标价算，缓存读、写分开算。
-  --   标价抄自 credit.ts 的 PRICES / WRITE_5M / WRITE_1H，那边改了这里跟着改。不在表里的模型照 Opus 算（同 credit.ts）。
+  --   标价抄自 credit.ts 的 PRICES / WRITE_5M / WRITE_1H / BATCH（走批处理的回执 usage.batch 为 true，整笔半价），那边改了这里跟着改。不在表里的模型照 Opus 算（同 credit.ts）。
   -- deepseek：照 myfnb/place-now.ts 的 costOf()。按后台价格表 service_prices，缓存命中按 cached_per_mtok 算；
   --   币种照价格表如实输出；价格表里没有、或缺价格的次数记进 unpriced，这时 week 不可信，仪表要说明。
   'claude', (SELECT json_build_object('start', per.start, 'end', per.start + interval '1 month', 'monthly', per.monthly,
@@ -104,7 +104,8 @@ SELECT json_build_object(
                                coalesce((ra.usage->>'cache_read_input_tokens')::numeric, 0) AS cr,
                                coalesce((ra.usage->'cache_creation'->>'ephemeral_5m_input_tokens')::numeric, 0) AS w5,
                                coalesce((ra.usage->'cache_creation'->>'ephemeral_1h_input_tokens')::numeric, 0) AS w1) t ON true
-     LEFT JOIN LATERAL (SELECT (greatest(0, t.tin - t.cr - t.w5 - t.w1) * t.i + t.cr * t.rd + t.w5 * t.i * 1.25 + t.w1 * t.i * 2
+     LEFT JOIN LATERAL (SELECT CASE WHEN (ra.usage->>'batch')::boolean THEN 0.5 ELSE 1 END
+                               * (greatest(0, t.tin - t.cr - t.w5 - t.w1) * t.i + t.cr * t.rd + t.w5 * t.i * 1.25 + t.w1 * t.i * 2
                                + t.tout * t.o) / 1e6 AS cost) c ON true
      GROUP BY per.start, per.monthly),
   'deepseek', (SELECT coalesce(json_agg(d ORDER BY d.currency NULLS LAST), '[]') FROM (

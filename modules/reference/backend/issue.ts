@@ -26,7 +26,7 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
-import { claudeJson, joined, type Parts } from "./claude.ts";
+import { batchLane, claudeJson, joined, type Parts } from "./claude.ts";
 
 export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
@@ -83,11 +83,13 @@ export type Ask = <S extends z.ZodType>(purpose: string, system: string, user: s
 /**
  * Asks the named model through the engine's receipts and budget; receipts go to `receiptIds`, paid tokens to `onUsage`.
  * Claude goes through Anthropic's own API (backend/claude.ts), the only one with prompt caching; the rest through chatJson.
+ * Its calls go as Message Batches at half price while they come back in time (the run's lane, backend/claude.ts).
  */
 export function modelAsk(model: string, subject: string, receiptIds: number[], onUsage: (u: Usage) => void = () => {}): Ask {
+  const batch = batchLane();
   return async (purpose, system, user, schema, attempt) => {
     const once = (tag?: string) => MODELS[model]?.service === "anthropic"
-      ? claudeJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag })
+      ? claudeJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag, batch })
       : chatJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag });
     // Unusable output once is asked again once (first trial: 2 of 20 of Claude's issues, broken JSON); a second is the answer.
     const res = await once(attempt).catch((error: unknown) => {

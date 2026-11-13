@@ -34,10 +34,12 @@ export const MIN_PUBLISHERS = 3;
 const MAX_LINE = 120;
 /**
  * Room for the find and gather answers. At 4,000 the week of 11-02 (about 700 reports) had its find answer cut off
- * sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid for): the model listed what
- * it would not count as well, a topic a report with "只有一条讲……" for a reason (receipts 171070, 173544: 104 and 86
- * topics; the one that ended, 174141, 44). The prompt now says what is not listed is not written (11-13); the room
- * stays for a week it lists long all the same. The model writes up to 384K (api-docs.deepseek.com
+ * sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid for). Two answers read
+ * back: one listed what it would not count as well, a topic a report with "只有一条讲……" for a reason (receipt 171070,
+ * 104 topics); the other cut the week fine, two or three reports a topic, one pair twice (173544, 86). The one that
+ * ended had 44 (174141), five of them single reports. All three began with one owner's own posts as a topic. The
+ * prompt now says what is not listed is not written and one author's posts are one source (11-13); the room is for
+ * a week listed fine all the same. The model writes up to 384K (api-docs.deepseek.com
  * pricing, read 11-13) and only what is written is paid for; 32,000 at about 180 tokens a second stays inside the
  * call's 300 s.
  */

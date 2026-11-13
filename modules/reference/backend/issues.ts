@@ -21,6 +21,10 @@ export const issuePath = (no: number) => `/reference/issues/${no}`;
  * Everything listed in the 24 hours up to `end`, or only the 精选, best scored first, numbered as the issue cites them.
  * `end` is the daily's edition time (the trial reads the daily's own window) or the time the issue is written, three
  * hours ahead of it: each day's window then starts where the last one ended, so nothing listed falls between two.
+ * An item belongs to the window it was listed in, as the daily attributes it (reports/edition.ts periodReports): by the
+ * later of its arrival (timeline_at) and, for a 精选, its release (visible_after); a historical import to none. Until 11-13
+ * it was over the original's own date: an item listed after 05:00 whose original was dated before it fell in neither
+ * day's window (11-04 to 11-12: 240 of 1,645 listed, 11 of them 精选, never reached 十一).
  */
 export async function dayItems(end: Date, selectedOnly = false): Promise<DayItem[]> {
   const start = new Date(end.getTime() - 86_400_000);
@@ -29,7 +33,9 @@ export async function dayItems(end: Date, selectedOnly = false): Promise<DayItem
       coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text,
       p.selected, p.story_id::text AS "storyId"
     FROM publications p JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
-    WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
+    WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND NOT p.backfill
+      AND (((p.visible_after IS NULL OR p.visible_after <= p.timeline_at) AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
+        OR (p.visible_after > p.timeline_at AND p.visible_after >= ${start} AND p.visible_after < ${end}))
     ORDER BY p.score DESC NULLS LAST, p.article_id`;
   return rows.map((r, i) => ({ n: i + 1, ...r }));
 }

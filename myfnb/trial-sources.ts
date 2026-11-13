@@ -10,7 +10,8 @@
 //   node myfnb/trial-sources.ts --apply        抓、判，打出逐条结果和汇总
 //   --per 3        每个订阅取最新几条（默认 3）
 //   --cap-usd 1    花费上限（默认 1）：开判每一条前先算「已花 + 在途和这一条按每条最多花多少」，会过线就停，不会超
-//   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下）；--jobs 6 同时抓几个订阅（默认 1）
+//   --sample <文件> 换一份订阅清单（myfnb/sourcing/ 下，或写绝对路径读仓库外的文件）；--jobs 6 同时抓几个订阅（默认 1）
+//   清单里的一项带 kind: "web_list" 和 config（网页列表的配置，同 industry/sources.json）时按网页列表抓，不带的照旧当订阅；信源只在内存里建。
 //   --only-passed <文件> 只跑上一轮逐条结果里至少 1 条过预筛的订阅
 // 全量试吃（Kay 10-24 21:11 同意约 US$9）：--sample trial-full-2026-10-24.json --per 10 --cap-usd 10 --jobs 6。
 // 同一条（同样的标题和正文）再判会直接用已有回执、不花钱，所以撞上限停下以后，第二天用同一条命令重开就是接着跑。
@@ -29,6 +30,7 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { runSelectionPrefilter, runSelectionScores, scoresSelect, type AnalyzeInputArticle } from "@aihot/backend/editorial/analyze";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { fetchRss } from "@aihot/backend/sources/rss";
+import { fetchWebList } from "@aihot/backend/sources/web-list";
 import { extractFromUrl, pageFetchable } from "@aihot/backend/content/extract";
 import type { SourceRow } from "@aihot/backend/sources/types";
 
@@ -37,8 +39,8 @@ const { values } = parseArgs({ options: {
   sample: { type: "string", default: "trial-sample-2026-10-24.json" }, jobs: { type: "string", default: "1" },
   reserve: { type: "string", default: "3000" }, "only-passed": { type: "string" },
 } });
-type Feed = { group: string; name: string; feedUrl: string; perDay: number };
-const sample = JSON.parse(readFileSync(path.join(REPO_ROOT, "myfnb/sourcing", values.sample), "utf8")) as {
+type Feed = { group: string; name: string; feedUrl: string; perDay: number; kind?: "web_list"; config?: Record<string, unknown> };
+const sample = JSON.parse(readFileSync(path.resolve(REPO_ROOT, "myfnb/sourcing", values.sample), "utf8")) as {
   volume: Record<string, { feeds: number; perDay: number }>; feeds: Feed[];
 };
 const groups = Object.keys(sample.volume);
@@ -68,7 +70,7 @@ const FOOD = new RegExp([
 const passesCode = (s: string) => FOOD.test(s);
 
 const sourceOf = (f: Feed, i: number): SourceRow => ({
-  id: `trial-${i}`, name: f.name, kind: "rss", config: { feedUrl: f.feedUrl }, tier: "T2", participation_mode: "editorial",
+  id: `trial-${i}`, name: f.name, kind: f.kind ?? "rss", config: f.config ?? { feedUrl: f.feedUrl }, tier: "T2", participation_mode: "editorial",
   first_party: false, interval_minutes: 720, enabled: true, cursor: null, fail_count: 0,
 });
 
@@ -132,7 +134,9 @@ const worker = async () => {
     }
     let items;
     try {
-      items = (await fetchRss(sourceOf(f, i), { force: true })).candidates
+      const src = sourceOf(f, i);
+      // 网页列表多半没有日期，排序是稳定的，没日期的保持列表上的先后。
+      items = (f.kind === "web_list" ? await fetchWebList(src) : (await fetchRss(src, { force: true })).candidates)
         .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0)).slice(0, per);
     } catch (e) {
       console.log(`! ${f.name}：抓不到（${String(e).slice(0, 80)}）`);
@@ -143,7 +147,7 @@ const worker = async () => {
       if (!room()) break;
       inflight++;
       let body = c.bodyText ?? null;
-      if (!body && pageFetchable(c.url, "rss")) {
+      if (!body && pageFetchable(c.url, f.kind ?? "rss")) {
         // 和站上一样先读文章页；不用付费的 Jina 兜底，读不到就按标题和摘要判（站上那种情况会等页面）。
         body = (await extractFromUrl(c.url, `trial:${c.url}`, {}, { paidFallback: false }).catch(() => null))?.text ?? null;
       }
@@ -151,7 +155,7 @@ const worker = async () => {
       const a: AnalyzeInputArticle = {
         id, revision: 1, title: c.title, url: c.url, author: c.author ?? null, publishedAt: c.publishedAt ?? null, publicationTime: c.publicationTime ?? null,
         bodyText: body, excerpt: c.excerpt ?? null, bodyStatus: body ? "ok" : "unconfirmed", xPost: null, media: [],
-        source: { name: f.name, kind: "rss", tier: "T2", firstParty: false },
+        source: { name: f.name, kind: f.kind ?? "rss", tier: "T2", firstParty: false },
       };
       const row: Row = { group: f.group, feed: f.name, title: c.title, url: c.url, code: passesCode(`${c.title} ${c.excerpt ?? ""} ${c.url}`), label: null, reason: "", scores: [], selected: false, cost: 0 };
       const ids: number[] = [];

@@ -161,8 +161,8 @@ export const AWKWARD = "拗口";
  */
 export const SHORTENS = 2;
 const SHORTEN_ABOVE = 4_200;
-/** Writes the script and has it checked, mending up to MENDS times; null with the last problems when it is still wrong. */
-export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number }>; written: number }> {
+/** Writes the script and has it checked, mending up to MENDS times; one still wrong then takes the last fixes and leaves out the lines none went into. */
+export async function writeScript(issue: IssueText, date: string, write: Ask, check: Ask | null): Promise<{ lines: string[] | null; rounds: Array<{ problems: Problem[]; applied: number; cut?: string[] }>; written: number }> {
   const page = pageText(issue, date);
   const system = prompt("issue-voice", { opening: opening(date), writeChars: String(WRITE_CHARS) });
   const framed = (got: string[]) => [opening(date), ...got.filter((l, i, all) => l && !(i === 0 && l.startsWith("大家早上好")) && !(i === all.length - 1 && l === CLOSING)), CLOSING];
@@ -172,7 +172,7 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     lines = framed((await write("reference_issue_voice", system, user, Script, `short${n}`)).lines);
   }
   const written = scriptChars(lines);
-  const rounds: Array<{ problems: Problem[]; applied: number }> = [];
+  const rounds: Array<{ problems: Problem[]; applied: number; cut?: string[] }> = [];
   if (!check) return { lines, rounds, written };
   // The last script that was wrong only in how it reads: a 拗口 fix can drop a 保留 the next round calls 误导, and that
   // must not stop an issue the same script would have passed with before 拗口 was checked (review of #203).
@@ -183,7 +183,20 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
     // 拗口 is how a line sounds, not what it says (Kay 11-03 18:20: nothing checked how a script reads aloud): its fixes
     // go in and are checked again like the others, but a line still 拗口 at the end does not stop the issue.
     if (problems.every((p) => p.kind === AWKWARD)) onlyStiff = lines;
-    if (round === MENDS) { rounds.push({ problems, applied: 0 }); break; }
+    if (round === MENDS) {
+      if (onlyStiff) { rounds.push({ problems, applied: 0 }); break; }
+      // Still wrong after the last mend, the script goes out as the page does (cutProblems, Kay 10-19 「哪有人每天出的结果
+      // 审核不过就不出了」): the check's last fixes put in, and a line still 严重 or 误导 that no fix went into left out.
+      // Issue 18 (11-11) had no audio at all for three lines that called Vinetur 「行业媒体」 and left out 「据 Vinetur 报道」.
+      // A 严重 or 误导 whose line is not one of the script's, word for word, can be neither mended nor left out: no script, as before.
+      const grave = problems.filter((p) => p.kind !== AWKWARD && p.kind !== "漏讲");
+      if (grave.some((p) => !lines.some((l) => l.trim() === p.line.trim()))) { rounds.push({ problems, applied: 0 }); break; }
+      const fixed = applyFixes(lines, problems);
+      const left = new Set(grave.map((p) => p.line.trim()));
+      const kept = fixed.lines.filter((l, i, all) => i === 0 || i === all.length - 1 || !left.has(l.trim()));
+      rounds.push({ problems, applied: fixed.applied, cut: fixed.lines.filter((l) => !kept.includes(l)) });
+      return { lines: kept, rounds, written };
+    }
     const fixed = applyFixes(lines, problems);
     rounds.push({ problems, applied: fixed.applied });
     lines = fixed.lines;

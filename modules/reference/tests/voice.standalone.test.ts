@@ -57,7 +57,25 @@ test("the check's fixes go in line by line; still wrong after three mends, there
 
   const stubborn = { problems: [{ kind: "漏讲", line: "没有这一行", fix: "补上", why: "漏了细说" }] };
   const bad = scripted({ reference_issue_voice: [{ lines: ["英国净少了977家店。"] }], reference_issue_voice_check: [stubborn, stubborn, stubborn, stubborn] });
-  assert.equal((await writeScript(ISSUE, "2026-10-31", bad, bad)).lines, null);
+  assert.deepEqual((await writeScript(ISSUE, "2026-10-31", bad, bad)).lines?.slice(1, -1), ["英国净少了977家店。"], "a part still not told does not stop the script");
+
+  // Issue 18 (11-11): a fourth round still found lines wrong and there was no audio that day. The last fixes go in, and a line no fix went into is left out.
+  const src = (from: string, to: string) => ({ kind: "误导", line: from, fix: to, why: "出处" });
+  const fourth = scripted({
+    reference_issue_voice: [{ lines: ["甲说涨了。", "乙说跌了。", "丙说平了。"] }],
+    reference_issue_voice_check: [{ problems: [src("甲说涨了。", "报道说甲涨了。")] }, { problems: [src("报道说甲涨了。", "据某报报道，甲涨了。")] }, { problems: [src("据某报报道，甲涨了。", "某报说甲涨了。")] },
+      { problems: [src("某报说甲涨了。", "据某报说，甲涨了。"), src("乙说跌了。", "（整行删除，不念）")] }],
+  });
+  const out = await writeScript(ISSUE, "2026-10-31", fourth, fourth);
+  assert.deepEqual(out.lines?.slice(1, -1), ["据某报说，甲涨了。", "丙说平了。"]);
+  assert.deepEqual(out.rounds.at(-1)!.cut, ["乙说跌了。"], "the line left out is kept in the report");
+  // A 严重 whose line is not in the script word for word can be neither mended nor left out: no script.
+  const adrift = scripted({
+    reference_issue_voice: [{ lines: ["甲说涨了。", "乙说跌了。"] }],
+    reference_issue_voice_check: [{ problems: [src("甲说涨了。", "报道说甲涨了。")] }, { problems: [src("报道说甲涨了。", "据某报报道，甲涨了。")] }, { problems: [src("据某报报道，甲涨了。", "某报说甲涨了。")] },
+      { problems: [{ kind: "严重", line: "乙说跌了", fix: "乙说平了。", why: "数字" }] }],
+  });
+  assert.equal((await writeScript(ISSUE, "2026-10-31", adrift, adrift)).lines, null);
 
   // 拗口 is mended like the rest, but one still there after the last round does not stop the issue.
   const stiff = { problems: [{ kind: "拗口", line: "该店表示涨价。", fix: "这家店说要涨价。", why: "书面词" }] };

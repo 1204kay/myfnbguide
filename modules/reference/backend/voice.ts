@@ -205,30 +205,29 @@ export async function writeScript(issue: IssueText, date: string, write: Ask, ch
 }
 
 /**
- * The script read aloud, line by line, the lines joined with a breath between (joinLines): a WAV (16-bit, one channel),
- * and where each line starts. A line is read again only for a drop in the middle of it (lowSeconds), not for its pitch as a whole: #178 read lines far off the issue's with seeds 1
- * and 2, and the other takes came back as high or low as the first (issue 10 on 11-03: 2 of 16 lines brought near;
- * issue 2: 2 of 34; about 40% more characters). The pitch goes with the words, short heads like 「第二条，英国酒税。」
- * reading high whatever the seed, not with the take.
+ * One line read aloud, a request a line. `take` is the seed: the engine reads the same words with the same seed the same
+ * way (help.aliyun.com/en/model-studio/qwen-audio-tts-http-java-sdk: seed 0–65535, default 0, "the same seed reproduces
+ * the same output"), so another take without another seed is the first take again. #270 read lines again without one,
+ * and every take was the same audio. `speed` is the engine's `rate` (1 when left out), for the trial only (dipTrial).
  */
-async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[]; dips: Dip[] }> {
+function reader(subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model) {
   const key = credential("models", "QWEN_TTS_API_KEY");
   if (!key) throw new Error("QWEN_TTS_API_KEY missing");
   const base = credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1";
   let rate = 0;
   let calls = 0;
-  const say = async (line: string, n: number, relink?: number, hops = 0, take = 0): Promise<Int16Array> => {
+  const say = async (line: string, n: number, relink?: number, hops = 0, take = 0, speed = 0): Promise<Int16Array> => {
     // A line every 1.1 s keeps under the `speech-qwen` row's 60 a minute: 11-01 23:09 issue 2 read its first 60 lines in
     // 45 s and the 61st was refused (Budget for speech-qwen exhausted (minute)), and a 3,350-character issue runs past 60.
     if (calls++ > 0) await sleep(1_100);
     let url: string | undefined;
     const receipt = await paidRequest(
-      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt, ...(take ? { take } : {}) }, requestSummary: { chars: line.length, n, attempt, ...(take ? { take } : {}) }, ...(relink ? { attemptTag: `relink:${relink}` } : {}) },
+      { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, line, n, attempt, ...(take ? { take } : {}), ...(speed ? { speed } : {}) }, requestSummary: { chars: line.length, n, attempt, ...(take ? { take } : {}) }, ...(relink ? { attemptTag: `relink:${relink}` } : {}) },
       async () => {
         // The Singapore host may need the workspace's own (https://<workspace>.ap-southeast-1.maas.aliyuncs.com/api/v1).
         const res = await fetch(`${base}/services/audio/tts/SpeechSynthesizer`, {
           method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, signal: AbortSignal.timeout(120_000),
-          body: JSON.stringify({ model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}) } }),
+          body: JSON.stringify({ model, input: { text: line, voice, format: "wav", sample_rate: 24_000, ...(style ? { instruction: style } : {}), ...(take ? { seed: take } : {}), ...(speed ? { rate: speed } : {}) } }),
         });
         // Which line, for the error: 11-01 the first line failed with only the engine's words to go by.
         if (!res.ok) {
@@ -253,7 +252,7 @@ async function read(script: string, subject: string, attempt: number, voice = VO
       // unchanged line of an issue read again from its revised script) reuses that receipt and its link, which lasts
       // 24 h. Such a link gone, the line is asked for again under a tag naming that receipt; a later run finds the same
       // chain, and the step past its last (also gone) link is a new request.
-      if (got.status >= 400 && got.status < 500 && receipt.reused && hops < MAX_READS) return say(line, n, receipt.receiptId, hops + 1, take);
+      if (got.status >= 400 && got.status < 500 && receipt.reused && hops < MAX_READS) return say(line, n, receipt.receiptId, hops + 1, take, speed);
       throw new Error(`speech-qwen: line ${n + 1} audio ${got.status} (the link lasts 24 h)`);
     }
     const wav = wavSamples(Buffer.from(await got.arrayBuffer()));
@@ -261,25 +260,37 @@ async function read(script: string, subject: string, attempt: number, voice = VO
     rate = wav.rate;
     return wav.samples;
   };
+  return { say, rate: () => rate };
+}
+
+/**
+ * The script read aloud, line by line, the lines joined with a breath between (joinLines): a WAV (16-bit, one channel),
+ * and where each line starts. A line is read again only for a drop in the middle of it (lowSeconds), not for its pitch as a whole: #178 read lines far off the issue's with seeds 1
+ * and 2, and the other takes came back as high or low as the first (issue 10 on 11-03: 2 of 16 lines brought near;
+ * issue 2: 2 of 34; about 40% more characters). The pitch goes with the words, short heads like 「第二条，英国酒税。」
+ * reading high whatever the seed, not with the take.
+ */
+async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[]; dips: Dip[] }> {
+  const { say, rate: rateOf } = reader(subject, attempt, voice, style, model);
   const lines = scriptLines(script);
   const parts: Int16Array[] = [];
   const dips: Dip[] = [];
   for (const [n, line] of lines.entries()) {
-    // A line whose voice drops low for a few characters is read again, and the take that drops least is kept.
+    // A line whose voice drops low for a few characters is read again with another seed, and the take that drops least is kept.
     let best = await say(line, n);
-    let low = lowSeconds(best, rate);
+    let low = lowSeconds(best, rateOf());
     const takes = [low];
     for (let take = 1; low > 0 && take <= DIP_TAKES; take += 1) {
       const again = await say(line, n, undefined, 0, take);
-      const l = lowSeconds(again, rate);
+      const l = lowSeconds(again, rateOf());
       takes.push(l);
       if (l < low) { best = again; low = l; }
     }
     if (takes[0]) dips.push({ line: n + 1, takes, kept: low });
     parts.push(best);
   }
-  const { samples, starts } = joinLines(parts, rate);
-  return { wav: wavOf(samples, rate), starts, dips };
+  const { samples, starts } = joinLines(parts, rateOf());
+  return { wav: wavOf(samples, rateOf()), starts, dips };
 }
 
 /** A line read again for a drop: its number in the script, the seconds low of each take in turn, and of the one kept (0: none left). */
@@ -295,6 +306,10 @@ export const DIP = { semitones: 4, seconds: 1, tail: 1, window: 0.25 };
  * semitones down for 1.7 s), issue 17 6 of 69. Pitch by pyin a quarter second at a time, against the line's own median.
  */
 export function lowSeconds(samples: Int16Array, rate: number): number {
+  return lowRuns(samples, rate).reduce((sum, r) => sum + r.seconds, 0);
+}
+/** Each drop in a line (lowSeconds): where it starts and how long it lasts, in seconds. `seconds`: the shortest that counts. */
+export function lowRuns(samples: Int16Array, rate: number, seconds = DIP.seconds): Array<{ at: number; seconds: number }> {
   const x = to16k(samples, rate);
   const sr = 16_000;
   const step = Math.round(DIP.window * sr);
@@ -304,17 +319,82 @@ export function lowSeconds(samples: Int16Array, rate: number): number {
     pitch.push(f.length >= 4 ? median(f) : null);
   }
   const voiced = pitch.filter((f): f is number => f !== null);
-  if (voiced.length < 6) return 0;
+  if (voiced.length < 6) return [];
   const mid = median(voiced);
   const last = pitch.length - Math.ceil(DIP.tail / DIP.window);
-  let total = 0, run = 0;
-  const end = () => { if (run * DIP.window >= DIP.seconds) total += run * DIP.window; run = 0; };
+  const runs: Array<{ at: number; seconds: number }> = [];
+  let run = 0, from = 0;
+  const end = () => { if (run * DIP.window >= seconds) runs.push({ at: from * DIP.window, seconds: run * DIP.window }); run = 0; };
   pitch.forEach((f, i) => {
-    if (f !== null && i < last && 12 * Math.log2(f / mid) < -DIP.semitones) run += 1;
+    if (f !== null && i < last && 12 * Math.log2(f / mid) < -DIP.semitones) { if (!run) from = i; run += 1; }
     else if (f !== null || !run) end();
   });
   end();
-  return total;
+  return runs;
+}
+
+/** Where a line is cut in two for the trial: after the last pause mark before the drop, else the first after it; null when it has none. */
+export function cutBefore(line: string, share: number): [string, string] | null {
+  const marks = [...line.matchAll(/[，、；：,;:]/gu)].map((m) => m.index + 1).filter((i) => i >= 4 && line.length - i >= 4);
+  if (!marks.length) return null;
+  const at = Math.round(line.length * share);
+  const cut = marks.filter((i) => i <= at).at(-1) ?? marks[0]!;
+  return [line.slice(0, cut), line.slice(cut)];
+}
+
+/**
+ * A trial on an issue already up, nothing of it changed: which lines of its audio drop (lowRuns on the MP3, by the
+ * lines' start times), and for each, what reading it again brings: the same seed (the engine should give the first take
+ * back), seeds 1 to 3, slower (rate 0.9), and cut in two before the drop, each part read on its own. Kay 11-13 13:22
+ * 「重做也只做一段不是吗？为什么还会一直失败？」: #270's takes had no seed, so nothing told a drop that goes with the
+ * words from one that goes with the take. Kay heard a drop in all six stretches of issue 20 played to Kay 11-13
+ * 13:32, three of them with none a second long, so each take is measured twice: drops of a second (`long`, what the
+ * daily reading acts on) and of half a second (`short`); and the line is read by the two other Mandarin voices of the
+ * region and with an instruction to keep the voice level, to tell what is this voice's own way of ending a clause from
+ * what another reading changes. Stops before `cap` characters are read; the takes go to `out` as WAVs.
+ */
+const TRIAL_VOICES = ["longanlingxin_v3.1", "longanfengyue_v3.1"];
+const TRIAL_STYLE = "语调平稳，句子中间和句尾都不要把声音压低。";
+export async function dipTrial(no: number, out: string, cap = 3_000) {
+  const meta = JSON.parse(await readFile(path.join(DIR, `${no}.json`), "utf8")) as { starts?: number[] };
+  const lines = scriptLines(await readFile(path.join(DIR, `${no}.txt`), "utf8"));
+  if (!Array.isArray(meta.starts) || meta.starts.length !== lines.length) throw new Error(`第 ${no} 期没有每行的开始时间，或和听稿行数对不上`);
+  const work = path.join(os.tmpdir(), `issue-dips-${no}`);
+  await mkdir(work, { recursive: true });
+  await writeFile(path.join(work, "in.mp3"), await readFile(path.join(DIR, `${no}.mp3`)));
+  await run("lame", ["--quiet", "--decode", path.join(work, "in.mp3"), path.join(work, "out.wav")]);
+  const up = wavSamples(await readFile(path.join(work, "out.wav")));
+  await rm(work, { recursive: true, force: true });
+  await mkdir(out, { recursive: true });
+  const { say, rate } = reader(`dip-trial:${no}`, 0);
+  const others = [...TRIAL_VOICES.map((v) => ({ name: v, ...reader(`dip-trial:${no}`, 0, v) })), { name: "instruction", ...reader(`dip-trial:${no}`, 0, VOICE.voice, TRIAL_STYLE) }];
+  const low = (p: Int16Array, r: number) => ({ long: lowSeconds(p, r), short: lowRuns(p, r, 0.5).reduce((sum, x) => sum + x.seconds, 0) });
+  let chars = 0;
+  const rows: Array<{ line: number; text: string; up: { long: number; short: number }; at: number; takes: Record<string, { long: number; short: number } | string> }> = [];
+  for (const [n, line] of lines.entries()) {
+    const part = up.samples.subarray(Math.round(meta.starts[n]! * up.rate), n + 1 < lines.length ? Math.round(meta.starts[n + 1]! * up.rate) : up.samples.length);
+    const runs = lowRuns(part, up.rate);
+    if (!runs.length) continue;
+    const halves = cutBefore(line, runs[0]!.at / (part.length / up.rate));
+    const cost = line.length * (5 + others.length + (halves ? 1 : 0));
+    if (chars + cost > cap) break;
+    chars += cost;
+    const takes: Record<string, { long: number; short: number } | string> = {};
+    const tryTake = async (name: string, read: () => Promise<Int16Array[]>, r = rate) => {
+      try {
+        const got = await read();
+        takes[name] = got.map((p) => low(p, r())).reduce((sum, l) => ({ long: sum.long + l.long, short: sum.short + l.short }));
+        await writeFile(path.join(out, `${n + 1}-${name}.wav`), wavOf(joinLines(got, r()).samples, r()));
+      } catch (error) { takes[name] = error instanceof Error ? error.message.slice(0, 200) : String(error); }
+    };
+    await tryTake("seed0", async () => [await say(line, n)]);
+    for (const seed of [1, 2, 3]) await tryTake(`seed${seed}`, async () => [await say(line, n, undefined, 0, seed)]);
+    await tryTake("rate0.9", async () => [await say(line, n, undefined, 0, 0, 0.9)]);
+    if (halves) await tryTake("cut", async () => [await say(halves[0], n), await say(halves[1], n)]);
+    for (const other of others) { await sleep(1_100); await tryTake(other.name, async () => [await other.say(line, n)], other.rate); }
+    rows.push({ line: n + 1, text: line, up: low(part, up.rate), at: runs[0]!.at, takes });
+  }
+  return { no, lines: lines.length, dropped: rows.length, chars, rows };
 }
 
 /** The samples of a 16-bit PCM WAV, wherever its data chunk sits. */

@@ -7,7 +7,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { config } from "@aihot/backend/config";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, lowSeconds, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, cutBefore, lowRuns, lowSeconds, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -321,4 +321,8 @@ test("a line whose voice drops low in the middle is found; a steady line, and on
   assert.ok(lowSeconds(tone([[250, 2.5], [150, 1.5], [250, 2.5]]), rate) >= 1, "nine semitones down for a second and a half");
   assert.equal(lowSeconds(tone([[250, 5], [150, 1]]), rate), 0, "a sentence falls at its end");
   assert.equal(lowSeconds(tone([[250, 3], [150, 0.5], [250, 3]]), rate), 0, "half a second is a tone of the language, not a drop");
+  const [drop] = lowRuns(tone([[250, 2.5], [150, 1.5], [250, 2.5]]), rate);
+  assert.ok(drop && Math.abs(drop.at - 2.5) <= 0.25, "where the drop starts");
+  assert.deepEqual(cutBefore("其中酒吧、夜店和酒廊涨得最多，一年涨了百分之六，餐厅涨得少一些", 0.6), ["其中酒吧、夜店和酒廊涨得最多，", "一年涨了百分之六，餐厅涨得少一些"]);
+  assert.equal(cutBefore("这一行没有可以停的地方所以不切", 0.5), null);
 });

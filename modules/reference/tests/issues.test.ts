@@ -1,7 +1,7 @@
 // 十一说 on the site (backend/issues.ts): failure cases are a day written twice (paying twice), an issue that misses the
 // items listed just before it is written, a daily that does not lead with the day's issue or then drops the item it
 // would have led with, a lead that points nowhere, and an issue page that lists originals the issue never names.
-import { editionAt, pointModels, stub, tag } from "../../../tests/setup.ts";
+import { editionAt, pointModels, Reply, stub, tag } from "../../../tests/setup.ts";
 import assert from "node:assert/strict";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -16,8 +16,12 @@ import { stopBoss } from "@aihot/backend/jobs/queue";
 import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
-import { issueLead, writeIssue } from "../backend/issues.ts";
+import { dayItems, issueLead, writeIssue } from "../backend/issues.ts";
+import { failedJobAlerts, missingIssueAlerts } from "../backend/failed.ts";
+import { getBoss } from "@aihot/backend/jobs/queue";
+import { z } from "zod";
 import { AGENT_ABILITIES } from "../backend/agent.ts";
+import { BATCH_TIMES, batchLane, claudeJson } from "../backend/claude.ts";
 
 const T = tag();
 const DAY = "2020-03-10";
@@ -137,4 +141,102 @@ test("an issue has 听 only once its audio is in place, its 文字稿 once its l
 
 test("a day without an issue leads by rule", async () => {
   assert.equal(await issueLead("2020-03-11"), null);
+});
+
+test("a Claude call goes as a batch; one not back in time is canceled, and that call and the rest of the run go straight", async () => {
+  const times = { ...BATCH_TIMES };
+  Object.assign(BATCH_TIMES, { wait: 300, poll: 20, cancel: 300 });
+  const message = (ok: boolean) => ({ id: "msg_1", content: [{ type: "text", text: JSON.stringify({ ok }) }], stop_reason: "end_turn", usage: { input_tokens: 10, output_tokens: 5 } });
+  let ends = true, canceled = false, cancelFails = false;
+  const seen: string[] = [];
+  const claude = await stub((_hit, req) => {
+    const at = req.url.replace("/v1/messages", "") || "/";
+    seen.push(at);
+    const batch = { id: "b1", processing_status: (ends || canceled) && at !== "/batches" ? "ended" : "in_progress", results_url: `${claude.url}/v1/messages/batches/b1/results` };
+    // A cancel that fails for a batch answered meanwhile: the batch ends with its result.
+    if (at === "/batches/b1/cancel" && cancelFails) { ends = true; return new Reply(500, { error: { message: "overloaded" } }); }
+    if (at === "/batches/b1/cancel") canceled = true;
+    if (at === "/batches/b1/results") return { custom_id: "r", result: canceled ? { type: "canceled" } : { type: "succeeded", message: message(true) } };
+    return at === "/" ? message(false) : batch;
+  });
+  pointModels(claude.url, ["claude-opus-5-5"]);
+  try {
+    const lane = batchLane();
+    const ask = (n: number) => claudeJson({ model: "claude-opus-5-5", purpose: "reference_issue_check", subject: `batch-${T}`, promptVersion: "t", system: "核对员", user: `稿子 ${n}`, schema: z.object({ ok: z.boolean() }), maxTokens: 8000, timeoutMs: 5000, batch: lane });
+    const usage = async (id: number) => (await sql<{ usage: Record<string, unknown> }[]>`SELECT usage FROM receipts WHERE id = ${id}`)[0]!.usage;
+
+    const first = await ask(1);
+    assert.equal(first.data.ok, true, "the batch's answer");
+    assert.equal((await usage(first.receiptId)).batch, true, "its receipt says so, for the half price");
+    assert.ok(!seen.includes("/"), "nothing was sent straight");
+
+    ends = false;
+    const second = await ask(2);
+    assert.ok(seen.includes("/batches/b1/cancel"), "a batch not back in time is canceled, so it is not answered and billed later");
+    assert.equal(second.data.ok, false, "and the call is sent straight");
+    assert.equal((await usage(second.receiptId)).batch, undefined);
+    assert.equal(lane.off, true);
+
+    const batches = seen.filter((x) => x === "/batches").length;
+    assert.equal((await ask(3)).data.ok, false);
+    assert.equal(seen.filter((x) => x === "/batches").length, batches, "the rest of the run does not wait on another batch");
+
+    canceled = false; cancelFails = true;
+    const straight = seen.filter((x) => x === "/").length;
+    const late = await claudeJson({ model: "claude-opus-5-5", purpose: "reference_issue_check", subject: `batch-${T}`, promptVersion: "t", system: "核对员", user: "稿子 4", schema: z.object({ ok: z.boolean() }), maxTokens: 8000, timeoutMs: 5000, batch: batchLane() });
+    assert.equal(late.data.ok, true, "a cancel that failed leaves the batch watched: answered meanwhile, its answer is used");
+    assert.equal(seen.filter((x) => x === "/").length, straight, "and the call is not sent, and paid for, a second time");
+  } finally {
+    Object.assign(BATCH_TIMES, times);
+    await claude.close();
+  }
+});
+
+test("十一 reads what was listed in the day, whatever date the original bears", async () => {
+  // Dated thirty hours back by its source, listed two hours before the day's edition: the daily lists it that day.
+  const day = "2020-03-20";
+  const at = editionAt("daily", day, -7200);
+  const { articleId } = await upsertMaterial({ sourceId: SRC, url: `https://example.com/issue-${T}-late`, title: `Late ${T}`, bodyText: "原文", bodyStatus: "ok", via: "fetch", publishedAt: new Date(at.getTime() - 30 * 3_600_000), discoveredAt: at });
+  await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected)
+            VALUES (${articleId}, 1, 'rule', 'pass', 'tip', '迟到的一条', '摘要', 50, false)`;
+  await publishArticle(articleId, { now: at, releasedAt: at });
+  ids.push(articleId);
+  assert.ok((await dayItems(editionAt("daily", day))).some((i) => i.id === articleId), "listed in the window: read");
+  assert.ok(!(await dayItems(editionAt("daily", "2020-03-21"))).some((i) => i.id === articleId), "and only in that one");
+  // Made a 精选 and released the next day: the daily would carry it again but for its own guard; 十一 read it yesterday.
+  const next = editionAt("daily", "2020-03-21");
+  await sql`UPDATE publications SET selected = true, visible_after = ${new Date(next.getTime() - 3_600_000)} WHERE article_id = ${articleId}`;
+  assert.ok((await dayItems(next)).some((i) => i.id === articleId), "in the release's window");
+  await sql`INSERT INTO reference_issues (date, no, status, content, version, models) VALUES (${day}, null, 'thin', ${sql.json({ items: [{ id: articleId }] })}, 'test', '{}')`;
+  try {
+    assert.ok(!(await dayItems(next)).some((i) => i.id === articleId), "not read twice");
+  } finally {
+    await sql`DELETE FROM reference_issues WHERE date = ${day}`;
+  }
+});
+
+test("a day without its 十一说 and a module job out of retries are told", async () => {
+  const day = "2020-03-25";
+  const due = editionAt("daily", day, -90 * 60).getTime();
+  const boss = await getBoss();
+  await boss.createQueue("reference.issue").catch(() => {});
+  await sql`INSERT INTO settings (key, value, updated_by) VALUES ('reference.issues', ${sql.json({ from: "2020-03-01" })}, 'test') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`;
+  try {
+    assert.deepEqual(await missingIssueAlerts(due - 60_000), [], "before it is due nothing is missing");
+    assert.match((await missingIssueAlerts(due + 60_000))[0]!.title, /2020-03-25.*十一说没有写出来/);
+    const running = await boss.send("reference.issue", { date: day });
+    assert.deepEqual(await missingIssueAlerts(due + 60_000), [], "its job still waiting or running is waited for");
+    await sql`DELETE FROM pgboss.job WHERE id = ${running!}`;
+    assert.deepEqual(await missingIssueAlerts(editionAt("daily", DAY).getTime()), [], "a day that has its issue is not told");
+  } finally {
+    await sql`DELETE FROM settings WHERE key = 'reference.issues'`;
+  }
+  await boss.createQueue("reference.voice").catch(() => {});
+  const id = await boss.send("reference.voice", { no: 999 });
+  // As pg-boss leaves a job whose retries are used up.
+  await sql`UPDATE pgboss.job SET state = 'failed', completed_on = now(), output = ${sql.json({ message: `boom ${T}` })} WHERE id = ${id!}`;
+  const told = (await failedJobAlerts()).find((f) => f.key === "modules.failed.reference.voice");
+  assert.match(told?.title ?? "", /十一说朗读/);
+  assert.ok(told?.detail?.includes(`boom ${T}`), "with why it failed");
+  await sql`DELETE FROM pgboss.job WHERE id = ${id!}`;
 });

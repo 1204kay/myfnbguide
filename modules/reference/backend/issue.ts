@@ -26,7 +26,7 @@ import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { chatJson } from "@aihot/backend/providers/llm";
 import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { MODELS } from "@aihot/backend/providers/llm";
-import { claudeJson, joined, type Parts } from "./claude.ts";
+import { batchLane, claudeJson, joined, type Parts } from "./claude.ts";
 
 export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
@@ -83,11 +83,13 @@ export type Ask = <S extends z.ZodType>(purpose: string, system: string, user: s
 /**
  * Asks the named model through the engine's receipts and budget; receipts go to `receiptIds`, paid tokens to `onUsage`.
  * Claude goes through Anthropic's own API (backend/claude.ts), the only one with prompt caching; the rest through chatJson.
+ * Its calls go as Message Batches at half price while they come back in time (the run's lane, backend/claude.ts).
  */
 export function modelAsk(model: string, subject: string, receiptIds: number[], onUsage: (u: Usage) => void = () => {}): Ask {
+  const batch = batchLane();
   return async (purpose, system, user, schema, attempt) => {
     const once = (tag?: string) => MODELS[model]?.service === "anthropic"
-      ? claudeJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag })
+      ? claudeJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user, schema, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag, batch })
       : chatJson({ model, purpose, subject, promptVersion: ISSUE_VERSION, system, user: joined(user), schema, temperature: 0, maxTokens: 8000, timeoutMs: 600_000, attemptTag: tag });
     // Unusable output once is asked again once (first trial: 2 of 20 of Claude's issues, broken JSON); a second is the answer.
     const res = await once(attempt).catch((error: unknown) => {
@@ -104,11 +106,14 @@ export function modelAsk(model: string, subject: string, receiptIds: number[], o
 const CLOSE_LABEL = /^合起来[：:]\s*/u;
 const PART_LABEL = /^(?:标题|导读|三句话|预告|快讯|细说|合起来)[：:]\s*/u;
 
+/** The 导读's sentences. A writer that gives them as one string is taken at its word: on 11-11 and 11-12 three drafts a day
+ * were refused for that alone, each a read of the whole day (380,000–530,000 tokens in) paid for nothing. */
+const Brief = z.preprocess((v) => (typeof v === "string" ? [v] : v), z.array(z.string().trim().min(1)).min(1));
 const IssueAnswer = z.object({
   /** The deep item's question. */
   title: z.string().trim().min(1),
   /** The deep item's 导读, under its title on the daily's lead and on the issue's page. */
-  brief: z.array(z.string().trim().min(1)).min(1),
+  brief: Brief,
   preview: z.string().trim().min(1),
   news: z.array(z.object({ head: z.string().trim().min(1), text: z.string().trim().min(1) })).min(1),
   deep: z.string().trim().min(1),
@@ -196,7 +201,8 @@ export const WRITE_FLOOR = 2_900;
 export const THIN_DAY = 20_000;
 
 /**
- * Goes over a draft once for the ear before it is checked, the second step of NotebookLlama (Meta's llama-cookbook):
+ * Goes over a draft once for its reader before it is checked (until 11-13 for the ear: the spoken turns it put in showed on
+ * the page, Kay 11-09 and 11-10; what is said aloud is the listen script's, voice.ts), the second step of NotebookLlama (Meta's llama-cookbook):
  * written for what to say, a draft read as a list (10-22, 0da591c: 22 figures in a thousand characters, sentences of 58).
  * The check comes after, so what this changes is read against the originals like the rest; output it cannot give
  * leaves the draft as written.
@@ -356,7 +362,7 @@ const leadChars = (brief: string[]) => bare(brief.join("")).length;
 export const leadFits = (issue: IssueText) =>
   [...issue.title].length <= TITLE_MAX && leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
 
-const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: z.array(z.string().trim().min(1)).min(1) });
+const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: Brief });
 
 /**
  * The title and 导读 written again from the deep piece when they are not the length asked: the prompts alone did not hold

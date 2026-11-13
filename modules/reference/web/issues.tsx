@@ -48,7 +48,7 @@ export default function IssuesRoute() {
             </span>
           </div>
           <div className="py-6 @[880px]:py-8">
-            <h1 id="report-start" data-page-title="" className="text-[32px] font-black leading-[1.2] tracking-[-0.02em] text-ink @[880px]:text-[44px]">{TITLE}</h1>
+            <h1 id="report-start" data-page-title="" className="text-[32px] font-black leading-[1.28] tracking-[-0.03em] text-ink [text-wrap:balance] @[520px]:text-[40px] @[1040px]:text-[48px] @[1040px]:leading-[1.22]">{TITLE}</h1>
           </div>
           <div aria-hidden="true" className="border-t border-line-strong" />
         </header>

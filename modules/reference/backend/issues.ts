@@ -8,7 +8,7 @@ import type { SitemapEntry } from "@aihot/backend/modules";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { listedCondition, selectedCondition } from "@aihot/backend/publication/scope";
-import { beijingAt } from "@aihot/contracts/time";
+import { beijingAt, beijingDate } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
 import type { IssueIndex, IssuePage } from "../types.ts";
 import { issueAudio } from "./audio.ts";
@@ -21,15 +21,30 @@ export const issuePath = (no: number) => `/reference/issues/${no}`;
  * Everything listed in the 24 hours up to `end`, or only the 精选, best scored first, numbered as the issue cites them.
  * `end` is the daily's edition time (the trial reads the daily's own window) or the time the issue is written, three
  * hours ahead of it: each day's window then starts where the last one ended, so nothing listed falls between two.
+ * An item belongs to the window it arrived in, as the daily attributes it (reports/edition.ts periodReports): by the
+ * later of its arrival (timeline_at) and, for a 精选, its release (visible_after), one released more than a day after
+ * the window began being old news; a historical import to none. One listed plain and made a 精选 the next day would be
+ * in both days' windows, and the daily's own guard (what a daily carried is not given again) is not here, so what the
+ * last two days' issues read is left out. One that arrived before 05:00 and was listed after it is in neither, as in
+ * the daily. Until 11-13
+ * it was over the original's own date: an item listed after 05:00 whose original was dated before it fell in neither
+ * day's window (11-04 to 11-12: 240 of 1,645 listed, 11 of them 精选, never reached 十一).
  */
 export async function dayItems(end: Date, selectedOnly = false): Promise<DayItem[]> {
   const start = new Date(end.getTime() - 86_400_000);
+  const day = beijingDate(end);
   const rows = await sql<Omit<DayItem, "n">[]>`
     SELECT p.article_id AS id, a.source_id AS "sourceId", s.name AS "sourceName", p.title, a.url,
       coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text,
       p.selected, p.story_id::text AS "storyId"
     FROM publications p JOIN articles a ON a.id = p.article_id JOIN sources s ON s.id = p.source_id
-    WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND coalesce(p.published_at, p.discovered_at) >= ${start} AND coalesce(p.published_at, p.discovered_at) < ${end}
+    WHERE ${selectedOnly ? selectedCondition(new Date()) : listedCondition(new Date())} AND NOT p.backfill
+      AND (((p.visible_after IS NULL OR p.visible_after <= p.timeline_at) AND p.timeline_at >= ${start} AND p.timeline_at < ${end})
+        OR (p.visible_after > p.timeline_at AND p.visible_after >= ${start} AND p.visible_after < ${end}))
+      AND p.timeline_at >= ${start}::timestamptz - interval '24 hours'
+      AND NOT EXISTS (SELECT 1 FROM reference_issues i, jsonb_array_elements(i.content->'items') it
+        WHERE i.date < ${day}::date AND i.date >= ${day}::date - 2
+          AND it->>'id' = p.article_id)
     ORDER BY p.score DESC NULLS LAST, p.article_id`;
   return rows.map((r, i) => ({ n: i + 1, ...r }));
 }

@@ -141,6 +141,21 @@ export function rail(): Tab[] {
   return [...all.slice(0, at), { key: "all", to: "/all", label: "全部", icon: IconList }, ...all.slice(at)];
 }
 
+/**
+ * The entry a page lights on desktops: by its address, as above, unless the page itself declares another tab
+ * (screens.ts) and its address only sits under an entry or under none. A module's page can have its address
+ * under one entry and belong to another (an issue of a module's column under the reports' tab); phones go by
+ * what the page declares, and the sidebar and the rail then light the same entry. A page that is an entry
+ * itself keeps it (全部 sits under 精选 on phones and has its own entry here).
+ */
+export function litItem(items: readonly NavItem[], pathname: string, screen: { tab?: TabKey; home?: TabKey }): NavItem | null {
+  const byPath = activeSidebarItem(items, pathname);
+  if (byPath && pathname === byPath.to) return byPath;
+  const key = byPath ? screen.tab ?? screen.home : screen.tab;
+  const declared = key && tabs().find((t) => t.key === key);
+  return (declared && items.find((i) => i.to === declared.to)) || byPath;
+}
+
 /** A rail entry is lit on its pages; 我的 also on the pages that sit under it on phones. */
 export function railIsActive(tab: Tab, pathname: string, screenTab: TabKey | undefined): boolean {
   if (tab.key === "me") return pathname === tab.to || screenTab === "me";

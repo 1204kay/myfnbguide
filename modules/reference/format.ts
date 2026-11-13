@@ -1,5 +1,5 @@
-// Numbers, counts, dates and spacing as the reference pages write them, on the server and in the browser alike.
-import { beijingDate, monthDay } from "@aihot/contracts/time";
+// Numbers, counts and months as the reference pages write them, on the server and in the browser alike.
+import { beijingDate } from "@aihot/contracts/time";
 import type { Count } from "./types.ts";
 
 /** "18,000", "10.5", "−3,810": thousands separated, at most one decimal place. */
@@ -30,14 +30,6 @@ export const restCountText = (c: Count) =>
 
 /** A situation's whole count on a line: "16 家店 · 1 位业内人士 · 26 条原文". */
 export const fullCountText = (c: Count) => [...tellers(c).map(([n, unit]) => `${num(n)} ${unit}`), `${num(c.cases)} 条原文`].join(" · ");
-
-/**
- * "10月5日" this year (Beijing time), "2019年2月19日" another: the engine's monthDay (apps/web/app/lib/format.ts), with
- * no spaces, as the original writes a day (myfnb/DIFFERENCES.md: 日期加空格 was taken back on 10/6).
- */
-export function day(at: string | Date, now: Date = new Date()): string {
-  return monthDay(beijingDate(at), beijingDate(now));
-}
 
 /** "2025 年 7 月": a month always has its year, as the engine writes a month (features/report/format.ts, routes/changelog.tsx). */
 export function month(at: string | Date): string {

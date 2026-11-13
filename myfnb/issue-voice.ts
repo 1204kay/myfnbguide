@@ -20,6 +20,9 @@
 //                                                                                    只读 mp3，不转写、不念、不花钱，只改 7.json；--pauses all 补全部有音频的期
 //   sudo docker compose exec -T worker node myfnb/issue-voice.ts --put-try 8         把 --try 8 留下、机器核对通过的那份放上网站（mp3、听稿、每行开始时间、停顿），
 //                                                                                    不再念、不花钱；要这次改动部署之后试念的才有核对记录
+//   sudo docker compose exec -T worker node myfnb/issue-voice.ts --dips 20           试验：量已放上的第 20 期哪几行中间声音忽然低沉，把这几行各再念几次
+//                                                                                    （同 seed、seed 1–3、慢一点、在低沉前的标点切成两行、另两个声音、加一句「语调平稳」的指令），量每次还低沉几秒；
+//                                                                                    不改线上任何一期，念出来的放在 /data/reference/audio/dips/20/；最多念 --cap 字（默认 3000，阿里云字数）
 // 花钱的：听稿用 DeepSeek 写（几分钱）、用核对模型核（Claude API 免费额度）；声音用阿里云（免费额度用完后每念一次约 US$0.07–0.1），一期最多念 6 次。
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -31,7 +34,7 @@ import { installModules } from "@aihot/backend/modules";
 import { SERVER_MODULES } from "@aihot/site/modules/server";
 import { ISSUE_CHECK_STEP, ISSUE_STEP, modelAsk } from "../modules/reference/backend/issue.ts";
 import { issueAudio } from "../modules/reference/backend/audio.ts";
-import { hearIssue, pauseIssue, putTry, timeIssue, voiceIssue, writeOnly, voiceMissing, voiceReport } from "../modules/reference/backend/voice.ts";
+import { dipTrial, hearIssue, pauseIssue, putTry, timeIssue, voiceIssue, writeOnly, voiceMissing, voiceReport } from "../modules/reference/backend/voice.ts";
 
 // modelFor knows a module's steps only once the modules are installed.
 installModules(SERVER_MODULES);
@@ -45,6 +48,9 @@ const writeNo = arg("--write");
 const timesNo = arg("--times");
 const pausesNo = arg("--pauses");
 const putTryNo = arg("--put-try");
+const dipsNo = arg("--dips");
+const cap = arg("--cap");
+if (cap !== undefined && !/^[1-9]\d*$/u.test(cap)) throw new Error("--cap 要一个字数，例如 3000");
 if (pausesNo !== undefined && pausesNo !== "all" && !/^[1-9]\d*$/u.test(pausesNo)) throw new Error("--pauses 要一个期号或 all");
 const voice = arg("--voice");
 if (voice !== undefined && !/^[A-Za-z0-9_.]+$/u.test(voice)) throw new Error("--voice 要一个声音名，例如 longanhuan_v3.1");
@@ -53,11 +59,11 @@ if (model !== undefined && !/^[a-z0-9.-]+$/u.test(model)) throw new Error("--mod
 const style = arg("--style");
 const scriptFile = arg("--script");
 if (from !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(from)) throw new Error("--from 要一个日期，例如 2026-11-01");
-for (const n of [tryNo, putNo, hearNo, timesNo, putTryNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
+for (const n of [tryNo, putNo, hearNo, timesNo, putTryNo, dipsNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
 
 // About 30 lines an issue, one request a line, six readings at most: the breaker stops a runaway loop.
 // Only this module's own row; Groq's `transcribe` row is archive's, and an operator adds it in the admin.
-if (from || tryNo || putNo) {
+if (from || tryNo || putNo || dipsNo) {
   await sql`INSERT INTO budgets (service, per_minute, per_hour, per_day, note)
     VALUES ('speech-qwen', 60, 200, 400, '十一说念稿（阿里云 Qwen，一行一次，一期约 30 行）') ON CONFLICT (service) DO NOTHING`;
 }
@@ -107,6 +113,11 @@ if (pausesNo) {
 if (putTryNo) {
   const put = await putTry(Number(putTryNo), path.join(config.dataDir, "reference", "audio", "tries", putTryNo));
   console.log("refused" in put ? `第 ${putTryNo} 期没有放上：${put.refused}` : `第 ${putTryNo} 期的试念放上了：${put.seconds} 秒，${put.lines} 行，文字稿跟着声音走。`);
+}
+if (dipsNo) {
+  const out = path.join(config.dataDir, "reference", "audio", "dips", dipsNo);
+  console.log(JSON.stringify(await dipTrial(Number(dipsNo), out, cap ? Number(cap) : undefined), null, 1));
+  console.log(`念出来的：${out}`);
 }
 if (timesNo) {
   const starts = await timeIssue(Number(timesNo));

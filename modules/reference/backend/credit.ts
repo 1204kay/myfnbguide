@@ -3,7 +3,8 @@
 // no text and no audio (Kay 11-01 22:43 asked for a warning before that day comes). The receipts carry no cost for
 // Claude, so the month's spend is counted from their tokens at list price. Since 11-02 the check reads the originals
 // from the prompt cache (backend/claude.ts): prompt_tokens still counts every token read in, and Anthropic's own fields
-// beside it say how many were cache reads and writes, priced as such here.
+// beside it say how many were cache reads and writes, priced as such here. Since 11-13 the calls go as Message Batches
+// when they come back in time (backend/claude.ts): those receipts' usage says `batch`, and every token of theirs is half price.
 import { sql } from "@aihot/backend/db";
 import type { Finding } from "@aihot/backend/notify/feishu";
 
@@ -26,6 +27,8 @@ const PRICES: Record<string, [number, number, number]> = {
 /** A cache write costs the input price times this: 1.25 for five minutes, 2 for an hour (same page). */
 const WRITE_5M = 1.25;
 const WRITE_1H = 2;
+/** A Message Batches request costs this share of every price above (pricing page, 11-13). */
+const BATCH = 0.5;
 
 export interface SpendRow {
   model: string | null;
@@ -34,6 +37,8 @@ export interface SpendRow {
   output: number;
   /** Of `input`: read from the cache, and written to it for five minutes and for an hour. */
   cacheRead?: number; write5m?: number; write1h?: number;
+  /** Sent as Message Batches. */
+  batch?: boolean;
 }
 /** Warn at this share spent, or when the month at its pace so far would go over. */
 const WARN_SHARE = 0.8;
@@ -45,7 +50,7 @@ export function monthSpend(rows: SpendRow[]): number {
     const [i, o, read] = PRICES[r.model ?? ""] ?? PRICES["claude-opus-5-5"]!;
     const cacheRead = r.cacheRead ?? 0, w5 = r.write5m ?? 0, w1 = r.write1h ?? 0;
     const plain = Math.max(0, r.input - cacheRead - w5 - w1);
-    return sum + (plain * i + cacheRead * read + w5 * i * WRITE_5M + w1 * i * WRITE_1H + r.output * o) / 1e6;
+    return sum + (r.batch ? BATCH : 1) * (plain * i + cacheRead * read + w5 * i * WRITE_5M + w1 * i * WRITE_1H + r.output * o) / 1e6;
   }, 0);
 }
 
@@ -78,7 +83,7 @@ export function creditFinding(spent: number, now: Date, plan: CreditPlan = DEFAU
     impact: `本月已用约 US$${spent.toFixed(0)}（额度 US$${MONTHLY_CREDIT}），剩余约 US$${left.toFixed(0)}${perDay > 0 ? `；按目前每天约 US$${perDay.toFixed(1)} 计算，约 ${Math.floor(left / perDay)} 天后用完` : ""}${pace !== null ? `；按此速度，整月约 US$${pace.toFixed(0)}` : ""}；额度用完当天的十一说无法生成（既没有文字，也没有声音）`,
     heals: `每月 ${plan.renewsOn} 号额度重置`,
     action: "告知 Kay：增加额度，或在本月余下的日子减少使用 Claude",
-    detail: "按回执 token × 标价估算（Opus 5.5 $4/$20 每百万，缓存读 $0.20、写 1.25 或 2 倍），回执中未记录 Claude 的费用；不含本服务器以外使用同一把钥匙的花费",
+    detail: "按回执 token × 标价估算（Opus 5.5 $4/$20 每百万，缓存读 $0.20、写 1.25 或 2 倍，批处理半价），回执中未记录 Claude 的费用；不含本服务器以外使用同一把钥匙的花费",
   };
 }
 
@@ -88,13 +93,13 @@ export async function creditAlerts(now: number): Promise<Finding[]> {
   const plan = { ...DEFAULT_PLAN, ...row?.value };
   const start = new Date(creditPeriod(at, plan.renewsOn).start);
   const rows = await sql<SpendRow[]>`
-    SELECT model, coalesce(sum((usage->>'prompt_tokens')::bigint), 0)::float8 AS input,
+    SELECT model, coalesce((usage->>'batch')::boolean, false) AS batch, coalesce(sum((usage->>'prompt_tokens')::bigint), 0)::float8 AS input,
       coalesce(sum((usage->>'completion_tokens')::bigint), 0)::float8 AS output,
       coalesce(sum((usage->>'cache_read_input_tokens')::bigint), 0)::float8 AS "cacheRead",
       coalesce(sum((usage->'cache_creation'->>'ephemeral_5m_input_tokens')::bigint), 0)::float8 AS "write5m",
       coalesce(sum((usage->'cache_creation'->>'ephemeral_1h_input_tokens')::bigint), 0)::float8 AS "write1h"
     FROM receipt_attempts WHERE service = 'anthropic' AND origin = 'live' AND started_at >= ${start} AND started_at <= ${at}
-    GROUP BY model`;
+    GROUP BY 1, 2`;
   const f = creditFinding(monthSpend(rows), at, plan);
   return f ? [f] : [];
 }

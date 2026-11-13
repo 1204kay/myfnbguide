@@ -1,11 +1,13 @@
 // One week's trends (backend/read.ts) in the weekly's own frame (routes/daily-archive.tsx, a page below the reports:
 // ReportLayout with a bar leading back, the masthead's date line, SectionPage a topic and the reports' Story a
 // report). Each report keeps its source, title and original as the weekly shows them; its summary is our one
-// sentence from it. Only the frame's parts already on the report pages are used (myfnb/DIFFERENCES.md).
+// sentence from it. The headline is in the type of the reports' lead headline (ReportPaper): the page has no nameplate picture.
+// A topic's heading runs to two lines on a phone where the reports' section names are a word, so its number is kept
+// from shrinking here: under overflow-wrap:anywhere it would give way first and break into 0 / 1.
 import { useLoaderData, type LoaderFunctionArgs, type MetaArgs } from "react-router";
 import type { ReportNavigationResponse } from "@aihot/contracts/site";
 import { SITE, withSubject } from "@aihot/site";
-import { beijingDate } from "@aihot/contracts/time";
+import { beijingDate, monthDay } from "@aihot/contracts/time";
 import { apiGet, cachedPage, loadOr404 } from "@aihot/web/lib/api.server";
 import { pageMeta, titled } from "@aihot/web/lib/seo";
 import { ReportLayout } from "@aihot/web/features/report/ReportLayout";
@@ -27,8 +29,8 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   return cachedPage(600, { issue, index, today: beijingDate(Date.now()) });
 }
 
-/** 2026-10-17 → 10 月 17 日 */
-const day = (date: string) => `${Number(date.slice(5, 7))} 月 ${Number(date.slice(8, 10))} 日`;
+/** 2026-10-17 → 10月17日, as the engine writes a day (monthDay). */
+const day = (date: string) => monthDay(date);
 const span = (i: TrendsIssue) => `${day(i.periodStart)} – ${day(i.periodEnd)}`;
 
 export function meta({ loaderData: data }: MetaArgs<typeof loader>) {
@@ -46,14 +48,14 @@ export default function TrendsIssueRoute() {
   const { issue, index, today } = useLoaderData<typeof loader>();
   return (
     <ReportLayout kind="weekly" index={index} current={issue.key} today={today} back={{ to: `/weekly/${issue.key}`, label: "周报" }} title={TITLE}>
-      <article className="@container [overflow-wrap:anywhere]">
+      <article className="@container [overflow-wrap:anywhere] [&_section>header>.num]:shrink-0">
         <header className="pt-5 lg:pt-0">
           <div className="flex items-center justify-between gap-4 text-[12px] text-ink-4">
             <span>{`${SITE.name} · ${withSubject("周报")}`}</span>
             <span className="num">{dateLine("weekly", issue.key)}</span>
           </div>
           <div className="py-6 @[880px]:py-8">
-            <h1 id="report-start" data-page-title="" className="text-[32px] font-black leading-[1.2] tracking-[-0.02em] text-ink @[880px]:text-[44px]">{TITLE}</h1>
+            <h1 id="report-start" data-page-title="" className="text-[32px] font-black leading-[1.28] tracking-[-0.03em] text-ink [text-wrap:balance] @[520px]:text-[40px] @[1040px]:text-[48px] @[1040px]:leading-[1.22]">{TITLE}</h1>
             <p className="mt-4 max-w-[46em] text-[16.5px] leading-[1.9] text-ink-2 @[560px]:text-justify @[880px]:text-[17.5px]">
               这一周里，三家以上的来源各自谈到同一件事。每个来源一句，只转述该原文的内容，不替它们下结论；点击标题查看本站收录的条目，点击「原文」查看原文。
             </p>

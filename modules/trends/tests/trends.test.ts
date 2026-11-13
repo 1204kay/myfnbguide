@@ -7,12 +7,12 @@ import { after, before, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
 import { upsertMaterial } from "@aihot/backend/content/materials";
 import { publishArticle } from "@aihot/backend/publication/publish";
-import { stopBoss } from "@aihot/backend/jobs/queue";
+import { getBoss, stopBoss } from "@aihot/backend/jobs/queue";
 import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import checker from "@aihot/checker/server";
 import trends from "../server.ts";
-import { composeWeek, countTopics, lineGrounded, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
+import { composeWeek, countTopics, lineGrounded, weekGaveUp, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
 import { publisherOf } from "../backend/publishers.ts";
 
 const T = tag();
@@ -138,4 +138,20 @@ test("only the newest weekly is composed, once", async () => {
   assert.deepEqual(await weekToCompose(), { key: "9999-W52", start: "9999-12-20", end: "9999-12-26" });
   await sql`INSERT INTO trends_issues (key, period_start, period_end, topics) VALUES ('9999-W52', '9999-12-20', '9999-12-26', '[]')`;
   assert.equal(await weekToCompose(), null, "a week done is not done again, and earlier weeks are never filled in");
+});
+
+test("a week whose job failed twice today is not queued again", async () => {
+  const boss = await getBoss();
+  await boss.createQueue("trends.week").catch(() => {});
+  const ids: string[] = [];
+  for (let i = 0; i < 2; i++) {
+    assert.equal(await weekGaveUp("9998-W01"), false, `${i} failed jobs`);
+    const id = await boss.send("trends.week", { key: "9998-W01", start: "9998-01-01", end: "9998-01-07" });
+    // As pg-boss leaves a job whose retries are used up.
+    await sql`UPDATE pgboss.job SET state = 'failed', completed_on = now() WHERE id = ${id!}`;
+    ids.push(id!);
+  }
+  assert.equal(await weekGaveUp("9998-W01"), true);
+  assert.equal(await weekGaveUp("9998-W02"), false, "another week is its own");
+  await sql`DELETE FROM pgboss.job WHERE id = ANY(${ids})`;
 });

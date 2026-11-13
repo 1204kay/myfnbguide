@@ -32,6 +32,19 @@ export const TRENDS_STEP = "trends";
 export const MIN_PUBLISHERS = 3;
 /** A sentence over this is cut by the writer's own rule (90 characters) with some room. */
 const MAX_LINE = 120;
+/**
+ * Room for the find and gather answers. At 4,000 the week of 11-02 (about 700 reports) had its find answer cut off
+ * sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid for). Two answers read
+ * back: one listed what it would not count as well, a topic a report with "只有一条讲……" for a reason (receipt 171070,
+ * 104 topics); the other cut the week fine, two or three reports a topic, one pair twice (173544, 86). The one that
+ * ended had 44 (174141), five of them single reports. All three began with one owner's own posts as a topic. Telling
+ * the prompt that what is not listed is not written, and that one author's posts are one source, made it worse
+ * (11-13, receipt 187734: the same week listed 506 topics, 472 of them one source, 17,875 tokens) and was taken back
+ * the same day; a new wording is tried with myfnb/trends-trial.ts --find --prompt before it goes in. The model writes up to 384K (api-docs.deepseek.com
+ * pricing, read 11-13) and only what is written is paid for; 32,000 at about 180 tokens a second stays inside the
+ * call's 300 s.
+ */
+const LIST_ROOM = 32_000;
 
 const prompt = (name: string) => promptFromText(`trends/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"));
 const FIND = prompt("find");
@@ -122,11 +135,23 @@ async function gather(found: Array<{ name: string; items: number[]; why: string 
   const topics = found.map((t, i) => `(${i + 1}) ${t.name}：${t.why}`).join("\n");
   const res = await chatJson({
     model, purpose: "trends_gather", subject, promptVersion: TRENDS_VERSION, system: GATHER,
-    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
+    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
   });
   receipts.push(res.receiptId);
   await completeReceipt(sql, res.receiptId);
   return withGathered(found, res.data.topics);
+}
+
+/** The find call alone: the things the model names over the week's pool, as it lists them (myfnb/trends-trial.ts --find reads it as it is, or with a prompt being tried in place of the one in use). */
+export async function findTopics(pool: PoolItem[], model: string, subject: string, receipts: number[], system = FIND): Promise<Array<{ name: string; items: number[]; why: string }>> {
+  if (pool.length < MIN_PUBLISHERS) return [];
+  const res = await chatJson({
+    model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system,
+    user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
+  });
+  receipts.push(res.receiptId);
+  await completeReceipt(sql, res.receiptId);
+  return res.data.topics;
 }
 
 /** Find, write and check one week's topics (paid calls, nothing kept: myfnb/trends-trial.ts reads it as it is). */
@@ -135,15 +160,7 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
   const receipts: number[] = [];
   const model = await modelFor(TRENDS_STEP);
   const subject = `trends:${key}`;
-  const found = pool.length < MIN_PUBLISHERS ? { topics: [] } : (await (async () => {
-    const res = await chatJson({
-      model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
-      user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
-    });
-    receipts.push(res.receiptId);
-    await completeReceipt(sql, res.receiptId);
-    return res.data;
-  })());
+  const found = { topics: await findTopics(pool, model, subject, receipts) };
   const gathered = await gather(found.topics, pool, model, subject, receipts);
   const { kept, dropped } = countTopics(gathered, pool);
   const byId = new Map(pool.map((p) => [p.id, p]));
@@ -191,4 +208,16 @@ export async function weekToCompose(): Promise<{ key: string; start: string; end
       EXISTS (SELECT 1 FROM trends_issues t WHERE t.key = r.key) AS done
     FROM reports r WHERE r.kind = 'weekly' ORDER BY r.key DESC LIMIT 1`;
   return r?.start && r.end && !r.done ? { key: r.key, start: r.start, end: r.end } : null;
+}
+
+/**
+ * Whether this week's job has already failed twice today (each job is two paid tries). The schedule asks again every
+ * half hour, and an answer that fails the same way each time was paid for sixteen times on 11-09; after two jobs it
+ * waits for a person (the failed job shows in the alerts).
+ */
+export async function weekGaveUp(key: string): Promise<boolean> {
+  const [r] = await sql<{ n: number }[]>`
+    SELECT count(*)::int AS n FROM pgboss.job
+    WHERE name = 'trends.week' AND state = 'failed' AND data->>'key' = ${key} AND completed_on > now() - interval '1 day'`;
+  return (r?.n ?? 0) >= 2;
 }

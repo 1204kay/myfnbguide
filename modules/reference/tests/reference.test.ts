@@ -17,7 +17,7 @@ import reference from "../server.ts";
 import { articlesToPlace, placeWaiting, readPlacing } from "../backend/place.ts";
 import { AGENT_ABILITIES } from "../backend/agent.ts";
 import { LISTED, rankSituations, sourceKind, tellerOf } from "../backend/read.ts";
-import { day, fullCountText, listCount, restCountText } from "../format.ts";
+import { fullCountText, listCount, restCountText } from "../format.ts";
 import type { CaseStory, Count, SituationRow } from "../types.ts";
 
 const count = (over: Partial<Count>): Count => ({ shops: 0, insiders: 0, cases: 0, ...over });
@@ -165,12 +165,6 @@ test("the pages list the stories' items by cause under the items' own titles, a 
   assert.deepEqual([after.categories, after.ranking], [[], []], "one shop left is not in the lists");
   await sql`UPDATE publications SET visibility = 'public' WHERE article_id IN (${ids.SECOND!}, ${ids.COFFEE!})`;
   LISTED.fromCases = 8;
-});
-
-test("a day is dated with the year only when it is another", () => {
-  const now = new Date("2026-10-05T02:00:00Z");
-  assert.equal(day("2026-10-04T20:00:00Z", now), "10月5日", "Beijing's date");
-  assert.equal(day("2019-02-19T04:00:00Z", now), "2019年2月19日");
 });
 
 test("an item without a story is placed in one situation and group of the list, or none, and the pages list it as a story's item", async () => {

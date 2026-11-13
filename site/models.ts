@@ -67,6 +67,9 @@ export const PRESETS: Record<string, ModelPreset> = {
   // models (myfnb/HANDOFF.md, 10-16). These models reject any temperature but 1, so extra overrides the framework's 0.2;
   // the endpoint ignores response_format, so no JSON mode (the reply is parsed from its text). Haiku skips thinking;
   // Sonnet thinks only between tool calls, of which there are none here.
+  // Anthropic's page for this endpoint says prompt caching is not supported on it: a large run of a framework step on
+  // one of these pays full price for every token (11-08: a trial of US$37 took the month's cache hit rate to 8%). A
+  // large run goes through Anthropic's own API, as 十一说 does (modules/reference/backend/claude.ts).
   "claude-haiku-5-5": {
     service: "anthropic", model: "claude-haiku-5-5", baseUrlEnv: "CLAUDE_BASE_URL", apiKeyEnv: "CLAUDE_API_KEY",
     extra: { temperature: 1, thinking: { type: "disabled" } }, jsonMode: false,

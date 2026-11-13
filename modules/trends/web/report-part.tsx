@@ -14,7 +14,7 @@ function Block({ data }: { kind: string; reportKey: string; data: unknown }) {
     <div className="@container">
       <SectionPage id="s-trends" label={TITLE}>
         <IntentLink viewTransition to={`/trends/${line.key}`} className="group flex items-baseline justify-between gap-4 border-b border-line py-5">
-          <span className="text-[15.5px] leading-[1.8] text-ink-2 transition-colors group-hover:text-accent">
+          <span className="text-[15.5px] leading-[1.9] text-ink-2 transition-colors group-hover:text-accent">
             这一周有 <span className="num">{line.topics}</span> 件事，三家以上的来源各自谈到；每个来源一句，并附原文出处
           </span>
           {/* The look of the engine's MoreLink (components/ui/Page.tsx): the whole row is the link. */}

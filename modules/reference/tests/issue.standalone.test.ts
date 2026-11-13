@@ -7,7 +7,7 @@ import { ModelOutputError } from "@aihot/backend/providers/receipts";
 import { creditFinding, creditPeriod, monthSpend } from "../backend/credit.ts";
 import { MODELS } from "@aihot/backend/providers/llm";
 import { answerText, BATCH_TIMES, batchBody, batchLane, batchMessage, CACHE_TTL, joined, laneOpen, messagesBody, type Parts, usageOf } from "../backend/claude.ts";
-import { amendIssue, type Ask, fitLead, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
+import { amendIssue, type Ask, fitLead, titlesShownAs, THIN_DAY, WRITE_FLOOR, checkIssue, citedItems, composeIssue, edit, LEFT_ENOUGH, reviewIssue, cutProblems, EDIT_ROUNDS, dailyLead, type DayItem, dayName, issueChars, issueMarkdown, type IssueText, MIN_ITEMS } from "../backend/issue.ts";
 
 const item = (n: number, sourceId = "rss-petpooja"): DayItem => ({
   n, id: `art-${n}`, sourceId, sourceName: `来源 ${n}`, title: `第 ${n} 条`, url: `https://example.com/${n}`,
@@ -484,6 +484,25 @@ test("a draft too short for twelve minutes is written once more, told so, unless
   const thin = scripted({ reference_issue_write: () => issue("短稿", "说了〔1〕。"), reference_issue_check: () => ({ lively: 5, problems: [] }) });
   await composeIssue(ITEMS, "2026-11-03", thin.ask);
   assert.deepEqual(thin.calls.filter((c) => c.purpose === "reference_issue_write").map((c) => c.attempt), ["a", "b"], "a thin day is left short");
+});
+
+test("a title is measured as the site shows it", async () => {
+  const deep = "一箱鳕鱼贵50英镑〔1〕，餐厅把涨价摊到整张菜单〔1〕。";
+  const good = ["英国一家炸鱼薯条店的鳕鱼进价一箱贵了50英镑〔1〕。", "店主没有只涨鳕鱼一道菜，而是把涨价摊到整张菜单，每道菜只涨一点，让一家人来吃一顿的总价涨得不显眼，同时保住招牌菜的销量和毛利〔1〕。"];
+  // Issue 18 (11-11): 20 characters as kept, 30 on the site.
+  const kept = { ...issue("一箱鳕鱼贵50英镑，他们把涨价摊到整张菜单", "说了〔1〕。"), brief: good, deep };
+  const { ask, calls } = scripted({ reference_issue_lead: () => ({ title: "鳕鱼涨价，他们把涨价摊到整张菜单", brief: good }) });
+  assert.equal(await fitLead(kept, ask), kept, "untold, it is counted as kept");
+  titlesShownAs(async (title) => title.replace("50英镑", "50英镑（约 US$66）"));
+  try {
+    const out = await fitLead(kept, ask);
+    assert.equal(out.title, "鳕鱼涨价，他们把涨价摊到整张菜单");
+    assert.ok(calls[0]!.user.includes("（约 US$66）"), "the writer is shown the title as the site shows it");
+    const still = scripted({ reference_issue_lead: () => ({ title: "一箱鳕鱼贵50英镑，涨价摊到整张菜单", brief: good }) });
+    assert.equal((await fitLead(kept, still.ask)).title, kept.title, "a title still too long as shown is not taken");
+    titlesShownAs(async () => { throw new Error("no rates"); });
+    assert.equal(await fitLead(kept, ask), kept, "a showing that fails counts it as kept");
+  } finally { titlesShownAs(async (title) => title); }
 });
 
 test("a title or 导读 not the length asked is written again from the deep piece, and a part still not the length keeps what it had", async () => {

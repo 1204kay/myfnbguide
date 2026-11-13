@@ -112,6 +112,9 @@ const TOPICS = defineQueue<{ date: string }>({
 /** Shared caches keep a page as long as the engine keeps its topic pages: a minute. */
 const CACHE = "public, max-age=60, stale-while-revalidate=60";
 
+/** How the site shows a 十一说 title, for counting its length (backend/issue.ts titlesShownAs). */
+export { titlesShownAs } from "./backend/issue.ts";
+
 export default defineServerModule({
   name: "reference",
   models: {

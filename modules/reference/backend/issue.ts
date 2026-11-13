@@ -196,7 +196,8 @@ export const WRITE_FLOOR = 2_900;
 export const THIN_DAY = 20_000;
 
 /**
- * Goes over a draft once for the ear before it is checked, the second step of NotebookLlama (Meta's llama-cookbook):
+ * Goes over a draft once for its reader before it is checked (until 11-13 for the ear: the spoken turns it put in showed on
+ * the page, Kay 11-09 and 11-10; what is said aloud is the listen script's, voice.ts), the second step of NotebookLlama (Meta's llama-cookbook):
  * written for what to say, a draft read as a list (10-22, 0da591c: 22 figures in a thousand characters, sentences of 58).
  * The check comes after, so what this changes is read against the originals like the rest; output it cannot give
  * leaves the draft as written.

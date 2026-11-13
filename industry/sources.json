@@ -991,28 +991,6 @@
       ]
     },
     {
-      "id": "nr-jollibee",
-      "name": "Jollibee Group（菲律宾 · 餐饮集团新闻室）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.jollibeegroup.com/news/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T1_5",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "菲律宾",
-        "品牌"
-      ]
-    },
-    {
       "id": "pod-cat-and-cloud",
       "name": "Cat & Cloud Podcast（美国 · 咖啡店老板的播客）",
       "kind": "rss",
@@ -2005,27 +1983,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-horesca-lu",
-      "name": "HORESCA（卢森堡 · 酒店餐饮协会）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.horesca.lu/actualites/news?format=feed&type=rss",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "卢森堡",
-        "协会"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-abl-usa",
       "name": "American Beverage Licensees（美国 · 酒吧协会）",
       "kind": "rss",
@@ -2041,27 +1998,6 @@
       "interval_minutes": 240,
       "tags": [
         "美国",
-        "协会"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-cosboa",
-      "name": "COSBOA（澳大利亚 · 小企业协会）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://cosboa.org.au/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T1",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "澳大利亚",
         "协会"
       ],
       "site_fulltext": false,
@@ -2673,36 +2609,6 @@
       },
       "tags": [
         "墨西哥",
-        "服务商"
-      ]
-    },
-    {
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 720,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "id": "web-shiftbase",
-      "name": "Shiftbase 博客（荷兰 · 排班软件公司的英文博客）",
-      "kind": "web_list",
-      "config": {
-        "url": "https://www.shiftbase.com/blog",
-        "itemSelector": "a[href^=\"/blog/\"]:has(h3)",
-        "titleSelector": "h3",
-        "allowUrlPrefixes": [
-          "https://www.shiftbase.com/blog/"
-        ],
-        "detail": {
-          "maxFetches": 10,
-          "publishedAtUtcOffset": "+01:00"
-        },
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tags": [
-        "荷兰",
         "服务商"
       ]
     },
@@ -5345,27 +5251,6 @@
       ]
     },
     {
-      "id": "rss-eater",
-      "name": "Eater（美国 · 餐饮媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.eater.com/rss/index.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "美国",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-preptalk-podigee",
       "name": "PREP.TALK（德国 · 一位教授每周评述德国餐饮酒店业的新闻）",
       "kind": "rss",
@@ -5975,27 +5860,6 @@
       ]
     },
     {
-      "id": "rss-vittlesmagazine",
-      "name": "Vittles（英国 · newsletter/杂志）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.vittlesmagazine.com/feed",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "英国",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-horecamagazine",
       "name": "Horeca Magazine（意大利 · 媒体）",
       "kind": "rss",
@@ -6122,27 +5986,6 @@
       ]
     },
     {
-      "id": "rss-boston",
-      "name": "Boston.com 美食栏目（美国 · 本地新闻的餐厅开张和动态）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.boston.com/category/food/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "美国",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-breakthrough-2",
       "name": "弁当屋のガイドブック（日本 · 便当店开店和经营指南）",
       "kind": "rss",
@@ -6265,27 +6108,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "芬兰",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-bakingbusiness",
-      "name": "Baking Business 咖啡栏目（澳大利亚 · 烘焙和咖啡生意媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://bakingbusiness.com.au/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "澳大利亚",
         "媒体"
       ]
     },
@@ -6793,27 +6615,6 @@
       ]
     },
     {
-      "id": "rss-yoomag",
-      "name": "Yoomag 餐饮栏目（巴西 · 餐饮业新闻）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://yoomag.com.br/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "巴西",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-retaildetail",
       "name": "RetailDetail 咖啡馆栏目（比利时 · 零售和餐饮业新闻）",
       "kind": "rss",
@@ -7276,27 +7077,6 @@
       ]
     },
     {
-      "id": "rss-pubisthehub",
-      "name": "Pub is The Hub（英国 · 支持乡村酒馆的公益组织）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.pubisthehub.org.uk/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "英国",
-        "博客"
-      ]
-    },
-    {
       "id": "rss-spigadivulga",
       "name": "Spiga Divulga（西班牙 · 手工面包作坊的经营节目）",
       "kind": "rss",
@@ -7563,27 +7343,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "挪威",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-veitingageirinn-is",
-      "name": "Veitingageirinn（冰岛 · 媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://veitingageirinn.is/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "冰岛",
         "媒体"
       ]
     },
@@ -7945,27 +7704,6 @@
       ]
     },
     {
-      "id": "rss-esmmagazine",
-      "name": "ESM Magazine 酒水栏目（欧洲 · 酒水零售行业新闻）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.esmmagazine.com/drinks/feed",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "欧洲",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-lataco",
       "name": "L.A. TACO 美食栏目（美国 · 洛杉矶餐饮报道）",
       "kind": "rss",
@@ -7983,27 +7721,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "美国",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-directoalpaladar",
-      "name": "Directo al Paladar（西班牙 · 美食媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.directoalpaladar.com/feedburner.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "西班牙",
         "媒体"
       ]
     },
@@ -8596,27 +8313,6 @@
       ]
     },
     {
-      "id": "rss-revistahosteleria",
-      "name": "Revista HOSTELERÍA（西班牙 · 餐饮业媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.revistahosteleria.com/feed/all",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "西班牙",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-aginfo",
       "name": "The Agribusiness Update（美国 · 农业新闻，含食材成本）",
       "kind": "rss",
@@ -8659,48 +8355,6 @@
       ]
     },
     {
-      "id": "rss-secretnyc",
-      "name": "Secret NYC 餐饮栏目（美国 · 纽约餐厅开张动态）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://secretnyc.co/category/food-drink/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "美国",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-madridsecreto",
-      "name": "Madrid Secreto 美食栏目（西班牙 · 马德里餐厅开张动态）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://madridsecreto.co/category/gastronomia/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "西班牙",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-atablefortwo",
       "name": "A Table for Two（美国 · 连锁餐饮动态）",
       "kind": "rss",
@@ -8719,27 +8373,6 @@
       "tags": [
         "美国",
         "博客"
-      ]
-    },
-    {
-      "id": "rss-oliveoiltimes",
-      "name": "Olive Oil Times（全球 · 媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.oliveoiltimes.com/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "全球",
-        "媒体"
       ]
     },
     {
@@ -8886,27 +8519,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "意大利",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-secretmanchester",
-      "name": "Secret Manchester 餐饮栏目（英国 · 曼彻斯特餐厅开张动态）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://secretmanchester.com/category/food-drink/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "英国",
         "媒体"
       ]
     },
@@ -9097,27 +8709,6 @@
       "tags": [
         "德国",
         "协会"
-      ]
-    },
-    {
-      "id": "rss-readfeedme",
-      "name": "Feed Me（美国 · 餐饮业 newsletter）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.readfeedme.com/feed",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "美国",
-        "媒体"
       ]
     },
     {

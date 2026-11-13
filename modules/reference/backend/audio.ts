@@ -13,6 +13,9 @@ import type { Finding } from "@aihot/backend/notify/feishu";
 
 const DIR = path.join(config.dataDir, "reference", "audio");
 
+/** The issue's mp3, which the page plays and the podcast feed (backend/podcast.ts) lists. */
+export const audioFile = (no: number) => path.join(DIR, `${no}.mp3`);
+
 /** The listen script's lines as the 文字稿 shows them; `starts` in <no>.json counts the same lines. */
 export const scriptLines = (script: string) => script.split(/\n+/u).map((l) => l.trim()).filter(Boolean);
 
@@ -43,7 +46,7 @@ export async function issueAudio(no: number): Promise<{ url: string; seconds: nu
  * go through static.ts sendFile, which sends the whole file each time.
  */
 export async function sendIssueAudio(req: FastifyRequest, reply: FastifyReply, no: number) {
-  const file = path.join(DIR, `${no}.mp3`);
+  const file = audioFile(no);
   const size = await stat(file).then((s) => s.size, () => null);
   if (size === null) return reply.code(404).type("text/plain; charset=utf-8").send("Not found");
   reply.header("Content-Type", "audio/mpeg").header("Accept-Ranges", "bytes").header("Cache-Control", "public, max-age=3600");

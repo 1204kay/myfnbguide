@@ -106,6 +106,8 @@ SELECT json_build_object(
   --   标价抄自 credit.ts 的 PRICES / WRITE_5M / WRITE_1H / BATCH（走批处理的回执 usage.batch 为 true，整笔半价），那边改了这里跟着改。不在表里的模型照 Opus 算（同 credit.ts）。
   -- deepseek：照 myfnb/place-now.ts 的 costOf()。按后台价格表 service_prices，缓存命中按 cached_per_mtok 算；
   --   币种照价格表如实输出；价格表里没有、或缺价格的次数记进 unpriced，这时 week 不可信，仪表要说明。
+  --   这台机器上默认模型（service llm，LLM_* 那把钥匙）也是 DeepSeek 的同一个账户（site/models.ts），一起算；价格先找它自己那个 service 的，没有就用 deepseek 的；
+  --   11-13 实测只算 service deepseek 时一周 782 次，而 llm 一天就有 4,244 次没算进去。
   'claude', (SELECT json_build_object('start', per.start, 'end', per.start + interval '1 month', 'monthly', per.monthly,
        'spent', round(coalesce(sum(c.cost) FILTER (WHERE ra.started_at >= per.start), 0), 4),
        'week', round(coalesce(sum(c.cost) FILTER (WHERE ra.started_at > now() - interval '7 days'), 0), 4),
@@ -133,13 +135,13 @@ SELECT json_build_object(
      SELECT pr.currency, round(sum(c.cost), 4) AS week, count(*) FILTER (WHERE c.cost IS NULL)::int AS unpriced, count(*)::int AS calls
      FROM receipt_attempts ra
        LEFT JOIN LATERAL (SELECT input_per_mtok, cached_per_mtok, output_per_mtok, currency FROM service_prices sp
-         WHERE sp.service = 'deepseek' AND sp.model IN (ra.model, '') ORDER BY sp.model = '' LIMIT 1) pr ON true
+         WHERE sp.service IN (ra.service, 'deepseek') AND sp.model IN (ra.model, '') ORDER BY sp.service <> ra.service, sp.model = '' LIMIT 1) pr ON true
        CROSS JOIN LATERAL (SELECT coalesce((ra.usage->>'prompt_tokens')::numeric, 0) AS tin,
          coalesce((ra.usage->'prompt_tokens_details'->>'cached_tokens')::numeric, (ra.usage->>'prompt_cache_hit_tokens')::numeric, 0) AS tc,
          coalesce((ra.usage->>'completion_tokens')::numeric, 0) AS tout) t
        CROSS JOIN LATERAL (SELECT ((t.tin - t.tc) * pr.input_per_mtok + t.tc * coalesce(pr.cached_per_mtok, pr.input_per_mtok)
          + t.tout * pr.output_per_mtok) / 1e6 AS cost) c
-     WHERE ra.service = 'deepseek' AND ra.origin = 'live' AND ra.usage IS NOT NULL AND ra.started_at > now() - interval '7 days'
+     WHERE ra.service IN ('deepseek', 'llm') AND ra.origin = 'live' AND ra.usage IS NOT NULL AND ra.started_at > now() - interval '7 days'
      GROUP BY pr.currency) d),
   -- speech：十一说念稿（service speech-qwen，modules/reference/backend/voice.ts）用掉的阿里云免费额度。阿里云没有查询接口，
   --   仪表从控制台读过的一个数往下推：Kay 11-03 14:18（MYT）控制台写剩 702.33K / 1M，2027-01-31 到期。base 和 since 是那次读数，

@@ -7,7 +7,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { config } from "@aihot/backend/config";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, lowSeconds, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -288,4 +288,19 @@ test("a passed --try goes up with its exact line starts and pauses; one not pass
   await writeFile(path.join(dir, `${no}.starts.json`), JSON.stringify([0]));
   assert.ok("refused" in await putTry(no, dir), "starts that do not match the lines");
   await Promise.all([dir, ...["json", "mp3", "txt"].map((ext) => path.join(up, `${no}.${ext}`))].map((f) => rm(f, { recursive: true, force: true })));
+});
+
+test("a line whose voice drops low in the middle is found; a steady line, and one that only falls at its end, are not", () => {
+  const rate = 16_000;
+  /** A tone of `parts` ([Hz, seconds]) one after another. */
+  const tone = (parts: Array<[number, number]>) => {
+    const out = new Int16Array(Math.round(parts.reduce((s, [, sec]) => s + sec, 0) * rate));
+    let at = 0, phase = 0;
+    for (const [hz, sec] of parts) for (let i = 0; i < Math.round(sec * rate); i += 1) { phase += (2 * Math.PI * hz) / rate; out[at++] = Math.round(8000 * Math.sin(phase)); }
+    return out;
+  };
+  assert.equal(lowSeconds(tone([[250, 6]]), rate), 0);
+  assert.ok(lowSeconds(tone([[250, 2.5], [150, 1.5], [250, 2.5]]), rate) >= 1, "nine semitones down for a second and a half");
+  assert.equal(lowSeconds(tone([[250, 5], [150, 1]]), rate), 0, "a sentence falls at its end");
+  assert.equal(lowSeconds(tone([[250, 3], [150, 0.5], [250, 3]]), rate), 0, "half a second is a tone of the language, not a drop");
 });

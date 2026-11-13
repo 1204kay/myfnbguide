@@ -10,7 +10,8 @@ import { edgeTtl, loadOr404 } from "@aihot/web/lib/api.server";
 import { archiveLd, pageMeta } from "@aihot/web/lib/seo";
 import { SITE } from "@aihot/site";
 import type { Screen } from "@aihot/web/components/shell/screens";
-import { day, num } from "../format.ts";
+import { monthDayTime } from "@aihot/web/lib/format";
+import { num } from "../format.ts";
 import type { CategoryRows, ReferenceHome, SituationRow } from "../types.ts";
 import { CARD, CountFigure, FIRST, Page, PageHeader, RankTag, SituationRows, STRETCH, Who } from "./ui";
 
@@ -116,7 +117,7 @@ export default function ReferenceHomePage() {
         {LEAD}
         <span className="block">
           {counts.map(([n, unit], i) => <span key={unit}>{i > 0 && " · "}<span className="num">{num(n)}</span> {unit}</span>)}
-          {data.updatedAt && <> · <time dateTime={data.updatedAt} className="num">{day(data.updatedAt)}</time> 更新</>}
+          {data.updatedAt && <> · <span className="num">{monthDayTime(data.updatedAt)}</span> 更新</>}
         </span>
       </>} />
       <PageHeader title="参考" dek={LEAD} counts={counts} updatedAt={data.updatedAt} className="hidden pb-5 pt-1 lg:flex" />

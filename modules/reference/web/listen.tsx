@@ -19,7 +19,7 @@ import { BODY } from "./ui";
 type P = { size?: number };
 
 const IconHeadphones = ({ size = 16 }: P) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M4 15v-3a8 8 0 0 1 16 0v3" /><rect x="3" y="14" width="5" height="7" rx="2" /><rect x="16" y="14" width="5" height="7" rx="2" />
   </svg>
 );
@@ -40,14 +40,15 @@ const SPEEDS = [1, 1.25, 1.5, 0.75];
 /** The 听 button: the share pill's look, so it sits beside 分享 as one more action. In the phone bar (`compact`) it
  *  gets what is left beside the centred title, about 76px on a 360px phone and less once the issue number has two
  *  digits; "听 · 18 分钟" folded onto two lines there (Kay's iPhone, 10-24), so it shows the headphones and "18 分"
- *  on one line and says the whole label to screen readers. */
-export function ListenButton({ seconds, onClick, compact = false }: { seconds: number; onClick: () => void; compact?: boolean }) {
+ *  on one line and says the whole label to screen readers. `className`: the height on touch screens where it stands
+ *  beside 分享 in the desktop bar. */
+export function ListenButton({ seconds, onClick, compact = false, className = "" }: { seconds: number; onClick: () => void; compact?: boolean; className?: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={compact ? `收听 · ${minutes(seconds)}` : undefined}
-      className={`inline-flex h-8 items-center justify-center whitespace-nowrap rounded-full border border-line-strong bg-surface font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink ${compact ? "shrink-0 gap-1 px-2 text-[13px]" : "w-full gap-1.5 px-3 text-[12.5px]"}`}
+      className={`inline-flex h-8 items-center justify-center whitespace-nowrap rounded-full border border-line-strong bg-surface font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink ${compact ? "shrink-0 gap-1 px-2 text-[13px]" : "w-full gap-1.5 px-3.5 text-[12.5px] touch:h-11"} ${className}`}
     >
       <IconHeadphones size={compact ? 15 : 14} /> {compact ? `${wholeMinutes(seconds)} 分` : `收听 · ${minutes(seconds)}`}
     </button>
@@ -125,7 +126,7 @@ function Following({ lines, starts, pauses = [], at, length, onPick }: { lines: 
 
 const IconSkip = ({ back = false }: { back?: boolean }) => (
   <span className="relative flex items-center justify-center">
-    <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width={26} height={26} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       {back ? <><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v5h5" /></> : <><path d="M21 12a9 9 0 1 1-3-6.7" /><path d="M21 4v5h-5" /></>}
     </svg>
     <span aria-hidden="true" className="absolute text-[9px] font-bold">15</span>
@@ -254,7 +255,7 @@ export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onC
           </button>
           <div className="flex min-w-0 flex-1 flex-col gap-px">
             <div className="truncate text-[14px] font-semibold text-ink">{title}</div>
-            <div className="font-mono text-[12px] text-ink-3">{clock(at)} / {clock(length)}</div>
+            <div className="mono text-[12px] text-ink-3">{clock(at)} / {clock(length)}</div>
           </div>
           {transcript && (
             <button
@@ -309,7 +310,7 @@ export function PlayerBar({ url, seconds, title, transcript, starts, pauses, onC
           {/* Down to the sheet's very foot: the content's bottom padding would otherwise show text under it. */}
           <div className="sticky bottom-[calc(-1*max(16px,env(safe-area-inset-bottom)))] z-10 border-t border-line-soft bg-surface px-5 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">
             <Seek at={at} length={length} onSeek={seek} thumb />
-            <div className="mt-1 flex justify-between font-mono text-[11px] text-ink-3">
+            <div className="mono mt-1 flex justify-between text-[11px] text-ink-3">
               <span>{clock(at)}</span>
               <span>-{clock(Math.max(0, length - at))}</span>
             </div>

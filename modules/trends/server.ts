@@ -4,7 +4,7 @@ import { config } from "@aihot/backend/config";
 import { sql } from "@aihot/backend/db";
 import { defineQueue, defineServerModule } from "@aihot/backend/modules";
 import { enqueueOn } from "@aihot/backend/jobs/queue";
-import { composeWeek, TRENDS_STEP, weekToCompose } from "./backend/compose.ts";
+import { composeWeek, TRENDS_STEP, weekGaveUp, weekToCompose } from "./backend/compose.ts";
 import { readIssue, readWeekLine } from "./backend/read.ts";
 
 const WEEKS = defineQueue<{ key: string; start: string; end: string }>({
@@ -41,6 +41,7 @@ export default defineServerModule({
       if (!(await on())) return { queued: 0, reason: "trends are not on (settings trends.on)" };
       const week = await weekToCompose();
       if (!week) return { queued: 0 };
+      if (await weekGaveUp(week.key)) return { queued: 0, key: week.key, reason: "failed twice today, not tried again" };
       await enqueueOn(WEEKS, week, { singletonKey: week.key });
       return { queued: 1, key: week.key };
     },

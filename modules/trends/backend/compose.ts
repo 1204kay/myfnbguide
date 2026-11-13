@@ -32,6 +32,14 @@ export const TRENDS_STEP = "trends";
 export const MIN_PUBLISHERS = 3;
 /** A sentence over this is cut by the writer's own rule (90 characters) with some room. */
 const MAX_LINE = 120;
+/**
+ * Room for the find and gather answers. They grow with the week: at 4,000 the week of 11-02 (about 700 reports) had
+ * its find answer cut off sixteen times running (11-09, finish_reason length at about 8,000 characters, each paid
+ * for), and the week after had about three times the reports. The model writes up to 384K (api-docs.deepseek.com
+ * pricing, read 11-13) and only what is written is paid for; 32,000 at about 180 tokens a second stays inside the
+ * call's 300 s.
+ */
+const LIST_ROOM = 32_000;
 
 const prompt = (name: string) => promptFromText(`trends/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"));
 const FIND = prompt("find");
@@ -122,7 +130,7 @@ async function gather(found: Array<{ name: string; items: number[]; why: string 
   const topics = found.map((t, i) => `(${i + 1}) ${t.name}：${t.why}`).join("\n");
   const res = await chatJson({
     model, purpose: "trends_gather", subject, promptVersion: TRENDS_VERSION, system: GATHER,
-    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
+    user: `话题：\n${topics}\n\n条目：\n${pool.map((p, i) => itemLine(p, i + 1)).join("\n")}`, schema: GatherSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
   });
   receipts.push(res.receiptId);
   await completeReceipt(sql, res.receiptId);
@@ -138,7 +146,7 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
   const found = pool.length < MIN_PUBLISHERS ? { topics: [] } : (await (async () => {
     const res = await chatJson({
       model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system: FIND,
-      user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: 4000, timeoutMs: 300_000,
+      user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
     });
     receipts.push(res.receiptId);
     await completeReceipt(sql, res.receiptId);
@@ -191,4 +199,16 @@ export async function weekToCompose(): Promise<{ key: string; start: string; end
       EXISTS (SELECT 1 FROM trends_issues t WHERE t.key = r.key) AS done
     FROM reports r WHERE r.kind = 'weekly' ORDER BY r.key DESC LIMIT 1`;
   return r?.start && r.end && !r.done ? { key: r.key, start: r.start, end: r.end } : null;
+}
+
+/**
+ * Whether this week's job has already failed twice today (each job is two paid tries). The schedule asks again every
+ * half hour, and an answer that fails the same way each time was paid for sixteen times on 11-09; after two jobs it
+ * waits for a person (the failed job shows in the alerts).
+ */
+export async function weekGaveUp(key: string): Promise<boolean> {
+  const [r] = await sql<{ n: number }[]>`
+    SELECT count(*)::int AS n FROM pgboss.job
+    WHERE name = 'trends.week' AND state = 'failed' AND data->>'key' = ${key} AND completed_on > now() - interval '1 day'`;
+  return (r?.n ?? 0) >= 2;
 }

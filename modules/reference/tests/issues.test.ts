@@ -24,13 +24,15 @@ const DAY = "2020-03-10";
 const SRC = `issue-${T}`;
 const answer = (out: unknown) => ({ id: "stub", model: "stub", choices: [{ message: { content: JSON.stringify(out) } }], usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } });
 const users: string[] = [];
+/** Makes the 导读 80–160 characters, the length asked, so it is not written again (fitLead). */
+const PAD = "，老板说先把房租、人工和食材的账都算清楚再定";
 const model = await stub((_hit, req) => {
   const body = JSON.parse(req.body) as { messages: Array<{ role: string; content: string }> };
   const user = body.messages.at(-1)!.content;
   users.push(user);
   if (user.startsWith("这一期：")) return answer({ lively: 7, problems: [] });
   return answer({
-    title: "店里该不该涨价？", brief: ["甲店涨了价〔1〕。", "乙店没涨〔2〕。", "丙店在等〔3〕。"], preview: "今天说三件事。",
+    title: "店里该不该涨价？", brief: [`甲店涨了价${PAD}〔1〕。`, `乙店没涨${PAD}〔2〕。`, `丙店在等${PAD}〔3〕。`], preview: "今天说三件事。",
     news: [1, 2, 3].map((n) => ({ head: `第 ${n} 条`, text: `报道${n}说了这件事〔${n}〕。` })),
     deep: "甲店的老板说，涨价前先算了账〔1〕。", close: "几家店都在算同一笔账。",
   });
@@ -68,11 +70,11 @@ test("the day's issue is written once, from what was listed before it, and the d
   assert.deepEqual(await writeIssue(DAY, editionAt("daily", DAY, -1800)), { date: DAY, status: "issue", no: 1 });
   assert.equal(users.length, calls, "a day written is not written again");
 
-  assert.deepEqual(await issueLead(DAY), { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价。乙店没涨。丙店在等。", href: "/reference/issues/1" });
+  assert.deepEqual(await issueLead(DAY), { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: `甲店涨了价${PAD}。乙店没涨${PAD}。丙店在等${PAD}。`, href: "/reference/issues/1" });
   assert.equal(JSON.parse((await app.inject("/api/reference/issues/1")).body).daily, false, "up before its daily: the page does not lead to a daily not there yet");
   await composeDaily(DAY);
   const daily = await loadReport("daily", DAY);
-  assert.deepEqual(daily?.lead, { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: "甲店涨了价。乙店没涨。丙店在等。", href: "/reference/issues/1" });
+  assert.deepEqual(daily?.lead, { kicker: "十一说 · 第 1 期", title: "店里该不该涨价？", leadParagraph: `甲店涨了价${PAD}。乙店没涨${PAD}。丙店在等${PAD}。`, href: "/reference/issues/1" });
   assert.equal(daily?.leadItemId, null, "the issue leads, not an item");
   assert.equal(daily?.cover, null);
   assert.equal(daily?.highlights[0]?.itemId, ids[0], "the item the rule would have led with stays, first of the highlights");

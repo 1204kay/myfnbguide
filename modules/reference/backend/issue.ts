@@ -32,7 +32,7 @@ export const ISSUE_STEP = "referenceIssue";
 /** The check and the editor that mends what it found: another model than the writer's (Kay 10-19: DeepSeek writes, Opus checks). */
 export const ISSUE_CHECK_STEP = "referenceIssueCheck";
 /** Purposes the check model answers (the writer answers reference_issue_write). */
-export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review" || purpose === "reference_issue_listen" || purpose === "reference_issue_voice_check";
+export const isCheckPurpose = (purpose: string) => purpose === "reference_issue_check" || purpose === "reference_issue_edit" || purpose === "reference_issue_review" || purpose === "reference_issue_listen" || purpose === "reference_issue_lead" || purpose === "reference_issue_voice_check";
 const prompt = (name: string) =>
   promptFromText(`reference/${name}`, readFileSync(new URL(`../prompts/${name}.md`, import.meta.url), "utf8"), {});
 const WRITE = prompt("issue-write");
@@ -41,7 +41,8 @@ const EDIT = prompt("issue-edit");
 const REVIEW = prompt("issue-review");
 const SPEAK = prompt("issue-speak");
 const LISTEN = prompt("issue-listen");
-export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW).update(SPEAK).update(LISTEN)
+const LEAD = prompt("issue-lead");
+export const ISSUE_VERSION = `reference-issue@${createHash("sha256").update(WRITE).update(CHECK).update(EDIT).update(REVIEW).update(SPEAK).update(LISTEN).update(LEAD)
   .update(readFileSync(new URL(import.meta.url), "utf8")).digest("hex").slice(0, 10)}`;
 
 /**
@@ -347,6 +348,43 @@ export async function reviewIssue(issue: IssueText, items: DayItem[], ask: Ask):
   return answer.problems.filter((p) => p.fix);
 }
 
+/** The title's and the 导读's lengths, as the writer is asked (issue-write.md): the title at most 22 characters, two lines
+ * of the daily's lead on a phone; the 导读 80–160, as long as the original's summary under its lead. */
+export const TITLE_MAX = 22;
+export const LEAD_CHARS = [80, 160] as const;
+const leadChars = (brief: string[]) => bare(brief.join("")).length;
+export const leadFits = (issue: IssueText) =>
+  [...issue.title].length <= TITLE_MAX && leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
+
+const LeadAnswer = z.object({ title: z.string().trim().min(1), brief: z.array(z.string().trim().min(1)).min(1) });
+
+/**
+ * The title and 导读 written again from the deep piece when they are not the length asked: the prompts alone did not hold
+ * them (issue 17, 11-10: a 导读 of 236; issue 19, 11-12: the check cut it to its first sentence, 35 characters, and Kay
+ * 08:57 「说明那么短？没说明白」). Only from the deep piece as checked, so it says nothing the issue does not; the omissions
+ * read after it (reviewIssue) holds it to the originals. A part that comes back still not the length keeps what it had.
+ */
+export async function fitLead(issue: IssueText, ask: Ask): Promise<IssueText> {
+  if (leadFits(issue) || !issue.deep) return issue;
+  const user = `标题：${issue.title}\n\n导读：${issue.brief.join("")}\n\n细说正文：\n${issue.deep}`;
+  // A failed call leaves the issue as composed: it is checked already, and the length is not worth losing the day for.
+  const answer = await ask("reference_issue_lead", LEAD, user, LeadAnswer).catch((error: unknown) => {
+    console.warn(`十一说 fitLead: ${error instanceof Error ? error.message : String(error)}`);
+    return null;
+  });
+  if (!answer) return issue;
+  // Not read sentence by sentence again: every number and 〔n〕 in what comes back must be in the deep piece as checked.
+  const fromDeep = (text: string) => [...text.matchAll(/〔[^〕]*〕|\d+(?:\.\d+)?/gu)].every((m) => issue.deep.includes(m[0]));
+  const n = leadChars(answer.brief);
+  const leadOk = n >= LEAD_CHARS[0] && n <= LEAD_CHARS[1] && fromDeep(answer.brief.join(""));
+  const oldLeadOk = leadChars(issue.brief) >= LEAD_CHARS[0] && leadChars(issue.brief) <= LEAD_CHARS[1];
+  return {
+    ...issue,
+    title: [...issue.title].length > TITLE_MAX && [...answer.title].length <= TITLE_MAX && fromDeep(answer.title) ? answer.title : issue.title,
+    brief: !oldLeadOk && leadOk ? answer.brief : issue.brief,
+  };
+}
+
 export interface Draft {
   issue: IssueText; lively: number; problems: Problem[]; edited: boolean;
   /** Sentences the program took out because the editor could not mend them. */
@@ -519,6 +557,7 @@ export async function composeIssue(items: DayItem[], date: string, ask: Ask): Pr
     return { date, status: "issue", chosen: { issue: itemsIssue(items), lively: 0, problems: [], edited: false }, drafts, items, note: `两稿都没写成（${why.slice(0, 120)}），照当天收录的标题和摘要出简版` };
   }
   const done = async (chosen: Draft): Promise<ComposedIssue> => {
+    chosen = { ...chosen, issue: await fitLead(chosen.issue, ask) };
     const reviewed = await reviewIssue(chosen.issue, items, ask);
     if (!reviewed.length) return { date, status: "issue", chosen, drafts, items };
     return { date, status: "issue", chosen: { ...chosen, issue: amendIssue(chosen.issue, reviewed, (p) => p.fix).issue, reviewed }, drafts, items };

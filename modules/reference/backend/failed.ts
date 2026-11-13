@@ -42,7 +42,7 @@ export async function failedJobAlerts(): Promise<Finding[]> {
   return rows.map((r) => failedFinding(r.name, r.n, r.first, r.error));
 }
 
-/** How long after the 05:00 run an issue is taken as not coming: its two tries and their wait are over by then. */
+/** From when a day without an issue is told. A run still going then (a slow first try, its retry) is waited for: see below. */
 export const ISSUE_DUE = "06:30";
 
 /** The day's 十一说 is on (settings reference.issues) and has no row by ISSUE_DUE: nothing was written, not even a thin day's row. */
@@ -52,6 +52,8 @@ export async function missingIssueAlerts(now: number): Promise<Finding[]> {
   const [on] = await sql<{ from: string | null }[]>`SELECT value->>'from' AS from FROM settings WHERE key = 'reference.issues'`;
   if (!on?.from || date < on.from) return [];
   if ((await sql`SELECT 1 FROM reference_issues WHERE date = ${date}`).length) return [];
+  // The day's job may still be writing (it has three hours, and a second try): told only once none is waiting or running.
+  if ((await sql`SELECT 1 FROM pgboss.job WHERE name = 'reference.issue' AND state IN ('created', 'retry', 'active') AND data->>'date' = ${date}`).length) return [];
   return [{
     key: `reference.issue-missing.${date}`,
     level: "now",

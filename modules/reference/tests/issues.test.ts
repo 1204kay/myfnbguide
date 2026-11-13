@@ -203,20 +203,34 @@ test("十一 reads what was listed in the day, whatever date the original bears"
   ids.push(articleId);
   assert.ok((await dayItems(editionAt("daily", day))).some((i) => i.id === articleId), "listed in the window: read");
   assert.ok(!(await dayItems(editionAt("daily", "2020-03-21"))).some((i) => i.id === articleId), "and only in that one");
+  // Made a 精选 and released the next day: the daily would carry it again but for its own guard; 十一 read it yesterday.
+  const next = editionAt("daily", "2020-03-21");
+  await sql`UPDATE publications SET selected = true, visible_after = ${new Date(next.getTime() - 3_600_000)} WHERE article_id = ${articleId}`;
+  assert.ok((await dayItems(next)).some((i) => i.id === articleId), "in the release's window");
+  await sql`INSERT INTO reference_issues (date, no, status, content, version, models) VALUES (${day}, null, 'thin', ${sql.json({ items: [{ id: articleId }] })}, 'test', '{}')`;
+  try {
+    assert.ok(!(await dayItems(next)).some((i) => i.id === articleId), "not read twice");
+  } finally {
+    await sql`DELETE FROM reference_issues WHERE date = ${day}`;
+  }
 });
 
 test("a day without its 十一说 and a module job out of retries are told", async () => {
   const day = "2020-03-25";
   const due = editionAt("daily", day, -90 * 60).getTime();
+  const boss = await getBoss();
+  await boss.createQueue("reference.issue").catch(() => {});
   await sql`INSERT INTO settings (key, value, updated_by) VALUES ('reference.issues', ${sql.json({ from: "2020-03-01" })}, 'test') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`;
   try {
     assert.deepEqual(await missingIssueAlerts(due - 60_000), [], "before it is due nothing is missing");
     assert.match((await missingIssueAlerts(due + 60_000))[0]!.title, /2020-03-25.*十一说没有写出来/);
+    const running = await boss.send("reference.issue", { date: day });
+    assert.deepEqual(await missingIssueAlerts(due + 60_000), [], "its job still waiting or running is waited for");
+    await sql`DELETE FROM pgboss.job WHERE id = ${running!}`;
     assert.deepEqual(await missingIssueAlerts(editionAt("daily", DAY).getTime()), [], "a day that has its issue is not told");
   } finally {
     await sql`DELETE FROM settings WHERE key = 'reference.issues'`;
   }
-  const boss = await getBoss();
   await boss.createQueue("reference.voice").catch(() => {});
   const id = await boss.send("reference.voice", { no: 999 });
   // As pg-boss leaves a job whose retries are used up.

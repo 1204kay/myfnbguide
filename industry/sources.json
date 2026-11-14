@@ -3537,28 +3537,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "pod-the-ceres-podcast",
-      "name": "The Ceres Podcast（英国 · 餐饮和食品创业者访谈）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://rss.libsyn.com/shows/124366/destinations/737174.xml",
-        "summaryIsBody": true,
-        "_aihot": {
-          "initialBackfillLimit": 2
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 240,
-      "tags": [
-        "英国",
-        "播客"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "pod-the-restaurant-guys",
       "name": "The Restaurant Guys（美国 · 两位餐厅老板访谈同业的播客）",
       "kind": "rss",
@@ -3682,27 +3660,6 @@
       "interval_minutes": 720,
       "tags": [
         "日本",
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-banc",
-      "name": "BANC（英国 · 酒吧餐饮酒店业的行业杂志）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://bancm.com/feed",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 720,
-      "tags": [
-        "英国",
         "媒体"
       ],
       "site_fulltext": false,
@@ -4174,27 +4131,6 @@
       ]
     },
     {
-      "id": "rss-horeca-advies",
-      "name": "Horeca Advies（比利时 · 餐饮顾问 Gino Vermeulen 的经营博客：现金流、转让估值、用工）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.ginovermeulen.be/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "比利时",
-        "博客"
-      ]
-    },
-    {
       "id": "rss-united-against-waste",
       "name": "United Against Waste（瑞士 · 餐饮业减少食物浪费的协会）",
       "kind": "rss",
@@ -4213,27 +4149,6 @@
       "tags": [
         "瑞士",
         "协会"
-      ]
-    },
-    {
-      "id": "rss-strategeat",
-      "name": "Strategeat（法国 · 餐饮市场研究机构：连锁扩张与消费趋势）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.strategeat.fr/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "法国",
-        "服务商"
       ]
     },
     {
@@ -4384,27 +4299,6 @@
       ]
     },
     {
-      "id": "rss-coffee-traveler",
-      "name": "Coffee Traveler Magazine（泰国 · 咖啡杂志：咖啡店、烘焙厂和产地）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.coffeetravelermagazine.com/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "泰国",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-e-restauracja",
       "name": "Restauracja（波兰 · 餐饮业专业双月刊）",
       "kind": "rss",
@@ -4507,27 +4401,6 @@
       "tags": [
         "美国",
         "媒体"
-      ]
-    },
-    {
-      "id": "rss-westchester-food-safety",
-      "name": "Westchester Food Safety（美国 · 食品安全培训机构：餐厅食安与证书要求）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.westchesterfoodsafety.com/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "美国",
-        "服务商"
       ]
     },
     {
@@ -5102,27 +4975,6 @@
       "tags": [
         "澳大利亚",
         "媒体"
-      ]
-    },
-    {
-      "id": "rss-burnt-chef-project",
-      "name": "The Burnt Chef Project（英国 · 餐饮从业者心理健康组织）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.theburntchefproject.com/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "英国",
-        "协会"
       ]
     },
     {
@@ -6007,27 +5859,6 @@
       ]
     },
     {
-      "id": "rss-ristorantiweb",
-      "name": "Ristoranti web（意大利 · 餐饮业新闻）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.ristorantiweb.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "意大利",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-fastcasualconsulting",
       "name": "Fast Casual Consulting（美国 · 快餐顾问的经营文章）",
       "kind": "rss",
@@ -6487,27 +6318,6 @@
       "tags": [
         "越南",
         "服务商"
-      ]
-    },
-    {
-      "id": "rss-orientalcoffeeandtea",
-      "name": "Oriental Coffee（泰国 · 咖啡店经营文章）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.orientalcoffeeandtea.com/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "泰国",
-        "博客"
       ]
     },
     {
@@ -7410,27 +7220,6 @@
       ]
     },
     {
-      "id": "rss-menumag",
-      "name": "MENU（加拿大 · 餐饮业杂志）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://menumag.ca/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "加拿大",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-hosteleriahospitalaria",
       "name": "AEHH 西班牙医院餐饮协会（西班牙 · 医院和养老院餐饮协会）",
       "kind": "rss",
@@ -7826,27 +7615,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "英国",
-        "媒体"
-      ]
-    },
-    {
-      "id": "rss-indualimentos",
-      "name": "Indualimentos（智利 · 食品餐饮行业媒体）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.indualimentos.net/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "智利",
         "媒体"
       ]
     },
@@ -9402,27 +9170,6 @@
       "tags": [
         "中国台湾",
         "媒体"
-      ]
-    },
-    {
-      "id": "rss-gsfg-tw",
-      "name": "綠盾食護（中国台湾 · 食品安全与稽核）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.gsfg.com.tw/blog-feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "中国台湾",
-        "服务商"
       ]
     },
     {

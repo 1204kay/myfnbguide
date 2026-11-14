@@ -100,6 +100,7 @@ test("a find answer cut off in a loop keeps every whole topic before it, each se
   assert.deepEqual(findAnswer(cut).topics.map((t) => (t as { name: string }).name), ["店面变小", "涨价", "第0个名字"]);
   assert.deepEqual(findAnswer('{"topics":[{"name":"a","items":[1,2],"why":""},{"name":"b","items":[2,1],"why":""}]}').topics.length, 1, "a whole answer is read the same way");
   assert.deepEqual(findAnswer("{\"topics\": [").topics, []);
+  assert.deepEqual(findAnswer('{"topics":[{"name":"a","items":[1,2],"why":"两行\n说明"},{"name":"b","items":[3').topics.length, 1, "a raw newline inside a string is read, not dropped");
 });
 
 test("only topics the find answer shows two publishers for go on, the most publishers when there are more than FIND_KEEP", () => {

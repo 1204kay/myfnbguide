@@ -20,7 +20,7 @@ import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { moduleCopyCheck } from "@aihot/backend/modules";
-import { chatJson } from "@aihot/backend/providers/llm";
+import { chatJson, escapeControlCharsInStrings } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { grounded } from "@aihot/backend/reports/compose";
 import { listedCondition } from "@aihot/backend/publication/scope";
@@ -134,6 +134,8 @@ const FindSchema = z.object({ topics: z.array(z.object({ name: z.string(), items
  * So every topic written out whole is kept, in order, and one whose reports were already listed together is left out.
  */
 export function findAnswer(content: string): { topics: unknown[] } {
+  // As the framework's own reading does: raw newlines or tabs inside a string are escaped before giving up on it.
+  const read = (text: string): unknown => { try { return JSON.parse(text); } catch { return JSON.parse(escapeControlCharsInStrings(text)); } };
   const seen = new Set<string>();
   const topics: unknown[] = [];
   const keep = (t: unknown) => {
@@ -144,7 +146,7 @@ export function findAnswer(content: string): { topics: unknown[] } {
     topics.push(t);
   };
   try {
-    const whole = JSON.parse(content) as { topics?: unknown[] };
+    const whole = read(content) as { topics?: unknown[] };
     for (const t of whole.topics ?? []) keep(t);
     return { topics };
   } catch { /* cut off: read it object by object below */ }
@@ -158,7 +160,7 @@ export function findAnswer(content: string): { topics: unknown[] } {
     if (c === '"') inString = true;
     else if (c === "{") { if (depth++ === 0) from = i; }
     else if (c === "}" && depth > 0 && --depth === 0) {
-      try { keep(JSON.parse(content.slice(from, i + 1))); } catch { /* not a whole topic */ }
+      try { keep(read(content.slice(from, i + 1))); } catch { /* not a whole topic */ }
     } else if (c === "]" && depth === 0) break;
   }
   return { topics };
@@ -210,6 +212,8 @@ export async function findTopics(pool: PoolItem[], model: string, subject: strin
     user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, parse: findAnswer, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
   });
   receipts.push(res.receiptId);
+  // A cut-off answer is read as far as it goes and counts as answered; say so where the run's log shows it.
+  if (Number(res.usage?.completion_tokens) >= LIST_ROOM) console.warn(`trends find ${subject}: answer cut off at ${LIST_ROOM} tokens (receipt ${res.receiptId}); read ${res.data.topics.length} whole topics`);
   await completeReceipt(sql, res.receiptId);
   return res.data.topics;
 }

@@ -7,6 +7,7 @@
 # 同一个守门也给 css-cloud 云电脑（原名 agent1）每天出十一说用（myfnb/ops/add-key.sh 装的钥匙，十一 10-30 定）。那把钥匙带名字进来
 # （command="… css-cloud"），只放行十一说用得到的：status、tail、audio、script、run myfnb/issue-now.ts 的取、核、放、上头条四样，
 # 以及 css-cloud 断线监控读模型用量的 budget（只读，只输出三个数）、读网站自己开着的告警的 alerts（只读）、
+# 每天读一次系统日报里信源以外的待跟进 followups（只读，格式同 alerts）、
 # 每天看读者反馈有没有新来的 feedback（只读，不带邮箱）、
 # 公司流水线看板读今天几篇几分、各任务最近一次跑得怎样的 board（只读，输出一行 JSON）；
 # 另有一把只给异地备份用的钥匙（command="… css-cloud-backup"），只能取最新一份每日备份（latest-backup db | files），不走下面的名单；
@@ -45,9 +46,9 @@ if [ "$caller" != github ]; then
   [[ ${#a[@]} -le 4 && ( -z ${a[3]:-} || ${a[3]} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ) ]] || a=(deny)
   [[ $verb != run || ${#a[@]} -le 2 || ${a[3]:-} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || a=(deny)
   case "${a[0]} ${a[1]:-} ${a[2]:-}" in
-    "status "*|"budget "*|"alerts "*|"feedback "*|"board "*|"tail "*|"audio "*|"script "*|"run myfnb/issue-now.ts "|"run myfnb/issue-now.ts --items"|"run myfnb/issue-now.ts --dump"|"run myfnb/issue-now.ts --put"|"run myfnb/issue-now.ts --lead") ;;
+    "status "*|"budget "*|"alerts "*|"followups "*|"feedback "*|"board "*|"tail "*|"audio "*|"script "*|"run myfnb/issue-now.ts "|"run myfnb/issue-now.ts --items"|"run myfnb/issue-now.ts --dump"|"run myfnb/issue-now.ts --put"|"run myfnb/issue-now.ts --lead") ;;
     *) echo "$(date -Is) [$caller] 拒绝" >> "$LOG/audit.log"
-       echo "这把钥匙只能：status | budget | alerts [test] | feedback [编号] | board | tail [编号] | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt | run myfnb/issue-now.ts [--items|--dump|--put|--lead 日期]"; exit 2 ;;
+       echo "这把钥匙只能：status | budget | alerts [test] | followups | feedback [编号] | board | tail [编号] | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt | run myfnb/issue-now.ts [--items|--dump|--put|--lead 日期]"; exit 2 ;;
   esac
 fi
 num() { [[ ${1:-} =~ ^[0-9]{1,5}$ ]] && echo "$1" || echo "$2"; }
@@ -69,6 +70,11 @@ case $verb in
     # 一行一个：键<TAB>开始时间<TAB>标题；没有告警就什么都不输出。alerts test 只输出一行固定的假告警，不碰库，给 site-watch 试整条路用。
     if [ "${a[1]:-}" = test ]; then printf 'test.alert\t%s\t测试告警：这是 alerts test 输出的假告警，不用处理\n' "$(date -Is)"; exit 0; fi
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -At -F $'\t' -v ON_ERROR_STOP=1 -c "SELECT e.key, e.value->>'since', e.value->>'title' FROM settings s, jsonb_each(s.value) AS e(key, value) WHERE s.key = 'alerts.state' ORDER BY e.value->>'since'" ;;
+  followups)
+    # 每天 09:00 系统日报里信源以外的待跟进（数据库备份超过一天没成功、付费请求结果没确认、后台任务排队超过 2 小时等）。
+    # 服务器没开飞书，日报只进容器日志、没有人收到，而这几类不会变成告警，上面的 alerts 读不到（同步原版串 11-14）。
+    # 信源那几条不在这里（信源串在后台「采集」页看）。只读，不写库。一行一个：键<TAB>开始时间<TAB>标题；没有就什么都不输出。
+    exec sudo docker compose exec -T worker node myfnb/followups.ts ;;
   feedback)
     # 读者反馈存在库里，只有后台 /admin 看得到，而飞书转发关着：有人要求下架、谈收费、删资料，没人知道（Kay 11-09 21:32）。
     # css-cloud 每天读一次，有新的才报。feedback <编号> 只给编号比它大的，没给编号就给最近 7 天的；标成 spam 的不给（后台手动标的；转发开着时模型判成没有内容的也会标，服务器上转发关着）。
@@ -214,5 +220,5 @@ SQL
     # 只读账号 myfnb_ro（install.sh 建的，只有 pg_read_all_data，默认只读事务），写不进任何东西
     sudo docker compose exec -T db psql -U myfnb_ro -d aihot -v ON_ERROR_STOP=1 -c "${CMD#sql }" ;;
   *)
-    echo "可用：status | budget | alerts [test] | feedback [编号] | board | deploy-log [行数] | logs <服务> [行数] | run myfnb/<脚本>.ts [参数] | bg myfnb/<脚本>.ts [参数] | tail [编号] [行数] | sql <只读查询> | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt" ;;
+    echo "可用：status | budget | alerts [test] | followups | feedback [编号] | board | deploy-log [行数] | logs <服务> [行数] | run myfnb/<脚本>.ts [参数] | bg myfnb/<脚本>.ts [参数] | tail [编号] [行数] | sql <只读查询> | audio <期号> <秒数> < mp3 | script <期号> < 听稿.txt" ;;
 esac

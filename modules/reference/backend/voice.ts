@@ -112,7 +112,7 @@ type Problem = z.infer<typeof Problems>["problems"][number];
 /** 2026-10-31 → 10月31号, as the opening has said it since issue 4. */
 const spokenDay = (date: string) => `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}号`;
 export const opening = (date: string) => `大家早上好！我是十一。今天是${spokenDay(date)}。`;
-export const CLOSING = "这就是今天的十一说。我们明天早上见。";
+export const CLOSING = "这就是今天的十一说。谢谢收听。";
 
 /** The page as the script is written from and checked against: what a reader sees, without the 〔n〕 marks. */
 export function pageText(issue: IssueText, date: string): string {

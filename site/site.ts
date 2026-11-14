@@ -385,7 +385,7 @@ export const SEO_TITLES = {
   /** 热点榜（/hot）。 */
   hot: `${withSubject("热点榜")}：今日热门事件排行`,
   /** 全部动态（/all），不含搜索和筛选结果。 */
-  all: `${subjectAfter("最新", "动态")}：实时更新`,
+  all: `${subjectAfter("最新", "动态")}：按收录时间排列`,
   /** Agent 接入页（/agent）。 */
   agent: `${withSubject("资讯")} API、MCP 与 RSS：接进你的 Agent`,
   /** 关于页（/about）的完整标题，已含站名。 */

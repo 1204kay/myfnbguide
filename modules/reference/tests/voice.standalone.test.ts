@@ -196,14 +196,14 @@ test("groups join with half a second between; inside a group each line's pause i
 
 test("short lines are read joined to a neighbour, a head to the line after it, the words unchanged", () => {
   const lines = ["大家早上好！我是十一。今天是11月3号。", "第二条，英国酒税。", "据英国酒馆和餐饮行业媒体报道，酒税从二月起上调百分之四点五。",
-    "酒税通常每年按通胀调整，但这对抵消成本上涨作用不大。", "最低工资也上调了。", "这就是今天的十一说。我们明天早上见。"];
+    "酒税通常每年按通胀调整，但这对抵消成本上涨作用不大。", "最低工资也上调了。", "这就是今天的十一说。谢谢收听。"];
   const joined = joinShort(lines);
   assert.deepEqual(joined, [lines[0], lines[1]! + lines[2], lines[3]! + lines[4], lines[5]]);
   assert.equal(joined.join(""), lines.join(""), "not a character more or less");
-  assert.deepEqual(joinShort(["大家早上好！我是十一。", "第一条，短。", "这就是今天的十一说。我们明天早上见。"]),
-    ["大家早上好！我是十一。第一条，短。", "这就是今天的十一说。我们明天早上见。"], "the closing line is never joined to");
+  assert.deepEqual(joinShort(["大家早上好！我是十一。", "第一条，短。", "这就是今天的十一说。谢谢收听。"]),
+    ["大家早上好！我是十一。第一条，短。", "这就是今天的十一说。谢谢收听。"], "the closing line is never joined to");
   const opens = ["大家早上好！我是十一。", "这一段讲的是英国的酒馆生意，今年一共净少了九百多家店。", "换到葡萄牙。", "葡萄牙的餐馆这个月又少了三十家。", "那明天就能做什么？",
-    "先把备料单拿出来，一项一项对一遍。", "这就是今天的十一说。我们明天早上见。"];
+    "先把备料单拿出来，一项一项对一遍。", "这就是今天的十一说。谢谢收听。"];
   assert.deepEqual(joinShort(opens), [opens[0], opens[1], opens[2]! + opens[3], opens[4]! + opens[5], opens[6]],
     "a turn to the next place and a question go onto the line after them");
 });
@@ -227,16 +227,16 @@ test("the machine check names each failed part", () => {
 
 test("a reading that stops before the closing line is caught", () => {
   const script = `第一行。\n英国净少了977家店。\n${CLOSING}`;
-  assert.equal(endHeard(script, "第一行 英国净少了九百七十七家店 这就是今天的十一说 我们明天早上见"), 1);
+  assert.equal(endHeard(script, "第一行 英国净少了九百七十七家店 这就是今天的十一说 谢谢收听"), 1);
   assert.ok(endHeard(script, "第一行 英国净少了九百七十七家店") < 0.8);
 });
 
 test("each line of the 文字稿 starts where Whisper heard its first words, whatever else it heard otherwise", () => {
-  const lines = ["大家早上好！我是十一。", "英国净少了977家店。", "（停一下）", "我们明天早上见。"];
+  const lines = ["大家早上好！我是十一。", "英国净少了977家店。", "（停一下）", "谢谢收听。"];
   const segments = [
     { start: 0, end: 2, text: "大家早上好 我是十一" },
     { start: 2.4, end: 6, text: "英国净少了九百七十七家点" },
-    { start: 9, end: 11, text: "我们明天早上见" },
+    { start: 9, end: 11, text: "谢谢收听" },
   ];
   const starts = lineStarts(lines, segments)!;
   assert.equal(starts.length, 4);

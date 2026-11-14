@@ -2264,27 +2264,6 @@
       "syndicate_fulltext": false
     },
     {
-      "id": "rss-foodship",
-      "name": "Foodship 博客（澳大利亚 · 线上点餐和收银软件公司的博客）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://foodship.com.au/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 720,
-      "tags": [
-        "澳大利亚",
-        "服务商"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
       "id": "rss-genius-food-purchasing",
       "name": "Genius Food Purchasing 博客（美国 · 餐厅采购比价软件公司的博客）",
       "kind": "rss",
@@ -8106,7 +8085,7 @@
       "name": "Favori Lezzetler（土耳其 · 餐饮和食材新闻）",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://favorilezzetler.com.tr/rss.xml",
+        "feedUrl": "https://favorilezzetler.com/rss.xml",
         "_aihot": {
           "initialBackfillLimit": 3
         }

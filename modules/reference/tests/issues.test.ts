@@ -251,6 +251,36 @@ test("a day whose 十一说 is up without audio by the daily is told, with why",
   }
 });
 
+test("an event an earlier issue told is marked for the writer, by the event its item is in now", async () => {
+  // Issues 20 and 21 (11-13, 11-14) both told Uliassi losing a star, from other reports of the one event.
+  const day = "2020-03-27";
+  const at = editionAt("daily", day, -7200);
+  const [story] = await sql<{ id: string }[]>`INSERT INTO stories (public_id, title) VALUES (gen_random_uuid(), ${`降星 ${T}`}) RETURNING id::text`;
+  const news: string[] = [];
+  for (const n of [1, 2, 3]) {
+    const { articleId } = await upsertMaterial({ sourceId: SRC, url: `https://example.com/issue-${T}-star-${n}`, title: `Star ${n} ${T}`, bodyText: "原文", bodyStatus: "ok", via: "fetch", publishedAt: at, discoveredAt: at });
+    await sql`INSERT INTO analyses (article_id, input_revision, origin, relevance, category, title_zh, summary_zh, score, selected)
+              VALUES (${articleId}, 1, 'rule', 'pass', 'tip', ${`降星 ${n}`}, '摘要', 50, true)`;
+    await publishArticle(articleId, { now: at, releasedAt: at });
+    news.push(articleId);
+    ids.push(articleId);
+  }
+  // The first told two days back; the second, in the same event only later, is not cited; the third waits for today.
+  await sql`UPDATE publications SET story_id = ${story!.id}::bigint WHERE article_id = ANY(${[news[0]!, news[2]!]}::text[])`;
+  const issue = { title: "t", brief: ["b〔1〕"], preview: "p", news: [{ head: "h", text: "x〔1〕" }], deep: "", close: "" };
+  await sql`INSERT INTO reference_issues (date, no, status, content, version, models)
+            VALUES ('2020-03-25', 900, 'issue', ${sql.json({ issue, items: [{ n: 1, id: news[0] }, { n: 2, id: news[1] }] })}, 'test', '{}')`;
+  try {
+    const items = await dayItems(editionAt("daily", day));
+    assert.equal(items.find((i) => i.id === news[2])?.told, 900, "a new report of an event told is marked with the issue that told it");
+    assert.equal(items.find((i) => i.id === news[1])?.told, undefined, "an item in no event told is not");
+    await sql`UPDATE reference_issues SET date = '2020-03-19' WHERE no = 900`;
+    assert.equal((await dayItems(editionAt("daily", day))).find((i) => i.id === news[2])?.told, undefined, "told more than a week back: forgotten, as the daily forgets");
+  } finally {
+    await sql`DELETE FROM reference_issues WHERE no = 900`;
+  }
+});
+
 test("a day without its 十一说 and a module job out of retries are told", async () => {
   const day = "2020-03-25";
   const due = editionAt("daily", day, -90 * 60).getTime();

@@ -21,7 +21,7 @@ export const scriptLines = (script: string) => script.split(/\n+/u).map((l) => l
 
 /**
  * The issue's audio as its page needs it, or null when it has none. `starts`, when <no>.json has them for each line
- * of the 文字稿 (backend/voice.ts joinLines; lineStarts for audio read before it), lets the 文字稿 follow the voice;
+ * of the 文字稿 (backend/voice.ts joinGroups; lineStarts for audio read before it), lets the 文字稿 follow the voice;
  * otherwise it is shown whole.
  */
 export async function issueAudio(no: number): Promise<{ url: string; seconds: number; transcript: string[] | null; starts?: number[]; pauses?: Array<[number, number]> } | null> {

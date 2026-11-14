@@ -7,7 +7,7 @@ import path from "node:path";
 import { test } from "node:test";
 import { config } from "@aihot/backend/config";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, cutBefore, lowRuns, lowSeconds, joinLines, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinGroups, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, readGroups, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -170,17 +170,28 @@ test("the audio goes to Whisper in pieces cut at the quietest moment near every 
   assert.deepEqual([...samples], [...audio.subarray(0, 100)]);
 });
 
-test("half a second of silence goes in at each seam between lines, and each line starts where it was put", () => {
+test("lines go to the voice a few to a request, in order, up to the limit; a line over it alone", () => {
+  const line = (n: number) => "字".repeat(n);
+  assert.deepEqual(readGroups([line(100), line(100), line(60), line(30), line(300), line(10)], 250), [[0, 1], [2, 3], [4], [5]]);
+  assert.deepEqual(readGroups([line(50)], 250), [[0]]);
+  assert.deepEqual(readGroups([], 250), []);
+});
+
+test("groups join with half a second between; inside a group each line's pause is made 0.7 s, only inside the pause", () => {
   const rate = 8000;
-  // A line that ends loud: the breath still goes after its last sample, never inside it.
-  const lines = [tone(rate, 3.1), tone(rate, 2.7), tone(rate, 2)];
-  const { samples, starts } = joinLines(lines, rate);
-  assert.equal(samples.length, lines.reduce((n, l) => n + l.length, 0) + rate);
-  assert.deepEqual(starts, [0, 3.6, 6.8]);
-  const quiet = silences(samples, rate, 0.4).map((s) => [Math.round(s.from * 10) / 10, Math.round(s.to * 10) / 10]);
-  assert.deepEqual(quiet, [[3.1, 3.6], [6.3, 6.8]]);
-  assert.deepEqual([...samples.subarray(Math.round(3.6 * rate), Math.round(3.6 * rate) + 50)], [...lines[1]!.subarray(0, 50)]);
-  assert.deepEqual(joinLines([tone(rate, 1)], rate).starts, [0]);
+  // Two sentences read in one request with a 0.4 s pause between them, then a group of one line.
+  const first = join(tone(rate, 2), tone(rate, 0.4, false), tone(rate, 2));
+  const { samples, starts } = joinGroups([{ samples: first, lines: ["一二三四五六七八九十", "一二三四五六七八九十"] }, { samples: tone(rate, 1), lines: ["一行"] }], rate);
+  assert.equal(samples.length, first.length + Math.round(0.3 * rate) + Math.round(0.5 * rate) + rate);
+  assert.deepEqual(starts, [0, 2.5, 5.2]);
+  const pauses = silences(samples, rate, 0.2).map((s) => [s.from, s.to]);
+  assert.deepEqual(pauses, [[2, 2.7], [4.7, 5.2]]);
+  assert.deepEqual([...samples.subarray(Math.round(2.7 * rate), Math.round(2.7 * rate) + 50)], [...first.subarray(Math.round(2.4 * rate), Math.round(2.4 * rate) + 50)], "the second sentence unchanged after the longer pause");
+  // A group with no pause: nothing added, the line starts where its characters put it.
+  const solid = joinGroups([{ samples: tone(rate, 3), lines: ["一二", "一二三四"] }], rate);
+  assert.equal(solid.samples.length, 3 * rate);
+  assert.deepEqual(solid.starts, [0, 1]);
+  assert.deepEqual(joinGroups([{ samples: tone(rate, 1), lines: ["一行"] }], rate).starts, [0]);
 });
 
 test("short lines are read joined to a neighbour, a head to the line after it, the words unchanged", () => {
@@ -285,7 +296,7 @@ test("a passed --try goes up with its exact line starts and pauses; one not pass
   const dir = await mkdtemp(path.join(os.tmpdir(), "try-"));
   const rate = 16_000;
   const tone = (s: number) => Int16Array.from({ length: rate * s }, (_, i) => Math.round(6000 * Math.sin((2 * Math.PI * 200 * i) / rate)));
-  const { samples, starts } = joinLines([tone(30), tone(31)], rate);
+  const { samples, starts } = joinGroups([{ samples: tone(30), lines: ["第一行，念了三十秒。"] }, { samples: tone(31), lines: ["第二行，念了三十一秒。"] }], rate);
   await writeFile(path.join(dir, `${no}.wav`), wavOf(samples, rate));
   await writeFile(path.join(dir, `${no}.mp3`), "mp3");
   await writeFile(path.join(dir, `${no}.txt`), "第一行，念了三十秒。\n第二行，念了三十一秒。\n");
@@ -306,23 +317,4 @@ test("a passed --try goes up with its exact line starts and pauses; one not pass
   await writeFile(path.join(dir, `${no}.starts.json`), JSON.stringify([0]));
   assert.ok("refused" in await putTry(no, dir), "starts that do not match the lines");
   await Promise.all([dir, ...["json", "mp3", "txt"].map((ext) => path.join(up, `${no}.${ext}`))].map((f) => rm(f, { recursive: true, force: true })));
-});
-
-test("a line whose voice drops low in the middle is found; a steady line, and one that only falls at its end, are not", () => {
-  const rate = 16_000;
-  /** A tone of `parts` ([Hz, seconds]) one after another. */
-  const tone = (parts: Array<[number, number]>) => {
-    const out = new Int16Array(Math.round(parts.reduce((s, [, sec]) => s + sec, 0) * rate));
-    let at = 0, phase = 0;
-    for (const [hz, sec] of parts) for (let i = 0; i < Math.round(sec * rate); i += 1) { phase += (2 * Math.PI * hz) / rate; out[at++] = Math.round(8000 * Math.sin(phase)); }
-    return out;
-  };
-  assert.equal(lowSeconds(tone([[250, 6]]), rate), 0);
-  assert.ok(lowSeconds(tone([[250, 2.5], [150, 1.5], [250, 2.5]]), rate) >= 1, "nine semitones down for a second and a half");
-  assert.equal(lowSeconds(tone([[250, 5], [150, 1]]), rate), 0, "a sentence falls at its end");
-  assert.equal(lowSeconds(tone([[250, 3], [150, 0.5], [250, 3]]), rate), 0, "half a second is a tone of the language, not a drop");
-  const [drop] = lowRuns(tone([[250, 2.5], [150, 1.5], [250, 2.5]]), rate);
-  assert.ok(drop && Math.abs(drop.at - 2.5) <= 0.25, "where the drop starts");
-  assert.deepEqual(cutBefore("其中酒吧、夜店和酒廊涨得最多，一年涨了百分之六，餐厅涨得少一些", 0.6), ["其中酒吧、夜店和酒廊涨得最多，", "一年涨了百分之六，餐厅涨得少一些"]);
-  assert.equal(cutBefore("这一行没有可以停的地方所以不切", 0.5), null);
 });

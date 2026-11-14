@@ -300,7 +300,7 @@ test("the date and weekday come from the calendar, and the program's own lines f
   const c = await composeIssue(ITEMS, "2026-10-11", ask);
   assert.ok(calls[0]!.user.startsWith("日期：2026年10月11日，星期日"));
   const md = issueMarkdown(c, 1);
-  assert.ok(md.includes("早上好，今天是2026年10月11日，星期日。我是十一。") && md.includes("下面，细说一件。") && md.includes("我们明天早上见。"));
+  assert.ok(md.includes("早上好，今天是2026年10月11日，星期日。我是十一。") && md.includes("下面，细说一件。") && md.includes("这就是今天的十一说。谢谢收听。"));
 });
 
 test("the program finds what the check model is not asked to count: an item with no source, a big event left out; how many news items is the writer's", async () => {

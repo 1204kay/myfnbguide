@@ -144,7 +144,7 @@ export function dayName(date: string): string {
 export const fixedLines = (date: string) => ({
   open: `早上好，今天是${dayName(date)}。我是十一。`,
   turn: "以上是今天的几条快讯。下面，细说一件。",
-  end: "这就是今天的十一说。我们明天早上见。",
+  end: "这就是今天的十一说。谢谢收听。",
 });
 
 /** Everything 十一 wrote, for finding its citations. */

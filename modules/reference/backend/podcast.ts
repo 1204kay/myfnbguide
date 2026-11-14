@@ -19,7 +19,7 @@ export const PODCAST_COVER = "shiyi-podcast.png";
 
 export const SHOW = {
   title: "十一说 · MYFNB",
-  description: "每天早上，十一读完 MYFNB 前一天收录的全部餐饮消息，用十多分钟说几条快讯，再细说一件。每句话的原文出处都列在网站上，内容由 AI 编写，引用时以原文为准。",
+  description: "十一读 MYFNB 前一天收录的餐饮消息，说几条快讯，再细说一件。每句话的原文出处列在网站上；内容由 AI 编写，引用时以原文为准。",
   author: "MYFNB（myfnbguide.com）",
   // Apple's own category names; a daily round-up of the trade's news.
   category: ["News", "Business News"] as const,

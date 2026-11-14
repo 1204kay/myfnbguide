@@ -9215,27 +9215,6 @@
       ]
     },
     {
-      "id": "rss-ondernemerslijst-horeca",
-      "name": "Ondernemerslijst · Horeca（荷兰 · 餐饮业创业者人物条目）",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.ondernemerslijst.nl/category/horeca/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 3
-        }
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "荷兰",
-        "媒体"
-      ]
-    },
-    {
       "id": "rss-culinaria-mexicana",
       "name": "Culinaria Mexicana（墨西哥 · 餐饮媒体）",
       "kind": "rss",
@@ -9253,37 +9232,6 @@
       "syndicate_fulltext": false,
       "tags": [
         "墨西哥",
-        "媒体"
-      ]
-    },
-    {
-      "id": "web-caper",
-      "name": "Caper（美国 · 餐饮 newsletter）",
-      "kind": "web_list",
-      "config": {
-        "url": "https://caper.media/",
-        "itemSelector": "div.embla__slide",
-        "linkSelector": "a[href*=\"/p/\"]",
-        "allowUrlPrefixes": [
-          "https://caper.media/p/",
-          "https://www.caper.media/p/"
-        ],
-        "detail": {
-          "maxFetches": 12
-        },
-        "_aihot": {
-          "initialBackfillLimit": 3
-        },
-        "titleSelector": "h3"
-      },
-      "tier": "T2",
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 1440,
-      "site_fulltext": false,
-      "syndicate_fulltext": false,
-      "tags": [
-        "美国",
         "媒体"
       ]
     },

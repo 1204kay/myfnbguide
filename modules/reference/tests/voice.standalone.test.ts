@@ -4,10 +4,13 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { createHash } from "node:crypto";
+import { createServer } from "node:http";
+import type { Socket } from "node:net";
 import { test } from "node:test";
 import { config } from "@aihot/backend/config";
 import type { Ask, IssueText } from "../backend/issue.ts";
-import { applyFixes, joinGroups, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, readGroups, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
+import { applyFixes, joinGroups, lineGuesses, streamTask, streamUrl, joinShort, missedRuns, CLOSING, flipsHeard, endHeard, heardShare, judge, lineStarts, numberWords, opening, followTimes, putTry, pitchWindows, readGroups, semitones, quietCuts, silences, tooLong, wavOf, wavSamples, writeScript } from "../backend/voice.ts";
 
 const ISSUE: IssueText = {
   title: "细说的题目", brief: ["一", "二", "三"], preview: "今天先说两件事。",
@@ -317,4 +320,110 @@ test("a passed --try goes up with its exact line starts and pauses; one not pass
   await writeFile(path.join(dir, `${no}.starts.json`), JSON.stringify([0]));
   assert.ok("refused" in await putTry(no, dir), "starts that do not match the lines");
   await Promise.all([dir, ...["json", "mp3", "txt"].map((ext) => path.join(up, `${no}.${ext}`))].map((f) => rm(f, { recursive: true, force: true })));
+});
+
+test("a whole issue read in one task: each line starts at the sentence that starts it, else where its characters put it", () => {
+  const lines = ["大家早上好！我是十一。", "第一条，英国。", "英国净少了977家店。"];
+  // The engine splits the first line in two and the second and third as written.
+  const sentences = [{ at: 0, text: "大家早上好！" }, { at: 1.2, text: "我是十一。" }, { at: 2.5, text: "第一条，英国。" }, { at: 4, text: "英国净少了977家店。" }];
+  assert.deepEqual(lineGuesses(lines, sentences, 7), [2.5, 4]);
+  // A sentence running over a line's end: that line goes by its characters.
+  assert.deepEqual(lineGuesses(lines, [{ at: 0, text: lines[0]! + lines[1]! }, { at: 4, text: lines[2]! }], 7), [7 * 11 / 29, 4]);
+  // The pause nearest the sentence's start, where the characters would have put it at the first pause.
+  const rate = 8000;
+  const gap = tone(rate, 0.2, false);
+  const audio = join(tone(rate, 1), gap, tone(rate, 1), gap, tone(rate, 1), gap, tone(rate, 1));
+  assert.deepEqual(joinGroups([{ samples: audio, lines: ["一", "一", "一"], guesses: [2.3, 3.5] }], rate).starts, [0, 2.8, 4.5]);
+  assert.deepEqual(joinGroups([{ samples: audio, lines: ["一", "一", "一"] }], rate).starts[1], 1.6);
+});
+
+test("the real-time address sits beside the HTTP one", () => {
+  assert.equal(streamUrl("https://dashscope-intl.aliyuncs.com/api/v1"), "wss://dashscope-intl.aliyuncs.com/api-ws/v1/inference");
+  assert.equal(streamUrl("https://ws1.ap-southeast-1.maas.aliyuncs.com/api/v1/"), "wss://ws1.ap-southeast-1.maas.aliyuncs.com/api-ws/v1/inference");
+});
+
+/** A WebSocket server speaking the real-time synthesis's events (qwen-audio-tts-client-events, -server-events), enough for one task. */
+async function engine(answer: (said: Record<string, any>, send: (event: unknown) => void, audio: (bytes: Buffer) => void) => void) {
+  const said: Array<Record<string, any>> = [];
+  const sockets: Socket[] = [];
+  const heads: Array<Record<string, string | string[] | undefined>> = [];
+  const server = createServer();
+  server.on("upgrade", (req, socket: Socket) => {
+    heads.push(req.headers);
+    sockets.push(socket);
+    const accept = createHash("sha1").update(`${req.headers["sec-websocket-key"]}258EAFA5-E914-47DA-95CA-C5AB0DC85B11`).digest("base64");
+    socket.write(`HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ${accept}\r\n\r\n`);
+    const frame = (op: number, body: Buffer) => {
+      const head = body.length < 126 ? Buffer.from([0x80 | op, body.length]) : Buffer.from([0x80 | op, 126, body.length >> 8, body.length & 255]);
+      socket.write(Buffer.concat([head, body]));
+    };
+    const send = (event: unknown) => frame(1, Buffer.from(JSON.stringify(event)));
+    let pending = Buffer.alloc(0);
+    socket.on("data", (chunk: Buffer) => {
+      pending = Buffer.concat([pending, chunk]);
+      while (pending.length >= 6) {
+        let len = pending[1]! & 127, at = 2;
+        if (len === 126) { len = pending.readUInt16BE(2); at = 4; }
+        if (pending.length < at + 4 + len) return;
+        const mask = pending.subarray(at, at + 4);
+        const body = Buffer.from(pending.subarray(at + 4, at + 4 + len).map((b, i) => b ^ mask[i % 4]!));
+        const op = pending[0]! & 15;
+        pending = pending.subarray(at + 4 + len);
+        if (op === 8) { socket.end(); return; }
+        if (op === 1) { const msg = JSON.parse(body.toString()); said.push(msg); answer(msg, send, (bytes) => frame(2, bytes)); }
+      }
+    });
+    socket.on("error", () => {});
+  });
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const { port } = server.address() as { port: number };
+  return { url: `ws://127.0.0.1:${port}`, said, heads, close: () => new Promise<void>((resolve) => { for (const s of sockets) s.destroy(); server.close(() => resolve()); }) };
+}
+
+test("one real-time task: run-task, a continue-task a line, finish-task; the audio and where each sentence starts come back", async () => {
+  const task = { model: "qwen-audio-3.1-tts-flash", voice: "longanhuan_v3.1", style: "", rate: 24_000, lines: ["第一行。", "第二行。"] };
+  let n = 0;
+  const server = await engine((msg, send, audio) => {
+    const head = { task_id: msg.header.task_id };
+    if (msg.header.action === "run-task") send({ header: { ...head, event: "task-started" }, payload: {} });
+    if (msg.header.action === "continue-task") {
+      const index = n++;
+      send({ header: { ...head, event: "result-generated" }, payload: { output: { type: "sentence-begin", sentence: { index }, original_text: msg.payload.input.text } } });
+      send({ header: { ...head, event: "result-generated" }, payload: { output: { type: "sentence-synthesis", sentence: { index } } } });
+      audio(Buffer.alloc(4800 * (index + 1)));
+      send({ header: { ...head, event: "result-generated" }, payload: { output: { type: "sentence-end", sentence: { index } } } });
+    }
+    if (msg.header.action === "finish-task") send({ header: { ...head, event: "task-finished" }, payload: { usage: { characters: 8 } } });
+  });
+  try {
+    const frames: Buffer[] = [];
+    const sentences: Array<[number, number | undefined, string | undefined]> = [];
+    const usage = await streamTask(server.url, "test-key", task, (f) => frames.push(f), (...s) => sentences.push(s), () => frames.reduce((sum, f) => sum + f.length, 0) / 2);
+    assert.deepEqual(usage, { characters: 8 });
+    assert.equal(Buffer.concat(frames).length, 4800 * 3);
+    assert.deepEqual(sentences.filter(([, at]) => at !== undefined), [[0, 0, "第一行。"], [1, 0.1, "第二行。"]]);
+    assert.equal(server.heads[0]!.authorization, "Bearer test-key");
+    assert.deepEqual(server.said.map((m) => m.header.action), ["run-task", "continue-task", "continue-task", "finish-task"]);
+    assert.ok(server.said.every((m) => m.header.streaming === "duplex" && m.header.task_id === server.said[0]!.header.task_id));
+    const run = server.said[0]!.payload;
+    assert.deepEqual([run.task_group, run.task, run.function, run.model, run.parameters.voice, run.parameters.format, run.parameters.sample_rate], ["audio", "tts", "SpeechSynthesizer", task.model, task.voice, "pcm", 24_000]);
+    assert.equal("instruction" in run.parameters, false);
+    assert.deepEqual(server.said.slice(1, 3).map((m) => m.payload.input.text), task.lines);
+  } finally { await server.close(); }
+});
+
+test("a real-time task that fails, or whose socket closes before it finishes, fails with the engine's words", async () => {
+  const task = { model: "m", voice: "v", style: "慢一点", rate: 24_000, lines: ["一行。"] };
+  const failing = await engine((msg, send) => {
+    if (msg.header.action === "run-task") send({ header: { task_id: msg.header.task_id, event: "task-failed", error_code: "InvalidParameter", error_message: "bad voice" }, payload: {} });
+  });
+  try {
+    await assert.rejects(streamTask(failing.url, "k", task, () => {}, () => {}, () => 0), /InvalidParameter bad voice/u);
+    assert.equal(failing.said[0]!.payload.parameters.instruction, "慢一点");
+  } finally { await failing.close(); }
+  const hanging = await engine((msg, send) => {
+    if (msg.header.action === "run-task") send({ header: { task_id: msg.header.task_id, event: "task-started" }, payload: {} });
+    if (msg.header.action === "finish-task") hanging.close();
+  });
+  await assert.rejects(streamTask(hanging.url, "k", task, () => {}, () => {}, () => 0), /连接/u);
 });

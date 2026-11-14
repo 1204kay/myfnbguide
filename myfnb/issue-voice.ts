@@ -55,7 +55,7 @@ const scriptFile = arg("--script");
 if (from !== undefined && !/^\d{4}-\d{2}-\d{2}$/u.test(from)) throw new Error("--from 要一个日期，例如 2026-11-01");
 for (const n of [tryNo, putNo, hearNo, timesNo, putTryNo]) if (n !== undefined && !/^[1-9]\d*$/u.test(n)) throw new Error("要一个期号，例如 8");
 
-// About 14 requests an issue (a few lines each, readGroups), six readings at most: the breaker stops a runaway loop.
+// One real-time task an issue (readStream), about 14 requests when it falls back to a few lines each (readGroups), six readings at most: the breaker stops a runaway loop.
 // Only this module's own row; Groq's `transcribe` row is archive's, and an operator adds it in the admin.
 if (from || tryNo || putNo) {
   await sql`INSERT INTO budgets (service, per_minute, per_hour, per_day, note)

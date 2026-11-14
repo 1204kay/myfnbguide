@@ -76,6 +76,26 @@ export async function weekPool(startDate: string, endDate: string): Promise<Pool
 
 const publishers = (ids: string[], byId: Map<string, PoolItem>) => new Set(ids.map((id) => byId.get(id)?.publisher).filter(Boolean)).size;
 
+/**
+ * What goes on from the find answer to the gather call: topics it already shows two publishers for, most publishers
+ * first, at most FIND_KEEP. The find answer is not bounded by anything but its room: the same week of 11-02 (583
+ * reports, the prompt as it is) listed 460 topics, 427 of them one publisher's, in 13,682 tokens on 11-13 21:36
+ * (receipt 188812), and ran out of all 32,000 on 11-14 15:05 (receipt 195777), cut off mid-JSON with nothing kept.
+ * The gather call has to answer for every topic it is given, so one with hundreds would run out the same way. A topic
+ * shown by one publisher in the find answer is not one the gather call has been seen to make into three: the three
+ * topics published for W45 each had two or more there (receipt 188812). So the prompt asks for two publishers and at
+ * most thirty (prompts/find.md), and the code holds both, counting publishers as countTopics does.
+ */
+export const FIND_KEEP = 30;
+export function shortlist<T extends { items: number[] }>(found: T[], pool: PoolItem[]): T[] {
+  const byId = new Map(pool.map((p) => [p.id, p]));
+  const count = (t: T) => publishers(t.items.map((n) => pool[n - 1]?.id).filter((id): id is string => !!id), byId);
+  // The most publishers are kept when there are more than FIND_KEEP; what is kept stays in the answer's order.
+  const kept = new Set(found.map((t, i) => ({ i, n: count(t) })).filter((x) => x.n >= 2)
+    .sort((a, b) => b.n - a.n || a.i - b.i).slice(0, FIND_KEEP).map((x) => x.i));
+  return found.filter((_, i) => kept.has(i));
+}
+
 /** The topics the model named, each with its reports; one with fewer than MIN_PUBLISHERS publishers is dropped here. */
 export function countTopics(found: Array<{ name: string; items: number[] }>, pool: PoolItem[]): { kept: Array<{ name: string; ids: string[] }>; dropped: Dropped[] } {
   const byId = new Map(pool.map((p) => [p.id, p]));
@@ -160,7 +180,7 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
   const receipts: number[] = [];
   const model = await modelFor(TRENDS_STEP);
   const subject = `trends:${key}`;
-  const found = { topics: await findTopics(pool, model, subject, receipts) };
+  const found = { topics: shortlist(await findTopics(pool, model, subject, receipts), pool) };
   const gathered = await gather(found.topics, pool, model, subject, receipts);
   const { kept, dropped } = countTopics(gathered, pool);
   const byId = new Map(pool.map((p) => [p.id, p]));

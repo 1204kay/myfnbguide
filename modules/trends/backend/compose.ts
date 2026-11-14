@@ -20,7 +20,7 @@ import { loadAnalyzeInput } from "@aihot/backend/editorial/analyze";
 import { modelFor } from "@aihot/backend/editorial/models";
 import { promptFromText } from "@aihot/backend/editorial/prompts";
 import { moduleCopyCheck } from "@aihot/backend/modules";
-import { chatJson } from "@aihot/backend/providers/llm";
+import { chatJson, escapeControlCharsInStrings } from "@aihot/backend/providers/llm";
 import { completeReceipt } from "@aihot/backend/providers/receipts";
 import { grounded } from "@aihot/backend/reports/compose";
 import { listedCondition } from "@aihot/backend/publication/scope";
@@ -76,6 +76,27 @@ export async function weekPool(startDate: string, endDate: string): Promise<Pool
 
 const publishers = (ids: string[], byId: Map<string, PoolItem>) => new Set(ids.map((id) => byId.get(id)?.publisher).filter(Boolean)).size;
 
+/**
+ * What goes on from the find answer to the gather call: topics it already shows two publishers for, most publishers
+ * first, at most FIND_KEEP. The find answer is not bounded by anything but its room: the same week of 11-02 (583
+ * reports, the prompt as it is) listed 460 topics, 427 of them one publisher's, in 13,682 tokens on 11-13 21:36
+ * (receipt 188812), and ran out of all 32,000 on 11-14 15:05 (receipt 195777), cut off mid-JSON with nothing kept.
+ * The gather call has to answer for every topic it is given, so one with hundreds would run out the same way. A topic
+ * shown by one publisher in the find answer is not one the gather call has been seen to make into three: the three
+ * topics published for W45 each had two or more there (receipt 188812). Asking the prompt for both was tried and did
+ * not hold (11-14, receipt 195848: it listed single reports 999 times), so the code holds both, counting publishers as
+ * countTopics does.
+ */
+export const FIND_KEEP = 30;
+export function shortlist<T extends { items: number[] }>(found: T[], pool: PoolItem[]): T[] {
+  const byId = new Map(pool.map((p) => [p.id, p]));
+  const count = (t: T) => publishers(t.items.map((n) => pool[n - 1]?.id).filter((id): id is string => !!id), byId);
+  // The most publishers are kept when there are more than FIND_KEEP; what is kept stays in the answer's order.
+  const kept = new Set(found.map((t, i) => ({ i, n: count(t) })).filter((x) => x.n >= 2)
+    .sort((a, b) => b.n - a.n || a.i - b.i).slice(0, FIND_KEEP).map((x) => x.i));
+  return found.filter((_, i) => kept.has(i));
+}
+
 /** The topics the model named, each with its reports; one with fewer than MIN_PUBLISHERS publishers is dropped here. */
 export function countTopics(found: Array<{ name: string; items: number[] }>, pool: PoolItem[]): { kept: Array<{ name: string; ids: string[] }>; dropped: Dropped[] } {
   const byId = new Map(pool.map((p) => [p.id, p]));
@@ -104,6 +125,47 @@ export function lineGrounded(text: string, item: PoolItem): boolean {
 }
 
 const FindSchema = z.object({ topics: z.array(z.object({ name: z.string(), items: z.array(z.coerce.number().int()), why: z.string().catch("") })) });
+/**
+ * The find answer read even when it was cut off, each topic once. At temperature 0 the model can fall into listing
+ * the same thing over and over until its room runs out: 11-14 the week of 11-02 was cut at 32,000 tokens twice, and
+ * the answers read back (css-cloud, Kay's 19:01 sentence) were loops, not a week with that many topics: receipt
+ * 195777 listed the same few pairs under new names ([90,129] 69 times, [61,62] and [191,171] 51 each), 195848 listed
+ * report 424 alone 839 times. What came before the loop is a good answer; what a loop adds is the same reports again.
+ * So every topic written out whole is kept, in order, and one whose reports were already listed together is left out.
+ */
+export function findAnswer(content: string): { topics: unknown[] } {
+  // As the framework's own reading does: raw newlines or tabs inside a string are escaped before giving up on it.
+  const read = (text: string): unknown => { try { return JSON.parse(text); } catch { return JSON.parse(escapeControlCharsInStrings(text)); } };
+  const seen = new Set<string>();
+  const topics: unknown[] = [];
+  const keep = (t: unknown) => {
+    const items = (t as { items?: unknown })?.items;
+    const key = Array.isArray(items) ? [...new Set(items.map(Number))].sort((a, b) => a - b).join(",") : "";
+    if (seen.has(key)) return;
+    seen.add(key);
+    topics.push(t);
+  };
+  try {
+    const whole = read(content) as { topics?: unknown[] };
+    for (const t of whole.topics ?? []) keep(t);
+    return { topics };
+  } catch { /* cut off: read it object by object below */ }
+  const start = content.indexOf("[", content.indexOf('"topics"'));
+  if (start < 0) return { topics };
+  // Each object inside the topics array, by its braces outside strings; the last, cut-off one is never closed.
+  let depth = 0, from = -1, inString = false, escaped = false;
+  for (let i = start + 1; i < content.length; i++) {
+    const c = content[i];
+    if (inString) { if (escaped) escaped = false; else if (c === "\\") escaped = true; else if (c === '"') inString = false; continue; }
+    if (c === '"') inString = true;
+    else if (c === "{") { if (depth++ === 0) from = i; }
+    else if (c === "}" && depth > 0 && --depth === 0) {
+      try { keep(read(content.slice(from, i + 1))); } catch { /* not a whole topic */ }
+    } else if (c === "]" && depth === 0) break;
+  }
+  return { topics };
+}
+
 const GatherSchema = z.object({ topics: z.array(z.object({ n: z.coerce.number().int(), items: z.array(z.coerce.number().int()) })) });
 const WriteSchema = z.object({ heading: z.string(), lines: z.array(z.object({ n: z.coerce.number().int(), text: z.string() })) });
 
@@ -147,9 +209,11 @@ export async function findTopics(pool: PoolItem[], model: string, subject: strin
   if (pool.length < MIN_PUBLISHERS) return [];
   const res = await chatJson({
     model, purpose: "trends_find", subject, promptVersion: TRENDS_VERSION, system,
-    user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
+    user: pool.map((p, i) => itemLine(p, i + 1)).join("\n"), schema: FindSchema, parse: findAnswer, temperature: 0, maxTokens: LIST_ROOM, timeoutMs: 300_000,
   });
   receipts.push(res.receiptId);
+  // A cut-off answer is read as far as it goes and counts as answered; say so where the run's log shows it.
+  if (Number(res.usage?.completion_tokens) >= LIST_ROOM) console.warn(`trends find ${subject}: answer cut off at ${LIST_ROOM} tokens (receipt ${res.receiptId}); read ${res.data.topics.length} whole topics`);
   await completeReceipt(sql, res.receiptId);
   return res.data.topics;
 }
@@ -160,7 +224,7 @@ export async function writeWeek(key: string, startDate: string, endDate: string)
   const receipts: number[] = [];
   const model = await modelFor(TRENDS_STEP);
   const subject = `trends:${key}`;
-  const found = { topics: await findTopics(pool, model, subject, receipts) };
+  const found = { topics: shortlist(await findTopics(pool, model, subject, receipts), pool) };
   const gathered = await gather(found.topics, pool, model, subject, receipts);
   const { kept, dropped } = countTopics(gathered, pool);
   const byId = new Map(pool.map((p) => [p.id, p]));

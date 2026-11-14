@@ -568,6 +568,6 @@ test("the podcast feed carries the tags podcast apps require, one episode per is
   assert.equal(item.enclosure["@_length"], "12345");
   assert.equal(item.enclosure["@_type"], "audio/mpeg");
   assert.equal(item["itunes:duration"], 760);
-  assert.match(item.description, /原文出处：https:\/\/www\.example\.com\/reference\/issues\/21$/);
+  assert.equal(item.description, '<p>导读。</p><p>快讯：一；二</p><p>全文和每句话的原文出处：<a href="https://www.example.com/reference/issues/21">https://www.example.com/reference/issues/21</a></p>');
   assert.equal(parse(podcastXml([], null))["itunes:owner"], undefined);
 });

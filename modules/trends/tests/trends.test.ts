@@ -12,7 +12,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import checker from "@aihot/checker/server";
 import trends from "../server.ts";
-import { composeWeek, countTopics, FIND_KEEP, lineGrounded, shortlist, weekGaveUp, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
+import { composeWeek, countTopics, FIND_KEEP, findAnswer, lineGrounded, shortlist, weekGaveUp, weekToCompose, withGathered, type PoolItem } from "../backend/compose.ts";
 import { publisherOf } from "../backend/publishers.ts";
 
 const T = tag();
@@ -92,6 +92,14 @@ test("publishers are counted by name, and a topic with fewer than three is left 
   assert.equal(publisherOf("web-qsrmedia-asia", "Asia's food news"), "QSR Media");
   const pool = ["甲", "乙", "乙"].map((publisher, i) => ({ id: `${i}`, title: "", summary: null, sourceId: "", sourceName: "", publisher })) satisfies PoolItem[];
   assert.deepEqual(countTopics([{ name: "x", items: [1, 2, 3, 9] }], pool), { kept: [], dropped: [{ name: "x", ids: ["0", "1", "2"], why: "只有 2 家来源" }] });
+});
+
+test("a find answer cut off in a loop keeps every whole topic before it, each set of reports once", () => {
+  const loop = Array.from({ length: 40 }, (_, i) => `{"name":"第${i}个名字","items":[129,90],"why":"同一件事"}`).join(",");
+  const cut = `{"topics":[{"name":"店面变小","items":[1,2],"why":"都讲 \\"}{\\" 店"},{"name":"涨价","items":[3,4,5],"why":"x"},${loop},{"name":"写到一半`;
+  assert.deepEqual(findAnswer(cut).topics.map((t) => (t as { name: string }).name), ["店面变小", "涨价", "第0个名字"]);
+  assert.deepEqual(findAnswer('{"topics":[{"name":"a","items":[1,2],"why":""},{"name":"b","items":[2,1],"why":""}]}').topics.length, 1, "a whole answer is read the same way");
+  assert.deepEqual(findAnswer("{\"topics\": [").topics, []);
 });
 
 test("only topics the find answer shows two publishers for go on, the most publishers when there are more than FIND_KEEP", () => {

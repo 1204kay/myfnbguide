@@ -9295,6 +9295,888 @@
         "美国",
         "播客"
       ]
+    },
+    {
+      "id": "rss-washington-beer-blog",
+      "name": "Washington Beer Blog（美国 · 华盛顿州精酿啤酒新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://washingtonbeerblog.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-gustocampania",
+      "name": "GustoCampania（意大利 · 坎帕尼亚餐饮美酒新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.gustocampania.it/gustocampania/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-g4food",
+      "name": "G4Food（罗马尼亚 · 餐饮食品媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://g4food.ro/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "罗马尼亚",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-notisul-gastronomia",
+      "name": "Notisul · Gastronomia（巴西 · 地方报餐饮栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.notisul.com.br/tag/gastronomia/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "巴西",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-sebarios",
+      "name": "Sebarios（阿根廷 · 葡萄酒与餐饮新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sebarios.com.ar/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "阿根廷",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-ilikemilano-food",
+      "name": "I Like Milano · Food（意大利 · 米兰餐饮栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ilikemilano.com/tag/food/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-the-bite-nm",
+      "name": "The Bite（美国 · 新墨西哥餐饮刊物）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://thebitenm.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-forecourt-retailer",
+      "name": "Forecourt Retailer（爱尔兰 · 加油站便利零售刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://forecourtretailer.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "爱尔兰",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-larvi",
+      "name": "La Revue Vinicole Internationale（法国 · 葡萄酒烈酒行业刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://larvi.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "法国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-diego-coquillat",
+      "name": "Diego Coquillat（西班牙 · 餐厅经营、营销与科技）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.diegocoquillat.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "西班牙",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-dinesarasota",
+      "name": "dineSarasota（美国 · 萨拉索塔本地餐饮）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.dinesarasota.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-sprudge",
+      "name": "Sprudge（美国 · 咖啡行业媒体）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sprudge.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-panagri",
+      "name": "PanAfrican Agriculture（非洲 · 农业与食材上游）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://panagrimedia.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "非洲和中东",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-goda-nyheter",
+      "name": "Goda nyheter（瑞典 · 美食美酒新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://goda-nyheter.se/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "瑞典",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-cheese-connoisseur",
+      "name": "Cheese Connoisseur（美国 · 奶酪与熟食零售刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cheeseconnoisseur.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-supermarktblog",
+      "name": "Supermarktblog（德国 · 超市零售）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.supermarktblog.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-farmers-review-africa",
+      "name": "Farmers Review Africa（非洲 · 农业与食品加工）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://farmersreviewafrica.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "非洲和中东",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-hule-y-mantel",
+      "name": "Hule y Mantel（西班牙 · 巴塞罗那餐饮新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.huleymantel.com/uploads/feeds/feed_hule-y-mantel_es.xml",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "西班牙",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-c4bn-food",
+      "name": "Campaign 4 Better Nigeria · Food（非洲 · 尼日利亚食品价格与标准）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.campaign4betternigeria.com/category/food/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "非洲和中东",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-cash-and-carry-management",
+      "name": "Cash & Carry Management（英国 · 批发与餐饮供应）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://cashandcarrymanagement.co.uk/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "英国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-sodateru",
+      "name": "そだてる（日本 · 农业经营与米价、肥料行情）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sodateru-karasawanouki.jp/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "服务商"
+      ]
+    },
+    {
+      "id": "rss-poculum",
+      "name": "ポクルム（日本 · 酒类资讯）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://poculum.club/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "日本",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-edairynews-en",
+      "name": "eDairy News（全球 · 乳业市场新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://en.edairynews.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "全球",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-iowa-agribusiness-radio",
+      "name": "Iowa Agribusiness Radio Network（美国 · 粮食和猪肉市场）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://iowaagribusinessradionetwork.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-ruminantia",
+      "name": "Ruminantia（意大利 · 奶业与反刍畜牧）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.ruminantia.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-beer-alien",
+      "name": "Beer Alien（美国 · 精酿啤酒行业新闻）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://beeralien.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-edible-monterey-bay",
+      "name": "Edible Monterey Bay（美国 · 本地餐饮）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ediblemontereybay.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-irish-liquor-lawyer",
+      "name": "The Irish Liquor Lawyer（美国 · 酒类法规与诉讼）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://irishliquorlawyer.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-jersey-bites",
+      "name": "Jersey Bites（美国 · 新泽西餐饮）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://jerseybites.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-nowjakarta-dining",
+      "name": "NOW! Jakarta · Dining（印度尼西亚 · 雅加达餐饮栏目）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.nowjakarta.co.id/category/dining/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "亚洲",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-nsac",
+      "name": "National Sustainable Agriculture Coalition（美国 · 农业与食品政策）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sustainableagriculture.net/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-wine-law-on-reserve",
+      "name": "On Reserve（美国 · 葡萄酒法规博客）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.winelawonreserve.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "博客"
+      ]
+    },
+    {
+      "id": "rss-indifoodbev",
+      "name": "IndiFoodBev（印度 · 食品饮料行业）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://indifoodbev.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "印度",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-convenience-shop-de",
+      "name": "Convenience Shop（德国 · 便利零售刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://convenienceshop.de/?format=feed&type=rss",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-freshpoint-magazine",
+      "name": "Fresh Point Magazine（意大利 · 果蔬行业刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.freshpointmagazine.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-frischeingeschenkt",
+      "name": "Frisch eingeschenkt（德国 · 饮料批发刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.frischeingeschenkt.de/news?type=9818",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "德国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-global-retail-mag",
+      "name": "Global Retail Magazine（欧洲 · PLMA 自有品牌零售刊）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://globalretailmag.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "欧洲",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-grande-consumo",
+      "name": "Grande Consumo（葡萄牙 · 快消零售）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://grandeconsumo.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "葡萄牙",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-western-grocer",
+      "name": "Western Grocer（加拿大 · 杂货零售）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://westerngrocer.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "加拿大",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-all-about-beer",
+      "name": "All About Beer（美国 · 啤酒行业）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://allaboutbeer.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
+    },
+    {
+      "id": "rss-federalimentare",
+      "name": "Federalimentare（意大利 · 食品工业联合会）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.federalimentare.it/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "意大利",
+        "协会"
+      ]
+    },
+    {
+      "id": "rss-oregon-wine-press",
+      "name": "Oregon Wine Press（美国 · 俄勒冈葡萄酒刊物）",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.oregonwinepress.com/index.php?rss=Article",
+        "_aihot": {
+          "initialBackfillLimit": 3
+        }
+      },
+      "tier": "T2",
+      "owner_entity_id": null,
+      "participation_mode": "editorial",
+      "interval_minutes": 1440,
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "tags": [
+        "美国",
+        "媒体"
+      ]
     }
   ]
 }

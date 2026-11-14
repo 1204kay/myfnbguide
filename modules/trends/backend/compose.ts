@@ -86,8 +86,11 @@ const publishers = (ids: string[], byId: Map<string, PoolItem>) => new Set(ids.m
  * topics published for W45 each had two or more there (receipt 188812). Asking the prompt for both was tried and did
  * not hold (11-14, receipt 195848: it listed single reports 999 times), so the code holds both, counting publishers as
  * countTopics does.
+ * Ten, because every topic written is checked line by line, one call after another: the week of 11-02 run whole on
+ * 11-14 19:21 (css-cloud, Kay's 19:11 sentence) wrote 8 topics and made 58 check calls, about 33 s and US$0.005 each,
+ * and was still checking after 36 minutes. Thirty topics would be over 200 checks, past the job's two hours.
  */
-export const FIND_KEEP = 30;
+export const FIND_KEEP = 10;
 export function shortlist<T extends { items: number[] }>(found: T[], pool: PoolItem[]): T[] {
   const byId = new Map(pool.map((p) => [p.id, p]));
   const count = (t: T) => publishers(t.items.map((n) => pool[n - 1]?.id).filter((id): id is string => !!id), byId);

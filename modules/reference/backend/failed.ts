@@ -2,12 +2,17 @@
 // pgboss.job as failed, and the engine's alerts read only jobs that wait (operations/alerts.ts waitingQueues) and the
 // schedules' own runs (job_runs: the run that queued the job is "ok"). 11-09 the weekly trends failed eight times
 // and 11-07 the 05:00 十一说 once; both were found four days later, by reading the queue. And a day whose 十一说 is not
-// written by the time it should be read aloud leaves the daily to lead by rule, silently.
+// written by the time it should be read aloud leaves the daily to lead by rule, silently. And a day whose 十一说 is up
+// with no audio by the daily (11-14 audit): issue 18's listen script failed, nothing ran again, and nobody knew until
+// the 11-13 trial read its report.
 // The alerts go where the site's own do (gate.sh `alerts`, read by css-cloud's site-watch).
 import { sql } from "@aihot/backend/db";
 import { serverModules } from "@aihot/backend/modules";
 import type { Finding } from "@aihot/backend/notify/feishu";
 import { beijingAt, beijingDate } from "@aihot/contracts/time";
+import { EDITION_TIMES } from "@aihot/site";
+import { issueAudio } from "./audio.ts";
+import { MAX_READS, voiceReport, type VoiceReport } from "./voice.ts";
 
 /** What each queue does, in the words Kay reads; a queue not named here is shown by its name. */
 const WORK: Record<string, string> = {
@@ -62,5 +67,52 @@ export async function missingIssueAlerts(now: number): Promise<Finding[]> {
     heals: "不会自动恢复：每天只在 05:00 写一次",
     action: `补写：node myfnb/issue-now.ts；08:00 以后补的再跑 node myfnb/issue-now.ts --lead ${date} 放上日报头条`,
     detail: "reference_issues 没有这一天的行；失败原因看「后台任务失败：十一说写稿」那一条或 worker 日志",
+  }];
+}
+
+/**
+ * What became of the day's reading, in the words Kay reads. "not ready" is not written to the report (voice.ts
+ * readIssue), so a day without the key shows as none; it is here for a report that says so all the same.
+ */
+const NO_AUDIO: Record<VoiceReport["status"] | "none", string> = {
+  none: "还没有开始念",
+  "not ready": "念稿缺钥匙或预算行",
+  error: "念的时候出错",
+  "check failed": "念了，没过机器核对",
+  "script failed": "听稿没写成",
+  "too long": "听稿太长，没有念",
+  "no reads left": `念了 ${MAX_READS} 次都没过机器核对`,
+  tried: "只试念过，没有放上",
+  up: "报告说放上了，但网站上没有音频文件",
+};
+
+/**
+ * Whether a later run this morning reads it again: as server.ts queueVoice decides, no report or one that ended in
+ * error or a failed check, with readings left.
+ */
+const readsAgain = (report: VoiceReport | null) =>
+  (!report || report.status === "error" || report.status === "check failed") && (report?.tries ?? 0) < MAX_READS;
+
+/**
+ * The day's 十一说 is up and read aloud is on (settings reference.voice), and by the daily (08:00) it has no audio: Kay
+ * 11-11 08:13 「八点两个都要同时」. Told, not read again: what to do depends on why (the report's status), and only
+ * the runs left this morning read again by themselves.
+ */
+export async function noAudioAlerts(now: number): Promise<Finding[]> {
+  const date = beijingDate(new Date(now));
+  if (now < beijingAt(date, EDITION_TIMES.daily).getTime()) return [];
+  const [on] = await sql<{ from: string | null }[]>`SELECT value->>'from' AS from FROM settings WHERE key = 'reference.voice'`;
+  if (!on?.from || date < on.from) return [];
+  const [row] = await sql<{ no: number }[]>`SELECT no FROM reference_issues WHERE date = ${date} AND status = 'issue'`;
+  if (!row || await issueAudio(row.no)) return [];
+  const report = await voiceReport(row.no);
+  return [{
+    key: `reference.audio-missing.${date}`,
+    level: "today",
+    title: `今天（${date}）的十一说第 ${row.no} 期没有音频：${NO_AUDIO[report?.status ?? "none"]}`,
+    impact: "网页、日报头条照常有十一说，但没有「听」，播客订阅源里也没有这一期",
+    heals: readsAgain(report) ? "上午每到 :20、:50 还会再念一次（最后一次 09:50），过了核对就自动放上" : "不会自动恢复：今天不会再念",
+    action: `看 ${row.no}.voice.json 里的原因；补念：node myfnb/issue-voice.ts --put ${row.no}（念、核、过了就放上）`,
+    detail: `报告状态：${report?.status ?? "没有报告"}；念了 ${report?.tries ?? 0} 次${report?.error ? `；${report.error.slice(0, 200)}` : ""}`,
   }];
 }

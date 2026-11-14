@@ -263,26 +263,144 @@ function reader(subject: string, attempt: number, voice = VOICE.voice, style = V
 }
 
 /**
- * The script read aloud a few lines to a request (readGroups), the groups joined with a breath between (joinGroups): a
- * WAV (16-bit, one channel), and where each line starts. Read line by line until 11-13, each line started its own
- * voice: Kay 11-11 07:50 「有时候声音还是会忽然低沉 … 一期大概有个三五次」, and 11-13 16:57 put a finger on one, issue 20
- * at 3:09.6, where 「它换来的是看得见的手作」 came in 4 dB duller in 2–4 kHz than the line before it ended (Kay 17:14
- * 「对 你找到了」). Of issues 9–20, 42 of 751 seams fell that far; each line alone sounded right, which is why reading a
- * line again, with or without a seed (#270, #286), changed nothing. Trial 11-13 17:31 on ten such seams: read with the
- * line before in one request, the seam fell 1.8–2.1 dB on average against 5.3 now (3 of 10 still 4 dB or more, each
- * where the talk turns, which the model lowers its voice for whatever it is given); read together and cut apart again,
- * 3.4. So lines are read together, not cut.
+ * The script read aloud: a WAV (16-bit, one channel), where each line starts, and which way it was read. Read line by
+ * line until 11-13, each line started its own voice: Kay 11-11 07:50 「有时候声音还是会忽然低沉 … 一期大概有个三五次」,
+ * and 11-13 16:57 put a finger on one, issue 20 at 3:09.6, where 「它换来的是看得见的手作」 came in 4 dB duller in
+ * 2–4 kHz than the line before it ended (Kay 17:14 「对 你找到了」). Trial 11-13 17:31: read with the line before in one
+ * request, such seams fell 1.8–2.1 dB on average against 5.3; read together and cut apart again, 3.4. So from 11-14 a
+ * few lines went to a request (#290). Kay 11-14 22:14 heard the voice still 「时常音不一样」 and 22:15 「多去参考官方怎么用」:
+ * the model's own page says to send text in batches through its real-time synthesis (help.aliyun.com/zh/model-studio/
+ * non-realtime-tts-user-guide: 「需要分批输入文本时，请使用实时语音合成」), one task of up to 200,000 characters over
+ * one WebSocket (qwen-audio-tts-client-events). So the whole script is one task (readStream); a reading that cannot go
+ * that way goes a few lines to a request as before, and the report says which way it went and why.
  */
-async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[] }> {
-  const { say, rate: rateOf } = reader(subject, attempt, voice, style, model);
+async function read(script: string, subject: string, attempt: number, voice = VOICE.voice, style = VOICE.style, model = VOICE.model): Promise<{ wav: Buffer; starts: number[]; how: "stream" | "groups"; fallback?: string }> {
   const lines = scriptLines(script);
+  let fallback: string | undefined;
+  try {
+    const { samples, rate, guesses } = await readStream(lines, subject, attempt, voice, style, model);
+    const { samples: joined, starts } = joinGroups([{ samples, lines, guesses }], rate);
+    return { wav: wavOf(joined, rate), starts, how: "stream" };
+  } catch (error) {
+    fallback = (error instanceof Error ? error.message : String(error)).slice(0, 300);
+    console.log(JSON.stringify({ job: "reference.voice", subject, attempt, stream: "failed", fallback }));
+  }
+  const { say, rate: rateOf } = reader(subject, attempt, voice, style, model);
   const groups: Array<{ samples: Int16Array; lines: string[] }> = [];
   for (const group of readGroups(lines)) {
     const part = group.map((n) => lines[n]!);
     groups.push({ samples: await say(part.join(""), group[0]!), lines: part });
   }
   const { samples, starts } = joinGroups(groups, rateOf());
-  return { wav: wavOf(samples, rateOf()), starts };
+  return { wav: wavOf(samples, rateOf()), starts, how: "groups", fallback };
+}
+
+/** The real-time synthesis's address: the WebSocket beside the HTTP one (…/api/v1 → …/api-ws/v1/inference; qwen-audio-tts-websocket-api). */
+export const streamUrl = (base: string) => base.replace(/^http/u, "ws").replace(/\/api\/v1\/?$/u, "/api-ws/v1/inference");
+/** A reading of a whole issue (about fifteen minutes of audio) is given this long, in milliseconds. */
+const STREAM_MS = 20 * 60_000;
+/** The page's own limits: 20,000 characters a continue-task, 200,000 a task (qwen-audio-tts-client-events). */
+const STREAM_CHARS = 200_000;
+
+/**
+ * The lines read in one real-time task (qwen-audio-tts-client-events, -server-events): run-task, a continue-task a line,
+ * finish-task; the audio comes as binary frames, raw 16-bit PCM at 24 kHz, and each sentence-begin says where a sentence
+ * starts in it. `guesses` are where each line after the first starts, in seconds, from the sentences' starts, for joinGroups
+ * to find its pause by. One receipt for the task. A receipt already completed holds no audio, so it is asked again under
+ * a tag naming it, as a gone link is (reader).
+ */
+async function readStream(lines: string[], subject: string, attempt: number, voice: string, style: string, model: string, again?: number, hops = 0): Promise<{ samples: Int16Array; rate: number; guesses: number[] }> {
+  const key = credential("models", "QWEN_TTS_API_KEY");
+  if (!key) throw new Error("QWEN_TTS_API_KEY missing");
+  const chars = lines.reduce((sum, l) => sum + [...l].length, 0);
+  if (chars > STREAM_CHARS) throw new Error(`实时合成：${chars} 字，超过一次 ${STREAM_CHARS}`);
+  const url = streamUrl(credential("models", "QWEN_TTS_BASE_URL") ?? "https://dashscope-intl.aliyuncs.com/api/v1");
+  const rate = 24_000;
+  let pcm: Buffer[] = [];
+  let sentences: Array<{ at: number; text: string }> = [];
+  const receipt = await paidRequest(
+    { service: VOICE.service, model, purpose: "reference_issue_read", subject, identity: { model, voice, style, lines, attempt, way: "stream" }, requestSummary: { chars, lines: lines.length, attempt, way: "stream" }, ...(again ? { attemptTag: `restream:${again}` } : {}) },
+    async () => {
+      pcm = [];
+      sentences = [];
+      const usage = await streamTask(url, key, { model, voice, style, rate, lines }, (frame) => pcm.push(frame), (index, at, text) => {
+        sentences[index] = { at: at ?? sentences[index]?.at ?? 0, text: text ?? sentences[index]?.text ?? "" };
+      }, () => pcm.reduce((n, b) => n + b.length, 0) / 2);
+      return { response: { sentences: sentences.length }, usage };
+    },
+  );
+  if (receipt.reused) {
+    if (hops >= MAX_READS) throw new Error("实时合成：回执都已用过，没有声音");
+    return readStream(lines, subject, attempt, voice, style, model, receipt.receiptId, hops + 1);
+  }
+  await sql.begin((tx) => completeReceipt(tx, receipt.receiptId));
+  const all = Buffer.concat(pcm);
+  if (!all.length) throw new Error("实时合成：没有收到声音");
+  const samples = new Int16Array(all.buffer.slice(all.byteOffset, all.byteOffset + (all.length & ~1)));
+  return { samples, rate, guesses: lineGuesses(lines, sentences.filter(Boolean), samples.length / rate) };
+}
+
+/**
+ * Where each line after the first starts, in seconds: at the sentence whose text starts where the line does (the
+ * script's lines end on a sentence's end, so the engine's sentences start on them), else where its characters put it.
+ */
+export function lineGuesses(lines: string[], sentences: Array<{ at: number; text: string }>, seconds: number): number[] {
+  const bare = (t: string) => [...t.replace(/\s/gu, "")].length;
+  const starts = new Map<number, number>();
+  let c = 0;
+  for (const s of sentences) { if (!starts.has(c)) starts.set(c, s.at); c += bare(s.text); }
+  const total = lines.reduce((sum, l) => sum + bare(l), 0);
+  const out: number[] = [];
+  let chars = 0;
+  for (let k = 1; k < lines.length; k += 1) {
+    chars += bare(lines[k - 1]!);
+    out.push(starts.get(chars) ?? (total ? (seconds * chars) / total : 0));
+  }
+  return out;
+}
+
+/**
+ * One real-time task over its own WebSocket: frames to `onAudio`, each sentence's start (in seconds of audio so far, from
+ * `heard`) and text to `onSentence`, the usage of task-finished returned. Fails on task-failed, a closed socket or STREAM_MS.
+ */
+export function streamTask(url: string, key: string, task: { model: string; voice: string; style: string; rate: number; lines: string[] }, onAudio: (frame: Buffer) => void,
+  onSentence: (index: number, at: number | undefined, text: string | undefined) => void, heard: () => number): Promise<Record<string, unknown> | null> {
+  const id = crypto.randomUUID();
+  const header = (action: string) => ({ action, task_id: id, streaming: "duplex" });
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(url, { headers: { Authorization: `Bearer ${key}` } } as unknown as string[]);
+    ws.binaryType = "arraybuffer";
+    let done = false;
+    const end = (error?: Error, usage?: Record<string, unknown> | null) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try { ws.close(); } catch { /* closed already */ }
+      if (error) reject(error); else resolve(usage ?? null);
+    };
+    const timer = setTimeout(() => end(new Error(`实时合成：${STREAM_MS / 60_000} 分钟没念完`)), STREAM_MS);
+    ws.onopen = () => ws.send(JSON.stringify({
+      header: header("run-task"),
+      payload: { task_group: "audio", task: "tts", function: "SpeechSynthesizer", model: task.model, input: {},
+        parameters: { text_type: "PlainText", voice: task.voice, format: "pcm", sample_rate: task.rate, ...(task.style ? { instruction: task.style } : {}) } },
+    }));
+    ws.onerror = () => end(new Error("实时合成：连接出错"));
+    ws.onclose = (e) => end(new Error(`实时合成：连接断开（${e.code}）`));
+    ws.onmessage = (e) => {
+      if (typeof e.data !== "string") { onAudio(Buffer.from(e.data as ArrayBuffer)); return; }
+      const msg = JSON.parse(e.data) as { header?: { event?: string; error_code?: string; error_message?: string }; payload?: { output?: { type?: string; sentence?: { index?: number }; original_text?: string }; usage?: Record<string, unknown> } };
+      const event = msg.header?.event;
+      if (event === "task-started") {
+        for (const line of task.lines) ws.send(JSON.stringify({ header: header("continue-task"), payload: { input: { text: line } } }));
+        ws.send(JSON.stringify({ header: header("finish-task"), payload: { input: {} } }));
+      } else if (event === "result-generated") {
+        const out = msg.payload?.output;
+        const index = out?.sentence?.index;
+        if (typeof index === "number") onSentence(index, out?.type === "sentence-begin" ? heard() / task.rate : undefined, out?.original_text);
+      } else if (event === "task-finished") end(undefined, msg.payload?.usage ?? null);
+      else if (event === "task-failed") end(new ProviderRejectedError(`实时合成：${msg.header?.error_code ?? ""} ${msg.header?.error_message ?? ""}`.trim(), null, false));
+    };
+  });
 }
 
 /**
@@ -314,14 +432,22 @@ export interface Seam { at: number; pad: number }
  * added inside a pause, so no word is cut (11-03 a breath put where Whisper heard a line start cut ten words in two).
  */
 export function seamsIn(samples: Int16Array, rate: number, lines: string[]): Array<Seam | null> {
-  const pauses = silences(samples, rate, 0.15);
-  const seconds = samples.length / rate;
+  return seamsAt(samples, rate, charGuesses(lines, samples.length / rate));
+}
+
+/** Where each line after the first starts by its characters, in seconds of a reading `seconds` long. */
+function charGuesses(lines: string[], seconds: number): number[] {
   const total = lines.reduce((sum, l) => sum + [...l].length, 0);
+  let chars = 0;
+  return lines.slice(1).map((_, k) => { chars += [...lines[k]!].length; return (seconds * chars) / total; });
+}
+
+/** The pause before each line after the first, nearest where `guesses` put it (seamsIn). */
+export function seamsAt(samples: Int16Array, rate: number, guesses: number[]): Array<Seam | null> {
+  const pauses = silences(samples, rate, 0.15);
   const out: Array<Seam | null> = [];
-  let chars = 0, after = 0;
-  for (let k = 1; k < lines.length; k += 1) {
-    chars += [...lines[k - 1]!].length;
-    const t = (seconds * chars) / total;
+  let after = 0;
+  for (const t of guesses) {
     const mid = (p: { from: number; to: number }) => (p.from + p.to) / 2;
     const near = pauses.filter((p) => mid(p) > after && Math.abs(mid(p) - t) <= SEAM_REACH);
     if (!near.length) { out.push(null); continue; }
@@ -337,22 +463,20 @@ export function seamsIn(samples: Int16Array, rate: number, lines: string[]): Arr
  * long (seamsIn), and where each line starts in seconds. A line whose pause was not found starts where its characters put
  * it; followTimes then moves every start to where the voice comes in.
  */
-export function joinGroups(groups: Array<{ samples: Int16Array; lines: string[] }>, rate: number): { samples: Int16Array; starts: number[] } {
+export function joinGroups(groups: Array<{ samples: Int16Array; lines: string[]; guesses?: number[] }>, rate: number): { samples: Int16Array; starts: number[] } {
   const gap = Math.round(rate * BREATH);
   const pieces: Int16Array[] = [];
   const starts: number[] = [];
   let at = 0;
-  for (const [g, { samples, lines }] of groups.entries()) {
+  for (const [g, { samples, lines, guesses: given }] of groups.entries()) {
     if (g) { pieces.push(new Int16Array(gap)); at += gap; }
-    const seams = seamsIn(samples, rate, lines);
+    const guesses = given ?? charGuesses(lines, samples.length / rate);
+    const seams = seamsAt(samples, rate, guesses);
     const found = seams.filter((c): c is Seam => c !== null);
     const placed = (s: number) => at + s + found.filter((c) => c.at <= s).reduce((sum, c) => sum + c.pad, 0);
-    const total = lines.reduce((sum, l) => sum + [...l].length, 0);
-    let chars = 0;
-    for (const [k, line] of lines.entries()) {
+    for (const k of lines.keys()) {
       const seam = k ? seams[k - 1] : { at: 0, pad: 0 };
-      starts.push(placed(seam ? seam.at : Math.round((samples.length * chars) / total)) / rate);
-      chars += [...line].length;
+      starts.push(placed(seam ? seam.at : Math.round(guesses[k - 1]! * rate)) / rate);
     }
     let from = 0;
     for (const c of found) { pieces.push(samples.subarray(from, c.at), new Int16Array(c.pad)); from = c.at; }
@@ -721,7 +845,7 @@ export interface VoiceReport {
   /** Readings of this issue begun, whatever came of them. */
   tries?: number;
   chars?: number; /** The script's length as the writer gave it, before the check's fixes. */ written?: number; scriptRounds?: Array<{ problems: Problem[]; applied: number }>;
-  reads?: Array<{ seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
+  reads?: Array<{ /** Which way it was read (read): one real-time task, or a few lines to a request after the task failed, and why. */ how?: "stream" | "groups"; fallback?: string; seconds: number; match: number; end?: number; gaps: Array<{ from: number; to: number }>; pitch: number[]; pass: boolean; why: string[]; missed?: string[]; /** When it was read: a report carries the earlier runs' reads too (11-01 one was taken for the run in hand). */ at?: string }>;
   /** A reading is kept with its script in the work folder but was never heard (the transcription failed): the next run hears it, not reads again. */
   unheard?: boolean;
   error?: string;
@@ -1004,11 +1128,14 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
     for (let attempt = saved ? used : used + 1; attempt <= MAX_READS; attempt += 1) {
       let wav: Buffer;
       let starts: number[];
+      let way: { how?: "stream" | "groups"; fallback?: string } = {};
       if (saved && attempt === used) { wav = saved[1]; starts = JSON.parse(saved[2]) as number[]; }
       else {
         report.tries = attempt;
         await keep();
-        ({ wav, starts } = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model));
+        const done = await read(script, `issue:${no}`, attempt, opts.voice, opts.style, opts.model);
+        ({ wav, starts } = done);
+        way = { how: done.how, ...(done.fallback ? { fallback: done.fallback } : {}) };
         await writeFile(path.join(work, `${no}.starts.json`), JSON.stringify(starts));
         await writeFile(path.join(work, `${no}.wav`), wav);
         report.unheard = true;
@@ -1024,7 +1151,7 @@ async function readIssue(no: number, ask: { write: Ask; check: Ask }, opts: { dr
       const pitch = pitchWindows(samples, rate).map((p) => Math.round(p * 10) / 10);
       const end = endHeard(script, heard);
       const verdict = judge(seconds, match, gaps, pitch, end, flipsHeard(script, heard));
-      report.reads!.push({ at: new Date().toISOString(), seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
+      report.reads!.push({ at: new Date().toISOString(), ...way, seconds, match: Math.round(match * 1000) / 1000, end: Math.round(end * 100) / 100, gaps, pitch, ...verdict, ...(verdict.pass ? {} : { missed: missedRuns(script, heard) }) });
       if (!verdict.pass) { await keep(); continue; }
       if (opts.dryRun) { report.status = "tried"; return keep(); }
       // The files under the names the page reads, the seconds last: until they are there the page shows no 听.

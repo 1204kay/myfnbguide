@@ -235,6 +235,12 @@ test("a day whose 十一说 is up without audio by the daily is told, with why",
     const [told] = await noAudioAlerts(daily + 60_000);
     assert.match(told?.title ?? "", /2020-03-28.*第 901 期没有音频：听稿没写成/u);
     assert.match(told?.heals ?? "", /不会自动恢复/u, "a failed script is not read again this morning");
+    await writeFile(path.join(dir, "901.voice.json"), JSON.stringify({ no: 901, date: day, at: "", status: "check failed", tries: 2 }));
+    assert.match((await noAudioAlerts(daily + 60_000))[0]?.heals ?? "", /还会再念/u, "a failed check with readings left is read again");
+    await writeFile(path.join(dir, "901.voice.json"), JSON.stringify({ no: 901, date: day, at: "", status: "check failed", tries: 6 }));
+    assert.match((await noAudioAlerts(daily + 60_000))[0]?.heals ?? "", /不会自动恢复/u, "and with none left, not");
+    await writeFile(path.join(dir, "901.voice.json"), JSON.stringify({ no: 901, date: day, at: "", status: "not ready", tries: 0 }));
+    assert.match((await noAudioAlerts(daily + 60_000))[0]?.heals ?? "", /不会自动恢复/u, "a report the morning's runs do not queue again is not");
     await writeFile(path.join(dir, "901.mp3"), Buffer.from([1, 2, 3]));
     await writeFile(path.join(dir, "901.json"), JSON.stringify({ seconds: 600 }));
     assert.deepEqual(await noAudioAlerts(daily + 60_000), [], "with its audio up nothing is told");

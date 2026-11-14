@@ -12,7 +12,7 @@ import type { Finding } from "@aihot/backend/notify/feishu";
 import { beijingAt, beijingDate } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
 import { issueAudio } from "./audio.ts";
-import { voiceReport, type VoiceReport } from "./voice.ts";
+import { MAX_READS, voiceReport, type VoiceReport } from "./voice.ts";
 
 /** What each queue does, in the words Kay reads; a queue not named here is shown by its name. */
 const WORK: Record<string, string> = {
@@ -70,18 +70,28 @@ export async function missingIssueAlerts(now: number): Promise<Finding[]> {
   }];
 }
 
-/** What became of the day's reading, in the words Kay reads, and whether a later run of the morning reads it again (server.ts queueVoice). */
-const NO_AUDIO: Record<VoiceReport["status"] | "none", { why: string; again: boolean }> = {
-  none: { why: "还没有开始念", again: true },
-  "not ready": { why: "念稿缺钥匙或预算行", again: true },
-  error: { why: "念的时候出错", again: true },
-  "check failed": { why: "念了，没过机器核对", again: true },
-  "script failed": { why: "听稿没写成", again: false },
-  "too long": { why: "听稿太长，没有念", again: false },
-  "no reads left": { why: "念了 6 次都没过机器核对", again: false },
-  tried: { why: "只试念过，没有放上", again: false },
-  up: { why: "报告说放上了，但网站上没有音频文件", again: false },
+/**
+ * What became of the day's reading, in the words Kay reads. "not ready" is not written to the report (voice.ts
+ * readIssue), so a day without the key shows as none; it is here for a report that says so all the same.
+ */
+const NO_AUDIO: Record<VoiceReport["status"] | "none", string> = {
+  none: "还没有开始念",
+  "not ready": "念稿缺钥匙或预算行",
+  error: "念的时候出错",
+  "check failed": "念了，没过机器核对",
+  "script failed": "听稿没写成",
+  "too long": "听稿太长，没有念",
+  "no reads left": `念了 ${MAX_READS} 次都没过机器核对`,
+  tried: "只试念过，没有放上",
+  up: "报告说放上了，但网站上没有音频文件",
 };
+
+/**
+ * Whether a later run this morning reads it again: as server.ts queueVoice decides, no report or one that ended in
+ * error or a failed check, with readings left.
+ */
+const readsAgain = (report: VoiceReport | null) =>
+  (!report || report.status === "error" || report.status === "check failed") && (report?.tries ?? 0) < MAX_READS;
 
 /**
  * The day's 十一说 is up and read aloud is on (settings reference.voice), and by the daily (08:00) it has no audio: Kay
@@ -96,13 +106,12 @@ export async function noAudioAlerts(now: number): Promise<Finding[]> {
   const [row] = await sql<{ no: number }[]>`SELECT no FROM reference_issues WHERE date = ${date} AND status = 'issue'`;
   if (!row || await issueAudio(row.no)) return [];
   const report = await voiceReport(row.no);
-  const { why, again } = NO_AUDIO[report?.status ?? "none"];
   return [{
     key: `reference.audio-missing.${date}`,
     level: "today",
-    title: `今天（${date}）的十一说第 ${row.no} 期没有音频：${why}`,
+    title: `今天（${date}）的十一说第 ${row.no} 期没有音频：${NO_AUDIO[report?.status ?? "none"]}`,
     impact: "网页、日报头条照常有十一说，但没有「听」，播客订阅源里也没有这一期",
-    heals: again ? "09:50 以前每个半点还会再念，过了核对就自动放上" : "不会自动恢复：今天不会再念",
+    heals: readsAgain(report) ? "上午每到 :20、:50 还会再念一次（最后一次 09:50），过了核对就自动放上" : "不会自动恢复：今天不会再念",
     action: `看 ${row.no}.voice.json 里的原因；补念：node myfnb/issue-voice.ts --put ${row.no}（念、核、过了就放上）`,
     detail: `报告状态：${report?.status ?? "没有报告"}；念了 ${report?.tries ?? 0} 次${report?.error ? `；${report.error.slice(0, 200)}` : ""}`,
   }];

@@ -74,6 +74,8 @@ export interface DayItem {
   selected: boolean;
   /** The story it was grouped into, if any: items sharing one are the same event told by several sources. */
   storyId: string | null;
+  /** The latest issue of the week before that told its event (backend/issues.ts toldEvents). */
+  told?: number;
 }
 
 export interface Usage { input: number; output: number }
@@ -161,7 +163,7 @@ export function citedItems(issue: IssueText, items: DayItem[]): { cited: DayItem
 export const issueChars = (issue: IssueText) => written({ ...issue, brief: [] }).replace(/〔[^〕]*〕/gu, "").replace(/\s/g, "").length;
 
 const itemList = (items: DayItem[]) => items.map((i) =>
-  `〔${i.n}〕${i.sourceName}《${i.title}》${i.selected ? "（精选）" : ""}${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : ""}\n摘要：${i.summary}\n原文：${i.text.slice(0, FULL_CHARS)}`).join("\n\n");
+  `〔${i.n}〕${i.sourceName}《${i.title}》${i.selected ? "（精选）" : ""}${QUOTABLE_SOURCES.has(i.sourceId) ? "（可以引原句）" : ""}${i.told ? `（第 ${i.told} 期讲过这件事）` : ""}\n摘要：${i.summary}\n原文：${i.text.slice(0, FULL_CHARS)}`).join("\n\n");
 
 /**
  * The day's events several sources told, as the site grouped them. On 10-06 six items were about McDonald's denying AI

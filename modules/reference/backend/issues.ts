@@ -12,7 +12,7 @@ import { beijingAt, beijingDate } from "@aihot/contracts/time";
 import { EDITION_TIMES } from "@aihot/site";
 import type { IssueIndex, IssuePage } from "../types.ts";
 import { issueAudio } from "./audio.ts";
-import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, leadParagraph, ISSUE_VERSION, modelAsk } from "./issue.ts";
+import { citedItems, composeIssue, type ComposedIssue, type DayItem, fixedLines, isCheckPurpose, ISSUE_CHECK_STEP, ISSUE_STEP, type IssueText, leadParagraph, ISSUE_VERSION, modelAsk } from "./issue.ts";
 
 /** Where an issue is read. */
 export const issuePath = (no: number) => `/reference/issues/${no}`;
@@ -33,7 +33,7 @@ export const issuePath = (no: number) => `/reference/issues/${no}`;
 export async function dayItems(end: Date, selectedOnly = false): Promise<DayItem[]> {
   const start = new Date(end.getTime() - 86_400_000);
   const day = beijingDate(end);
-  const rows = await sql<Omit<DayItem, "n">[]>`
+  const rows = await sql<Omit<DayItem, "n" | "told">[]>`
     SELECT p.article_id AS id, a.source_id AS "sourceId", s.name AS "sourceName", p.title, a.url,
       coalesce(p.summary, '') AS summary, coalesce(nullif(a.body_text, ''), a.excerpt, '') AS text,
       p.selected, p.story_id::text AS "storyId"
@@ -46,7 +46,38 @@ export async function dayItems(end: Date, selectedOnly = false): Promise<DayItem
         WHERE i.date < ${day}::date AND i.date >= ${day}::date - 2
           AND it->>'id' = p.article_id)
     ORDER BY p.score DESC NULLS LAST, p.article_id`;
-  return rows.map((r, i) => ({ n: i + 1, ...r }));
+  const told = await toldEvents(day);
+  return rows.map((r, i) => {
+    const no = r.storyId ? told.get(r.storyId) : undefined;
+    return { n: i + 1, ...r, ...(no ? { told: no } : {}) };
+  });
+}
+
+/** How far back an event told is remembered: the original daily's own memory (reports/edition.ts MEMORY_DAYS). */
+export const TOLD_DAYS = 7;
+
+/**
+ * The events the issues of the week before `day` told, each with the latest issue that told it, as the original daily
+ * remembers what its issues carried (reports/edition.ts dailyMemory): by the event each cited item is in now, so a later
+ * merge still counts. A new report of an event told is not left out, as the daily does not leave it out: it is marked,
+ * and the writer tells it only for what is new (prompts/issue-write.md). Issues 20 and 21 (11-13, 11-14) both told
+ * Uliassi losing its third star, from other reports of the one event: 十一 never knew it had told it.
+ */
+async function toldEvents(day: string): Promise<Map<string, number>> {
+  const issues = await sql<{ no: number; content: { issue: IssueText | null; items: DayItem[] } }[]>`
+    SELECT no, content FROM reference_issues
+    WHERE status = 'issue' AND date < ${day}::date AND date >= ${day}::date - ${TOLD_DAYS}::int`;
+  const told = new Map<string, number>();
+  for (const { no, content } of issues) {
+    if (!content.issue) continue;
+    for (const item of citedItems(content.issue, content.items ?? []).cited) told.set(item.id, Math.max(told.get(item.id) ?? 0, no));
+  }
+  if (!told.size) return new Map();
+  const rows = await sql<{ id: string; storyId: string }[]>`
+    SELECT article_id AS id, story_id::text AS "storyId" FROM publications WHERE article_id = ANY(${[...told.keys()]}::text[]) AND story_id IS NOT NULL`;
+  const events = new Map<string, number>();
+  for (const r of rows) events.set(r.storyId, Math.max(events.get(r.storyId) ?? 0, told.get(r.id)!));
+  return events;
 }
 
 /** What is kept of an issue: all of it but the originals' text, which stays with the articles. */

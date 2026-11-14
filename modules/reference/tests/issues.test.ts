@@ -17,7 +17,7 @@ import { installModules } from "@aihot/backend/modules";
 import { buildApp } from "../../../apps/api/src/app.ts";
 import reference from "../server.ts";
 import { dayItems, issueLead, writeIssue } from "../backend/issues.ts";
-import { failedJobAlerts, missingIssueAlerts } from "../backend/failed.ts";
+import { failedJobAlerts, missingIssueAlerts, noAudioAlerts } from "../backend/failed.ts";
 import { getBoss } from "@aihot/backend/jobs/queue";
 import { z } from "zod";
 import { AGENT_ABILITIES } from "../backend/agent.ts";
@@ -217,6 +217,31 @@ test("十一 reads what was listed in the day, whatever date the original bears"
     assert.ok(!(await dayItems(next)).some((i) => i.id === articleId), "not read twice");
   } finally {
     await sql`DELETE FROM reference_issues WHERE date = ${day}`;
+  }
+});
+
+test("a day whose 十一说 is up without audio by the daily is told, with why", async () => {
+  // Issue 18 (11-12): its listen script failed, nothing read it again, and nobody knew.
+  const day = "2020-03-28";
+  const dir = path.join(config.dataDir, "reference", "audio");
+  const daily = editionAt("daily", day).getTime();
+  await mkdir(dir, { recursive: true });
+  await sql`INSERT INTO reference_issues (date, no, status, content, version, models) VALUES (${day}, 901, 'issue', ${sql.json({ issue: null, items: [] })}, 'test', '{}')`;
+  try {
+    assert.deepEqual(await noAudioAlerts(daily + 60_000), [], "read aloud off: nothing to tell");
+    await sql`INSERT INTO settings (key, value, updated_by) VALUES ('reference.voice', ${sql.json({ from: "2020-03-01" })}, 'test') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`;
+    assert.deepEqual(await noAudioAlerts(daily - 60_000), [], "before the daily it may still come");
+    await writeFile(path.join(dir, "901.voice.json"), JSON.stringify({ no: 901, date: day, at: "", status: "script failed", tries: 0 }));
+    const [told] = await noAudioAlerts(daily + 60_000);
+    assert.match(told?.title ?? "", /2020-03-28.*第 901 期没有音频：听稿没写成/u);
+    assert.match(told?.heals ?? "", /不会自动恢复/u, "a failed script is not read again this morning");
+    await writeFile(path.join(dir, "901.mp3"), Buffer.from([1, 2, 3]));
+    await writeFile(path.join(dir, "901.json"), JSON.stringify({ seconds: 600 }));
+    assert.deepEqual(await noAudioAlerts(daily + 60_000), [], "with its audio up nothing is told");
+  } finally {
+    await sql`DELETE FROM settings WHERE key = 'reference.voice'`;
+    await sql`DELETE FROM reference_issues WHERE no = 901`;
+    for (const f of ["901.voice.json", "901.mp3", "901.json"]) await rm(path.join(dir, f), { force: true });
   }
 });
 
